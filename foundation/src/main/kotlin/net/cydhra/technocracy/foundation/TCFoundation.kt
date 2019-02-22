@@ -1,6 +1,5 @@
 package net.cydhra.technocracy.foundation
 
-import net.cydhra.technocracy.foundation.items.ItemManager
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.Mod.EventHandler
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
@@ -31,7 +30,6 @@ object TCFoundation {
     @EventHandler
     fun preInit(event: FMLPreInitializationEvent) {
         logger = event.modLog
-        ItemManager.init()
     }
 
     @EventHandler
