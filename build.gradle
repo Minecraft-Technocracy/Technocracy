@@ -1,0 +1,70 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven { url = "https://files.minecraftforge.net/maven" }
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: forge_plugin_version
+        classpath group: 'org.jetbrains.kotlin', name: 'kotlin-gradle-plugin', version: kotlin_version
+    }
+}
+
+allprojects {
+    // plugins
+    apply plugin: 'kotlin'
+
+    // artifact configuration
+    version = mod_version
+    group = "net.cydhra.technocracy"
+
+    // compiler configuration
+    compileKotlin {
+        kotlinOptions.jvmTarget = jvm_target
+    }
+
+    // repositories
+    repositories {
+        jcenter()
+        maven {
+            url 'https://maven.shadowfacts.net/'
+        }
+    }
+}
+
+subprojects {
+    // plugins
+    apply plugin: 'net.minecraftforge.gradle.forge'
+
+    // dependencies
+    dependencies {
+        compile group: 'net.shadowfacts', name: 'Forgelin', version: forgelin_version
+    }
+
+    // forge configuration
+    minecraft {
+        version = "$minecraft_version-$forge_version"
+        runDir = "run"
+        mappings = mappings_version
+        // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+    }
+
+    processResources {
+        // this will ensure that this task is redone when the versions change.
+        inputs.property "version", project.version
+        inputs.property "mcversion", project.minecraft.version
+
+        // replace stuff in mcmod.info, nothing else
+        from(sourceSets.main.resources.srcDirs) {
+            include 'mcmod.info'
+
+            // replace version and mcversion
+            expand 'version':project.version, 'mcversion':project.minecraft.version
+        }
+
+        // copy everything else except the mcmod.info
+        from(sourceSets.main.resources.srcDirs) {
+            exclude 'mcmod.info'
+        }
+    }
+}

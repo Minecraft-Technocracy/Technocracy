@@ -1,0 +1,16 @@
+[
+{
+  "modid": "technocracy.foundation",
+  "name": "Technocracy Foundation",
+  "description": "Technocracy Base Mod",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Cydhra"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

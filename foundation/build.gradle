@@ -1,0 +1,4 @@
+minecraft {
+    replace "##MOD.VERSION", mod_version
+    replace "##MOD.ID", "technocracy.foundation"
+}
