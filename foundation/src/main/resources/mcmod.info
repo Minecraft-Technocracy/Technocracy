@@ -1,6 +1,6 @@
 [
 {
-  "modid": "technocracy.foundation",
+  "modid": "${modid}",
   "name": "Technocracy Foundation",
   "description": "Technocracy Base Mod",
   "version": "${version}",
