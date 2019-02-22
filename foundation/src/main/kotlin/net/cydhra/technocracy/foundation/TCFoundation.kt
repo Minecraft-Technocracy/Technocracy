@@ -1,4 +1,4 @@
-package net.cydhra.technocracy
+package net.cydhra.technocracy.foundation
 
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.Mod.EventHandler
