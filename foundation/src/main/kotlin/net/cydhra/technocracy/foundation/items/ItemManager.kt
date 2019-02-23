@@ -1,7 +1,7 @@
-
 package net.cydhra.technocracy.foundation.items
 
 import net.cydhra.technocracy.foundation.TCFoundation
+import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.block.model.ModelResourceLocation
 import net.minecraft.item.Item
 import net.minecraftforge.client.event.ModelRegistryEvent
@@ -44,6 +44,16 @@ object ItemManager {
     @JvmStatic
     fun registerRenders(event: ModelRegistryEvent) {
         this.itemsToRegister.forEach(this::registerItemRender)
+    }
+
+    /**
+     * Must be called client side in initialization phase
+     */
+    fun registerItemColors() {
+        this.itemsToRegister.forEach { item ->
+            if (item.itemColor != null)
+                Minecraft.getMinecraft().itemColors.registerItemColorHandler(item.itemColor, item)
+        }
     }
 
     /**
