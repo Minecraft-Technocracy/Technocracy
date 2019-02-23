@@ -2,6 +2,8 @@ buildscript {
     ext.mod_id = 'technocracy.foundation'
 }
 
+apply plugin: 'idea'
+
 minecraft {
     replace "##MOD.VERSION", mod_version
     replace "##MOD.ID", mod_id
@@ -25,3 +27,24 @@ processResources {
         exclude 'mcmod.info'
     }
 }
+
+//
+// the following tasks are a workaround for IntelliJ's habbit of keeping built classes and resources apart, which 
+// breaks an assumption of forge's resource loader thus assets cannot be found while running the mod inside IntelliJ.
+//
+
+task delOriginalAssets(type: Delete) {
+    delete "$project.buildDir/resources"
+}
+
+task copyAssets(type: Copy) {
+    from("$project.buildDir/resources")
+    into("$project.buildDir/classes/kotlin")
+
+    finalizedBy delOriginalAssets
+}
+
+
+build.finalizedBy(copyAssets)
+
+
