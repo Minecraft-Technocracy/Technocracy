@@ -23,7 +23,10 @@ class MaterialSystem(materialName: String, colorMultiplier: Int) {
      */
     val ore = OreBlock()
 
-    init {
+    /**
+     * Must be called in pre-init. Registers all the components at forge
+     */
+    fun register() {
         ItemManager.prepareItemForRegistration(this.ingot)
     }
 }
