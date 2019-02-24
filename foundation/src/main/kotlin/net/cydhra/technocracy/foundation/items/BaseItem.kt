@@ -9,6 +9,10 @@ import net.minecraft.item.Item
 abstract class BaseItem(unlocalizedName: String,
                         registryName: String = unlocalizedName,
                         val itemColor: IItemColor? = null) : Item() {
+
+    open val modelLocation: String
+        get() = this.registryName.toString()
+
     init {
         this.unlocalizedName = unlocalizedName
         this.setRegistryName(registryName)

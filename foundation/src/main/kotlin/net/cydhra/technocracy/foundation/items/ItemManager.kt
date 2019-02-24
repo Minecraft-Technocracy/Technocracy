@@ -73,6 +73,6 @@ object ItemManager {
      */
     private fun registerItemRender(item: BaseItem, metadata: Int) {
         ModelLoader.setCustomModelResourceLocation(item, metadata,
-                ModelResourceLocation(item.registryName!!, "inventory"))
+                ModelResourceLocation(item.modelLocation, "inventory"))
     }
 }
