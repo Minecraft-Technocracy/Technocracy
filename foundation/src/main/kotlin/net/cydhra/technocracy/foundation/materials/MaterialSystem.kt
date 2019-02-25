@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.materials
 
+import net.cydhra.technocracy.foundation.blocks.BlockManager
 import net.cydhra.technocracy.foundation.blocks.OreBlock
 import net.cydhra.technocracy.foundation.items.ConstantItemColor
 import net.cydhra.technocracy.foundation.items.IngotItem
@@ -21,12 +22,13 @@ class MaterialSystem(materialName: String, colorMultiplier: Int) {
     /**
      * The ore of this material
      */
-    val ore = OreBlock()
+    val ore = OreBlock(materialName)
 
     /**
      * Must be called in pre-init. Registers all the components at forge
      */
     fun register() {
         ItemManager.prepareItemForRegistration(this.ingot)
+        BlockManager.prepareBlocksForRegistration(this.ore)
     }
 }
