@@ -6,4 +6,12 @@ import net.minecraft.block.material.Material
 /**
  * Base class for all blocks added by this modification
  */
-abstract class BaseBlock(material: Material) : Block(material)
+abstract class BaseBlock(unlocalizedName: String,
+                         registryName: String = unlocalizedName,
+                         material: Material) : Block(material) {
+
+    init {
+        this.unlocalizedName = unlocalizedName
+        this.setRegistryName(registryName)
+    }
+}
