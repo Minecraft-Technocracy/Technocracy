@@ -2,6 +2,7 @@ package net.cydhra.technocracy.foundation.blocks
 
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.minecraft.block.Block
+import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.block.model.ModelResourceLocation
 import net.minecraft.item.Item
 import net.minecraft.item.ItemBlock
@@ -43,6 +44,13 @@ object BlockManager {
     @SubscribeEvent
     fun onRegisterRenders(event: ModelRegistryEvent) {
         this.blocksToRegister.map(Item::getItemFromBlock).forEach(this::registerRender)
+    }
+
+    fun registerBlockColors() {
+        this.blocksToRegister.forEach { block ->
+            if (block.colorMultiplier != null)
+                Minecraft.getMinecraft().blockColors.registerBlockColorHandler(block.colorMultiplier, block)
+        }
     }
 
     private fun registerRender(item: Item) {

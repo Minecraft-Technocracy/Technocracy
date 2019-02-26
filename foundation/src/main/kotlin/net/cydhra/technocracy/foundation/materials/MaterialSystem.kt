@@ -22,7 +22,7 @@ class MaterialSystem(materialName: String, colorMultiplier: Int) {
     /**
      * The ore of this material
      */
-    val ore = OreBlock(materialName)
+    val ore = OreBlock(materialName, colorMultiplier)
 
     /**
      * Must be called in pre-init. Registers all the components at forge

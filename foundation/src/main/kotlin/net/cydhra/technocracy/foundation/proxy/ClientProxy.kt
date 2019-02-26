@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.proxy
 
+import net.cydhra.technocracy.foundation.blocks.BlockManager
 import net.cydhra.technocracy.foundation.items.ItemManager
 
 class ClientProxy : CommonProxy() {
@@ -11,6 +12,7 @@ class ClientProxy : CommonProxy() {
     override fun init() {
         super.init()
         ItemManager.registerItemColors()
+        BlockManager.registerBlockColors()
     }
 
     override fun postInit() {

@@ -11,6 +11,9 @@ import net.minecraft.world.IBlockAccess
  */
 class ConstantBlockColor(private val constantItemColor: Int) : IBlockColor {
     override fun colorMultiplier(state: IBlockState, worldIn: IBlockAccess?, pos: BlockPos?, tintIndex: Int): Int {
-        return this.constantItemColor
+        return if (tintIndex == 1)
+            this.constantItemColor
+        else
+            -1
     }
 }
