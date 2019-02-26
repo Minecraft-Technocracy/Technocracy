@@ -18,6 +18,8 @@ class OreBlock(unlocalizedName: String, colorMultiplier: Int)
 
     init {
         this.setCreativeTab(CreativeTabs.BUILDING_BLOCKS)
+        this.blockResistance = 3.5f
+        this.blockHardness = 2f
     }
 
     @SideOnly(Side.CLIENT)
