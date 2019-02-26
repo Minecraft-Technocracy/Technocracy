@@ -2,7 +2,8 @@
   "parent": "block/block",
   "textures": {
     "block": "blocks/stone",
-    "ore": "technocracy.foundation:block/ore_overlay"
+    "ore": "technocracy.foundation:block/ore_overlay",
+    "particle": "blocks/stone"
   },
   "elements": [
     {
