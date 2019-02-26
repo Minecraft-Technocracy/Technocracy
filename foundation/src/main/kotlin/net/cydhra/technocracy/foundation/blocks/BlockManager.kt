@@ -59,7 +59,7 @@ object BlockManager {
     }
 
     /**
-     * Convencience function to register a custom model resource for an ItemBlock.
+     * Convenience function to register a custom model resource for an ItemBlock.
      *
      * @param item an instance of [Item]. Note that the function asserts that it is actually an [ItemBlock]. It is
      * just out of convenience an [Item] to be used as function reference in stream calls.
