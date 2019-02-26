@@ -1,7 +1,85 @@
 {
-  "parent": "block/cube_all",
+  "parent": "block/block",
   "textures": {
-    "layer0": "minecraft:block/stone",
-    "layer1": "technocracy.foundation:block/ore_overlay"
-  }
+    "block": "blocks/stone",
+    "ore": "technocracy.foundation:block/ore_overlay"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#block",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#block",
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#block",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#block",
+          "cullface": "south"
+        },
+        "west": {
+          "texture": "#block",
+          "cullface": "west"
+        },
+        "east": {
+          "texture": "#block",
+          "cullface": "east"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#ore",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#ore",
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#ore",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#ore",
+          "cullface": "south"
+        },
+        "west": {
+          "texture": "#ore",
+          "cullface": "west"
+        },
+        "east": {
+          "texture": "#ore",
+          "cullface": "east"
+        }
+      }
+    }
+  ]
 }

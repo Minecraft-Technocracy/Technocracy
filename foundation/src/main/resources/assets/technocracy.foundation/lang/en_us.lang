@@ -6,3 +6,12 @@ item.ingot.nickel.name=Nickel Ingot
 item.ingot.osmium.name=Osmium Ingot
 item.ingot.silver.name=Silver Ingot
 item.ingot.tin.name=Tin Ingot
+
+tile.ore.aluminum.name=Aluminum Ore
+tile.ore.copper.name=Copper Ore
+tile.ore.lead.name=Lead Ore
+tile.ore.lithium.name=Lithium Ore
+tile.ore.nickel.name=Nickel Ore
+tile.ore.osmium.name=Osmium Ore
+tile.ore.silver.name=Silver Ore
+tile.ore.tin.name=Tin Ore
