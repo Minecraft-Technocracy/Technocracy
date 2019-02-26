@@ -8,7 +8,7 @@ import net.minecraft.block.material.Material
  */
 abstract class BaseBlock(unlocalizedName: String,
                          registryName: String = unlocalizedName,
-                         val colorMultiplier: ConstantBlockColor?,
+                         val colorMultiplier: ConstantBlockColor? = null,
                          material: Material) : Block(material) {
 
     /**
