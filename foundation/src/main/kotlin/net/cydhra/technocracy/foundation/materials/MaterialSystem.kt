@@ -5,6 +5,10 @@ import net.cydhra.technocracy.foundation.blocks.OreBlock
 import net.cydhra.technocracy.foundation.items.ConstantItemColor
 import net.cydhra.technocracy.foundation.items.IngotItem
 import net.cydhra.technocracy.foundation.items.ItemManager
+import net.minecraft.item.ItemStack
+import net.minecraftforge.fml.common.registry.GameRegistry
+
+
 
 /**
  * A material system consists of an ore type, an ingot and all stages of ore processing necessary.
@@ -27,8 +31,12 @@ class MaterialSystem(materialName: String, colorMultiplier: Int) {
     /**
      * Must be called in pre-init. Registers all the components at forge
      */
-    fun register() {
+    fun preInit() {
         ItemManager.prepareItemForRegistration(this.ingot)
         BlockManager.prepareBlocksForRegistration(this.ore)
+    }
+
+    fun init() {
+        GameRegistry.addSmelting(ore, ItemStack(ingot, 1), 0.5f)
     }
 }
