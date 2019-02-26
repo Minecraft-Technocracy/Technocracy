@@ -48,8 +48,10 @@ object BlockManager {
 
     fun registerBlockColors() {
         this.blocksToRegister.forEach { block ->
-            if (block.colorMultiplier != null)
+            if (block.colorMultiplier != null) {
                 Minecraft.getMinecraft().blockColors.registerBlockColorHandler(block.colorMultiplier, block)
+                Minecraft.getMinecraft().itemColors.registerItemColorHandler(block.colorMultiplier, block)
+            }
         }
     }
 
