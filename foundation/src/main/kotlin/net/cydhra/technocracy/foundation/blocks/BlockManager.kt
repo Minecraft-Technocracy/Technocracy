@@ -35,7 +35,7 @@ object BlockManager {
     fun onRegisterItems(event: RegistryEvent.Register<Item>) {
         event.registry.registerAll(*blocksToRegister
                 .map(::ItemBlock)
-                .map { it.apply { registryName = it.block.registryName } }
+                .map { it.apply { it.registryName = it.block.registryName } }
                 .toTypedArray())
     }
 
@@ -46,6 +46,7 @@ object BlockManager {
     }
 
     private fun registerRender(item: Item) {
-        ModelLoader.setCustomModelResourceLocation(item, 0, ModelResourceLocation(item.registryName!!, "inventory"))
+        ModelLoader.setCustomModelResourceLocation(item, 0, ModelResourceLocation(((item as ItemBlock).block as
+                BaseBlock).modelLocation, "inventory"))
     }
 }
