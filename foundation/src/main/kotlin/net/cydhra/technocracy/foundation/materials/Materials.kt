@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.materials
 
-val aluminiumSystem = MaterialSystem("aluminium", 0xFFFFFF)
+val aluminiumSystem = MaterialSystem("aluminum", 0xFFFFFF)
 val copperSystem = MaterialSystem("copper", 0xF78725)
 val leadSystem = MaterialSystem("lead", 0x9696BE)
 val lithiumSystem = MaterialSystem("lithium", 0x176B59)
