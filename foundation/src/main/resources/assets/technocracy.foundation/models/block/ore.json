@@ -1,7 +1,7 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "layer0": "minecraft:blocks/stone",
-    "layer1": "technocracy.foundation:blocks/ore_overlay"
+    "layer0": "minecraft:block/stone",
+    "layer1": "technocracy.foundation:block/ore_overlay"
   }
 }
