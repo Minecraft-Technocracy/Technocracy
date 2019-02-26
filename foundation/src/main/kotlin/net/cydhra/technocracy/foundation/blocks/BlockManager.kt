@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 
 /**
- *
+ * A manager for blocks added by the mod
  */
 @Mod.EventBusSubscriber(modid = TCFoundation.MODID)
 object BlockManager {
@@ -46,6 +46,9 @@ object BlockManager {
         this.blocksToRegister.map(Item::getItemFromBlock).forEach(this::registerRender)
     }
 
+    /**
+     * Called client-side during initialization. Registers colors for blocks and their [ItemBlock] instances.
+     */
     fun registerBlockColors() {
         this.blocksToRegister.forEach { block ->
             if (block.colorMultiplier != null) {
@@ -55,6 +58,12 @@ object BlockManager {
         }
     }
 
+    /**
+     * Convencience function to register a custom model resource for an ItemBlock.
+     *
+     * @param item an instance of [Item]. Note that the function asserts that it is actually an [ItemBlock]. It is
+     * just out of convenience an [Item] to be used as function reference in stream calls.
+     */
     private fun registerRender(item: Item) {
         ModelLoader.setCustomModelResourceLocation(item, 0, ModelResourceLocation(((item as ItemBlock).block as
                 BaseBlock).modelLocation, "inventory"))
