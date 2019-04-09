@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.blocks
 
+import net.cydhra.technocracy.foundation.blocks.color.ConstantBlockColor
 import net.minecraft.block.Block
 import net.minecraft.block.material.Material
 

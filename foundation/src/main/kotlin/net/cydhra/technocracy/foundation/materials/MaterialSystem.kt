@@ -2,13 +2,12 @@ package net.cydhra.technocracy.foundation.materials
 
 import net.cydhra.technocracy.foundation.blocks.BlockManager
 import net.cydhra.technocracy.foundation.blocks.OreBlock
-import net.cydhra.technocracy.foundation.items.ConstantItemColor
 import net.cydhra.technocracy.foundation.items.DustItem
 import net.cydhra.technocracy.foundation.items.IngotItem
 import net.cydhra.technocracy.foundation.items.ItemManager
+import net.cydhra.technocracy.foundation.items.color.ConstantItemColor
 import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.common.registry.GameRegistry
-
 
 
 /**

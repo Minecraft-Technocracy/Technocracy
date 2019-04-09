@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.foundation.blocks
+package net.cydhra.technocracy.foundation.blocks.color
 
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.renderer.color.IBlockColor

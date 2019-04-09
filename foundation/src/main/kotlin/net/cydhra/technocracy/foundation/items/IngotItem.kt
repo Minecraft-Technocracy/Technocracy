@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.items
 
 import net.cydhra.technocracy.foundation.TCFoundation
+import net.cydhra.technocracy.foundation.items.color.ConstantItemColor
 import net.minecraft.creativetab.CreativeTabs
 
 /**
