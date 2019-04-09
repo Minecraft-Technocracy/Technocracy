@@ -21,8 +21,12 @@ object BlockManager {
 
     private val blocksToRegister = mutableListOf<BaseBlock>()
 
-    fun prepareBlocksForRegistration(block: BaseBlock) {
+    /**
+     * Prepare a block for the registration happening per event later on.
+     */
+    fun prepareBlocksForRegistration(block: BaseBlock): BaseBlock {
         blocksToRegister += block
+        return block
     }
 
     @Suppress("unused")
