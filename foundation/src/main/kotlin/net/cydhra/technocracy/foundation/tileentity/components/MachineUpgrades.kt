@@ -8,11 +8,11 @@ class MachineUpgrades : IComponent {
     /**
      * Allowed Upgrades and maximum amount
      */
-    var allowedUpgrades = HashMap<Upgrade, Int>()
+    private val allowedUpgrades = HashMap<Upgrade, Int>()
     /**
      * Installed Upgrades with amount
      */
-    private var installedUpgrades = HashMap<Upgrade, Int>()
+    private val installedUpgrades = HashMap<Upgrade, Int>()
 
     override fun readFromNBT(nbtTags: NBTTagCompound) {
         if (nbtTags.hasKey("upgrades")) {

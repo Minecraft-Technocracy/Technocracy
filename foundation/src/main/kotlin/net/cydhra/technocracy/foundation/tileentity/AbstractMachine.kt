@@ -9,12 +9,12 @@ import net.minecraft.util.ITickable
 
 abstract class AbstractMachine : TileEntity(), ITickable {
 
-    var rotation = EnumFacing.NORTH
-    var redstoneMode = RedstoneMode.IGNORE
+    protected var rotation = EnumFacing.NORTH
+    protected var redstoneMode = RedstoneMode.IGNORE
 
-    var upgrades = MachineUpgrades()
+    protected val upgrades = MachineUpgrades()
 
-    var components = HashSet<IComponent>()
+    protected val components = HashSet<IComponent>()
 
     init {
         components.add(upgrades)
