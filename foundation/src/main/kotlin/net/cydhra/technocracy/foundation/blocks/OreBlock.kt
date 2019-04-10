@@ -19,9 +19,10 @@ class OreBlock(unlocalizedName: String, colorMultiplier: Int)
     override val modelLocation: String = "${TCFoundation.MODID}:ore"
 
     init {
-        this.setCreativeTab(CreativeTabs.BUILDING_BLOCKS)
         this.blockResistance = 3.5f
         this.blockHardness = 2f
+
+        this.setCreativeTab(CreativeTabs.BUILDING_BLOCKS)
     }
 
     @SideOnly(Side.CLIENT)
