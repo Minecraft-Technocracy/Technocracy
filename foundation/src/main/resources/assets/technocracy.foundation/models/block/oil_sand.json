@@ -1,6 +1,98 @@
 {
-  "parent": "block/cube_all",
+  "parent": "block/block",
   "textures": {
-    "all": "blocks/sand"
-  }
+    "block": "blocks/sand",
+    "oil": "technocracy.foundation:block/ore_overlay",
+    "particle": "blocks/sand"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "tintindex": 0,
+          "texture": "#block",
+          "cullface": "down"
+        },
+        "up": {
+          "tintindex": 0,
+          "texture": "#block",
+          "cullface": "up"
+        },
+        "north": {
+          "tintindex": 0,
+          "texture": "#block",
+          "cullface": "north"
+        },
+        "south": {
+          "tintindex": 0,
+          "texture": "#block",
+          "cullface": "south"
+        },
+        "west": {
+          "tintindex": 0,
+          "texture": "#block",
+          "cullface": "west"
+        },
+        "east": {
+          "tintindex": 0,
+          "texture": "#block",
+          "cullface": "east"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "tintindex": 1,
+          "texture": "#oil",
+          "cullface": "down"
+        },
+        "up": {
+          "tintindex": 1,
+          "texture": "#oil",
+          "cullface": "up"
+        },
+        "north": {
+          "tintindex": 1,
+          "texture": "#oil",
+          "cullface": "north"
+        },
+        "south": {
+          "tintindex": 1,
+          "texture": "#oil",
+          "cullface": "south"
+        },
+        "west": {
+          "tintindex": 1,
+          "texture": "#oil",
+          "cullface": "west"
+        },
+        "east": {
+          "tintindex": 1,
+          "texture": "#oil",
+          "cullface": "east"
+        }
+      }
+    }
+  ]
 }
