@@ -74,6 +74,6 @@ object BlockManager {
      */
     private fun registerRender(item: Item) {
         ModelLoader.setCustomModelResourceLocation(item, 0, ModelResourceLocation(((item as ItemBlock).block as
-                AbstractBaseBlock).modelLocation, "inventory"))
+                IBaseBlock).modelLocation, "inventory"))
     }
 }
