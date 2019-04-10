@@ -1,13 +1,16 @@
 package net.cydhra.technocracy.foundation.tileentity
 
+import net.cydhra.technocracy.foundation.capabilities.energy.DynamicEnergyStorage
+import net.cydhra.technocracy.foundation.capabilities.energy.EnergyCapabilityProvider
 import net.cydhra.technocracy.foundation.tileentity.components.IComponent
 import net.cydhra.technocracy.foundation.tileentity.components.MachineUpgrades
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.ITickable
+import net.minecraftforge.common.capabilities.Capability
 
-abstract class AbstractMachine : TileEntity(), ITickable {
+abstract class AbstractMachine(private val energyStorage: DynamicEnergyStorage) : TileEntity(), ITickable {
 
     protected var rotation = EnumFacing.NORTH
     protected var redstoneMode = RedstoneMode.IGNORE
@@ -30,7 +33,7 @@ abstract class AbstractMachine : TileEntity(), ITickable {
             redstoneMode = RedstoneMode.values()[(nbtTags.getInteger("redstone"))]
         }
 
-        for(comp in components) {
+        for (comp in components) {
             comp.readFromNBT(nbtTags)
         }
     }
@@ -41,7 +44,7 @@ abstract class AbstractMachine : TileEntity(), ITickable {
         nbtTags.setInteger("facing", rotation.ordinal)
         nbtTags.setInteger("redstone", redstoneMode.ordinal)
 
-        for(comp in components) {
+        for (comp in components) {
             comp.writeToNBT(nbtTags)
         }
 
@@ -49,6 +52,20 @@ abstract class AbstractMachine : TileEntity(), ITickable {
     }
 
     abstract override fun update()
+
+    override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
+        return if (capability == EnergyCapabilityProvider.CAPABILITY_ENERGY)
+            true
+        else
+            super.hasCapability(capability, facing)
+    }
+
+    override fun <T : Any?> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
+        return if (capability == EnergyCapabilityProvider.CAPABILITY_ENERGY)
+            EnergyCapabilityProvider.CAPABILITY_ENERGY!!.cast<T>(this.energyStorage)
+        else
+            super.getCapability(capability, facing)
+    }
 
     enum class RedstoneMode {
         HIGH, LOW, IGNORE
