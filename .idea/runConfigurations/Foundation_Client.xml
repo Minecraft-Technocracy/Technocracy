@@ -7,6 +7,8 @@
     <ConfigurationWrapper RunnerId="Run" />
     <method v="2">
       <option name="Make" enabled="true" />
+      <option name="Gradle.BeforeRunTask" enabled="true" tasks="clean" externalProjectPath="$PROJECT_DIR$/foundation" vmOptions="" scriptParameters="" />
+      <option name="Gradle.BeforeRunTask" enabled="true" tasks="build" externalProjectPath="$PROJECT_DIR$/foundation" vmOptions="" scriptParameters="" />
     </method>
   </configuration>
 </component>

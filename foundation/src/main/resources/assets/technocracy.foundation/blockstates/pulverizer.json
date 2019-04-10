@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "oreore"
+    },
+    "facing=east": {
+      "model": "oreore",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "oreore",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "oreore",
+      "y": 270
+    }
+  }
+}

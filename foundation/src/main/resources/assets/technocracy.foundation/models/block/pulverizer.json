@@ -1,0 +1,11 @@
+{
+  "parent": "block/orientable",
+  "textures": {
+    "up": "blocks/stone",
+    "down": "blocks/stone",
+    "north": "blocks/stone",
+    "east": "blocks/endStone",
+    "south": "blocks/stone",
+    "west": "blocks/stone"
+  }
+}
