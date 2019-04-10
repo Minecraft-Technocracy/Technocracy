@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.tileentity
 
+import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.capabilities.energy.DynamicEnergyStorage
 import net.cydhra.technocracy.foundation.capabilities.energy.DynamicEnergyStorageStategy
 import net.cydhra.technocracy.foundation.capabilities.energy.EnergyCapabilityProvider
@@ -22,6 +23,7 @@ abstract class AbstractMachine(private val energyStorage: DynamicEnergyStorage) 
 
     init {
         components.add(upgrades)
+        TileEntity.register("${TCFoundation.MODID}:${javaClass.simpleName}", this.javaClass)
     }
 
     override fun readFromNBT(nbtTags: NBTTagCompound) {
@@ -34,11 +36,14 @@ abstract class AbstractMachine(private val energyStorage: DynamicEnergyStorage) 
             redstoneMode = RedstoneMode.values()[(nbtTags.getInteger("redstone"))]
         }
 
+        if(nbtTags.hasKey("energy")) {
+            DynamicEnergyStorageStategy.readNBT(this.energyStorage, nbtTags.getCompoundTag("energy"))
+        }
+
         for (comp in components) {
             comp.readFromNBT(nbtTags)
         }
 
-        DynamicEnergyStorageStategy.readNBT(this.energyStorage, nbtTags)
     }
 
     override fun writeToNBT(nbtTags: NBTTagCompound): NBTTagCompound {
@@ -46,12 +51,11 @@ abstract class AbstractMachine(private val energyStorage: DynamicEnergyStorage) 
 
         nbtTags.setInteger("facing", rotation.ordinal)
         nbtTags.setInteger("redstone", redstoneMode.ordinal)
+        nbtTags.setTag("energy", DynamicEnergyStorageStategy.writeNBT(this.energyStorage))
 
         for (comp in components) {
             comp.writeToNBT(nbtTags)
         }
-
-        nbtTags.setTag("energy", DynamicEnergyStorageStategy.writeNBT(this.energyStorage))
 
         return nbtTags
     }

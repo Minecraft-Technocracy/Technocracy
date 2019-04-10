@@ -1,5 +1,7 @@
 package net.cydhra.technocracy.foundation.proxy
 
+import net.cydhra.technocracy.foundation.blocks.BlockManager
+import net.cydhra.technocracy.foundation.blocks.Pulveriser
 import net.cydhra.technocracy.foundation.materials.*
 
 open class CommonProxy : ISidedProxy {
@@ -9,6 +11,8 @@ open class CommonProxy : ISidedProxy {
 
     override fun preInit() {
         materialSystems.forEach(MaterialSystem::preInit)
+
+        BlockManager.prepareBlocksForRegistration(Pulveriser())
     }
 
     override fun init() {
