@@ -1,20 +1,15 @@
 package net.cydhra.technocracy.foundation.blocks
 
-import net.cydhra.technocracy.foundation.blocks.general.AbstractBaseBlock
+import net.cydhra.technocracy.foundation.blocks.general.BaseTileEntityBlock
 import net.cydhra.technocracy.foundation.tileentity.TileEntityPulveriser
-import net.minecraft.block.ITileEntityProvider
 import net.minecraft.block.material.Material
-import net.minecraft.block.state.IBlockState
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.world.World
 
 
-class Pulverizer : AbstractBaseBlock("pulverizer", material = Material.IRON), ITileEntityProvider {
-    override fun createNewTileEntity(worldIn: World, meta: Int): TileEntity? {
-        return TileEntityPulveriser()
-    }
+class Pulverizer : BaseTileEntityBlock("pulverizer", material = Material.IRON) {
 
-    override fun createTileEntity(world: World, state: IBlockState): TileEntity? {
+    override fun createNewTileEntity(worldIn: World, meta: Int): TileEntity? {
         return TileEntityPulveriser()
     }
 }
