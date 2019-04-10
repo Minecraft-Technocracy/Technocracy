@@ -14,20 +14,24 @@ import net.minecraft.util.EnumHand
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-
-abstract class BaseTileEntityBlock : AbstractBaseBlock, ITileEntityProvider {
+/**
+ * A base block that provides a tile entity.
+ */
+abstract class BaseTileEntityBlock(unlocalizedName: String,
+                                   registryName: String = unlocalizedName,
+                                   colorMultiplier: ConstantBlockColor? = null,
+                                   material: Material)
+    : AbstractBaseBlock(unlocalizedName, material, registryName, colorMultiplier), ITileEntityProvider {
 
     companion object {
-        val FACING = BlockHorizontal.FACING
+        /**
+         * The block property used to determine block rotation
+         */
+        private val facingProperty = BlockHorizontal.FACING!!
     }
 
-    constructor(unlocalizedName: String, registryName: String, colorMultiplier: ConstantBlockColor?, material: Material)
-            : super(unlocalizedName, material, registryName, colorMultiplier)
-
-    constructor(unlocalizedName: String, material: Material) : super(unlocalizedName, material = material)
-
     init {
-        defaultState = this.blockState.baseState.withProperty(FACING, EnumFacing.NORTH)
+        defaultState = this.blockState.baseState.withProperty(facingProperty, EnumFacing.NORTH)
     }
 
     override fun onBlockActivated(worldIn: World, pos: BlockPos, state: IBlockState, playerIn: EntityPlayer,
@@ -40,20 +44,20 @@ abstract class BaseTileEntityBlock : AbstractBaseBlock, ITileEntityProvider {
     }
 
     override fun createBlockState(): BlockStateContainer {
-        return BlockStateContainer(this, FACING)
+        return BlockStateContainer(this, facingProperty)
     }
 
     override fun getStateFromMeta(meta: Int): IBlockState {
         var facing = EnumFacing.getFront(meta)
         if (facing.axis == EnumFacing.Axis.Y) facing = EnumFacing.NORTH
-        return this.defaultState.withProperty(FACING, facing)
+        return this.defaultState.withProperty(facingProperty, facing)
     }
 
     override fun getMetaFromState(state: IBlockState): Int {
-        return (state.getValue(FACING) as EnumFacing).index
+        return (state.getValue(facingProperty) as EnumFacing).index
     }
 
     override fun onBlockPlacedBy(worldIn: World, pos: BlockPos, state: IBlockState, placer: EntityLivingBase, stack: ItemStack) {
-        worldIn.setBlockState(pos, state.withProperty(FACING, placer.adjustedHorizontalFacing.opposite))
+        worldIn.setBlockState(pos, state.withProperty(facingProperty, placer.adjustedHorizontalFacing.opposite))
     }
 }
