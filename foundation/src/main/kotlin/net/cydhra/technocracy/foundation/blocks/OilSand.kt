@@ -8,8 +8,8 @@ class OilSand : BaseBlock("oil_sand", material = Material.SAND) {
 
     init {
         this.soundType = SoundType.SAND
-        this.blockHardness = 1.0f
-        this.blockResistance = 1.0f
+        this.blockHardness = 0.5f
+        this.blockResistance = 0.5f
     }
 
     override fun isToolEffective(type: String, state: IBlockState): Boolean {
