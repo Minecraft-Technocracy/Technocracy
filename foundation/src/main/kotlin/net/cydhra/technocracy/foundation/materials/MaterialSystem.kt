@@ -1,12 +1,18 @@
 package net.cydhra.technocracy.foundation.materials
 
+import com.google.common.base.Predicate
 import net.cydhra.technocracy.foundation.blocks.BlockManager
 import net.cydhra.technocracy.foundation.blocks.OreBlock
 import net.cydhra.technocracy.foundation.items.DustItem
 import net.cydhra.technocracy.foundation.items.IngotItem
 import net.cydhra.technocracy.foundation.items.ItemManager
 import net.cydhra.technocracy.foundation.items.color.ConstantItemColor
+import net.cydhra.technocracy.foundation.world.gen.OreGenerator
+import net.minecraft.block.state.IBlockState
+import net.minecraft.block.state.pattern.BlockMatcher
+import net.minecraft.init.Blocks
 import net.minecraft.item.ItemStack
+import net.minecraft.world.DimensionType
 import net.minecraftforge.fml.common.registry.GameRegistry
 
 
@@ -15,8 +21,16 @@ import net.minecraftforge.fml.common.registry.GameRegistry
  *
  * @param materialName name of the mineable material this system introduces
  * @param colorMultiplier the color of the material states
+ * @param oreDimensions the dimensions where ores are generated. Only [overworld][DimensionType.OVERWORLD] by default
+ * @param replacementPredicate which blocks to replace. Only stone to replace
+ * @param veinsPerChunk how many veins per chunk
+ * @param
  */
-class MaterialSystem(materialName: String, colorMultiplier: Int) {
+class MaterialSystem(materialName: String, colorMultiplier: Int,
+                     private val oreDimensions: Array<Int> = arrayOf(DimensionType.OVERWORLD.id),
+                     private val replacementPredicate: Predicate<IBlockState> = BlockMatcher.forBlock(Blocks.STONE),
+                     private val veinsPerChunk: Int, private val amountPerVein: Int, private val minHeight: Int,
+                     private val maxHeight: Int) {
 
     /**
      * The ingot of this material
@@ -45,5 +59,7 @@ class MaterialSystem(materialName: String, colorMultiplier: Int) {
     fun init() {
         GameRegistry.addSmelting(ore, ItemStack(ingot, 1), 0.5f)
         GameRegistry.addSmelting(dust, ItemStack(ingot, 1), 0.5f)
+        GameRegistry.registerWorldGenerator(OreGenerator(oreDimensions, replacementPredicate, this.ore.defaultState,
+                this.veinsPerChunk, this.amountPerVein, this.minHeight, this.maxHeight), 0)
     }
 }
