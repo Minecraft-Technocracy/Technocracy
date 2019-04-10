@@ -11,7 +11,13 @@ out
 *.ipr
 *.iws
 *.iml
-.idea
+.idea/artifacts
+.idea/libraries
+.idea/modules
+.idea/gradle.xml
+.idea/modules.xml
+.idea/uiDesigner.xml
+.idea/workspace.xml
 
 # gradle
 build
