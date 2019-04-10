@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.proxy
 
-import net.cydhra.technocracy.foundation.blocks.BlockManager
+import net.cydhra.technocracy.foundation.blocks.general.BlockManager
 import net.cydhra.technocracy.foundation.items.ItemManager
 
 class ClientProxy : CommonProxy() {

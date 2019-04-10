@@ -1,10 +1,11 @@
 package net.cydhra.technocracy.foundation.blocks
 
+import net.cydhra.technocracy.foundation.blocks.general.AbstractBaseBlock
 import net.minecraft.block.SoundType
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
 
-class OilSand : BaseBlock("oil_sand", material = Material.SAND) {
+class OilSand : AbstractBaseBlock("oil_sand", material = Material.SAND) {
 
     init {
         this.soundType = SoundType.SAND

@@ -1,8 +1,8 @@
 package net.cydhra.technocracy.foundation.materials
 
 import com.google.common.base.Predicate
-import net.cydhra.technocracy.foundation.blocks.BlockManager
 import net.cydhra.technocracy.foundation.blocks.OreBlock
+import net.cydhra.technocracy.foundation.blocks.general.BlockManager
 import net.cydhra.technocracy.foundation.items.DustItem
 import net.cydhra.technocracy.foundation.items.IngotItem
 import net.cydhra.technocracy.foundation.items.ItemManager

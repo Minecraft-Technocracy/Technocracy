@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.foundation.blocks
+package net.cydhra.technocracy.foundation.blocks.general
 
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.minecraft.block.Block
@@ -19,12 +19,12 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 @Mod.EventBusSubscriber(modid = TCFoundation.MODID)
 object BlockManager {
 
-    private val blocksToRegister = mutableListOf<BaseBlock>()
+    private val blocksToRegister = mutableListOf<IBaseBlock>()
 
     /**
      * Prepare a block for the registration happening per event later on.
      */
-    fun prepareBlocksForRegistration(block: BaseBlock): BaseBlock {
+    fun prepareBlocksForRegistration(block: IBaseBlock): IBaseBlock {
         blocksToRegister += block
         return block
     }
@@ -32,13 +32,14 @@ object BlockManager {
     @Suppress("unused")
     @SubscribeEvent
     fun onRegister(event: RegistryEvent.Register<Block>) {
-        event.registry.registerAll(*blocksToRegister.toTypedArray())
+        event.registry.registerAll(*blocksToRegister.map { it as Block }.toTypedArray())
     }
 
     @Suppress("unused")
     @SubscribeEvent
     fun onRegisterItems(event: RegistryEvent.Register<Item>) {
         event.registry.registerAll(*blocksToRegister
+                .map { it as Block }
                 .map(::ItemBlock)
                 .map { it.apply { it.registryName = it.block.registryName } }
                 .toTypedArray())
@@ -47,16 +48,19 @@ object BlockManager {
     @Suppress("unused")
     @SubscribeEvent
     fun onRegisterRenders(event: ModelRegistryEvent) {
-        this.blocksToRegister.map(Item::getItemFromBlock).forEach(this::registerRender)
+        blocksToRegister
+                .map { it as Block }
+                .map(Item::getItemFromBlock)
+                .forEach(this::registerRender)
     }
 
     /**
      * Called client-side during initialization. Registers colors for blocks and their [ItemBlock] instances.
      */
     fun registerBlockColors() {
-        this.blocksToRegister.forEach { block ->
+        blocksToRegister.forEach { block ->
             if (block.colorMultiplier != null) {
-                Minecraft.getMinecraft().blockColors.registerBlockColorHandler(block.colorMultiplier, block)
+                Minecraft.getMinecraft().blockColors.registerBlockColorHandler(block.colorMultiplier, block as Block)
                 Minecraft.getMinecraft().itemColors.registerItemColorHandler(block.colorMultiplier, block)
             }
         }
@@ -70,6 +74,6 @@ object BlockManager {
      */
     private fun registerRender(item: Item) {
         ModelLoader.setCustomModelResourceLocation(item, 0, ModelResourceLocation(((item as ItemBlock).block as
-                BaseBlock).modelLocation, "inventory"))
+                AbstractBaseBlock).modelLocation, "inventory"))
     }
 }
