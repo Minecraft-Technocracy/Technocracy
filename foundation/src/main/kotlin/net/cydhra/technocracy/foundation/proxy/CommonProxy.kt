@@ -12,7 +12,8 @@ open class CommonProxy : ISidedProxy {
     override fun preInit() {
         materialSystems.forEach(MaterialSystem::preInit)
 
-        BlockManager.prepareBlocksForRegistration(Pulverizer())
+        BlockManager.prepareBlocksForRegistration(pulverizerBlock)
+        BlockManager.prepareBlocksForRegistration(oilSandBlock)
     }
 
     override fun init() {
