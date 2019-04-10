@@ -1,7 +1,8 @@
 package net.cydhra.technocracy.foundation.proxy
 
-import net.cydhra.technocracy.foundation.blocks.BlockManager
-import net.cydhra.technocracy.foundation.blocks.Pulverizer
+import net.cydhra.technocracy.foundation.blocks.general.BlockManager
+import net.cydhra.technocracy.foundation.blocks.general.oilSandBlock
+import net.cydhra.technocracy.foundation.blocks.general.pulverizerBlock
 import net.cydhra.technocracy.foundation.materials.*
 
 open class CommonProxy : ISidedProxy {
