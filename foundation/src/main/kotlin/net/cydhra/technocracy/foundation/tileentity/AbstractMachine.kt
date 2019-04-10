@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.tileentity
 
 import net.cydhra.technocracy.foundation.capabilities.energy.DynamicEnergyStorage
+import net.cydhra.technocracy.foundation.capabilities.energy.DynamicEnergyStorageStategy
 import net.cydhra.technocracy.foundation.capabilities.energy.EnergyCapabilityProvider
 import net.cydhra.technocracy.foundation.tileentity.components.IComponent
 import net.cydhra.technocracy.foundation.tileentity.components.MachineUpgrades
@@ -36,6 +37,8 @@ abstract class AbstractMachine(private val energyStorage: DynamicEnergyStorage) 
         for (comp in components) {
             comp.readFromNBT(nbtTags)
         }
+
+        DynamicEnergyStorageStategy.readNBT(this.energyStorage, nbtTags)
     }
 
     override fun writeToNBT(nbtTags: NBTTagCompound): NBTTagCompound {
@@ -47,6 +50,8 @@ abstract class AbstractMachine(private val energyStorage: DynamicEnergyStorage) 
         for (comp in components) {
             comp.writeToNBT(nbtTags)
         }
+
+        nbtTags.setTag("energy", DynamicEnergyStorageStategy.writeNBT(this.energyStorage))
 
         return nbtTags
     }
