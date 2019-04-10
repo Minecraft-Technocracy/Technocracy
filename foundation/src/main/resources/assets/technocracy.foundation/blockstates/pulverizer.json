@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=north": {
-      "model": "oreore"
+      "model": "technocracy.foundation:pulverizer"
     },
     "facing=east": {
-      "model": "oreore",
+      "model": "technocracy.foundation:pulverizer",
       "y": 90
     },
     "facing=south": {
-      "model": "oreore",
+      "model": "technocracy.foundation:pulverizer",
       "y": 180
     },
     "facing=west": {
-      "model": "oreore",
+      "model": "technocracy.foundation:pulverizer",
       "y": 270
     }
   }
