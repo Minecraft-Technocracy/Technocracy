@@ -15,6 +15,7 @@ item.dust.osmium.name=Osmium Dust
 item.dust.silver.name=Silver Dust
 item.dust.tin.name=Tin Dust
 
+tile.oil_sand.name=Oil Sand
 tile.ore.aluminum.name=Aluminum Ore
 tile.ore.copper.name=Copper Ore
 tile.ore.lead.name=Lead Ore
@@ -24,4 +25,4 @@ tile.ore.osmium.name=Osmium Ore
 tile.ore.silver.name=Silver Ore
 tile.ore.tin.name=Tin Ore
 
-tile.pulveriser.name=Pulveriser
+tile.pulverizer.name=Pulverizer
