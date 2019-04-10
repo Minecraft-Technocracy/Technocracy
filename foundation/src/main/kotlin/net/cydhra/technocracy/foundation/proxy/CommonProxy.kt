@@ -12,7 +12,7 @@ open class CommonProxy : ISidedProxy {
     override fun preInit() {
         materialSystems.forEach(MaterialSystem::preInit)
 
-        BlockManager.prepareBlocksForRegistration(Pulveriser())
+        BlockManager.prepareBlocksForRegistration(Pulverizer())
     }
 
     override fun init() {

@@ -8,7 +8,7 @@ import net.minecraft.tileentity.TileEntity
 import net.minecraft.world.World
 
 
-class Pulveriser : BaseBlock("pulveriser", material = Material.IRON), ITileEntityProvider {
+class Pulverizer : BaseBlock("pulverizer", material = Material.IRON), ITileEntityProvider {
     override fun createNewTileEntity(worldIn: World, meta: Int): TileEntity? {
         return TileEntityPulveriser()
     }
