@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sps",
+    "pgp",
+    "sps"
+  ],
+  "key": {
+    "p": {
+      "type": "forege:ore_dict",
+      "ore": "paneGlass"
+    },
+    "s": {
+      "type": "forge:ore_dict",
+      "ore": "sheetTin"
+    },
+    "g": {
+      "type": "forge:ore_dict",
+      "ore": "gearLead"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:machine_frame",
+    "count": 1
+  }
+}
