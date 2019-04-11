@@ -5,6 +5,7 @@ import net.cydhra.technocracy.foundation.blocks.OreBlock
 import net.cydhra.technocracy.foundation.blocks.general.BlockManager
 import net.cydhra.technocracy.foundation.items.DustItem
 import net.cydhra.technocracy.foundation.items.IngotItem
+import net.cydhra.technocracy.foundation.items.SheetItem
 import net.cydhra.technocracy.foundation.items.color.ConstantItemColor
 import net.cydhra.technocracy.foundation.items.general.ItemManager
 import net.cydhra.technocracy.foundation.world.gen.OreGenerator
@@ -48,11 +49,17 @@ class MaterialSystem(materialName: String, colorMultiplier: Int,
     val dust = DustItem(materialName, ConstantItemColor(colorMultiplier))
 
     /**
+     * the compressed sheet item from the ingot
+     */
+    val sheet = SheetItem(materialName, ConstantItemColor(colorMultiplier))
+
+    /**
      * Must be called in pre-init. Registers all the components at forge
      */
     fun preInit() {
         ItemManager.prepareItemForRegistration(this.ingot)
         ItemManager.prepareItemForRegistration(this.dust)
+        ItemManager.prepareItemForRegistration(this.sheet)
         BlockManager.prepareBlocksForRegistration(this.ore)
     }
 

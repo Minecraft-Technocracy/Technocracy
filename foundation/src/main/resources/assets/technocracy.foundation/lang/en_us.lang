@@ -6,6 +6,7 @@ item.ingot.nickel.name=Nickel Ingot
 item.ingot.osmium.name=Osmium Ingot
 item.ingot.silver.name=Silver Ingot
 item.ingot.tin.name=Tin Ingot
+
 item.dust.aluminum.name=Aluminum Dust
 item.dust.copper.name=Copper Dust
 item.dust.lead.name=Lead Dust
@@ -15,6 +16,17 @@ item.dust.osmium.name=Osmium Dust
 item.dust.silver.name=Silver Dust
 item.dust.tin.name=Tin Dust
 item.dust.coal.name=Coal Dust
+item.dust.iron.name=Iron Dust
+
+item.sheet.aluminum.name=Aluminum Sheet
+item.sheet.copper.name=Copper Sheet
+item.sheet.lead.name=Lead Sheet
+item.sheet.lithium.name=Lithium Sheet
+item.sheet.nickel.name=Nickel Sheet
+item.sheet.osmium.name=Osmium Sheet
+item.sheet.silver.name=Silver Sheet
+item.sheet.tin.name=Tin Sheet
+item.sheet.iron.name=Iron Sheet
 
 tile.oil_sand.name=Oil Sand
 tile.ore.aluminum.name=Aluminum Ore
