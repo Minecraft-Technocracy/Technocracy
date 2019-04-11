@@ -19,6 +19,7 @@ out
 .idea/modules.xml
 .idea/uiDesigner.xml
 .idea/workspace.xml
+.idea/misc.xml
 
 # gradle
 build
