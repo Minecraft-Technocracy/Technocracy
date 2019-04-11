@@ -1,7 +1,7 @@
 {
   "parent": "block/orientable",
   "textures": {
-    "up": "blocks/furnace_top",
+    "up": "technocracy.foundation:block/pulverizer_top",
     "down": "blocks/furnace_top",
     "north": "blocks/furnace_top",
     "east": "blocks/furnace_top",
