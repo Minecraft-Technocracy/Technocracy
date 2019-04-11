@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.blocks
 
 import net.cydhra.technocracy.foundation.blocks.general.BaseTileEntityBlock
-import net.cydhra.technocracy.foundation.tileentity.TileEntityPulveriser
+import net.cydhra.technocracy.foundation.tileentity.TileEntityPulverizer
 import net.minecraft.block.material.Material
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.tileentity.TileEntity
@@ -17,6 +17,6 @@ class Pulverizer : BaseTileEntityBlock("pulverizer", material = Material.ROCK) {
     }
 
     override fun createNewTileEntity(worldIn: World, meta: Int): TileEntity? {
-        return TileEntityPulveriser()
+        return TileEntityPulverizer()
     }
 }
