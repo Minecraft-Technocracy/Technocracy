@@ -28,6 +28,9 @@ item.sheet.silver.name=Silver Sheet
 item.sheet.tin.name=Tin Sheet
 item.sheet.iron.name=Iron Sheet
 
+item.battery.name=Battery
+item.akkumulator.name=Lithium Ion Akkumulator
+
 tile.oil_sand.name=Oil Sand
 tile.ore.aluminum.name=Aluminum Ore
 tile.ore.copper.name=Copper Ore

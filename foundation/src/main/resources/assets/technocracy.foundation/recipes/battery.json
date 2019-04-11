@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "crt",
+    "srs",
+    "sss"
+  ],
+  "key": {
+    "c": {
+      "type": "forge:ore_dict",
+      "ore": "ingotCopper"
+    },
+    "r": {
+      "type": "forge:ore_dict",
+      "ore": "dustRedstone"
+    },
+    "t": {
+      "type": "forge:ore_dict",
+      "ore": "ingotTin"
+    },
+    "s": {
+      "type": "forge:ore_dict",
+      "ore": "sheetIron"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:battery",
+    "count": 1
+  }
+}
