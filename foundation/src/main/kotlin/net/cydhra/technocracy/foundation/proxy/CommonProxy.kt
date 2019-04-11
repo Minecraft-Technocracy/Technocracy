@@ -1,7 +1,6 @@
 package net.cydhra.technocracy.foundation.proxy
 
 import net.cydhra.technocracy.foundation.blocks.general.BlockManager
-import net.cydhra.technocracy.foundation.blocks.general.machineFrameBlock
 import net.cydhra.technocracy.foundation.blocks.general.oilSandBlock
 import net.cydhra.technocracy.foundation.blocks.general.pulverizerBlock
 import net.cydhra.technocracy.foundation.items.general.*
@@ -17,8 +16,8 @@ open class CommonProxy : ISidedProxy {
 
         BlockManager.prepareBlocksForRegistration(pulverizerBlock)
         BlockManager.prepareBlocksForRegistration(oilSandBlock)
-        BlockManager.prepareBlocksForRegistration(machineFrameBlock)
 
+        ItemManager.prepareItemForRegistration(machineFrameItem)
         ItemManager.prepareItemForRegistration(coalDustItem)
         ItemManager.prepareItemForRegistration(ironDustItem)
         ItemManager.prepareItemForRegistration(ironSheetItem)

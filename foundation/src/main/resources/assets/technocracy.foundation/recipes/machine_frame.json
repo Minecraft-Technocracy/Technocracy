@@ -7,7 +7,7 @@
   ],
   "key": {
     "p": {
-      "type": "forege:ore_dict",
+      "type": "forge:ore_dict",
       "ore": "paneGlass"
     },
     "s": {
