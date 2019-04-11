@@ -1,11 +1,12 @@
 {
   "parent": "block/orientable",
   "textures": {
+    "particle": "technocracy.foundation:block/machine_bottom",
     "up": "technocracy.foundation:block/pulverizer_top",
-    "down": "blocks/furnace_top",
-    "north": "blocks/furnace_top",
-    "east": "blocks/furnace_top",
-    "south": "blocks/furnace_top",
-    "west": "blocks/furnace_top"
+    "down": "technocracy.foundation:block/machine_bottom",
+    "north": "technocracy.foundation:block/pulverizer_front",
+    "east": "technocracy.foundation:block/machine_side_vent",
+    "south": "technocracy.foundation:block/machine_side_empty",
+    "west": "technocracy.foundation:block/machine_side_vent"
   }
 }
