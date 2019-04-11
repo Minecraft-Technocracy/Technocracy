@@ -14,6 +14,7 @@ out
 .idea/artifacts
 .idea/libraries
 .idea/modules
+.idea/dictionaries
 .idea/gradle.xml
 .idea/modules.xml
 .idea/uiDesigner.xml
