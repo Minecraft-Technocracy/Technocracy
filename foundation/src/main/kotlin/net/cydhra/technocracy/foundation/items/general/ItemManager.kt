@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.foundation.items
+package net.cydhra.technocracy.foundation.items.general
 
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.minecraft.client.Minecraft
@@ -28,14 +28,14 @@ object ItemManager {
      * registration phase.
      */
     fun prepareItemForRegistration(item: BaseItem) {
-        this.itemsToRegister += item
+        itemsToRegister += item
     }
 
     @Suppress("unused")
     @SubscribeEvent
     @JvmStatic
     fun registerItems(event: RegistryEvent.Register<Item>) {
-        event.registry.registerAll(*this.itemsToRegister.toTypedArray())
+        event.registry.registerAll(*itemsToRegister.toTypedArray())
 
     }
 
@@ -43,14 +43,14 @@ object ItemManager {
     @SubscribeEvent
     @JvmStatic
     fun registerRenders(event: ModelRegistryEvent) {
-        this.itemsToRegister.forEach(this::registerItemRender)
+        itemsToRegister.forEach(this::registerItemRender)
     }
 
     /**
      * Must be called client side in initialization phase
      */
     fun registerItemColors() {
-        this.itemsToRegister.forEach { item ->
+        itemsToRegister.forEach { item ->
             if (item.itemColor != null)
                 Minecraft.getMinecraft().itemColors.registerItemColorHandler(item.itemColor, item)
         }
@@ -62,7 +62,7 @@ object ItemManager {
      * @param item a [BaseItem] instance
      */
     private fun registerItemRender(item: BaseItem) {
-        this.registerItemRender(item, 0)
+        registerItemRender(item, 0)
     }
 
     /**

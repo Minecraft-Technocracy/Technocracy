@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.foundation.items
+package net.cydhra.technocracy.foundation.items.general
 
 import net.minecraft.client.renderer.color.IItemColor
 import net.minecraft.item.Item
