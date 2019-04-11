@@ -10,17 +10,17 @@ class MachineUpgrades : IComponent {
     /**
      * Allowed Upgrades and maximum amount
      */
-    private val allowedUpgrades = HashMap<Upgrade, Int>()
+    private val allowedUpgrades = HashMap<UpgradeType, Int>()
     /**
      * Installed Upgrades with amount
      */
-    private val installedUpgrades = HashMap<Upgrade, Int>()
+    private val installedUpgrades = HashMap<UpgradeType, Int>()
 
     override fun readFromNBT(nbtTags: NBTTagCompound) {
         if (nbtTags.hasKey("upgrades")) {
             val upgradeTag = nbtTags.getCompoundTag("upgrades")
 
-            for (upgrade in Upgrade.values()) {
+            for (upgrade in UpgradeType.values()) {
                 if (upgradeTag.hasKey(upgrade.name)) {
                     installedUpgrades[upgrade] = upgradeTag.getInteger(upgrade.name)
                 }
@@ -41,36 +41,36 @@ class MachineUpgrades : IComponent {
     /**
      * Install an Upgrade, returns amount of added Upgrades
      */
-    fun setUpgrades(upgrade: Upgrade, amount: Int) {
-        val max = allowedUpgrades.getOrDefault(upgrade, -1)
+    fun setUpgrades(upgradeType: UpgradeType, amount: Int) {
+        val max = allowedUpgrades.getOrDefault(upgradeType, -1)
 
         if (max != -1) {
-            installedUpgrades[upgrade] = Math.min(max, amount)
+            installedUpgrades[upgradeType] = Math.min(max, amount)
         }
     }
 
     /**
      * Install an Upgrade, returns true if successful
      */
-    fun addUpgrade(upgrade: Upgrade): Boolean {
-        return addUpgrade(upgrade, 1) != 0;
+    fun addUpgrade(upgradeType: UpgradeType): Boolean {
+        return addUpgrade(upgradeType, 1) != 0;
     }
 
     /**
      * Install an Upgrade, returns amount of added Upgrades
      */
-    fun addUpgrade(upgrade: Upgrade, amount: Int): Int {
+    fun addUpgrade(upgradeType: UpgradeType, amount: Int): Int {
 
-        val max = allowedUpgrades.getOrDefault(upgrade, -1)
+        val max = allowedUpgrades.getOrDefault(upgradeType, -1)
 
         if (max != -1) {
-            val current = installedUpgrades.getOrDefault(upgrade, 0)
+            val current = installedUpgrades.getOrDefault(upgradeType, 0)
 
             return if (current + amount > max) {
-                installedUpgrades[upgrade] = max
+                installedUpgrades[upgradeType] = max
                 max - current
             } else {
-                installedUpgrades[upgrade] = current + amount
+                installedUpgrades[upgradeType] = current + amount
                 amount
             }
         }
@@ -80,22 +80,22 @@ class MachineUpgrades : IComponent {
     /**
      * Install an Upgrade, returns true if successful
      */
-    fun removeUpgrade(upgrade: Upgrade): Boolean {
-        return removeUpgrade(upgrade, 1) != 0;
+    fun removeUpgrade(upgradeType: UpgradeType): Boolean {
+        return removeUpgrade(upgradeType, 1) != 0;
     }
 
     /**
      * Install an Upgrade, returns amount of removed Upgrades
      */
-    fun removeUpgrade(upgrade: Upgrade, amount: Int): Int {
-        if (allowedUpgrades.containsKey(upgrade)) {
-            val current = installedUpgrades.getOrDefault(upgrade, 0)
+    fun removeUpgrade(upgradeType: UpgradeType, amount: Int): Int {
+        if (allowedUpgrades.containsKey(upgradeType)) {
+            val current = installedUpgrades.getOrDefault(upgradeType, 0)
             if (current != 0) {
                 return if (current - amount >= 0) {
-                    installedUpgrades[upgrade] = current - amount
+                    installedUpgrades[upgradeType] = current - amount
                     amount
                 } else {
-                    installedUpgrades[upgrade] = 0
+                    installedUpgrades[upgradeType] = 0
                     current
                 }
             }
@@ -103,7 +103,28 @@ class MachineUpgrades : IComponent {
         return 0
     }
 
-    enum class Upgrade {
-        SPEED, ENERGY
+    /**
+     * The type of upgrade for the machine.
+     */
+    enum class UpgradeType {
+        /**
+         * Machine speed upgrade. This upgrade increases machine speed while also increasing energy usage
+         */
+        SPEED,
+
+        /**
+         * Machine energy upgrade. This decreases energy usage but increases usage of auxiliary liquid, if present
+         */
+        ENERGY,
+
+        /**
+         * Machine upgrade reducing usage of auxiliary gas or liquid, but increases heat generation if present
+         */
+        AUXILIARY_USAGE,
+
+        /**
+         * Machine upgrade reducing generation of heat. TODO: negative effects of this upgrade?
+         */
+        HEAT
     }
 }
