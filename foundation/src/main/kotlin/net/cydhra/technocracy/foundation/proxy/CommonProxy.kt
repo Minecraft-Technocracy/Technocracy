@@ -1,9 +1,6 @@
 package net.cydhra.technocracy.foundation.proxy
 
-import net.cydhra.technocracy.foundation.blocks.general.BlockManager
-import net.cydhra.technocracy.foundation.blocks.general.ironBeamBlock
-import net.cydhra.technocracy.foundation.blocks.general.oilSandBlock
-import net.cydhra.technocracy.foundation.blocks.general.pulverizerBlock
+import net.cydhra.technocracy.foundation.blocks.general.*
 import net.cydhra.technocracy.foundation.items.general.*
 import net.cydhra.technocracy.foundation.materials.*
 
@@ -16,6 +13,7 @@ open class CommonProxy : ISidedProxy {
         materialSystems.forEach(MaterialSystem::preInit)
 
         BlockManager.prepareBlocksForRegistration(pulverizerBlock)
+        BlockManager.prepareBlocksForRegistration(electricFurnaceBlock)
         BlockManager.prepareBlocksForRegistration(oilSandBlock)
         BlockManager.prepareBlocksForRegistration(ironBeamBlock)
 

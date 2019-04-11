@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "technocracy.foundation:electric_furnace"
+    },
+    "facing=east": {
+      "model": "technocracy.foundation:electric_furnace",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "technocracy.foundation:electric_furnace",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "technocracy.foundation:electric_furnace",
+      "y": 270
+    }
+  }
+}
