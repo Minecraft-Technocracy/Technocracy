@@ -3,10 +3,8 @@ package net.cydhra.technocracy.foundation.materials
 import com.google.common.base.Predicate
 import net.cydhra.technocracy.foundation.blocks.OreBlock
 import net.cydhra.technocracy.foundation.blocks.general.BlockManager
-import net.cydhra.technocracy.foundation.items.DustItem
-import net.cydhra.technocracy.foundation.items.IngotItem
-import net.cydhra.technocracy.foundation.items.SheetItem
 import net.cydhra.technocracy.foundation.items.color.ConstantItemColor
+import net.cydhra.technocracy.foundation.items.general.ColoredItem
 import net.cydhra.technocracy.foundation.items.general.ItemManager
 import net.cydhra.technocracy.foundation.world.gen.OreGenerator
 import net.minecraft.block.state.IBlockState
@@ -36,7 +34,7 @@ class MaterialSystem(materialName: String, colorMultiplier: Int,
     /**
      * The ingot of this material
      */
-    val ingot = IngotItem(materialName, ConstantItemColor(colorMultiplier))
+    val ingot = ColoredItem("ingot", materialName, ConstantItemColor(colorMultiplier))
 
     /**
      * The ore of this material
@@ -46,12 +44,12 @@ class MaterialSystem(materialName: String, colorMultiplier: Int,
     /**
      * the dusted ore that can be smelted into ingots
      */
-    val dust = DustItem(materialName, ConstantItemColor(colorMultiplier))
+    val dust = ColoredItem("dust", materialName, ConstantItemColor(colorMultiplier))
 
     /**
      * the compressed sheet item from the ingot
      */
-    val sheet = SheetItem(materialName, ConstantItemColor(colorMultiplier))
+    val sheet = ColoredItem("sheet", materialName, ConstantItemColor(colorMultiplier))
 
     /**
      * Must be called in pre-init. Registers all the components at forge
