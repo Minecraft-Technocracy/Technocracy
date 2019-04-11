@@ -5,8 +5,8 @@ import net.cydhra.technocracy.foundation.blocks.OreBlock
 import net.cydhra.technocracy.foundation.blocks.general.BlockManager
 import net.cydhra.technocracy.foundation.items.DustItem
 import net.cydhra.technocracy.foundation.items.IngotItem
-import net.cydhra.technocracy.foundation.items.ItemManager
 import net.cydhra.technocracy.foundation.items.color.ConstantItemColor
+import net.cydhra.technocracy.foundation.items.general.ItemManager
 import net.cydhra.technocracy.foundation.world.gen.OreGenerator
 import net.minecraft.block.state.IBlockState
 import net.minecraft.block.state.pattern.BlockMatcher

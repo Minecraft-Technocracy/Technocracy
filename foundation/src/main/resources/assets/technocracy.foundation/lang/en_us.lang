@@ -14,6 +14,7 @@ item.dust.nickel.name=Nickel Dust
 item.dust.osmium.name=Osmium Dust
 item.dust.silver.name=Silver Dust
 item.dust.tin.name=Tin Dust
+item.dust.coal.name=Coal Dust
 
 tile.oil_sand.name=Oil Sand
 tile.ore.aluminum.name=Aluminum Ore
