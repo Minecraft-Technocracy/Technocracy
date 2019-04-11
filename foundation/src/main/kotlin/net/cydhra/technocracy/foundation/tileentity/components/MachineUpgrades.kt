@@ -2,7 +2,9 @@ package net.cydhra.technocracy.foundation.tileentity.components
 
 import net.minecraft.nbt.NBTTagCompound
 
-
+/**
+ * A machine component that handles all machine upgrades.
+ */
 class MachineUpgrades : IComponent {
 
     /**
@@ -16,11 +18,11 @@ class MachineUpgrades : IComponent {
 
     override fun readFromNBT(nbtTags: NBTTagCompound) {
         if (nbtTags.hasKey("upgrades")) {
-            val upgrades = nbtTags.getCompoundTag("upgrades")
+            val upgradeTag = nbtTags.getCompoundTag("upgrades")
 
-            for (u in Upgrade.values()) {
-                if (upgrades.hasKey(u.name)) {
-                    installedUpgrades.put(u, upgrades.getInteger(u.name))
+            for (upgrade in Upgrade.values()) {
+                if (upgradeTag.hasKey(upgrade.name)) {
+                    installedUpgrades[upgrade] = upgradeTag.getInteger(upgrade.name)
                 }
             }
         }
@@ -43,7 +45,7 @@ class MachineUpgrades : IComponent {
         val max = allowedUpgrades.getOrDefault(upgrade, -1)
 
         if (max != -1) {
-            installedUpgrades.put(upgrade, Math.min(max, amount))
+            installedUpgrades[upgrade] = Math.min(max, amount)
         }
     }
 
@@ -89,12 +91,12 @@ class MachineUpgrades : IComponent {
         if (allowedUpgrades.containsKey(upgrade)) {
             val current = installedUpgrades.getOrDefault(upgrade, 0)
             if (current != 0) {
-                if (current - amount >= 0) {
+                return if (current - amount >= 0) {
                     installedUpgrades[upgrade] = current - amount
-                    return amount
+                    amount
                 } else {
                     installedUpgrades[upgrade] = 0
-                    return current
+                    current
                 }
             }
         }
