@@ -1,8 +1,8 @@
 {
   "parent": "block/block",
   "textures": {
-    "particle": "technocracy.foundation:block/iron_texture",
-    "texture": "technocracy.foundation:block/iron_texture"
+    "particle": "technocracy.foundation:block/steel",
+    "texture": "technocracy.foundation:block/steel"
   },
   "elements": [
     {
