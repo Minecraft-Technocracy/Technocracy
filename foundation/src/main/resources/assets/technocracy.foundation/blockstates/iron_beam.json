@@ -1,9 +1,18 @@
 {
   "variants": {
-    "normal": [
-      {
-        "model": "technocracy.foundation:iron_beam"
-      }
-    ]
+    "facing=east": {
+      "model": "technocracy.foundation:iron_beam",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "technocracy.foundation:iron_beam"
+    },
+    "facing=west": {
+      "model": "technocracy.foundation:iron_beam",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "technocracy.foundation:iron_beam"
+    }
   }
 }

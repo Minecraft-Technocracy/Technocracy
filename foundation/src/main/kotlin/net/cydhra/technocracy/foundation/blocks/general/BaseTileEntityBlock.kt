@@ -21,18 +21,9 @@ abstract class BaseTileEntityBlock(unlocalizedName: String,
                                    registryName: String = unlocalizedName,
                                    colorMultiplier: ConstantBlockColor? = null,
                                    material: Material)
-    : AbstractBaseBlock(unlocalizedName, material, registryName, colorMultiplier), ITileEntityProvider {
+    : AbstractRotateableBlock(unlocalizedName, material, registryName, colorMultiplier), ITileEntityProvider {
 
-    companion object {
-        /**
-         * The block property used to determine block rotation
-         */
-        private val facingProperty = BlockHorizontal.FACING!!
-    }
 
-    init {
-        defaultState = this.blockState.baseState.withProperty(facingProperty, EnumFacing.NORTH)
-    }
 
     override fun onBlockActivated(worldIn: World, pos: BlockPos, state: IBlockState, playerIn: EntityPlayer,
                                   hand: EnumHand, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean {
@@ -43,21 +34,4 @@ abstract class BaseTileEntityBlock(unlocalizedName: String,
         return true
     }
 
-    override fun createBlockState(): BlockStateContainer {
-        return BlockStateContainer(this, facingProperty)
-    }
-
-    override fun getStateFromMeta(meta: Int): IBlockState {
-        var facing = EnumFacing.getFront(meta)
-        if (facing.axis == EnumFacing.Axis.Y) facing = EnumFacing.NORTH
-        return this.defaultState.withProperty(facingProperty, facing)
-    }
-
-    override fun getMetaFromState(state: IBlockState): Int {
-        return (state.getValue(facingProperty) as EnumFacing).index
-    }
-
-    override fun onBlockPlacedBy(worldIn: World, pos: BlockPos, state: IBlockState, placer: EntityLivingBase, stack: ItemStack) {
-        worldIn.setBlockState(pos, state.withProperty(facingProperty, placer.adjustedHorizontalFacing.opposite))
-    }
 }
