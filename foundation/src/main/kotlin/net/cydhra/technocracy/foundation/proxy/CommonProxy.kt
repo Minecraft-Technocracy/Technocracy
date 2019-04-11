@@ -3,10 +3,7 @@ package net.cydhra.technocracy.foundation.proxy
 import net.cydhra.technocracy.foundation.blocks.general.BlockManager
 import net.cydhra.technocracy.foundation.blocks.general.oilSandBlock
 import net.cydhra.technocracy.foundation.blocks.general.pulverizerBlock
-import net.cydhra.technocracy.foundation.items.general.ItemManager
-import net.cydhra.technocracy.foundation.items.general.coalDustItem
-import net.cydhra.technocracy.foundation.items.general.ironDustItem
-import net.cydhra.technocracy.foundation.items.general.ironSheetItem
+import net.cydhra.technocracy.foundation.items.general.*
 import net.cydhra.technocracy.foundation.materials.*
 
 open class CommonProxy : ISidedProxy {
@@ -23,6 +20,9 @@ open class CommonProxy : ISidedProxy {
         ItemManager.prepareItemForRegistration(coalDustItem)
         ItemManager.prepareItemForRegistration(ironDustItem)
         ItemManager.prepareItemForRegistration(ironSheetItem)
+
+        ItemManager.prepareItemForRegistration(batteryItem)
+        ItemManager.prepareItemForRegistration(akkumulatorItem)
     }
 
     override fun init() {

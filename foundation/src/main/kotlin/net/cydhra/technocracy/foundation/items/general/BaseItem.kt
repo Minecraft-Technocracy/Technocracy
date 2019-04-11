@@ -6,9 +6,9 @@ import net.minecraft.item.Item
 /**
  * Base class for all items added by this modification
  */
-abstract class BaseItem(unlocalizedName: String,
-                        registryName: String = unlocalizedName,
-                        val itemColor: IItemColor? = null) : Item() {
+open class BaseItem(unlocalizedName: String,
+                    registryName: String = unlocalizedName,
+                    val itemColor: IItemColor? = null) : Item() {
 
     open val modelLocation: String
         get() = this.registryName.toString()
