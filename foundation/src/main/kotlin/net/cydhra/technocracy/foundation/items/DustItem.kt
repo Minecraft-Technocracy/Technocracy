@@ -9,7 +9,7 @@ import net.minecraft.creativetab.CreativeTabs
  * Any additional ingots created by this mod are ultimately an instance of this class
  */
 open class DustItem(ingotMaterialName: String, color: ConstantItemColor)
-    : BaseItem("dust.$ingotMaterialName", itemColor = color) {
+    : BaseItem("dust.$ingotMaterialName", oreDictName = "dust${ingotMaterialName.capitalize()}", itemColor = color) {
 
     override val modelLocation: String = "${TCFoundation.MODID}:dust"
 

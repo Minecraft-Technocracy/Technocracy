@@ -6,7 +6,7 @@ import net.cydhra.technocracy.foundation.items.general.BaseItem
 import net.minecraft.creativetab.CreativeTabs
 
 class SheetItem(ingotMaterialName: String, color: ConstantItemColor)
-    : BaseItem("sheet.$ingotMaterialName", itemColor = color) {
+    : BaseItem("sheet.$ingotMaterialName", oreDictName = "sheet${ingotMaterialName.capitalize()}", itemColor = color) {
 
     override val modelLocation: String = "${TCFoundation.MODID}:sheet"
 

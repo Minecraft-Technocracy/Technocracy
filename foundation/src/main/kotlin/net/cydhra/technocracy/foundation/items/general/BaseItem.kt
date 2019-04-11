@@ -8,6 +8,7 @@ import net.minecraft.item.Item
  */
 open class BaseItem(unlocalizedName: String,
                     registryName: String = unlocalizedName,
+                    val oreDictName: String? = null,
                     val itemColor: IItemColor? = null) : Item() {
 
     open val modelLocation: String
