@@ -32,9 +32,14 @@ class MaterialSystem(materialName: String, colorMultiplier: Int,
                      private val maxHeight: Int) {
 
     /**
+     * The color multiplier used for items of this material system
+     */
+    private val itemColor = ConstantItemColor(colorMultiplier)
+
+    /**
      * The ingot of this material
      */
-    val ingot = ColoredItem("ingot", materialName, ConstantItemColor(colorMultiplier))
+    val ingot = ColoredItem("ingot", materialName, itemColor)
 
     /**
      * The ore of this material
@@ -44,12 +49,17 @@ class MaterialSystem(materialName: String, colorMultiplier: Int,
     /**
      * the dusted ore that can be smelted into ingots
      */
-    val dust = ColoredItem("dust", materialName, ConstantItemColor(colorMultiplier))
+    val dust = ColoredItem("dust", materialName, itemColor)
 
     /**
      * the compressed sheet item from the ingot
      */
-    val sheet = ColoredItem("sheet", materialName, ConstantItemColor(colorMultiplier))
+    val sheet = ColoredItem("sheet", materialName, itemColor)
+
+    /**
+     * Normal gear of this system. Crafted from workbench
+     */
+    val gear = ColoredItem("gear", materialName, itemColor)
 
     /**
      * Must be called in pre-init. Registers all the components at forge
@@ -58,6 +68,7 @@ class MaterialSystem(materialName: String, colorMultiplier: Int,
         ItemManager.prepareItemForRegistration(this.ingot)
         ItemManager.prepareItemForRegistration(this.dust)
         ItemManager.prepareItemForRegistration(this.sheet)
+        ItemManager.prepareItemForRegistration(this.gear)
         BlockManager.prepareBlocksForRegistration(this.ore)
     }
 

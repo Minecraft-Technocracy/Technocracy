@@ -28,6 +28,16 @@ item.sheet.silver.name=Silver Sheet
 item.sheet.tin.name=Tin Sheet
 item.sheet.iron.name=Iron Sheet
 
+item.gear.aluminum.name=Aluminum Gear
+item.gear.copper.name=Copper Gear
+item.gear.lead.name=Lead Gear
+item.gear.lithium.name=Lithium Gear
+item.gear.nickel.name=Nickel Gear
+item.gear.osmium.name=Osmium Gear
+item.gear.silver.name=Silver Gear
+item.gear.tin.name=Tin Gear
+item.gear.iron.name=Iron Gear
+
 item.battery.name=Battery
 item.akkumulator.name=Lithium Ion Akkumulator
 
