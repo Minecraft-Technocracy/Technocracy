@@ -26,38 +26,38 @@ abstract class AbstractMachine(private val energyStorage: DynamicEnergyStorage) 
         TileEntity.register("${TCFoundation.MODID}:${javaClass.simpleName}", this.javaClass)
     }
 
-    override fun readFromNBT(nbtTags: NBTTagCompound) {
-        super.readFromNBT(nbtTags)
+    override fun readFromNBT(compound: NBTTagCompound) {
+        super.readFromNBT(compound)
 
-        if (nbtTags.hasKey("facing")) {
-            rotation = EnumFacing.values()[(nbtTags.getInteger("facing"))]
+        if (compound.hasKey("facing")) {
+            rotation = EnumFacing.values()[(compound.getInteger("facing"))]
         }
-        if (nbtTags.hasKey("redstone")) {
-            redstoneMode = RedstoneMode.values()[(nbtTags.getInteger("redstone"))]
+        if (compound.hasKey("redstone")) {
+            redstoneMode = RedstoneMode.values()[(compound.getInteger("redstone"))]
         }
 
-        if(nbtTags.hasKey("energy")) {
-            DynamicEnergyStorageStategy.readNBT(this.energyStorage, nbtTags.getCompoundTag("energy"))
+        if (compound.hasKey("energy")) {
+            DynamicEnergyStorageStategy.readNBT(this.energyStorage, compound.getCompoundTag("energy"))
         }
 
         for (comp in components) {
-            comp.readFromNBT(nbtTags)
+            comp.readFromNBT(compound)
         }
 
     }
 
-    override fun writeToNBT(nbtTags: NBTTagCompound): NBTTagCompound {
-        super.writeToNBT(nbtTags)
+    override fun writeToNBT(compound: NBTTagCompound): NBTTagCompound {
+        super.writeToNBT(compound)
 
-        nbtTags.setInteger("facing", rotation.ordinal)
-        nbtTags.setInteger("redstone", redstoneMode.ordinal)
-        nbtTags.setTag("energy", DynamicEnergyStorageStategy.writeNBT(this.energyStorage))
+        compound.setInteger("facing", rotation.ordinal)
+        compound.setInteger("redstone", redstoneMode.ordinal)
+        compound.setTag("energy", DynamicEnergyStorageStategy.writeNBT(this.energyStorage))
 
         for (comp in components) {
-            comp.writeToNBT(nbtTags)
+            comp.writeToNBT(compound)
         }
 
-        return nbtTags
+        return compound
     }
 
     abstract override fun update()
