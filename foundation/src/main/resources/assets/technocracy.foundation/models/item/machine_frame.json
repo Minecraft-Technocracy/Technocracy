@@ -1,7 +1,6 @@
 {
   "parent": "block/block",
   "textures": {
-    "particle": "technocracy.foundation:block/machine_particle",
     "beams": "technocracy.foundation:block/frame_beams",
     "windows": "technocracy.foundation:block/frame_windows",
     "corners": "technocracy.foundation:block/frame_corners"
