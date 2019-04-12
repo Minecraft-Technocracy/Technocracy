@@ -5,20 +5,35 @@ import net.minecraft.nbt.NBTTagCompound
 /**
  * A machine component that handles all machine upgrades.
  */
-class MachineUpgrades : IComponent {
+class MachineUpgradesComponents : IComponent {
+
+    companion object {
+        private const val NBT_KEY_UPGRADES = "upgrades"
+    }
 
     /**
      * Allowed Upgrades and maximum amount
      */
     private val allowedUpgrades = HashMap<UpgradeType, Int>()
+
     /**
      * Installed Upgrades with amount
      */
     private val installedUpgrades = HashMap<UpgradeType, Int>()
 
-    override fun readFromNBT(nbtTags: NBTTagCompound) {
-        if (nbtTags.hasKey("upgrades")) {
-            val upgradeTag = nbtTags.getCompoundTag("upgrades")
+    override fun writeToNBT(compound: NBTTagCompound) {
+        val tag = NBTTagCompound()
+
+        for ((upgrade, amount) in installedUpgrades) {
+            tag.setInteger(upgrade.name, amount)
+        }
+
+        compound.setTag(NBT_KEY_UPGRADES, tag)
+    }
+
+    override fun readFromNBT(compound: NBTTagCompound) {
+        if (compound.hasKey(NBT_KEY_UPGRADES)) {
+            val upgradeTag = compound.getCompoundTag(NBT_KEY_UPGRADES)
 
             for (upgrade in UpgradeType.values()) {
                 if (upgradeTag.hasKey(upgrade.name)) {
@@ -26,16 +41,6 @@ class MachineUpgrades : IComponent {
                 }
             }
         }
-    }
-
-    override fun writeToNBT(nbtTags: NBTTagCompound) {
-        val tag = NBTTagCompound()
-
-        for ((upgrade, amount) in installedUpgrades) {
-            tag.setInteger(upgrade.name, amount)
-        }
-
-        nbtTags.setTag("upgrades", tag)
     }
 
     /**

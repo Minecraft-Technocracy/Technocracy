@@ -33,12 +33,12 @@ abstract class AbstractMachine : TileEntity(), ITickable {
      */
     /* TODO as the possible upgrades are dependant of machine type, either split this compound into single upgrades or
         at least handle it from subclass*/
-    protected val upgrades = MachineUpgrades()
+    protected val machineUpgradesComponent = MachineUpgradesComponents()
 
     /**
      * All machine components that are saved to NBT and possibly accessible from GUI
      */
-    private val components: MutableSet<IComponent> = mutableSetOf(redstoneModeComponent, energyStorageComponent, upgrades)
+    private val components: MutableSet<IComponent> = mutableSetOf()
 
     /**
      * All components that also offer a capability. They must also be added to [components] but for speed they are
@@ -54,6 +54,10 @@ abstract class AbstractMachine : TileEntity(), ITickable {
     init {
         TileEntity.register("${TCFoundation.MODID}:${javaClass.simpleName}", this.javaClass)
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityElectricFurnace::class.java, TileEntityElectricFurnaceRenderer())
+
+        this.registerComponent(redstoneModeComponent)
+        this.registerComponent(energyStorageComponent)
+        this.registerComponent(machineUpgradesComponent)
     }
 
     override fun writeToNBT(compound: NBTTagCompound): NBTTagCompound {
