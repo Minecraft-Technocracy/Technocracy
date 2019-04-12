@@ -22,7 +22,7 @@ abstract class AbstractRotateableBlock(unlocalizedName: String,
         /**
          * The block property used to determine block rotation
          */
-        private val facingProperty = BlockHorizontal.FACING!!
+        val facingProperty = BlockHorizontal.FACING!!
     }
 
     init {
@@ -46,5 +46,4 @@ abstract class AbstractRotateableBlock(unlocalizedName: String,
     override fun onBlockPlacedBy(worldIn: World, pos: BlockPos, state: IBlockState, placer: EntityLivingBase, stack: ItemStack) {
         worldIn.setBlockState(pos, state.withProperty(facingProperty, placer.adjustedHorizontalFacing.opposite))
     }
-
 }

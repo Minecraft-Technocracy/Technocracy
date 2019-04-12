@@ -18,6 +18,8 @@ class TileEntityElectricFurnaceRenderer : TileEntitySpecialRenderer<TileEntityEl
     var m = ConnectorModel()
 
     override fun render(te: TileEntityElectricFurnace, x: Double, y: Double, z: Double, partialTicks: Float, destroyStage: Int, alpha: Float) {
+        if(true)
+            return
         val mc = Minecraft.getMinecraft()
         val dispatcher = mc.blockRendererDispatcher
 

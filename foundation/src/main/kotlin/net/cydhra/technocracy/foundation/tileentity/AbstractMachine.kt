@@ -13,6 +13,11 @@ import net.minecraft.util.EnumFacing
 import net.minecraft.util.ITickable
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.fml.client.registry.ClientRegistry
+import net.minecraft.block.state.IBlockState
+import net.minecraft.util.math.BlockPos
+import net.minecraft.world.World
+import javax.annotation.Nonnull
+
 
 abstract class AbstractMachine(private val energyStorage: DynamicEnergyStorage) : TileEntity(), ITickable {
 
@@ -23,11 +28,12 @@ abstract class AbstractMachine(private val energyStorage: DynamicEnergyStorage) 
 
     protected val components = HashSet<IComponent>()
 
+    protected var state: IBlockState? = null
+
     init {
         components.add(upgrades)
         TileEntity.register("${TCFoundation.MODID}:${javaClass.simpleName}", this.javaClass)
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityElectricFurnace::class.java, TileEntityElectricFurnaceRenderer())
-
     }
 
     override fun readFromNBT(compound: NBTTagCompound) {
@@ -82,5 +88,18 @@ abstract class AbstractMachine(private val energyStorage: DynamicEnergyStorage) 
 
     enum class RedstoneMode {
         HIGH, LOW, IGNORE
+    }
+
+    fun getBlockState(): IBlockState {
+        if (this.state == null) {
+            this.state = this.world.getBlockState(this.getPos())
+        }
+        return this.state!!
+    }
+
+    fun markForUpdate() {
+        if (this.world != null) {
+            this.world.notifyBlockUpdate(this.pos, this.getBlockState(), this.getBlockState(), 3)
+        }
     }
 }
