@@ -4,6 +4,7 @@ import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.capabilities.energy.DynamicEnergyStorage
 import net.cydhra.technocracy.foundation.capabilities.energy.DynamicEnergyStorageStategy
 import net.cydhra.technocracy.foundation.capabilities.energy.EnergyCapabilityProvider
+import net.cydhra.technocracy.foundation.client.renderer.tileEntity.TileEntityElectricFurnaceRenderer
 import net.cydhra.technocracy.foundation.tileentity.components.IComponent
 import net.cydhra.technocracy.foundation.tileentity.components.MachineUpgrades
 import net.minecraft.nbt.NBTTagCompound
@@ -11,6 +12,7 @@ import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.ITickable
 import net.minecraftforge.common.capabilities.Capability
+import net.minecraftforge.fml.client.registry.ClientRegistry
 
 abstract class AbstractMachine(private val energyStorage: DynamicEnergyStorage) : TileEntity(), ITickable {
 
@@ -24,6 +26,8 @@ abstract class AbstractMachine(private val energyStorage: DynamicEnergyStorage) 
     init {
         components.add(upgrades)
         TileEntity.register("${TCFoundation.MODID}:${javaClass.simpleName}", this.javaClass)
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityElectricFurnace::class.java, TileEntityElectricFurnaceRenderer())
+
     }
 
     override fun readFromNBT(compound: NBTTagCompound) {
