@@ -1,7 +1,6 @@
 package net.cydhra.technocracy.foundation.tileentity
 
 import net.cydhra.technocracy.foundation.TCFoundation
-import net.cydhra.technocracy.foundation.client.renderer.tileEntity.TileEntityElectricFurnaceRenderer
 import net.cydhra.technocracy.foundation.tileentity.components.*
 import net.minecraft.block.state.IBlockState
 import net.minecraft.nbt.NBTTagCompound
@@ -9,7 +8,6 @@ import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.ITickable
 import net.minecraftforge.common.capabilities.Capability
-import net.minecraftforge.fml.client.registry.ClientRegistry
 
 /**
  * Base class for all machine [TileEntities][TileEntity]. The tile entity automatically has capabilities for energy
@@ -53,7 +51,6 @@ abstract class AbstractMachine : TileEntity(), ITickable {
 
     init {
         TileEntity.register("${TCFoundation.MODID}:${javaClass.simpleName}", this.javaClass)
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityElectricFurnace::class.java, TileEntityElectricFurnaceRenderer())
 
         this.registerComponent(redstoneModeComponent)
         this.registerComponent(energyStorageComponent)
