@@ -14,6 +14,7 @@ open class CommonProxy : ISidedProxy {
 
         BlockManager.prepareBlocksForRegistration(pulverizerBlock)
         BlockManager.prepareBlocksForRegistration(electricFurnaceBlock)
+        BlockManager.prepareBlocksForRegistration(centrifugeBlock)
         BlockManager.prepareBlocksForRegistration(oilSandBlock)
         BlockManager.prepareBlocksForRegistration(ironBeamBlock)
 
