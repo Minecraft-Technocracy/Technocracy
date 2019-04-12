@@ -1,40 +1,21 @@
 package net.cydhra.technocracy.foundation.blocks.general
 
 import net.cydhra.technocracy.foundation.blocks.color.ConstantBlockColor
-import net.minecraft.block.BlockHorizontal
 import net.minecraft.block.ITileEntityProvider
 import net.minecraft.block.material.Material
-import net.minecraft.block.state.BlockStateContainer
-import net.minecraft.block.state.IBlockState
-import net.minecraft.client.renderer.block.model.SimpleBakedModel
-import net.minecraft.entity.EntityLivingBase
-import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.item.ItemStack
-import net.minecraft.util.EnumFacing
-import net.minecraft.util.EnumHand
-import net.minecraft.util.math.BlockPos
-import net.minecraft.world.World
 
 /**
- * A base block that provides a tile entity.
+ * An implementation of [IBaseBlock] that creates a tile entity with it. It inherits [AbstractRotateableBlock] so it
+ * automatically has a block state with facing information. The class does not define behaviour on its own yet,
+ * subclasses are required to implement tile entity interaction.
+ *
+ * @param unlocalizedName the unlocalized name of the block used for language lookup.
+ * @param material block material
+ * @param registryName the name of the block used in registries. By default the unlocalized name is used.
+ * @param colorMultiplier special color multiplier for block texture. Null by default.
  */
 abstract class BaseTileEntityBlock(unlocalizedName: String,
                                    registryName: String = unlocalizedName,
                                    colorMultiplier: ConstantBlockColor? = null,
                                    material: Material)
-    : AbstractRotateableBlock(unlocalizedName, material, registryName, colorMultiplier), ITileEntityProvider {
-
-
-
-    override fun onBlockActivated(worldIn: World, pos: BlockPos, state: IBlockState, playerIn: EntityPlayer,
-                                  hand: EnumHand, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean {
-        if (worldIn.isRemote) {
-            //TODO open gui
-            //playerIn.openGui()
-        }
-
-        return true
-
-    }
-
-}
+    : AbstractRotateableBlock(unlocalizedName, material, registryName, colorMultiplier), ITileEntityProvider

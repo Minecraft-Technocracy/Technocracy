@@ -5,17 +5,19 @@ import net.minecraft.block.Block
 import net.minecraft.block.material.Material
 
 /**
- * Base class for all blocks added by this modification
+ * Base class for simple blocks with no further requirements. It is a naive implementation of [IBaseBlock] and
+ * directly inherits [Block].
+ *
+ * @param unlocalizedName the unlocalized name of the block used for language lookup.
+ * @param material block material
+ * @param registryName the name of the block used in registries. By default the unlocalized name is used.
+ * @param colorMultiplier special color multiplier for block texture. Null by default.
  */
 abstract class AbstractBaseBlock(unlocalizedName: String,
                                  material: Material,
                                  registryName: String = unlocalizedName,
                                  override val colorMultiplier: ConstantBlockColor? = null) : Block(material), IBaseBlock {
 
-    /**
-     * The location where to expect the model. This is usually congruent to the registry name, except when the child
-     * class does not want an extra model and texture just for this single block
-     */
     override val modelLocation: String
         get() = this.registryName.toString()
 

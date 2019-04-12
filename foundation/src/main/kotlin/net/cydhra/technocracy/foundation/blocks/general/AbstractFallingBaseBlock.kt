@@ -4,15 +4,20 @@ import net.cydhra.technocracy.foundation.blocks.color.ConstantBlockColor
 import net.minecraft.block.BlockFalling
 import net.minecraft.block.material.Material
 
+/**
+ * An implementation of [IBaseBlock] that inherits [BlockFalling] and therefore is used as a base class for all
+ * blocks affected by gravity.
+ *
+ * @param unlocalizedName the unlocalized name of the block used for language lookup.
+ * @param material block material
+ * @param registryName the name of the block used in registries. By default the unlocalized name is used.
+ * @param colorMultiplier special color multiplier for block texture. Null by default.
+ */
 abstract class AbstractFallingBaseBlock(unlocalizedName: String,
                                         material: Material,
                                         registryName: String = unlocalizedName,
                                         override val colorMultiplier: ConstantBlockColor? = null) : BlockFalling(material), IBaseBlock {
 
-    /**
-     * The location where to expect the model. This is usually congruent to the registry name, except when the child
-     * class does not want an extra model and texture just for this single block
-     */
     override val modelLocation: String
         get() = this.registryName.toString()
 
