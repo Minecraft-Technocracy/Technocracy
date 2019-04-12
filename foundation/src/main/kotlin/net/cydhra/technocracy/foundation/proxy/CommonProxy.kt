@@ -1,15 +1,23 @@
 package net.cydhra.technocracy.foundation.proxy
 
+import com.google.common.collect.ImmutableMap
 import net.cydhra.technocracy.foundation.blocks.general.*
 import net.cydhra.technocracy.foundation.items.general.*
 import net.cydhra.technocracy.foundation.materials.*
+import net.minecraft.util.ResourceLocation
+import net.minecraftforge.common.animation.ITimeValue
+import net.minecraftforge.common.model.animation.IAnimationStateMachine
 
-open class CommonProxy : ISidedProxy {
+/**
+ * Mod proxy for both client and server implementation. Handles registration of everything required by both sides.
+ * Offers a general interface for resource loading though client-only resources aren't loaded by this class
+ */
+open class CommonProxy {
 
     private val materialSystems = arrayOf(aluminiumSystem, copperSystem, leadSystem,
             lithiumSystem, nickelSystem, osmiumSystem, silverSystem, tinSystem)
 
-    override fun preInit() {
+    open fun preInit() {
         materialSystems.forEach(MaterialSystem::preInit)
 
         BlockManager.prepareBlocksForRegistration(pulverizerBlock)
@@ -27,11 +35,22 @@ open class CommonProxy : ISidedProxy {
         ItemManager.prepareItemForRegistration(akkumulatorItem)
     }
 
-    override fun init() {
+    open fun init() {
         materialSystems.forEach(MaterialSystem::init)
     }
 
-    override fun postInit() {
+    open fun postInit() {
 
+    }
+
+    /**
+     * Loads an [IAnimationStateMachine] from a model file at [location] on client side, returns null on server side.
+     *
+     * @param location ASM model file location
+     * @param parameters ASM parameter list
+     */
+    open fun loadAnimationStateMachine(location: ResourceLocation, parameters: ImmutableMap<String, ITimeValue>):
+            IAnimationStateMachine? {
+        return null
     }
 }

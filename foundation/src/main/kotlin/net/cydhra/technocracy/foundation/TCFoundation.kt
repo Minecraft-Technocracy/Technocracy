@@ -1,14 +1,12 @@
 package net.cydhra.technocracy.foundation
 
-import net.cydhra.technocracy.foundation.proxy.ClientProxy
 import net.cydhra.technocracy.foundation.proxy.CommonProxy
-import net.cydhra.technocracy.foundation.proxy.ISidedProxy
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.Mod.EventHandler
+import net.minecraftforge.fml.common.SidedProxy
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
-import net.minecraftforge.fml.relauncher.Side
 import org.apache.logging.log4j.Logger
 
 @Mod(modid = TCFoundation.MODID, name = TCFoundation.NAME, version = TCFoundation.VERSION,
@@ -35,13 +33,14 @@ object TCFoundation {
      */
     private lateinit var logger: Logger
 
-    private lateinit var proxy: ISidedProxy
+    @SidedProxy(
+            serverSide = "net.cydhra.technocracy.foundation.proxy.CommonProxy",
+            clientSide = "net.cydhra.technocracy.foundation.proxy.ClientProxy")
+    lateinit var proxy: CommonProxy
 
     @EventHandler
     fun preInit(event: FMLPreInitializationEvent) {
         logger = event.modLog
-        proxy = if (event.side == Side.CLIENT) ClientProxy() else CommonProxy()
-
         proxy.preInit()
     }
 
