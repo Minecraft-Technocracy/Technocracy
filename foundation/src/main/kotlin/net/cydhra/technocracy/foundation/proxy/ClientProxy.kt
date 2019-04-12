@@ -5,9 +5,9 @@ import net.cydhra.technocracy.foundation.blocks.general.BlockManager
 import net.cydhra.technocracy.foundation.client.model.CustomModelLoader
 import net.cydhra.technocracy.foundation.client.model.MachineConnectorModel
 import net.cydhra.technocracy.foundation.items.general.ItemManager
+import net.cydhra.technocracy.foundation.tileentity.management.TileEntityManager
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.model.IModel
-import net.minecraftforge.client.model.ModelLoader
 import net.minecraftforge.client.model.ModelLoaderRegistry
 import net.minecraftforge.common.animation.ITimeValue
 import net.minecraftforge.common.model.animation.IAnimationStateMachine
@@ -17,12 +17,6 @@ import net.minecraftforge.common.model.animation.IAnimationStateMachine
  * and animations.
  */
 class ClientProxy : CommonProxy() {
-
-    override fun init() {
-        super.init()
-        ItemManager.registerItemColors()
-        BlockManager.registerBlockColors()
-    }
 
     /**
      * Loads an [IAnimationStateMachine] from a model file at [location] on client side.
@@ -35,8 +29,15 @@ class ClientProxy : CommonProxy() {
     override fun preInit() {
         super.preInit()
         val map = hashMapOf<String, IModel>()
-        map.put("models/block/electric_furnace", MachineConnectorModel())
+        map["models/block/electric_furnace"] = MachineConnectorModel()
         val loader = CustomModelLoader(map)
         ModelLoaderRegistry.registerLoader(loader)
+    }
+
+    override fun init() {
+        super.init()
+        ItemManager.registerItemColors()
+        BlockManager.registerBlockColors()
+        TileEntityManager.onClientInitialize()
     }
 }

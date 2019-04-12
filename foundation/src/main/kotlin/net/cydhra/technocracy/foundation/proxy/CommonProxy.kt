@@ -2,8 +2,12 @@ package net.cydhra.technocracy.foundation.proxy
 
 import com.google.common.collect.ImmutableMap
 import net.cydhra.technocracy.foundation.blocks.general.*
+import net.cydhra.technocracy.foundation.client.renderer.tileEntity.TileEntityElectricFurnaceRenderer
 import net.cydhra.technocracy.foundation.items.general.*
 import net.cydhra.technocracy.foundation.materials.*
+import net.cydhra.technocracy.foundation.tileentity.TileEntityElectricFurnace
+import net.cydhra.technocracy.foundation.tileentity.TileEntityPulverizer
+import net.cydhra.technocracy.foundation.tileentity.management.TileEntityManager
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.animation.ITimeValue
 import net.minecraftforge.common.model.animation.IAnimationStateMachine
@@ -30,9 +34,11 @@ open class CommonProxy {
         ItemManager.prepareItemForRegistration(coalDustItem)
         ItemManager.prepareItemForRegistration(ironDustItem)
         ItemManager.prepareItemForRegistration(ironSheetItem)
-
         ItemManager.prepareItemForRegistration(batteryItem)
         ItemManager.prepareItemForRegistration(akkumulatorItem)
+
+        TileEntityManager.prepareTileEntityForRegistration(TileEntityPulverizer::class)
+        TileEntityManager.prepareTileEntityForRegistration(TileEntityElectricFurnace::class, TileEntityElectricFurnaceRenderer())
     }
 
     open fun init() {
