@@ -2,7 +2,6 @@ package net.cydhra.technocracy.foundation.proxy
 
 import com.google.common.collect.ImmutableMap
 import net.cydhra.technocracy.foundation.blocks.general.*
-import net.cydhra.technocracy.foundation.client.renderer.tileEntity.TileEntityElectricFurnaceRenderer
 import net.cydhra.technocracy.foundation.items.general.*
 import net.cydhra.technocracy.foundation.materials.*
 import net.cydhra.technocracy.foundation.tileentity.TileEntityElectricFurnace
@@ -38,7 +37,7 @@ open class CommonProxy {
         ItemManager.prepareItemForRegistration(akkumulatorItem)
 
         TileEntityManager.prepareTileEntityForRegistration(TileEntityPulverizer::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityElectricFurnace::class, TileEntityElectricFurnaceRenderer())
+        TileEntityManager.prepareTileEntityForRegistration(TileEntityElectricFurnace::class)
     }
 
     open fun init() {
