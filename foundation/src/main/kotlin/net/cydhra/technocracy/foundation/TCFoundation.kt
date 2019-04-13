@@ -31,7 +31,7 @@ object TCFoundation {
     /**
      * Mod logger
      */
-    private lateinit var logger: Logger
+    lateinit var logger: Logger
 
     @SidedProxy(
             serverSide = "net.cydhra.technocracy.foundation.proxy.CommonProxy",
