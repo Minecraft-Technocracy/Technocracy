@@ -2,6 +2,7 @@ package net.cydhra.technocracy.foundation.proxy
 
 import com.google.common.collect.ImmutableMap
 import net.cydhra.technocracy.foundation.blocks.general.*
+import net.cydhra.technocracy.foundation.client.model.MachineConnectorModel
 import net.cydhra.technocracy.foundation.items.general.*
 import net.cydhra.technocracy.foundation.materials.*
 import net.cydhra.technocracy.foundation.tileentity.TileEntityElectricFurnace
@@ -23,9 +24,9 @@ open class CommonProxy {
     open fun preInit() {
         materialSystems.forEach(MaterialSystem::preInit)
 
-        BlockManager.prepareBlocksForRegistration(pulverizerBlock)
-        BlockManager.prepareBlocksForRegistration(electricFurnaceBlock)
-        BlockManager.prepareBlocksForRegistration(centrifugeBlock)
+        BlockManager.prepareBlocksForRegistration(pulverizerBlock, MachineConnectorModel())
+        BlockManager.prepareBlocksForRegistration(electricFurnaceBlock, MachineConnectorModel())
+        BlockManager.prepareBlocksForRegistration(centrifugeBlock, MachineConnectorModel())
         BlockManager.prepareBlocksForRegistration(oilSandBlock)
         BlockManager.prepareBlocksForRegistration(ironBeamBlock)
 
