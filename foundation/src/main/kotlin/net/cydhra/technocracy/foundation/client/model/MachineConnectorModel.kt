@@ -9,11 +9,12 @@ import net.minecraftforge.client.model.ModelLoaderRegistry
 import net.minecraftforge.common.model.IModelState
 import java.util.function.Function
 import com.google.common.collect.ImmutableList
+import net.minecraft.client.renderer.block.model.SimpleBakedModel
 
 
 class MachineConnectorModel : AbstractCustomModel() {
 
-    private val CONNECTORS = ResourceLocation("technocracy.foundation", "block/connector")
+    private val CONNECTORS = ResourceLocation("technocracy.foundation", "extra/connector")
 
     override fun bake(state: IModelState, format: VertexFormat, bakedTextureGetter: Function<ResourceLocation, TextureAtlasSprite>): IBakedModel {
         val modelBase: IModel = ModelLoaderRegistry.getModelOrLogError(MODEL_BASE!!, "Model (${MODEL_BASE!!}) not " +

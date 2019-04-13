@@ -5,8 +5,7 @@ import net.minecraftforge.client.model.IModel
 
 
 abstract class AbstractCustomModel : IModel {
-    protected var MODEL_BASE: ResourceLocation = ResourceLocation("technocracy.foundation",
-            "block/electric_furnace_base")
+    protected var MODEL_BASE: ResourceLocation? = null
 
     fun initModel(modelName: String): IModel {
         MODEL_BASE = ResourceLocation("technocracy.foundation", "block/${modelName}_base")
