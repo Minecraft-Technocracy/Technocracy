@@ -1,0 +1,9 @@
+{
+  "input": {
+    "item": "minecraft:coal"
+  },
+  "output": {
+    "item": "technocracy.foundation:coal.dust"
+  },
+  "cost": 80
+}
