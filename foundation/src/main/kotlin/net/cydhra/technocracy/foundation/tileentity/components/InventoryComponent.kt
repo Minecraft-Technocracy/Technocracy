@@ -1,10 +1,10 @@
 package net.cydhra.technocracy.foundation.tileentity.components
 
+import net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryHandler
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.items.CapabilityItemHandler
-import net.minecraftforge.items.ItemStackHandler
 
 /**
  * A machine component that offers a inventory for the machine. It also implements the inventory capability
@@ -16,7 +16,7 @@ class InventoryComponent(size: Int) : AbstractCapabilityComponent() {
     /**
      * Inventory capability of the machine
      */
-    val inventory = ItemStackHandler(size)
+    val inventory = DynamicInventoryHandler(size)
 
     companion object {
         private const val NBT_KEY_INVENTORY = "inventory"
