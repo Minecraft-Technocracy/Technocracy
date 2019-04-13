@@ -11,28 +11,26 @@ import java.util.function.Function
 import com.google.common.collect.ImmutableList
 
 
+class MachineConnectorModel : AbstractCustomModel() {
 
-
-
-
-class MachineConnectorModel : IModel {
-    private val MODEL_BASE = ResourceLocation("technocracy.foundation", "block/electric_furnace_base")
-
-    private val extra = ResourceLocation("technocracy.foundation", "block/connector")
+    private val CONNECTORS = ResourceLocation("technocracy.foundation", "block/connector")
 
     override fun bake(state: IModelState, format: VertexFormat, bakedTextureGetter: Function<ResourceLocation, TextureAtlasSprite>): IBakedModel {
-        val modelBase: IModel = ModelLoaderRegistry.getModel(MODEL_BASE)
+        val modelBase: IModel = ModelLoaderRegistry.getModelOrLogError(MODEL_BASE!!, "Model (${MODEL_BASE!!}) not " +
+                "found has it the right name?")
         //Hand renderer
-        if(state == null) {
+        if (state == null) {
             return modelBase.bake(state, format, bakedTextureGetter)
         } else {
-            val connectors: IModel = ModelLoaderRegistry.getModel(extra)
+            val connectors: IModel = ModelLoaderRegistry.getModel(CONNECTORS)
             return MachineConnectorBakedModel(modelBase.bake(state, format, bakedTextureGetter), connectors.bake(state, format,
                     bakedTextureGetter))
         }
     }
 
     override fun getDependencies(): MutableCollection<ResourceLocation> {
-        return ImmutableList.builder<ResourceLocation>().add(MODEL_BASE).add(extra).build();
+        return ImmutableList.builder<ResourceLocation>().add(MODEL_BASE!!).add(CONNECTORS).build();
     }
+
+
 }

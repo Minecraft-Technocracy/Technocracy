@@ -2,7 +2,7 @@ package net.cydhra.technocracy.foundation.proxy
 
 import com.google.common.collect.ImmutableMap
 import net.cydhra.technocracy.foundation.blocks.general.BlockManager
-import net.cydhra.technocracy.foundation.client.model.CustomModelLoader
+import net.cydhra.technocracy.foundation.client.model.CustomModelProvider
 import net.cydhra.technocracy.foundation.client.model.MachineConnectorModel
 import net.cydhra.technocracy.foundation.items.general.ItemManager
 import net.cydhra.technocracy.foundation.tileentity.management.TileEntityManager
@@ -28,10 +28,8 @@ class ClientProxy : CommonProxy() {
 
     override fun preInit() {
         super.preInit()
-        val map = hashMapOf<String, IModel>()
-        map["models/block/electric_furnace"] = MachineConnectorModel()
-        val loader = CustomModelLoader(map)
-        ModelLoaderRegistry.registerLoader(loader)
+
+        BlockManager.registerCustomBlockModels()
     }
 
     override fun init() {

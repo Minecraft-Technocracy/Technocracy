@@ -2,13 +2,17 @@ package net.cydhra.technocracy.foundation.blocks.general
 
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.general.BlockManager.prepareBlocksForRegistration
+import net.cydhra.technocracy.foundation.client.model.AbstractCustomModel
+import net.cydhra.technocracy.foundation.client.model.CustomModelProvider
 import net.minecraft.block.Block
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.block.model.ModelResourceLocation
 import net.minecraft.item.Item
 import net.minecraft.item.ItemBlock
 import net.minecraftforge.client.event.ModelRegistryEvent
+import net.minecraftforge.client.model.IModel
 import net.minecraftforge.client.model.ModelLoader
+import net.minecraftforge.client.model.ModelLoaderRegistry
 import net.minecraftforge.event.RegistryEvent
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -28,11 +32,23 @@ object BlockManager {
      */
     private val blocksToRegister = mutableListOf<IBaseBlock>()
 
+    private val customModels = mutableMapOf<String, IModel>()
+
     /**
      * Prepare a block for the registration happening per event later on.
      */
     fun prepareBlocksForRegistration(block: IBaseBlock): IBaseBlock {
         blocksToRegister += block
+        return block
+    }
+
+    /**
+     * Prepare a block for the registration happening per event later on, with custom Model.
+     */
+    fun prepareBlocksForRegistration(block: IBaseBlock, model: AbstractCustomModel): IBaseBlock {
+        blocksToRegister += block
+        val name = (block as Block).registryName!!.resourcePath
+        customModels["models/block/$name"] = model.initModel(name)
         return block
     }
 
@@ -83,6 +99,10 @@ object BlockManager {
                 Minecraft.getMinecraft().itemColors.registerItemColorHandler(block.colorMultiplier, block)
             }
         }
+    }
+
+    fun registerCustomBlockModels() {
+        ModelLoaderRegistry.registerLoader(CustomModelProvider(customModels))
     }
 
 }

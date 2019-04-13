@@ -7,7 +7,7 @@ import net.minecraftforge.client.model.ICustomModelLoader
 import net.minecraftforge.client.model.IModel
 import net.minecraft.client.resources.IResourceManagerReloadListener
 
-class CustomModelLoader(val builtInModels: Map<String, IModel>) : ICustomModelLoader {
+class CustomModelProvider(val builtInModels: Map<String, IModel>) : ICustomModelLoader {
     override fun accepts(modelLocation: ResourceLocation): Boolean {
         return if (modelLocation.resourceDomain != TCFoundation.MODID) {
             false
@@ -15,7 +15,7 @@ class CustomModelLoader(val builtInModels: Map<String, IModel>) : ICustomModelLo
     }
 
     override fun loadModel(modelLocation: ResourceLocation): IModel? {
-        return this.builtInModels.get( modelLocation.getResourcePath() );
+        return this.builtInModels.get(modelLocation.getResourcePath());
     }
 
     override fun onResourceManagerReload(resourceManager: IResourceManager) {
