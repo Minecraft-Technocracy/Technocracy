@@ -1,10 +1,13 @@
 package net.cydhra.technocracy.foundation.crafting
 
+import com.google.common.collect.HashMultimap
+import com.google.common.collect.Multimap
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParseException
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.crafting.RecipeManager.RECIPE_ASSETS_FOLDER
+import net.cydhra.technocracy.foundation.crafting.types.IRecipe
 import net.cydhra.technocracy.foundation.crafting.types.PulverizerRecipeParser
 import net.cydhra.technocracy.foundation.crafting.types.RecipeParser
 import net.minecraft.util.JsonUtils
@@ -35,10 +38,15 @@ object RecipeManager {
     private val jsonContext = JsonContext(TCFoundation.MODID)
 
     /**
+     * All recipes loaded by type
+     */
+    private val loadedRecipes: Multimap<RecipeType, IRecipe> = HashMultimap.create()
+
+    /**
      * Called upon post initialization by common proxy. Attempts to load recipes of all different machine types.
      */
     fun initialize() {
-        parseMachineRecipes("pulverizer", PulverizerRecipeParser)
+        parseMachineRecipes("pulverizer", PulverizerRecipeParser, RecipeManager.RecipeType.PULVERIZER)
     }
 
     /**
@@ -47,11 +55,12 @@ object RecipeManager {
      *
      * @param path path where the file is located
      * @param parser the responsible parser for the recipe file
+     * @param type recipe type that is loaded
      *
      * @return true if the file has either been loaded successfully or was not loaded on purpose. False in case of an
      * error
      */
-    private fun loadRecipe(path: Path, parser: RecipeParser<*>): Boolean {
+    private fun loadRecipe(path: Path, parser: RecipeParser<*>, type: RecipeType): Boolean {
         if (!path.endsWith(".json"))
             return true
 
@@ -63,7 +72,8 @@ object RecipeManager {
         }
 
         try {
-            parser.process(jsonObject, jsonContext)
+            val recipe = parser.process(jsonObject, jsonContext)
+            loadedRecipes.put(type, recipe)
         } catch (e: IllegalStateException) {
             TCFoundation.logger.error("Recipe parse exception", e)
             return false
@@ -77,14 +87,19 @@ object RecipeManager {
      *
      * @param endpoint subfolder of [RECIPE_ASSETS_FOLDER] where all recipes for the given parser are located
      * @param parser parser for recipes at the given endpoint
+     * @param type type of recipe that is loaded
      */
-    private fun parseMachineRecipes(endpoint: String, parser: RecipeParser<*>) {
+    private fun parseMachineRecipes(endpoint: String, parser: RecipeParser<*>, type: RecipeType) {
         CraftingHelper.findFiles(
                 Loader.instance().indexedModList[TCFoundation.MODID],
                 "assets/${TCFoundation.MODID}/$RECIPE_ASSETS_FOLDER/$endpoint",
                 { true },
-                { _, path -> this.loadRecipe(path, parser) },
+                { _, path -> this.loadRecipe(path, parser, type) },
                 true,
                 true)
+    }
+
+    enum class RecipeType {
+        PULVERIZER, ELECTRIC_FURNACE
     }
 }

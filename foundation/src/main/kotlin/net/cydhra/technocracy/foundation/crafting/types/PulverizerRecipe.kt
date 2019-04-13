@@ -9,4 +9,4 @@ import net.minecraft.item.crafting.Ingredient
  * @param output the output produced with given input
  * @param cost the base cost in ticks for the recipe to complete
  */
-data class PulverizerRecipe(val input: Ingredient, val output: Ingredient, val cost: Int)
+data class PulverizerRecipe(val input: Ingredient, val output: Ingredient, val cost: Int) : IRecipe
