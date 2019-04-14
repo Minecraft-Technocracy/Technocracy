@@ -1,0 +1,9 @@
+{
+  "input": {
+    "item": "technocracy.foundation:dust.iron"
+  },
+  "output": {
+    "item": "minecraft:iron_ingot"
+  },
+  "cost": 80
+}
