@@ -1,6 +1,8 @@
 package net.cydhra.technocracy.foundation.tileentity
 
 import net.cydhra.technocracy.foundation.tileentity.components.*
+import net.cydhra.technocracy.foundation.tileentity.logic.ILogicClient
+import net.cydhra.technocracy.foundation.tileentity.logic.LogicClientDelegate
 import net.minecraft.block.state.IBlockState
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
@@ -13,7 +15,7 @@ import net.minecraftforge.common.capabilities.Capability
  * storage and a component that defines reactions to redstone signales. Note, that the component does not handle the
  * defined reactions itself.
  */
-abstract class AbstractMachine : TileEntity(), ITickable {
+abstract class AbstractMachine : TileEntity(), ITickable, ILogicClient by LogicClientDelegate() {
 
     /**
      * The machine's redstone mode
@@ -79,6 +81,11 @@ abstract class AbstractMachine : TileEntity(), ITickable {
         return capabilityComponents
                 .firstOrNull { it.hasCapability(capability, facing) }
                 ?.getCapability(capability, facing) ?: super.getCapability(capability, facing)
+    }
+
+    override fun update() {
+        // update ILogic strategies
+        this.tick()
     }
 
     /**

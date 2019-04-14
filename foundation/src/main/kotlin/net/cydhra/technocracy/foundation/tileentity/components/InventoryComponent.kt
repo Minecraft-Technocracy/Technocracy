@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.tileentity.components
 
 import net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryHandler
+import net.cydhra.technocracy.foundation.tileentity.management.TEInventoryProvider
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
@@ -11,12 +12,12 @@ import net.minecraftforge.items.CapabilityItemHandler
  *
  * @param size amount of inventory slots
  */
-class InventoryComponent(size: Int) : AbstractCapabilityComponent() {
+class InventoryComponent(size: Int, provider: TEInventoryProvider) : AbstractCapabilityComponent() {
 
     /**
      * Inventory capability of the machine
      */
-    val inventory = DynamicInventoryHandler(size)
+    val inventory = DynamicInventoryHandler(size, provider)
 
     companion object {
         private const val NBT_KEY_INVENTORY = "inventory"

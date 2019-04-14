@@ -5,5 +5,4 @@ package net.cydhra.technocracy.foundation.tileentity
  */
 class TileEntityElectricFurnace : AbstractMachine() {
 
-    override fun update() {}
 }

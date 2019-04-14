@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.capabilities.inventory
 
+import net.cydhra.technocracy.foundation.tileentity.management.TEInventoryProvider
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTTagList
@@ -11,7 +12,8 @@ import net.minecraftforge.items.IItemHandlerModifiable
 import net.minecraftforge.items.ItemHandlerHelper
 
 
-class DynamicInventoryHandler(size: Int = 0) : IItemHandler, IItemHandlerModifiable,
+class DynamicInventoryHandler(size: Int = 0, private val machine: TEInventoryProvider) : IItemHandler,
+        IItemHandlerModifiable,
         INBTSerializable<NBTTagCompound> {
 
     private var stacks: NonNullList<ItemStack>
@@ -111,8 +113,8 @@ class DynamicInventoryHandler(size: Int = 0) : IItemHandler, IItemHandlerModifia
     }
 
     override fun isItemValid(slot: Int, stack: ItemStack): Boolean {
-        //TODO: Add callback to tileEntity
-        return true
+        // callback the machine for that
+        return machine.isItemValid(slot, stack)
     }
 
     override fun serializeNBT(): NBTTagCompound {
