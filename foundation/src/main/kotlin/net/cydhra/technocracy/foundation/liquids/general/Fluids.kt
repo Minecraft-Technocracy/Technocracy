@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.liquids.general
 
-import net.cydhra.technocracy.foundation.liquids.FluidOil
+import net.cydhra.technocracy.foundation.liquids.OilFluid
 
 
-val oil = FluidOil()
+val oil = OilFluid()
