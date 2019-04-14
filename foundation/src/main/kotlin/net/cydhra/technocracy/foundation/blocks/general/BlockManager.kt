@@ -6,13 +6,9 @@ import net.cydhra.technocracy.foundation.client.model.AbstractCustomModel
 import net.cydhra.technocracy.foundation.client.model.CustomModelProvider
 import net.cydhra.technocracy.foundation.util.StateMapper
 import net.minecraft.block.Block
-import net.minecraft.block.state.IBlockState
 import net.minecraft.client.Minecraft
-import net.minecraft.client.renderer.ItemMeshDefinition
 import net.minecraft.client.renderer.block.model.ModelBakery
 import net.minecraft.client.renderer.block.model.ModelResourceLocation
-import net.minecraft.client.renderer.block.statemap.IStateMapper
-import net.minecraft.client.renderer.block.statemap.StateMapperBase
 import net.minecraft.item.Item
 import net.minecraft.item.ItemBlock
 import net.minecraftforge.client.event.ModelRegistryEvent
@@ -73,7 +69,7 @@ object BlockManager {
     @Suppress("unused")
     @SubscribeEvent
     fun onRegisterItems(event: RegistryEvent.Register<Item>) {
-        event.registry.registerAll(*blocksToRegister.filter { it !is AbstractBaseLiquid }
+        event.registry.registerAll(*blocksToRegister.filter { it !is AbstractBaseLiquidBlock }
                 .map { it as Block }
                 .map(::ItemBlock)
                 .map { it.apply { it.registryName = it.block.registryName } }
@@ -86,7 +82,7 @@ object BlockManager {
     @Suppress("unused")
     @SubscribeEvent
     fun onRegisterRenders(@Suppress("UNUSED_PARAMETER") event: ModelRegistryEvent) {
-        blocksToRegister.filter { it !is AbstractBaseLiquid }
+        blocksToRegister.filter { it !is AbstractBaseLiquidBlock }
                 .map { it as Block }
                 .map(Item::getItemFromBlock)
                 .forEach { item ->
@@ -94,8 +90,8 @@ object BlockManager {
                             ModelResourceLocation(((item).block as IBaseBlock).modelLocation, "inventory"))
                 }
 
-        blocksToRegister.filter { it is AbstractBaseLiquid }
-                .map { it as AbstractBaseLiquid }
+        blocksToRegister.filter { it is AbstractBaseLiquidBlock }
+                .map { it as AbstractBaseLiquidBlock }
                 .forEach { liquid ->
                     val stateMapper = StateMapper("fluid", liquid.modelLocation)
 
