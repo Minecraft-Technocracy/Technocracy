@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation
 
 import net.cydhra.technocracy.foundation.proxy.CommonProxy
+import net.minecraftforge.fml.common.FMLLog
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.Mod.EventHandler
 import net.minecraftforge.fml.common.SidedProxy
@@ -40,7 +41,7 @@ object TCFoundation {
 
     @EventHandler
     fun preInit(event: FMLPreInitializationEvent) {
-        logger = event.modLog
+        logger = FMLLog.log
         proxy.preInit()
     }
 
