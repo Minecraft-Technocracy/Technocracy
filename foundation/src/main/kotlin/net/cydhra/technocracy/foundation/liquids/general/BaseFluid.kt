@@ -12,7 +12,8 @@ import java.awt.Color
  * @param color color modifier for fluid textures (also for universal bucket texture)
  * @param opaqueTexture whether to use the opaque or the transparent fluid texture
  */
-abstract class AbstractFluid(fluidName: String, color: Color, opaqueTexture: Boolean) : Fluid(fluidName,
+open class BaseFluid(fluidName: String, color: Color, opaqueTexture: Boolean) : Fluid(
+        fluidName,
         ResourceLocation("technocracy.foundation", "liquid/fluid_${if (opaqueTexture) "opaque_" else ""}still"),
         ResourceLocation("technocracy.foundation", "liquid/fluid_${if (opaqueTexture) "opaque_" else ""}flow"),
         color)
