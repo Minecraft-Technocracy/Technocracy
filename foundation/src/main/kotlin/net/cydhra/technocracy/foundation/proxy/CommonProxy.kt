@@ -5,6 +5,8 @@ import net.cydhra.technocracy.foundation.blocks.general.*
 import net.cydhra.technocracy.foundation.client.model.MachineConnectorModel
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.items.general.*
+import net.cydhra.technocracy.foundation.liquids.FluidOil
+import net.cydhra.technocracy.foundation.liquids.general.FluidManager
 import net.cydhra.technocracy.foundation.materials.*
 import net.cydhra.technocracy.foundation.tileentity.TileEntityElectricFurnace
 import net.cydhra.technocracy.foundation.tileentity.TileEntityPulverizer
@@ -12,6 +14,7 @@ import net.cydhra.technocracy.foundation.tileentity.management.TileEntityManager
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.animation.ITimeValue
 import net.minecraftforge.common.model.animation.IAnimationStateMachine
+import net.minecraftforge.fluids.FluidRegistry
 
 /**
  * Mod proxy for both client and server implementation. Handles registration of everything required by both sides.
@@ -23,13 +26,18 @@ open class CommonProxy {
             lithiumSystem, nickelSystem, osmiumSystem, silverSystem, tinSystem)
 
     open fun preInit() {
+        FluidRegistry.enableUniversalBucket()
+
         materialSystems.forEach(MaterialSystem::preInit)
+
+        FluidManager.registerFluid(FluidOil())
 
         BlockManager.prepareBlocksForRegistration(pulverizerBlock, MachineConnectorModel())
         BlockManager.prepareBlocksForRegistration(electricFurnaceBlock, MachineConnectorModel())
         BlockManager.prepareBlocksForRegistration(centrifugeBlock, MachineConnectorModel())
         BlockManager.prepareBlocksForRegistration(oilSandBlock)
         BlockManager.prepareBlocksForRegistration(ironBeamBlock)
+        BlockManager.prepareBlocksForRegistration(oilBlock)
 
         ItemManager.prepareItemForRegistration(machineFrameItem)
         ItemManager.prepareItemForRegistration(coalDustItem)
@@ -40,6 +48,7 @@ open class CommonProxy {
 
         TileEntityManager.prepareTileEntityForRegistration(TileEntityPulverizer::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityElectricFurnace::class)
+
     }
 
     open fun init() {
