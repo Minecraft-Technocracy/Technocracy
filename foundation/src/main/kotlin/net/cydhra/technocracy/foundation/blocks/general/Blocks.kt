@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.blocks.general
 
 import net.cydhra.technocracy.foundation.blocks.*
+import net.cydhra.technocracy.foundation.blocks.liquid.OilBlock
 
 val pulverizerBlock = Pulverizer()
 val electricFurnaceBlock = ElectricFurnaceBlock()

@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.foundation.blocks
+package net.cydhra.technocracy.foundation.blocks.liquid
 
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.general.AbstractBaseLiquid
