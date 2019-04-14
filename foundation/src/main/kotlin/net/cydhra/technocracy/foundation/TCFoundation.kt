@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation
 
 import net.cydhra.technocracy.foundation.proxy.CommonProxy
+import net.minecraftforge.fluids.FluidRegistry
 import net.minecraftforge.fml.common.FMLLog
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.Mod.EventHandler
@@ -13,6 +14,11 @@ import org.apache.logging.log4j.Logger
 @Mod(modid = TCFoundation.MODID, name = TCFoundation.NAME, version = TCFoundation.VERSION,
         modLanguageAdapter = "net.shadowfacts.forgelin.KotlinAdapter")
 object TCFoundation {
+
+    init {
+        // enable the universal bucket for forge fluids. Must be done statically in here
+        FluidRegistry.enableUniversalBucket()
+    }
 
     /**
      * Module-internal constant for the forge mod identifier

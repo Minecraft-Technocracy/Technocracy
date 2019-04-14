@@ -14,7 +14,6 @@ import net.cydhra.technocracy.foundation.tileentity.management.TileEntityManager
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.animation.ITimeValue
 import net.minecraftforge.common.model.animation.IAnimationStateMachine
-import net.minecraftforge.fluids.FluidRegistry
 
 /**
  * Mod proxy for both client and server implementation. Handles registration of everything required by both sides.
@@ -26,8 +25,6 @@ open class CommonProxy {
             lithiumSystem, nickelSystem, osmiumSystem, silverSystem, tinSystem)
 
     open fun preInit() {
-        FluidRegistry.enableUniversalBucket()
-
         materialSystems.forEach(MaterialSystem::preInit)
 
         FluidManager.registerFluid(oilFluid)
