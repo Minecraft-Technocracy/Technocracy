@@ -5,7 +5,7 @@ import net.minecraftforge.fluids.FluidStack
 import java.awt.Color
 
 
-class OilFluid : AbstractFluid("oil", Color(30, 30, 30), opaqueTexture = true) {
+class OilFluid : AbstractFluid("oil", Color(25, 25, 25), opaqueTexture = true) {
 
     init {
 
