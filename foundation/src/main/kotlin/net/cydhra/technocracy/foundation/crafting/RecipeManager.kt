@@ -14,6 +14,7 @@ import net.minecraft.util.JsonUtils
 import net.minecraftforge.common.crafting.CraftingHelper
 import net.minecraftforge.common.crafting.JsonContext
 import net.minecraftforge.fml.common.Loader
+import org.apache.commons.io.FilenameUtils
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -72,7 +73,7 @@ object RecipeManager {
      * error
      */
     private fun loadRecipe(path: Path, parser: RecipeParser<*>, type: RecipeType): Boolean {
-        if (!path.endsWith(".json"))
+        if (FilenameUtils.getExtension(path.toFile().path) != "json")
             return true
 
         val jsonObject = try {
