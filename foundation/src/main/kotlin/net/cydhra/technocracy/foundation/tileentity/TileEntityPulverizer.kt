@@ -22,8 +22,8 @@ class TileEntityPulverizer : AbstractMachine(), TEInventoryProvider {
     private val outputInventoryComponent = InventoryComponent(1, this, EnumFacing.EAST)
 
     init {
-        this.registerComponent(inputInventoryComponent)
-        this.registerComponent(outputInventoryComponent)
+        this.registerComponent(inputInventoryComponent, "input_inventory")
+        this.registerComponent(outputInventoryComponent, "output_inventory")
 
         this.addLogicStrategy(ItemProcessingLogic(
                 recipeType = RecipeManager.RecipeType.PULVERIZER,

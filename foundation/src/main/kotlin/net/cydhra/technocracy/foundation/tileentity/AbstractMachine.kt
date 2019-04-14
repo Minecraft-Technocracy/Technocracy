@@ -37,7 +37,7 @@ abstract class AbstractMachine : TileEntity(), ITickable, ILogicClient by LogicC
     /**
      * All machine components that are saved to NBT and possibly accessible from GUI
      */
-    private val components: MutableSet<IComponent> = mutableSetOf()
+    private val components: MutableList<Pair<String, IComponent>> = mutableListOf()
 
     /**
      * All components that also offer a capability. They must also be added to [components] but for speed they are
@@ -51,15 +51,15 @@ abstract class AbstractMachine : TileEntity(), ITickable, ILogicClient by LogicC
     protected var state: IBlockState? = null
 
     init {
-        this.registerComponent(redstoneModeComponent)
-        this.registerComponent(energyStorageComponent)
-        this.registerComponent(machineUpgradesComponent)
+        this.registerComponent(redstoneModeComponent, "redstone_mode")
+        this.registerComponent(energyStorageComponent, "energy")
+        this.registerComponent(machineUpgradesComponent, "upgrades")
     }
 
     override fun writeToNBT(compound: NBTTagCompound): NBTTagCompound {
         super.writeToNBT(compound)
-        for (comp in components) {
-            comp.writeToNBT(compound)
+        for ((name, component) in components) {
+            compound.setTag(name, component.serializeNBT())
         }
 
         return compound
@@ -67,8 +67,9 @@ abstract class AbstractMachine : TileEntity(), ITickable, ILogicClient by LogicC
 
     override fun readFromNBT(compound: NBTTagCompound) {
         super.readFromNBT(compound)
-        for (comp in components) {
-            comp.readFromNBT(compound)
+        for ((name, component) in components) {
+            if (compound.hasKey(name))
+                component.deserializeNBT(compound.getTag(name))
         }
     }
 
@@ -92,9 +93,10 @@ abstract class AbstractMachine : TileEntity(), ITickable, ILogicClient by LogicC
      * Register a machine component. Should happen during construction of the tile entity instance.
      *
      * @param component [IComponent] implementation
+     * @param name machine-unique name for the component. Used in NBT serialization
      */
-    protected fun registerComponent(component: IComponent) {
-        this.components += component
+    protected fun registerComponent(component: IComponent, name: String) {
+        this.components += name to component
 
         if (component is AbstractCapabilityComponent) {
             capabilityComponents += component

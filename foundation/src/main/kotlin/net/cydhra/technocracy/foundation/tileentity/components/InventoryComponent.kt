@@ -2,6 +2,7 @@ package net.cydhra.technocracy.foundation.tileentity.components
 
 import net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryHandler
 import net.cydhra.technocracy.foundation.tileentity.management.TEInventoryProvider
+import net.minecraft.nbt.NBTBase
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
@@ -20,10 +21,6 @@ class InventoryComponent(size: Int, provider: TEInventoryProvider, val facing: E
      */
     val inventory = DynamicInventoryHandler(size, provider)
 
-    companion object {
-        private const val NBT_KEY_INVENTORY = "inventory"
-    }
-
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
         return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && this.facing?.equals(facing) ?: true
     }
@@ -35,11 +32,11 @@ class InventoryComponent(size: Int, provider: TEInventoryProvider, val facing: E
             null
     }
 
-    override fun writeToNBT(compound: NBTTagCompound) {
-        compound.setTag(NBT_KEY_INVENTORY, inventory.serializeNBT())
+    override fun serializeNBT(): NBTBase {
+        return inventory.serializeNBT()
     }
 
-    override fun readFromNBT(compound: NBTTagCompound) {
-        inventory.deserializeNBT(compound.getCompoundTag(NBT_KEY_INVENTORY))
+    override fun deserializeNBT(nbt: NBTBase) {
+        inventory.deserializeNBT(nbt as NBTTagCompound)
     }
 }

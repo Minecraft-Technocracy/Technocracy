@@ -3,7 +3,7 @@ package net.cydhra.technocracy.foundation.tileentity.components
 import net.cydhra.technocracy.foundation.capabilities.energy.DynamicEnergyStorage
 import net.cydhra.technocracy.foundation.capabilities.energy.DynamicEnergyStorageStategy
 import net.cydhra.technocracy.foundation.capabilities.energy.EnergyCapabilityProvider
-import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.nbt.NBTBase
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
 
@@ -13,10 +13,6 @@ import net.minecraftforge.common.capabilities.Capability
  * its constructor.
  */
 class EnergyStorageComponent : AbstractCapabilityComponent() {
-
-    companion object {
-        private const val NBT_KEY_ENERGY = "energy"
-    }
 
     /**
      * The energy storage capability instance containing energy storage state
@@ -35,15 +31,11 @@ class EnergyStorageComponent : AbstractCapabilityComponent() {
         return EnergyCapabilityProvider.CAPABILITY_ENERGY!!.cast(this.energyStorage)
     }
 
-    override fun writeToNBT(compound: NBTTagCompound) {
-        compound.setTag(NBT_KEY_ENERGY, DynamicEnergyStorageStategy.writeNBT(this.energyStorage))
+    override fun serializeNBT(): NBTBase {
+        return DynamicEnergyStorageStategy.writeNBT(this.energyStorage)
     }
 
-    override fun readFromNBT(compound: NBTTagCompound) {
-        if (compound.hasKey(NBT_KEY_ENERGY)) {
-            DynamicEnergyStorageStategy.readNBT(this.energyStorage, compound.getCompoundTag("energy"))
-        }
+    override fun deserializeNBT(nbt: NBTBase) {
+        DynamicEnergyStorageStategy.readNBT(this.energyStorage, nbt)
     }
-
-
 }

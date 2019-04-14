@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.tileentity.components
 
-import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.nbt.NBTBase
 
 /**
  * Interface defining a common component of machine tile entity implementations. All components define some ability
@@ -9,13 +9,13 @@ import net.minecraft.nbt.NBTTagCompound
 interface IComponent {
 
     /**
-     * Write the component's state to the given [NBTTagCompound]
+     * Write the component's state to an NBT value
      */
-    fun writeToNBT(compound: NBTTagCompound)
+    fun serializeNBT(): NBTBase
 
     /**
-     * Read the component's state from the given [NBTTagCompound]
+     * deserialize and apply the component's state from the given tag
      */
-    fun readFromNBT(compound: NBTTagCompound)
+    fun deserializeNBT(nbt: NBTBase)
 
 }
