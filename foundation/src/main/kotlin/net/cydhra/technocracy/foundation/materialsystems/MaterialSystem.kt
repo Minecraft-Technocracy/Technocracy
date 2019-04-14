@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.foundation.materials
+package net.cydhra.technocracy.foundation.materialsystems
 
 import com.google.common.base.Predicate
 import net.cydhra.technocracy.foundation.blocks.OreBlock

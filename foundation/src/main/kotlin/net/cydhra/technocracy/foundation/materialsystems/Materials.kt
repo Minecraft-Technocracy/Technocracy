@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.foundation.materials
+package net.cydhra.technocracy.foundation.materialsystems
 
 val aluminiumSystem = MaterialSystem("aluminum", 0xFFFFFF,
         veinsPerChunk = 14, amountPerVein = 6, minHeight = 10, maxHeight = 45)

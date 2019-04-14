@@ -7,7 +7,7 @@ import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.items.general.*
 import net.cydhra.technocracy.foundation.liquids.general.FluidManager
 import net.cydhra.technocracy.foundation.liquids.general.oilFluid
-import net.cydhra.technocracy.foundation.materials.*
+import net.cydhra.technocracy.foundation.materialsystems.*
 import net.cydhra.technocracy.foundation.tileentity.TileEntityElectricFurnace
 import net.cydhra.technocracy.foundation.tileentity.TileEntityPulverizer
 import net.cydhra.technocracy.foundation.tileentity.management.TileEntityManager
