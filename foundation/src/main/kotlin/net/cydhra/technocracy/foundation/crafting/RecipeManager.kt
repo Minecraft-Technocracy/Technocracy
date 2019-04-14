@@ -50,6 +50,17 @@ object RecipeManager {
     }
 
     /**
+     * Query all recipes of a specific type
+     *
+     * @param type request recipe type
+     *
+     * @return an immutable collection of registered recipes of the specified type
+     */
+    fun getRecipesByType(type: RecipeType): Collection<IRecipe>? {
+        return loadedRecipes[type]
+    }
+
+    /**
      * Load a recipe off a path that has been found by the [CraftingHelper]. The parsed json object is then handed to
      * the given [parser]
      *
