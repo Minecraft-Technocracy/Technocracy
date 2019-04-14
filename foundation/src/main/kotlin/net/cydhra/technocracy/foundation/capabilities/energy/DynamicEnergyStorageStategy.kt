@@ -16,7 +16,7 @@ object DynamicEnergyStorageStategy {
             capacity = (nbt as NBTTagCompound).getInteger(KEY_CAPACITY)
             extractionLimit = nbt.getInteger(KEY_MAX_EXTRACT)
             receivingLimit = nbt.getInteger(KEY_MAX_RECEIVE)
-            currentEnergy = nbt.getInteger(KEY_CURRENT_AMOUNT)
+            forceUpdateOfCurrentEnergy(nbt.getInteger(KEY_CURRENT_AMOUNT))
         }
     }
 

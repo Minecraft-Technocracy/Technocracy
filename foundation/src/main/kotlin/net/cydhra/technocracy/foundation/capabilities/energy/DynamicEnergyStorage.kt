@@ -5,8 +5,17 @@ import net.minecraftforge.energy.IEnergyStorage
 /**
  * A implementation of [IEnergyStorage] that can be dynamically adjusted in its limits
  */
-class DynamicEnergyStorage(var currentEnergy: Int = 0, var capacity: Int,
+class DynamicEnergyStorage(currentEnergy: Int = 0, capacity: Int,
                            var extractionLimit: Int, var receivingLimit: Int = -1) : IEnergyStorage {
+
+    var currentEnergy: Int = currentEnergy
+        private set
+
+    var capacity: Int = capacity
+        set(value) {
+            this.currentEnergy = Math.min(this.currentEnergy, value)
+            field = value
+        }
 
     override fun canExtract(): Boolean {
         return extractionLimit > 0
@@ -40,5 +49,28 @@ class DynamicEnergyStorage(var currentEnergy: Int = 0, var capacity: Int,
 
     override fun canReceive(): Boolean {
         return receivingLimit > 0 || receivingLimit == -1
+    }
+
+    /**
+     * Consumes energy of the storage for internal machine purposes like item processing. Returns true, if the
+     * consumption was successful, false if not. Does not respect extraction limit.
+     *
+     * @param amount the amount of energy to consume
+     */
+    fun consumeEnergy(amount: Int): Boolean {
+        if (this.currentEnergy >= amount) {
+            this.currentEnergy -= amount
+            return true
+        }
+
+        return false
+    }
+
+    /**
+     * Force an unchecked update of the internal energy storage. This should only be done by the serializer and not
+     * by machine logic.
+     */
+    fun forceUpdateOfCurrentEnergy(currentEnergy: Int) {
+        this.currentEnergy = currentEnergy
     }
 }
