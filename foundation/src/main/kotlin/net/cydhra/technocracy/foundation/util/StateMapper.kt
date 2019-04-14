@@ -7,10 +7,12 @@ import net.minecraft.client.renderer.block.statemap.StateMapperBase
 import net.minecraft.item.ItemStack
 import net.minecraft.util.ResourceLocation
 
-
+/**
+ * Custom state mapper that assignes an alternative model resource location to block models
+ */
 class StateMapper(fileName: String, modelName: String) : StateMapperBase(), ItemMeshDefinition {
 
-    val modelLocation: ModelResourceLocation = ModelResourceLocation(ResourceLocation("technocracy.foundation",
+    val modelLocation = ModelResourceLocation(ResourceLocation("technocracy.foundation",
             fileName), modelName)
 
     override fun getModelResourceLocation(state: IBlockState): ModelResourceLocation {
