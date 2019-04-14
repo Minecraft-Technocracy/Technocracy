@@ -6,13 +6,13 @@ import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.crafting.types.IRecipe
 import net.cydhra.technocracy.foundation.tileentity.components.MachineUpgradesComponents
 import net.minecraft.item.ItemStack
-import java.util.*
 
 class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
-                          private val inventory: DynamicInventoryHandler, private val inputSlots: Array<Int>,
-                          private val outputSlots: Array<Int>, private val energyStorage: DynamicEnergyStorage,
-                          private val machineUpgrades: MachineUpgradesComponents, private val baseTickEnergyCost: Int)
-    : ILogic {
+                          private val inputInventory: DynamicInventoryHandler,
+                          private val outputInventory: DynamicInventoryHandler,
+                          private val energyStorage: DynamicEnergyStorage,
+                          private val machineUpgrades: MachineUpgradesComponents,
+                          private val baseTickEnergyCost: Int) : ILogic {
 
     companion object {
         // TODO this could be a value obtained from config
@@ -24,10 +24,7 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
      * [update] tick, as they might not have been registered yet.
      */
     private val recipes: Collection<IRecipe> by lazy {
-        (RecipeManager.getRecipesByType(this.recipeType) ?: emptyList()).also {
-            println(">>>>>>>>>>>>>>>>>>>>>" +
-                    Arrays.toString(it.toTypedArray()))
-        }
+        (RecipeManager.getRecipesByType(this.recipeType) ?: emptyList())
     }
 
     /**
@@ -42,7 +39,7 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
 
     override fun update() {
         // collect input item stacks
-        val input = inputSlots.map(inventory::getStackInSlot)
+        val input = (0 until inputInventory.slots).map(inputInventory::getStackInSlot)
 
         assert(recipes.filter { it.conforms(input) }.size <= 1)
         val activeRecipe = recipes.firstOrNull { it.conforms(input) }
@@ -66,26 +63,26 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
             // if enough progress happened, try process the recipe (if enough space for recipe output is present)
             if (this.processingProgress >= this.currentRecipe!!.processingCost) {
                 val recipeOutput = this.currentRecipe!!.getOutput()
-                assert(recipeOutput.size <= this.outputSlots.size)
+                assert(recipeOutput.size <= this.outputInventory.slots)
 
                 // check if the output fits into the output slots
-                if (recipeOutput.zip(this.outputSlots).all { (outputStack, outputSlot) ->
-                            this.inventory.insertItem(outputSlot, outputStack, true) == ItemStack.EMPTY
+                if (recipeOutput.zip(0 until this.outputInventory.slots).all { (outputStack, outputSlot) ->
+                            this.outputInventory.insertItem(outputSlot, outputStack, true) == ItemStack.EMPTY
                         }) {
                     // consume input items
                     val recipeInputRequirements = this.currentRecipe!!.getInput()
                     recipeInputRequirements.forEach { ingredient ->
-                        for (slot in this.inputSlots) {
-                            if (ingredient.test(inventory.getStackInSlot(slot))) {
-                                inventory.extractItem(slot, 1, false)
+                        for (slot in (0 until this.inputInventory.slots)) {
+                            if (ingredient.test(inputInventory.getStackInSlot(slot))) {
+                                inputInventory.extractItem(slot, 1, false)
                                 break
                             }
                         }
                     }
 
                     // insert output items
-                    recipeOutput.zip(this.outputSlots).forEach { (outputStack, outputSlot) ->
-                        this.inventory.insertItem(outputSlot, outputStack, false)
+                    recipeOutput.zip(0 until this.outputInventory.slots).forEach { (outputStack, outputSlot) ->
+                        this.outputInventory.insertItem(outputSlot, outputStack, false)
                     }
 
                     // reset progress and the machine is good to go

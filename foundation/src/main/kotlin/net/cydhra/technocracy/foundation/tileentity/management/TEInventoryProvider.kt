@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.tileentity.management
 
+import net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryHandler
 import net.minecraft.item.ItemStack
 
 /**
@@ -9,10 +10,11 @@ import net.minecraft.item.ItemStack
 interface TEInventoryProvider {
 
     /**
+     * @param inventory the handler that is requesting whether the slot is valid
      * @param slot inventory slot
      * @param stack that shall be inserted into the slot
      *
      * @return true, if the stack can be inserted into the slot
      */
-    fun isItemValid(slot: Int, stack: ItemStack): Boolean
+    fun isItemValid(inventory: DynamicInventoryHandler, slot: Int, stack: ItemStack): Boolean
 }

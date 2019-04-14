@@ -12,7 +12,8 @@ import net.minecraftforge.items.CapabilityItemHandler
  *
  * @param size amount of inventory slots
  */
-class InventoryComponent(size: Int, provider: TEInventoryProvider) : AbstractCapabilityComponent() {
+class InventoryComponent(size: Int, provider: TEInventoryProvider, val facing: EnumFacing? = null) :
+        AbstractCapabilityComponent() {
 
     /**
      * Inventory capability of the machine
@@ -24,11 +25,11 @@ class InventoryComponent(size: Int, provider: TEInventoryProvider) : AbstractCap
     }
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
-        return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
+        return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && this.facing?.equals(facing) ?: true
     }
 
     override fun <T> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
-        return if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+        return if (hasCapability(capability, facing))
             CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(inventory)
         else
             null

@@ -114,7 +114,7 @@ class DynamicInventoryHandler(size: Int = 0, private val machine: TEInventoryPro
 
     override fun isItemValid(slot: Int, stack: ItemStack): Boolean {
         // callback the machine for that
-        return machine.isItemValid(slot, stack)
+        return machine.isItemValid(this, slot, stack)
     }
 
     override fun serializeNBT(): NBTTagCompound {
