@@ -2,6 +2,7 @@ package net.cydhra.technocracy.foundation.tileentity
 
 import net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryHandler
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
+import net.cydhra.technocracy.foundation.crafting.types.IRecipe
 import net.cydhra.technocracy.foundation.tileentity.components.InventoryComponent
 import net.cydhra.technocracy.foundation.tileentity.logic.ItemProcessingLogic
 import net.cydhra.technocracy.foundation.tileentity.management.TEInventoryProvider
@@ -15,11 +16,22 @@ import net.minecraft.util.EnumFacing
 class TileEntityPulverizer : AbstractMachine(), TEInventoryProvider {
 
     /**
-     * Inventory machine component with input stack in slot 0 and output stack in slot 1
+     * Input inventory for the pulverizer with one slot
      */
     private val inputInventoryComponent = InventoryComponent(1, this, EnumFacing.WEST)
 
+    /**
+     * Output inventory for the pulverizer with one slot
+     */
     private val outputInventoryComponent = InventoryComponent(1, this, EnumFacing.EAST)
+
+    /**
+     * All recipes of the pulverizer; loaded lazily so they are not loaded before game loop, as they might not have
+     * been registered yet.
+     */
+    private val recipes: Collection<IRecipe> by lazy {
+        (RecipeManager.getRecipesByType(RecipeManager.RecipeType.PULVERIZER) ?: emptyList())
+    }
 
     init {
         this.registerComponent(inputInventoryComponent, "input_inventory")
@@ -35,6 +47,6 @@ class TileEntityPulverizer : AbstractMachine(), TEInventoryProvider {
     }
 
     override fun isItemValid(inventory: DynamicInventoryHandler, slot: Int, stack: ItemStack): Boolean {
-        return inventory == inputInventoryComponent.inventory
+        return inventory == inputInventoryComponent.inventory && this.recipes.any { it.getInput()[0].test(stack) }
     }
 }
