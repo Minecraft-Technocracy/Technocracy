@@ -6,7 +6,7 @@ import net.cydhra.technocracy.foundation.client.model.MachineConnectorModel
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.items.general.*
 import net.cydhra.technocracy.foundation.liquids.general.FluidManager
-import net.cydhra.technocracy.foundation.liquids.general.oil
+import net.cydhra.technocracy.foundation.liquids.general.oilFluid
 import net.cydhra.technocracy.foundation.materials.*
 import net.cydhra.technocracy.foundation.tileentity.TileEntityElectricFurnace
 import net.cydhra.technocracy.foundation.tileentity.TileEntityPulverizer
@@ -30,7 +30,7 @@ open class CommonProxy {
 
         materialSystems.forEach(MaterialSystem::preInit)
 
-        FluidManager.registerFluid(oil)
+        FluidManager.registerFluid(oilFluid)
 
         BlockManager.prepareBlocksForRegistration(pulverizerBlock, MachineConnectorModel())
         BlockManager.prepareBlocksForRegistration(electricFurnaceBlock, MachineConnectorModel())

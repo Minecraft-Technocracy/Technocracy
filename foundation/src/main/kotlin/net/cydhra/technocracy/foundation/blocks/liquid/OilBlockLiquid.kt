@@ -2,7 +2,7 @@ package net.cydhra.technocracy.foundation.blocks.liquid
 
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.general.AbstractBaseLiquidBlock
-import net.cydhra.technocracy.foundation.liquids.general.oil
+import net.cydhra.technocracy.foundation.liquids.general.oilFluid
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.renderer.ItemMeshDefinition
@@ -13,7 +13,7 @@ import net.minecraft.util.EnumBlockRenderType
 import net.minecraftforge.client.model.ModelLoader
 
 
-class OilBlockLiquid : AbstractBaseLiquidBlock(oil, "oil_block", Material.WATER) {
+class OilBlockLiquid : AbstractBaseLiquidBlock(oilFluid, "oil_block", Material.WATER) {
 
     val location: ModelResourceLocation = ModelResourceLocation(TCFoundation.MODID + ":" + "fluid", "oil")
 
