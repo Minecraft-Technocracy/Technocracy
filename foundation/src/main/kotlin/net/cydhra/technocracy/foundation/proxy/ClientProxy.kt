@@ -3,19 +3,14 @@ package net.cydhra.technocracy.foundation.proxy
 import com.google.common.collect.ImmutableMap
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.general.BlockManager
-import net.cydhra.technocracy.foundation.client.model.CustomModelProvider
-import net.cydhra.technocracy.foundation.client.model.MachineConnectorModel
 import net.cydhra.technocracy.foundation.client.textures.TextureAtlasManager
 import net.cydhra.technocracy.foundation.items.general.ItemManager
 import net.cydhra.technocracy.foundation.tileentity.management.TileEntityManager
 import net.minecraft.util.ResourceLocation
-import net.minecraftforge.client.event.TextureStitchEvent
-import net.minecraftforge.client.model.IModel
 import net.minecraftforge.client.model.ModelLoaderRegistry
 import net.minecraftforge.common.animation.ITimeValue
 import net.minecraftforge.common.model.animation.IAnimationStateMachine
 import net.minecraftforge.fml.common.Mod
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 /**
  * Client side implementation of sided proxy. Calls Common proxy and adds client-side-only behaviour like rendering

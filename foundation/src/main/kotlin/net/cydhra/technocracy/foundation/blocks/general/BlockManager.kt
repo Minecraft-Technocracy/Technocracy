@@ -69,7 +69,7 @@ object BlockManager {
     @Suppress("unused")
     @SubscribeEvent
     fun onRegisterItems(event: RegistryEvent.Register<Item>) {
-        event.registry.registerAll(*blocksToRegister.filter { it !is AbstractBaseLiquidBlock }
+        event.registry.registerAll(*blocksToRegister.filter { it !is BaseLiquidBlock }
                 .map { it as Block }
                 .map(::ItemBlock)
                 .map { it.apply { it.registryName = it.block.registryName } }
@@ -82,22 +82,12 @@ object BlockManager {
     @Suppress("unused")
     @SubscribeEvent
     fun onRegisterRenders(@Suppress("UNUSED_PARAMETER") event: ModelRegistryEvent) {
-        blocksToRegister.filter { it !is AbstractBaseLiquidBlock }
+        blocksToRegister.filter { it !is BaseLiquidBlock }
                 .map { it as Block }
                 .map(Item::getItemFromBlock)
                 .forEach { item ->
                     ModelLoader.setCustomModelResourceLocation(item as ItemBlock, 0,
                             ModelResourceLocation(((item).block as IBaseBlock).modelLocation, "inventory"))
-                }
-
-        blocksToRegister.filter { it is AbstractBaseLiquidBlock }
-                .map { it as AbstractBaseLiquidBlock }
-                .forEach { liquid ->
-                    val stateMapper = StateMapper("fluid", liquid.modelLocation)
-
-                    ModelBakery.registerItemVariants(Item.getItemFromBlock(liquid))
-                    ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(liquid), stateMapper)
-                    ModelLoader.setCustomStateMapper(liquid, stateMapper)
                 }
     }
 
@@ -115,6 +105,13 @@ object BlockManager {
 
     fun registerCustomBlockModels() {
         ModelLoaderRegistry.registerLoader(CustomModelProvider(customModels))
+        blocksToRegister.filter { it is BaseLiquidBlock }
+                .map { it as BaseLiquidBlock }
+                .forEach { liquid ->
+                    val stateMapper = StateMapper("fluid", liquid.modelLocation)
+                    ModelLoader.setCustomStateMapper(liquid, stateMapper)
+                    ModelBakery.registerItemVariants(Item.getItemFromBlock(liquid))
+                }
     }
 
 }
