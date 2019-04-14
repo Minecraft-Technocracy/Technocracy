@@ -5,5 +5,5 @@
   "output": {
     "item": "technocracy.foundation:coal.dust"
   },
-  "cost": 80
+  "processingCost": 80
 }

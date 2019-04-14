@@ -24,9 +24,9 @@ object PulverizerRecipeParser : RecipeParser<PulverizerRecipe> {
         check(json.has(JSON_KEY_TICK_COST)) { "recipe is missing cost parameter" }
 
         val inputIngredient = CraftingHelper.getIngredient(json.getAsJsonObject(JSON_KEY_INPUT), context)
-        val outputIngredient = CraftingHelper.getIngredient(json.getAsJsonObject(JSON_KEY_OUTPUT), context)
+        val outputStack = CraftingHelper.getItemStack(json.getAsJsonObject(JSON_KEY_OUTPUT), context)
 
-        return PulverizerRecipe(inputIngredient, outputIngredient, json.get(JSON_KEY_TICK_COST).asInt)
+        return PulverizerRecipe(inputIngredient, outputStack, json.get(JSON_KEY_TICK_COST).asInt)
     }
 
 }
