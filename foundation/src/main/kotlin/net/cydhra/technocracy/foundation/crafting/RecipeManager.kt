@@ -7,10 +7,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParseException
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.crafting.RecipeManager.RECIPE_ASSETS_FOLDER
-import net.cydhra.technocracy.foundation.crafting.types.ElectricFurnaceRecipeParser
-import net.cydhra.technocracy.foundation.crafting.types.IRecipe
-import net.cydhra.technocracy.foundation.crafting.types.PulverizerRecipeParser
-import net.cydhra.technocracy.foundation.crafting.types.RecipeParser
+import net.cydhra.technocracy.foundation.crafting.types.*
 import net.minecraft.util.JsonUtils
 import net.minecraftforge.common.crafting.CraftingHelper
 import net.minecraftforge.common.crafting.JsonContext
@@ -50,6 +47,7 @@ object RecipeManager {
     fun initialize() {
         parseMachineRecipes("pulverizer", PulverizerRecipeParser, RecipeManager.RecipeType.PULVERIZER)
         parseMachineRecipes("electric_furnace", ElectricFurnaceRecipeParser, RecipeManager.RecipeType.ELECTRIC_FURNACE)
+        parseMachineRecipes("centrifuge", CentrifugeRecipeParser, RecipeManager.RecipeType.CENTRIFUGE)
     }
 
     /**
@@ -114,6 +112,6 @@ object RecipeManager {
     }
 
     enum class RecipeType {
-        PULVERIZER, ELECTRIC_FURNACE
+        PULVERIZER, ELECTRIC_FURNACE, CENTRIFUGE
     }
 }
