@@ -40,6 +40,7 @@ item.gear.iron.name=Iron Gear
 
 item.battery.name=Battery
 item.akkumulator.name=Lithium Ion Akkumulator
+item.silicon.name=Silicon
 
 tile.oil_sand.name=Oil Sand
 tile.ore.aluminum.name=Aluminum Ore
