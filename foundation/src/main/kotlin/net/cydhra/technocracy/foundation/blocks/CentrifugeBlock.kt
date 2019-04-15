@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.blocks
 
 import net.cydhra.technocracy.foundation.blocks.general.BaseTileEntityBlock
-import net.cydhra.technocracy.foundation.tileentity.TileEntityPulverizer
+import net.cydhra.technocracy.foundation.tileentity.TileEntityCentrifuge
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
 import net.minecraft.creativetab.CreativeTabs
@@ -18,7 +18,7 @@ class CentrifugeBlock : BaseTileEntityBlock("centrifuge", material = Material.RO
     }
 
     override fun createNewTileEntity(worldIn: World, meta: Int): TileEntity? {
-        return TileEntityPulverizer() // TODO
+        return TileEntityCentrifuge()
     }
 
     @Suppress("OverridingDeprecatedMember")
