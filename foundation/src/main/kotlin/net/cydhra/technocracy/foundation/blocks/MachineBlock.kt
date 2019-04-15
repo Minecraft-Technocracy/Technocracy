@@ -1,15 +1,14 @@
 package net.cydhra.technocracy.foundation.blocks
 
 import net.cydhra.technocracy.foundation.blocks.general.BaseTileEntityBlock
-import net.cydhra.technocracy.foundation.tileentity.TileEntityPulverizer
 import net.minecraft.block.material.Material
+import net.minecraft.block.state.IBlockState
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.world.World
 
-
-class Pulverizer : BaseTileEntityBlock("pulverizer", material = Material.ROCK) {
-
+class MachineBlock(name: String, private val tileEntityConstructor: () -> TileEntity)
+    : BaseTileEntityBlock(name, material = Material.ROCK) {
     init {
         this.setCreativeTab(CreativeTabs.MATERIALS)
         this.setHardness(2f)
@@ -17,6 +16,11 @@ class Pulverizer : BaseTileEntityBlock("pulverizer", material = Material.ROCK) {
     }
 
     override fun createNewTileEntity(worldIn: World, meta: Int): TileEntity? {
-        return TileEntityPulverizer()
+        return tileEntityConstructor()
+    }
+
+    @Suppress("OverridingDeprecatedMember")
+    override fun isOpaqueCube(state: IBlockState): Boolean {
+        return false
     }
 }
