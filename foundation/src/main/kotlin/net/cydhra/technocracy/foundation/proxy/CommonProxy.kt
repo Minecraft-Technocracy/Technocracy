@@ -8,6 +8,7 @@ import net.cydhra.technocracy.foundation.items.general.*
 import net.cydhra.technocracy.foundation.liquids.general.FluidManager
 import net.cydhra.technocracy.foundation.liquids.general.oilFluid
 import net.cydhra.technocracy.foundation.materialsystems.*
+import net.cydhra.technocracy.foundation.tileentity.TileEntityAlloySmeltery
 import net.cydhra.technocracy.foundation.tileentity.TileEntityCentrifuge
 import net.cydhra.technocracy.foundation.tileentity.TileEntityElectricFurnace
 import net.cydhra.technocracy.foundation.tileentity.TileEntityPulverizer
@@ -33,6 +34,7 @@ open class CommonProxy {
         BlockManager.prepareBlocksForRegistration(pulverizerBlock, MachineConnectorModel())
         BlockManager.prepareBlocksForRegistration(electricFurnaceBlock, MachineConnectorModel())
         BlockManager.prepareBlocksForRegistration(centrifugeBlock, MachineConnectorModel())
+        BlockManager.prepareBlocksForRegistration(alloySmelteryBlock, MachineConnectorModel())
         BlockManager.prepareBlocksForRegistration(oilSandBlock)
         BlockManager.prepareBlocksForRegistration(ironBeamBlock)
         BlockManager.prepareBlocksForRegistration(oilBlock)
@@ -48,7 +50,7 @@ open class CommonProxy {
         TileEntityManager.prepareTileEntityForRegistration(TileEntityPulverizer::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityElectricFurnace::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityCentrifuge::class)
-
+        TileEntityManager.prepareTileEntityForRegistration(TileEntityAlloySmeltery::class)
     }
 
     open fun init() {
