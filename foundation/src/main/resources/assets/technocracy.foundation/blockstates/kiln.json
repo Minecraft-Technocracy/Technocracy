@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "technocracy.foundation:kiln"
+    },
+    "facing=east": {
+      "model": "technocracy.foundation:kiln",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "technocracy.foundation:kiln",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "technocracy.foundation:kiln",
+      "y": 270
+    }
+  }
+}

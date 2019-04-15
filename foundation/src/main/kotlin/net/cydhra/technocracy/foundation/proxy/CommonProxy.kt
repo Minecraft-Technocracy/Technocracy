@@ -8,10 +8,7 @@ import net.cydhra.technocracy.foundation.items.general.*
 import net.cydhra.technocracy.foundation.liquids.general.FluidManager
 import net.cydhra.technocracy.foundation.liquids.general.oilFluid
 import net.cydhra.technocracy.foundation.materialsystems.*
-import net.cydhra.technocracy.foundation.tileentity.TileEntityAlloySmeltery
-import net.cydhra.technocracy.foundation.tileentity.TileEntityCentrifuge
-import net.cydhra.technocracy.foundation.tileentity.TileEntityElectricFurnace
-import net.cydhra.technocracy.foundation.tileentity.TileEntityPulverizer
+import net.cydhra.technocracy.foundation.tileentity.*
 import net.cydhra.technocracy.foundation.tileentity.management.TileEntityManager
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.animation.ITimeValue
@@ -35,6 +32,7 @@ open class CommonProxy {
         BlockManager.prepareBlocksForRegistration(electricFurnaceBlock, MachineConnectorModel())
         BlockManager.prepareBlocksForRegistration(centrifugeBlock, MachineConnectorModel())
         BlockManager.prepareBlocksForRegistration(alloySmelteryBlock, MachineConnectorModel())
+        BlockManager.prepareBlocksForRegistration(kilnBlock, MachineConnectorModel())
         BlockManager.prepareBlocksForRegistration(oilSandBlock)
         BlockManager.prepareBlocksForRegistration(ironBeamBlock)
         BlockManager.prepareBlocksForRegistration(oilBlock)
@@ -51,6 +49,7 @@ open class CommonProxy {
         TileEntityManager.prepareTileEntityForRegistration(TileEntityElectricFurnace::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityCentrifuge::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityAlloySmeltery::class)
+        TileEntityManager.prepareTileEntityForRegistration(TileEntityKiln::class)
     }
 
     open fun init() {
