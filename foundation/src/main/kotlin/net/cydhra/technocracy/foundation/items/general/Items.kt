@@ -10,3 +10,4 @@ val ironSheetItem = ColoredItem("sheet", "iron", ConstantItemColor(0xD4D4CD))
 val machineFrameItem = BaseItem("machine_frame").apply { creativeTab = CreativeTabs.DECORATIONS }
 val batteryItem = BaseItem("battery").apply { creativeTab = CreativeTabs.MATERIALS }
 val akkumulatorItem = BaseItem("akkumulator").apply { creativeTab = CreativeTabs.MATERIALS }
+val siliconItem = BaseItem("silicon").apply { creativeTab = CreativeTabs.MATERIALS }

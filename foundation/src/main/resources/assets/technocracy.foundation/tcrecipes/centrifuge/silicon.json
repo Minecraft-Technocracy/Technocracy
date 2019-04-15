@@ -1,0 +1,10 @@
+{
+  "input": {
+    "item": "minecraft:sand",
+    "data": 0
+  },
+  "output_primary": {
+    "item": "technocracy.foundation:silicon"
+  },
+  "cost": 80
+}
