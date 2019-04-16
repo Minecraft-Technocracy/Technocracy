@@ -58,7 +58,7 @@ tile.electric_furnace.name=Electric Furnace
 tile.centrifuge.name=Centrifuge
 tile.kiln.name=Pyrolysis Kiln
 tile.alloy_smeltery.name=Alloy Smeltery
-tile.compressor.name=Compactor
+tile.compactor.name=Compactor
 tile.iron_beam.name=Steel Beam
 
 itemGroup.technocracy=Technocracy

@@ -33,7 +33,7 @@ open class CommonProxy {
         BlockManager.prepareBlocksForRegistration(centrifugeBlock, MachineConnectorModel())
         BlockManager.prepareBlocksForRegistration(alloySmelteryBlock, MachineConnectorModel())
         BlockManager.prepareBlocksForRegistration(kilnBlock, MachineConnectorModel())
-        BlockManager.prepareBlocksForRegistration(compressorBlock, MachineConnectorModel())
+        BlockManager.prepareBlocksForRegistration(compactorBlock, MachineConnectorModel())
         BlockManager.prepareBlocksForRegistration(oilSandBlock)
         BlockManager.prepareBlocksForRegistration(ironBeamBlock)
         BlockManager.prepareBlocksForRegistration(oilBlock)
@@ -51,7 +51,7 @@ open class CommonProxy {
         TileEntityManager.prepareTileEntityForRegistration(TileEntityCentrifuge::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityAlloySmeltery::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityKiln::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityCompressor::class)
+        TileEntityManager.prepareTileEntityForRegistration(TileEntityCompactor::class)
 
     }
 

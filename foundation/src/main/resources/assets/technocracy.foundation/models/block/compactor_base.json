@@ -4,7 +4,7 @@
     "particle": "technocracy.foundation:block/machine_bottom",
     "up": "technocracy.foundation:block/machine_bottom",
     "down": "technocracy.foundation:block/machine_bottom",
-    "north": "technocracy.foundation:block/compressor_front",
+    "north": "technocracy.foundation:block/compactor_front",
     "east": "technocracy.foundation:block/machine_side_bolted",
     "south": "technocracy.foundation:block/machine_side_empty",
     "west": "technocracy.foundation:block/machine_side_bolted"
