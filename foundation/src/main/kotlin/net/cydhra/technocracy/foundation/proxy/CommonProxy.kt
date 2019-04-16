@@ -45,6 +45,7 @@ open class CommonProxy {
         ItemManager.prepareItemForRegistration(batteryItem)
         ItemManager.prepareItemForRegistration(akkumulatorItem)
         ItemManager.prepareItemForRegistration(siliconItem)
+        ItemManager.prepareItemForRegistration(bedrockiumItem)
 
         TileEntityManager.prepareTileEntityForRegistration(TileEntityPulverizer::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityElectricFurnace::class)

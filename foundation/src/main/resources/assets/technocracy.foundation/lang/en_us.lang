@@ -42,6 +42,7 @@ item.machine_frame.name=Machine Frame
 item.battery.name=Battery
 item.akkumulator.name=Lithium Ion Akkumulator
 item.silicon.name=Silicon
+item.bedrockium.name=Bedrockium Ingot
 
 tile.oil_sand.name=Oil Sand
 tile.ore.aluminum.name=Aluminum Ore
