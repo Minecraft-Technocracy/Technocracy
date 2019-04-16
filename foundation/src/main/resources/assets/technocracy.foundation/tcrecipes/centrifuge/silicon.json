@@ -1,7 +1,7 @@
 {
   "input": {
     "item": "minecraft:sand",
-    "data": 0
+    "data": 32767
   },
   "output_primary": {
     "item": "technocracy.foundation:silicon"
