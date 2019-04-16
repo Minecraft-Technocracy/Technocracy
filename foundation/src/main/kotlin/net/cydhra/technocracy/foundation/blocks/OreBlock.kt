@@ -4,7 +4,6 @@ import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.color.ConstantBlockColor
 import net.cydhra.technocracy.foundation.blocks.general.AbstractBaseBlock
 import net.minecraft.block.material.Material
-import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.util.BlockRenderLayer
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
@@ -21,8 +20,6 @@ class OreBlock(unlocalizedName: String, colorMultiplier: Int)
     init {
         this.blockResistance = 3.5f
         this.blockHardness = 2f
-
-        this.setCreativeTab(CreativeTabs.BUILDING_BLOCKS)
     }
 
     @SideOnly(Side.CLIENT)

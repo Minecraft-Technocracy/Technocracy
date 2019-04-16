@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.blocks.general
 
 import net.cydhra.technocracy.foundation.blocks.color.ConstantBlockColor
+import net.cydhra.technocracy.foundation.client.technocracyCreativeTabs
 import net.minecraft.block.BlockFalling
 import net.minecraft.block.material.Material
 
@@ -24,5 +25,6 @@ abstract class AbstractFallingBaseBlock(unlocalizedName: String,
     init {
         this.unlocalizedName = unlocalizedName
         this.setRegistryName(registryName)
+        this.setCreativeTab(technocracyCreativeTabs)
     }
 }

@@ -5,7 +5,6 @@ import net.cydhra.technocracy.foundation.blocks.general.AbstractFallingBaseBlock
 import net.minecraft.block.SoundType
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
-import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.item.EntityFallingBlock
 import net.minecraft.init.Blocks
 import net.minecraft.item.Item
@@ -25,8 +24,6 @@ class OilSand : AbstractFallingBaseBlock("oil_sand", colorMultiplier = ConstantB
         this.soundType = SoundType.SAND
         this.blockHardness = 0.5f
         this.blockResistance = 0.5f
-
-        this.setCreativeTab(CreativeTabs.BUILDING_BLOCKS)
     }
 
     override fun isToolEffective(type: String, state: IBlockState): Boolean {

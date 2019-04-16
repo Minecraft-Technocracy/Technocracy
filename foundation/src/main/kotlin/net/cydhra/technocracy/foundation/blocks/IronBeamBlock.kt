@@ -1,11 +1,9 @@
 package net.cydhra.technocracy.foundation.blocks
 
-import net.cydhra.technocracy.foundation.blocks.general.AbstractBaseBlock
 import net.cydhra.technocracy.foundation.blocks.general.AbstractRotateableBlock
 import net.minecraft.block.SoundType
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
-import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.util.BlockRenderLayer
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
@@ -16,8 +14,6 @@ class IronBeamBlock : AbstractRotateableBlock("iron_beam", material = Material.I
         this.soundType = SoundType.METAL
         this.blockHardness = 3f
         this.blockResistance = 5f
-
-        this.setCreativeTab(CreativeTabs.BUILDING_BLOCKS)
     }
 
     override fun isToolEffective(type: String, state: IBlockState): Boolean {

@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.items.general
 
+import net.cydhra.technocracy.foundation.client.technocracyCreativeTabs
 import net.minecraft.client.renderer.color.IItemColor
 import net.minecraft.item.Item
 
@@ -17,5 +18,6 @@ open class BaseItem(unlocalizedName: String,
     init {
         this.unlocalizedName = unlocalizedName
         this.setRegistryName(registryName)
+        this.creativeTab = technocracyCreativeTabs
     }
 }
