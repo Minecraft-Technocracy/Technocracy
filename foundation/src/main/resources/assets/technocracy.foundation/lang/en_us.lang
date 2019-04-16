@@ -38,6 +38,7 @@ item.gear.silver.name=Silver Gear
 item.gear.tin.name=Tin Gear
 item.gear.iron.name=Iron Gear
 
+item.machine_frame.name=Machine Frame
 item.battery.name=Battery
 item.akkumulator.name=Lithium Ion Akkumulator
 item.silicon.name=Silicon
@@ -55,3 +56,9 @@ tile.ore.tin.name=Tin Ore
 tile.pulverizer.name=Pulverizer
 tile.electric_furnace.name=Electric Furnace
 tile.centrifuge.name=Centrifuge
+tile.kiln.name=Pyrolysis Kiln
+tile.alloy_smeltery.name=Alloy Smeltery
+tile.compressor.name=Compactor
+tile.iron_beam.name=Steel Beam
+
+itemGroup.technocracy=Technocracy
