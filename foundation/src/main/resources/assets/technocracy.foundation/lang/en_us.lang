@@ -62,4 +62,8 @@ tile.alloy_smeltery.name=Alloy Smeltery
 tile.compactor.name=Compactor
 tile.iron_beam.name=Steel Beam
 
+fluid.oil=Oil
+
+effect.oily=Oily
+
 itemGroup.technocracy=Technocracy

@@ -11,6 +11,9 @@ import net.minecraftforge.client.model.ModelLoaderRegistry
 import net.minecraftforge.common.animation.ITimeValue
 import net.minecraftforge.common.model.animation.IAnimationStateMachine
 import net.minecraftforge.fml.common.Mod
+import net.minecraftforge.common.MinecraftForge
+
+
 
 /**
  * Client side implementation of sided proxy. Calls Common proxy and adds client-side-only behaviour like rendering
@@ -31,6 +34,7 @@ class ClientProxy : CommonProxy() {
         super.preInit()
         BlockManager.registerCustomBlockModels()
         TextureAtlasManager()
+        MinecraftForge.EVENT_BUS.register(RenderProxy())
     }
 
     override fun init() {
@@ -39,6 +43,4 @@ class ClientProxy : CommonProxy() {
         BlockManager.registerBlockColors()
         TileEntityManager.onClientInitialize()
     }
-
-
 }

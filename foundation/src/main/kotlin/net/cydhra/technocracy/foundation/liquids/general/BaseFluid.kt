@@ -16,4 +16,5 @@ open class BaseFluid(fluidName: String, color: Color, opaqueTexture: Boolean) : 
         fluidName,
         ResourceLocation("technocracy.foundation", "liquid/fluid_${if (opaqueTexture) "opaque_" else ""}still"),
         ResourceLocation("technocracy.foundation", "liquid/fluid_${if (opaqueTexture) "opaque_" else ""}flow"),
+        ResourceLocation("technocracy.foundation", "extra/underwater_grayscale"),
         color)

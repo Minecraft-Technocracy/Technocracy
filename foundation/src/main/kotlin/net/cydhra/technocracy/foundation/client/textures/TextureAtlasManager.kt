@@ -17,6 +17,7 @@ class TextureAtlasManager {
         var connector_inventory: TextureAtlasSprite? = null
     }
 
+    @Suppress("unused")
     @SubscribeEvent
     fun registerTextureAltas(event: TextureStitchEvent.Pre) {
         connector_energy = event.map.registerSprite(getIcon("extra/connector_energy"))

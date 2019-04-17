@@ -1,11 +1,14 @@
 package net.cydhra.technocracy.foundation.blocks.general
 
+import com.google.common.primitives.Ints
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.color.ConstantBlockColor
 import net.minecraft.block.BlockLiquid
 import net.minecraft.block.material.MapColor
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
+import net.minecraft.client.entity.EntityPlayerSP
+import net.minecraft.entity.Entity
 import net.minecraft.init.Blocks
 import net.minecraft.util.EnumBlockRenderType
 import net.minecraft.util.EnumFacing
@@ -36,12 +39,12 @@ open class BaseLiquidBlock(fluid: Fluid,
     init {
         this.unlocalizedName = unlocalizedName
         this.setRegistryName(registryName)
+        this.setLightOpacity(100)
     }
 
     override fun getRenderType(state: IBlockState): EnumBlockRenderType {
         return EnumBlockRenderType.MODEL
     }
-
 
     override fun updateTick(world: World, pos: BlockPos, state: IBlockState, rand: Random) {
         var remainingHeight = quantaPerBlock - state.getValue(BlockFluidBase.LEVEL)
@@ -52,14 +55,27 @@ open class BaseLiquidBlock(fluid: Fluid,
             //check if fluid is lighter, if so go up
             if (canDisplaceLiquid(world, pos.down(densityDir))) {
                 //if a oilblock is underneath add another ontop
-                if (isSourceBlock(world, pos) || (getFluidLevel(world, pos) == 1 && world.getBlockState(pos.up(densityDir))
-                                .block == this)) {
+                if (isSourceBlock(world, pos) || (/*getFluidLevel(world, pos) == 1 && */world.getBlockState(pos.up(densityDir)).block == this
+                                || touchesFluidWithState(world, pos, getFluidLevel(state) - 1))) {
                     world.setBlockState(pos.down(densityDir), state.withProperty(BlockFluidBase.LEVEL, 1), 2)
                     world.scheduleUpdate(pos.down(densityDir), this, tickRate)
                     world.notifyNeighborsOfStateChange(pos.down(densityDir), this, false)
                 } else {
-                    //remove oil if no source block or no oil with level 1 is beneath
                     world.setBlockToAir(pos)
+                }
+            } else {
+                if (!(isSourceBlock(world, pos) || (/*getFluidLevel(world, pos) == 1 && */world.getBlockState(pos.up
+                        (densityDir)).block == this
+                                || touchesFluidWithState(world, pos, getFluidLevel(state) - 1)))) {
+                    world.setBlockToAir(pos)
+                } else {
+                    if (getFluidLevel(world, pos) < 8 && false) {
+                        val flowTo = getOptimalFlowDirectionsUnderwater(world, pos)
+                        val flowMeta = getFluidLevel(world, pos) + 1
+                        for (i in 0..3) {
+                            if (flowTo[i]) flowIntoFluid(world, pos.offset(SIDES[i]), flowMeta)
+                        }
+                    }
                 }
             }
         } else {
@@ -133,6 +149,29 @@ open class BaseLiquidBlock(fluid: Fluid,
         }
     }
 
+    protected fun getOptimalFlowDirectionsUnderwater(world: World, pos: BlockPos): BooleanArray {
+        for (side in 0..3) {
+            flowCost[side] = 1000
+
+            val pos2 = pos.offset(SIDES[side])
+
+            val state = world.getBlockState(pos)
+            val block = state.block
+
+            if (!canDisplaceLiquid(world, pos2) || isSourceBlock(world, pos2) || block == this) {
+                continue
+            }
+
+            flowCost[side] = 0
+        }
+
+        val min = Ints.min(*flowCost)
+        for (side in 0..3) {
+            isOptimalFlowDirection[side] = flowCost[side] == min
+        }
+        return isOptimalFlowDirection
+    }
+
     override fun isFlowingVertically(world: IBlockAccess, pos: BlockPos): Boolean {
 
         val fromLiquid = touchesFluid(world, pos.up(densityDir), true)
@@ -164,6 +203,13 @@ open class BaseLiquidBlock(fluid: Fluid,
     }
 
     /**
+     * Get the level of the fluid
+     */
+    private fun getFluidLevel(state: IBlockState): Int {
+        return if (state.block == this) state.getValue(BlockFluidBase.LEVEL) else -1
+    }
+
+    /**
      * Returns true if one side (U,N,S,E,W) touches a fluid
      */
     private fun touchesFluid(world: IBlockAccess, pos: BlockPos, ignoreOwn: Boolean): Boolean {
@@ -177,6 +223,27 @@ open class BaseLiquidBlock(fluid: Fluid,
         }
 
         return liquid
+    }
+
+    /**
+     * Returns true if one side (U,N,S,E,W) touches a fluid
+     */
+    private fun touchesFluidWithState(world: IBlockAccess, pos: BlockPos, value: Int): Boolean {
+        var liquid = false
+        for (state in EnumFacing.HORIZONTALS) {
+            val liquidState = world.getBlockState(pos.offset(state))
+            if (liquidState.block == this && getFluidLevel(liquidState) == value)
+                liquid = true
+        }
+
+        return liquid
+    }
+
+    protected fun flowIntoFluid(world: World, pos: BlockPos, meta: Int) {
+        if (meta < 0 || meta > 15) return
+        if (canDisplaceLiquid(world, pos)) {
+            world.setBlockState(pos, this.defaultState.withProperty(BlockFluidBase.LEVEL, meta), 3)
+        }
     }
 
     private fun canDisplaceLiquid(world: IBlockAccess, pos: BlockPos): Boolean {
