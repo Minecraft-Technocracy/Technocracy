@@ -6,13 +6,14 @@ import net.cydhra.technocracy.foundation.capabilities.energy.EnergyCapabilityPro
 import net.minecraft.nbt.NBTBase
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
+import net.minecraftforge.items.CapabilityItemHandler
 
 /**
  * A machine component that handles energy storage and transfer speeds of the machine. The storage defaults to a
  * capacity of 8000 and a receiving limit of 8000 FE. If a machine wants to change the defaults, it has to do so in
  * its constructor.
  */
-class EnergyStorageComponent : AbstractCapabilityComponent() {
+class EnergyStorageComponent(val facing: MutableSet<EnumFacing>) : AbstractCapabilityComponent() {
 
     /**
      * The energy storage capability instance containing energy storage state
@@ -23,8 +24,9 @@ class EnergyStorageComponent : AbstractCapabilityComponent() {
             extractionLimit = 0,
             receivingLimit = 8000)
 
+
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
-        return capability == EnergyCapabilityProvider.CAPABILITY_ENERGY
+        return capability == EnergyCapabilityProvider.CAPABILITY_ENERGY && this.facing.contains(facing) ?: true
     }
 
     override fun <T> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {

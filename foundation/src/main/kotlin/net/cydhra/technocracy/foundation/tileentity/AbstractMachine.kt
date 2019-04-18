@@ -25,7 +25,7 @@ abstract class AbstractMachine : TileEntity(), ITickable, ILogicClient by LogicC
     /**
      * The machines internal energy storage and transfer limit state
      */
-    protected val energyStorageComponent = EnergyStorageComponent()
+    protected val energyStorageComponent = EnergyStorageComponent(mutableSetOf(EnumFacing.UP))
 
     /**
      * The machine upgrades component.
@@ -54,6 +54,10 @@ abstract class AbstractMachine : TileEntity(), ITickable, ILogicClient by LogicC
         this.registerComponent(redstoneModeComponent, "redstone_mode")
         this.registerComponent(energyStorageComponent, "energy")
         this.registerComponent(machineUpgradesComponent, "upgrades")
+    }
+
+    fun getComponents(): MutableList<Pair<String, IComponent>> {
+        return this.components
     }
 
     override fun writeToNBT(compound: NBTTagCompound): NBTTagCompound {
