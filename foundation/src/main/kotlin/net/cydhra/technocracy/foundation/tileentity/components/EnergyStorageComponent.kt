@@ -26,7 +26,7 @@ class EnergyStorageComponent(val facing: MutableSet<EnumFacing>) : AbstractCapab
 
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
-        return capability == EnergyCapabilityProvider.CAPABILITY_ENERGY && this.facing.contains(facing) ?: true
+        return capability == EnergyCapabilityProvider.CAPABILITY_ENERGY && this.facing.contains(facing)
     }
 
     override fun <T> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
