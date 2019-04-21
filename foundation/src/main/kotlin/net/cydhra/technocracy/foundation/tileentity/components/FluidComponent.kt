@@ -17,7 +17,8 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler
  * @param tanktype type of tank [DynamicFluidHandler.TankType]
  * @param facing facing of the capability
  */
-class FluidComponent(var capacity: Int = 1000, vararg allowedFluid: Fluid, var tanktype: DynamicFluidHandler.TankType = DynamicFluidHandler.TankType.BOTH, val facing: MutableSet<EnumFacing>) :
+class FluidComponent(var capacity: Int = 1000, vararg allowedFluid: Fluid = arrayOf(), var tanktype: DynamicFluidHandler
+.TankType = DynamicFluidHandler.TankType.BOTH, val facing: MutableSet<EnumFacing>) :
         AbstractCapabilityComponent() {
 
     /**

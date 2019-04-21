@@ -6,7 +6,7 @@ import net.minecraftforge.fluids.capability.IFluidTankProperties
 
 class SimpleTankProperty(val fluidHandler: DynamicFluidHandler) : IFluidTankProperties {
     override fun canDrainFluidType(fluidStack: FluidStack?): Boolean {
-        return fluidHandler.allowedFluid.contains(fluidStack!!.fluid)
+        return fluidHandler.allowedFluid.isEmpty() || fluidHandler.allowedFluid.contains(fluidStack!!.fluid)
     }
 
     override fun getContents(): FluidStack? {
@@ -14,7 +14,7 @@ class SimpleTankProperty(val fluidHandler: DynamicFluidHandler) : IFluidTankProp
     }
 
     override fun canFillFluidType(fluidStack: FluidStack?): Boolean {
-        return fluidHandler.allowedFluid.contains(fluidStack!!.fluid)
+        return fluidHandler.allowedFluid.isEmpty() || fluidHandler.allowedFluid.contains(fluidStack!!.fluid)
     }
 
     override fun getCapacity(): Int {

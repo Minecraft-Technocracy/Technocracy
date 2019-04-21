@@ -1,11 +1,9 @@
 package net.cydhra.technocracy.foundation.capabilities.fluid
 
 import net.minecraft.nbt.NBTTagCompound
-import net.minecraft.nbt.NBTTagList
 import net.minecraftforge.common.util.INBTSerializable
 import net.minecraftforge.fluids.Fluid
 import net.minecraftforge.fluids.FluidStack
-import net.minecraftforge.fluids.FluidTank
 import net.minecraftforge.fluids.capability.IFluidHandler
 import net.minecraftforge.fluids.capability.IFluidTankProperties
 
@@ -39,7 +37,10 @@ class DynamicFluidHandler(var capacity: Int = 1000, val allowedFluid: MutableLis
         return out
     }
 
-    override fun drain(maxDrain: Int, doDrain: Boolean): FluidStack {
+    override fun drain(maxDrain: Int, doDrain: Boolean): FluidStack? {
+        if (currentFluid == null)
+            return null
+
         val drain = Math.min(maxDrain, currentFluid!!.amount)
 
         if (doDrain) {
@@ -56,7 +57,7 @@ class DynamicFluidHandler(var capacity: Int = 1000, val allowedFluid: MutableLis
     }
 
     override fun fill(resource: FluidStack, doFill: Boolean): Int {
-        if (!allowedFluid.contains(resource.fluid)) {
+        if (!allowedFluid.contains(resource.fluid) && !allowedFluid.isEmpty()) {
             return 0
         }
 
@@ -64,17 +65,23 @@ class DynamicFluidHandler(var capacity: Int = 1000, val allowedFluid: MutableLis
             return 0
         }
 
-        if (currentFluid == null) {
-            currentFluid = FluidStack(resource.fluid, 0)
-        }
-
-        val fill = Math.min(resource.amount, capacity - currentFluid!!.amount)
 
         if (doFill) {
-            currentFluid!!.amount += fill
-        }
+            if (currentFluid == null) {
+                currentFluid = FluidStack(resource.fluid, 0)
+            }
 
-        return fill
+            val fill = Math.min(resource.amount, capacity - currentFluid!!.amount)
+
+            currentFluid!!.amount += fill
+            return fill
+        } else {
+            if (currentFluid == null) {
+                return Math.min(resource.amount, capacity)
+            }
+
+            return Math.min(resource.amount, capacity - currentFluid!!.amount)
+        }
     }
 
     override fun getTankProperties(): Array<IFluidTankProperties> {
@@ -86,7 +93,7 @@ class DynamicFluidHandler(var capacity: Int = 1000, val allowedFluid: MutableLis
     }
 
     override fun serializeNBT(): NBTTagCompound {
-        if(currentFluid != null) {
+        if (currentFluid != null) {
             return currentFluid!!.writeToNBT(NBTTagCompound())
         }
         return NBTTagCompound()
