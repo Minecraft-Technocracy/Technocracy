@@ -1,19 +1,21 @@
 package net.cydhra.technocracy.foundation.capabilities.fluid
 
+import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.nbt.NBTTagList
+import net.minecraftforge.common.util.INBTSerializable
 import net.minecraftforge.fluids.Fluid
 import net.minecraftforge.fluids.FluidStack
+import net.minecraftforge.fluids.FluidTank
 import net.minecraftforge.fluids.capability.IFluidHandler
 import net.minecraftforge.fluids.capability.IFluidTankProperties
 
 
-class DynamicFluidHandler(var capacity: Int = 1000, vararg allowedFluid: Fluid,
+class DynamicFluidHandler(var capacity: Int = 1000, val allowedFluid: MutableList<Fluid>,
                           var tanktype: TankType = TankType.BOTH) :
-        IFluidHandler {
+        IFluidHandler, INBTSerializable<NBTTagCompound> {
 
     var currentFluid: FluidStack? = null
         private set
-
-    val allowedFluid: MutableList<Fluid> = mutableListOf(*allowedFluid)
 
     val simpleTankProperty = arrayOf<IFluidTankProperties>(SimpleTankProperty(this))
 
@@ -54,7 +56,6 @@ class DynamicFluidHandler(var capacity: Int = 1000, vararg allowedFluid: Fluid,
     }
 
     override fun fill(resource: FluidStack, doFill: Boolean): Int {
-
         if (!allowedFluid.contains(resource.fluid)) {
             return 0
         }
@@ -78,6 +79,17 @@ class DynamicFluidHandler(var capacity: Int = 1000, vararg allowedFluid: Fluid,
 
     override fun getTankProperties(): Array<IFluidTankProperties> {
         return simpleTankProperty
+    }
+
+    override fun deserializeNBT(nbt: NBTTagCompound?) {
+        currentFluid = FluidStack.loadFluidStackFromNBT(nbt)
+    }
+
+    override fun serializeNBT(): NBTTagCompound {
+        if(currentFluid != null) {
+            return currentFluid!!.writeToNBT(NBTTagCompound())
+        }
+        return NBTTagCompound()
     }
 
     enum class TankType {
