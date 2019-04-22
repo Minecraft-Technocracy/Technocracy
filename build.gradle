@@ -36,9 +36,31 @@ subprojects {
     // plugins
     apply plugin: 'net.minecraftforge.gradle.forge'
 
+    repositories {
+        jcenter()
+        maven {
+            url 'https://maven.shadowfacts.net/'
+        }
+        maven {
+            name 'CoFH Maven'
+            url 'https://maven.covers1624.net'
+        }
+        maven {
+            name = "Jei maven"
+            url = "https://dvs1.progwml6.com/files/maven/"
+        }
+    }
+
     // dependencies
     dependencies {
         compile group: 'net.shadowfacts', name: 'Forgelin', version: forgelin_version
+
+        compileOnly "mezz.jei:jei_${minecraft_version}:${jei_version}:api"
+        runtime "mezz.jei:jei_${minecraft_version}:${jei_version}"
+
+        deobfCompile "cofh:CoFHCore:1.12.2-${cofhcore_version}:universal"
+        deobfCompile "cofh:CoFHWorld:1.12.2-${cofhworld_version}:universal"
+
     }
 
     // forge configuration
