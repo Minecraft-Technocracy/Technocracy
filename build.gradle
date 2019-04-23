@@ -49,12 +49,14 @@ subprojects {
     dependencies {
         compile group: 'net.shadowfacts', name: 'Forgelin', version: forgelin_version
 
-        deobfProvided group: 'mezz.jei', name: "jei_$minecraft_version", version: jei_version, classifier: 'api'
-        runtime group: 'mezz.jei', name: "jei_$minecraft_version", version: jei_version
+        //deobfProvided group: 'mezz.jei', name: "jei_$minecraft_version", version: jei_version, classifier: 'api'
+        deobfCompile group: 'mezz.jei', name: "jei_$minecraft_version", version: jei_version
 
         deobfCompile group: 'cofh', name: 'CoFHCore', version: "$minecraft_version-$cofhcore_version",
                 classifier: 'universal'
         deobfCompile group: 'cofh', name: 'CoFHWorld', version: "$minecraft_version-$cofhworld_version",
+                classifier: 'universal'
+        deobfCompile group: 'cofh', name: 'RedstoneFlux', version: "1.12-$redstoneflux_version",
                 classifier: 'universal'
 
     }
