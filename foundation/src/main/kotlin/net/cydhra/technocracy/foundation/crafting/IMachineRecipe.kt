@@ -27,9 +27,21 @@ interface IMachineRecipe {
     fun getInput(): List<Ingredient> = emptyList()
 
     /**
-     * Get all output of the recipe in a list sorted by the output stacks of the machine. For machines that have
-     * different stacks of output, this sorting is important and the processing logic assumes, that it is sorted by
+     * Get a list of fluids that need to be put in for the recipe to work
+     */
+    fun getFluidInput(): List<FluidStack> = emptyList()
+
+    /**
+     * Get all output of the recipe in a list sorted by the output slots of the machine. For machines that have
+     * different slots for output, this sorting is important and the processing logic assumes, that it is sorted by
      * ascending output inventory slot id.
      */
     fun getOutput(): List<ItemStack> = emptyList()
+
+    /**
+     * Get all fluid outputs of the recipe in a list sorted by the output slots of the machine. For machines that have
+     * different slots for output, this sorting is important and the processing logic assumes, that it is sorted by
+     * ascending output inventory slot id.
+     */
+    fun getFluidOutput(): List<FluidStack> = emptyList()
 }
