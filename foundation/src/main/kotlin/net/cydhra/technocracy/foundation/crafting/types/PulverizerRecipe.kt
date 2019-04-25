@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.crafting.types
 
+import net.cydhra.technocracy.foundation.crafting.IRecipe
 import net.minecraft.item.ItemStack
 import net.minecraft.item.crafting.Ingredient
 

@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.foundation.crafting.types
+package net.cydhra.technocracy.foundation.crafting
 
 import net.minecraft.item.ItemStack
 import net.minecraft.item.crafting.Ingredient

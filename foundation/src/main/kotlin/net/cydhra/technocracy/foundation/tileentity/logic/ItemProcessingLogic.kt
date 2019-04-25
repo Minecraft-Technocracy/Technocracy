@@ -3,7 +3,7 @@ package net.cydhra.technocracy.foundation.tileentity.logic
 import net.cydhra.technocracy.foundation.capabilities.energy.DynamicEnergyStorage
 import net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryHandler
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
-import net.cydhra.technocracy.foundation.crafting.types.IRecipe
+import net.cydhra.technocracy.foundation.crafting.IRecipe
 import net.cydhra.technocracy.foundation.tileentity.components.MachineUpgradesComponents
 import net.minecraft.item.ItemStack
 
