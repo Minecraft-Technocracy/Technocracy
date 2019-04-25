@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.crafting.types
 
-import net.cydhra.technocracy.foundation.crafting.IRecipe
+import net.cydhra.technocracy.foundation.crafting.IMachineRecipe
 import net.minecraft.item.ItemStack
 import net.minecraft.item.crafting.Ingredient
 
@@ -14,7 +14,7 @@ import net.minecraft.item.crafting.Ingredient
  */
 data class CentrifugeRecipe(val input: Ingredient, val output: ItemStack, val secondaryOutput: ItemStack?,
                             override val processingCost: Int) :
-        IRecipe {
+        IMachineRecipe {
     override fun conforms(stacks: List<ItemStack>): Boolean {
         return stacks.size == 1 && this.input.test(stacks[0])
     }

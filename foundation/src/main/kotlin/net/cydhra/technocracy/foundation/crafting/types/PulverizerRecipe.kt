@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.crafting.types
 
-import net.cydhra.technocracy.foundation.crafting.IRecipe
+import net.cydhra.technocracy.foundation.crafting.IMachineRecipe
 import net.minecraft.item.ItemStack
 import net.minecraft.item.crafting.Ingredient
 
@@ -11,7 +11,7 @@ import net.minecraft.item.crafting.Ingredient
  * @param output the output produced with given input as an item stack
  * @param processingCost the base cost in ticks for the recipe to complete
  */
-data class PulverizerRecipe(val input: Ingredient, val output: ItemStack, override val processingCost: Int) : IRecipe {
+data class PulverizerRecipe(val input: Ingredient, val output: ItemStack, override val processingCost: Int) : IMachineRecipe {
     override fun conforms(stacks: List<ItemStack>): Boolean {
         return stacks.size == 1 && this.input.test(stacks[0])
     }

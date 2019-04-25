@@ -1,8 +1,8 @@
 package net.cydhra.technocracy.foundation.tileentity
 
 import net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryHandler
+import net.cydhra.technocracy.foundation.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
-import net.cydhra.technocracy.foundation.crafting.IRecipe
 import net.cydhra.technocracy.foundation.tileentity.components.InventoryComponent
 import net.cydhra.technocracy.foundation.tileentity.logic.ItemProcessingLogic
 import net.cydhra.technocracy.foundation.tileentity.management.TEInventoryProvider
@@ -28,7 +28,7 @@ class TileEntityElectricFurnace : AbstractMachine(), TEInventoryProvider {
      * All recipes of the pulverizer; loaded lazily so they are not loaded before game loop, as they might not have
      * been registered yet.
      */
-    private val recipes: Collection<IRecipe> by lazy {
+    private val recipes: Collection<IMachineRecipe> by lazy {
         (RecipeManager.getRecipesByType(RecipeManager.RecipeType.ELECTRIC_FURNACE) ?: emptyList())
     }
 

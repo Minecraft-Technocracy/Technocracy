@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.crafting.types
 
-import net.cydhra.technocracy.foundation.crafting.IRecipe
+import net.cydhra.technocracy.foundation.crafting.IMachineRecipe
 import net.minecraft.item.ItemStack
 import net.minecraft.item.crafting.Ingredient
 
@@ -8,7 +8,7 @@ import net.minecraft.item.crafting.Ingredient
  * A recipe model type for alloy smeltery recipes. Two or three inputs, one output.
  */
 data class AlloySmelteryRecipe(val inputIngredients: List<Ingredient>, val output: ItemStack,
-                               override val processingCost: Int) : IRecipe {
+                               override val processingCost: Int) : IMachineRecipe {
     override fun conforms(stacks: List<ItemStack>): Boolean {
         return stacks.size == inputIngredients.size &&
                 inputIngredients.all { ingredient -> stacks.any { ingredient.test(it) } }

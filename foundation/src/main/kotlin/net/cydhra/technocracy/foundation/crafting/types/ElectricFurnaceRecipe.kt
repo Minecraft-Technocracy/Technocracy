@@ -1,13 +1,13 @@
 package net.cydhra.technocracy.foundation.crafting.types
 
-import net.cydhra.technocracy.foundation.crafting.IRecipe
+import net.cydhra.technocracy.foundation.crafting.IMachineRecipe
 import net.minecraft.item.ItemStack
 import net.minecraft.item.crafting.Ingredient
 
 /**
  * A recipe model type for electric furnace recipes. One input, one output.
  */
-data class ElectricFurnaceRecipe(val input: Ingredient, val output: ItemStack, override val processingCost: Int) : IRecipe {
+data class ElectricFurnaceRecipe(val input: Ingredient, val output: ItemStack, override val processingCost: Int) : IMachineRecipe {
     override fun conforms(stacks: List<ItemStack>): Boolean {
         return stacks.size == 1 && this.input.test(stacks[0])
     }

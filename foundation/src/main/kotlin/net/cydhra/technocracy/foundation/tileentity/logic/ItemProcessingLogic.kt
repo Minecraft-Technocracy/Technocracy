@@ -2,8 +2,8 @@ package net.cydhra.technocracy.foundation.tileentity.logic
 
 import net.cydhra.technocracy.foundation.capabilities.energy.DynamicEnergyStorage
 import net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryHandler
+import net.cydhra.technocracy.foundation.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
-import net.cydhra.technocracy.foundation.crafting.IRecipe
 import net.cydhra.technocracy.foundation.tileentity.components.MachineUpgradesComponents
 import net.minecraft.item.ItemStack
 
@@ -23,14 +23,14 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
      * All recipes of the machine type this logic handles; loaded lazily so they are not loaded before the first
      * [update] tick, as they might not have been registered yet.
      */
-    private val recipes: Collection<IRecipe> by lazy {
+    private val recipes: Collection<IMachineRecipe> by lazy {
         (RecipeManager.getRecipesByType(this.recipeType) ?: emptyList())
     }
 
     /**
      * Currently processed recipe
      */
-    private var currentRecipe: IRecipe? = null
+    private var currentRecipe: IMachineRecipe? = null
 
     /**
      * Current progress of recipe processing.

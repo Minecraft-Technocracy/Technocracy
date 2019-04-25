@@ -39,7 +39,7 @@ object RecipeManager {
     /**
      * All recipes loaded by type
      */
-    private val loadedRecipes: Multimap<RecipeType, IRecipe> = HashMultimap.create()
+    private val loadedRecipes: Multimap<RecipeType, IMachineRecipe> = HashMultimap.create()
 
     /**
      * Called upon post initialization by common proxy. Attempts to load recipes of all different machine types.
@@ -58,7 +58,7 @@ object RecipeManager {
      *
      * @return an immutable collection of registered recipes of the specified type
      */
-    fun getRecipesByType(type: RecipeType): Collection<IRecipe>? {
+    fun getRecipesByType(type: RecipeType): Collection<IMachineRecipe>? {
         return loadedRecipes[type]
     }
 
@@ -112,6 +112,9 @@ object RecipeManager {
                 true)
     }
 
+    /**
+     * An enumeration of all custom recipe types parsed by the RecipeManager
+     */
     enum class RecipeType {
         PULVERIZER, ELECTRIC_FURNACE, CENTRIFUGE, ALLOY
     }
