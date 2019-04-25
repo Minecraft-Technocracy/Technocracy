@@ -3,6 +3,7 @@ package net.cydhra.technocracy.foundation.crafting.types
 import net.cydhra.technocracy.foundation.crafting.IMachineRecipe
 import net.minecraft.item.ItemStack
 import net.minecraft.item.crafting.Ingredient
+import net.minecraftforge.fluids.FluidStack
 
 /**
  * A recipe model type for pulverizer recipe with one input type, one output type and processing time cost
@@ -12,7 +13,7 @@ import net.minecraft.item.crafting.Ingredient
  * @param processingCost the base cost in ticks for the recipe to complete
  */
 data class PulverizerRecipe(val input: Ingredient, val output: ItemStack, override val processingCost: Int) : IMachineRecipe {
-    override fun conforms(stacks: List<ItemStack>): Boolean {
+    override fun conforms(stacks: List<ItemStack>, fluids: List<FluidStack>): Boolean {
         return stacks.size == 1 && this.input.test(stacks[0])
     }
 
