@@ -1,0 +1,17 @@
+{
+  "input": [
+    {
+      "type": "forge:ore_dict",
+      "ore": "ingotNickel"
+    },
+    {
+      "type": "forge:ore_dict",
+      "ore": "ingotIron"
+    }
+  ],
+  "output": {
+    "item": "technocracy.foundation:ingot.invar",
+    "count": 2
+  },
+  "cost": 80
+}

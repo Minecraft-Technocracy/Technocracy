@@ -1,0 +1,17 @@
+{
+  "input": [
+    {
+      "type": "forge:ore_dict",
+      "ore": "ingotNickel"
+    },
+    {
+      "type": "forge:ore_dict",
+      "ore": "ingotNiobium"
+    }
+  ],
+  "output": {
+    "item": "technocracy.foundation:ingot.nickel_niobium",
+    "count": 2
+  },
+  "cost": 200
+}

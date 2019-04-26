@@ -44,6 +44,10 @@ item.akkumulator.name=Lithium Ion Akkumulator
 item.silicon.name=Silicon
 item.bedrockium.name=Bedrockium Ingot
 
+item.invar.name=Invar Ingot
+item.anyuiit.name=Anyuiit Ingot
+item.nickel_niobium.name=Nickel-Niobium Ingot
+
 tile.oil_sand.name=Oil Sand
 tile.ore.aluminum.name=Aluminum Ore
 tile.ore.copper.name=Copper Ore

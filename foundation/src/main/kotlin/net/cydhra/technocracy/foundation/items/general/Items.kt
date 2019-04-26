@@ -15,3 +15,7 @@ val phenoplastItem = BaseItem("phenoplast")
 val polypropyleneItem = BaseItem("polypropylene")
 val polyacrylateItem = BaseItem("polyacrylate")
 val polystyreneItem = BaseItem("polystyrene")
+
+val invarItem = ColoredItem("ingot", "invar", ConstantItemColor(0xDDC2BE)) // nickel iron
+val anyuiitItem = ColoredItem("ingot", "anyuiit", ConstantItemColor(0xDBE480)) // gold lead
+val nickelNiobiumItem = ColoredItem("ingot", "nickel_niobium", ConstantItemColor(0x7AA9DB)) // nickel niob supra

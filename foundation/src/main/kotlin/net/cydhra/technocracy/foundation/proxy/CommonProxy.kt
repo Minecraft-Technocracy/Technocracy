@@ -74,7 +74,6 @@ open class CommonProxy {
 
         BlockManager.prepareBlocksForRegistration(oilSandBlock)
         BlockManager.prepareBlocksForRegistration(ironBeamBlock)
-
         BlockManager.prepareBlocksForRegistration(oilBlock)
 
         ItemManager.prepareItemForRegistration(machineFrameItem)
@@ -89,6 +88,9 @@ open class CommonProxy {
         ItemManager.prepareItemForRegistration(polyacrylateItem)
         ItemManager.prepareItemForRegistration(polypropyleneItem)
         ItemManager.prepareItemForRegistration(polystyreneItem)
+        ItemManager.prepareItemForRegistration(invarItem)
+        ItemManager.prepareItemForRegistration(anyuiitItem)
+        ItemManager.prepareItemForRegistration(nickelNiobiumItem)
 
         TileEntityManager.prepareTileEntityForRegistration(TileEntityAlloySmeltery::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityArcFurnace::class)
