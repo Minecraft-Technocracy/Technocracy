@@ -1,7 +1,9 @@
 package net.cydhra.technocracy.foundation.proxy
 
 import com.google.common.collect.ImmutableMap
+import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.general.*
+import net.cydhra.technocracy.foundation.client.gui.handler.GuiHandler
 import net.cydhra.technocracy.foundation.client.model.MachineConnectorModel
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.items.general.*
@@ -14,6 +16,9 @@ import net.cydhra.technocracy.foundation.tileentity.management.TileEntityManager
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.animation.ITimeValue
 import net.minecraftforge.common.model.animation.IAnimationStateMachine
+import net.minecraftforge.fml.common.network.NetworkRegistry
+
+
 
 /**
  * Mod proxy for both client and server implementation. Handles registration of everything required by both sides.
@@ -102,6 +107,8 @@ open class CommonProxy {
         TileEntityManager.prepareTileEntityForRegistration(TileEntityThermoelectricFreezer::class)
 
         PotionManager.preparePotionForRegistration(oilyEffect)
+
+        NetworkRegistry.INSTANCE.registerGuiHandler(TCFoundation, GuiHandler())
     }
 
     open fun init() {
