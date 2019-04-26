@@ -49,6 +49,7 @@ object RecipeManager {
         parseMachineRecipes("electric_furnace", ElectricFurnaceRecipeParser, RecipeManager.RecipeType.ELECTRIC_FURNACE)
         parseMachineRecipes("centrifuge", CentrifugeRecipeParser, RecipeManager.RecipeType.CENTRIFUGE)
         parseMachineRecipes("alloy_smeltery", AlloySmelteryRecipeParser, RecipeManager.RecipeType.ALLOY)
+        parseMachineRecipes("chemical_oxidizer", ChemicalOxidizerRecipeParser, RecipeManager.RecipeType.CHEMICAL_OXIDIZER)
     }
 
     /**
@@ -116,6 +117,6 @@ object RecipeManager {
      * An enumeration of all custom recipe types parsed by the RecipeManager
      */
     enum class RecipeType {
-        PULVERIZER, ELECTRIC_FURNACE, CENTRIFUGE, ALLOY
+        PULVERIZER, ELECTRIC_FURNACE, CENTRIFUGE, ALLOY, CHEMICAL_OXIDIZER
     }
 }
