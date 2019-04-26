@@ -75,22 +75,6 @@ open class CommonProxy {
         TileEntityManager.prepareTileEntityForRegistration(TileEntityRefinery::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityThermoelectricFreezer::class)
 
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityAlloySmeltery::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityArcFurnace::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityCentrifuge::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityChemicalEnrichmentChamber::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityChemicalEtchingChamber::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityChemicalOxidizer::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityChemicalReactionChamber::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityCompactor::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityElectricFurnace::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityElectrolysisChamber::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityKiln::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityPolymerizationChamber::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityPulverizer::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityRefinery::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityThermoelectricFreezer::class)
-
         PotionManager.preparePotionForRegistration(oilyEffect)
     }
 
