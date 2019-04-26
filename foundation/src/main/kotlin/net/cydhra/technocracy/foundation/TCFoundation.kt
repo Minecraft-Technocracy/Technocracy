@@ -23,12 +23,12 @@ object TCFoundation {
     /**
      * Module-internal constant for the forge mod identifier
      */
-    internal const val MODID = "##MOD.ID"
+    internal const val MODID = "technocracy.foundation"
 
     /**
      * Mod version
      */
-    const val VERSION = "##MOD.VERSION"
+    const val VERSION = "1.0"
 
     /**
      * Mod name used by forge
