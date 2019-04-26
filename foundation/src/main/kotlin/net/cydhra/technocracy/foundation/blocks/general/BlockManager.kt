@@ -89,6 +89,7 @@ object BlockManager {
                     ModelLoader.setCustomModelResourceLocation(item as ItemBlock, 0,
                             ModelResourceLocation(((item).block as IBaseBlock).modelLocation, "inventory"))
                 }
+        registerCustomBlockModels()
     }
 
     /**
@@ -103,14 +104,16 @@ object BlockManager {
         }
     }
 
-    fun registerCustomBlockModels() {
+    private fun registerCustomBlockModels() {
         ModelLoaderRegistry.registerLoader(CustomModelProvider(customModels))
         blocksToRegister.filter { it is BaseLiquidBlock }
                 .map { it as BaseLiquidBlock }
                 .forEach { liquid ->
                     val stateMapper = StateMapper("fluid", liquid.modelLocation)
+                    val item = Item.getItemFromBlock(liquid)
+                    ModelBakery.registerItemVariants(item)
+                    ModelLoader.setCustomMeshDefinition(item, stateMapper)
                     ModelLoader.setCustomStateMapper(liquid, stateMapper)
-                    ModelBakery.registerItemVariants(Item.getItemFromBlock(liquid))
                 }
     }
 

@@ -1,17 +1,13 @@
 package net.cydhra.technocracy.foundation.blocks.liquid
 
-import com.sun.org.apache.xpath.internal.operations.Bool
 import net.cydhra.technocracy.foundation.blocks.general.BaseLiquidBlock
-import net.cydhra.technocracy.foundation.blocks.material.oilMaterial
 import net.cydhra.technocracy.foundation.liquids.general.oilFluid
 import net.cydhra.technocracy.foundation.potions.oilyEffect
-import net.minecraft.block.Block
 import net.minecraft.block.BlockLiquid
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityLivingBase
-import net.minecraft.init.Blocks
 import net.minecraft.potion.PotionEffect
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.AxisAlignedBB
@@ -20,9 +16,6 @@ import net.minecraft.util.math.MathHelper
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
-import net.minecraftforge.fluids.BlockFluidBase
-import net.minecraftforge.fml.relauncher.Side
-import net.minecraftforge.fml.relauncher.SideOnly
 
 
 class OilBlock : BaseLiquidBlock(oilFluid, "oil", Material.WATER) {

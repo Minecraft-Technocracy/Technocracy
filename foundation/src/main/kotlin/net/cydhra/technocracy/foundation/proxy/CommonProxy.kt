@@ -5,8 +5,7 @@ import net.cydhra.technocracy.foundation.blocks.general.*
 import net.cydhra.technocracy.foundation.client.model.MachineConnectorModel
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.items.general.*
-import net.cydhra.technocracy.foundation.liquids.general.FluidManager
-import net.cydhra.technocracy.foundation.liquids.general.oilFluid
+import net.cydhra.technocracy.foundation.liquids.general.*
 import net.cydhra.technocracy.foundation.materialsystems.*
 import net.cydhra.technocracy.foundation.potions.PotionManager
 import net.cydhra.technocracy.foundation.potions.oilyEffect
@@ -29,6 +28,28 @@ open class CommonProxy {
         materialSystems.forEach(MaterialSystem::preInit)
 
         FluidManager.registerFluid(oilFluid)
+        FluidManager.registerFluid(sulfurDiOxideFluid)
+        FluidManager.registerFluid(oxygenFluid)
+        FluidManager.registerFluid(sulfurTriOxideFluid)
+        FluidManager.registerFluid(sulfuricAcidFluid)
+        FluidManager.registerFluid(propenFluid)
+        FluidManager.registerFluid(acrylicAcidFluid)
+        FluidManager.registerFluid(benzolFluid)
+        FluidManager.registerFluid(phenolFluid)
+        FluidManager.registerFluid(kerosinFluid)
+        FluidManager.registerFluid(rocketFuelFluid)
+        FluidManager.registerFluid(propylenoxideFluid)
+        FluidManager.registerFluid(propylenglycolFluid)
+        FluidManager.registerFluid(chlorineFluid)
+        FluidManager.registerFluid(styrolFluid)
+        FluidManager.registerFluid(cryogenicGelFluid)
+        FluidManager.registerFluid(heavyOilFluid)
+        FluidManager.registerFluid(lightOilFluid)
+        FluidManager.registerFluid(tarFluid)
+        FluidManager.registerFluid(pitchFluid)
+        FluidManager.registerFluid(hydrochloricAcidFluid)
+        FluidManager.registerFluid(hydrogenFluid)
+        FluidManager.registerFluid(silicaFluid)
 
         BlockManager.prepareBlocksForRegistration(alloySmelteryBlock, MachineConnectorModel())
         BlockManager.prepareBlocksForRegistration(arcFurnaceBlock, MachineConnectorModel())
@@ -48,6 +69,7 @@ open class CommonProxy {
 
         BlockManager.prepareBlocksForRegistration(oilSandBlock)
         BlockManager.prepareBlocksForRegistration(ironBeamBlock)
+
         BlockManager.prepareBlocksForRegistration(oilBlock)
 
         ItemManager.prepareItemForRegistration(machineFrameItem)
@@ -58,10 +80,6 @@ open class CommonProxy {
         ItemManager.prepareItemForRegistration(akkumulatorItem)
         ItemManager.prepareItemForRegistration(siliconItem)
         ItemManager.prepareItemForRegistration(bedrockiumItem)
-        ItemManager.prepareItemForRegistration(phenoplastItem)
-        ItemManager.prepareItemForRegistration(polyacrylateItem)
-        ItemManager.prepareItemForRegistration(polypropyleneItem)
-        ItemManager.prepareItemForRegistration(polystyreneItem)
 
         TileEntityManager.prepareTileEntityForRegistration(TileEntityAlloySmeltery::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityArcFurnace::class)

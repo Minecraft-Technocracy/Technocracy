@@ -15,6 +15,8 @@ import net.minecraftforge.common.MinecraftForge
 
 
 
+
+
 /**
  * Client side implementation of sided proxy. Calls Common proxy and adds client-side-only behaviour like rendering
  * and animations.
@@ -32,7 +34,6 @@ class ClientProxy : CommonProxy() {
 
     override fun preInit() {
         super.preInit()
-        BlockManager.registerCustomBlockModels()
         TextureAtlasManager()
         MinecraftForge.EVENT_BUS.register(RenderProxy())
     }

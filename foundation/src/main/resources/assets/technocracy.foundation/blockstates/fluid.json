@@ -10,6 +10,160 @@
           "fluid": "oil"
         }
       }
+    ],
+    "sulfurdioxide": [
+      {
+        "custom": {
+          "fluid": "sulfurdioxide"
+        }
+      }
+    ],
+    "oxygen": [
+      {
+        "custom": {
+          "fluid": "oxygen"
+        }
+      }
+    ],
+    "sulfurtrioxide": [
+      {
+        "custom": {
+          "fluid": "sulfurtrioxide"
+        }
+      }
+    ],
+    "sulfuricacid": [
+      {
+        "custom": {
+          "fluid": "sulfuricacid"
+        }
+      }
+    ],
+    "propen": [
+      {
+        "custom": {
+          "fluid": "propen"
+        }
+      }
+    ],
+    "acrylicacid": [
+      {
+        "custom": {
+          "fluid": "acrylicacid"
+        }
+      }
+    ],
+    "benzol": [
+      {
+        "custom": {
+          "fluid": "benzol"
+        }
+      }
+    ],
+    "phenol": [
+      {
+        "custom": {
+          "fluid": "phenol"
+        }
+      }
+    ],
+    "kerosin": [
+      {
+        "custom": {
+          "fluid": "kerosin"
+        }
+      }
+    ],
+    "rocketfuel": [
+      {
+        "custom": {
+          "fluid": "rocketfuel"
+        }
+      }
+    ],
+    "propylenoxide": [
+      {
+        "custom": {
+          "fluid": "propylenoxide"
+        }
+      }
+    ],
+    "propylenglycol": [
+      {
+        "custom": {
+          "fluid": "propylenglycol"
+        }
+      }
+    ],
+    "chlorine": [
+      {
+        "custom": {
+          "fluid": "chlorine"
+        }
+      }
+    ],
+    "styrol": [
+      {
+        "custom": {
+          "fluid": "styrol"
+        }
+      }
+    ],
+    "cryogenicgel": [
+      {
+        "custom": {
+          "fluid": "cryogenicgel"
+        }
+      }
+    ],
+    "heavyoil": [
+      {
+        "custom": {
+          "fluid": "heavyoil"
+        }
+      }
+    ],
+    "lightoil": [
+      {
+        "custom": {
+          "fluid": "lightoil"
+        }
+      }
+    ],
+    "tar": [
+      {
+        "custom": {
+          "fluid": "tar"
+        }
+      }
+    ],
+    "pitch": [
+      {
+        "custom": {
+          "fluid": "pitch"
+        }
+      }
+    ],
+    "hydrochloricacid": [
+      {
+        "custom": {
+          "fluid": "hydrochloricacid"
+        }
+      }
+    ],
+    "hydrogen": [
+      {
+        "custom": {
+          "fluid": "hydrogen"
+        }
+      }
+    ],
+    "silica": [
+      {
+        "custom": {
+          "fluid": "silica"
+        }
+      }
     ]
   }
 }
