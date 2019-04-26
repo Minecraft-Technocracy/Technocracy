@@ -8,17 +8,13 @@ import net.cydhra.technocracy.foundation.items.general.*
 import net.cydhra.technocracy.foundation.liquids.general.FluidManager
 import net.cydhra.technocracy.foundation.liquids.general.oilFluid
 import net.cydhra.technocracy.foundation.materialsystems.*
-import net.cydhra.technocracy.foundation.potions.OilyEffect
 import net.cydhra.technocracy.foundation.potions.PotionManager
 import net.cydhra.technocracy.foundation.potions.oilyEffect
 import net.cydhra.technocracy.foundation.tileentity.*
 import net.cydhra.technocracy.foundation.tileentity.management.TileEntityManager
-import net.minecraft.potion.Potion
-import net.minecraft.potion.PotionEffect
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.animation.ITimeValue
 import net.minecraftforge.common.model.animation.IAnimationStateMachine
-import net.minecraftforge.fml.common.registry.GameRegistry
 
 /**
  * Mod proxy for both client and server implementation. Handles registration of everything required by both sides.
@@ -40,6 +36,7 @@ open class CommonProxy {
         BlockManager.prepareBlocksForRegistration(alloySmelteryBlock, MachineConnectorModel())
         BlockManager.prepareBlocksForRegistration(kilnBlock, MachineConnectorModel())
         BlockManager.prepareBlocksForRegistration(compactorBlock, MachineConnectorModel())
+        BlockManager.prepareBlocksForRegistration(chemicalOxidizerBlock, MachineConnectorModel())
         BlockManager.prepareBlocksForRegistration(oilSandBlock)
         BlockManager.prepareBlocksForRegistration(ironBeamBlock)
         BlockManager.prepareBlocksForRegistration(oilBlock)
@@ -59,6 +56,7 @@ open class CommonProxy {
         TileEntityManager.prepareTileEntityForRegistration(TileEntityAlloySmeltery::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityKiln::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityCompactor::class)
+        TileEntityManager.prepareTileEntityForRegistration(TileEntityChemicalOxidizer::class)
 
         PotionManager.preparePotionForRegistration(oilyEffect)
     }
