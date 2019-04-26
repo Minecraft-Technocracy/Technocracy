@@ -17,6 +17,6 @@ val technocracyCreativeTabs = object : CreativeTabs("technocracy") {
     }
 
     override fun hasSearchBar(): Boolean {
-        return true
+        return false
     }
 }

@@ -1,5 +1,7 @@
 package net.cydhra.technocracy.foundation.tileentity
 
+import net.cydhra.technocracy.foundation.client.gui.machine.Tab
+import net.cydhra.technocracy.foundation.client.gui.machine.tabs.WipTab
 import net.cydhra.technocracy.foundation.tileentity.components.*
 import net.cydhra.technocracy.foundation.tileentity.logic.ILogicClient
 import net.cydhra.technocracy.foundation.tileentity.logic.LogicClientDelegate
@@ -54,6 +56,10 @@ abstract class AbstractMachine : TileEntity(), ITickable, ILogicClient by LogicC
         this.registerComponent(redstoneModeComponent, "redstone_mode")
         this.registerComponent(energyStorageComponent, "energy")
         this.registerComponent(machineUpgradesComponent, "upgrades")
+    }
+
+    fun getGuiTabs(): Array<Tab> {
+        return arrayOf(WipTab(500, 500))
     }
 
     fun getComponents(): MutableList<Pair<String, IComponent>> {
