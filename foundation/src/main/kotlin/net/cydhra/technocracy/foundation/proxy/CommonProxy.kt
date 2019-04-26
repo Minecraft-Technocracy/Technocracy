@@ -80,6 +80,10 @@ open class CommonProxy {
         ItemManager.prepareItemForRegistration(akkumulatorItem)
         ItemManager.prepareItemForRegistration(siliconItem)
         ItemManager.prepareItemForRegistration(bedrockiumItem)
+        ItemManager.prepareItemForRegistration(phenoplastItem)
+        ItemManager.prepareItemForRegistration(polyacrylateItem)
+        ItemManager.prepareItemForRegistration(polypropyleneItem)
+        ItemManager.prepareItemForRegistration(polystyreneItem)
 
         TileEntityManager.prepareTileEntityForRegistration(TileEntityAlloySmeltery::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityArcFurnace::class)
