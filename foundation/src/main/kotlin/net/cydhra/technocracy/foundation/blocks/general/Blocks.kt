@@ -6,13 +6,22 @@ import net.cydhra.technocracy.foundation.blocks.OilSand
 import net.cydhra.technocracy.foundation.blocks.liquid.OilBlock
 import net.cydhra.technocracy.foundation.tileentity.*
 
-val pulverizerBlock = MachineBlock("pulverizer", ::TileEntityPulverizer)
-val electricFurnaceBlock = MachineBlock("electric_furnace", ::TileEntityElectricFurnace)
-val centrifugeBlock = MachineBlock("centrifuge", ::TileEntityCentrifuge)
 val alloySmelteryBlock = MachineBlock("alloy_smeltery", ::TileEntityAlloySmeltery)
-val compactorBlock = MachineBlock("compactor", ::TileEntityCompactor)
-val kilnBlock = MachineBlock("kiln", ::TileEntityKiln)
+val arcFurnaceBlock = MachineBlock("arc_furnace", ::TileEntityArcFurnace)
+val centrifugeBlock = MachineBlock("centrifuge", ::TileEntityCentrifuge)
+val chemicalEnrichmentChamberBlock = MachineBlock("chemical_enrichment_chamber", ::TileEntityChemicalEnrichmentChamber)
+val chemicalEtchingChamberBlock = MachineBlock("chemical_etching_chamber", ::TileEntityChemicalEtchingChamber)
 val chemicalOxidizerBlock = MachineBlock("chemical_oxidizer", ::TileEntityChemicalOxidizer)
+val chemicalReactionChamberBlock = MachineBlock("chemical_reaction_chamber", ::TileEntityChemicalReactionChamber)
+val compactorBlock = MachineBlock("compactor", ::TileEntityCompactor)
+val electricFurnaceBlock = MachineBlock("electric_furnace", ::TileEntityElectricFurnace)
+val electrolysisChamberBlock = MachineBlock("electrolysis_chamber", ::TileEntityElectrolysisChamber)
+val kilnBlock = MachineBlock("kiln", ::TileEntityKiln)
+val polymerizationChamberBlock = MachineBlock("polymerization_chamber", ::TileEntityPolymerizationChamber)
+val pulverizerBlock = MachineBlock("pulverizer", ::TileEntityPulverizer)
+val refineryBlock = MachineBlock("refinery", ::TileEntityRefinery)
+val thermoelectricFreezerBlock = MachineBlock("thermoelectric_freezer", ::TileEntityThermoelectricFreezer)
+
 val oilSandBlock = OilSand()
 val ironBeamBlock = IronBeamBlock()
 val oilBlock = OilBlock()

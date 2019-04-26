@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "technocracy.foundation:thermoelectric_freezer"
+    },
+    "facing=east": {
+      "model": "technocracy.foundation:thermoelectric_freezer",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "technocracy.foundation:thermoelectric_freezer",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "technocracy.foundation:thermoelectric_freezer",
+      "y": 270
+    }
+  }
+}

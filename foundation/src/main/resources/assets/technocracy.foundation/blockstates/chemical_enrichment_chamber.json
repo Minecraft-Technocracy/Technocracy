@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "technocracy.foundation:chemical_enrichment_chamber"
+    },
+    "facing=east": {
+      "model": "technocracy.foundation:chemical_enrichment_chamber",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "technocracy.foundation:chemical_enrichment_chamber",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "technocracy.foundation:chemical_enrichment_chamber",
+      "y": 270
+    }
+  }
+}

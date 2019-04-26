@@ -54,12 +54,22 @@ tile.ore.osmium.name=Osmium Ore
 tile.ore.silver.name=Silver Ore
 tile.ore.tin.name=Tin Ore
 
-tile.pulverizer.name=Pulverizer
-tile.electric_furnace.name=Electric Furnace
-tile.centrifuge.name=Centrifuge
-tile.kiln.name=Pyrolysis Kiln
 tile.alloy_smeltery.name=Alloy Smeltery
+tile.arc_furnace.name=Arc Furnace
+tile.centrifuge.name=Centrifuge
+tile.chemical_enrichment_chamber.name=Chemical Enrichment Chamber
+tile.chemical_etching_chamber.name=Chemical Etching Chamber
+tile.chemical_oxidizer.name=Chemical Oxidizer
+tile.chemical_reaction_chamber.name=Chemical Reaction Chamber
 tile.compactor.name=Compactor
+tile.electric_furnace.name=Electric Furnace
+tile.electrolysis_chamber.name=Electrolysis Chamber
+tile.kiln.name=Pyrolysis Kiln
+tile.polymerization_chamber.name=Polymerization Chamber
+tile.pulverizer.name=Pulverizer
+tile.refinery.name=Refinery
+tile.thermoelectric_freezer.name=Thermoelectric Freezer
+
 tile.iron_beam.name=Steel Beam
 
 fluid.oil=Oil
