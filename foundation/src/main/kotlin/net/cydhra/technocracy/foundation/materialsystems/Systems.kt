@@ -10,7 +10,7 @@ val lithiumSystem = MaterialSystem("lithium", 0x176B59,
         veinsPerChunk = 8, amountPerVein = 7, minHeight = 1, maxHeight = 60)
 val nickelSystem = MaterialSystem("nickel", 0xB56932,
         veinsPerChunk = 8, amountPerVein = 4, minHeight = 1, maxHeight = 20)
-val osmiumSystem = MaterialSystem("osmium", 0x4682B4,
+val niobiumSystem = MaterialSystem("niobium", 0x4682B4,
         veinsPerChunk = 12, amountPerVein = 6, minHeight = 1, maxHeight = 30)
 val silverSystem = MaterialSystem("silver", 0xE0E0FF,
         veinsPerChunk = 8, amountPerVein = 5, minHeight = 1, maxHeight = 20)

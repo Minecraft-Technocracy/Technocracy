@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.client
 
-import net.cydhra.technocracy.foundation.materialsystems.osmiumSystem
+import net.cydhra.technocracy.foundation.materialsystems.niobiumSystem
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.ItemStack
 
@@ -13,7 +13,7 @@ val technocracyCreativeTabs = object : CreativeTabs("technocracy") {
     }
 
     override fun getTabIconItem(): ItemStack {
-        return ItemStack(osmiumSystem.gear) // TODO replace this with something more exemplary for this mod
+        return ItemStack(niobiumSystem.gear) // TODO replace this with something more exemplary for this mod
     }
 
     override fun hasSearchBar(): Boolean {

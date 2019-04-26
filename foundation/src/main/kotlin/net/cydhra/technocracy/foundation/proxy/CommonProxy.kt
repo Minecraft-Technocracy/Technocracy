@@ -22,7 +22,7 @@ import net.minecraftforge.common.model.animation.IAnimationStateMachine
 open class CommonProxy {
 
     private val materialSystems = arrayOf(aluminiumSystem, copperSystem, leadSystem,
-            lithiumSystem, nickelSystem, osmiumSystem, silverSystem, tinSystem)
+            lithiumSystem, nickelSystem, niobiumSystem, silverSystem, tinSystem)
 
     open fun preInit() {
         materialSystems.forEach(MaterialSystem::preInit)
