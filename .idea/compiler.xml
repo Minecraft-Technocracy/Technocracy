@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="Technocracy.foundation.api" target="1.8" />
+      <module name="Technocracy.foundation.main" target="1.8" />
+      <module name="Technocracy.foundation.test" target="1.8" />
+      <module name="Technocracy.main" target="1.8" />
+      <module name="Technocracy.test" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
