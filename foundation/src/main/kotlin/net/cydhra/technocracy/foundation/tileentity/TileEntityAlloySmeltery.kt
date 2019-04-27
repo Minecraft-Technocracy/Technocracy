@@ -50,5 +50,8 @@ class TileEntityAlloySmeltery : AbstractMachine(), TEInventoryProvider {
         return inventory == inputInventoryComponent.inventory && this.recipes.any { recipe ->
             recipe.getInput().any { it.test(stack) }
         }
+                && (0 until this.inputInventoryComponent.inventory.slots).all { index ->
+            index == slot || !this.inputInventoryComponent.inventory.getStackInSlot(index).isItemEqual(stack)
+        }
     }
 }
