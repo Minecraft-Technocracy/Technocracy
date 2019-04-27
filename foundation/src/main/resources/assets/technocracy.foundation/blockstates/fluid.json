@@ -39,10 +39,10 @@
         }
       }
     ],
-    "propen": [
+    "propene": [
       {
         "custom": {
-          "fluid": "propen"
+          "fluid": "propene"
         }
       }
     ],
@@ -53,10 +53,10 @@
         }
       }
     ],
-    "benzol": [
+    "benzene": [
       {
         "custom": {
-          "fluid": "benzol"
+          "fluid": "benzene"
         }
       }
     ],
@@ -67,10 +67,10 @@
         }
       }
     ],
-    "kerosin": [
+    "kerosene": [
       {
         "custom": {
-          "fluid": "kerosin"
+          "fluid": "kerosene"
         }
       }
     ],
@@ -81,17 +81,17 @@
         }
       }
     ],
-    "propylenoxide": [
+    "propylene_oxide": [
       {
         "custom": {
-          "fluid": "propylenoxide"
+          "fluid": "propylene_oxide"
         }
       }
     ],
-    "propylenglycol": [
+    "propylene_glycol": [
       {
         "custom": {
-          "fluid": "propylenglycol"
+          "fluid": "propylene_glycol"
         }
       }
     ],
@@ -102,10 +102,10 @@
         }
       }
     ],
-    "styrol": [
+    "styrene": [
       {
         "custom": {
-          "fluid": "styrol"
+          "fluid": "styrene"
         }
       }
     ],
