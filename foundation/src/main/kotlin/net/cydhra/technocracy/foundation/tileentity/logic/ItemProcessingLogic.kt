@@ -43,7 +43,7 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
     override fun update() {
         // collect input item stacks
         val inputItems = if (inputInventory != null) {
-            (0 until inputInventory.slots).map(inputInventory::getStackInSlot)
+            (0 until inputInventory.slots).map(inputInventory::getStackInSlot).filter { !it.isEmpty }
         } else {
             emptyList()
         }
