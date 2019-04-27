@@ -89,8 +89,9 @@ open class CommonProxy {
         ItemManager.prepareItemForRegistration(polypropyleneItem)
         ItemManager.prepareItemForRegistration(polystyreneItem)
         ItemManager.prepareItemForRegistration(invarItem)
-        ItemManager.prepareItemForRegistration(leadGoldItem)
+        ItemManager.prepareItemForRegistration(siliconBronzeItem)
         ItemManager.prepareItemForRegistration(superconductorItem)
+        ItemManager.prepareItemForRegistration(metallicPhaseChangeMaterialItem)
 
         TileEntityManager.prepareTileEntityForRegistration(TileEntityAlloySmeltery::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityArcFurnace::class)

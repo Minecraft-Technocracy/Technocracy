@@ -45,7 +45,9 @@ item.silicon.name=Silicon
 item.bedrockium.name=Bedrockium Ingot
 
 item.invar.name=Invar Ingot
-item.superconductor.name=Superconductor
+item.superconductor.name=Superconductor Ingot
+item.mpcm.name=Metallic Phase Change Material
+item.silicon_bronze.name=Silicon Bronze Ingot
 
 tile.oil_sand.name=Oil Sand
 tile.ore.aluminum.name=Aluminum Ore

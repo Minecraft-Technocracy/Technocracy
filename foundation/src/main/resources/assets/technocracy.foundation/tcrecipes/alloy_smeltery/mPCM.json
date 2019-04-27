@@ -1,0 +1,21 @@
+{
+  "input": [
+    {
+      "type": "forge:ore_dict",
+      "ore": "ingotAluminium"
+    },
+    {
+      "type": "forge:ore_dict",
+      "ore": "ingotCopper"
+    },
+    {
+      "type": "forge:ore_dict",
+      "ore": "itemSilicon"
+    }
+  ],
+  "output": {
+    "item": "technocracy.foundation:ingot.mpcm",
+    "count": 3
+  },
+  "cost": 120
+}
