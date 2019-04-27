@@ -88,6 +88,7 @@ open class CommonProxy {
         ItemManager.prepareItemForRegistration(polyacrylateItem)
         ItemManager.prepareItemForRegistration(polypropyleneItem)
         ItemManager.prepareItemForRegistration(polystyreneItem)
+        ItemManager.prepareItemForRegistration(nanotubes)
         ItemManager.prepareItemForRegistration(invarItem)
         ItemManager.prepareItemForRegistration(siliconBronzeItem)
         ItemManager.prepareItemForRegistration(superconductorItem)

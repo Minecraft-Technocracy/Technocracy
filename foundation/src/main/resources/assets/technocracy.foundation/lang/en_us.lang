@@ -43,11 +43,11 @@ item.battery.name=Battery
 item.akkumulator.name=Lithium Ion Akkumulator
 item.silicon.name=Silicon
 item.bedrockium.name=Bedrockium Ingot
-
-item.invar.name=Invar Ingot
-item.superconductor.name=Superconductor Ingot
-item.mpcm.name=Metallic Phase Change Material
-item.silicon_bronze.name=Silicon Bronze Ingot
+item.nanotubes.name=Cryogenic Nanotubes
+item.ingot.invar.name=Invar Ingot
+item.ingot.superconductor.name=Superconductor Ingot
+item.ingot.mpcm.name=Metallic Phase Change Material
+item.ingot.silicon_bronze.name=Silicon Bronze Ingot
 
 tile.oil_sand.name=Oil Sand
 tile.ore.aluminum.name=Aluminum Ore
