@@ -1,0 +1,9 @@
+{
+  "input": {
+    "item": "minecraft:coal_block"
+  },
+  "output_primary": {
+    "item": "technocracy.foundation:sulfur"
+  },
+  "cost": 80
+}
