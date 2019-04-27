@@ -10,7 +10,7 @@
     }
   ],
   "output": {
-    "item": "technocracy.foundation:ingot.nickel_niobium",
+    "item": "technocracy.foundation:ingot.superconductor",
     "count": 2
   },
   "cost": 200
