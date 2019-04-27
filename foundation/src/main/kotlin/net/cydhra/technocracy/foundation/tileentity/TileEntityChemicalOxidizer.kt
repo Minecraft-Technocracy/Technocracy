@@ -6,6 +6,7 @@ import net.cydhra.technocracy.foundation.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.tileentity.components.FluidComponent
 import net.cydhra.technocracy.foundation.tileentity.components.InventoryComponent
+import net.cydhra.technocracy.foundation.tileentity.logic.ItemProcessingLogic
 import net.cydhra.technocracy.foundation.tileentity.management.TEInventoryProvider
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
@@ -24,20 +25,29 @@ class TileEntityChemicalOxidizer : AbstractMachine(), TEInventoryProvider {
     /**
      * Output inventory for the pulverizer with one slot
      */
-    private val outputInventoryComponent = FluidComponent(1, allowedFluid = *arrayOf(),
-            tanktype = DynamicFluidHandler.TankType.INPUT, facing = mutableSetOf(EnumFacing.EAST))
+    private val outputInventoryComponent = FluidComponent(4000,
+            tanktype = DynamicFluidHandler.TankType.OUTPUT, facing = mutableSetOf(EnumFacing.EAST))
 
     /**
      * All recipes of the pulverizer; loaded lazily so they are not loaded before game loop, as they might not have
      * been registered yet.
      */
     private val recipes: Collection<IMachineRecipe> by lazy {
-        (RecipeManager.getRecipesByType(RecipeManager.RecipeType.ALLOY) ?: emptyList())
+        (RecipeManager.getRecipesByType(RecipeManager.RecipeType.CHEMICAL_OXIDIZER) ?: emptyList())
     }
 
     init {
         this.registerComponent(inputInventoryComponent, "input_inventory")
         this.registerComponent(outputInventoryComponent, "output_inventory")
+
+        this.addLogicStrategy(ItemProcessingLogic(
+                recipeType = RecipeManager.RecipeType.CHEMICAL_OXIDIZER,
+                inputInventory = this.inputInventoryComponent.inventory,
+                outputFluidSlots = arrayOf(this.outputInventoryComponent.fluid),
+                energyStorage = this.energyStorageComponent.energyStorage,
+                machineUpgrades = this.machineUpgradesComponent,
+                baseTickEnergyCost = 40
+        ))
     }
 
     override fun isItemValid(inventory: DynamicInventoryHandler, slot: Int, stack: ItemStack): Boolean {
