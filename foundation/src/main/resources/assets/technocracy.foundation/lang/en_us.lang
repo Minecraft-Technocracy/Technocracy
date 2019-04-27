@@ -46,7 +46,7 @@ item.bedrockium.name=Bedrockium Ingot
 item.nanotubes.name=Cryogenic Nanotubes
 item.ingot.invar.name=Invar Ingot
 item.ingot.superconductor.name=Superconductor Ingot
-item.ingot.mpcm.name=Metallic Phase Change Material
+item.ingot.mPCM.name=Metallic Phase Change Material
 item.ingot.silicon_bronze.name=Silicon Bronze Ingot
 
 tile.oil_sand.name=Oil Sand
