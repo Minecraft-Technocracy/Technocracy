@@ -80,6 +80,7 @@ open class CommonProxy {
         ItemManager.prepareItemForRegistration(coalDustItem)
         ItemManager.prepareItemForRegistration(ironDustItem)
         ItemManager.prepareItemForRegistration(ironSheetItem)
+        ItemManager.prepareItemForRegistration(sulfur)
         ItemManager.prepareItemForRegistration(batteryItem)
         ItemManager.prepareItemForRegistration(akkumulatorItem)
         ItemManager.prepareItemForRegistration(siliconItem)

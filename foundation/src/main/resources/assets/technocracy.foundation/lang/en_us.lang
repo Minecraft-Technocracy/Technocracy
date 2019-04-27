@@ -39,6 +39,7 @@ item.gear.tin.name=Tin Gear
 item.gear.iron.name=Iron Gear
 
 item.machine_frame.name=Machine Frame
+item.sulfur.name=Sulfur
 item.battery.name=Battery
 item.akkumulator.name=Lithium Ion Akkumulator
 item.silicon.name=Silicon
