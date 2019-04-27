@@ -17,6 +17,6 @@ val polyacrylateItem = BaseItem("polyacrylate")
 val polystyreneItem = BaseItem("polystyrene")
 
 val invarItem = ColoredItem("ingot", "invar", ConstantItemColor(0xDDC2BE))
-val siliconBronzeItem = ColoredItem("ingot", "silicon_bronze", ConstantItemColor(0xCD7F32))
+val siliconBronzeItem = ColoredItem("ingot", "silicon_bronze", ConstantItemColor(0xCC9E44))
 val superconductorItem = ColoredItem("ingot", "superconductor", ConstantItemColor(0x7AA9DB))
 val metallicPhaseChangeMaterialItem = ColoredItem("ingot", "mPCM", ConstantItemColor(0xC9BEC9))
