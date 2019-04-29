@@ -48,6 +48,7 @@ subprojects {
     // dependencies
     dependencies {
         compile group: 'net.shadowfacts', name: 'Forgelin', version: forgelin_version
+        compile group: 'org.jgrapht', name: 'jgrapht-core', version: jgrapht_version
 
         //deobfProvided group: 'mezz.jei', name: "jei_$minecraft_version", version: jei_version, classifier: 'api'
         deobfCompile group: 'mezz.jei', name: "jei_$minecraft_version", version: jei_version
