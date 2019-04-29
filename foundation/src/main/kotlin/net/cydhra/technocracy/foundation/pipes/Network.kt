@@ -13,7 +13,7 @@ import java.util.*
 import java.util.function.Consumer
 
 
-class Network {
+object Network {
     var networks = mutableMapOf<String, MutableMap<UUID, Multigraph<BlockPos, WrappedPipeType>>>()
     val saveName = "${TCFoundation.MODID}:pipe_network"
 
@@ -37,16 +37,29 @@ class Network {
 
     fun removeNode(node: BlockPos, networkId: UUID, world: World) {
         val network = networks[world.worldInfo.worldName]!![networkId]!!
+
+        val edges = network.edgesOf(node)
+        if(edges.size > 1) {
+            edges.forEach(Consumer { edge ->
+                val edgetmp = network.getEdgeSource(edge)
+                val secondNode = if (edgetmp == node) network.getEdgeTarget(edge) else edgetmp
+
+                splitNetwork(secondNode,networkId, world)
+            })
+        }
+
         network.removeVertex(node)
 
         getWorldSave().markDirty()
     }
 
     fun addNode(node: BlockPos, networkId: UUID, world: World) {
+
         networks.getOrPut(world.worldInfo.worldName) {
-            mutableMapOf(Pair<UUID, Multigraph<BlockPos, WrappedPipeType>>(UUID.randomUUID(), Multigraph
-                    .createBuilder<BlockPos, WrappedPipeType>(WrappedPipeType::class.java).build()))
+            mutableMapOf(Pair(networkId, Multigraph.createBuilder<BlockPos, WrappedPipeType>(WrappedPipeType::class.java).build()))
         }
+
+        println("$node $networkId ${world.worldInfo.worldName} ${networks[world.worldInfo.worldName]}")
 
         val network = networks[world.worldInfo.worldName]!![networkId]!!
         network.addVertex(node)
@@ -73,6 +86,7 @@ class Network {
 
     fun combineNetwork(nodeA: BlockPos, nodeB: BlockPos, networkId_old: UUID, networkId_new: UUID, world: World, type:
     PipeType) {
+
         val network_old = networks[world.worldInfo.worldName]!![networkId_old]!!
         var network_new = networks[world.worldInfo.worldName]!![networkId_new]!!
 
@@ -84,7 +98,11 @@ class Network {
 
         networks[world.worldInfo.worldName]!!.remove(networkId_old)
 
-        //todo update networkids
+        val iterator = DepthFirstIterator(network_old, if (network_old.containsVertex(nodeB)) nodeB else nodeA)
+
+        iterator.forEach { firstNode ->
+            forceNetworkId(firstNode, networkId_new, world)
+        }
     }
 
     fun splitNetwork(nodeA: BlockPos, networkId: UUID, world: World) {
@@ -110,17 +128,23 @@ class Network {
 
         networks[world.worldInfo.worldName] = mutableMapOf(Pair(newUUID, newNetwork))
 
-        //todo update networkids
+        forceNetworkId(removeList, newUUID, world)
     }
 
     fun forceNetworkId(blocks: MutableSet<BlockPos>, uuid: UUID, world: World) {
-        blocks.forEach({
+        blocks.forEach {
             val tile = world.getTileEntity(it)
-            if(tile != null && tile is TileEntityPipe) {
+            if (tile != null && tile is TileEntityPipe) {
                 tile.setNetworkId(uuid)
             }
-        })
-        world.getTileEntity(blocks)
+        }
+    }
+
+    fun forceNetworkId(block: BlockPos, uuid: UUID, world: World) {
+        val tile = world.getTileEntity(block)
+        if (tile != null && tile is TileEntityPipe) {
+            tile.setNetworkId(uuid)
+        }
     }
 
     fun getWorldSave(): WorldSavedData {
