@@ -12,13 +12,16 @@ class NetworkComponent : IComponent {
     override fun serializeNBT(): NBTBase {
         val base = NBTTagCompound()
         if(uuid != null)
-            base.setUniqueId("networkId", uuid)
+            base.setUniqueId("id", uuid!!)
         return base
     }
 
     override fun deserializeNBT(nbt: NBTBase) {
-        if((nbt as NBTTagCompound).hasKey("networkId")) {
-            uuid = nbt.getUniqueId("networkId")
+        if((nbt as NBTTagCompound).hasKey("id")) {
+            uuid = nbt.getUniqueId("id")
+        } else {
+            System.err.println("PIPE HAS NO NETWORK UUID")
+            uuid = UUID.randomUUID()
         }
     }
 }
