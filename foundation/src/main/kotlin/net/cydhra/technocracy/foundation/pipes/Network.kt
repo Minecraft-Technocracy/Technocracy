@@ -1,13 +1,16 @@
 package net.cydhra.technocracy.foundation.pipes
 
 import net.cydhra.technocracy.foundation.TCFoundation
+import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
 import net.minecraft.client.Minecraft
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import net.minecraft.world.storage.WorldSavedData
 import org.jgrapht.graph.GraphWalk
 import org.jgrapht.graph.Multigraph
+import org.jgrapht.traverse.DepthFirstIterator
 import java.util.*
+import java.util.function.Consumer
 
 
 class Network {
@@ -66,6 +69,58 @@ class Network {
         }
 
         return true
+    }
+
+    fun combineNetwork(nodeA: BlockPos, nodeB: BlockPos, networkId_old: UUID, networkId_new: UUID, world: World, type:
+    PipeType) {
+        val network_old = networks[world.worldInfo.worldName]!![networkId_old]!!
+        var network_new = networks[world.worldInfo.worldName]!![networkId_new]!!
+
+        val builder = Multigraph.createBuilder<BlockPos, WrappedPipeType>(WrappedPipeType::class.java)
+        builder.addGraph(network_old)
+        builder.addGraph(network_new)
+        network_new = builder.build()
+        network_new.addEdge(nodeA, nodeB, WrappedPipeType(type))
+
+        networks[world.worldInfo.worldName]!!.remove(networkId_old)
+
+        //todo update networkids
+    }
+
+    fun splitNetwork(nodeA: BlockPos, networkId: UUID, world: World) {
+        val network = networks[world.worldInfo.worldName]!![networkId]!!
+        val newNetwork = Multigraph.createBuilder<BlockPos, WrappedPipeType>(WrappedPipeType::class.java).build()
+        val newUUID = UUID.randomUUID()
+        val iterator = DepthFirstIterator(network, nodeA)
+        val removeList = mutableSetOf<BlockPos>()
+
+        iterator.forEach { firstNode ->
+            newNetwork.addVertex(firstNode)
+            removeList.add(firstNode)
+
+            val edges = network.edgesOf(firstNode)
+            edges.forEach(Consumer { edge ->
+                val edgetmp = network.getEdgeSource(edge)
+                val secondNode = if (edgetmp == firstNode) network.getEdgeTarget(edge) else edgetmp
+
+                newNetwork.addEdge(firstNode, secondNode, edge)
+            })
+        }
+        network.removeAllVertices(removeList)
+
+        networks[world.worldInfo.worldName] = mutableMapOf(Pair(newUUID, newNetwork))
+
+        //todo update networkids
+    }
+
+    fun forceNetworkId(blocks: MutableSet<BlockPos>, uuid: UUID, world: World) {
+        blocks.forEach({
+            val tile = world.getTileEntity(it)
+            if(tile != null && tile is TileEntityPipe) {
+                tile.setNetworkId(uuid)
+            }
+        })
+        world.getTileEntity(blocks)
     }
 
     fun getWorldSave(): WorldSavedData {
