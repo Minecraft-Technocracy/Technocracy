@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
 import org.apache.logging.log4j.Logger
 
 @Mod(modid = TCFoundation.MODID, name = TCFoundation.NAME, version = TCFoundation.VERSION,
-        modLanguageAdapter = "net.shadowfacts.forgelin.KotlinAdapter")
+        modLanguageAdapter = TCFoundation.LANGUAGE_ADAPTER, dependencies = TCFoundation.DEPENDENCIES)
 object TCFoundation {
 
     init {
@@ -23,7 +23,7 @@ object TCFoundation {
     /**
      * Module-internal constant for the forge mod identifier
      */
-    internal const val MODID = "technocracy.foundation"
+    const val MODID = "technocracy.foundation"
 
     /**
      * Mod version
@@ -34,6 +34,20 @@ object TCFoundation {
      * Mod name used by forge
      */
     const val NAME = "Technocracy Foundation"
+
+    /**
+     * The adapter responsible to load this mod class, as it is not a default java mod class
+     */
+    internal const val LANGUAGE_ADAPTER = "net.shadowfacts.forgelin.KotlinAdapter"
+
+    /**
+     * All forge mod hard-dependencies that must be provided
+     */
+    internal const val DEPENDENCIES = "after:forgelin;" +
+            "after:cofhcore;" +
+            "after:cofhworld;" +
+            "after:redstoneflux;" +
+            "after:zerocore"
 
     /**
      * Mod logger

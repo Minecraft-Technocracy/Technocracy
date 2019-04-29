@@ -38,6 +38,14 @@ allprojects {
             name = "Jei maven"
             url = "https://dvs1.progwml6.com/files/maven/"
         }
+        maven {
+            name "zerocore"
+            url "http://maven.zerono.it/"
+        }
+        ivy {
+            name = "ComputerCraft"
+            artifactPattern "http://addons-origin.cursecdn.com/files/2291/384/[module][revision](.[ext])"
+        }
     }
 }
 
@@ -50,7 +58,6 @@ subprojects {
         compile group: 'net.shadowfacts', name: 'Forgelin', version: forgelin_version
         compile group: 'org.jgrapht', name: 'jgrapht-core', version: jgrapht_version
 
-        //deobfProvided group: 'mezz.jei', name: "jei_$minecraft_version", version: jei_version, classifier: 'api'
         deobfCompile group: 'mezz.jei', name: "jei_$minecraft_version", version: jei_version
 
         deobfCompile group: 'cofh', name: 'CoFHCore', version: "$minecraft_version-$cofhcore_version",
@@ -59,7 +66,7 @@ subprojects {
                 classifier: 'universal'
         deobfCompile group: 'cofh', name: 'RedstoneFlux', version: "1.12-$redstoneflux_version",
                 classifier: 'universal'
-
+        deobfCompile group: "it.zerono.mods.zerocore", name: "zerocore", version: "1.12-0.1.1.0"
     }
 
     // forge configuration
