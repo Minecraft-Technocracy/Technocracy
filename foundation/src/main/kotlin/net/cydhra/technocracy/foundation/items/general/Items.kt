@@ -7,6 +7,7 @@ val ironDustItem = ColoredItem("dust", "iron", ConstantItemColor(0xD4D4CD))
 val ironSheetItem = ColoredItem("sheet", "iron", ConstantItemColor(0xD4D4CD))
 
 val machineFrameItem = BaseItem("machine_frame")
+val sulfur = BaseItem("sulfur", oreDictName = "dustSulfur")
 val batteryItem = BaseItem("battery")
 val akkumulatorItem = BaseItem("akkumulator")
 val siliconItem = BaseItem("silicon", oreDictName = "itemSilicon")

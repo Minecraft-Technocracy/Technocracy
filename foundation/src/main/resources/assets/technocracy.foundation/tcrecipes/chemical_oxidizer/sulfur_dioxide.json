@@ -1,0 +1,11 @@
+{
+  "input": {
+    "type": "forge:ore_dict",
+    "ore": "dustSulfur"
+  },
+  "output": {
+    "fluid": "sulfurdioxide",
+    "amount": 200
+  },
+  "cost": 40
+}

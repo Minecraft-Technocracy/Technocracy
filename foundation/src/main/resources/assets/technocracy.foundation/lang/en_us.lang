@@ -39,6 +39,7 @@ item.gear.tin.name=Tin Gear
 item.gear.iron.name=Iron Gear
 
 item.machine_frame.name=Machine Frame
+item.sulfur.name=Sulfur
 item.battery.name=Battery
 item.akkumulator.name=Lithium Ion Akkumulator
 item.silicon.name=Silicon
@@ -77,7 +78,29 @@ tile.thermoelectric_freezer.name=Thermoelectric Freezer
 
 tile.iron_beam.name=Steel Beam
 
-fluid.oil=Oil
+fluid.oil=Mineral Oil
+fluid.sulfurdioxide=Sulfurdioxide
+fluid.oxygen=Oxygen
+fluid.sulfurtrioxide=Sulfurtrioxide
+fluid.sulfuricacid=Sulfuric Acid
+fluid.propene=Propene
+fluid.acrylicacid=Acrylic Acid
+fluid.benzene=Benzene
+fluid.phenol=Phenol
+fluid.kerosene=Kerosene
+fluid.rocketfuel=Rocket Fuel
+fluid.propylene_oxide=Propylene Oxide
+fluid.propylene_glycol=Propylene Glycol
+fluid.chlorine=Chlorine
+fluid.styrene=Styrene
+fluid.cryogenicgel=Cryogenic Gel
+fluid.heavyoil=Heavy Oil
+fluid.lightoil=Light Oil
+fluid.tar=Tar
+fluid.pitch=Pitch
+fluid.hydrochloricacid=Hydrochloric Acid
+fluid.hydrogen=Hydrogen
+fluid.silica=Silica
 
 effect.oily=Oily
 

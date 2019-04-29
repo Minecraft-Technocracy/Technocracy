@@ -1,22 +1,14 @@
 package net.cydhra.technocracy.foundation.proxy
 
-import cofh.core.util.RayTracer
-import cofh.core.util.helpers.RenderHelper
 import net.cydhra.technocracy.foundation.TCFoundation
-import net.cydhra.technocracy.foundation.blocks.general.BaseLiquidBlock
-import net.cydhra.technocracy.foundation.liquids.general.oilFluid
-import net.cydhra.technocracy.foundation.potions.oilyEffect
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
-import net.minecraft.entity.EntityLivingBase
-import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
-import net.minecraftforge.client.event.*
+import net.minecraftforge.client.event.RenderBlockOverlayEvent
 import net.minecraftforge.fluids.BlockFluidBase
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent

@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.blocks.liquid
 
 import net.cydhra.technocracy.foundation.blocks.general.BaseLiquidBlock
-import net.cydhra.technocracy.foundation.liquids.general.oilFluid
+import net.cydhra.technocracy.foundation.liquids.general.mineralOilFluid
 import net.cydhra.technocracy.foundation.potions.oilyEffect
 import net.minecraft.block.BlockLiquid
 import net.minecraft.block.material.Material
@@ -18,7 +18,7 @@ import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 
 
-class OilBlock : BaseLiquidBlock(oilFluid, "oil", Material.WATER) {
+class OilBlock : BaseLiquidBlock(mineralOilFluid, "oil", Material.WATER) {
     override fun onEntityCollidedWithBlock(worldIn: World, pos: BlockPos, state: IBlockState, entityIn: Entity) {
         handleMaterialAcceleration(worldIn, entityIn.entityBoundingBox, this.blockMaterial, entityIn)
     }
