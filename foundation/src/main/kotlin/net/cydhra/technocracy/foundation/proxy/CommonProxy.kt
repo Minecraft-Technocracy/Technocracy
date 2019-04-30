@@ -11,7 +11,8 @@ import net.cydhra.technocracy.foundation.liquids.general.*
 import net.cydhra.technocracy.foundation.materialsystems.*
 import net.cydhra.technocracy.foundation.potions.PotionManager
 import net.cydhra.technocracy.foundation.potions.oilyEffect
-import net.cydhra.technocracy.foundation.tileentity.*
+import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
+import net.cydhra.technocracy.foundation.tileentity.machines.*
 import net.cydhra.technocracy.foundation.tileentity.management.TileEntityManager
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.animation.ITimeValue

@@ -1,8 +1,9 @@
-package net.cydhra.technocracy.foundation.tileentity
+package net.cydhra.technocracy.foundation.tileentity.machines
 
 import net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryHandler
 import net.cydhra.technocracy.foundation.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
+import net.cydhra.technocracy.foundation.tileentity.AbstractMachine
 import net.cydhra.technocracy.foundation.tileentity.components.InventoryComponent
 import net.cydhra.technocracy.foundation.tileentity.logic.ItemProcessingLogic
 import net.cydhra.technocracy.foundation.tileentity.management.TEInventoryProvider
@@ -10,26 +11,27 @@ import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
 
 /**
- * Electric furnace tile entity
+ * A tile entity linked to a pulverizer block that can store up to two stacks of items and processes the first stack
+ * into its output (second) stack, if the processing output and second stack can be merged.
  */
-class TileEntityElectricFurnace : AbstractMachine(), TEInventoryProvider {
+class TileEntityCentrifuge : AbstractMachine(), TEInventoryProvider {
 
     /**
-     * Input inventory for the furnace with one slot
+     * Input inventory for the pulverizer with one slot
      */
     private val inputInventoryComponent = InventoryComponent(1, this, EnumFacing.WEST)
 
     /**
-     * Output inventory for the furnace with one slot
+     * Output inventory for the pulverizer with one slot
      */
-    private val outputInventoryComponent = InventoryComponent(1, this, EnumFacing.EAST)
+    private val outputInventoryComponent = InventoryComponent(2, this, EnumFacing.EAST)
 
     /**
      * All recipes of the pulverizer; loaded lazily so they are not loaded before game loop, as they might not have
      * been registered yet.
      */
     private val recipes: Collection<IMachineRecipe> by lazy {
-        (RecipeManager.getRecipesByType(RecipeManager.RecipeType.ELECTRIC_FURNACE) ?: emptyList())
+        (RecipeManager.getRecipesByType(RecipeManager.RecipeType.CENTRIFUGE) ?: emptyList())
     }
 
     init {
@@ -37,7 +39,7 @@ class TileEntityElectricFurnace : AbstractMachine(), TEInventoryProvider {
         this.registerComponent(outputInventoryComponent, "output_inventory")
 
         this.addLogicStrategy(ItemProcessingLogic(
-                recipeType = RecipeManager.RecipeType.ELECTRIC_FURNACE,
+                recipeType = RecipeManager.RecipeType.CENTRIFUGE,
                 inputInventory = this.inputInventoryComponent.inventory,
                 outputInventory = this.outputInventoryComponent.inventory,
                 energyStorage = this.energyStorageComponent.energyStorage,
@@ -48,5 +50,4 @@ class TileEntityElectricFurnace : AbstractMachine(), TEInventoryProvider {
     override fun isItemValid(inventory: DynamicInventoryHandler, slot: Int, stack: ItemStack): Boolean {
         return inventory == inputInventoryComponent.inventory && this.recipes.any { it.getInput()[0].test(stack) }
     }
-
 }

@@ -5,7 +5,7 @@ import net.cydhra.technocracy.foundation.blocks.MachineBlock
 import net.cydhra.technocracy.foundation.blocks.OilSand
 import net.cydhra.technocracy.foundation.blocks.PipeBlock
 import net.cydhra.technocracy.foundation.blocks.liquid.OilBlock
-import net.cydhra.technocracy.foundation.tileentity.*
+import net.cydhra.technocracy.foundation.tileentity.machines.*
 
 val alloySmelteryBlock = MachineBlock("alloy_smeltery", ::TileEntityAlloySmeltery)
 val centrifugeBlock = MachineBlock("centrifuge", ::TileEntityCentrifuge)
