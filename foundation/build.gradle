@@ -4,11 +4,6 @@ buildscript {
 
 apply plugin: 'idea'
 
-minecraft {
-    replace "##MOD.VERSION", mod_version
-    replace "##MOD.ID", mod_id
-}
-
 processResources {
     // this will ensure that this task is redone when the versions change.
     inputs.property "version", project.version
@@ -47,4 +42,6 @@ task copyAssets(type: Copy) {
 
 build.finalizedBy(copyAssets)
 
+// there is no point in not reobfuscating the generated jar file
+jar.finalizedBy("reobfJar")
 
