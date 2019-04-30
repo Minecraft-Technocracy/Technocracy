@@ -58,19 +58,22 @@ object TCFoundation {
             clientSide = "net.cydhra.technocracy.foundation.proxy.ClientProxy")
     lateinit var proxy: CommonProxy
 
+    @Suppress("unused")
     @EventHandler
-    fun preInit(event: FMLPreInitializationEvent) {
+    fun preInit(@Suppress("UNUSED_PARAMETER") event: FMLPreInitializationEvent) {
         logger = FMLLog.log
         proxy.preInit()
     }
 
+    @Suppress("unused")
     @EventHandler
-    fun init(event: FMLInitializationEvent) {
+    fun init(@Suppress("UNUSED_PARAMETER") event: FMLInitializationEvent) {
         proxy.init()
     }
 
+    @Suppress("unused")
     @EventHandler
-    fun postInit(event: FMLPostInitializationEvent) {
+    fun postInit(@Suppress("UNUSED_PARAMETER") event: FMLPostInitializationEvent) {
         proxy.postInit()
     }
 }
