@@ -75,7 +75,7 @@ object RecipeManager {
      * error
      */
     private fun loadRecipe(path: Path, parser: RecipeParser<*>, type: RecipeType): Boolean {
-        if (FilenameUtils.getExtension(path.toFile().path) != "json")
+        if (FilenameUtils.getExtension(path.toString()) != "json")
             return true
 
         val jsonObject = try {
