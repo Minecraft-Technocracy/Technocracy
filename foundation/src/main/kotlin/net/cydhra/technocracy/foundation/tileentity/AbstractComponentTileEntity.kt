@@ -91,6 +91,7 @@ abstract class AbstractComponentTileEntity : TileEntity() {
     fun markForUpdate() {
         if (this.world != null) {
             this.world.notifyBlockUpdate(this.pos, this.getBlockState(), this.getBlockState(), 3)
+            markDirty()
         }
     }
 }

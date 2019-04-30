@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.tileentity
 
+import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.PipeBlock
 import net.cydhra.technocracy.foundation.pipes.Network
 import net.cydhra.technocracy.foundation.tileentity.components.NetworkComponent
@@ -16,14 +17,14 @@ class TileEntityPipe : AbstractComponentTileEntity() {
 
     fun setNetworkId(uuid: UUID): TileEntityPipe {
         networkComponent.uuid = uuid
-        markForUpdate()
+        markDirty()
         return this
     }
 
     override fun onLoad() {
 
         //forge calls onLoad 2x
-        if(networkComponent.uuid != null)
+        if(networkComponent.uuid != null || world.isRemote)
             return
 
         var connected = 0
@@ -31,6 +32,9 @@ class TileEntityPipe : AbstractComponentTileEntity() {
             val current = pos.offset(facing)
             if (world.getBlockState(current).block is PipeBlock) {
                 val pipe = world.getTileEntity(current) as TileEntityPipe
+                if(pipe.networkComponent.uuid == null) {
+                    TCFoundation.logger.error("No networkId found")
+                }
                 val uuid = pipe.networkComponent.uuid!!
                 if (connected != 0) {
                     //already has connected to a subnet
@@ -53,7 +57,8 @@ class TileEntityPipe : AbstractComponentTileEntity() {
 
         if(connected == 0) {
             //no network found, create new one
-            Network.addNode(pos, UUID.randomUUID(), world)
+            setNetworkId(UUID.randomUUID())
+            Network.addNode(pos, networkComponent.uuid!!, world)
         }
     }
 }

@@ -5,6 +5,7 @@ import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.general.*
 import net.cydhra.technocracy.foundation.client.gui.handler.GuiHandler
 import net.cydhra.technocracy.foundation.client.model.MachineConnectorModel
+import net.cydhra.technocracy.foundation.client.renderer.tileEntity.PipeRenderer
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.items.general.*
 import net.cydhra.technocracy.foundation.liquids.general.*
@@ -31,7 +32,6 @@ open class CommonProxy {
             lithiumSystem, nickelSystem, niobiumSystem, silverSystem, tinSystem)
 
     open fun preInit() {
-
         materialSystems.forEach(MaterialSystem::preInit)
 
         FluidManager.registerFluid(mineralOilFluid)
@@ -114,7 +114,7 @@ open class CommonProxy {
         TileEntityManager.prepareTileEntityForRegistration(TileEntityPulverizer::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityRefinery::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityThermoelectricFreezer::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityPipe::class)
+        TileEntityManager.prepareTileEntityForRegistration(TileEntityPipe::class, PipeRenderer())
 
         TileEntityManager.prepareTileEntityForRegistration(TileEntityBoilerController::class)
 
