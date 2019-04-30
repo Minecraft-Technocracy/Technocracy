@@ -61,7 +61,6 @@ tile.ore.silver.name=Silver Ore
 tile.ore.tin.name=Tin Ore
 
 tile.alloy_smeltery.name=Alloy Smeltery
-tile.arc_furnace.name=Arc Furnace
 tile.centrifuge.name=Centrifuge
 tile.chemical_enrichment_chamber.name=Chemical Enrichment Chamber
 tile.chemical_etching_chamber.name=Chemical Etching Chamber

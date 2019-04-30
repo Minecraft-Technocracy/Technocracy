@@ -8,7 +8,6 @@ import net.cydhra.technocracy.foundation.blocks.liquid.OilBlock
 import net.cydhra.technocracy.foundation.tileentity.*
 
 val alloySmelteryBlock = MachineBlock("alloy_smeltery", ::TileEntityAlloySmeltery)
-val arcFurnaceBlock = MachineBlock("arc_furnace", ::TileEntityArcFurnace)
 val centrifugeBlock = MachineBlock("centrifuge", ::TileEntityCentrifuge)
 val chemicalEnrichmentChamberBlock = MachineBlock("chemical_enrichment_chamber", ::TileEntityChemicalEnrichmentChamber)
 val chemicalEtchingChamberBlock = MachineBlock("chemical_etching_chamber", ::TileEntityChemicalEtchingChamber)
