@@ -4,6 +4,7 @@ import net.cydhra.technocracy.foundation.blocks.color.ConstantBlockColor
 import net.cydhra.technocracy.foundation.blocks.general.AbstractRotateableBlock.Companion.facingProperty
 import net.cydhra.technocracy.foundation.util.propertys.POSITION
 import net.minecraft.block.BlockHorizontal
+import net.minecraft.block.BlockStairs
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.BlockStateContainer
 import net.minecraft.block.state.IBlockState
@@ -65,8 +66,9 @@ abstract class AbstractRotateableBlock(unlocalizedName: String,
         return (state.getValue(facingProperty) as EnumFacing).index
     }
 
-    override fun onBlockPlacedBy(worldIn: World, pos: BlockPos, state: IBlockState, placer: EntityLivingBase, stack: ItemStack) {
-        // set the block facing towards the placing player
-        worldIn.setBlockState(pos, state.withProperty(facingProperty, placer.adjustedHorizontalFacing.opposite))
+    override fun getStateForPlacement(worldIn: World, pos: BlockPos, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float, meta: Int, placer: EntityLivingBase): IBlockState {
+        return defaultState.withProperty(facingProperty, placer.adjustedHorizontalFacing
+                .opposite)
     }
+
 }
