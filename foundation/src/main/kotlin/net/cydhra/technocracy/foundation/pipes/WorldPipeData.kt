@@ -66,9 +66,6 @@ class WorldPipeData(val network: Network) {
                 val edges = NBTTagCompound()
                 for (type in PipeType.values()) {
                     val edgeList = NBTTagList()
-
-                    println(blocks.edgeSet().size)
-
                     blocks.edgeSet().filter { it.pipeType == type }.forEach { edge ->
                         val edgeVertices = NBTTagCompound()
 

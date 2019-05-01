@@ -7,6 +7,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import net.minecraftforge.common.DimensionManager
 import net.minecraftforge.event.world.WorldEvent
+import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import org.jgrapht.graph.DefaultEdge
 import org.jgrapht.graph.GraphWalk
@@ -18,10 +19,9 @@ import java.io.FileOutputStream
 import java.util.*
 import java.util.function.Consumer
 
-
+@Mod.EventBusSubscriber(modid = TCFoundation.MODID)
 object Network {
     var networks = mutableMapOf<String, MutableMap<UUID, Multigraph<BlockPos, WrappedPipeType>>>()
-    val saveName = "${TCFoundation.MODID}:pipe_network"
 
     var savedData = WorldPipeData(this)
 
@@ -39,10 +39,11 @@ object Network {
                 type: PipeType) {
         if (world.isRemote)
             return
-        addNode(newBlockPos, networkId, world)
-        addNode(connectToBlock, networkId, world)
 
         val network = networks[world.worldInfo.worldName]!![networkId]!!
+
+        network.addVertex(newBlockPos)
+        network.addVertex(connectToBlock)
 
         if (network.getAllEdges(connectToBlock, newBlockPos).none { it.pipeType == type }) {
             network.addEdge(connectToBlock, newBlockPos, WrappedPipeType(type))
@@ -62,22 +63,25 @@ object Network {
         dirty = true
     }
 
-    fun removeNode(node: BlockPos, networkId: UUID, world: World) {
+    private fun removeNode(node: BlockPos, networkId: UUID, world: World) {
         if (world.isRemote)
             return
         val network = networks[world.worldInfo.worldName]!![networkId]!!
 
-        val edges = network.edgesOf(node)
+        /*val edges = network.edgesOf(node)
         if (edges.size > 1) {
-            edges.forEach(Consumer { edge ->
+            edges.forEach { edge ->
                 val edgetmp = network.getEdgeSource(edge)
                 val secondNode = if (edgetmp == node) network.getEdgeTarget(edge) else edgetmp
-
-                splitNetwork(secondNode, networkId, world)
-            })
-        }
+                //splitNetwork(secondNode, networkId, world)
+            }
+        }*/
 
         network.removeVertex(node)
+
+        if (network.vertexSet().size == 0) {
+            networks[world.worldInfo.worldName]!!.remove(networkId)
+        }
 
         dirty = true
     }
@@ -85,27 +89,82 @@ object Network {
     fun removeNodeInEveryNetwork(node: BlockPos, world: World) {
         if (world.isRemote)
             return
-        networks[world.worldInfo.worldName]!!.forEach { id, network ->
-            if (network.containsVertex(node)) {
-                val edges = network.edgesOf(node)
-                if (edges.size != 0) {
-                    edges.forEach { edge ->
-                        val edgetmp = network.getEdgeSource(edge)
-                        val secondNode = if (edgetmp == node) network.getEdgeTarget(edge) else edgetmp
 
-                        splitNetwork(secondNode, id, world)
+        val newNetworks = mutableMapOf<UUID, Multigraph<BlockPos, WrappedPipeType>>()
+
+        mapOf(*networks.toList().toTypedArray())
+                .forEach { _, worldNetworks ->
+                    worldNetworks.forEach { id, network ->
+                        if (network.containsVertex(node)) {
+                            val edges = setOf(*network.edgesOf(node).toTypedArray())
+
+                            network.removeVertex(node)
+
+                            if (edges.size > 1) {
+                                val used = mutableSetOf<BlockPos>()
+                                val remove = mutableSetOf(node)
+                                edges.forEachIndexed { index, wrappedPipeType ->
+
+                                    val currentNode =
+                                            (if (wrappedPipeType.getSourceNode() == node)
+                                                wrappedPipeType.getTargetNode()
+                                            else wrappedPipeType.getSourceNode())
+
+                                    if (index == 0) {
+                                        val iterator = DepthFirstIterator(network, currentNode)
+                                        iterator.forEach { used.add(it) }
+                                    } else {
+                                        if (!used.contains(currentNode)) {
+                                            val iterator = DepthFirstIterator(network, currentNode)
+                                            val newNetwork = Multigraph.createBuilder<BlockPos, WrappedPipeType>(WrappedPipeType::class.java).build()
+                                            val uuid = UUID.randomUUID()
+                                            newNetworks[uuid] = newNetwork
+                                            iterator.forEach {
+                                                used.add(it)
+                                                remove.add(it)
+                                                newNetwork.addVertex(it)
+                                                forceNetworkId(it, uuid, world)
+
+                                                val innerEdge = network.edgesOf(it)
+                                                for (e in innerEdge) {
+                                                    newNetwork.addVertex(e.getSourceNode())
+                                                    newNetwork.addVertex(e.getTargetNode())
+                                                    newNetwork.addEdge(e.getSourceNode(), e.getTargetNode(), e)
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                for (rem in remove) {
+                                    removeNode(rem, id, world)
+                                }
+
+
+                                /*edges.forEach { edge ->
+                                    val edgetmp = network.getEdgeSource(edge)
+                                    val secondNode = if (edgetmp == node) network.getEdgeTarget(edge) else edgetmp
+
+                                    splitNetwork(secondNode, id, world)
+                                }*/
+                            }
+
+                            if (network.vertexSet().size == 0) {
+                                networks[world.worldInfo.worldName]!!.remove(id)
+                            }
+                        }
                     }
                 }
 
-                network.removeVertex(node)
-            }
-        }
+
+        networks[world.worldInfo.worldName]!!.putAll(newNetworks)
         dirty = true
     }
 
     fun addNode(node: BlockPos, networkId: UUID, world: World) {
         if (world.isRemote)
             return
+
         val map = networks.getOrPut(world.worldInfo.worldName) {
             mutableMapOf(Pair(networkId, Multigraph.createBuilder<BlockPos, WrappedPipeType>(WrappedPipeType::class.java).build()))
         }
@@ -114,10 +173,8 @@ object Network {
             Multigraph.createBuilder<BlockPos, WrappedPipeType>(WrappedPipeType::class.java).build()
         }
 
-        if (!network.vertexSet().contains(node)) {
-            network.addVertex(node)
-            dirty = true
-        }
+        network.addVertex(node)
+        dirty = true
     }
 
     fun loadNode(node: BlockPos, networkId: UUID, world: World) {
@@ -154,12 +211,12 @@ object Network {
         return true
     }
 
-    fun combineNet1work(nodeA: BlockPos, nodeB: BlockPos, networkId_old: UUID, networkId_new: UUID, world: World, type:
+    fun combineNetwork(nodeA: BlockPos, nodeB: BlockPos, networkId_old: UUID, networkId_new: UUID, world: World, type:
     PipeType) {
         if (world.isRemote)
             return
         val network_old = networks[world.worldInfo.worldName]!![networkId_old]!!
-        var network_new = networks[world.worldInfo.worldName]!![networkId_new]!!
+        val network_new = networks[world.worldInfo.worldName]!![networkId_new]!!
 
         network_old.vertexSet().forEach {
             network_new.addVertex(it)
@@ -235,7 +292,7 @@ object Network {
     @SubscribeEvent
     fun initWorld(e: WorldEvent.Load) {
         if (!e.world.isRemote) {
-            val file = File(DimensionManager.getCurrentSaveRootDirectory()!!.absolutePath + "./pipes.data")
+            val file = File(DimensionManager.getCurrentSaveRootDirectory()!!.absolutePath + "./data/${TCFoundation.MODID}/pipes.dat")
             if (file.exists())
                 savedData.readNBT(e.world, CompressedStreamTools.readCompressed(FileInputStream(file)))
         }
@@ -245,7 +302,10 @@ object Network {
     fun worldSave(e: WorldEvent.Save) {
         if (!e.world.isRemote && dirty) {
             dirty = false
-            val file = File(DimensionManager.getCurrentSaveRootDirectory()!!.absolutePath + "./pipes.data")
+            println("Saving Network")
+            val file = File(DimensionManager.getCurrentSaveRootDirectory()!!.absolutePath + "./data/${TCFoundation.MODID}/pipes.dat")
+            if(!file.parentFile.exists())
+                file.parentFile.mkdirs()
             CompressedStreamTools.writeCompressed(savedData.writeNBT(), FileOutputStream(file))
         }
     }

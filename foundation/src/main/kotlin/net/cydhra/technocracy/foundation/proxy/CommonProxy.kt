@@ -10,6 +10,7 @@ import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.items.general.*
 import net.cydhra.technocracy.foundation.liquids.general.*
 import net.cydhra.technocracy.foundation.materialsystems.*
+import net.cydhra.technocracy.foundation.pipes.Network
 import net.cydhra.technocracy.foundation.potions.PotionManager
 import net.cydhra.technocracy.foundation.potions.oilyEffect
 import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
@@ -17,6 +18,7 @@ import net.cydhra.technocracy.foundation.tileentity.controllers.TileEntityBoiler
 import net.cydhra.technocracy.foundation.tileentity.machines.*
 import net.cydhra.technocracy.foundation.tileentity.management.TileEntityManager
 import net.minecraft.util.ResourceLocation
+import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.animation.ITimeValue
 import net.minecraftforge.common.model.animation.IAnimationStateMachine
 import net.minecraftforge.fml.common.network.NetworkRegistry
@@ -32,6 +34,8 @@ open class CommonProxy {
             lithiumSystem, nickelSystem, niobiumSystem, silverSystem, tinSystem)
 
     open fun preInit() {
+        MinecraftForge.EVENT_BUS.register(Network)
+
         materialSystems.forEach(MaterialSystem::preInit)
 
         FluidManager.registerFluid(mineralOilFluid)

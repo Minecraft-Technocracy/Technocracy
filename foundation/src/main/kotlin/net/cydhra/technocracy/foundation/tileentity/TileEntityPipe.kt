@@ -22,7 +22,6 @@ class TileEntityPipe : AbstractComponentTileEntity() {
     }
 
     override fun onLoad() {
-
         //forge calls onLoad 2x
         if(networkComponent.uuid != null || world.isRemote)
             return
