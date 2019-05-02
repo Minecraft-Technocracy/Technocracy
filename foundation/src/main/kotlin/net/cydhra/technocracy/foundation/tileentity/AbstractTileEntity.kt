@@ -1,3 +1,5 @@
 package net.cydhra.technocracy.foundation.tileentity
 
-abstract class AbstractTileEntity : TCTileEntity
+import net.minecraft.tileentity.TileEntity
+
+abstract class AbstractTileEntity : TileEntity(), TCTileEntity
