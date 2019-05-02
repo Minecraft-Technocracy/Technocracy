@@ -2,7 +2,6 @@ package net.cydhra.technocracy.foundation.tileentity
 
 import net.cydhra.technocracy.foundation.tileentity.components.AbstractCapabilityComponent
 import net.cydhra.technocracy.foundation.tileentity.components.IComponent
-import net.minecraft.block.state.IBlockState
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
@@ -19,11 +18,6 @@ open class AggregatableTileEntity : AbstractTileEntity(), TCAggregatableTileEnti
      * also collected in this list for quick query times in [hasCapability]
      */
     private val capabilityComponents: MutableSet<AbstractCapabilityComponent> = mutableSetOf()
-
-    /**
-     * The attached block's BlockState.
-     */
-    protected var state: IBlockState? = null
 
     override fun getComponents(): MutableList<Pair<String, IComponent>> {
         return this.components
@@ -68,27 +62,6 @@ open class AggregatableTileEntity : AbstractTileEntity(), TCAggregatableTileEnti
 
         if (component is AbstractCapabilityComponent) {
             capabilityComponents += component
-        }
-    }
-
-    /**
-     * Query the world for the [IBlockState] associated with this entity
-     *
-     * @return the block state of the associated block in world
-     */
-    private fun getBlockState(): IBlockState {
-        if (this.state == null) {
-            this.state = this.world.getBlockState(this.getPos())
-        }
-        return this.state!!
-    }
-
-    /**
-     * Mark the block for a block update. Does not mark the chunk dirty.
-     */
-    private fun markForUpdate() {
-        if (this.world != null) {
-            this.world.notifyBlockUpdate(this.pos, this.getBlockState(), this.getBlockState(), 3)
         }
     }
 }
