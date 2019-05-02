@@ -33,7 +33,7 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
         this.registerComponent(machineUpgradesComponent, "upgrades")
     }
 
-    fun getGuiTabs(): Array<Tab> {
+    override fun getAvailableGUITabs(): Array<Tab> {
         return arrayOf(WipTab(500, 500))
     }
 
