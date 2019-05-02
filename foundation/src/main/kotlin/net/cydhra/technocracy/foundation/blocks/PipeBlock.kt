@@ -24,14 +24,12 @@ class PipeBlock : BaseTileEntityBlock("pipe", material = Material.PISTON) {
     }
 
     override fun onBlockDestroyedByExplosion(worldIn: World, pos: BlockPos, explosionIn: Explosion) {
-        val pipe = worldIn.getTileEntity(pos) as TileEntityPipe
-        Network.removeNode(pos, pipe.networkComponent.uuid!!, worldIn)
+        Network.removeNodeInEveryNetwork(pos, worldIn)
         super.onBlockDestroyedByExplosion(worldIn, pos, explosionIn)
     }
 
     override fun onBlockDestroyedByPlayer(worldIn: World, pos: BlockPos, state: IBlockState) {
-        val pipe = worldIn.getTileEntity(pos) as TileEntityPipe
-        Network.removeNode(pos, pipe.networkComponent.uuid!!, worldIn)
+        Network.removeNodeInEveryNetwork(pos, worldIn)
         super.onBlockDestroyedByPlayer(worldIn, pos, state)
     }
 }
