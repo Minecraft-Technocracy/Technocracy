@@ -3,7 +3,7 @@ package net.cydhra.technocracy.foundation.tileentity.machines
 import net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryHandler
 import net.cydhra.technocracy.foundation.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
-import net.cydhra.technocracy.foundation.tileentity.AbstractMachine
+import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
 import net.cydhra.technocracy.foundation.tileentity.components.InventoryComponent
 import net.cydhra.technocracy.foundation.tileentity.logic.ItemProcessingLogic
 import net.cydhra.technocracy.foundation.tileentity.management.TEInventoryProvider
@@ -13,7 +13,7 @@ import net.minecraft.util.EnumFacing
 /**
  * Electric furnace tile entity
  */
-class TileEntityElectricFurnace : AbstractMachine(), TEInventoryProvider {
+class TileEntityElectricFurnace : MachineTileEntity(), TEInventoryProvider {
 
     /**
      * Input inventory for the furnace with one slot

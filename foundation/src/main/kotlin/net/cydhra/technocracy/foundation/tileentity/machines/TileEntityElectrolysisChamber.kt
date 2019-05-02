@@ -1,8 +1,8 @@
 package net.cydhra.technocracy.foundation.tileentity.machines
 
-import net.cydhra.technocracy.foundation.tileentity.AbstractMachine
+import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
 
 /**
  *
  */
-class TileEntityElectrolysisChamber : AbstractMachine()
+class TileEntityElectrolysisChamber : MachineTileEntity()

@@ -1,13 +1,13 @@
 package net.cydhra.technocracy.foundation.client.gui.machine
 
-import net.cydhra.technocracy.foundation.tileentity.AbstractMachine
+import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.entity.player.InventoryPlayer
 import net.minecraft.inventory.Container
 import net.minecraft.inventory.Slot
 
 
-open class MachineContainer(protected val playerInventory: InventoryPlayer, protected val machine: AbstractMachine) :
+open class MachineContainer(protected val playerInventory: InventoryPlayer, protected val machine: MachineTileEntity) :
         Container() {
 
     init {

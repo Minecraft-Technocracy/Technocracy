@@ -1,13 +1,13 @@
 package net.cydhra.technocracy.foundation.client.gui.machine
 
-import net.cydhra.technocracy.foundation.tileentity.AbstractMachine
+import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.entity.player.InventoryPlayer
 import net.minecraft.util.ResourceLocation
 
-open class MachineGui(private val machine: AbstractMachine?, private val container: MachineContainer?, private val
+open class MachineGui(private val machine: MachineTileEntity?, private val container: MachineContainer?, private val
 playerInventory: InventoryPlayer,
                       private val tabs: Array<Tab>) :
         GuiContainer

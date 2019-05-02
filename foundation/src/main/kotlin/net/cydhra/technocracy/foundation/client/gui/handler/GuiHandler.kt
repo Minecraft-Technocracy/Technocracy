@@ -2,7 +2,7 @@ package net.cydhra.technocracy.foundation.client.gui.handler
 
 import net.cydhra.technocracy.foundation.client.gui.machine.MachineContainer
 import net.cydhra.technocracy.foundation.client.gui.machine.MachineGui
-import net.cydhra.technocracy.foundation.tileentity.AbstractMachine
+import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
@@ -15,7 +15,7 @@ class GuiHandler : IGuiHandler {
     }
 
     override fun getServerGuiElement(ID: Int, player: EntityPlayer, world: World, x: Int, y: Int, z: Int): Any? {
-        val machine = world.getTileEntity(BlockPos(x, y, z)) as AbstractMachine
+        val machine = world.getTileEntity(BlockPos(x, y, z)) as MachineTileEntity
 
         return when (ID) {
             machineGui -> MachineContainer(player.inventory, machine)
@@ -24,10 +24,11 @@ class GuiHandler : IGuiHandler {
     }
 
     override fun getClientGuiElement(ID: Int, player: EntityPlayer, world: World, x: Int, y: Int, z: Int): Any? {
-        val machine = world.getTileEntity(BlockPos(x, y, z)) as AbstractMachine
+        val machine = world.getTileEntity(BlockPos(x, y, z)) as MachineTileEntity
 
         return when (ID) {
-            machineGui -> MachineGui(machine, MachineContainer(player.inventory, machine), player.inventory, machine.getGuiTabs())
+            machineGui -> MachineGui(machine, MachineContainer(player.inventory, machine), player.inventory,
+                    machine.getAvailableGUITabs())
             else -> null
         }
     }

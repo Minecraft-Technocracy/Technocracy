@@ -7,7 +7,7 @@ import net.minecraft.util.EnumFacing
 import java.util.*
 
 
-class TileEntityPipe : AbstractComponentTileEntity() {
+class TileEntityPipe : AggregatableTileEntity() {
     val networkComponent = NetworkComponent()
 
     init {

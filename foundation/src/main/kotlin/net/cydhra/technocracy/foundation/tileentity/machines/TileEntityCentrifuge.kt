@@ -3,7 +3,7 @@ package net.cydhra.technocracy.foundation.tileentity.machines
 import net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryHandler
 import net.cydhra.technocracy.foundation.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
-import net.cydhra.technocracy.foundation.tileentity.AbstractMachine
+import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
 import net.cydhra.technocracy.foundation.tileentity.components.InventoryComponent
 import net.cydhra.technocracy.foundation.tileentity.logic.ItemProcessingLogic
 import net.cydhra.technocracy.foundation.tileentity.management.TEInventoryProvider
@@ -14,7 +14,7 @@ import net.minecraft.util.EnumFacing
  * A tile entity linked to a pulverizer block that can store up to two stacks of items and processes the first stack
  * into its output (second) stack, if the processing output and second stack can be merged.
  */
-class TileEntityCentrifuge : AbstractMachine(), TEInventoryProvider {
+class TileEntityCentrifuge : MachineTileEntity(), TEInventoryProvider {
 
     /**
      * Input inventory for the pulverizer with one slot
