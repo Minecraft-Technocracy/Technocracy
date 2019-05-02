@@ -2,6 +2,7 @@ package net.cydhra.technocracy.foundation.tileentity
 
 import it.zerono.mods.zerocore.api.multiblock.rectangular.RectangularMultiblockControllerBase
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
+import net.cydhra.technocracy.foundation.tileentity.api.TCMachineTileEntity
 import net.minecraft.block.state.IBlockState
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World

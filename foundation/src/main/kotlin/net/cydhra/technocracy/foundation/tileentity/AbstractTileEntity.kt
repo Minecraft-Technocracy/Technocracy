@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.tileentity
 
+import net.cydhra.technocracy.foundation.tileentity.api.TCTileEntity
 import net.minecraft.block.state.IBlockState
 import net.minecraft.tileentity.TileEntity
 

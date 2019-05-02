@@ -2,6 +2,7 @@ package net.cydhra.technocracy.foundation.tileentity
 
 import net.cydhra.technocracy.foundation.client.gui.machine.Tab
 import net.cydhra.technocracy.foundation.client.gui.machine.tabs.WipTab
+import net.cydhra.technocracy.foundation.tileentity.api.TCMachineTileEntity
 import net.cydhra.technocracy.foundation.tileentity.components.EnergyStorageComponent
 import net.cydhra.technocracy.foundation.tileentity.components.MachineUpgradesComponents
 import net.cydhra.technocracy.foundation.tileentity.components.RedstoneModeComponent

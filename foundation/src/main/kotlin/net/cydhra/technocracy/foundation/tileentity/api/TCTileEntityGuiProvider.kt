@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.foundation.tileentity
+package net.cydhra.technocracy.foundation.tileentity.api
 
 import net.cydhra.technocracy.foundation.client.gui.machine.Tab
 
