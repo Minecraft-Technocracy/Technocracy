@@ -1,17 +1,34 @@
 package net.cydhra.technocracy.foundation.proxy
 
 import net.cydhra.technocracy.foundation.TCFoundation
+import net.cydhra.technocracy.foundation.client.renderer.sky.CustomSkyRenderer
+import net.cydhra.technocracy.foundation.client.renderer.sky.WrappedWorldProvider
 import net.minecraft.client.Minecraft
+import net.minecraft.client.multiplayer.WorldClient
 import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.client.renderer.OpenGlHelper
+import net.minecraft.client.renderer.RenderHelper
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
+import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.MathHelper
 import net.minecraft.util.math.Vec3d
+import net.minecraft.world.*
+import net.minecraft.world.biome.Biome
+import net.minecraft.world.biome.BiomeProvider
+import net.minecraft.world.border.WorldBorder
+import net.minecraft.world.gen.IChunkGenerator
+import net.minecraftforge.client.IRenderHandler
 import net.minecraftforge.client.event.RenderBlockOverlayEvent
+import net.minecraftforge.event.world.WorldEvent
 import net.minecraftforge.fluids.BlockFluidBase
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import net.minecraftforge.fml.common.gameevent.TickEvent
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 
 @Mod.EventBusSubscriber(modid = TCFoundation.MODID)
 class RenderProxy {
@@ -98,6 +115,19 @@ class RenderProxy {
                 GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f)
         }
     }*/
+
+    @SubscribeEvent
+    fun loadWorld(event: WorldEvent.Load) {
+        //event.world.provider.skyRenderer = CustomSkyRenderer()
+        //event.world.provider = WrappedWorldProvider(event.world.provider)
+    }
+
+    @SubscribeEvent
+    fun render(event: TickEvent.WorldTickEvent) {
+        //if(event.phase == TickEvent.Phase.END) {
+        //    event.world.skylightSubtracted = 10
+        //}
+    }
 
     @SubscribeEvent
     @Suppress("unused")
