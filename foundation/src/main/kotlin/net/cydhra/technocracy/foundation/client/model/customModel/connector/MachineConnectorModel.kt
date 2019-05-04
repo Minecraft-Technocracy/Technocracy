@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.foundation.client.model
+package net.cydhra.technocracy.foundation.client.model.customModel.connector
 
 import net.minecraft.client.renderer.block.model.IBakedModel
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
@@ -9,7 +9,7 @@ import net.minecraftforge.client.model.ModelLoaderRegistry
 import net.minecraftforge.common.model.IModelState
 import java.util.function.Function
 import com.google.common.collect.ImmutableList
-import net.minecraft.client.renderer.block.model.SimpleBakedModel
+import net.cydhra.technocracy.foundation.client.model.AbstractCustomModel
 
 
 class MachineConnectorModel : AbstractCustomModel() {
