@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.blocks
 
 import net.cydhra.technocracy.foundation.TCFoundation
+import net.cydhra.technocracy.foundation.blocks.general.BaseRotateableTileEntityBlock
 import net.cydhra.technocracy.foundation.blocks.general.BaseTileEntityBlock
 import net.cydhra.technocracy.foundation.client.gui.handler.GuiHandler
 import net.minecraft.block.material.Material
@@ -13,7 +14,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
 class MachineBlock(name: String, private val tileEntityConstructor: () -> TileEntity)
-    : BaseTileEntityBlock(name, material = Material.ROCK) {
+    : BaseRotateableTileEntityBlock(name, material = Material.ROCK) {
     init {
         this.setHardness(2f)
         this.setResistance(4f)

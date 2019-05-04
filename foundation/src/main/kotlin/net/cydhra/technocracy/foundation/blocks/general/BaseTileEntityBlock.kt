@@ -18,4 +18,4 @@ abstract class BaseTileEntityBlock(unlocalizedName: String,
                                    registryName: String = unlocalizedName,
                                    colorMultiplier: ConstantBlockColor? = null,
                                    material: Material)
-    : AbstractRotateableBlock(unlocalizedName, material, registryName, colorMultiplier), ITileEntityProvider
+    : AbstractBaseBlock(unlocalizedName, material, registryName, colorMultiplier), ITileEntityProvider
