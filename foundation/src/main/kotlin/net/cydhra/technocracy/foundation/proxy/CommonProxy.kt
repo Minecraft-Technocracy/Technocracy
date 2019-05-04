@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.general.*
 import net.cydhra.technocracy.foundation.client.gui.handler.GuiHandler
-import net.cydhra.technocracy.foundation.client.model.MachineConnectorModel
+import net.cydhra.technocracy.foundation.client.model.customModel.connector.MachineConnectorModel
 import net.cydhra.technocracy.foundation.client.renderer.tileEntity.PipeRenderer
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.items.general.*
