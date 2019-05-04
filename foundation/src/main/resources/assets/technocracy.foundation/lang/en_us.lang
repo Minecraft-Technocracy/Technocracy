@@ -76,6 +76,7 @@ tile.refinery.name=Refinery
 tile.thermoelectric_freezer.name=Thermoelectric Freezer
 
 tile.iron_beam.name=Steel Beam
+tile.boiler_wall=Boiler Frame
 
 fluid.oil=Mineral Oil
 fluid.sulfurdioxide=Sulfurdioxide

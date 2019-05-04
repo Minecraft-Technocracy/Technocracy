@@ -7,6 +7,7 @@ import net.cydhra.technocracy.foundation.blocks.PipeBlock
 import net.cydhra.technocracy.foundation.blocks.liquid.OilBlock
 import net.cydhra.technocracy.foundation.tileentity.controller.TileEntityBoilerController
 import net.cydhra.technocracy.foundation.tileentity.machines.*
+import net.minecraft.block.material.Material
 
 val alloySmelteryBlock = MachineBlock("alloy_smeltery", ::TileEntityAlloySmeltery)
 val centrifugeBlock = MachineBlock("centrifuge", ::TileEntityCentrifuge)
@@ -25,6 +26,7 @@ val thermoelectricFreezerBlock = MachineBlock("thermoelectric_freezer", ::TileEn
 
 val boilerControllerBlock = MachineBlock("boiler_controller", ::TileEntityBoilerController)
 
+val boilerWallBlock = PlainBlock("boiler_wall", Material.IRON).apply { setHardness(3.5f).setResistance(1f) }
 val oilSandBlock = OilSand()
 val ironBeamBlock = IronBeamBlock()
 
