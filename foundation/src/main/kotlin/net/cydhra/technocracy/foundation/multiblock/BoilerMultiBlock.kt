@@ -1,14 +1,13 @@
-package net.cydhra.technocracy.foundation.tileentity.controllers
+package net.cydhra.technocracy.foundation.multiblock
 
 import it.zerono.mods.zerocore.api.multiblock.IMultiblockPart
 import it.zerono.mods.zerocore.api.multiblock.MultiblockControllerBase
 import it.zerono.mods.zerocore.lib.block.ModTileEntity
-import net.cydhra.technocracy.foundation.tileentity.AbstractRectangularMultiBlockControllerTileEntity
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.world.World
 import java.util.function.Predicate
 
-class TileEntityBoilerController(world: World) : AbstractRectangularMultiBlockControllerTileEntity(
+class BoilerMultiBlock(world: World) : BaseMultiBlock(
         frameBlockWhitelist = Predicate { true },
         sideBlockWhitelist = Predicate { true },
         topBlockWhitelist = Predicate { true },
@@ -73,5 +72,4 @@ class TileEntityBoilerController(world: World) : AbstractRectangularMultiBlockCo
     override fun onMachineDisassembled() {
         TODO("not implemented")
     }
-
 }
