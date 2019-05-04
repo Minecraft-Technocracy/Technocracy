@@ -17,6 +17,8 @@ import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 import net.minecraftforge.common.property.IExtendedBlockState
 import net.minecraft.tileentity.TileEntity
+import net.minecraft.util.Mirror
+import net.minecraft.util.Rotation
 
 
 /**
@@ -45,6 +47,10 @@ abstract class AbstractRotateableBlock(unlocalizedName: String,
 
     init {
         defaultState = this.blockState.baseState.withProperty(facingProperty, EnumFacing.NORTH)
+    }
+
+    override fun withRotation(state: IBlockState, rot: Rotation): IBlockState {
+        return state.withProperty(facingProperty, rot.rotate(EnumFacing.NORTH))
     }
 
     override fun createBlockState(): BlockStateContainer {
