@@ -1,5 +1,12 @@
 buildscript {
     ext.mod_id = 'technocracy.foundation'
+
+}
+
+jar {
+    manifest {
+        attributes 'FMLAT': 'technocracy_at.cfg'
+    }
 }
 
 apply plugin: 'idea'
@@ -21,6 +28,8 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+
+    rename '(.+_at.cfg)', 'META-INF/$1'
 }
 
 //
