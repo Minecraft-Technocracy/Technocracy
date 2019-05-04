@@ -5,6 +5,7 @@ import net.cydhra.technocracy.foundation.blocks.MachineBlock
 import net.cydhra.technocracy.foundation.blocks.OilSand
 import net.cydhra.technocracy.foundation.blocks.PipeBlock
 import net.cydhra.technocracy.foundation.blocks.liquid.OilBlock
+import net.cydhra.technocracy.foundation.tileentity.controller.TileEntityBoilerController
 import net.cydhra.technocracy.foundation.tileentity.machines.*
 
 val alloySmelteryBlock = MachineBlock("alloy_smeltery", ::TileEntityAlloySmeltery)
@@ -21,6 +22,8 @@ val polymerizationChamberBlock = MachineBlock("polymerization_chamber", ::TileEn
 val pulverizerBlock = MachineBlock("pulverizer", ::TileEntityPulverizer)
 val refineryBlock = MachineBlock("refinery", ::TileEntityRefinery)
 val thermoelectricFreezerBlock = MachineBlock("thermoelectric_freezer", ::TileEntityThermoelectricFreezer)
+
+val boilerControllerBlock = MachineBlock("boiler_controller", ::TileEntityBoilerController)
 
 val oilSandBlock = OilSand()
 val ironBeamBlock = IronBeamBlock()

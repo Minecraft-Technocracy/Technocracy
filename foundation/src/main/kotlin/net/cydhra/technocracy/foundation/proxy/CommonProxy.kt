@@ -14,6 +14,7 @@ import net.cydhra.technocracy.foundation.pipes.Network
 import net.cydhra.technocracy.foundation.potions.PotionManager
 import net.cydhra.technocracy.foundation.potions.oilyEffect
 import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
+import net.cydhra.technocracy.foundation.tileentity.controller.TileEntityBoilerController
 import net.cydhra.technocracy.foundation.tileentity.machines.*
 import net.cydhra.technocracy.foundation.tileentity.management.TileEntityManager
 import net.minecraft.util.ResourceLocation
@@ -76,6 +77,8 @@ open class CommonProxy {
         BlockManager.prepareBlocksForRegistration(refineryBlock, MachineConnectorModel())
         BlockManager.prepareBlocksForRegistration(thermoelectricFreezerBlock, MachineConnectorModel())
 
+        BlockManager.prepareBlocksForRegistration(boilerControllerBlock)
+
         BlockManager.prepareBlocksForRegistration(oilSandBlock)
         BlockManager.prepareBlocksForRegistration(ironBeamBlock)
         BlockManager.prepareBlocksForRegistration(oilBlock)
@@ -115,6 +118,7 @@ open class CommonProxy {
         TileEntityManager.prepareTileEntityForRegistration(TileEntityPulverizer::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityRefinery::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityThermoelectricFreezer::class)
+        TileEntityManager.prepareTileEntityForRegistration(TileEntityBoilerController::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityPipe::class, PipeRenderer())
 
         PotionManager.preparePotionForRegistration(oilyEffect)
