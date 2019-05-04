@@ -32,4 +32,16 @@ class PipeBlock : BaseTileEntityBlock("pipe", material = Material.PISTON) {
         Network.removeNodeInEveryNetwork(pos, worldIn)
         super.onBlockDestroyedByPlayer(worldIn, pos, state)
     }
+
+    override fun isOpaqueCube(state: IBlockState): Boolean {
+        return false
+    }
+
+    override fun isFullBlock(state: IBlockState): Boolean {
+        return false
+    }
+
+    override fun isFullCube(state: IBlockState): Boolean {
+        return false
+    }
 }
