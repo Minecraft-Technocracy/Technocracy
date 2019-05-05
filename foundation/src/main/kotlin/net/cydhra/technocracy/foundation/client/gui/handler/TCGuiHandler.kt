@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.client.gui.handler
 
-import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
+import net.cydhra.technocracy.foundation.tileentity.api.TCTileEntityGuiProvider
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
@@ -13,7 +13,7 @@ class TCGuiHandler : IGuiHandler {
     }
 
     override fun getServerGuiElement(ID: Int, player: EntityPlayer, world: World, x: Int, y: Int, z: Int): Any? {
-        val machine = world.getTileEntity(BlockPos(x, y, z)) as MachineTileEntity
+        val machine = world.getTileEntity(BlockPos(x, y, z)) as TCTileEntityGuiProvider
 
         return when (ID) {
             machineGui -> machine.getGui(player).container
@@ -22,7 +22,7 @@ class TCGuiHandler : IGuiHandler {
     }
 
     override fun getClientGuiElement(ID: Int, player: EntityPlayer, world: World, x: Int, y: Int, z: Int): Any? {
-        val machine = world.getTileEntity(BlockPos(x, y, z)) as MachineTileEntity
+        val machine = world.getTileEntity(BlockPos(x, y, z)) as TCTileEntityGuiProvider
 
         return when (ID) {
             machineGui -> machine.getGui(player)
