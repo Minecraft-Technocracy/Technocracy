@@ -2,8 +2,10 @@ package net.cydhra.technocracy.foundation.blocks.general
 
 import net.cydhra.technocracy.foundation.blocks.*
 import net.cydhra.technocracy.foundation.blocks.liquid.OilBlock
+import net.cydhra.technocracy.foundation.multiblock.BoilerMultiBlock
 import net.cydhra.technocracy.foundation.tileentity.machines.*
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityBoilerController
+import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPart
 
 val alloySmelteryBlock = MachineBlock("alloy_smeltery", ::TileEntityAlloySmeltery)
 val centrifugeBlock = MachineBlock("centrifuge", ::TileEntityCentrifuge)
@@ -22,7 +24,9 @@ val thermoelectricFreezerBlock = MachineBlock("thermoelectric_freezer", ::TileEn
 
 val boilerControllerBlock = MultiBlockControllerBlock("boiler_controller", ::TileEntityBoilerController)
 
-val boilerWallBlock = MultiBlockBaseBlock("boiler_wall", ::TileEntityBoilerController).apply { setHardness(3.5f).setResistance(1f) }
+val boilerWallBlock = MultiBlockBaseBlock("boiler_wall", { TileEntityMultiBlockPart(BoilerMultiBlock::class, ::BoilerMultiBlock) })
+        .apply { setHardness(3.5f).setResistance(1f) }
+
 val oilSandBlock = OilSand()
 val ironBeamBlock = IronBeamBlock()
 
