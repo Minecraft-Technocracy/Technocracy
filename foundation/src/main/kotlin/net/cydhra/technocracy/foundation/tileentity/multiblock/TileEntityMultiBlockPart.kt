@@ -13,7 +13,7 @@ import kotlin.reflect.KClass
  * @param clazz the class of the [MultiblockControllerBase] implementation responsible for this specific tile entity
  * @param constructController the constructor for the [MultiblockControllerBase] implementation
  */
-open class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private val constructController: (World) -> T)
+abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private val constructController: (World) -> T)
     : AbstractRectangularMultiBlockTileEntity()
         where T : MultiblockControllerBase {
 

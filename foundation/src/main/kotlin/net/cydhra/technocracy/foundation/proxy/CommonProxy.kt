@@ -17,7 +17,7 @@ import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
 import net.cydhra.technocracy.foundation.tileentity.machines.*
 import net.cydhra.technocracy.foundation.tileentity.management.TileEntityManager
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityBoilerController
-import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPart
+import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartBoiler
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.animation.ITimeValue
@@ -121,7 +121,7 @@ open class CommonProxy {
         TileEntityManager.prepareTileEntityForRegistration(TileEntityRefinery::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityThermoelectricFreezer::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityBoilerController::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityMultiBlockPart::class)
+        TileEntityManager.prepareTileEntityForRegistration(TileEntityMultiBlockPartBoiler::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityPipe::class, PipeRenderer())
 
         PotionManager.preparePotionForRegistration(oilyEffect)
