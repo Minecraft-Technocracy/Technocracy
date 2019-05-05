@@ -1,12 +1,12 @@
 {
   "parent": "block/orientable",
   "textures": {
-    "particle": "technocracy.foundation:block/corrugated_sheet",
-    "up": "technocracy.foundation:block/corrugated_sheet",
-    "down": "technocracy.foundation:block/corrugated_sheet",
+    "particle": "technocracy.foundation:block/boiler_wall",
+    "up": "technocracy.foundation:block/boiler_wall",
+    "down": "technocracy.foundation:block/boiler_wall",
     "north": "technocracy.foundation:block/boiler_controller",
-    "east": "technocracy.foundation:block/corrugated_sheet",
-    "south": "technocracy.foundation:block/corrugated_sheet",
-    "west": "technocracy.foundation:block/corrugated_sheet"
+    "east": "technocracy.foundation:block/boiler_wall",
+    "south": "technocracy.foundation:block/boiler_wall",
+    "west": "technocracy.foundation:block/boiler_wall"
   }
 }
