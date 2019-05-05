@@ -329,7 +329,7 @@ object Network {
         }
     }
 
-    enum class PipeType {
-        ENERGY, FLUID, ITEM
+    enum class PipeType(val unlocalizedName: String) {
+        ENERGY("energy"), FLUID("fluid"), ITEM("item")
     }
 }
