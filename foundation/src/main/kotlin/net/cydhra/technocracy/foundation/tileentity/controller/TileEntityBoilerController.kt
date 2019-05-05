@@ -24,9 +24,9 @@ class TileEntityBoilerController : AbstractRectangularMultiBlockTileEntity() {
 
     override fun isGoodForSides(v: IMultiblockValidator) = true
     override fun isGoodForFrame(v: IMultiblockValidator) = true
-    override fun isGoodForTop(v: IMultiblockValidator) = false
+    override fun isGoodForTop(v: IMultiblockValidator) = true
     override fun isGoodForInterior(v: IMultiblockValidator) = false
-    override fun isGoodForBottom(v: IMultiblockValidator) = false
+    override fun isGoodForBottom(v: IMultiblockValidator) = true
 
     override fun validateStructure(): Boolean {
         return this.multiblockController.isAssembled

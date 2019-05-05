@@ -1,13 +1,9 @@
 package net.cydhra.technocracy.foundation.blocks.general
 
-import net.cydhra.technocracy.foundation.blocks.IronBeamBlock
-import net.cydhra.technocracy.foundation.blocks.MachineBlock
-import net.cydhra.technocracy.foundation.blocks.OilSand
-import net.cydhra.technocracy.foundation.blocks.PipeBlock
+import net.cydhra.technocracy.foundation.blocks.*
 import net.cydhra.technocracy.foundation.blocks.liquid.OilBlock
 import net.cydhra.technocracy.foundation.tileentity.controller.TileEntityBoilerController
 import net.cydhra.technocracy.foundation.tileentity.machines.*
-import net.minecraft.block.material.Material
 
 val alloySmelteryBlock = MachineBlock("alloy_smeltery", ::TileEntityAlloySmeltery)
 val centrifugeBlock = MachineBlock("centrifuge", ::TileEntityCentrifuge)
@@ -24,9 +20,9 @@ val pulverizerBlock = MachineBlock("pulverizer", ::TileEntityPulverizer)
 val refineryBlock = MachineBlock("refinery", ::TileEntityRefinery)
 val thermoelectricFreezerBlock = MachineBlock("thermoelectric_freezer", ::TileEntityThermoelectricFreezer)
 
-val boilerControllerBlock = MachineBlock("boiler_controller", ::TileEntityBoilerController)
+val boilerControllerBlock = MultiBlockControllerBlock("boiler_controller", ::TileEntityBoilerController)
 
-val boilerWallBlock = PlainBlock("boiler_wall", Material.IRON).apply { setHardness(3.5f).setResistance(1f) }
+val boilerWallBlock = MultiBlockBaseBlock("boiler_wall", ::TileEntityBoilerController).apply { setHardness(3.5f).setResistance(1f) }
 val oilSandBlock = OilSand()
 val ironBeamBlock = IronBeamBlock()
 
