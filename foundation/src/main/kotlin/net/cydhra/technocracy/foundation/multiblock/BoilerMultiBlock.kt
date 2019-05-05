@@ -7,7 +7,7 @@ import it.zerono.mods.zerocore.lib.block.ModTileEntity
 import net.cydhra.technocracy.foundation.blocks.general.boilerControllerBlock
 import net.cydhra.technocracy.foundation.blocks.general.boilerGlassBlock
 import net.cydhra.technocracy.foundation.blocks.general.boilerWallBlock
-import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityBoilerController
+import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerController
 import net.minecraft.init.Blocks
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.world.World
@@ -20,9 +20,15 @@ class BoilerMultiBlock(world: World) : BaseMultiBlock(
         sideBlockWhitelist = Predicate {
             it.block == boilerWallBlock || it.block == boilerGlassBlock || it.block == boilerControllerBlock
         },
-        topBlockWhitelist = Predicate { it.block == boilerWallBlock || it.block == boilerGlassBlock },
-        bottomBlockWhitelist = Predicate { it.block == boilerWallBlock || it.block == boilerGlassBlock },
-        interiorBlockWhitelist = Predicate { it.block == Blocks.AIR },
+        topBlockWhitelist = Predicate {
+            it.block == boilerWallBlock || it.block == boilerGlassBlock
+        },
+        bottomBlockWhitelist = Predicate {
+            it.block == boilerWallBlock || it.block == boilerGlassBlock
+        },
+        interiorBlockWhitelist = Predicate {
+            it.block == Blocks.AIR
+        },
         maximumSizeXZ = 16,
         maximumSizeY = 16,
         world = world) {

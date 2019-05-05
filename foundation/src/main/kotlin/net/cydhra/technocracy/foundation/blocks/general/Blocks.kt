@@ -3,8 +3,8 @@ package net.cydhra.technocracy.foundation.blocks.general
 import net.cydhra.technocracy.foundation.blocks.*
 import net.cydhra.technocracy.foundation.blocks.liquid.OilBlock
 import net.cydhra.technocracy.foundation.tileentity.machines.*
-import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityBoilerController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartBoiler
+import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerController
 import net.minecraft.util.BlockRenderLayer
 
 val alloySmelteryBlock = MachineBlock("alloy_smeltery", ::TileEntityAlloySmeltery)
