@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.tileentity.api
 
-import net.cydhra.technocracy.foundation.client.gui.machine.Tab
+import net.cydhra.technocracy.foundation.client.gui.TCGui
+import net.minecraft.entity.player.EntityPlayer
 
 /**
  * An interface for tile entities that offer a GUI
@@ -8,7 +9,7 @@ import net.cydhra.technocracy.foundation.client.gui.machine.Tab
 interface TCTileEntityGuiProvider {
 
     /**
-     * @return an array of tabs that are relevant for interaction with this tile entity.
+     * @return the gui to display to all players
      */
-    fun getAvailableGUITabs(): Array<Tab>
+    fun getGui(player: EntityPlayer): TCGui
 }
