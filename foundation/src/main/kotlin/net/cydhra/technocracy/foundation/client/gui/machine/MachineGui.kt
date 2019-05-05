@@ -1,36 +1,12 @@
 package net.cydhra.technocracy.foundation.client.gui.machine
 
+import net.cydhra.technocracy.foundation.client.gui.TCContainer
+import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
-import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.inventory.GuiContainer
-import net.minecraft.client.renderer.GlStateManager
-import net.minecraft.entity.player.InventoryPlayer
-import net.minecraft.util.ResourceLocation
+import net.minecraft.entity.player.EntityPlayer
 
-open class MachineGui(private val machine: MachineTileEntity?, private val container: MachineContainer?, private val
-playerInventory: InventoryPlayer,
-                      private val tabs: Array<Tab>) :
-        GuiContainer
-        (container) {
+open class MachineGui(player: EntityPlayer, private val machine: MachineTileEntity?, container: TCContainer) :
+        TCGui(player, container = container) {
 
-    companion object {
-        val guiTexture: ResourceLocation = ResourceLocation("technocracy.foundation", "textures/gui/machine.png")
-    }
-
-    private var tab: Int = 0
-
-    override fun drawGuiContainerBackgroundLayer(partialTicks: Float, mouseX: Int, mouseY: Int) {
-        GlStateManager.color(1F, 1F, 1F, 1F)
-        Minecraft.getMinecraft().textureManager.bindTexture(guiTexture)
-        drawTexturedModalRect((width - xSize) / 2, (height - ySize) / 2, 0, 0, xSize, ySize)
-        this.tabs[tab].draw(mouseX, mouseY, partialTicks)
-    }
-
-    override fun updateScreen() {
-        this.tabs[tab].update()
-    }
-
-    override fun doesGuiPauseGame(): Boolean {
-        return false
-    }
 }
+

@@ -3,7 +3,7 @@ package net.cydhra.technocracy.foundation.proxy
 import com.google.common.collect.ImmutableMap
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.general.*
-import net.cydhra.technocracy.foundation.client.gui.handler.GuiHandler
+import net.cydhra.technocracy.foundation.client.gui.handler.TCGuiHandler
 import net.cydhra.technocracy.foundation.client.model.customModel.connector.MachineConnectorModel
 import net.cydhra.technocracy.foundation.client.renderer.tileEntity.PipeRenderer
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
@@ -124,7 +124,7 @@ open class CommonProxy {
 
         PotionManager.preparePotionForRegistration(oilyEffect)
 
-        NetworkRegistry.INSTANCE.registerGuiHandler(TCFoundation, GuiHandler())
+        NetworkRegistry.INSTANCE.registerGuiHandler(TCFoundation, TCGuiHandler())
     }
 
     open fun init() {

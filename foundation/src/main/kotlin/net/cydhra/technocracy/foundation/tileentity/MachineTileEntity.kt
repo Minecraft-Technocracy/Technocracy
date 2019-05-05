@@ -1,14 +1,19 @@
 package net.cydhra.technocracy.foundation.tileentity
 
-import net.cydhra.technocracy.foundation.client.gui.machine.Tab
-import net.cydhra.technocracy.foundation.client.gui.machine.tabs.WipTab
+import net.cydhra.technocracy.foundation.client.gui.TCGui
+import net.cydhra.technocracy.foundation.client.gui.machine.MachineContainer
+import net.cydhra.technocracy.foundation.client.gui.tabs.TCTab
+import net.cydhra.technocracy.foundation.client.gui.tabs.WipTab
 import net.cydhra.technocracy.foundation.tileentity.api.TCMachineTileEntity
 import net.cydhra.technocracy.foundation.tileentity.components.EnergyStorageComponent
 import net.cydhra.technocracy.foundation.tileentity.components.MachineUpgradesComponents
 import net.cydhra.technocracy.foundation.tileentity.components.RedstoneModeComponent
 import net.cydhra.technocracy.foundation.tileentity.logic.ILogicClient
 import net.cydhra.technocracy.foundation.tileentity.logic.LogicClientDelegate
+import net.minecraft.client.Minecraft
+import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.EnumFacing
+import net.minecraft.util.ResourceLocation
 
 open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, ILogicClient by LogicClientDelegate() {
     /**
@@ -34,8 +39,30 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
         this.registerComponent(machineUpgradesComponent, "upgrades")
     }
 
-    override fun getAvailableGUITabs(): Array<Tab> {
-        return arrayOf(WipTab(500, 500))
+    override fun getGui(player: EntityPlayer): TCGui {
+        val gui = TCGui(player, container = MachineContainer(this))
+        gui.registerTab(object : TCTab(gui, icon = ResourceLocation("technocracy.foundation", "textures/item/silicon" +
+                ".png")) {
+
+            override fun draw(mouseX: Int, mouseY: Int, partialTicks: Float) {
+                super.draw(mouseX, mouseY, partialTicks)
+
+                Minecraft.getMinecraft().fontRenderer.drawStringWithShadow("Dies ist noch ein Tab lul", 8F, 8F, -1)
+            }
+
+            override fun update() {
+            }
+
+            override fun init() {
+                this.addPlayerInventorySlots(player, 8, 84)
+            }
+
+        })
+        gui.registerTab(WipTab(gui))
+        gui.registerTab(WipTab(gui))
+        gui.registerTab(WipTab(gui))
+
+        return gui
     }
 
     override fun update() {

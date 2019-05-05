@@ -2,8 +2,7 @@ package net.cydhra.technocracy.foundation.blocks
 
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.general.BaseRotateableTileEntityBlock
-import net.cydhra.technocracy.foundation.blocks.general.BaseTileEntityBlock
-import net.cydhra.technocracy.foundation.client.gui.handler.GuiHandler
+import net.cydhra.technocracy.foundation.client.gui.handler.TCGuiHandler
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.player.EntityPlayer
@@ -30,10 +29,12 @@ class MachineBlock(name: String, private val tileEntityConstructor: () -> TileEn
     }
 
     override fun onBlockActivated(worldIn: World, pos: BlockPos, state: IBlockState, playerIn: EntityPlayer, hand: EnumHand, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean {
-        if (!worldIn.isRemote) {
-            if (!playerIn.isSneaking) {
-                playerIn.openGui(TCFoundation, GuiHandler.machineGui, worldIn, pos.x, pos.y, pos.z)
+        if (!playerIn.isSneaking) {
+            if (!worldIn.isRemote) {
+                playerIn.openGui(TCFoundation, TCGuiHandler.machineGui, worldIn, pos.x, pos.y, pos.z)
             }
+
+            return true
         }
 
         return super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ)
