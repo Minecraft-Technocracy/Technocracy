@@ -102,6 +102,7 @@ fluid.pitch=Pitch
 fluid.hydrochloricacid=Hydrochloric Acid
 fluid.hydrogen=Hydrogen
 fluid.silica=Silica
+fluid.steam=Steam
 
 effect.oily=Oily
 

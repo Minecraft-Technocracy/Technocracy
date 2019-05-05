@@ -164,6 +164,13 @@
           "fluid": "silica"
         }
       }
+    ],
+    "steam": [
+      {
+        "custom": {
+          "fluid": "steam"
+        }
+      }
     ]
   }
 }
