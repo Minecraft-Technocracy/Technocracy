@@ -24,7 +24,7 @@ val thermoelectricFreezerBlock = MachineBlock("thermoelectric_freezer", ::TileEn
 
 val boilerControllerBlock = MultiBlockControllerBlock("boiler_controller", ::TileEntityBoilerController)
 
-val boilerWallBlock = MultiBlockBaseBlock("boiler_wall", { TileEntityMultiBlockPart(BoilerMultiBlock::class, ::BoilerMultiBlock) })
+val boilerWallBlock = PlainMultiBlockPartBlock("boiler_wall") { TileEntityMultiBlockPart(BoilerMultiBlock::class, ::BoilerMultiBlock) }
         .apply { setHardness(3.5f).setResistance(1f) }
 
 val oilSandBlock = OilSand()
