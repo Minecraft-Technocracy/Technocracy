@@ -2,8 +2,8 @@ package net.cydhra.technocracy.foundation.blocks.general
 
 import net.cydhra.technocracy.foundation.blocks.*
 import net.cydhra.technocracy.foundation.blocks.liquid.OilBlock
-import net.cydhra.technocracy.foundation.tileentity.controller.TileEntityBoilerController
 import net.cydhra.technocracy.foundation.tileentity.machines.*
+import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityBoilerController
 
 val alloySmelteryBlock = MachineBlock("alloy_smeltery", ::TileEntityAlloySmeltery)
 val centrifugeBlock = MachineBlock("centrifuge", ::TileEntityCentrifuge)

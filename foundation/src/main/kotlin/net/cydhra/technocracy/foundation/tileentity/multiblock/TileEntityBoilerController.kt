@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.foundation.tileentity.controller
+package net.cydhra.technocracy.foundation.tileentity.multiblock
 
 import it.zerono.mods.zerocore.api.multiblock.MultiblockControllerBase
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator

@@ -14,9 +14,9 @@ import net.cydhra.technocracy.foundation.pipes.Network
 import net.cydhra.technocracy.foundation.potions.PotionManager
 import net.cydhra.technocracy.foundation.potions.oilyEffect
 import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
-import net.cydhra.technocracy.foundation.tileentity.controller.TileEntityBoilerController
 import net.cydhra.technocracy.foundation.tileentity.machines.*
 import net.cydhra.technocracy.foundation.tileentity.management.TileEntityManager
+import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityBoilerController
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.animation.ITimeValue
