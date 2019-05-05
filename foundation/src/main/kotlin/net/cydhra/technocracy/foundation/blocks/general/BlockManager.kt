@@ -69,7 +69,8 @@ object BlockManager {
     @Suppress("unused")
     @SubscribeEvent
     fun onRegisterItems(event: RegistryEvent.Register<Item>) {
-        event.registry.registerAll(*blocksToRegister.filter { it !is BaseLiquidBlock }
+        event.registry.registerAll(*blocksToRegister.filter { it.generateItem }
+                .filter { it !is BaseLiquidBlock }
                 .map { it as Block }
                 .map(::ItemBlock)
                 .map { it.apply { it.registryName = it.block.registryName } }

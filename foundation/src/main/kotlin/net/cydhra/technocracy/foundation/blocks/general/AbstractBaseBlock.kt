@@ -22,6 +22,9 @@ abstract class AbstractBaseBlock(unlocalizedName: String,
     override val modelLocation: String
         get() = this.registryName.toString()
 
+    override val generateItem: Boolean
+        get() = true
+
     init {
         this.unlocalizedName = unlocalizedName
         this.setRegistryName(registryName)

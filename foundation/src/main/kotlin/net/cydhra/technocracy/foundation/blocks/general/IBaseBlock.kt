@@ -21,4 +21,6 @@ interface IBaseBlock {
      * required, this field is set to null.
      */
     val colorMultiplier: ConstantBlockColor?
+
+    val generateItem: Boolean
 }

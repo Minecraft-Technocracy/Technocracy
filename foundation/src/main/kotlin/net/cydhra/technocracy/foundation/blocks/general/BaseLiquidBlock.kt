@@ -33,6 +33,10 @@ open class BaseLiquidBlock(fluid: Fluid,
     : BlockFluidClassic(fluid, material, mapColor), IBaseBlock {
 
     override val modelLocation: String = unlocalizedName
+
+    override val generateItem: Boolean
+        get() = true
+
     //used to allow blocks to flow out of the water
     private var fakeSource = false
 
