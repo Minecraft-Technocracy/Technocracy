@@ -13,6 +13,6 @@ import net.minecraft.tileentity.TileEntity
  * @param tileEntityConstructor constructor for the tile entity that is created
  */
 class PlainMultiBlockPartBlock<T>(unlocalizedName: String, tileEntityConstructor: () -> T)
-    : AbstractBaseBlock(unlocalizedName, Material.IRON),
+    : BaseTileEntityBlock(unlocalizedName, material = Material.IRON),
         TCMultiBlock<T> by MultiBlockBaseDelegate<T>(tileEntityConstructor)
         where T : TileEntity, T : TCControllerTileEntity, T : IMultiblockPart
