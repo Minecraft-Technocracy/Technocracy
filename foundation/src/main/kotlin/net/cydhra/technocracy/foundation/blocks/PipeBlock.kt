@@ -1,8 +1,7 @@
 package net.cydhra.technocracy.foundation.blocks
 
-import net.cydhra.technocracy.foundation.blocks.general.BaseTileEntityBlock
+import net.cydhra.technocracy.foundation.blocks.api.AbstractTileEntityBlock
 import net.cydhra.technocracy.foundation.pipes.Network
-import net.cydhra.technocracy.foundation.proxy.CommonProxy
 import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
@@ -17,7 +16,7 @@ import net.minecraft.world.Explosion
 import net.minecraft.world.World
 
 
-class PipeBlock : BaseTileEntityBlock("pipe", material = Material.PISTON) {
+class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON) {
 
     override val generateItem: Boolean
         get() = false

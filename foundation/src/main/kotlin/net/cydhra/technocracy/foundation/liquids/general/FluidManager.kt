@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.liquids.general
 
 import net.cydhra.technocracy.foundation.TCFoundation
-import net.cydhra.technocracy.foundation.blocks.general.BaseLiquidBlock
+import net.cydhra.technocracy.foundation.blocks.BaseLiquidBlock
 import net.cydhra.technocracy.foundation.blocks.general.BlockManager
 import net.minecraft.block.material.Material
 import net.minecraftforge.client.event.ModelRegistryEvent

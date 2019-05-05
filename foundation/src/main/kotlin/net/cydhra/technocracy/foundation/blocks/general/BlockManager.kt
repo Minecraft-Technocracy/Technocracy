@@ -1,6 +1,8 @@
 package net.cydhra.technocracy.foundation.blocks.general
 
 import net.cydhra.technocracy.foundation.TCFoundation
+import net.cydhra.technocracy.foundation.blocks.BaseLiquidBlock
+import net.cydhra.technocracy.foundation.blocks.api.IBaseBlock
 import net.cydhra.technocracy.foundation.blocks.general.BlockManager.prepareBlocksForRegistration
 import net.cydhra.technocracy.foundation.client.model.AbstractCustomModel
 import net.cydhra.technocracy.foundation.client.model.CustomModelProvider

@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.foundation.blocks.general
+package net.cydhra.technocracy.foundation.blocks.api
 
 import net.cydhra.technocracy.foundation.blocks.color.ConstantBlockColor
 

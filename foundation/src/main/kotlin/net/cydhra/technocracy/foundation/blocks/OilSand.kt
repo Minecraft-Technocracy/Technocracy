@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.blocks
 
+import net.cydhra.technocracy.foundation.blocks.api.AbstractFallingBaseBlock
 import net.cydhra.technocracy.foundation.blocks.color.ConstantBlockColor
-import net.cydhra.technocracy.foundation.blocks.general.AbstractFallingBaseBlock
 import net.minecraft.block.SoundType
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState

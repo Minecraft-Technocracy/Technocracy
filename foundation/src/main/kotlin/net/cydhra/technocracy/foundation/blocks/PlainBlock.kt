@@ -1,5 +1,6 @@
-package net.cydhra.technocracy.foundation.blocks.general
+package net.cydhra.technocracy.foundation.blocks
 
+import net.cydhra.technocracy.foundation.blocks.api.AbstractBaseBlock
 import net.minecraft.block.material.Material
 
 /**

@@ -1,8 +1,8 @@
 package net.cydhra.technocracy.foundation.blocks
 
 import net.cydhra.technocracy.foundation.TCFoundation
+import net.cydhra.technocracy.foundation.blocks.api.AbstractBaseBlock
 import net.cydhra.technocracy.foundation.blocks.color.ConstantBlockColor
-import net.cydhra.technocracy.foundation.blocks.general.AbstractBaseBlock
 import net.minecraft.block.material.Material
 import net.minecraft.util.BlockRenderLayer
 import net.minecraftforge.fml.relauncher.Side

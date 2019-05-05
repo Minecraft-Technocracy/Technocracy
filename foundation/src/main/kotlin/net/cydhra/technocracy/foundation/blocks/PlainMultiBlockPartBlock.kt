@@ -1,9 +1,9 @@
 package net.cydhra.technocracy.foundation.blocks
 
 import it.zerono.mods.zerocore.api.multiblock.IMultiblockPart
+import net.cydhra.technocracy.foundation.blocks.api.AbstractTileEntityBlock
+import net.cydhra.technocracy.foundation.blocks.api.MultiBlockBaseDelegate
 import net.cydhra.technocracy.foundation.blocks.api.TCMultiBlock
-import net.cydhra.technocracy.foundation.blocks.general.BaseTileEntityBlock
-import net.cydhra.technocracy.foundation.blocks.general.MultiBlockBaseDelegate
 import net.cydhra.technocracy.foundation.tileentity.api.TCControllerTileEntity
 import net.minecraft.block.material.Material
 import net.minecraft.tileentity.TileEntity
@@ -15,6 +15,6 @@ import net.minecraft.tileentity.TileEntity
  * @param tileEntityConstructor constructor for the tile entity that is created
  */
 class PlainMultiBlockPartBlock<T>(unlocalizedName: String, tileEntityConstructor: () -> T)
-    : BaseTileEntityBlock(unlocalizedName, material = Material.IRON),
+    : AbstractTileEntityBlock(unlocalizedName, material = Material.IRON),
         TCMultiBlock<T> by MultiBlockBaseDelegate<T>(tileEntityConstructor)
         where T : TileEntity, T : TCControllerTileEntity, T : IMultiblockPart

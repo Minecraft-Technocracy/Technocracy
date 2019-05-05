@@ -1,7 +1,6 @@
 package net.cydhra.technocracy.foundation.blocks
 
 import net.cydhra.technocracy.foundation.TCFoundation
-import net.cydhra.technocracy.foundation.blocks.general.BaseRotateableTileEntityBlock
 import net.cydhra.technocracy.foundation.client.gui.handler.TCGuiHandler
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState

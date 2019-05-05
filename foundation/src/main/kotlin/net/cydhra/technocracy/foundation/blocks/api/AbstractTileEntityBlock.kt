@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.foundation.blocks.general
+package net.cydhra.technocracy.foundation.blocks.api
 
 import net.cydhra.technocracy.foundation.blocks.color.ConstantBlockColor
 import net.minecraft.block.ITileEntityProvider
@@ -14,8 +14,8 @@ import net.minecraft.block.material.Material
  * @param registryName the name of the block used in registries. By default the unlocalized name is used.
  * @param colorMultiplier special color multiplier for block texture. Null by default.
  */
-abstract class BaseTileEntityBlock(unlocalizedName: String,
-                                   registryName: String = unlocalizedName,
-                                   colorMultiplier: ConstantBlockColor? = null,
-                                   material: Material)
+abstract class AbstractTileEntityBlock(unlocalizedName: String,
+                                       registryName: String = unlocalizedName,
+                                       colorMultiplier: ConstantBlockColor? = null,
+                                       material: Material)
     : AbstractBaseBlock(unlocalizedName, material, registryName, colorMultiplier), ITileEntityProvider

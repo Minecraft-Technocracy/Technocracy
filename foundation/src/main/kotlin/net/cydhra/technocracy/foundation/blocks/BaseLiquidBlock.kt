@@ -1,15 +1,13 @@
-package net.cydhra.technocracy.foundation.blocks.general
+package net.cydhra.technocracy.foundation.blocks
 
 import com.google.common.primitives.Ints
 import net.cydhra.technocracy.foundation.TCFoundation
+import net.cydhra.technocracy.foundation.blocks.api.IBaseBlock
 import net.cydhra.technocracy.foundation.blocks.color.ConstantBlockColor
 import net.minecraft.block.BlockLiquid
 import net.minecraft.block.material.MapColor
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
-import net.minecraft.client.entity.EntityPlayerSP
-import net.minecraft.entity.Entity
-import net.minecraft.init.Blocks
 import net.minecraft.util.EnumBlockRenderType
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
@@ -19,7 +17,6 @@ import net.minecraftforge.event.ForgeEventFactory
 import net.minecraftforge.fluids.BlockFluidBase
 import net.minecraftforge.fluids.BlockFluidClassic
 import net.minecraftforge.fluids.Fluid
-import net.minecraftforge.fluids.IFluidBlock
 import net.minecraftforge.fml.common.Mod
 import java.util.*
 

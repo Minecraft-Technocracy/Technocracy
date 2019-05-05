@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.blocks
 
-import net.cydhra.technocracy.foundation.blocks.general.AbstractRotateableBlock
+import net.cydhra.technocracy.foundation.blocks.api.AbstractRotateableBlock
 import net.minecraft.block.SoundType
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState

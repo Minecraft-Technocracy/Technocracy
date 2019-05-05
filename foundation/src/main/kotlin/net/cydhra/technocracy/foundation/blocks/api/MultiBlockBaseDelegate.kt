@@ -1,7 +1,6 @@
-package net.cydhra.technocracy.foundation.blocks.general
+package net.cydhra.technocracy.foundation.blocks.api
 
 import it.zerono.mods.zerocore.api.multiblock.IMultiblockPart
-import net.cydhra.technocracy.foundation.blocks.api.TCMultiBlock
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
