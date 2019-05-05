@@ -1,7 +1,9 @@
-package net.cydhra.technocracy.foundation.blocks.general
+package net.cydhra.technocracy.foundation.blocks
 
 import it.zerono.mods.zerocore.api.multiblock.IMultiblockPart
 import net.cydhra.technocracy.foundation.blocks.api.TCMultiBlock
+import net.cydhra.technocracy.foundation.blocks.general.BaseTileEntityBlock
+import net.cydhra.technocracy.foundation.blocks.general.MultiBlockBaseDelegate
 import net.cydhra.technocracy.foundation.tileentity.api.TCControllerTileEntity
 import net.minecraft.block.material.Material
 import net.minecraft.tileentity.TileEntity
