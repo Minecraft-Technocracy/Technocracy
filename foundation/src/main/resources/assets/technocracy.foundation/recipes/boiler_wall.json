@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "psp",
+    "s s",
+    "psp"
+  ],
+  "key": {
+    "p": {
+      "item": "technocracy.foundation:ingot.mpcm"
+    },
+    "s": {
+      "type": "forge:ore_dict",
+      "ore": "sheetIron"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:boiler_wall",
+    "count": 4
+  }
+}
