@@ -5,7 +5,7 @@ import net.cydhra.technocracy.foundation.tileentity.api.TCControllerTileEntity
 import net.cydhra.technocracy.foundation.tileentity.api.TCMachineTileEntity
 import net.minecraft.block.state.IBlockState
 
-abstract class AbstractRectangularMultiBlockControllerTileEntity()
+abstract class AbstractRectangularMultiBlockTileEntity
     : RectangularMultiblockTileEntityBase(), TCMachineTileEntity by MachineTileEntity(), TCControllerTileEntity {
 
     /**

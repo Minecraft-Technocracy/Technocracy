@@ -3,9 +3,9 @@ package net.cydhra.technocracy.foundation.tileentity.controller
 import it.zerono.mods.zerocore.api.multiblock.MultiblockControllerBase
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import net.cydhra.technocracy.foundation.multiblock.BoilerMultiBlock
-import net.cydhra.technocracy.foundation.tileentity.AbstractRectangularMultiBlockControllerTileEntity
+import net.cydhra.technocracy.foundation.tileentity.AbstractRectangularMultiBlockTileEntity
 
-class TileEntityBoilerController : AbstractRectangularMultiBlockControllerTileEntity() {
+class TileEntityBoilerController : AbstractRectangularMultiBlockTileEntity() {
     override fun createNewMultiblock(): MultiblockControllerBase {
         return BoilerMultiBlock(this.world)
     }
