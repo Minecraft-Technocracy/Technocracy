@@ -29,7 +29,6 @@ class MultiBlockControllerBlock<out T>(name: String, tileEntityConstructor: () -
                 if (controllerTileEntity.validateStructure()) {
                     playerIn.openGui(TCFoundation, TCGuiHandler.machineGui, worldIn, pos.x, pos.y, pos.z)
                 } else {
-                    println((controllerTileEntity as IMultiblockPart).multiblockController.numConnectedBlocks)
                     playerIn.sendMessage(multiBlockController.lastError?.chatMessage
                             ?: TextComponentTranslation("null"))
                 }
