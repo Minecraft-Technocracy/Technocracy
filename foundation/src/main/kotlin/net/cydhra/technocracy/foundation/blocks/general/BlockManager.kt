@@ -83,7 +83,8 @@ object BlockManager {
     @Suppress("unused")
     @SubscribeEvent
     fun onRegisterRenders(@Suppress("UNUSED_PARAMETER") event: ModelRegistryEvent) {
-        blocksToRegister.filter { it !is BaseLiquidBlock }
+        blocksToRegister.filter { it.generateItem }
+                .filter { it !is BaseLiquidBlock }
                 .map { it as Block }
                 .map(Item::getItemFromBlock)
                 .forEach { item ->
