@@ -80,11 +80,12 @@ open class CommonProxy {
         BlockManager.prepareBlocksForRegistration(thermoelectricFreezerBlock, MachineConnectorModel())
 
         BlockManager.prepareBlocksForRegistration(boilerControllerBlock)
+        BlockManager.prepareBlocksForRegistration(boilerWallBlock)
+        BlockManager.prepareBlocksForRegistration(boilerGlassBlock)
 
         BlockManager.prepareBlocksForRegistration(oilSandBlock)
         BlockManager.prepareBlocksForRegistration(ironBeamBlock)
         BlockManager.prepareBlocksForRegistration(oilBlock)
-        BlockManager.prepareBlocksForRegistration(boilerWallBlock)
 
         BlockManager.prepareBlocksForRegistration(pipe)
 

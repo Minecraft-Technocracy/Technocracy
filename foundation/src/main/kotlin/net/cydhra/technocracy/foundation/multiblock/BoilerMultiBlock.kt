@@ -5,6 +5,7 @@ import it.zerono.mods.zerocore.api.multiblock.MultiblockControllerBase
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import it.zerono.mods.zerocore.lib.block.ModTileEntity
 import net.cydhra.technocracy.foundation.blocks.general.boilerControllerBlock
+import net.cydhra.technocracy.foundation.blocks.general.boilerGlassBlock
 import net.cydhra.technocracy.foundation.blocks.general.boilerWallBlock
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityBoilerController
 import net.minecraft.init.Blocks
@@ -13,15 +14,22 @@ import net.minecraft.world.World
 import java.util.function.Predicate
 
 class BoilerMultiBlock(world: World) : BaseMultiBlock(
-        frameBlockWhitelist = Predicate { it.block == boilerWallBlock || it.block == boilerControllerBlock },
-        sideBlockWhitelist = Predicate { it.block == boilerWallBlock || it.block == boilerControllerBlock },
-        topBlockWhitelist = Predicate { it.block == boilerWallBlock },
-        bottomBlockWhitelist = Predicate { it.block == boilerWallBlock },
+        frameBlockWhitelist = Predicate {
+            it.block == boilerWallBlock || it.block == boilerControllerBlock
+        },
+        sideBlockWhitelist = Predicate {
+            it.block == boilerWallBlock || it.block == boilerGlassBlock || it.block == boilerControllerBlock
+        },
+        topBlockWhitelist = Predicate { it.block == boilerWallBlock || it.block == boilerGlassBlock },
+        bottomBlockWhitelist = Predicate { it.block == boilerWallBlock || it.block == boilerGlassBlock },
         interiorBlockWhitelist = Predicate { it.block == Blocks.AIR },
         maximumSizeXZ = 16,
         maximumSizeY = 16,
         world = world) {
 
+    /**
+     * The controller tile entity of this multi block structure. Null until the block is found by [isMachineWhole]
+     */
     private var controllerTileEntity: TileEntityBoilerController? = null
 
     override fun updateServer(): Boolean {
