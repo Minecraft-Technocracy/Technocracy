@@ -3,6 +3,7 @@ package net.cydhra.technocracy.foundation.tileentity
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.PipeBlock
 import net.cydhra.technocracy.foundation.pipes.Network
+import net.cydhra.technocracy.foundation.tileentity.components.ComponentPipeTypes
 import net.cydhra.technocracy.foundation.tileentity.components.NetworkComponent
 import net.minecraft.util.EnumFacing
 import java.util.*
@@ -10,9 +11,12 @@ import java.util.*
 
 class TileEntityPipe : AggregatableTileEntity() {
     val networkComponent = NetworkComponent()
+    val pipeTypes = ComponentPipeTypes()
+
 
     init {
         registerComponent(networkComponent, "network")
+        registerComponent(pipeTypes, "pipeTypes")
     }
 
     fun setNetworkId(uuid: UUID): TileEntityPipe {
