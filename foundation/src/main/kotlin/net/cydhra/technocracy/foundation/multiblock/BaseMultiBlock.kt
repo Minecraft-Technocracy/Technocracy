@@ -10,11 +10,11 @@ import net.minecraft.world.World
 import java.util.function.Predicate
 
 abstract class BaseMultiBlock(
-        private val frameBlockWhitelist: Predicate<IBlockState>?,
-        private val sideBlockWhitelist: Predicate<IBlockState>?,
-        private val topBlockWhitelist: Predicate<IBlockState>?,
-        private val bottomBlockWhitelist: Predicate<IBlockState>?,
-        private val interiorBlockWhitelist: Predicate<IBlockState>?,
+        val frameBlockWhitelist: Predicate<IBlockState>?,
+        val sideBlockWhitelist: Predicate<IBlockState>?,
+        val topBlockWhitelist: Predicate<IBlockState>?,
+        val bottomBlockWhitelist: Predicate<IBlockState>?,
+        val interiorBlockWhitelist: Predicate<IBlockState>?,
         private val maximumSizeXZ: Int,
         private val maximumSizeY: Int,
         world: World)
