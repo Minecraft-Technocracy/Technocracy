@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_bottom_top",
+  "textures": {
+    "bottom": "technocracy.foundation:block/boiler_ingress",
+    "top": "technocracy.foundation:block/boiler_heater",
+    "side": "technocracy.foundation:block/boiler_wall"
+  }
+}

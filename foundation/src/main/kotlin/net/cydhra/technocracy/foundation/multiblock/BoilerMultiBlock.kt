@@ -6,6 +6,7 @@ import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import it.zerono.mods.zerocore.lib.block.ModTileEntity
 import net.cydhra.technocracy.foundation.blocks.general.boilerControllerBlock
 import net.cydhra.technocracy.foundation.blocks.general.boilerGlassBlock
+import net.cydhra.technocracy.foundation.blocks.general.boilerHeaterBlock
 import net.cydhra.technocracy.foundation.blocks.general.boilerWallBlock
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerController
 import net.minecraft.init.Blocks
@@ -24,7 +25,7 @@ class BoilerMultiBlock(world: World) : BaseMultiBlock(
             it.block == boilerWallBlock || it.block == boilerGlassBlock
         },
         bottomBlockWhitelist = Predicate {
-            it.block == boilerWallBlock || it.block == boilerGlassBlock
+            it.block == boilerWallBlock || it.block == boilerGlassBlock || it.block == boilerHeaterBlock
         },
         interiorBlockWhitelist = Predicate {
             it.block == Blocks.AIR
