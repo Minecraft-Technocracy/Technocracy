@@ -1,11 +1,5 @@
 buildscript {
-    ext.mod_id = 'technocracy.foundation'
-}
-
-jar {
-    manifest {
-        attributes 'FMLAT': 'technocracy_at.cfg'
-    }
+    ext.mod_id = 'technocracy.megastructures'
 }
 
 processResources {
@@ -30,7 +24,7 @@ processResources {
 }
 
 //
-// the following tasks are a workaround for IntelliJ's habbit of keeping built classes and resources apart, which
+// the following tasks are a workaround for IntelliJ's habbit of keeping built classes and resources apart, which 
 // breaks an assumption of forge's resource loader thus assets cannot be found while running the mod inside IntelliJ.
 //
 task delOriginalAssets(type: Delete) {
