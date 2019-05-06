@@ -38,11 +38,10 @@ processResources {
 }
 
 dependencies {
-    compile group: 'net.shadowfacts', name: 'Forgelin', version: forgelin_version
     compile group: 'org.jgrapht', name: 'jgrapht-core', version: jgrapht_version
-
+    
+    deobfCompile group: 'net.shadowfacts', name: 'Forgelin', version: forgelin_version
     deobfCompile group: 'mezz.jei', name: "jei_$minecraft_version", version: jei_version
-
     deobfCompile group: 'cofh', name: 'CoFHCore', version: "$minecraft_version-$cofhcore_version",
             classifier: 'universal'
     deobfCompile group: 'cofh', name: 'CoFHWorld', version: "$minecraft_version-$cofhworld_version",
