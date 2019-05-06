@@ -17,20 +17,7 @@ buildscript {
 
 apply from: '../configuration.gradle'
 
-configurations {
-    shade
-    compile.extendsFrom shade
-}
-
 dependencies {
-    shade group: 'net.cydhra.technocracy', name: 'technocracy.foundation', version: project.version
-    shade group: 'net.cydhra.technocracy', name: 'technocracy.megastructures', version: project.version
-}
-
-jar {
-    configurations.shade.each { dep ->
-        from(project.zipTree(dep)){
-            exclude 'META-INF', 'META-INF/**'
-        }
-    }
+    compile group: 'net.cydhra.technocracy', name: 'technocracy.foundation', version: project.version
+    compile group: 'net.cydhra.technocracy', name: 'technocracy.megastructures', version: project.version
 }
