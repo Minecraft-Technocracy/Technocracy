@@ -1,0 +1,5 @@
+rootProject.name = 'technocracy.megastructures'
+
+if (file("../technocracy.foundation").exists()) {
+    includeBuild "../technocracy.foundation"
+}

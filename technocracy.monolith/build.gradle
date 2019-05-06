@@ -1,0 +1,36 @@
+buildscript {
+    apply from: '../buildscript.gradle'
+
+    ext.mod_id = 'technocracy.monolith'
+
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven { url = "https://files.minecraftforge.net/maven" }
+    }
+
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: forge_plugin_version
+        classpath group: 'org.jetbrains.kotlin', name: 'kotlin-gradle-plugin', version: kotlin_version
+    }
+}
+
+apply from: '../configuration.gradle'
+
+configurations {
+    shade
+    compile.extendsFrom shade
+}
+
+dependencies {
+    shade group: 'net.cydhra.technocracy', name: 'technocracy.foundation', version: project.version
+    shade group: 'net.cydhra.technocracy', name: 'technocracy.megastructures', version: project.version
+}
+
+jar {
+    configurations.shade.each { dep ->
+        from(project.zipTree(dep)){
+            exclude 'META-INF', 'META-INF/**'
+        }
+    }
+}
