@@ -4,7 +4,7 @@ import it.zerono.mods.zerocore.api.multiblock.IMultiblockPart
 import net.cydhra.technocracy.foundation.blocks.api.AbstractTileEntityBlock
 import net.cydhra.technocracy.foundation.blocks.api.MultiBlockBaseDelegate
 import net.cydhra.technocracy.foundation.blocks.api.TCMultiBlock
-import net.cydhra.technocracy.foundation.tileentity.api.TCControllerTileEntity
+import net.cydhra.technocracy.foundation.tileentity.api.TCMultiBlockActiveTileEntity
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
 import net.minecraft.tileentity.TileEntity
@@ -32,7 +32,7 @@ class PlainMultiBlockPartBlock<T>(
         private val renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID)
     : AbstractTileEntityBlock(unlocalizedName, material = Material.IRON),
         TCMultiBlock<T> by MultiBlockBaseDelegate<T>(tileEntityConstructor)
-        where T : TileEntity, T : TCControllerTileEntity, T : IMultiblockPart {
+        where T : TileEntity, T : TCMultiBlockActiveTileEntity, T : IMultiblockPart {
 
     override fun isOpaqueCube(state: IBlockState): Boolean {
         return this.opaque

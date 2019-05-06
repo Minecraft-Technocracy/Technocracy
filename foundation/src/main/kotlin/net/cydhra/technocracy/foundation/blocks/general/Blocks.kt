@@ -22,7 +22,7 @@ val pulverizerBlock = MachineBlock("pulverizer", ::TileEntityPulverizer)
 val refineryBlock = MachineBlock("refinery", ::TileEntityRefinery)
 val thermoelectricFreezerBlock = MachineBlock("thermoelectric_freezer", ::TileEntityThermoelectricFreezer)
 
-val boilerControllerBlock = MultiBlockControllerBlock("boiler_controller", ::TileEntityBoilerController)
+val boilerControllerBlock = MultiBlockActiveBlock("boiler_controller", ::TileEntityBoilerController)
 
 val boilerWallBlock = PlainMultiBlockPartBlock("boiler_wall", ::TileEntityMultiBlockPartBoiler)
         .apply { setHardness(3.5f).setResistance(1f) }

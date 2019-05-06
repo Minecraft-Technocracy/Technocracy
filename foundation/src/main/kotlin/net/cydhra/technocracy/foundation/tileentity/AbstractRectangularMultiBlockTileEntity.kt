@@ -1,10 +1,10 @@
 package net.cydhra.technocracy.foundation.tileentity
 
 import it.zerono.mods.zerocore.api.multiblock.rectangular.RectangularMultiblockTileEntityBase
-import net.cydhra.technocracy.foundation.tileentity.api.TCControllerTileEntity
+import net.cydhra.technocracy.foundation.tileentity.api.TCMultiBlockActiveTileEntity
 import net.minecraft.block.state.IBlockState
 
-abstract class AbstractRectangularMultiBlockTileEntity : RectangularMultiblockTileEntityBase(), TCControllerTileEntity {
+abstract class AbstractRectangularMultiBlockTileEntity : RectangularMultiblockTileEntityBase(), TCMultiBlockActiveTileEntity {
 
     /**
      * Cached attached block's BlockState.
