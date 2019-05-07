@@ -9,6 +9,7 @@ import net.cydhra.technocracy.foundation.blocks.general.boilerGlassBlock
 import net.cydhra.technocracy.foundation.blocks.general.boilerHeaterBlock
 import net.cydhra.technocracy.foundation.blocks.general.boilerWallBlock
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerController
+import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerHeater
 import net.minecraft.init.Blocks
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.world.World
@@ -39,6 +40,11 @@ class BoilerMultiBlock(world: World) : BaseMultiBlock(
      */
     private var controllerTileEntity: TileEntityBoilerController? = null
 
+    /**
+     * The heaters of this structure. Empty until the machine is assembled successfully
+     */
+    private var heaterElements: List<TileEntityBoilerHeater> = emptyList()
+
     override fun updateServer(): Boolean {
         return true
     }
@@ -51,26 +57,18 @@ class BoilerMultiBlock(world: World) : BaseMultiBlock(
         if (!super.isMachineWhole(validatorCallback))
             return false
 
-        var controllerTileEntity: TileEntityBoilerController? = null
+        return assemble(validatorCallback) {
+            val controllerTileEntities = mutableListOf<TileEntityBoilerController>()
+            val heaterTileEntities = mutableListOf<TileEntityBoilerHeater>()
 
-        for (part in this.connectedParts) {
-            if (part is TileEntityBoilerController) {
-                if (controllerTileEntity == null)
-                    controllerTileEntity = part
-                else {
-                    validatorCallback.setLastError("only one controller is allowed")
-                    return false
-                }
+            collect(boilerControllerBlock.unlocalizedName, controllerTileEntities, 1)
+            collect(heaterTileEntities)
+
+            onSuccess {
+                this@BoilerMultiBlock.controllerTileEntity = controllerTileEntities.single()
+                this@BoilerMultiBlock.heaterElements = heaterTileEntities
             }
         }
-
-        if (controllerTileEntity == null) {
-            validatorCallback.setLastError("controller is missing")
-            return false
-        }
-
-        this.controllerTileEntity = controllerTileEntity
-        return true
     }
 
     override fun onBlockAdded(p0: IMultiblockPart?) {

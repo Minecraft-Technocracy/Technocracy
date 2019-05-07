@@ -109,3 +109,7 @@ fluid.steam=Steam
 effect.oily=Oily
 
 itemGroup.technocracy=Technocracy
+
+multiblock.error.number_of_blocks=%s: Expected %d but found %d
+multiblock.error.too_few_blocks=%s: Expected at least %d but found %d
+multiblock.error.too_many_blocks=%s: Expected at most %d but found %d
