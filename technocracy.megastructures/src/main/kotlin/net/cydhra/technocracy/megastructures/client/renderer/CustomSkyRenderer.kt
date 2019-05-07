@@ -36,7 +36,7 @@ object CustomSkyRenderer : IRenderHandler() {
 
     fun renderSky(partialTicks: Float, world: WorldClient, mc: Minecraft) {
 
-        val pass = 2
+        val pass = 2 // debug variable
         val renderGlobal = mc.renderGlobal
 
         if (mc.world.provider.dimensionType.id == 1) {
@@ -44,27 +44,27 @@ object CustomSkyRenderer : IRenderHandler() {
         } else if (mc.world.provider.isSurfaceWorld) {
             GlStateManager.disableTexture2D()
             val vec3d = world.getSkyColor(mc.renderViewEntity!!, partialTicks)
-            var f = vec3d.x.toFloat() * 0.2f
-            var f1 = vec3d.y.toFloat() * 0.2f
-            var f2 = vec3d.z.toFloat() * 0.2f
+            var baseSkyColorRed = vec3d.x.toFloat() * 0.2f
+            var baseSkyColorGreen = vec3d.y.toFloat() * 0.2f
+            var baseSkyColorBlue = vec3d.z.toFloat() * 0.2f
 
             //TODO modify saturation
 
             if (pass != 2) {
-                val f3 = (f * 30.0f + f1 * 59.0f + f2 * 11.0f) / 100.0f
-                val f4 = (f * 30.0f + f1 * 70.0f) / 100.0f
-                val f5 = (f * 30.0f + f2 * 70.0f) / 100.0f
-                f = f3
-                f1 = f4
-                f2 = f5
+                val shiftedSkyColorRed = (baseSkyColorRed * 30.0f + baseSkyColorGreen * 59.0f + baseSkyColorBlue * 11.0f) / 100.0f
+                val shiftedSkyColorGreen = (baseSkyColorRed * 30.0f + baseSkyColorGreen * 70.0f) / 100.0f
+                val shiftedSkyColorBlue = (baseSkyColorRed * 30.0f + baseSkyColorBlue * 70.0f) / 100.0f
+                baseSkyColorRed = shiftedSkyColorRed
+                baseSkyColorGreen = shiftedSkyColorGreen
+                baseSkyColorBlue = shiftedSkyColorBlue
             }
 
-            GlStateManager.color(f, f1, f2)
+            GlStateManager.color(baseSkyColorRed, baseSkyColorGreen, baseSkyColorBlue)
             val tessellator = Tessellator.getInstance()
             val bufferBuilder = tessellator.buffer
             GlStateManager.depthMask(false)
             GlStateManager.enableFog()
-            GlStateManager.color(f, f1, f2)
+            GlStateManager.color(baseSkyColorRed, baseSkyColorGreen, baseSkyColorBlue)
 
             if (renderGlobal.vboEnabled) {
                 renderGlobal.skyVBO.bindBuffer()
@@ -82,18 +82,18 @@ object CustomSkyRenderer : IRenderHandler() {
             GlStateManager.enableBlend()
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
             RenderHelper.disableStandardItemLighting()
-            val afloat = world.provider.calcSunriseSunsetColors(world.getCelestialAngle(partialTicks), partialTicks)
+            val sunsetColors = world.provider.calcSunriseSunsetColors(world.getCelestialAngle(partialTicks), partialTicks)
 
-            if (afloat != null) {
+            if (sunsetColors != null) {
                 GlStateManager.disableTexture2D()
                 GlStateManager.shadeModel(7425)
                 GlStateManager.pushMatrix()
                 GlStateManager.rotate(90.0f, 1.0f, 0.0f, 0.0f)
                 GlStateManager.rotate(if (MathHelper.sin(world.getCelestialAngleRadians(partialTicks)) < 0.0f) 180.0f else 0.0f, 0.0f, 0.0f, 1.0f)
                 GlStateManager.rotate(90.0f, 0.0f, 0.0f, 1.0f)
-                var f6 = afloat[0] * 0.2f
-                var f7 = afloat[1] * 0.2f
-                var f8 = afloat[2] * 0.2f
+                var f6 = sunsetColors[0] * 0.2f
+                var f7 = sunsetColors[1] * 0.2f
+                var f8 = sunsetColors[2] * 0.2f
 
                 //TODO modify saturation
                 if (pass != 2) {
@@ -106,13 +106,13 @@ object CustomSkyRenderer : IRenderHandler() {
                 }
 
                 bufferBuilder.begin(6, DefaultVertexFormats.POSITION_COLOR)
-                bufferBuilder.pos(0.0, 100.0, 0.0).color(f6, f7, f8, afloat[3]).endVertex()
+                bufferBuilder.pos(0.0, 100.0, 0.0).color(f6, f7, f8, sunsetColors[3]).endVertex()
 
                 for (j2 in 0..16) {
                     val f21 = j2.toFloat() * (Math.PI.toFloat() * 2f) / 16.0f
                     val f12 = MathHelper.sin(f21)
                     val f13 = MathHelper.cos(f21)
-                    bufferBuilder.pos((f12 * 120.0f).toDouble(), (f13 * 120.0f).toDouble(), (-f13 * 40.0f * afloat[3]).toDouble()).color(afloat[0], afloat[1], afloat[2], 0.0f).endVertex()
+                    bufferBuilder.pos((f12 * 120.0f).toDouble(), (f13 * 120.0f).toDouble(), (-f13 * 40.0f * sunsetColors[3]).toDouble()).color(sunsetColors[0], sunsetColors[1], sunsetColors[2], 0.0f).endVertex()
                 }
 
                 tessellator.draw()
@@ -219,9 +219,9 @@ object CustomSkyRenderer : IRenderHandler() {
             }
 
             if (world.provider.isSkyColored) {
-                GlStateManager.color(f * 0.2f + 0.04f, f1 * 0.2f + 0.04f, f2 * 0.6f + 0.1f)
+                GlStateManager.color(baseSkyColorRed * 0.2f + 0.04f, baseSkyColorGreen * 0.2f + 0.04f, baseSkyColorBlue * 0.6f + 0.1f)
             } else {
-                GlStateManager.color(f, f1, f2)
+                GlStateManager.color(baseSkyColorRed, baseSkyColorGreen, baseSkyColorBlue)
             }
 
             GlStateManager.pushMatrix()
