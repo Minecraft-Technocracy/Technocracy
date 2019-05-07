@@ -15,7 +15,7 @@ import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 @Mod.EventBusSubscriber(modid = TCFoundation.MODID)
-class CustomSkyRenderer : IRenderHandler() {
+object CustomSkyRenderer : IRenderHandler() {
 
     override fun render(partialTicks: Float, world: WorldClient, mc: Minecraft) {
         renderSky(partialTicks, world, mc)
@@ -39,11 +39,11 @@ class CustomSkyRenderer : IRenderHandler() {
         val pass = 2
         val renderGlobal = mc.renderGlobal
 
-        if (mc.world.provider.getDimensionType().getId() == 1) {
+        if (mc.world.provider.dimensionType.id == 1) {
             renderGlobal.renderSkyEnd()
-        } else if (mc.world.provider.isSurfaceWorld()) {
+        } else if (mc.world.provider.isSurfaceWorld) {
             GlStateManager.disableTexture2D()
-            val vec3d = world.getSkyColor(mc.getRenderViewEntity()!!, partialTicks)
+            val vec3d = world.getSkyColor(mc.renderViewEntity!!, partialTicks)
             var f = vec3d.x.toFloat() * 0.2f
             var f1 = vec3d.y.toFloat() * 0.2f
             var f2 = vec3d.z.toFloat() * 0.2f
@@ -61,7 +61,7 @@ class CustomSkyRenderer : IRenderHandler() {
 
             GlStateManager.color(f, f1, f2)
             val tessellator = Tessellator.getInstance()
-            val bufferbuilder = tessellator.buffer
+            val bufferBuilder = tessellator.buffer
             GlStateManager.depthMask(false)
             GlStateManager.enableFog()
             GlStateManager.color(f, f1, f2)
@@ -105,15 +105,14 @@ class CustomSkyRenderer : IRenderHandler() {
                     f8 = f11
                 }
 
-                bufferbuilder.begin(6, DefaultVertexFormats.POSITION_COLOR)
-                bufferbuilder.pos(0.0, 100.0, 0.0).color(f6, f7, f8, afloat[3]).endVertex()
-                val l1 = 16
+                bufferBuilder.begin(6, DefaultVertexFormats.POSITION_COLOR)
+                bufferBuilder.pos(0.0, 100.0, 0.0).color(f6, f7, f8, afloat[3]).endVertex()
 
                 for (j2 in 0..16) {
                     val f21 = j2.toFloat() * (Math.PI.toFloat() * 2f) / 16.0f
                     val f12 = MathHelper.sin(f21)
                     val f13 = MathHelper.cos(f21)
-                    bufferbuilder.pos((f12 * 120.0f).toDouble(), (f13 * 120.0f).toDouble(), (-f13 * 40.0f * afloat[3]).toDouble()).color(afloat[0], afloat[1], afloat[2], 0.0f).endVertex()
+                    bufferBuilder.pos((f12 * 120.0f).toDouble(), (f13 * 120.0f).toDouble(), (-f13 * 40.0f * afloat[3]).toDouble()).color(afloat[0], afloat[1], afloat[2], 0.0f).endVertex()
                 }
 
                 tessellator.draw()
@@ -130,26 +129,26 @@ class CustomSkyRenderer : IRenderHandler() {
             GlStateManager.rotate(world.getCelestialAngle(partialTicks) * 360.0f, 1.0f, 0.0f, 0.0f)
             var f17 = 30.0f
             mc.renderEngine.bindTexture(SUN_TEXTURES)
-            bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX)
-            bufferbuilder.pos((-f17).toDouble(), 100.0, (-f17).toDouble()).tex(0.0, 0.0).endVertex()
-            bufferbuilder.pos(f17.toDouble(), 100.0, (-f17).toDouble()).tex(1.0, 0.0).endVertex()
-            bufferbuilder.pos(f17.toDouble(), 100.0, f17.toDouble()).tex(1.0, 1.0).endVertex()
-            bufferbuilder.pos((-f17).toDouble(), 100.0, f17.toDouble()).tex(0.0, 1.0).endVertex()
+            bufferBuilder.begin(7, DefaultVertexFormats.POSITION_TEX)
+            bufferBuilder.pos((-f17).toDouble(), 100.0, (-f17).toDouble()).tex(0.0, 0.0).endVertex()
+            bufferBuilder.pos(f17.toDouble(), 100.0, (-f17).toDouble()).tex(1.0, 0.0).endVertex()
+            bufferBuilder.pos(f17.toDouble(), 100.0, f17.toDouble()).tex(1.0, 1.0).endVertex()
+            bufferBuilder.pos((-f17).toDouble(), 100.0, f17.toDouble()).tex(0.0, 1.0).endVertex()
             tessellator.draw()
             f17 = 20.0f
             mc.renderEngine.bindTexture(MOON_PHASES_TEXTURES)
-            val k1 = world.getMoonPhase()
+            val k1 = world.moonPhase
             val i2 = k1 % 4
             val k2 = k1 / 4 % 2
             val f22 = (i2 + 0).toFloat() / 4.0f
             val f23 = (k2 + 0).toFloat() / 2.0f
             val f24 = (i2 + 1).toFloat() / 4.0f
             val f14 = (k2 + 1).toFloat() / 2.0f
-            bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX)
-            bufferbuilder.pos((-f17).toDouble(), -100.0, f17.toDouble()).tex(f24.toDouble(), f14.toDouble()).endVertex()
-            bufferbuilder.pos(f17.toDouble(), -100.0, f17.toDouble()).tex(f22.toDouble(), f14.toDouble()).endVertex()
-            bufferbuilder.pos(f17.toDouble(), -100.0, (-f17).toDouble()).tex(f22.toDouble(), f23.toDouble()).endVertex()
-            bufferbuilder.pos((-f17).toDouble(), -100.0, (-f17).toDouble()).tex(f24.toDouble(), f23.toDouble()).endVertex()
+            bufferBuilder.begin(7, DefaultVertexFormats.POSITION_TEX)
+            bufferBuilder.pos((-f17).toDouble(), -100.0, f17.toDouble()).tex(f24.toDouble(), f14.toDouble()).endVertex()
+            bufferBuilder.pos(f17.toDouble(), -100.0, f17.toDouble()).tex(f22.toDouble(), f14.toDouble()).endVertex()
+            bufferBuilder.pos(f17.toDouble(), -100.0, (-f17).toDouble()).tex(f22.toDouble(), f23.toDouble()).endVertex()
+            bufferBuilder.pos((-f17).toDouble(), -100.0, (-f17).toDouble()).tex(f24.toDouble(), f23.toDouble()).endVertex()
             tessellator.draw()
             GlStateManager.disableTexture2D()
             val f15 = world.getStarBrightness(partialTicks) * f16
@@ -176,7 +175,7 @@ class CustomSkyRenderer : IRenderHandler() {
             GlStateManager.popMatrix()
             GlStateManager.disableTexture2D()
             GlStateManager.color(0.0f, 0.0f, 0.0f)
-            val d3 = mc.player.getPositionEyes(partialTicks).y - world.getHorizon()
+            val d3 = mc.player.getPositionEyes(partialTicks).y - world.horizon
 
             if (d3 < 0.0) {
                 GlStateManager.pushMatrix()
@@ -194,34 +193,32 @@ class CustomSkyRenderer : IRenderHandler() {
                 }
 
                 GlStateManager.popMatrix()
-                val f18 = 1.0f
                 val f19 = -(d3 + 65.0).toFloat()
-                val f20 = -1.0f
-                bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR)
-                bufferbuilder.pos(-1.0, f19.toDouble(), 1.0).color(0, 0, 0, 255).endVertex()
-                bufferbuilder.pos(1.0, f19.toDouble(), 1.0).color(0, 0, 0, 255).endVertex()
-                bufferbuilder.pos(1.0, -1.0, 1.0).color(0, 0, 0, 255).endVertex()
-                bufferbuilder.pos(-1.0, -1.0, 1.0).color(0, 0, 0, 255).endVertex()
-                bufferbuilder.pos(-1.0, -1.0, -1.0).color(0, 0, 0, 255).endVertex()
-                bufferbuilder.pos(1.0, -1.0, -1.0).color(0, 0, 0, 255).endVertex()
-                bufferbuilder.pos(1.0, f19.toDouble(), -1.0).color(0, 0, 0, 255).endVertex()
-                bufferbuilder.pos(-1.0, f19.toDouble(), -1.0).color(0, 0, 0, 255).endVertex()
-                bufferbuilder.pos(1.0, -1.0, -1.0).color(0, 0, 0, 255).endVertex()
-                bufferbuilder.pos(1.0, -1.0, 1.0).color(0, 0, 0, 255).endVertex()
-                bufferbuilder.pos(1.0, f19.toDouble(), 1.0).color(0, 0, 0, 255).endVertex()
-                bufferbuilder.pos(1.0, f19.toDouble(), -1.0).color(0, 0, 0, 255).endVertex()
-                bufferbuilder.pos(-1.0, f19.toDouble(), -1.0).color(0, 0, 0, 255).endVertex()
-                bufferbuilder.pos(-1.0, f19.toDouble(), 1.0).color(0, 0, 0, 255).endVertex()
-                bufferbuilder.pos(-1.0, -1.0, 1.0).color(0, 0, 0, 255).endVertex()
-                bufferbuilder.pos(-1.0, -1.0, -1.0).color(0, 0, 0, 255).endVertex()
-                bufferbuilder.pos(-1.0, -1.0, -1.0).color(0, 0, 0, 255).endVertex()
-                bufferbuilder.pos(-1.0, -1.0, 1.0).color(0, 0, 0, 255).endVertex()
-                bufferbuilder.pos(1.0, -1.0, 1.0).color(0, 0, 0, 255).endVertex()
-                bufferbuilder.pos(1.0, -1.0, -1.0).color(0, 0, 0, 255).endVertex()
+                bufferBuilder.begin(7, DefaultVertexFormats.POSITION_COLOR)
+                bufferBuilder.pos(-1.0, f19.toDouble(), 1.0).color(0, 0, 0, 255).endVertex()
+                bufferBuilder.pos(1.0, f19.toDouble(), 1.0).color(0, 0, 0, 255).endVertex()
+                bufferBuilder.pos(1.0, -1.0, 1.0).color(0, 0, 0, 255).endVertex()
+                bufferBuilder.pos(-1.0, -1.0, 1.0).color(0, 0, 0, 255).endVertex()
+                bufferBuilder.pos(-1.0, -1.0, -1.0).color(0, 0, 0, 255).endVertex()
+                bufferBuilder.pos(1.0, -1.0, -1.0).color(0, 0, 0, 255).endVertex()
+                bufferBuilder.pos(1.0, f19.toDouble(), -1.0).color(0, 0, 0, 255).endVertex()
+                bufferBuilder.pos(-1.0, f19.toDouble(), -1.0).color(0, 0, 0, 255).endVertex()
+                bufferBuilder.pos(1.0, -1.0, -1.0).color(0, 0, 0, 255).endVertex()
+                bufferBuilder.pos(1.0, -1.0, 1.0).color(0, 0, 0, 255).endVertex()
+                bufferBuilder.pos(1.0, f19.toDouble(), 1.0).color(0, 0, 0, 255).endVertex()
+                bufferBuilder.pos(1.0, f19.toDouble(), -1.0).color(0, 0, 0, 255).endVertex()
+                bufferBuilder.pos(-1.0, f19.toDouble(), -1.0).color(0, 0, 0, 255).endVertex()
+                bufferBuilder.pos(-1.0, f19.toDouble(), 1.0).color(0, 0, 0, 255).endVertex()
+                bufferBuilder.pos(-1.0, -1.0, 1.0).color(0, 0, 0, 255).endVertex()
+                bufferBuilder.pos(-1.0, -1.0, -1.0).color(0, 0, 0, 255).endVertex()
+                bufferBuilder.pos(-1.0, -1.0, -1.0).color(0, 0, 0, 255).endVertex()
+                bufferBuilder.pos(-1.0, -1.0, 1.0).color(0, 0, 0, 255).endVertex()
+                bufferBuilder.pos(1.0, -1.0, 1.0).color(0, 0, 0, 255).endVertex()
+                bufferBuilder.pos(1.0, -1.0, -1.0).color(0, 0, 0, 255).endVertex()
                 tessellator.draw()
             }
 
-            if (world.provider.isSkyColored()) {
+            if (world.provider.isSkyColored) {
                 GlStateManager.color(f * 0.2f + 0.04f, f1 * 0.2f + 0.04f, f2 * 0.6f + 0.1f)
             } else {
                 GlStateManager.color(f, f1, f2)

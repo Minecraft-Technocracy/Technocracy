@@ -40,7 +40,7 @@ object TCMegaStructures {
 
     @SubscribeEvent
     fun loadWorld(event: WorldEvent.Load) {
-        event.world.provider.skyRenderer = CustomSkyRenderer()
+        event.world.provider.skyRenderer = CustomSkyRenderer
         event.world.provider = WrappedWorldProvider(event.world.provider)
     }
 
