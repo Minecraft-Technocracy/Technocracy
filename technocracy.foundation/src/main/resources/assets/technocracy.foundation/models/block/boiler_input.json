@@ -1,0 +1,12 @@
+{
+  "parent": "block/orientable",
+  "textures": {
+    "particle": "technocracy.foundation:block/boiler_wall",
+    "up": "technocracy.foundation:block/boiler_wall",
+    "down": "technocracy.foundation:block/boiler_wall",
+    "north": "technocracy.foundation:block/boiler_ingress",
+    "east": "technocracy.foundation:block/boiler_wall",
+    "south": "technocracy.foundation:block/boiler_wall",
+    "west": "technocracy.foundation:block/boiler_wall"
+  }
+}

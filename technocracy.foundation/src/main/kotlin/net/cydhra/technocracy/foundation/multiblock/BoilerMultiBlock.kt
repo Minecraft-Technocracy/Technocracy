@@ -4,10 +4,7 @@ import it.zerono.mods.zerocore.api.multiblock.IMultiblockPart
 import it.zerono.mods.zerocore.api.multiblock.MultiblockControllerBase
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import it.zerono.mods.zerocore.lib.block.ModTileEntity
-import net.cydhra.technocracy.foundation.blocks.general.boilerControllerBlock
-import net.cydhra.technocracy.foundation.blocks.general.boilerGlassBlock
-import net.cydhra.technocracy.foundation.blocks.general.boilerHeaterBlock
-import net.cydhra.technocracy.foundation.blocks.general.boilerWallBlock
+import net.cydhra.technocracy.foundation.blocks.general.*
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerHeater
 import net.minecraft.init.Blocks
@@ -20,13 +17,16 @@ class BoilerMultiBlock(world: World) : BaseMultiBlock(
             it.block == boilerWallBlock || it.block == boilerControllerBlock
         },
         sideBlockWhitelist = Predicate {
-            it.block == boilerWallBlock || it.block == boilerGlassBlock || it.block == boilerControllerBlock
+            it.block == boilerWallBlock || it.block == boilerGlassBlock || it.block == boilerControllerBlock ||
+                    it.block == boilerFluidInputBlock
         },
         topBlockWhitelist = Predicate {
-            it.block == boilerWallBlock || it.block == boilerGlassBlock
+            it.block == boilerWallBlock || it.block == boilerGlassBlock ||
+                    it.block == boilerFluidInputBlock
         },
         bottomBlockWhitelist = Predicate {
-            it.block == boilerWallBlock || it.block == boilerGlassBlock || it.block == boilerHeaterBlock
+            it.block == boilerWallBlock || it.block == boilerGlassBlock || it.block == boilerHeaterBlock ||
+                    it.block == boilerFluidInputBlock
         },
         interiorBlockWhitelist = Predicate {
             it.block == Blocks.AIR
@@ -46,6 +46,7 @@ class BoilerMultiBlock(world: World) : BaseMultiBlock(
     private var heaterElements: List<TileEntityBoilerHeater> = emptyList()
 
     override fun updateServer(): Boolean {
+
         return true
     }
 
