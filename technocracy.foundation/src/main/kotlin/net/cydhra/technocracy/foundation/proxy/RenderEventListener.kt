@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 @Mod.EventBusSubscriber(modid = TCFoundation.MODID)
-class RenderProxy {
+class RenderEventListener {
     private val UNDERWATER_GRAYSCALE = ResourceLocation("technocracy.foundation",
             "textures/extra/underwater_grayscale.png")
 

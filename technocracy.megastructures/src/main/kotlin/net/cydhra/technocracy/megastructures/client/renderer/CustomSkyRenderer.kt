@@ -1,7 +1,6 @@
 package net.cydhra.technocracy.megastructures.client.renderer
 
 import net.cydhra.technocracy.foundation.TCFoundation
-import net.cydhra.technocracy.foundation.proxy.RenderProxy
 import net.minecraft.client.Minecraft
 import net.minecraft.client.multiplayer.WorldClient
 import net.minecraft.client.renderer.GlStateManager
@@ -12,16 +11,11 @@ import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.MathHelper
 import net.minecraftforge.client.IRenderHandler
 import net.minecraftforge.client.event.EntityViewRenderEvent
-import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 @Mod.EventBusSubscriber(modid = TCFoundation.MODID)
 class CustomSkyRenderer : IRenderHandler() {
-
-    init {
-        MinecraftForge.EVENT_BUS.register(RenderProxy())
-    }
 
     override fun render(partialTicks: Float, world: WorldClient, mc: Minecraft) {
         renderSky(partialTicks, world, mc)

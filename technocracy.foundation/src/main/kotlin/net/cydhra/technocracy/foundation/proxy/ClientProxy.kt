@@ -32,7 +32,7 @@ class ClientProxy : CommonProxy() {
     override fun preInit() {
         super.preInit()
         TextureAtlasManager()
-        MinecraftForge.EVENT_BUS.register(RenderProxy())
+        MinecraftForge.EVENT_BUS.register(RenderEventListener())
     }
 
     override fun init() {
