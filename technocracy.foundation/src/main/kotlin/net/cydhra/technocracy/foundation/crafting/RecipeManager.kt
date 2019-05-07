@@ -79,7 +79,9 @@ object RecipeManager {
             return true
 
         val jsonObject = try {
-            JsonUtils.fromJson(gson, Files.newBufferedReader(path), JsonObject::class.java)!!
+            Files.newBufferedReader(path).use { reader ->
+                JsonUtils.fromJson(gson, reader, JsonObject::class.java)!!
+            }
         } catch (e: JsonParseException) {
             TCFoundation.logger.error("JSON parse exception", e)
             return false
