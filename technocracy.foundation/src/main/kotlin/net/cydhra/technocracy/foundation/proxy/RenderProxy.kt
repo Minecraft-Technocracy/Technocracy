@@ -9,11 +9,9 @@ import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
 import net.minecraftforge.client.event.RenderBlockOverlayEvent
-import net.minecraftforge.event.world.WorldEvent
 import net.minecraftforge.fluids.BlockFluidBase
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
-import net.minecraftforge.fml.common.gameevent.TickEvent
 
 @Mod.EventBusSubscriber(modid = TCFoundation.MODID)
 class RenderProxy {
@@ -100,19 +98,6 @@ class RenderProxy {
                 GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f)
         }
     }*/
-
-    @SubscribeEvent
-    fun loadWorld(event: WorldEvent.Load) {
-        //event.world.provider.skyRenderer = CustomSkyRenderer()
-        //event.world.provider = WrappedWorldProvider(event.world.provider)
-    }
-
-    @SubscribeEvent
-    fun render(event: TickEvent.WorldTickEvent) {
-        //if(event.phase == TickEvent.Phase.END) {
-        //    event.world.skylightSubtracted = 10
-        //}
-    }
 
     @SubscribeEvent
     @Suppress("unused")

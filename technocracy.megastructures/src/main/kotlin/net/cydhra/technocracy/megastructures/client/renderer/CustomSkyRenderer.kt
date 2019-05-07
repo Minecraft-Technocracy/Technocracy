@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.foundation.client.renderer.sky
+package net.cydhra.technocracy.megastructures.client.renderer
 
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.proxy.RenderProxy

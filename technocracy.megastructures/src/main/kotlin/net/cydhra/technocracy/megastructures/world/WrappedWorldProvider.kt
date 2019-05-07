@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.foundation.client.renderer.sky
+package net.cydhra.technocracy.megastructures.world
 
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.util.math.BlockPos
