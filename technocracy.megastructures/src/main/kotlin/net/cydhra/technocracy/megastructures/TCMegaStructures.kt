@@ -20,7 +20,7 @@ object TCMegaStructures {
     /**
      * Mod version
      */
-    const val VERSION = "@VERSION@"
+    const val VERSION = "1.0"
 
     /**
      * Mod name used by forge
