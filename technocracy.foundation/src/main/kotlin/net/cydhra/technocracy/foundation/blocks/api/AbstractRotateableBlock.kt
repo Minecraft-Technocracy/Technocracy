@@ -49,15 +49,18 @@ abstract class AbstractRotateableBlock(unlocalizedName: String,
     }
 
     override fun createBlockState(): BlockStateContainer {
+        //Todo separate
         return BlockStateContainer.Builder(this).add(facingProperty).add(POSITION).build()
     }
 
     override fun getExtendedState(state: IBlockState, world: IBlockAccess?, pos: BlockPos?): IExtendedBlockState {
+        //Todo separate
         return (state as IExtendedBlockState).withProperty(POSITION, pos)
     }
 
     @Suppress("OverridingDeprecatedMember")
     override fun getStateFromMeta(meta: Int): IBlockState {
+        //Todo separate
         var facing = EnumFacing.getFront(meta)
         if (facing.axis == EnumFacing.Axis.Y) facing = EnumFacing.NORTH
         return this.defaultState.withProperty(facingProperty, facing)

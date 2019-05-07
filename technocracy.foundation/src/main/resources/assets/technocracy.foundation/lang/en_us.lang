@@ -50,6 +50,10 @@ item.ingot.superconductor.name=Superconductor Ingot
 item.ingot.mPCM.name=Metallic Phase Change Material
 item.ingot.silicon_bronze.name=Silicon Bronze Ingot
 
+item.pipe.item.name=Item Pipe
+item.pipe.fluid.name=Fluid Pipe
+item.pipe.energy.name=Energy Pipe
+
 tile.oil_sand.name=Oil Sand
 tile.ore.aluminum.name=Aluminum Ore
 tile.ore.copper.name=Copper Ore

@@ -15,13 +15,19 @@ class TextureAtlasManager {
     companion object {
         var connector_energy: TextureAtlasSprite? = null
         var connector_inventory: TextureAtlasSprite? = null
+        var pipe_item: TextureAtlasSprite? = null
+        var pipe_fluid: TextureAtlasSprite? = null
+        var pipe_energy: TextureAtlasSprite? = null
     }
 
     @Suppress("unused")
     @SubscribeEvent
-    fun registerTextureAltas(event: TextureStitchEvent.Pre) {
+    fun registerTextureAtlas(event: TextureStitchEvent.Pre) {
         connector_energy = event.map.registerSprite(getIcon("extra/connector_energy"))
         connector_inventory = event.map.registerSprite(getIcon("extra/connector_inventory"))
+        pipe_item = event.map.registerSprite(getIcon("block/steel"))
+        pipe_fluid = event.map.registerSprite(getIcon("block/steel_dark"))
+        pipe_energy = event.map.registerSprite(getIcon("extra/connector_inventory"))
     }
 
     fun getIcon(name: String): ResourceLocation {

@@ -3,26 +3,46 @@ package net.cydhra.technocracy.foundation.blocks
 import net.cydhra.technocracy.foundation.blocks.api.AbstractTileEntityBlock
 import net.cydhra.technocracy.foundation.pipes.Network
 import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
+import net.cydhra.technocracy.foundation.util.propertys.POSITION
 import net.minecraft.block.material.Material
+import net.minecraft.block.properties.PropertyEnum
+import net.minecraft.block.state.BlockStateContainer
 import net.minecraft.block.state.IBlockState
+import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.Item
+import net.minecraft.item.ItemStack
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumHand
+import net.minecraft.util.NonNullList
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.Explosion
+import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
+import net.minecraftforge.common.property.IExtendedBlockState
 
 
 class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON) {
 
+    companion object {
+        var PIPETYPE: PropertyEnum<Network.PipeType> = PropertyEnum.create("pipetype", Network.PipeType::class.java)
+    }
+
     override val generateItem: Boolean
         get() = false
 
+    override fun getExtendedState(state: IBlockState, world: IBlockAccess?, pos: BlockPos?): IExtendedBlockState {
+        return (state as IExtendedBlockState).withProperty(POSITION, pos)
+    }
+
+    override fun createBlockState(): BlockStateContainer {
+        return BlockStateContainer.Builder(this).add(PIPETYPE).add(POSITION).build()
+    }
+
     override fun createNewTileEntity(worldIn: World, meta: Int): TileEntity? {
-        return TileEntityPipe()
+        return TileEntityPipe(meta)
     }
 
     override fun getStateForPlacement(worldIn: World, pos: BlockPos, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float, meta: Int, placer: EntityLivingBase): IBlockState {
@@ -39,6 +59,35 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON) {
         super.onBlockDestroyedByPlayer(worldIn, pos, state)
     }
 
+    override fun getMetaFromState(state: IBlockState): Int {
+        return state.getValue(PIPETYPE).ordinal
+    }
+
+    override fun damageDropped(state: IBlockState): Int {
+        return state.getValue(PIPETYPE).ordinal
+    }
+
+    /**
+     * returns a list of blocks with the same ID, but different meta (eg: wood returns 4 blocks)
+     */
+    override fun getSubBlocks(itemIn: CreativeTabs, items: NonNullList<ItemStack>) {
+        for (type in Network.PipeType.values()) {
+            items.add(ItemStack(this, 1, type.ordinal))
+        }
+    }
+
+    /**
+     * Convert the given metadata into a BlockState for this Block
+     */
+    override fun getStateFromMeta(meta: Int): IBlockState {
+        return this.defaultState.withProperty(PIPETYPE, Network.PipeType.values()[meta])
+    }
+
+    /*override fun createBlockState(): BlockStateContainer {
+        println(PIPETYPE)
+        //PIPETYPE = PropertyEnum.create("pipetype", Network.PipeType::class.java)
+        return BlockStateContainer(this, PIPETYPE)
+    }*/
 
     override fun onBlockActivated(worldIn: World, pos: BlockPos, state: IBlockState, playerIn: EntityPlayer, hand: EnumHand, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean {
         if(!playerIn.isSneaking && playerIn.inventory.getCurrentItem().item == Item.getItemFromBlock(this))

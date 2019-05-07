@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.tileentity.components
 
 import net.cydhra.technocracy.foundation.pipes.Network
+import net.cydhra.technocracy.foundation.tileentity.AbstractTileEntity
 import net.minecraft.nbt.NBTBase
 import net.minecraft.nbt.NBTTagCompound
 import java.util.*
@@ -32,6 +33,5 @@ class ComponentPipeTypes : IComponent {
                     types.add(optional.get())
             }
         }
-
     }
 }

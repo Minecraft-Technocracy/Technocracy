@@ -9,25 +9,43 @@ import net.minecraft.util.EnumFacing
 import java.util.*
 
 
-class TileEntityPipe : AggregatableTileEntity() {
-    val networkComponent = NetworkComponent()
-    val pipeTypes = ComponentPipeTypes()
-
+class TileEntityPipe(val meta: Int = 0) : AggregatableTileEntity() {
+    private val networkComponent = NetworkComponent()
+    private val pipeTypes = ComponentPipeTypes()
 
     init {
         registerComponent(networkComponent, "network")
         registerComponent(pipeTypes, "pipeTypes")
+
+        pipeTypes.types.add(Network.PipeType.values()[meta])
+    }
+
+    fun hasPipeType(type: Network.PipeType): Boolean {
+        return pipeTypes.types.contains(type)
+    }
+
+    fun addPipeType(type: Network.PipeType) {
+        pipeTypes.types.add(type)
+        markForUpdate()
+    }
+
+    fun getInstalledTypes(): List<Network.PipeType> {
+        return listOf(*pipeTypes.types.toTypedArray())
+    }
+
+    fun getNetworkId(): UUID {
+        return networkComponent.uuid!!
     }
 
     fun setNetworkId(uuid: UUID): TileEntityPipe {
         networkComponent.uuid = uuid
-        markDirty()
+        markForUpdate()
         return this
     }
 
     override fun onLoad() {
         //forge calls onLoad 2x
-        if(networkComponent.uuid != null || world.isRemote)
+        if (networkComponent.uuid != null || world.isRemote)
             return
 
         var connected = 0
@@ -35,7 +53,7 @@ class TileEntityPipe : AggregatableTileEntity() {
             val current = pos.offset(facing)
             if (world.getBlockState(current).block is PipeBlock) {
                 val pipe = world.getTileEntity(current) as TileEntityPipe
-                if(pipe.networkComponent.uuid == null) {
+                if (pipe.networkComponent.uuid == null) {
                     TCFoundation.logger.error("No networkId found")
                 }
                 val uuid = pipe.networkComponent.uuid!!
@@ -58,7 +76,7 @@ class TileEntityPipe : AggregatableTileEntity() {
             }
         }
 
-        if(connected == 0) {
+        if (connected == 0) {
             //no network found, create new one
             setNetworkId(UUID.randomUUID())
             Network.addNode(pos, networkComponent.uuid!!, world)

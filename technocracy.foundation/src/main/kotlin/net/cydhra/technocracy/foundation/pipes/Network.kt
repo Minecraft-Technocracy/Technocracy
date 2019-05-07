@@ -3,6 +3,7 @@ package net.cydhra.technocracy.foundation.pipes
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
 import net.minecraft.nbt.CompressedStreamTools
+import net.minecraft.util.IStringSerializable
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import net.minecraftforge.common.DimensionManager
@@ -39,7 +40,13 @@ object Network {
         if (world.isRemote)
             return
 
-        val network = networks[world.worldInfo.worldName]!![networkId]!!
+        val map = networks.getOrPut(world.worldInfo.worldName) {
+            mutableMapOf(Pair(networkId, Multigraph.createBuilder<BlockPos, WrappedPipeType>(WrappedPipeType::class.java).build()))
+        }
+
+        val network = map.getOrPut(networkId) {
+            Multigraph.createBuilder<BlockPos, WrappedPipeType>(WrappedPipeType::class.java).build()
+        }
 
         network.addVertex(newBlockPos)
         network.addVertex(connectToBlock)
@@ -93,7 +100,7 @@ object Network {
 
         mapOf(*networks.toList().toTypedArray())
                 .forEach { _, worldNetworks ->
-                    worldNetworks.forEach { id, network ->
+                    mapOf(*worldNetworks.toList().toTypedArray()).forEach { id, network ->
                         if (network.containsVertex(node)) {
                             val edges = setOf(*network.edgesOf(node).toTypedArray())
 
@@ -138,14 +145,6 @@ object Network {
                                 for (rem in remove) {
                                     removeNode(rem, id, world)
                                 }
-
-
-                                /*edges.forEach { edge ->
-                                    val edgetmp = network.getEdgeSource(edge)
-                                    val secondNode = if (edgetmp == node) network.getEdgeTarget(edge) else edgetmp
-
-                                    splitNetwork(secondNode, id, world)
-                                }*/
                             }
 
                             if (network.vertexSet().size == 0) {
@@ -193,23 +192,6 @@ object Network {
         }
     }
 
-    fun areNodesConnected(nodeA: BlockPos, nodeB: BlockPos, networkId: UUID, world: World, type:
-    PipeType): Boolean {
-        val network = networks[world.worldInfo.worldName]!![networkId]!!
-
-        val edges = network.edgeSet().filter { it.pipeType == type }
-
-        val walker = GraphWalk(network, nodeA, nodeB, edges, 0.0)
-
-        try {
-            walker.verify()
-        } catch (e: RuntimeException) {
-            return false
-        }
-
-        return true
-    }
-
     fun combineNetwork(nodeA: BlockPos, nodeB: BlockPos, networkId_old: UUID, networkId_new: UUID, world: World, type:
     PipeType) {
         if (world.isRemote)
@@ -226,49 +208,6 @@ object Network {
 
         networks[world.worldInfo.worldName]!!.remove(networkId_old)
 
-        /*val builder = Multigraph.createBuilder<BlockPos, WrappedPipeType>(WrappedPipeType::class.java)
-        builder.addGraph(network_old)
-        builder.addGraph(network_new)
-        network_new = builder.build()
-        network_new.addEdge(nodeA, nodeB, WrappedPipeType(type))
-
-        networks[world.worldInfo.worldName]!!.remove(networkId_old)
-
-        val iterator = DepthFirstIterator(network_old, if (network_old.containsVertex(nodeB)) nodeB else nodeA)
-
-        iterator.forEach { firstNode ->
-            forceNetworkId(firstNode, networkId_new, world)
-        }*/
-        dirty = true
-    }
-
-    fun splitNetwork(nodeA: BlockPos, networkId: UUID, world: World) {
-        if (world.isRemote)
-            return
-        val network = networks[world.worldInfo.worldName]!![networkId]!!
-        val newNetwork = Multigraph.createBuilder<BlockPos, WrappedPipeType>(WrappedPipeType::class.java).build()
-        val newUUID = UUID.randomUUID()
-        val iterator = DepthFirstIterator(network, nodeA)
-        val removeList = mutableSetOf<BlockPos>()
-
-        iterator.forEach { firstNode ->
-            newNetwork.addVertex(firstNode)
-            removeList.add(firstNode)
-
-            val edges = network.edgesOf(firstNode)
-            edges.forEach { edge ->
-                val src = edge.getSourceNode()
-                val taregt = edge.getTargetNode()
-                newNetwork.addVertex(src)
-                newNetwork.addVertex(taregt)
-                newNetwork.addEdge(src, taregt, edge)
-            }
-        }
-        network.removeAllVertices(removeList)
-
-        networks[world.worldInfo.worldName] = mutableMapOf(Pair(newUUID, newNetwork))
-
-        forceNetworkId(removeList, newUUID, world)
         dirty = true
     }
 
@@ -328,7 +267,10 @@ object Network {
         }
     }
 
-    enum class PipeType(val unlocalizedName: String) {
-        ENERGY("energy"), FLUID("fluid"), ITEM("item")
+    enum class PipeType(val unlocalizedName: String) : IStringSerializable {
+        ENERGY("energy"), FLUID("fluid"), ITEM("item");
+        override fun getName(): String {
+            return this.unlocalizedName
+        }
     }
 }

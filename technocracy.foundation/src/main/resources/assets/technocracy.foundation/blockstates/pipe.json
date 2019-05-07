@@ -1,8 +1,18 @@
 {
   "variants": {
-    "normal": [
+    "pipetype=energy": [
       {
-        "model": "technocracy.foundation:extra/pipe/quad_normal"
+        "model": "technocracy.foundation:pipe"
+      }
+    ],
+    "pipetype=fluid": [
+      {
+        "model": "technocracy.foundation:pipe"
+      }
+    ],
+    "pipetype=item": [
+      {
+        "model": "technocracy.foundation:pipe"
       }
     ]
   }

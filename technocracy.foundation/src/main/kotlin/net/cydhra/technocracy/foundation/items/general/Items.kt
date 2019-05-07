@@ -22,3 +22,5 @@ val invarItem = AlloyItem("invar", ConstantItemColor(0xDDC2BE))
 val siliconBronzeItem = AlloyItem("silicon_bronze", ConstantItemColor(0xCC9E44))
 val superconductorItem = AlloyItem("superconductor", ConstantItemColor(0x7AA9DB))
 val metallicPhaseChangeMaterialItem = AlloyItem("mPCM", ConstantItemColor(0xC9BEC9))
+
+val pipeItem = PipeItem()

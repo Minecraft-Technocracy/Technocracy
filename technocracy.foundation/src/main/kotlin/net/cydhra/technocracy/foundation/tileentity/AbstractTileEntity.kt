@@ -3,6 +3,10 @@ package net.cydhra.technocracy.foundation.tileentity
 import net.cydhra.technocracy.foundation.tileentity.api.TCTileEntity
 import net.minecraft.block.state.IBlockState
 import net.minecraft.tileentity.TileEntity
+import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.network.play.server.SPacketUpdateTileEntity
+
+
 
 abstract class AbstractTileEntity : TileEntity(), TCTileEntity {
 
@@ -23,11 +27,20 @@ abstract class AbstractTileEntity : TileEntity(), TCTileEntity {
         return this.state!!
     }
 
+    override fun getUpdatePacket(): SPacketUpdateTileEntity? {
+        return SPacketUpdateTileEntity(this.pos, 3, this.updateTag)
+    }
+
+    override fun getUpdateTag(): NBTTagCompound {
+        return this.writeToNBT(NBTTagCompound())
+    }
+
     /**
-     * Mark the block for a block update. Does not mark the chunk dirty.
+     * Mark the block for a block update.
      */
-    protected fun markForUpdate() {
+    fun markForUpdate() {
         if (this.world != null) {
+            this.world.markBlockRangeForRenderUpdate(pos, pos)
             this.world.notifyBlockUpdate(this.pos, this.getBlockState(), this.getBlockState(), 3)
             markDirty()
         }

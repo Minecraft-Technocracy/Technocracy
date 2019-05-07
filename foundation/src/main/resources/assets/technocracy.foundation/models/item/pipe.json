@@ -1,0 +1,26 @@
+{
+  "parent": "technocracy.foundation:block/pipe",
+  "variants": {
+    "pipetype=energy": [
+      {
+        "textures": {
+          "texture": "technocracy.foundation:block/machine_bottom"
+        }
+      }
+    ],
+    "pipetype=fluid": [
+      {
+        "textures":{
+          "texture": "technocracy.foundation:block/steel_dark"
+        }
+      }
+    ],
+    "pipetype=item": [
+      {
+        "textures": {
+          "texture": "technocracy.foundation:block/steel"
+        }
+      }
+    ]
+  }
+}
