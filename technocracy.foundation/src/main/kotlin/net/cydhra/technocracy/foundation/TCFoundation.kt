@@ -44,8 +44,7 @@ object TCFoundation {
      * All forge mod hard-dependencies that must be provided
      */
     internal const val DEPENDENCIES = "required-after:forgelin;" +
-            "required-after:cofhcore;" +
-            "required-after:cofhworld;" +
+            "required-after:mirror;" +
             "required-after:zerocore"
 
     /**

@@ -8,20 +8,20 @@ group = "net.cydhra.technocracy"
 repositories {
     jcenter()
     maven {
-        name 'Forgelin Maven'
+        name 'Forgelin Maven Repository'
         url 'https://maven.shadowfacts.net/'
     }
     maven {
-        name 'CoFH Maven'
-        url 'https://maven.covers1624.net'
+        name "JEI Maven Repository"
+        url "https://dvs1.progwml6.com/files/maven/"
     }
     maven {
-        name = "JEI Maven"
-        url = "https://dvs1.progwml6.com/files/maven/"
-    }
-    maven {
-        name "zerocore"
+        name "zerocore Repository"
         url "http://maven.zerono.it/"
+    }
+    maven {
+        name "team-nightclipse Bintray Repository"
+        url "https://dl.bintray.com/team-nightclipse/maven"
     }
 }
 
