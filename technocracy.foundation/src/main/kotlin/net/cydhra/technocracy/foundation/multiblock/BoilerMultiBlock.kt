@@ -31,7 +31,7 @@ class BoilerMultiBlock(world: World) : BaseMultiBlock(
                     it.block == boilerFluidInputBlock
         },
         interiorBlockWhitelist = Predicate {
-            it.block == Blocks.AIR
+            it.block == Blocks.AIR || it.block == boilerConductorBlock
         },
         maximumSizeXZ = 16,
         maximumSizeY = 16,

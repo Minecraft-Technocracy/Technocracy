@@ -80,12 +80,14 @@ tile.refinery.name=Refinery
 tile.thermoelectric_freezer.name=Thermoelectric Freezer
 
 tile.iron_beam.name=Steel Beam
+
 tile.boiler_controller.name=Boiler Controller
 tile.boiler_wall.name=Boiler Frame
 tile.boiler_glass.name=Boiler Glass Frame
 tile.boiler_heater.name=Boiler Heater
 tile.boiler_input.name=Boiler Ingress Port
 tile.boiler_output.name=Boiler Egress Port
+tile.boiler_conductor.name=Boiler Heat Conductor
 
 fluid.oil=Mineral Oil
 fluid.sulfurdioxide=Sulfurdioxide
