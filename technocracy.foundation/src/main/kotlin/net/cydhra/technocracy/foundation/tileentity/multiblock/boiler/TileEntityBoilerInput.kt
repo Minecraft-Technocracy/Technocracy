@@ -21,19 +21,19 @@ class TileEntityBoilerInput : TileEntityMultiBlockPart<BoilerMultiBlock>(BoilerM
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
         return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
-                && this.multiblockController.fluidHandler != null
+                && this.multiblockController?.fluidHandler != null
     }
 
     override fun <T> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
         return if (hasCapability(capability, facing))
-            CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.multiblockController.fluidHandler!!)
+            CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.multiblockController!!.fluidHandler!!)
         else
             null
     }
 
     override fun onActivate(world: World, pos: BlockPos, player: EntityPlayer, hand: EnumHand, facing: EnumFacing) {
         player.sendMessage(TextComponentString("Water: " +
-                (this.multiblockController.fluidHandler!!.currentFluid?.amount ?: 0) + "/" +
-                this.multiblockController.fluidHandler!!.capacity))
+                (this.multiblockController!!.fluidHandler!!.currentFluid?.amount ?: 0) + "/" +
+                this.multiblockController!!.fluidHandler!!.capacity))
     }
 }

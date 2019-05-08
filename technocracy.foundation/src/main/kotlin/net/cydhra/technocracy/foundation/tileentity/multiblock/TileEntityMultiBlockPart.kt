@@ -29,9 +29,9 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
         return clazz.java
     }
 
-    override fun getMultiblockController(): T {
+    override fun getMultiblockController(): T? {
         @Suppress("UNCHECKED_CAST")
-        return super.getMultiblockController() as T
+        return super.getMultiblockController() as T?
     }
 
     override fun onMachineActivated() {}
@@ -65,7 +65,7 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
     }
 
     override fun validateStructure(): Boolean {
-        return this.multiblockController.isAssembled
+        return this.multiblockController?.isAssembled ?: false
     }
 
     override fun onActivate(world: World, pos: BlockPos, player: EntityPlayer, hand: EnumHand, facing: EnumFacing) {}
