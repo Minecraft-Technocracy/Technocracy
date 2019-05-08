@@ -29,13 +29,13 @@ class TileEntityBoilerController
     /**
      * The fluid storage for internal usage
      */
-    private val internalFluidHandler = DynamicFluidHandler(0, mutableListOf(FluidRegistry.WATER),
+    private val internalFluidHandler = DynamicFluidHandler(0, mutableListOf(FluidRegistry.WATER.name),
             DynamicFluidHandler.TankType.INPUT)
 
     /**
      * The steam storage for internal usage
      */
-    private val internalSteamHandler = DynamicFluidHandler(0, mutableListOf(steamFluid),
+    private val internalSteamHandler = DynamicFluidHandler(0, mutableListOf(steamFluid.name),
             DynamicFluidHandler.TankType.OUTPUT)
 
     /**

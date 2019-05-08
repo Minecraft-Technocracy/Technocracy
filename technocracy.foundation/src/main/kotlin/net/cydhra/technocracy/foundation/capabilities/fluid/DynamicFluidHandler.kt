@@ -2,13 +2,12 @@ package net.cydhra.technocracy.foundation.capabilities.fluid
 
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.common.util.INBTSerializable
-import net.minecraftforge.fluids.Fluid
 import net.minecraftforge.fluids.FluidStack
 import net.minecraftforge.fluids.capability.IFluidHandler
 import net.minecraftforge.fluids.capability.IFluidTankProperties
 
 
-class DynamicFluidHandler(var capacity: Int = 1000, val allowedFluid: MutableList<Fluid>,
+class DynamicFluidHandler(var capacity: Int = 1000, val allowedFluid: MutableList<String>,
                           var tanktype: TankType = TankType.BOTH) :
         IFluidHandler, INBTSerializable<NBTTagCompound> {
 
@@ -57,7 +56,7 @@ class DynamicFluidHandler(var capacity: Int = 1000, val allowedFluid: MutableLis
     }
 
     override fun fill(resource: FluidStack, doFill: Boolean): Int {
-        if (!allowedFluid.contains(resource.fluid) && !allowedFluid.isEmpty()) {
+        if (!allowedFluid.contains(resource.fluid.name) && !allowedFluid.isEmpty()) {
             return 0
         }
 

@@ -5,7 +5,6 @@ import net.minecraft.nbt.NBTBase
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
-import net.minecraftforge.fluids.Fluid
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler
 
 
@@ -21,7 +20,7 @@ class FluidComponent(val fluid: DynamicFluidHandler, val facing: MutableSet<Enum
      * @param tanktype type of tank [DynamicFluidHandler.TankType]
      * @param facing facing of the capability
      */
-    constructor(capacity: Int = 1000, vararg allowedFluid: Fluid = arrayOf(),
+    constructor(capacity: Int = 1000, vararg allowedFluid: String = arrayOf(),
                 tanktype: DynamicFluidHandler.TankType = DynamicFluidHandler.TankType.BOTH,
                 facing: MutableSet<EnumFacing>)
             : this(DynamicFluidHandler(capacity, mutableListOf(*allowedFluid), tanktype), facing)
