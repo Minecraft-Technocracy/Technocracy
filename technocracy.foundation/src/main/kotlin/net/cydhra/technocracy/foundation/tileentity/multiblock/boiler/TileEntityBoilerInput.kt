@@ -21,12 +21,11 @@ class TileEntityBoilerInput : TileEntityMultiBlockPart<BoilerMultiBlock>(BoilerM
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
         return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
-                && this.multiblockController?.fluidHandler != null
     }
 
     override fun <T> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
         return if (hasCapability(capability, facing))
-            CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.multiblockController!!.fluidHandler!!)
+            CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.multiblockController?.fluidHandler)
         else
             null
     }
