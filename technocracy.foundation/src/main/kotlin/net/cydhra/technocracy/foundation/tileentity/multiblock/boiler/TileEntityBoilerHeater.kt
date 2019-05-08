@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumHand
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.text.TextComponentString
 import net.minecraft.world.World
 
 /**
@@ -42,6 +43,7 @@ class TileEntityBoilerHeater
     }
 
     override fun onActivate(world: World, pos: BlockPos, player: EntityPlayer, hand: EnumHand, facing: EnumFacing) {
-
+        player.sendMessage(TextComponentString("Energy: ${energyStorageComponent.energyStorage
+                .currentEnergy}/${energyStorageComponent.energyStorage.capacity}"))
     }
 }
