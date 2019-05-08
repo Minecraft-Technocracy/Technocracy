@@ -6,6 +6,7 @@ import net.cydhra.technocracy.foundation.multiblock.BoilerMultiBlock
 import net.cydhra.technocracy.foundation.tileentity.AggregatableDelegate
 import net.cydhra.technocracy.foundation.tileentity.api.TCAggregatable
 import net.cydhra.technocracy.foundation.tileentity.api.TCAggregatableTileEntity
+import net.cydhra.technocracy.foundation.tileentity.components.FluidComponent
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPart
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.nbt.NBTTagCompound
@@ -38,6 +39,9 @@ class TileEntityBoilerController
     private val internalSteamHandler = DynamicFluidHandler(0, mutableListOf(steamFluid.name),
             DynamicFluidHandler.TankType.OUTPUT)
 
+    private val waterComponent = FluidComponent(internalFluidHandler, mutableSetOf())
+    private val steamComponent = FluidComponent(internalSteamHandler, mutableSetOf())
+
     /**
      * The fluid storage of this boiler structure. If the structure isn't fully assembled, it is null
      */
@@ -57,6 +61,11 @@ class TileEntityBoilerController
                 return null
             return internalSteamHandler
         }
+
+    init {
+        this.registerComponent(waterComponent, "water")
+        this.registerComponent(steamComponent, "steam")
+    }
 
     fun doWork() {
         if (this.multiblockController?.isAssembled == true) {
