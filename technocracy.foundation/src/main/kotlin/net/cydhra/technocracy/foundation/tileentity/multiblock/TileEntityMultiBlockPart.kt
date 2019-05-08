@@ -17,12 +17,17 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
     : AbstractRectangularMultiBlockTileEntity()
         where T : MultiblockControllerBase {
 
-    override fun createNewMultiblock(): MultiblockControllerBase {
+    override fun createNewMultiblock(): T {
         return constructController(this.world)
     }
 
-    override fun getMultiblockControllerType(): Class<out MultiblockControllerBase> {
+    override fun getMultiblockControllerType(): Class<T> {
         return clazz.java
+    }
+
+    override fun getMultiblockController(): T {
+        @Suppress("UNCHECKED_CAST")
+        return super.getMultiblockController() as T
     }
 
     override fun onMachineActivated() {}
