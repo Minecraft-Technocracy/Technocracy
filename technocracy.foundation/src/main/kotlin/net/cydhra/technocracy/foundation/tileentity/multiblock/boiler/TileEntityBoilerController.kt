@@ -43,7 +43,7 @@ class TileEntityBoilerController
      */
     val fluidHandler: DynamicFluidHandler?
         get() {
-            if (this.multiblockController?.isAssembled == true)
+            if (this.multiblockController?.isAssembled == false)
                 return null
             return internalFluidHandler
         }
@@ -53,7 +53,7 @@ class TileEntityBoilerController
      */
     val steamHandler: DynamicFluidHandler?
         get() {
-            if (this.multiblockController?.isAssembled == true)
+            if (this.multiblockController?.isAssembled == false)
                 return null
             return internalSteamHandler
         }
