@@ -9,6 +9,7 @@ import net.cydhra.technocracy.foundation.blocks.general.boilerGlassBlock
 import net.cydhra.technocracy.foundation.blocks.general.boilerHeaterBlock
 import net.cydhra.technocracy.foundation.blocks.general.boilerWallBlock
 import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandler
+import net.cydhra.technocracy.foundation.liquids.general.steamFluid
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerHeater
 import net.minecraft.block.BlockAir
 import net.minecraft.init.Blocks
@@ -16,6 +17,7 @@ import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import net.minecraftforge.fluids.FluidRegistry
+import net.minecraftforge.fluids.FluidStack
 import java.util.function.Predicate
 
 class BoilerMultiBlock(world: World) : BaseMultiBlock(
@@ -53,6 +55,12 @@ class BoilerMultiBlock(world: World) : BaseMultiBlock(
             DynamicFluidHandler.TankType.INPUT)
 
     /**
+     * The steam storage for internal usage
+     */
+    private val internalSteamHandler = DynamicFluidHandler(0, mutableListOf(steamFluid),
+            DynamicFluidHandler.TankType.OUTPUT)
+
+    /**
      * The fluid storage of this boiler structure. If the structure isn't fully assembled, it is null
      */
     val fluidHandler: DynamicFluidHandler?
@@ -62,11 +70,22 @@ class BoilerMultiBlock(world: World) : BaseMultiBlock(
             return internalFluidHandler
         }
 
+    /**
+     * The output fluid storage for generated steam. If this structure isn't fully assembled, it is null
+     */
+    val steamHandler: DynamicFluidHandler?
+        get() {
+            if (!this.isAssembled)
+                return null
+            return internalSteamHandler
+        }
+
     override fun updateServer(): Boolean {
         if (this.isAssembled) {
             if (this.internalFluidHandler.currentFluid?.amount ?: -1 > 0)
                 repeat(this.heaterElements.filter { it.tryHeating() }.size) {
                     this.internalFluidHandler.drain(100 /* TODO proper calculation */, true)
+                    this.internalFluidHandler.fill(FluidStack(steamFluid, 100), true)
                 }
         }
         return true
