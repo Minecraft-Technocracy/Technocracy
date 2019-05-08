@@ -11,20 +11,20 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler
 
 /**
  * A machine component that offers a fluid inventory for the machine. It also implements the fluid capability
- *
- * @param size amount of fluid in millibucket
- * @param allowedFluid list of allowed input fluids
- * @param tanktype type of tank [DynamicFluidHandler.TankType]
- * @param facing facing of the capability
  */
-class FluidComponent(var capacity: Int = 1000, vararg allowedFluid: Fluid = arrayOf(), var tanktype: DynamicFluidHandler
-.TankType = DynamicFluidHandler.TankType.BOTH, val facing: MutableSet<EnumFacing>) :
+class FluidComponent(val fluid: DynamicFluidHandler, val facing: MutableSet<EnumFacing>) :
         AbstractCapabilityComponent() {
 
     /**
-     * Fluid capability of the machine
+     * @param size amount of fluid in millibucket
+     * @param allowedFluid list of allowed input fluids
+     * @param tanktype type of tank [DynamicFluidHandler.TankType]
+     * @param facing facing of the capability
      */
-    val fluid = DynamicFluidHandler(capacity, mutableListOf(*allowedFluid), tanktype)
+    constructor(capacity: Int = 1000, vararg allowedFluid: Fluid = arrayOf(),
+                tanktype: DynamicFluidHandler.TankType = DynamicFluidHandler.TankType.BOTH,
+                facing: MutableSet<EnumFacing>)
+            : this(DynamicFluidHandler(capacity, mutableListOf(*allowedFluid), tanktype), facing)
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
         return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && this.facing.contains(facing)
