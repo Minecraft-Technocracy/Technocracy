@@ -4,7 +4,6 @@ import net.cydhra.technocracy.foundation.blocks.*
 import net.cydhra.technocracy.foundation.blocks.liquid.OilBlock
 import net.cydhra.technocracy.foundation.tileentity.machines.*
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartBoiler
-import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerHeater
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerInput
 import net.minecraft.util.BlockRenderLayer
@@ -24,7 +23,6 @@ val pulverizerBlock = MachineBlock("pulverizer", ::TileEntityPulverizer)
 val refineryBlock = MachineBlock("refinery", ::TileEntityRefinery)
 val thermoelectricFreezerBlock = MachineBlock("thermoelectric_freezer", ::TileEntityThermoelectricFreezer)
 
-val boilerControllerBlock = MultiBlockActiveBlock("boiler_controller", ::TileEntityBoilerController)
 val boilerHeaterBlock = MultiBlockActiveBlock("boiler_heater", ::TileEntityBoilerHeater)
 val boilerFluidInputBlock = MultiBlockActiveBlock("boiler_input", ::TileEntityBoilerInput)
 val boilerWallBlock = PlainMultiBlockPartBlock("boiler_wall", ::TileEntityMultiBlockPartBoiler)
