@@ -23,7 +23,7 @@ class BoilerMultiBlock(world: World) : BaseMultiBlock(
                     it.block == boilerFluidInputBlock
         },
         topBlockWhitelist = Predicate {
-            it.block == boilerWallBlock || it.block == boilerGlassBlock ||
+            it.block == boilerWallBlock || it.block == boilerGlassBlock || it.block == boilerFluidOutputBlock ||
                     it.block == boilerFluidInputBlock
         },
         bottomBlockWhitelist = Predicate {

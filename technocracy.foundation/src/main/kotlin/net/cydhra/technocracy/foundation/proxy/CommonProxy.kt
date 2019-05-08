@@ -20,6 +20,7 @@ import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBl
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerHeater
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerInput
+import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerOutput
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.animation.ITimeValue
@@ -84,6 +85,7 @@ open class CommonProxy {
         BlockManager.prepareBlocksForRegistration(boilerControllerBlock)
         BlockManager.prepareBlocksForRegistration(boilerHeaterBlock)
         BlockManager.prepareBlocksForRegistration(boilerFluidInputBlock)
+        BlockManager.prepareBlocksForRegistration(boilerFluidOutputBlock)
         BlockManager.prepareBlocksForRegistration(boilerWallBlock)
         BlockManager.prepareBlocksForRegistration(boilerGlassBlock)
 
@@ -133,6 +135,7 @@ open class CommonProxy {
         TileEntityManager.prepareTileEntityForRegistration(TileEntityBoilerHeater::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityMultiBlockPartBoiler::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityBoilerInput::class)
+        TileEntityManager.prepareTileEntityForRegistration(TileEntityBoilerOutput::class)
 
         TileEntityManager.prepareTileEntityForRegistration(TileEntityPipe::class)
 

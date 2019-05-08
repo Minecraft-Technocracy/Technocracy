@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "technocracy.foundation:boiler_output"
+    },
+    "facing=east": {
+      "model": "technocracy.foundation:boiler_output"
+    },
+    "facing=south": {
+      "model": "technocracy.foundation:boiler_output"
+    },
+    "facing=west": {
+      "model": "technocracy.foundation:boiler_output"
+    }
+  }
+}

@@ -7,6 +7,7 @@ import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBl
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerHeater
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerInput
+import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerOutput
 import net.minecraft.util.BlockRenderLayer
 
 val alloySmelteryBlock = MachineBlock("alloy_smeltery", ::TileEntityAlloySmeltery)
@@ -27,6 +28,7 @@ val thermoelectricFreezerBlock = MachineBlock("thermoelectric_freezer", ::TileEn
 val boilerControllerBlock = MultiBlockActiveBlock("boiler_controller", ::TileEntityBoilerController)
 val boilerHeaterBlock = MultiBlockActiveBlock("boiler_heater", ::TileEntityBoilerHeater)
 val boilerFluidInputBlock = MultiBlockActiveBlock("boiler_input", ::TileEntityBoilerInput)
+val boilerFluidOutputBlock = MultiBlockActiveBlock("boiler_output", ::TileEntityBoilerOutput)
 val boilerWallBlock = PlainMultiBlockPartBlock("boiler_wall", ::TileEntityMultiBlockPartBoiler)
         .apply { setHardness(3.5f).setResistance(1f) }
 val boilerGlassBlock = PlainMultiBlockPartBlock("boiler_glass", ::TileEntityMultiBlockPartBoiler,
