@@ -119,7 +119,7 @@ class BoilerMultiBlock(world: World) : BaseMultiBlock(
         }
 
         // update internal fluid storage capacity
-        this.internalFluidHandler.capacity = spaceInside * 16_000
+        this.internalFluidHandler.capacity = spaceInside * 4000 // 4 buckets of water per block
 
         // drain overflowing fluids
         if (this.internalFluidHandler.currentFluid?.amount ?: -1 > this.internalFluidHandler.capacity) {
