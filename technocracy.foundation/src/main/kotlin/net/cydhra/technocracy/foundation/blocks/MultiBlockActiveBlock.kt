@@ -1,10 +1,8 @@
 package net.cydhra.technocracy.foundation.blocks
 
 import it.zerono.mods.zerocore.api.multiblock.IMultiblockPart
-import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.api.MultiBlockBaseDelegate
 import net.cydhra.technocracy.foundation.blocks.api.TCMultiBlock
-import net.cydhra.technocracy.foundation.client.gui.handler.TCGuiHandler
 import net.cydhra.technocracy.foundation.tileentity.api.TCMultiBlockActiveTileEntity
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
@@ -27,7 +25,7 @@ class MultiBlockActiveBlock<out T>(name: String, tileEntityConstructor: () -> T)
                 val controllerTileEntity = getMultiBlockPartTileEntity(worldIn, pos)
                 val multiBlockController = controllerTileEntity.multiblockController
                 if (controllerTileEntity.validateStructure()) {
-                    playerIn.openGui(TCFoundation, TCGuiHandler.machineGui, worldIn, pos.x, pos.y, pos.z)
+                    controllerTileEntity.onActivate(worldIn, pos, playerIn, hand, facing)
                 } else {
                     playerIn.sendMessage(multiBlockController.lastError?.chatMessage
                             ?: TextComponentTranslation("null"))

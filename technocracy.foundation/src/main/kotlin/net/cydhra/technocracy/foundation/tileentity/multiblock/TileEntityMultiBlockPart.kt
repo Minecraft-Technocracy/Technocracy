@@ -4,6 +4,10 @@ import it.zerono.mods.zerocore.api.multiblock.MultiblockControllerBase
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import net.cydhra.technocracy.foundation.multiblock.BaseMultiBlock
 import net.cydhra.technocracy.foundation.tileentity.AbstractRectangularMultiBlockTileEntity
+import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.util.EnumFacing
+import net.minecraft.util.EnumHand
+import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import kotlin.reflect.KClass
 
@@ -64,4 +68,5 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
         return this.multiblockController.isAssembled
     }
 
+    override fun onActivate(world: World, pos: BlockPos, player: EntityPlayer, hand: EnumHand, facing: EnumFacing) {}
 }
