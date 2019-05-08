@@ -5,8 +5,6 @@ import it.zerono.mods.zerocore.api.multiblock.MultiblockControllerBase
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import it.zerono.mods.zerocore.lib.block.ModTileEntity
 import net.cydhra.technocracy.foundation.blocks.general.*
-import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandler
-import net.cydhra.technocracy.foundation.liquids.general.steamFluid
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerHeater
 import net.minecraft.block.BlockAir
@@ -14,8 +12,6 @@ import net.minecraft.init.Blocks
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
-import net.minecraftforge.fluids.FluidRegistry
-import net.minecraftforge.fluids.FluidStack
 import java.util.function.Predicate
 
 class BoilerMultiBlock(world: World) : BaseMultiBlock(
@@ -44,53 +40,25 @@ class BoilerMultiBlock(world: World) : BaseMultiBlock(
     /**
      * The controller tile entity of this multi block structure. Null until the block is found by [isMachineWhole]
      */
-    private var controllerTileEntity: TileEntityBoilerController? = null
+    var controllerTileEntity: TileEntityBoilerController? = null
 
     /**
      * The heaters of this structure. Empty until the machine is assembled successfully
      */
-    private var heaterElements: List<TileEntityBoilerHeater> = emptyList()
+    var heaterElements: List<TileEntityBoilerHeater> = emptyList()
 
     /**
-     * The fluid storage for internal usage
+     * Steam that one heater produces per tick with the current setup
      */
-    private val internalFluidHandler = DynamicFluidHandler(0, mutableListOf(FluidRegistry.WATER),
-            DynamicFluidHandler.TankType.INPUT)
+    var steamPerHeaterPerTick: Int = 100
 
     /**
-     * The steam storage for internal usage
+     * Energy consumed by one heater per tick
      */
-    private val internalSteamHandler = DynamicFluidHandler(0, mutableListOf(steamFluid),
-            DynamicFluidHandler.TankType.OUTPUT)
-
-    /**
-     * The fluid storage of this boiler structure. If the structure isn't fully assembled, it is null
-     */
-    val fluidHandler: DynamicFluidHandler?
-        get() {
-            if (!this.isAssembled)
-                return null
-            return internalFluidHandler
-        }
-
-    /**
-     * The output fluid storage for generated steam. If this structure isn't fully assembled, it is null
-     */
-    val steamHandler: DynamicFluidHandler?
-        get() {
-            if (!this.isAssembled)
-                return null
-            return internalSteamHandler
-        }
+    var energyPerHeaterPerTick: Int = 100
 
     override fun updateServer(): Boolean {
-        if (this.isAssembled) {
-            if (this.internalFluidHandler.currentFluid?.amount ?: -1 > 0)
-                repeat(this.heaterElements.filter { it.tryHeating() }.size) {
-                    this.internalFluidHandler.drain(100 /* TODO proper calculation */, true)
-                    this.internalFluidHandler.fill(FluidStack(steamFluid, 100), true)
-                }
-        }
+        controllerTileEntity?.doWork()
         return true
     }
 
@@ -114,6 +82,7 @@ class BoilerMultiBlock(world: World) : BaseMultiBlock(
                 this@BoilerMultiBlock.heaterElements = heaterTileEntities
 
                 this@BoilerMultiBlock.recalculateContents()
+                this@BoilerMultiBlock.recalculateStats()
             }
         }
     }
@@ -137,14 +106,14 @@ class BoilerMultiBlock(world: World) : BaseMultiBlock(
             }
         }
 
-        // update internal fluid storage capacity
-        this.internalFluidHandler.capacity = spaceInside * 4000 // 4 buckets of water per block
+        this.controllerTileEntity!!.updateCapacity(spaceInside * 4000)
+    }
 
-        // drain overflowing fluids
-        if (this.internalFluidHandler.currentFluid?.amount ?: -1 > this.internalFluidHandler.capacity) {
-            this.internalFluidHandler.drain(this.internalFluidHandler.currentFluid!!.amount -
-                    this.internalFluidHandler.capacity, doDrain = true)
-        }
+    /**
+     * Recalculate stats like energy and steam per tick
+     */
+    private fun recalculateStats() {
+        // TODO
     }
 
     override fun onBlockAdded(p0: IMultiblockPart?) {

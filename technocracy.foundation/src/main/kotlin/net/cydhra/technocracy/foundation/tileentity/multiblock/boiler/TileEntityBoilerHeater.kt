@@ -21,11 +21,6 @@ import net.minecraftforge.common.capabilities.Capability
 class TileEntityBoilerHeater : TileEntityMultiBlockPart<BoilerMultiBlock>(BoilerMultiBlock::class, ::BoilerMultiBlock),
         TCAggregatable by AggregatableDelegate() {
 
-    companion object {
-        // TODO balancing, config, upgrades, calculation etc
-        const val ENERGY_COST = 100
-    }
-
     /**
      *The energy storage of this block. It is not part of the boiler structure, as heating is decoupled from it and
      * could be done by other means than energy.
@@ -43,10 +38,12 @@ class TileEntityBoilerHeater : TileEntityMultiBlockPart<BoilerMultiBlock>(Boiler
     /**
      * Called by the multiblock structure to use energy.
      *
-     * @return true if a sufficient amount of energy has been drawn to successfully heat water
+     * @param energy the amount of energy to be consumed
+     *
+     * @return true if a sufficient amount of energy has been consumed
      */
-    fun tryHeating(): Boolean {
-        return this.energyStorageComponent.energyStorage.consumeEnergy(ENERGY_COST)
+    fun tryHeating(energy: Int): Boolean {
+        return this.energyStorageComponent.energyStorage.consumeEnergy(energy)
     }
 
     /**

@@ -6,7 +6,6 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumHand
 import net.minecraft.util.math.BlockPos
-import net.minecraft.util.text.TextComponentString
 import net.minecraft.world.World
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler
@@ -25,14 +24,13 @@ class TileEntityBoilerInput : TileEntityMultiBlockPart<BoilerMultiBlock>(BoilerM
 
     override fun <T> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
         return if (hasCapability(capability, facing))
-            CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.multiblockController?.fluidHandler)
+            CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.multiblockController
+                    ?.controllerTileEntity?.fluidHandler)
         else
             null
     }
 
     override fun onActivate(world: World, pos: BlockPos, player: EntityPlayer, hand: EnumHand, facing: EnumFacing) {
-        player.sendMessage(TextComponentString("Water: " +
-                (this.multiblockController!!.fluidHandler!!.currentFluid?.amount ?: 0) + "/" +
-                this.multiblockController!!.fluidHandler!!.capacity))
+
     }
 }
