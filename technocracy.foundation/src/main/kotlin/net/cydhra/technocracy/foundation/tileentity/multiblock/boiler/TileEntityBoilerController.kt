@@ -129,6 +129,8 @@ class TileEntityBoilerController
                 ?: 0}/${internalFluidHandler.capacity}"))
         player.sendMessage(TextComponentString("Steam: ${internalSteamHandler.currentFluid?.amount
                 ?: 0}/${internalSteamHandler.capacity}"))
+        player.sendMessage(TextComponentString("Steam per heater: ${multiblockController!!.steamPerHeaterPerTick}/t"))
+        player.sendMessage(TextComponentString("Energy per heater: ${multiblockController!!.energyPerHeaterPerTick}/t"))
     }
 
 

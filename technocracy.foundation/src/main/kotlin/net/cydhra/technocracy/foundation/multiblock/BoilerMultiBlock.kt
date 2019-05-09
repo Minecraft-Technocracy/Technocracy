@@ -12,6 +12,7 @@ import net.minecraft.init.Blocks
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
+import java.util.*
 import java.util.function.Predicate
 
 class BoilerMultiBlock(world: World) : BaseMultiBlock(
@@ -36,6 +37,26 @@ class BoilerMultiBlock(world: World) : BaseMultiBlock(
         maximumSizeXZ = 16,
         maximumSizeY = 16,
         world = world) {
+
+    companion object {
+        // TODO balancing and config
+
+        /**
+         * the base energy usage of one heated block in the interior
+         */
+        const val BASE_ENERGY_USAGE = 20
+
+        /**
+         * The temperature of the heat conductors. It spreads with a falloff of 1 to nearby blocks. Every block that
+         * has a temperature multiplier of more than zero produces [BASE_STEAM_GEN] * [CONDUCTOR_TEMPERATURE_MULTIPLIER]
+         */
+        const val CONDUCTOR_TEMPERATURE_MULTIPLIER = 4
+
+        /**
+         * The base steam gen of heated blocks in the boilers interior.
+         */
+        const val BASE_STEAM_GEN = 2
+    }
 
     /**
      * The controller tile entity of this multi block structure. Null until the block is found by [isMachineWhole]
@@ -82,7 +103,6 @@ class BoilerMultiBlock(world: World) : BaseMultiBlock(
                 this@BoilerMultiBlock.heaterElements = heaterTileEntities
 
                 this@BoilerMultiBlock.recalculateContents()
-                this@BoilerMultiBlock.recalculateStats()
             }
         }
     }
@@ -95,25 +115,94 @@ class BoilerMultiBlock(world: World) : BaseMultiBlock(
         val interiorMax = maximumCoord.add(-1, -1, -1)
 
         var spaceInside = 0
+        val heatQueue = ArrayDeque<BlockPos>()
 
-        // calculate fluid capacity
-        for (x in interiorMin.x..interiorMax.x) {
-            for (y in interiorMin.y..interiorMax.y) {
+        // a map of heat multipliers per block pos
+        val heatMap = HashMap<BlockPos, Int>()
+
+        // calculate fluid capacity (calculate bottom up, so conductors are placed in the right order)
+        for (y in interiorMin.y..interiorMax.y) {
+            for (x in interiorMin.x..interiorMax.x) {
                 for (z in interiorMin.z..interiorMax.z) {
-                    if (this.WORLD.getBlockState(BlockPos(x, y, z)).block is BlockAir)
-                        spaceInside++
+                    when (this.WORLD.getBlockState(BlockPos(x, y, z)).block) {
+                        is BlockAir -> {
+                            // add blocks to heat queue that are directly above heaters
+                            if (WORLD.getBlockState(BlockPos(x, y - 1, z)).block == boilerHeaterBlock) {
+                                heatQueue.addLast(BlockPos(x, y, z))
+                            }
+                            spaceInside++
+                        }
+                        boilerConductorBlock -> {
+                            // add all conductors to heat map (bottom first)
+                            heatQueue.addLast(BlockPos(x, y, z))
+                        }
+                    }
                 }
             }
         }
 
-        this.controllerTileEntity!!.updateCapacity(spaceInside * 4000)
-    }
+        // update steam generation stats
+        if (heaterElements.isEmpty()) {
+            energyPerHeaterPerTick = 0
+            steamPerHeaterPerTick = 0
+        } else {
+            // calculate heat map
+            while (heatQueue.isNotEmpty()) {
+                val pos = heatQueue.pop()
+                val block = this.WORLD.getBlockState(BlockPos(pos.x, pos.y, pos.z)).block
+                if (block == boilerConductorBlock) {
+                    heatMap[pos] = when {
+                        heatMap[pos.down()] == CONDUCTOR_TEMPERATURE_MULTIPLIER -> CONDUCTOR_TEMPERATURE_MULTIPLIER
+                        WORLD.getBlockState(pos.down()).block == boilerHeaterBlock -> CONDUCTOR_TEMPERATURE_MULTIPLIER
+                        else -> 0
+                    }
 
-    /**
-     * Recalculate stats like energy and steam per tick
-     */
-    private fun recalculateStats() {
-        // TODO
+                    // update neighbors
+                    arrayOf(pos.north(), pos.east(), pos.south(), pos.west(), pos.up())
+                            .filter { this.WORLD.getBlockState(BlockPos(it)).block is BlockAir }
+                            .forEach(heatQueue::addLast)
+                } else if (block is BlockAir) { // do not calculate wall blocks and outside
+                    // calculate maximal heat of all neighbor blocks
+                    val neighborHeat =
+                            if (WORLD.getBlockState(pos.down()).block == boilerHeaterBlock)
+                                CONDUCTOR_TEMPERATURE_MULTIPLIER
+                            else
+                                arrayOf(pos.down(), pos.north(), pos.east(), pos.south(), pos.west())
+                                        .mapNotNull { heatMap[it] }
+                                        .max() ?: 0
+
+                    // if current heat is lower than neighbor heat and falloff, update it
+                    if (heatMap[pos] ?: 0 < neighborHeat - 1) {
+                        heatMap[pos] = neighborHeat - 1
+                        // update neighbors
+                        arrayOf(pos.north(), pos.east(), pos.south(), pos.west(), pos.up())
+                                .filter { this.WORLD.getBlockState(BlockPos(it)).block is BlockAir }
+                                .forEach(heatQueue::addLast)
+                    }
+                }
+            }
+
+            var totalEnergyUsage = 0
+            var totalSteamProduction = 0
+
+            heatMap.values
+                    .filter { heat -> heat in 1..CONDUCTOR_TEMPERATURE_MULTIPLIER }
+                    .forEach { heat ->
+                        // increase energy cost for every heated block
+                        totalEnergyUsage += BASE_ENERGY_USAGE
+
+                        // increase steam production for every heated block that is not a conductor
+                        if (heat < CONDUCTOR_TEMPERATURE_MULTIPLIER)
+                            totalSteamProduction += BASE_STEAM_GEN * heat
+                    }
+
+            this.steamPerHeaterPerTick = totalSteamProduction / heaterElements.size
+            this.energyPerHeaterPerTick = totalEnergyUsage / heaterElements.size
+
+        }
+
+        // update fluid capacity
+        this.controllerTileEntity!!.updateCapacity(spaceInside * 4000)
     }
 
     override fun onBlockAdded(p0: IMultiblockPart?) {
