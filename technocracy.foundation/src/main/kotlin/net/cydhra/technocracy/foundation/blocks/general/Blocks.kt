@@ -28,8 +28,8 @@ val thermoelectricFreezerBlock = MachineBlock("thermoelectric_freezer", ::TileEn
 
 val boilerControllerBlock = MultiBlockActiveBlock("boiler_controller", ::TileEntityBoilerController)
 val boilerHeaterBlock = MultiBlockActiveBlock("boiler_heater", ::TileEntityBoilerHeater)
-val boilerFluidInputBlock = MultiBlockActiveBlock("boiler_input", ::TileEntityBoilerInput)
-val boilerFluidOutputBlock = MultiBlockActiveBlock("boiler_output", ::TileEntityBoilerOutput)
+val boilerFluidInputBlock = MultiBlockActiveBlock("boiler_input", ::TileEntityBoilerInput, BlockRenderLayer.CUTOUT)
+val boilerFluidOutputBlock = MultiBlockActiveBlock("boiler_output", ::TileEntityBoilerOutput, BlockRenderLayer.CUTOUT)
 val boilerWallBlock = PlainMultiBlockPartBlock("boiler_wall", ::TileEntityMultiBlockPartBoiler)
         .apply { setHardness(3.5f).setResistance(1f) }
 val boilerGlassBlock = PlainMultiBlockPartBlock("boiler_glass", ::TileEntityMultiBlockPartBoiler,
