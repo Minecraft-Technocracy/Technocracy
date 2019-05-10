@@ -4,6 +4,7 @@ import net.cydhra.technocracy.foundation.blocks.*
 import net.cydhra.technocracy.foundation.blocks.liquid.OilBlock
 import net.cydhra.technocracy.foundation.tileentity.machines.*
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartBoiler
+import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartHeatExchanger
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerHeater
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerInput
@@ -37,6 +38,10 @@ val boilerGlassBlock = PlainMultiBlockPartBlock("boiler_glass", ::TileEntityMult
         .apply { setHardness(1.5f).setResistance(1f) }
 val boilerConductorBlock = PlainBlock("boiler_conductor", material = Material.IRON)
         .apply { setHardness(4f).setResistance(2.5f) }
+
+val heatExchangerControllerBlock = MultiBlockActiveBlock("heat_exchanger_controller", ::TileEntityBoilerController)
+val heatExchangerWallBlock = MultiBlockActiveBlock("heat_exchanger_wall", ::TileEntityMultiBlockPartHeatExchanger)
+
 
 val oilSandBlock = OilSand()
 val ironBeamBlock = IronBeamBlock()
