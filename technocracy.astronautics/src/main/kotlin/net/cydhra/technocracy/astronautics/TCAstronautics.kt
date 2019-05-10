@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.astronautics
 
-import net.cydhra.technocracy.foundation.proxy.CommonProxy
+import net.cydhra.technocracy.astronautics.proxy.CommonProxy
 import net.minecraftforge.fml.common.FMLLog
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.SidedProxy
