@@ -95,6 +95,8 @@ open class CommonProxy {
         BlockManager.prepareBlocksForRegistration(heatExchangerControllerBlock)
         BlockManager.prepareBlocksForRegistration(heatExchangerWallBlock)
         BlockManager.prepareBlocksForRegistration(heatExchangerGlassBlock)
+        BlockManager.prepareBlocksForRegistration(heatExchangerColdAgentTube)
+        BlockManager.prepareBlocksForRegistration(heatExchangerHotAgentTube)
 
         BlockManager.prepareBlocksForRegistration(oilSandBlock)
         BlockManager.prepareBlocksForRegistration(ironBeamBlock)

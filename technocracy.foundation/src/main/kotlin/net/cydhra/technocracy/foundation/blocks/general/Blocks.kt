@@ -45,6 +45,8 @@ val heatExchangerWallBlock = PlainMultiBlockPartBlock("heat_exchanger_wall", ::T
 val heatExchangerGlassBlock = PlainMultiBlockPartBlock("heat_exchanger_glass", ::TileEntityMultiBlockPartHeatExchanger,
         isFullCube = false, opaque = false, glassSides = true, renderLayer = BlockRenderLayer.CUTOUT)
         .apply { setHardness(1.5f).setResistance(1f) }
+val heatExchangerColdAgentTube = PlainMultiBlockPartBlock("heat_exchanger_cold_tube", ::TileEntityMultiBlockPartHeatExchanger)
+val heatExchangerHotAgentTube = PlainMultiBlockPartBlock("heat_exchanger_hot_tube", ::TileEntityMultiBlockPartHeatExchanger)
 
 val oilSandBlock = OilSand()
 val ironBeamBlock = IronBeamBlock()

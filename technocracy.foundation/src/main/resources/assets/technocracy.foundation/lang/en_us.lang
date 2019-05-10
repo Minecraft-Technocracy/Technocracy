@@ -91,7 +91,9 @@ tile.boiler_conductor.name=Boiler Heat Conductor
 
 tile.heat_exchanger_controller.name=Heat Exchanger Controller
 tile.heat_exchanger_wall.name=Heat Exchanger Frame
-tile.heat_exchanger_wall.name=Heat Exchanger Glass
+tile.heat_exchanger_glass.name=Heat Exchanger Glass
+tile.heat_exchanger_cool_tube.name=Cool Agent Tube
+tile.heat_exchanger_hot_tube.name=Hot Agent Tube
 
 fluid.oil=Mineral Oil
 fluid.sulfurdioxide=Sulfurdioxide

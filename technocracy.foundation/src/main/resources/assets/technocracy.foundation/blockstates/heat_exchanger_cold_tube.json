@@ -1,0 +1,9 @@
+{
+  "variants": {
+    "normal": [
+      {
+        "model": "technocracy.foundation:heat_exchanger_cold_tube"
+      }
+    ]
+  }
+}
