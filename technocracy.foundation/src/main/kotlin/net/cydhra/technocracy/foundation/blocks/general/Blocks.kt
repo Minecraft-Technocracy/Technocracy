@@ -28,7 +28,7 @@ val refineryBlock = MachineBlock("refinery", ::TileEntityRefinery)
 val thermoelectricFreezerBlock = MachineBlock("thermoelectric_freezer", ::TileEntityThermoelectricFreezer)
 
 val boilerControllerBlock = MultiBlockRotatableActiveBlock("boiler_controller", ::TileEntityBoilerController)
-val boilerHeaterBlock = MultiBlockRotatableActiveBlock("boiler_heater", ::TileEntityBoilerHeater, BlockRenderLayer.CUTOUT)
+val boilerHeaterBlock = MultiBlockActiveBlock("boiler_heater", ::TileEntityBoilerHeater)
 val boilerFluidInputBlock = MultiBlockRotatableActiveBlock("boiler_input", ::TileEntityBoilerInput, BlockRenderLayer.CUTOUT)
 val boilerFluidOutputBlock = MultiBlockRotatableActiveBlock("boiler_output", ::TileEntityBoilerOutput, BlockRenderLayer.CUTOUT)
 val boilerWallBlock = PlainMultiBlockPartBlock("boiler_wall", ::TileEntityMultiBlockPartBoiler)

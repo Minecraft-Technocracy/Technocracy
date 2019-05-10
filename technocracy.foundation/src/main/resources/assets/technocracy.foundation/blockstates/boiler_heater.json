@@ -1,16 +1,9 @@
 {
   "variants": {
-    "facing=north": {
-      "model": "technocracy.foundation:boiler_heater"
-    },
-    "facing=east": {
-      "model": "technocracy.foundation:boiler_heater"
-    },
-    "facing=south": {
-      "model": "technocracy.foundation:boiler_heater"
-    },
-    "facing=west": {
-      "model": "technocracy.foundation:boiler_heater"
-    }
+    "normal": [
+      {
+        "model": "technocracy.foundation:boiler_heater"
+      }
+    ]
   }
 }
