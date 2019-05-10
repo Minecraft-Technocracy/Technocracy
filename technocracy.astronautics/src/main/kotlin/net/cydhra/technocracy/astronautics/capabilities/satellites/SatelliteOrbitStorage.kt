@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.astronautics.capabilities.satellites
 
+import net.cydhra.technocracy.astronautics.TCAstronautics
 import net.minecraft.nbt.NBTBase
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTTagList
@@ -12,9 +13,40 @@ import net.minecraftforge.common.capabilities.Capability
  */
 class SatelliteOrbitStorage : Capability.IStorage<ISatelliteOrbit> {
 
+    companion object {
+        const val NBT_KEY_TYPE = "type"
+    }
+
     override fun readNBT(capability: Capability<ISatelliteOrbit>, instance: ISatelliteOrbit, side: EnumFacing?,
                          nbt: NBTBase) {
-        TODO("not implemented: how to deserialize different satellite types? factory?")
+        if (nbt is NBTTagList) {
+            nbt.forEach { element ->
+                if (element is NBTTagCompound) {
+                    if (!element.hasKey(NBT_KEY_TYPE))
+                        error("expected satellite type in compound")
+
+                    val type = element.getString(NBT_KEY_TYPE)
+                    val satellite = SatelliteFactory.createSatellite(type)
+
+                    if (satellite == null) {
+                        TCAstronautics.logger.warn("satellite of type $type could not be deserialized. Removing it " +
+                                "from chunk")
+                    } else {
+                        try {
+                            satellite.deserializeNbt(element)
+                        } catch (t: Throwable) {
+                            TCAstronautics.logger.error("error while deserializing satellite ($type)", t)
+                        }
+
+                        capability.defaultInstance!!.add(satellite, false)
+                    }
+                } else {
+                    error("wrong nbt tag for satellite. Expected compound but got ${element.javaClass.name}")
+                }
+            }
+        } else {
+            error("wrong NBT tag for satellite orbit storage. Expected list but got ${nbt.javaClass.name}")
+        }
     }
 
     /**
@@ -26,6 +58,7 @@ class SatelliteOrbitStorage : Capability.IStorage<ISatelliteOrbit> {
 
         instance.getSatellites().forEach { satellite ->
             val satelliteCompound = NBTTagCompound()
+            satelliteCompound.setString(NBT_KEY_TYPE, satellite.type)
             satellite.serializeNbt(satelliteCompound)
             list.appendTag(satelliteCompound)
         }
