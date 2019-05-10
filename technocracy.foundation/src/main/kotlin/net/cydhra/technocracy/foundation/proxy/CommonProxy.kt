@@ -118,7 +118,6 @@ open class CommonProxy {
         ItemManager.prepareItemForRegistration(siliconBronzeItem)
         ItemManager.prepareItemForRegistration(superconductorItem)
         ItemManager.prepareItemForRegistration(metallicPhaseChangeMaterialItem)
-        ItemManager.prepareItemForRegistration(metallicPhaseChangeMaterialItem)
         ItemManager.prepareItemForRegistration(pipeItem)
 
         TileEntityManager.prepareTileEntityForRegistration(TileEntityAlloySmeltery::class)
