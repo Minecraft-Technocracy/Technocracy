@@ -17,6 +17,7 @@ import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
 import net.cydhra.technocracy.foundation.tileentity.machines.*
 import net.cydhra.technocracy.foundation.tileentity.management.TileEntityManager
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartBoiler
+import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartHeatExchanger
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerHeater
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerInput
@@ -93,6 +94,7 @@ open class CommonProxy {
 
         BlockManager.prepareBlocksForRegistration(heatExchangerControllerBlock)
         BlockManager.prepareBlocksForRegistration(heatExchangerWallBlock)
+        BlockManager.prepareBlocksForRegistration(heatExchangerGlassBlock)
 
         BlockManager.prepareBlocksForRegistration(oilSandBlock)
         BlockManager.prepareBlocksForRegistration(ironBeamBlock)
@@ -134,15 +136,16 @@ open class CommonProxy {
         TileEntityManager.prepareTileEntityForRegistration(TileEntityPulverizer::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityRefinery::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityThermoelectricFreezer::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityBoilerController::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityPipe::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityBoilerHeater::class)
+
         TileEntityManager.prepareTileEntityForRegistration(TileEntityMultiBlockPartBoiler::class)
+        TileEntityManager.prepareTileEntityForRegistration(TileEntityBoilerController::class)
+        TileEntityManager.prepareTileEntityForRegistration(TileEntityBoilerHeater::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityBoilerInput::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityBoilerOutput::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityHeatExchangerController::class)
 
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityPipe::class)
+        TileEntityManager.prepareTileEntityForRegistration(TileEntityMultiBlockPartHeatExchanger::class)
+        TileEntityManager.prepareTileEntityForRegistration(TileEntityHeatExchangerController::class)
 
         PotionManager.preparePotionForRegistration(oilyEffect)
 
