@@ -9,13 +9,17 @@ import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.tileentity.TileEntity
+import net.minecraft.util.BlockRenderLayer
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumHand
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.text.TextComponentTranslation
 import net.minecraft.world.World
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 
-class MultiBlockActiveBlock<out T>(name: String, tileEntityConstructor: () -> T)
+class MultiBlockActiveBlock<out T>(name: String, tileEntityConstructor: () -> T,
+                                   private val renderLayer: BlockRenderLayer)
     : AbstractTileEntityBlock(name, material = Material.ROCK),
         TCMultiBlock<T> by MultiBlockBaseDelegate<T>(tileEntityConstructor)
         where T : TileEntity, T : TCMultiBlockActiveTileEntity, T : IMultiblockPart {
@@ -37,5 +41,10 @@ class MultiBlockActiveBlock<out T>(name: String, tileEntityConstructor: () -> T)
         }
 
         return super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ)
+    }
+
+    @SideOnly(Side.CLIENT)
+    override fun getBlockLayer(): BlockRenderLayer {
+        return this.renderLayer
     }
 }

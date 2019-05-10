@@ -28,8 +28,8 @@ val refineryBlock = MachineBlock("refinery", ::TileEntityRefinery)
 val thermoelectricFreezerBlock = MachineBlock("thermoelectric_freezer", ::TileEntityThermoelectricFreezer)
 
 val boilerControllerBlock = MultiBlockRotatableActiveBlock("boiler_controller", ::TileEntityBoilerController)
-val boilerHeaterBlock = MultiBlockActiveBlock("boiler_heater", ::TileEntityBoilerHeater)
-val boilerFluidOutputBlock = MultiBlockActiveBlock("boiler_output", ::TileEntityBoilerOutput)
+val boilerHeaterBlock = MultiBlockActiveBlock("boiler_heater", ::TileEntityBoilerHeater, renderLayer = BlockRenderLayer.CUTOUT)
+val boilerFluidOutputBlock = MultiBlockActiveBlock("boiler_output", ::TileEntityBoilerOutput, renderLayer = BlockRenderLayer.CUTOUT)
 val boilerFluidInputBlock = MultiBlockRotatableActiveBlock("boiler_input", ::TileEntityBoilerInput, BlockRenderLayer.CUTOUT)
 val boilerWallBlock = PlainMultiBlockPartBlock("boiler_wall", ::TileEntityMultiBlockPartBoiler)
         .apply { setHardness(3.5f).setResistance(1f) }
@@ -39,8 +39,8 @@ val boilerGlassBlock = PlainMultiBlockPartBlock("boiler_glass", ::TileEntityMult
 val boilerConductorBlock = PlainBlock("boiler_conductor", material = Material.IRON)
         .apply { setHardness(4f).setResistance(2.5f) }
 
-val heatExchangerControllerBlock = MultiBlockRotatableActiveBlock("heat_exchanger_controller", ::TileEntityBoilerController)
-val heatExchangerWallBlock = MultiBlockRotatableActiveBlock("heat_exchanger_wall", ::TileEntityMultiBlockPartHeatExchanger)
+val heatExchangerControllerBlock = MultiBlockActiveBlock("heat_exchanger_controller", ::TileEntityBoilerController, BlockRenderLayer.SOLID)
+val heatExchangerWallBlock = MultiBlockActiveBlock("heat_exchanger_wall", ::TileEntityMultiBlockPartHeatExchanger, BlockRenderLayer.SOLID)
 
 
 val oilSandBlock = OilSand()
