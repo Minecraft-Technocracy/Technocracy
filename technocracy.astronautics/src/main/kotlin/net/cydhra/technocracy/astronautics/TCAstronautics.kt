@@ -1,6 +1,9 @@
 package net.cydhra.technocracy.astronautics
 
+import net.minecraftforge.fml.common.FMLLog
 import net.minecraftforge.fml.common.Mod
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
+import org.apache.logging.log4j.Logger
 
 
 @Mod(modid = TCAstronautics.MODID, name = TCAstronautics.NAME, version = TCAstronautics.VERSION,
@@ -32,4 +35,15 @@ object TCAstronautics {
      */
     internal const val DEPENDENCIES = "required-after:forgelin;" +
             "required-after:technocracy.foundation"
+
+    /**
+     * Mod logger
+     */
+    lateinit var logger: Logger
+
+    @Suppress("unused")
+    @Mod.EventHandler
+    fun preInit(@Suppress("UNUSED_PARAMETER") event: FMLPreInitializationEvent) {
+        logger = FMLLog.log
+    }
 }
