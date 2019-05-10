@@ -98,11 +98,12 @@ class BoilerMultiBlock(world: World) : BaseMultiBlock(
             collect(boilerControllerBlock.unlocalizedName, controllerTileEntities, 1)
             collect(heaterTileEntities)
 
-            onSuccess {
+            finishUp {
                 this@BoilerMultiBlock.controllerTileEntity = controllerTileEntities.single()
                 this@BoilerMultiBlock.heaterElements = heaterTileEntities
 
                 this@BoilerMultiBlock.recalculateContents()
+                return@finishUp true
             }
         }
     }

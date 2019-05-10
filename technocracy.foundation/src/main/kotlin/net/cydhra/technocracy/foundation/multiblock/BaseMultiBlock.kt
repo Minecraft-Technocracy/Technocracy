@@ -100,8 +100,7 @@ abstract class BaseMultiBlock(
             }
         }
 
-        domain.successBlock?.invoke()
-        return true
+        return domain.finishBlock?.invoke() ?: true
     }
 
     /**
@@ -109,12 +108,12 @@ abstract class BaseMultiBlock(
      * process tile entities that must or can be part of the structure.
      *
      * @see collect
-     * @see successBlock
+     * @see finishBlock
      */
     protected class MultiBlockAssemblyDomain {
         val assemblyRules = mutableListOf<AssemblyRule<*>>()
 
-        var successBlock: (() -> Unit)? = null
+        var finishBlock: (() -> Boolean)? = null
 
         inline fun <reified T : IMultiblockPart> collect(unlocalizedBlock: String, list: MutableList<T>,
                                                          range: IntRange) {
@@ -132,11 +131,11 @@ abstract class BaseMultiBlock(
         /**
          * @param block a lambda that is executed once all parts have been scanned and no parts are missing or too much
          */
-        fun onSuccess(block: () -> Unit) {
-            if (successBlock != null)
-                throw IllegalStateException("only one success block is allowed")
+        fun finishUp(block: () -> Boolean) {
+            if (finishBlock != null)
+                throw IllegalStateException("only one finish block is allowed")
 
-            successBlock = block
+            finishBlock = block
         }
 
         /**
