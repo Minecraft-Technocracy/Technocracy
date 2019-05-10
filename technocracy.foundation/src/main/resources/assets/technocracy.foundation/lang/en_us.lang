@@ -89,6 +89,10 @@ tile.boiler_input.name=Boiler Ingress Port
 tile.boiler_output.name=Boiler Egress Port
 tile.boiler_conductor.name=Boiler Heat Conductor
 
+tile.heat_exchanger_controller.name=Heat Exchanger Controller
+tile.heat_exchanger_wall.name=Heat Exchanger Frame
+tile.heat_exchanger_wall.name=Heat Exchanger Glass
+
 fluid.oil=Mineral Oil
 fluid.sulfurdioxide=Sulfurdioxide
 fluid.oxygen=Oxygen

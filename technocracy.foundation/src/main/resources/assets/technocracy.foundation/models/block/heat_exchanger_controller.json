@@ -1,0 +1,12 @@
+{
+  "parent": "block/orientable",
+  "textures": {
+    "particle": "technocracy.foundation:block/heat_exchanger_wall",
+    "up": "technocracy.foundation:block/heat_exchanger_wall",
+    "down": "technocracy.foundation:block/heat_exchanger_wall",
+    "north": "technocracy.foundation:block/heat_exchanger_controller",
+    "east": "technocracy.foundation:block/heat_exchanger_wall",
+    "south": "technocracy.foundation:block/heat_exchanger_wall",
+    "west": "technocracy.foundation:block/heat_exchanger_wall"
+  }
+}

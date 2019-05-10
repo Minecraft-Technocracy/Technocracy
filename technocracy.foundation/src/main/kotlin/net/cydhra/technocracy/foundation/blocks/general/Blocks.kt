@@ -39,9 +39,12 @@ val boilerGlassBlock = PlainMultiBlockPartBlock("boiler_glass", ::TileEntityMult
 val boilerConductorBlock = PlainBlock("boiler_conductor", material = Material.IRON)
         .apply { setHardness(4f).setResistance(2.5f) }
 
-val heatExchangerControllerBlock = MultiBlockActiveBlock("heat_exchanger_controller", ::TileEntityBoilerController, BlockRenderLayer.SOLID)
-val heatExchangerWallBlock = MultiBlockActiveBlock("heat_exchanger_wall", ::TileEntityMultiBlockPartHeatExchanger, BlockRenderLayer.SOLID)
-
+val heatExchangerControllerBlock = MultiBlockRotatableActiveBlock("heat_exchanger_controller",
+        ::TileEntityBoilerController)
+val heatExchangerWallBlock = PlainMultiBlockPartBlock("heat_exchanger_wall", ::TileEntityMultiBlockPartHeatExchanger)
+val heatExchangerGlassBlock = PlainMultiBlockPartBlock("heat_exchanger_glass", ::TileEntityMultiBlockPartHeatExchanger,
+        isFullCube = false, opaque = false, glassSides = true, renderLayer = BlockRenderLayer.CUTOUT)
+        .apply { setHardness(1.5f).setResistance(1f) }
 
 val oilSandBlock = OilSand()
 val ironBeamBlock = IronBeamBlock()

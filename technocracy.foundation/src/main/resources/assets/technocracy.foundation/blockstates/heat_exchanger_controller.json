@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "technocracy.foundation:heat_exchanger_controller"
+    },
+    "facing=east": {
+      "model": "technocracy.foundation:heat_exchanger_controller",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "technocracy.foundation:heat_exchanger_controller",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "technocracy.foundation:heat_exchanger_controller",
+      "y": 270
+    }
+  }
+}
