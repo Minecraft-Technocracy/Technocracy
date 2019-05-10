@@ -1,7 +1,11 @@
 package net.cydhra.technocracy.astronautics
 
+import net.cydhra.technocracy.foundation.proxy.CommonProxy
 import net.minecraftforge.fml.common.FMLLog
 import net.minecraftforge.fml.common.Mod
+import net.minecraftforge.fml.common.SidedProxy
+import net.minecraftforge.fml.common.event.FMLInitializationEvent
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
 import org.apache.logging.log4j.Logger
 
@@ -41,9 +45,27 @@ object TCAstronautics {
      */
     lateinit var logger: Logger
 
+    @SidedProxy(
+            serverSide = "net.cydhra.technocracy.astronautics.proxy.CommonProxy",
+            clientSide = "net.cydhra.technocracy.astronautics.proxy.ClientProxy")
+    lateinit var proxy: CommonProxy
+
     @Suppress("unused")
     @Mod.EventHandler
     fun preInit(@Suppress("UNUSED_PARAMETER") event: FMLPreInitializationEvent) {
         logger = FMLLog.log
+        proxy.preInit()
+    }
+
+    @Suppress("unused")
+    @Mod.EventHandler
+    fun init(@Suppress("UNUSED_PARAMETER") event: FMLInitializationEvent) {
+        proxy.init()
+    }
+
+    @Suppress("unused")
+    @Mod.EventHandler
+    fun postInit(@Suppress("UNUSED_PARAMETER") event: FMLPostInitializationEvent) {
+        proxy.postInit()
     }
 }
