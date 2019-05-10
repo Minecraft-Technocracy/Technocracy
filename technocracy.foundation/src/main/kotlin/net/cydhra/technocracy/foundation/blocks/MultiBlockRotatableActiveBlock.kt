@@ -17,8 +17,8 @@ import net.minecraft.world.World
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 
-class MultiBlockActiveBlock<out T>(name: String, tileEntityConstructor: () -> T,
-                                   private val renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID)
+class MultiBlockRotatableActiveBlock<out T>(name: String, tileEntityConstructor: () -> T,
+                                            private val renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID)
     : BaseRotateableTileEntityBlock(name, material = Material.ROCK),
         TCMultiBlock<T> by MultiBlockBaseDelegate<T>(tileEntityConstructor)
         where T : TileEntity, T : TCMultiBlockActiveTileEntity, T : IMultiblockPart {
