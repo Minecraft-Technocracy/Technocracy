@@ -23,6 +23,8 @@ import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntity
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerInput
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerOutput
 import net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger.TileEntityHeatExchangerController
+import net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger.TileEntityHeatExchangerInput
+import net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger.TileEntityHeatExchangerOutput
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.animation.ITimeValue
@@ -97,6 +99,8 @@ open class CommonProxy {
         BlockManager.prepareBlocksForRegistration(heatExchangerGlassBlock)
         BlockManager.prepareBlocksForRegistration(heatExchangerColdAgentTube)
         BlockManager.prepareBlocksForRegistration(heatExchangerHotAgentTube)
+        BlockManager.prepareBlocksForRegistration(heatExchangerInputBlock)
+        BlockManager.prepareBlocksForRegistration(heatExchangerOutputBlock)
 
         BlockManager.prepareBlocksForRegistration(oilSandBlock)
         BlockManager.prepareBlocksForRegistration(ironBeamBlock)
@@ -148,6 +152,8 @@ open class CommonProxy {
 
         TileEntityManager.prepareTileEntityForRegistration(TileEntityMultiBlockPartHeatExchanger::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityHeatExchangerController::class)
+        TileEntityManager.prepareTileEntityForRegistration(TileEntityHeatExchangerInput::class)
+        TileEntityManager.prepareTileEntityForRegistration(TileEntityHeatExchangerOutput::class)
 
         PotionManager.preparePotionForRegistration(oilyEffect)
 

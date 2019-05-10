@@ -9,6 +9,8 @@ import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntity
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerHeater
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerInput
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerOutput
+import net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger.TileEntityHeatExchangerInput
+import net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger.TileEntityHeatExchangerOutput
 import net.minecraft.block.material.Material
 import net.minecraft.util.BlockRenderLayer
 
@@ -47,6 +49,10 @@ val heatExchangerGlassBlock = PlainMultiBlockPartBlock("heat_exchanger_glass", :
         .apply { setHardness(1.5f).setResistance(1f) }
 val heatExchangerColdAgentTube = PlainMultiBlockPartBlock("heat_exchanger_cold_tube", ::TileEntityMultiBlockPartHeatExchanger)
 val heatExchangerHotAgentTube = PlainMultiBlockPartBlock("heat_exchanger_hot_tube", ::TileEntityMultiBlockPartHeatExchanger)
+val heatExchangerInputBlock = MultiBlockRotatableActiveBlock("heat_exchanger_input", ::TileEntityHeatExchangerInput,
+        renderLayer = BlockRenderLayer.CUTOUT)
+val heatExchangerOutputBlock = MultiBlockRotatableActiveBlock("heat_exchanger_output", ::TileEntityHeatExchangerOutput,
+        renderLayer = BlockRenderLayer.CUTOUT)
 
 val oilSandBlock = OilSand()
 val ironBeamBlock = IronBeamBlock()
