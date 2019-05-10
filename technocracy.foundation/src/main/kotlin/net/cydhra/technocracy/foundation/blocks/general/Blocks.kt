@@ -9,6 +9,7 @@ import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntity
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerHeater
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerInput
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerOutput
+import net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger.TileEntityHeatExchangerController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger.TileEntityHeatExchangerInput
 import net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger.TileEntityHeatExchangerOutput
 import net.minecraft.block.material.Material
@@ -42,7 +43,7 @@ val boilerConductorBlock = PlainBlock("boiler_conductor", material = Material.IR
         .apply { setHardness(4f).setResistance(2.5f) }
 
 val heatExchangerControllerBlock = MultiBlockRotatableActiveBlock("heat_exchanger_controller",
-        ::TileEntityBoilerController)
+        ::TileEntityHeatExchangerController)
 val heatExchangerWallBlock = PlainMultiBlockPartBlock("heat_exchanger_wall", ::TileEntityMultiBlockPartHeatExchanger)
 val heatExchangerGlassBlock = PlainMultiBlockPartBlock("heat_exchanger_glass", ::TileEntityMultiBlockPartHeatExchanger,
         isFullCube = false, opaque = false, glassSides = true, renderLayer = BlockRenderLayer.CUTOUT)
