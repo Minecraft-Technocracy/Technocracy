@@ -5,9 +5,11 @@ import it.zerono.mods.zerocore.api.multiblock.MultiblockControllerBase
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import it.zerono.mods.zerocore.lib.block.ModTileEntity
 import net.cydhra.technocracy.foundation.blocks.general.*
+import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartHeatExchanger
 import net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger.TileEntityHeatExchangerController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger.TileEntityHeatExchangerInput
 import net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger.TileEntityHeatExchangerOutput
+import net.minecraft.block.Block
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.math.BlockPos
@@ -50,6 +52,11 @@ class HeatExchangerMultiBlock(world: World) :
      */
     private var tubes: List<CoolantTube> = emptyList()
 
+    /**
+     * The amount of blocks in the structure's interior that are not tubes but a homogeneous material saving heat
+     */
+    private var matrixSize = 0
+
     override fun updateServer(): Boolean {
 
         return true
@@ -76,9 +83,7 @@ class HeatExchangerMultiBlock(world: World) :
                 this@HeatExchangerMultiBlock.inputPorts = inputPorts
                 this@HeatExchangerMultiBlock.outputPorts = outputPorts
 
-                this@HeatExchangerMultiBlock.recalculatePhysics(validatorCallback)
-
-                return@finishUp true
+                return@finishUp this@HeatExchangerMultiBlock.recalculatePhysics(validatorCallback)
             }
         }
     }
@@ -92,7 +97,7 @@ class HeatExchangerMultiBlock(world: World) :
      */
     private fun recalculatePhysics(validatorCallback: IMultiblockValidator): Boolean {
         val visited = mutableSetOf<BlockPos>()
-        val tubeNetworks = HashMap<TileEntityHeatExchangerInput, CoolantTube>()
+        val tubes = mutableListOf<CoolantTube>()
 
         val findNeighbor: (BlockPos, BlockPos?, (TileEntity) -> Boolean) -> Collection<TileEntity> =
                 { current, comeFrom, filter ->
@@ -112,8 +117,80 @@ class HeatExchangerMultiBlock(world: World) :
                 validatorCallback.setLastError("unused input port")
                 return false
             }
+
+            var comeFrom = inputPort.pos
+            var currentPipe = neighbor.first()
+            val tube = CoolantTube(inputPort, currentPipe as TileEntityMultiBlockPartHeatExchanger)
+
+            tubeWalking@ while (true) {
+                val nextTube = findNeighbor(currentPipe.pos, comeFrom) {
+                    it is TileEntityHeatExchangerOutput ||
+                            if (tube.isHot) {
+                                it.blockType == heatExchangerHotAgentTube
+                            } else {
+                                it.blockType == heatExchangerColdAgentTube
+                            }
+                }
+
+                when {
+                    nextTube.size > 1 -> {
+                        validatorCallback.setLastError("tube flow diverges")
+                        return false
+                    }
+                    nextTube.isEmpty() -> {
+                        validatorCallback.setLastError("tube is missing exit")
+                        return false
+                    }
+                    nextTube.first() is TileEntityHeatExchangerOutput -> {
+                        tube.output = nextTube.first() as TileEntityHeatExchangerOutput
+                        break@tubeWalking
+                    }
+                    else -> {
+                        comeFrom = currentPipe.pos
+                        currentPipe = nextTube.first()
+
+                        if (visited.contains(currentPipe.pos)) {
+                            validatorCallback.setLastError("tube flows converge")
+                            return false
+                        }
+
+                        tube.addTube(currentPipe as TileEntityMultiBlockPartHeatExchanger)
+                        visited.add(currentPipe.pos)
+                    }
+                }
+            }
+
+            tubes.add(tube)
         }
 
+        // count heat matrix
+        val interiorMin = this.minimumCoord.add(1, 1, 1)
+        val interiorMax = this.maximumCoord.add(-1, -1, -1)
+
+        var matrixType: Block? = null
+        var matrix = 0
+        for (x in interiorMin.x..interiorMax.x) {
+            for (y in interiorMin.y..interiorMax.y) {
+                for (z in interiorMin.z..interiorMax.z) {
+                    val block = WORLD.getBlockState(BlockPos(x, y, z))
+                    if (block.block == heatExchangerColdAgentTube || block.block == heatExchangerHotAgentTube)
+                        continue
+
+                    if (matrixType == null) {
+                        matrixType = block.block
+                    } else if (matrixType != block.block) {
+                        validatorCallback.setLastError("matrix consists of different materials ${matrixType.localizedName} and " +
+                                block.block.localizedName)
+                        return false
+                    }
+
+                    matrix++
+                }
+            }
+        }
+
+        this.tubes = tubes
+        this.matrixSize = matrix
         return true
     }
 
@@ -169,7 +246,29 @@ class HeatExchangerMultiBlock(world: World) :
      * A helper structure to organize and manage single tubes inside the heat exchanger with their own fluid storages
      * and flows
      */
-    class CoolantTube {
+    class CoolantTube(val input: TileEntityHeatExchangerInput, firstPipe: TileEntityMultiBlockPartHeatExchanger) {
 
+        val isHot: Boolean = when {
+            firstPipe.blockType == heatExchangerHotAgentTube -> true
+            firstPipe.blockType == heatExchangerColdAgentTube -> false
+            else -> throw AssertionError("neither hot nor cold tube")
+        }
+
+        lateinit var output: TileEntityHeatExchangerOutput
+
+        private val tubeBlocks = mutableListOf<TileEntityMultiBlockPartHeatExchanger>()
+
+        init {
+            addTube(firstPipe)
+        }
+
+        fun addTube(tubeEntity: TileEntityMultiBlockPartHeatExchanger) {
+            if (tubeEntity.blockType == heatExchangerHotAgentTube && isHot)
+                tubeBlocks.add(tubeEntity)
+            else if (tubeEntity.blockType == heatExchangerColdAgentTube && !isHot)
+                tubeBlocks.add(tubeEntity)
+            else
+                throw IllegalStateException("wrong tile entity for coolant tube")
+        }
     }
 }
