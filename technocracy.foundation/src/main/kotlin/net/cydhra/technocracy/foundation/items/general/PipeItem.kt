@@ -21,6 +21,11 @@ import net.minecraft.world.World
 
 class PipeItem : BaseItem("pipe") {
 
+    init {
+        hasSubtypes = true
+        maxDamage = 0
+    }
+
     override fun onItemUse(player: EntityPlayer, worldIn: World, pos: BlockPos, hand: EnumHand, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): EnumActionResult {
         val block = worldIn.getBlockState(pos).block
         val flag = block.isReplaceable(worldIn, pos)
