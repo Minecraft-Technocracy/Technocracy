@@ -52,11 +52,6 @@ class HeatExchangerMultiBlock(world: World) :
      */
     private var tubes: List<CoolantTube> = emptyList()
 
-    /**
-     * The amount of blocks in the structure's interior that are not tubes but a homogeneous material saving heat
-     */
-    private var matrixSize = 0
-
     override fun updateServer(): Boolean {
 
         return true
@@ -190,7 +185,7 @@ class HeatExchangerMultiBlock(world: World) :
         }
 
         this.tubes = tubes
-        this.matrixSize = matrix
+        this.controllerTileEntity!!.updatePhysics(matrix, matrixType)
         return true
     }
 
