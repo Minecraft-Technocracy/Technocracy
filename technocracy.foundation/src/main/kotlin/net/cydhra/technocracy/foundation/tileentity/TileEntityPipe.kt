@@ -62,7 +62,9 @@ class TileEntityPipe(val meta: Int = 0) : AggregatableTileEntity() {
                     if (uuid != networkComponent.uuid) {
                         //is in different network
                         //combine the two networks
-                        Network.combineNetwork(pos, current, uuid, networkComponent.uuid!!, world, Network.PipeType.ENERGY)
+                        Network.combineNetwork(Network.WrappedBlockPos(pos), Network.WrappedBlockPos(pos), uuid, networkComponent.uuid!!, world,
+                                Network.PipeType
+                                .ENERGY)
                     } else {
                         //is same network add an edge
                         Network.addEdge(pos, current, uuid, world, Network.PipeType.ENERGY)
@@ -79,7 +81,7 @@ class TileEntityPipe(val meta: Int = 0) : AggregatableTileEntity() {
         if (connected == 0) {
             //no network found, create new one
             setNetworkId(UUID.randomUUID())
-            Network.addNode(pos, networkComponent.uuid!!, world)
+            Network.addNode(Network.WrappedBlockPos(pos), networkComponent.uuid!!, world)
         }
     }
 }

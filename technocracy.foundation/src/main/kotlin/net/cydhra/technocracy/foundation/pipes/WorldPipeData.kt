@@ -10,16 +10,30 @@ import net.minecraft.world.World
 
 class WorldPipeData(val network: Network) {
     fun readNBT(world: World, nbt: NBTTagCompound) {
-        if (nbt.hasKey(world.worldInfo.worldName)) {
-            val worldCompound = nbt.getTagList(world.providerName, 9)
+        val worldId = world.provider.dimensionType.getName() + "_" + world.provider.dimension
+        if (nbt.hasKey(worldId)) {
+            val worldCompound = nbt.getTagList(worldId, 10)
             for (networkCounter in 0 until worldCompound.tagCount()) {
                 val networkComponent = worldCompound.get(networkCounter) as NBTTagCompound
                 val networkId = networkComponent.getUniqueId("id")
 
-                if(networkComponent.hasKey("vertices")) {
-                    val vertices = networkComponent.getTagList("vertices", 9)
+                if (networkComponent.hasKey("vertices")) {
+                    val vertices = networkComponent.getTagList("vertices", 10)
                     for (pos in 0 until vertices.tagCount()) {
-                        network.loadNode(NBTUtil.getPosFromTag(vertices.getCompoundTagAt(pos)),networkId!!, world)
+                        val readPos = NBTUtil.getPosFromTag(vertices.getCompoundTagAt(pos))
+                        val wrapped = Network.WrappedBlockPos(readPos)
+
+                        network.loadNode(wrapped, networkId!!, world)
+                    }
+                }
+
+                if (networkComponent.hasKey("io_vertices")) {
+                    val vertices = networkComponent.getTagList("io_vertices", 10)
+                    for (pos in 0 until vertices.tagCount()) {
+                        val readPos = NBTUtil.getPosFromTag(vertices.getCompoundTagAt(pos))
+                        val wrapped = Network.WrappedBlockPos(readPos)
+
+                        network.loadNode(wrapped, networkId!!, world)
                     }
                 }
 
@@ -29,19 +43,19 @@ class WorldPipeData(val network: Network) {
                         if (!edges.hasKey(type.name))
                             continue
 
-                        val edgeList = edges.getTagList(type.name, 9)
+                        val edgeList = edges.getTagList(type.name, 10)
                         for (edge in 0 until edgeList.tagCount()) {
                             val vertexes = edgeList.get(edge) as NBTTagCompound
                             val source = NBTUtil.getPosFromTag(vertexes.getCompoundTag("source"))
                             val target = NBTUtil.getPosFromTag(vertexes.getCompoundTag("target"))
-
                             network.loadEdge(source, target, networkId!!, world, type)
                         }
                     }
                 }
 
                 if (networkComponent.hasKey("firstBlock")) {
-                    network.loadNode(BlockPos.fromLong(networkComponent.getLong("firstBlock")), networkId!!, world)
+                    network.loadNode(Network.WrappedBlockPos(BlockPos.fromLong(networkComponent.getLong("firstBlock"))),
+                            networkId!!, world)
                 }
             }
         }
@@ -57,10 +71,20 @@ class WorldPipeData(val network: Network) {
                 networkCompound.setUniqueId("id", networkkey)
 
                 val vertices = NBTTagList()
-                blocks.vertexSet().forEach { pos ->
-                    vertices.appendTag(NBTUtil.createPosTag(pos))
+                blocks.vertexSet().filter { !it.isIONode }.forEach { pos ->
+                    vertices.appendTag(NBTUtil.createPosTag(pos.pos))
                 }
-                networkCompound.setTag("vertices", vertices)
+
+                if (vertices.tagCount() != 0)
+                    networkCompound.setTag("vertices", vertices)
+
+                val io_vertices = NBTTagList()
+                blocks.vertexSet().filter { it.isIONode }.forEach { pos ->
+                    vertices.appendTag(NBTUtil.createPosTag(pos.pos))
+                }
+
+                if (io_vertices.tagCount() != 0)
+                    networkCompound.setTag("io_vertices", io_vertices)
 
                 val edges = NBTTagCompound()
                 for (type in PipeType.values()) {
@@ -71,8 +95,8 @@ class WorldPipeData(val network: Network) {
                         val src = blocks.getEdgeSource(edge)
                         val target = blocks.getEdgeTarget(edge)
 
-                        edgeVertices.setTag("source", NBTUtil.createPosTag(src))
-                        edgeVertices.setTag("target", NBTUtil.createPosTag(target))
+                        edgeVertices.setTag("source", NBTUtil.createPosTag(src.pos))
+                        edgeVertices.setTag("target", NBTUtil.createPosTag(target.pos))
 
                         edgeList.appendTag(edgeVertices)
                     }
