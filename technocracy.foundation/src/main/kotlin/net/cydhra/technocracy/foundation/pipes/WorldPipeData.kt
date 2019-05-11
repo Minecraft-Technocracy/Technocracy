@@ -4,8 +4,10 @@ import net.cydhra.technocracy.foundation.pipes.Network.PipeType
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTTagList
 import net.minecraft.nbt.NBTUtil
-import net.minecraft.util.math.BlockPos
+import net.minecraft.nbt.NBTTagByte
+import net.minecraft.util.EnumFacing
 import net.minecraft.world.World
+import kotlin.experimental.and
 
 
 class WorldPipeData(val network: Network) {
@@ -20,18 +22,35 @@ class WorldPipeData(val network: Network) {
                 if (networkComponent.hasKey("vertices")) {
                     val vertices = networkComponent.getTagList("vertices", 10)
                     for (pos in 0 until vertices.tagCount()) {
-                        val readPos = NBTUtil.getPosFromTag(vertices.getCompoundTagAt(pos))
+
+                        val wrappedPos = vertices.getCompoundTagAt(pos)
+                        val readPos = NBTUtil.getPosFromTag(wrappedPos)
                         val wrapped = Network.WrappedBlockPos(readPos)
 
-                        network.loadNode(wrapped, networkId!!, world)
-                    }
-                }
+                        if (wrappedPos.hasKey("io")) {
+                            val io = wrappedPos.getCompoundTag("io")
 
-                if (networkComponent.hasKey("io_vertices")) {
-                    val vertices = networkComponent.getTagList("io_vertices", 10)
-                    for (pos in 0 until vertices.tagCount()) {
-                        val readPos = NBTUtil.getPosFromTag(vertices.getCompoundTagAt(pos))
-                        val wrapped = Network.WrappedBlockPos(readPos)
+                            for (type in PipeType.values()) {
+                                if (io.hasKey(type.name)) {
+                                    for(ioEnum in Network.IO.values()) {
+                                        val facesEncoded = io.getByte(type.name + "_" + ioEnum.name)
+
+                                        val facesList = mutableSetOf<EnumFacing>()
+
+                                        for (facing in EnumFacing.values()) {
+                                            if (facesEncoded.and((1 shl facing.index).toByte()).toInt() != -1) {
+                                                facesList.add(facing)
+                                            }
+                                        }
+
+                                        val map = wrapped.io.getOrPut(type) {
+                                            mutableMapOf()
+                                        }
+                                        map[ioEnum] = facesList
+                                    }
+                                }
+                            }
+                        }
 
                         network.loadNode(wrapped, networkId!!, world)
                     }
@@ -40,8 +59,7 @@ class WorldPipeData(val network: Network) {
                 if (networkComponent.hasKey("edges")) {
                     val edges = networkComponent.getCompoundTag("edges")
                     for (type in PipeType.values()) {
-                        if (!edges.hasKey(type.name))
-                            continue
+                        if (!edges.hasKey(type.name)) continue
 
                         val edgeList = edges.getTagList(type.name, 10)
                         for (edge in 0 until edgeList.tagCount()) {
@@ -51,11 +69,6 @@ class WorldPipeData(val network: Network) {
                             network.loadEdge(source, target, networkId!!, world, type)
                         }
                     }
-                }
-
-                if (networkComponent.hasKey("firstBlock")) {
-                    network.loadNode(Network.WrappedBlockPos(BlockPos.fromLong(networkComponent.getLong("firstBlock"))),
-                            networkId!!, world)
                 }
             }
         }
@@ -71,20 +84,31 @@ class WorldPipeData(val network: Network) {
                 networkCompound.setUniqueId("id", networkkey)
 
                 val vertices = NBTTagList()
-                blocks.vertexSet().filter { !it.isIONode }.forEach { pos ->
-                    vertices.appendTag(NBTUtil.createPosTag(pos.pos))
+                blocks.vertexSet().forEach { pos ->
+
+                    val wrappedBlockPos = NBTUtil.createPosTag(pos.pos)
+
+                    if (pos.hasIO) {
+                        val pipeface = NBTTagCompound()
+
+                        pos.io.forEach { pipeType, ioMap ->
+                            ioMap.forEach { ioEnum, faces ->
+                                var all = 0
+                                for (facing in faces) {
+                                    all = all or (1 shl facing.index)
+                                }
+
+                                pipeface.setTag(pipeType.name + "_" + ioEnum.name, NBTTagByte(all.toByte()))
+                            }
+                        }
+
+                        wrappedBlockPos.setTag("io", pipeface)
+                    }
+
+                    vertices.appendTag(wrappedBlockPos)
                 }
 
-                if (vertices.tagCount() != 0)
-                    networkCompound.setTag("vertices", vertices)
-
-                val io_vertices = NBTTagList()
-                blocks.vertexSet().filter { it.isIONode }.forEach { pos ->
-                    vertices.appendTag(NBTUtil.createPosTag(pos.pos))
-                }
-
-                if (io_vertices.tagCount() != 0)
-                    networkCompound.setTag("io_vertices", io_vertices)
+                if (vertices.tagCount() != 0) networkCompound.setTag("vertices", vertices)
 
                 val edges = NBTTagCompound()
                 for (type in PipeType.values()) {
@@ -101,8 +125,7 @@ class WorldPipeData(val network: Network) {
                         edgeList.appendTag(edgeVertices)
                     }
 
-                    if (edgeList.tagCount() != 0)
-                        edges.setTag(type.name, edgeList)
+                    if (edgeList.tagCount() != 0) edges.setTag(type.name, edgeList)
                 }
                 networkCompound.setTag("edges", edges)
 

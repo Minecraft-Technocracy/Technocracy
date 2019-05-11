@@ -9,7 +9,7 @@ import net.minecraft.util.EnumFacing
 import java.util.*
 
 
-class TileEntityPipe(val meta: Int = 0) : AggregatableTileEntity() {
+class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
     private val networkComponent = NetworkComponent()
     private val pipeTypes = ComponentPipeTypes()
 
@@ -26,6 +26,7 @@ class TileEntityPipe(val meta: Int = 0) : AggregatableTileEntity() {
 
     fun addPipeType(type: Network.PipeType) {
         pipeTypes.types.add(type)
+        //todo update network pipe tier
         markForUpdate()
     }
 
@@ -45,8 +46,7 @@ class TileEntityPipe(val meta: Int = 0) : AggregatableTileEntity() {
 
     override fun onLoad() {
         //forge calls onLoad 2x
-        if (networkComponent.uuid != null || world.isRemote)
-            return
+        if (networkComponent.uuid != null || world.isRemote) return
 
         var connected = 0
         for (facing in EnumFacing.values()) {
@@ -62,16 +62,23 @@ class TileEntityPipe(val meta: Int = 0) : AggregatableTileEntity() {
                     if (uuid != networkComponent.uuid) {
                         //is in different network
                         //combine the two networks
-                        Network.combineNetwork(Network.WrappedBlockPos(pos), Network.WrappedBlockPos(pos), uuid, networkComponent.uuid!!, world,
-                                Network.PipeType
-                                .ENERGY)
+                        Network.combineNetwork(Network.WrappedBlockPos(pos),
+                                Network.WrappedBlockPos(current),
+                                uuid,
+                                networkComponent.uuid!!,
+                                world,
+                                pipeTypes.types.first())
                     } else {
                         //is same network add an edge
-                        Network.addEdge(pos, current, uuid, world, Network.PipeType.ENERGY)
+                        Network.addEdge(Network.WrappedBlockPos(pos), Network.WrappedBlockPos(current), uuid, world, pipeTypes.types.first())
                     }
                 } else {
                     setNetworkId(uuid)
-                    Network.addEdge(pos, current, uuid, world, Network.PipeType.ENERGY)
+                    Network.addEdge(Network.WrappedBlockPos(pos),
+                            Network.WrappedBlockPos(current),
+                            uuid,
+                            world,
+                            pipeTypes.types.first())
                 }
 
                 connected++
@@ -81,7 +88,27 @@ class TileEntityPipe(val meta: Int = 0) : AggregatableTileEntity() {
         if (connected == 0) {
             //no network found, create new one
             setNetworkId(UUID.randomUUID())
-            Network.addNode(Network.WrappedBlockPos(pos), networkComponent.uuid!!, world)
+            //TODO current pipe tier
+            Network.addNode(Network.WrappedBlockPos(pos),
+                    networkComponent.uuid!!,
+                    world)
+        }
+
+        for (facing in EnumFacing.values()) {
+            val current = pos.offset(facing)
+            val tile = world.getTileEntity(current)
+            if (tile != null && tile !is TileEntityPipe) {
+                val pipe = pipeTypes.types.first()
+                if (tile.hasCapability(pipe.capability!!, facing.opposite)) {
+                    Network.addIOToNode(pos, facing, networkComponent.uuid!!, world, pipe)
+                }
+
+                /*if (tile.hasCapability(pipe.capability, facing.opposite)) {
+                    val virtualNode = Network.WrappedBlockPos(current)
+                    virtualNode.isIONode = true
+                    Network.addEdge(Network.WrappedBlockPos(pos), virtualNode, getNetworkId(), world, pipe)
+                }*/
+            }
         }
     }
 }
