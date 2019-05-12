@@ -13,46 +13,46 @@ open class TCContainer(val inventorySize: Int = 0) : Container() {
     private val playerHotBarStart = playerInventorySize + 1
     private val playerHotBarEnd = playerHotBarStart + 8
 
-    override fun transferStackInSlot(player: EntityPlayer?, index: Int): ItemStack? {
-        var exchangedStack = ItemStack.EMPTY
+    override fun transferStackInSlot(player: EntityPlayer, index: Int): ItemStack? {
+        var newStack = ItemStack.EMPTY
         val slot = this.inventorySlots[index]
 
         if (slot.hasStack) {
-            val stackInSlot = slot.stack
-            exchangedStack = stackInSlot.copy()
+            val oldStack = slot.stack
+            newStack = oldStack.copy()
 
             if (index < inventorySize) {
-                if (!this.mergeItemStack(stackInSlot, inventorySize, playerHotBarEnd + 1, true)) {
+                if (!this.mergeItemStack(oldStack, inventorySize, playerHotBarEnd + 1, true)) {
                     return ItemStack.EMPTY
                 }
 
-                slot.onSlotChange(stackInSlot, exchangedStack)
+                slot.onSlotChange(oldStack, newStack)
             } else {
                 if (index in inventorySize until playerHotBarStart) {
-                    if (!this.mergeItemStack(stackInSlot, playerHotBarStart, playerHotBarEnd + 1, false)) {
+                    if (!this.mergeItemStack(oldStack, playerHotBarStart, playerHotBarEnd + 1, false)) {
                         return ItemStack.EMPTY
                     }
                 } else if (index >= playerHotBarStart && index < playerHotBarEnd + 1) {
-                    if (!this.mergeItemStack(stackInSlot, inventorySize, playerInventorySize + 1, false)) {
+                    if (!this.mergeItemStack(oldStack, inventorySize, playerInventorySize + 1, false)) {
                         return ItemStack.EMPTY
                     }
                 }
             }
 
-            if (stackInSlot.count == 0) {
+            if (oldStack.count == 0) {
                 slot.putStack(ItemStack.EMPTY)
             } else {
                 slot.onSlotChanged()
             }
 
-            if (stackInSlot.count == exchangedStack.count) {
+            if (oldStack.count == newStack.count) {
                 return ItemStack.EMPTY
             }
 
-            slot.onTake(player, stackInSlot)
+            slot.onTake(player, oldStack)
         }
 
-        return exchangedStack
+        return newStack
     }
 
     fun registerComponent(component: TCComponent) {
