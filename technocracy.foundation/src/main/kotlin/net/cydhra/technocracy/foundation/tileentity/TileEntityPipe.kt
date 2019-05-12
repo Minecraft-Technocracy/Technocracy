@@ -3,6 +3,8 @@ package net.cydhra.technocracy.foundation.tileentity
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.PipeBlock
 import net.cydhra.technocracy.foundation.pipes.Network
+import net.cydhra.technocracy.foundation.pipes.WrappedBlockPos
+import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.cydhra.technocracy.foundation.tileentity.components.ComponentPipeTypes
 import net.cydhra.technocracy.foundation.tileentity.components.NetworkComponent
 import net.minecraft.util.EnumFacing
@@ -17,20 +19,20 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
         registerComponent(networkComponent, "network")
         registerComponent(pipeTypes, "pipeTypes")
 
-        pipeTypes.types.add(Network.PipeType.values()[meta])
+        pipeTypes.types.add(PipeType.values()[meta])
     }
 
-    fun hasPipeType(type: Network.PipeType): Boolean {
+    fun hasPipeType(type: PipeType): Boolean {
         return pipeTypes.types.contains(type)
     }
 
-    fun addPipeType(type: Network.PipeType) {
+    fun addPipeType(type: PipeType) {
         pipeTypes.types.add(type)
         //todo update network pipe tier
         markForUpdate()
     }
 
-    fun getInstalledTypes(): List<Network.PipeType> {
+    fun getInstalledTypes(): List<PipeType> {
         return listOf(*pipeTypes.types.toTypedArray())
     }
 
@@ -62,20 +64,20 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
                     if (uuid != networkComponent.uuid) {
                         //is in different network
                         //combine the two networks
-                        Network.combineNetwork(Network.WrappedBlockPos(pos),
-                                Network.WrappedBlockPos(current),
+                        Network.combineNetwork(WrappedBlockPos(pos),
+                                WrappedBlockPos(current),
                                 uuid,
                                 networkComponent.uuid!!,
                                 world,
                                 pipeTypes.types.first())
                     } else {
                         //is same network add an edge
-                        Network.addEdge(Network.WrappedBlockPos(pos), Network.WrappedBlockPos(current), uuid, world, pipeTypes.types.first())
+                        Network.addEdge(WrappedBlockPos(pos), WrappedBlockPos(current), uuid, world, pipeTypes.types.first())
                     }
                 } else {
                     setNetworkId(uuid)
-                    Network.addEdge(Network.WrappedBlockPos(pos),
-                            Network.WrappedBlockPos(current),
+                    Network.addEdge(WrappedBlockPos(pos),
+                            WrappedBlockPos(current),
                             uuid,
                             world,
                             pipeTypes.types.first())
@@ -89,7 +91,7 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
             //no network found, create new one
             setNetworkId(UUID.randomUUID())
             //TODO current pipe tier
-            Network.addNode(Network.WrappedBlockPos(pos),
+            Network.addNode(WrappedBlockPos(pos),
                     networkComponent.uuid!!,
                     world)
         }

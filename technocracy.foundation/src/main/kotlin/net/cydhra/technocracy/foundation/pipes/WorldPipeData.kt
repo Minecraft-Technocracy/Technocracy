@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.pipes
 
-import net.cydhra.technocracy.foundation.pipes.Network.PipeType
+import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTTagList
 import net.minecraft.nbt.NBTUtil
@@ -25,7 +25,7 @@ class WorldPipeData(val network: Network) {
 
                         val wrappedPos = vertices.getCompoundTagAt(pos)
                         val readPos = NBTUtil.getPosFromTag(wrappedPos)
-                        val wrapped = Network.WrappedBlockPos(readPos)
+                        val wrapped = WrappedBlockPos(readPos)
 
                         if (wrappedPos.hasKey("io")) {
                             val io = wrappedPos.getCompoundTag("io")

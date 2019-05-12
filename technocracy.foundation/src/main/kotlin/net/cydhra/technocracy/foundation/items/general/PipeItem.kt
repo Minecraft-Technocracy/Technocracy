@@ -3,6 +3,7 @@ package net.cydhra.technocracy.foundation.items.general
 import net.cydhra.technocracy.foundation.blocks.PipeBlock
 import net.cydhra.technocracy.foundation.blocks.general.pipe
 import net.cydhra.technocracy.foundation.pipes.Network
+import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
 import net.minecraft.advancements.CriteriaTriggers
 import net.minecraft.creativetab.CreativeTabs
@@ -36,7 +37,7 @@ class PipeItem : BaseItem("pipe") {
             if(block is PipeBlock) {
                 val tile = worldIn.getTileEntity(pos)!! as TileEntityPipe
 
-                val thisPipeType = Network.PipeType.values()[itemstack.metadata]
+                val thisPipeType = PipeType.values()[itemstack.metadata]
 
                 if(!tile.hasPipeType(thisPipeType)) {
                     tile.addPipeType(thisPipeType)
@@ -48,7 +49,7 @@ class PipeItem : BaseItem("pipe") {
         }
 
         return if (player.canPlayerEdit(blockpos, facing, itemstack) && worldIn.mayPlace(worldIn.getBlockState(blockpos).block, blockpos, false, facing, null as Entity?)) {
-            worldIn.setBlockState(blockpos, pipe.defaultState.withProperty(PipeBlock.PIPETYPE, Network.PipeType
+            worldIn.setBlockState(blockpos, pipe.defaultState.withProperty(PipeBlock.PIPETYPE, PipeType
                     .values()[itemstack.metadata]))
 
             if (player is EntityPlayerMP) {
@@ -63,12 +64,12 @@ class PipeItem : BaseItem("pipe") {
     }
 
     override fun getUnlocalizedName(stack: ItemStack): String {
-        return super.getUnlocalizedName() + "." + Network.PipeType.values()[stack.metadata].unlocalizedName
+        return super.getUnlocalizedName() + "." + PipeType.values()[stack.metadata].unlocalizedName
     }
 
     override fun getSubItems(tab: CreativeTabs, items: NonNullList<ItemStack>) {
         if (this.isInCreativeTab(tab)) {
-            for (i in 0 until Network.PipeType.values().size) {
+            for (i in 0 until PipeType.values().size) {
                 items.add(ItemStack(this, 1, i))
             }
         }

@@ -1,24 +1,17 @@
 package net.cydhra.technocracy.foundation.pipes
 
 import net.cydhra.technocracy.foundation.TCFoundation
-import net.cydhra.technocracy.foundation.capabilities.energy.EnergyCapabilityProvider
+import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
-import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompressedStreamTools
-import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
-import net.minecraft.util.IStringSerializable
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import net.minecraftforge.common.DimensionManager
-import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.event.world.WorldEvent
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent
-import net.minecraftforge.items.CapabilityItemHandler
-import net.minecraftforge.items.IItemHandler
 import org.jgrapht.graph.DefaultEdge
 import org.jgrapht.graph.Multigraph
 import org.jgrapht.traverse.ClosestFirstIterator
@@ -358,30 +351,32 @@ object Network {
                                 val pipeOut = tick.world.getTileEntity(it.pos) as TileEntityPipe
                                 val tileOut = tick.world.getTileEntity(it.pos.offset(outputSide))!!
 
-                                val iterator = ClosestFirstIterator(graph, it)
+                                val iterator = ClosestFirstIterator(FilteredPipeTypeGraph(graph, pipeType), it)
 
+                                //output should not be split equal to all inputs, just find the best exit node
+                                if (!pipeType.splitInputEqual) {
+                                    iterator@ for (node in iterator) {
+                                        if (!node.hasIO) continue
+                                        val inputs = node.getInputFacings(pipeType, false)
+                                        for (inputSide in inputs) {
+                                            if (node == it && outputSide == inputSide) continue
 
-                                iterator@ for (node in iterator) {
-                                    if (!node.hasIO) continue
-                                    val inputs = node.getInputFacings(pipeType, false)
-                                    for (inputSide in inputs) {
-                                        if (node == it && outputSide == inputSide) continue
+                                            val pipeIn = tick.world.getTileEntity(node.pos) as TileEntityPipe
+                                            val tileIn = tick.world.getTileEntity(node.pos.offset(inputSide))!!
 
-                                        val pipeIn = tick.world.getTileEntity(node.pos) as TileEntityPipe
-                                        val tileIn = tick.world.getTileEntity(node.pos.offset(inputSide))!!
+                                            if (pipeType.canDoAction(pipeType,
+                                                            pipeIn,
+                                                            pipeOut,
+                                                            tileIn,
+                                                            tileOut,
+                                                            inputSide,
+                                                            outputSide)) {
+                                                //TODO timeout
 
-                                        if (pipeType.canDoAction(pipeType,
-                                                        pipeIn,
-                                                        pipeOut,
-                                                        tileIn,
-                                                        tileOut,
-                                                        inputSide,
-                                                        outputSide)) {
-                                            //TODO timeout
+                                                println("found output")
 
-                                            println("found output")
-
-                                            break@iterator
+                                                break@iterator
+                                            }
                                         }
                                     }
                                 }
@@ -393,69 +388,9 @@ object Network {
         }
     }
 
-    data class WrappedPipeType(val pipeType: PipeType) : DefaultEdge() {
-        val uuid: UUID? = UUID.randomUUID()
-        fun getSourceNode(): WrappedBlockPos {
-            return super.getSource() as WrappedBlockPos
-        }
 
-        fun getTargetNode(): WrappedBlockPos {
-            return super.getTarget() as WrappedBlockPos
-        }
 
-        override fun equals(other: Any?): Boolean {
-            return other is WrappedPipeType && other.uuid?.equals(uuid)!!
-        }
 
-        override fun hashCode(): Int {
-            return uuid.hashCode()
-        }
-    }
-
-    data class WrappedBlockPos(val pos: BlockPos) {
-        val io = mutableMapOf<PipeType, MutableMap<IO, MutableSet<EnumFacing>>>()
-        //TODO priority pipes
-
-        val hasIO: Boolean
-            get() {
-                return io.isNotEmpty() && io.filter { !it.value.isNullOrEmpty() }.isNotEmpty()
-            }
-
-        fun getInputFacings(type: PipeType, strictInput: Boolean): Set<EnumFacing> {
-            val map = io[type]
-            if (map != null) {
-                val combined = mutableSetOf<EnumFacing>()
-                map.filter { if (strictInput) it.key == IO.INPUT else it.key != IO.OUTPUT }.forEach { ioEnum, facing ->
-                    combined.addAll(facing)
-                }
-                return combined
-            }
-            return emptySet()
-        }
-
-        fun getOutputFacings(type: PipeType, strictOutput: Boolean): Set<EnumFacing> {
-            val map = io[type]
-            if (map != null) {
-                val combined = mutableSetOf<EnumFacing>()
-                map.filter { if (strictOutput) it.key == IO.OUTPUT else it.key != IO.INPUT }.forEach { ioEnum, facing ->
-                    combined.addAll(facing)
-                }
-                return combined
-            }
-            return emptySet()
-        }
-
-        override fun equals(other: Any?): Boolean {
-            if (other is WrappedBlockPos) {
-                return other.pos == pos
-            }
-            return super.equals(other)
-        }
-
-        override fun hashCode(): Int {
-            return pos.hashCode()
-        }
-    }
 
     /*enum class PipeTier(val type: PipeType, weight: Double) {
         @Deprecated("Internal use only")
@@ -474,55 +409,5 @@ object Network {
 
     enum class IO {
         INPUT, OUTPUT, BOTH
-    }
-
-    enum class PipeType(val unlocalizedName: String, val capability: Capability<*>?) : IStringSerializable {
-        ENERGY("energy", EnergyCapabilityProvider.CAPABILITY_ENERGY),
-        FLUID("fluid", CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY),
-        ITEM("item", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
-
-        fun canDoAction(current: PipeType, pipeIn: TileEntityPipe, pipeOut: TileEntityPipe, tileIn: TileEntity,
-                tileOut: TileEntity, facingIn: EnumFacing, facingOut: EnumFacing): Boolean {
-
-            val capIn = tileIn.getCapability(current.capability!!, facingIn.opposite)
-            val capOut = tileOut.getCapability(current.capability, facingOut.opposite)
-
-            if (current == ITEM) {
-                val handlerIn = capIn as IItemHandler
-                val handlerOut = capOut as IItemHandler
-
-                inputSlots@ for (slotIn in 0 until handlerIn.slots) {
-                    //todo limit item transfer rate
-                    //todo item inout/output filtering
-                    var limit = 8
-                    var stackIn = handlerIn.extractItem(slotIn, limit, true)
-                    if (stackIn != ItemStack.EMPTY) {
-                        for (slotOut in 0 until handlerOut.slots) {
-                            val stackOut = handlerOut.insertItem(slotOut, stackIn, true)
-                            if (stackOut.isEmpty || stackIn.count != stackOut.count) {
-                                if (stackOut.isEmpty) {
-                                    stackIn = handlerIn.extractItem(slotIn, limit, false)
-                                    handlerOut.insertItem(slotOut, stackIn, false)
-                                } else {
-                                    limit = Math.min(limit, stackOut.count)
-                                    stackIn = handlerIn.extractItem(slotIn, limit, false)
-                                    handlerOut.insertItem(slotOut, stackIn, false)
-                                }
-                                return true
-                            }
-                        }
-
-                    }
-                }
-
-                return false
-            }
-            println(current)
-            TODO("not implemented")
-        }
-
-        override fun getName(): String {
-            return this.unlocalizedName
-        }
     }
 }
