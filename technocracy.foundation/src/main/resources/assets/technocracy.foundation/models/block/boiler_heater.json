@@ -1,8 +1,57 @@
 {
-  "parent": "block/cube_bottom_top",
+  "parent": "block/orientable",
   "textures": {
-    "bottom": "technocracy.foundation:block/boiler_ingress",
+    "particle": "technocracy.foundation:block/boiler_wall",
+    "wall": "technocracy.foundation:block/boiler_wall",
     "top": "technocracy.foundation:block/boiler_heater",
-    "side": "technocracy.foundation:block/boiler_wall"
-  }
+    "port": "technocracy.foundation:block/port_ingress"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "down": {
+          "tintindex": 0,
+          "texture": "#wall",
+          "cullface": "down"
+        },
+        "up": {
+          "tintindex": 0,
+          "texture": "#top",
+          "cullface": "up"
+        },
+        "north": {
+          "tintindex": 0,
+          "texture": "#wall",
+          "cullface": "north"
+        },
+        "south": {
+          "tintindex": 0,
+          "texture": "#wall",
+          "cullface": "south"
+        },
+        "west": {
+          "tintindex": 0,
+          "texture": "#wall",
+          "cullface": "west"
+        },
+        "east": {
+          "tintindex": 0,
+          "texture": "#wall",
+          "cullface": "east"
+        }
+      }
+    }, {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "down": {
+          "tintindex": 0,
+          "texture": "#port",
+          "cullface": "down"
+        }
+      }
+    }
+  ]
 }

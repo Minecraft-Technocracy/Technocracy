@@ -3,13 +3,15 @@ package net.cydhra.technocracy.foundation.tileentity
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.PipeBlock
 import net.cydhra.technocracy.foundation.pipes.Network
+import net.cydhra.technocracy.foundation.pipes.WrappedBlockPos
+import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.cydhra.technocracy.foundation.tileentity.components.ComponentPipeTypes
 import net.cydhra.technocracy.foundation.tileentity.components.NetworkComponent
 import net.minecraft.util.EnumFacing
 import java.util.*
 
 
-class TileEntityPipe(val meta: Int = 0) : AggregatableTileEntity() {
+class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
     private val networkComponent = NetworkComponent()
     private val pipeTypes = ComponentPipeTypes()
 
@@ -17,19 +19,20 @@ class TileEntityPipe(val meta: Int = 0) : AggregatableTileEntity() {
         registerComponent(networkComponent, "network")
         registerComponent(pipeTypes, "pipeTypes")
 
-        pipeTypes.types.add(Network.PipeType.values()[meta])
+        pipeTypes.types.add(PipeType.values()[meta])
     }
 
-    fun hasPipeType(type: Network.PipeType): Boolean {
+    fun hasPipeType(type: PipeType): Boolean {
         return pipeTypes.types.contains(type)
     }
 
-    fun addPipeType(type: Network.PipeType) {
+    fun addPipeType(type: PipeType) {
         pipeTypes.types.add(type)
+        //todo update network pipe tier
         markForUpdate()
     }
 
-    fun getInstalledTypes(): List<Network.PipeType> {
+    fun getInstalledTypes(): List<PipeType> {
         return listOf(*pipeTypes.types.toTypedArray())
     }
 
@@ -45,8 +48,7 @@ class TileEntityPipe(val meta: Int = 0) : AggregatableTileEntity() {
 
     override fun onLoad() {
         //forge calls onLoad 2x
-        if (networkComponent.uuid != null || world.isRemote)
-            return
+        if (networkComponent.uuid != null || world.isRemote) return
 
         var connected = 0
         for (facing in EnumFacing.values()) {
@@ -62,14 +64,23 @@ class TileEntityPipe(val meta: Int = 0) : AggregatableTileEntity() {
                     if (uuid != networkComponent.uuid) {
                         //is in different network
                         //combine the two networks
-                        Network.combineNetwork(pos, current, uuid, networkComponent.uuid!!, world, Network.PipeType.ENERGY)
+                        Network.combineNetwork(WrappedBlockPos(pos),
+                                WrappedBlockPos(current),
+                                uuid,
+                                networkComponent.uuid!!,
+                                world,
+                                pipeTypes.types.first())
                     } else {
                         //is same network add an edge
-                        Network.addEdge(pos, current, uuid, world, Network.PipeType.ENERGY)
+                        Network.addEdge(WrappedBlockPos(pos), WrappedBlockPos(current), uuid, world, pipeTypes.types.first())
                     }
                 } else {
                     setNetworkId(uuid)
-                    Network.addEdge(pos, current, uuid, world, Network.PipeType.ENERGY)
+                    Network.addEdge(WrappedBlockPos(pos),
+                            WrappedBlockPos(current),
+                            uuid,
+                            world,
+                            pipeTypes.types.first())
                 }
 
                 connected++
@@ -79,7 +90,27 @@ class TileEntityPipe(val meta: Int = 0) : AggregatableTileEntity() {
         if (connected == 0) {
             //no network found, create new one
             setNetworkId(UUID.randomUUID())
-            Network.addNode(pos, networkComponent.uuid!!, world)
+            //TODO current pipe tier
+            Network.addNode(WrappedBlockPos(pos),
+                    networkComponent.uuid!!,
+                    world)
+        }
+
+        for (facing in EnumFacing.values()) {
+            val current = pos.offset(facing)
+            val tile = world.getTileEntity(current)
+            if (tile != null && tile !is TileEntityPipe) {
+                val pipe = pipeTypes.types.first()
+                if (tile.hasCapability(pipe.capability!!, facing.opposite)) {
+                    Network.addIOToNode(pos, facing, networkComponent.uuid!!, world, pipe)
+                }
+
+                /*if (tile.hasCapability(pipe.capability, facing.opposite)) {
+                    val virtualNode = Network.WrappedBlockPos(current)
+                    virtualNode.isIONode = true
+                    Network.addEdge(Network.WrappedBlockPos(pos), virtualNode, getNetworkId(), world, pipe)
+                }*/
+            }
         }
     }
 }

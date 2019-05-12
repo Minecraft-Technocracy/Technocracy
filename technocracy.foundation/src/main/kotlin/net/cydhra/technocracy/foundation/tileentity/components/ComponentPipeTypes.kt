@@ -1,7 +1,6 @@
 package net.cydhra.technocracy.foundation.tileentity.components
 
-import net.cydhra.technocracy.foundation.pipes.Network
-import net.cydhra.technocracy.foundation.tileentity.AbstractTileEntity
+import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.minecraft.nbt.NBTBase
 import net.minecraft.nbt.NBTTagCompound
 import java.util.*
@@ -9,7 +8,7 @@ import java.util.*
 
 class ComponentPipeTypes : IComponent {
 
-    var types = mutableSetOf<Network.PipeType>()
+    var types = mutableSetOf<PipeType>()
 
     override fun serializeNBT(): NBTBase {
         val base = NBTTagCompound()
@@ -28,7 +27,7 @@ class ComponentPipeTypes : IComponent {
 
             for (i in 0 until amount) {
                 val name = base.getString("$i")
-                val optional = Arrays.stream(Network.PipeType.values()).filter { it.name == name }.findFirst()
+                val optional = Arrays.stream(PipeType.values()).filter { it.name == name }.findFirst()
                 if (optional.isPresent)
                     types.add(optional.get())
             }

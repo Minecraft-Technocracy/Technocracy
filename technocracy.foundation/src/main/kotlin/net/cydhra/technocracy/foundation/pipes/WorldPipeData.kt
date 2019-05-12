@@ -1,47 +1,74 @@
 package net.cydhra.technocracy.foundation.pipes
 
-import net.cydhra.technocracy.foundation.pipes.Network.PipeType
+import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTTagList
 import net.minecraft.nbt.NBTUtil
-import net.minecraft.util.math.BlockPos
+import net.minecraft.nbt.NBTTagByte
+import net.minecraft.util.EnumFacing
 import net.minecraft.world.World
+import kotlin.experimental.and
 
 
 class WorldPipeData(val network: Network) {
     fun readNBT(world: World, nbt: NBTTagCompound) {
-        if (nbt.hasKey(world.worldInfo.worldName)) {
-            val worldCompound = nbt.getTagList(world.providerName, 9)
+        val worldId = world.provider.dimensionType.getName() + "_" + world.provider.dimension
+        if (nbt.hasKey(worldId)) {
+            val worldCompound = nbt.getTagList(worldId, 10)
             for (networkCounter in 0 until worldCompound.tagCount()) {
                 val networkComponent = worldCompound.get(networkCounter) as NBTTagCompound
                 val networkId = networkComponent.getUniqueId("id")
 
-                if(networkComponent.hasKey("vertices")) {
-                    val vertices = networkComponent.getTagList("vertices", 9)
+                if (networkComponent.hasKey("vertices")) {
+                    val vertices = networkComponent.getTagList("vertices", 10)
                     for (pos in 0 until vertices.tagCount()) {
-                        network.loadNode(NBTUtil.getPosFromTag(vertices.getCompoundTagAt(pos)),networkId!!, world)
+
+                        val wrappedPos = vertices.getCompoundTagAt(pos)
+                        val readPos = NBTUtil.getPosFromTag(wrappedPos)
+                        val wrapped = WrappedBlockPos(readPos)
+
+                        if (wrappedPos.hasKey("io")) {
+                            val io = wrappedPos.getCompoundTag("io")
+
+                            for (type in PipeType.values()) {
+                                if (io.hasKey(type.name)) {
+                                    for(ioEnum in Network.IO.values()) {
+                                        val facesEncoded = io.getByte(type.name + "_" + ioEnum.name)
+
+                                        val facesList = mutableSetOf<EnumFacing>()
+
+                                        for (facing in EnumFacing.values()) {
+                                            if (facesEncoded.and((1 shl facing.index).toByte()).toInt() != -1) {
+                                                facesList.add(facing)
+                                            }
+                                        }
+
+                                        val map = wrapped.io.getOrPut(type) {
+                                            mutableMapOf()
+                                        }
+                                        map[ioEnum] = facesList
+                                    }
+                                }
+                            }
+                        }
+
+                        network.loadNode(wrapped, networkId!!, world)
                     }
                 }
 
                 if (networkComponent.hasKey("edges")) {
                     val edges = networkComponent.getCompoundTag("edges")
                     for (type in PipeType.values()) {
-                        if (!edges.hasKey(type.name))
-                            continue
+                        if (!edges.hasKey(type.name)) continue
 
-                        val edgeList = edges.getTagList(type.name, 9)
+                        val edgeList = edges.getTagList(type.name, 10)
                         for (edge in 0 until edgeList.tagCount()) {
                             val vertexes = edgeList.get(edge) as NBTTagCompound
                             val source = NBTUtil.getPosFromTag(vertexes.getCompoundTag("source"))
                             val target = NBTUtil.getPosFromTag(vertexes.getCompoundTag("target"))
-
                             network.loadEdge(source, target, networkId!!, world, type)
                         }
                     }
-                }
-
-                if (networkComponent.hasKey("firstBlock")) {
-                    network.loadNode(BlockPos.fromLong(networkComponent.getLong("firstBlock")), networkId!!, world)
                 }
             }
         }
@@ -58,9 +85,30 @@ class WorldPipeData(val network: Network) {
 
                 val vertices = NBTTagList()
                 blocks.vertexSet().forEach { pos ->
-                    vertices.appendTag(NBTUtil.createPosTag(pos))
+
+                    val wrappedBlockPos = NBTUtil.createPosTag(pos.pos)
+
+                    if (pos.hasIO) {
+                        val pipeface = NBTTagCompound()
+
+                        pos.io.forEach { pipeType, ioMap ->
+                            ioMap.forEach { ioEnum, faces ->
+                                var all = 0
+                                for (facing in faces) {
+                                    all = all or (1 shl facing.index)
+                                }
+
+                                pipeface.setTag(pipeType.name + "_" + ioEnum.name, NBTTagByte(all.toByte()))
+                            }
+                        }
+
+                        wrappedBlockPos.setTag("io", pipeface)
+                    }
+
+                    vertices.appendTag(wrappedBlockPos)
                 }
-                networkCompound.setTag("vertices", vertices)
+
+                if (vertices.tagCount() != 0) networkCompound.setTag("vertices", vertices)
 
                 val edges = NBTTagCompound()
                 for (type in PipeType.values()) {
@@ -71,14 +119,13 @@ class WorldPipeData(val network: Network) {
                         val src = blocks.getEdgeSource(edge)
                         val target = blocks.getEdgeTarget(edge)
 
-                        edgeVertices.setTag("source", NBTUtil.createPosTag(src))
-                        edgeVertices.setTag("target", NBTUtil.createPosTag(target))
+                        edgeVertices.setTag("source", NBTUtil.createPosTag(src.pos))
+                        edgeVertices.setTag("target", NBTUtil.createPosTag(target.pos))
 
                         edgeList.appendTag(edgeVertices)
                     }
 
-                    if (edgeList.tagCount() != 0)
-                        edges.setTag(type.name, edgeList)
+                    if (edgeList.tagCount() != 0) edges.setTag(type.name, edgeList)
                 }
                 networkCompound.setTag("edges", edges)
 

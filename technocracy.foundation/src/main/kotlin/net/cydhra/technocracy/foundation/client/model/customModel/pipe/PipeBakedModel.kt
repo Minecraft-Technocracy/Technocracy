@@ -3,6 +3,7 @@ package net.cydhra.technocracy.foundation.client.model.customModel.pipe
 import net.cydhra.technocracy.foundation.blocks.general.pipe
 import net.cydhra.technocracy.foundation.client.textures.TextureAtlasManager
 import net.cydhra.technocracy.foundation.pipes.Network
+import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
 import net.cydhra.technocracy.foundation.util.propertys.POSITION
 import net.minecraft.block.state.IBlockState
@@ -97,7 +98,7 @@ baseBakedModel {
         return quads
     }
 
-    fun getExtension(pos: BlockPos, world: World, type: Network.PipeType): ArrayList<Boolean> {
+    fun getExtension(pos: BlockPos, world: World, type: PipeType): ArrayList<Boolean> {
         val sides = arrayListOf(false, false, false, false, false, false)
 
         EnumFacing.values().forEachIndexed { index, facing ->
@@ -110,12 +111,12 @@ baseBakedModel {
         return sides
     }
 
-    fun getTexture(type: Network.PipeType): TextureAtlasSprite {
+    fun getTexture(type: PipeType): TextureAtlasSprite {
         return when (type) {
 
-            Network.PipeType.ENERGY -> TextureAtlasManager.pipe_energy!!
-            Network.PipeType.FLUID -> TextureAtlasManager.pipe_fluid!!
-            Network.PipeType.ITEM -> TextureAtlasManager.pipe_item!!
+            PipeType.ENERGY -> TextureAtlasManager.pipe_energy!!
+            PipeType.FLUID -> TextureAtlasManager.pipe_fluid!!
+            PipeType.ITEM -> TextureAtlasManager.pipe_item!!
         }
     }
 

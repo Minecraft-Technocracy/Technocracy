@@ -4,6 +4,10 @@ import it.zerono.mods.zerocore.api.multiblock.MultiblockControllerBase
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import net.cydhra.technocracy.foundation.multiblock.BaseMultiBlock
 import net.cydhra.technocracy.foundation.tileentity.AbstractRectangularMultiBlockTileEntity
+import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.util.EnumFacing
+import net.minecraft.util.EnumHand
+import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import kotlin.reflect.KClass
 
@@ -17,12 +21,17 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
     : AbstractRectangularMultiBlockTileEntity()
         where T : MultiblockControllerBase {
 
-    override fun createNewMultiblock(): MultiblockControllerBase {
+    override fun createNewMultiblock(): T {
         return constructController(this.world)
     }
 
-    override fun getMultiblockControllerType(): Class<out MultiblockControllerBase> {
+    override fun getMultiblockControllerType(): Class<T> {
         return clazz.java
+    }
+
+    override fun getMultiblockController(): T? {
+        @Suppress("UNCHECKED_CAST")
+        return super.getMultiblockController() as T?
     }
 
     override fun onMachineActivated() {}
@@ -56,7 +65,8 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
     }
 
     override fun validateStructure(): Boolean {
-        return this.multiblockController.isAssembled
+        return this.multiblockController?.isAssembled ?: false
     }
 
+    override fun onActivate(world: World, pos: BlockPos, player: EntityPlayer, hand: EnumHand, facing: EnumFacing) {}
 }

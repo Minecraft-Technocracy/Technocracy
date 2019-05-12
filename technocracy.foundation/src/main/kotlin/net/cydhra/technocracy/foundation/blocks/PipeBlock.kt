@@ -2,6 +2,7 @@ package net.cydhra.technocracy.foundation.blocks
 
 import net.cydhra.technocracy.foundation.blocks.api.AbstractTileEntityBlock
 import net.cydhra.technocracy.foundation.pipes.Network
+import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
 import net.cydhra.technocracy.foundation.util.propertys.POSITION
 import net.minecraft.block.material.Material
@@ -27,7 +28,7 @@ import net.minecraftforge.common.property.IExtendedBlockState
 class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON) {
 
     companion object {
-        var PIPETYPE: PropertyEnum<Network.PipeType> = PropertyEnum.create("pipetype", Network.PipeType::class.java)
+        var PIPETYPE: PropertyEnum<PipeType> = PropertyEnum.create("pipetype", PipeType::class.java)
     }
 
     override val generateItem: Boolean
@@ -71,7 +72,7 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON) {
      * returns a list of blocks with the same ID, but different meta (eg: wood returns 4 blocks)
      */
     override fun getSubBlocks(itemIn: CreativeTabs, items: NonNullList<ItemStack>) {
-        for (type in Network.PipeType.values()) {
+        for (type in PipeType.values()) {
             items.add(ItemStack(this, 1, type.ordinal))
         }
     }
@@ -80,12 +81,12 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON) {
      * Convert the given metadata into a BlockState for this Block
      */
     override fun getStateFromMeta(meta: Int): IBlockState {
-        return this.defaultState.withProperty(PIPETYPE, Network.PipeType.values()[meta])
+        return this.defaultState.withProperty(PIPETYPE, PipeType.values()[meta])
     }
 
     /*override fun createBlockState(): BlockStateContainer {
         println(PIPETYPE)
-        //PIPETYPE = PropertyEnum.create("pipetype", Network.PipeType::class.java)
+        //PIPETYPE = PropertyEnum.create("pipetype", PipeType::class.java)
         return BlockStateContainer(this, PIPETYPE)
     }*/
 

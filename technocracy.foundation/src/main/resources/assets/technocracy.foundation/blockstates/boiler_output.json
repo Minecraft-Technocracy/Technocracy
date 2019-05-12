@@ -1,0 +1,9 @@
+{
+  "variants": {
+    "normal": [
+      {
+        "model": "technocracy.foundation:boiler_output"
+      }
+    ]
+  }
+}
