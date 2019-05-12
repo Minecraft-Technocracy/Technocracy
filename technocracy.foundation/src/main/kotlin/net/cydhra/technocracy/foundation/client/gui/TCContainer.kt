@@ -4,28 +4,55 @@ import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.Container
 import net.minecraft.inventory.Slot
+import net.minecraft.item.ItemStack
 
 
-open class TCContainer : Container() {
+open class TCContainer(val inventorySize: Int = 0) : Container() {
 
-    init {
-//        val inventory = machine.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.NORTH)
-//        addSlotToContainer(object : SlotItemHandler(inventory, 0, 80, 35) {
-//            override fun onSlotChanged() {
-//                machine.markDirty()
-//            }
-//        })
-//        for (row in 0..2) {
-//            for (slot in 0..8) {
-//                this.addSlotToContainer(TCSlot(Minecraft.getMinecraft().player.inventory, slot + row * 9 + 9, 8 + slot * 18,
-//                        84 + row *
-//                        18))
-//            }
-//        }
-//
-//        for (k in 0..8) {
-//            this.addSlotToContainer(TCSlot(this.playerInventory, k, 8 + k * 18, 142))
-//        }
+    private val playerInventorySize = inventorySize + 26
+    private val playerHotBarStart = playerInventorySize + 1
+    private val playerHotBarEnd = playerHotBarStart + 8
+
+    override fun transferStackInSlot(player: EntityPlayer?, index: Int): ItemStack? {
+        var exchangedStack = ItemStack.EMPTY
+        val slot = this.inventorySlots[index]
+
+        if (slot.hasStack) {
+            val stackInSlot = slot.stack
+            exchangedStack = stackInSlot.copy()
+
+            if (index < inventorySize) {
+                if (!this.mergeItemStack(stackInSlot, inventorySize, playerHotBarEnd + 1, true)) {
+                    return ItemStack.EMPTY
+                }
+
+                slot.onSlotChange(stackInSlot, exchangedStack)
+            } else {
+                if (index in inventorySize until playerHotBarStart) {
+                    if (!this.mergeItemStack(stackInSlot, playerHotBarStart, playerHotBarEnd + 1, false)) {
+                        return ItemStack.EMPTY
+                    }
+                } else if (index >= playerHotBarStart && index < playerHotBarEnd + 1) {
+                    if (!this.mergeItemStack(stackInSlot, inventorySize, playerInventorySize + 1, false)) {
+                        return ItemStack.EMPTY
+                    }
+                }
+            }
+
+            if (stackInSlot.count == 0) {
+                slot.putStack(ItemStack.EMPTY)
+            } else {
+                slot.onSlotChanged()
+            }
+
+            if (stackInSlot.count == exchangedStack.count) {
+                return ItemStack.EMPTY
+            }
+
+            slot.onTake(player, stackInSlot)
+        }
+
+        return exchangedStack
     }
 
     fun registerComponent(component: TCComponent) {
