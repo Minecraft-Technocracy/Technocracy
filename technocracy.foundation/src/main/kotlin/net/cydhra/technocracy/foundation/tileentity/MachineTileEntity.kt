@@ -41,13 +41,13 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
 
     override fun getGui(player: EntityPlayer): TCGui {
         val gui = TCGui(player, container = MachineContainer(this))
-        gui.registerTab(object : TCTab(gui, icon = ResourceLocation("technocracy.foundation", "textures/item/silicon" +
-                ".png")) {
+        gui.registerTab(object : TCTab("Tab mit Inventar", gui, icon = ResourceLocation("technocracy.foundation",
+                "textures/item/silicon.png")) {
 
             override fun draw(mouseX: Int, mouseY: Int, partialTicks: Float) {
                 super.draw(mouseX, mouseY, partialTicks)
 
-                Minecraft.getMinecraft().fontRenderer.drawStringWithShadow("Dies ist noch ein Tab lul", 8F, 8F, -1)
+                Minecraft.getMinecraft().fontRenderer.drawStringWithShadow("Dies ist ein Tab mit Inventar", 8F, 8F, -1)
             }
 
             override fun update() {
@@ -58,8 +58,6 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
             }
 
         })
-        gui.registerTab(WipTab(gui))
-        gui.registerTab(WipTab(gui))
         gui.registerTab(WipTab(gui))
 
         return gui

@@ -4,7 +4,7 @@ import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.machine.MachineContainer
 import net.minecraft.client.Minecraft
 
-class WipTab(parent: TCGui) : TCTab(parent) {
+class WipTab(parent: TCGui) : TCTab("WIP Tab", parent) {
     override fun init() {
 
     }
