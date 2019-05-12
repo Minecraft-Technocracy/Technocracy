@@ -2,12 +2,10 @@ package net.cydhra.technocracy.foundation.pipes
 
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.capabilities.energy.EnergyCapabilityProvider
-import net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryHandler
 import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompressedStreamTools
 import net.minecraft.tileentity.TileEntity
-import net.minecraft.tileentity.TileEntityHopper
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.IStringSerializable
 import net.minecraft.util.math.BlockPos
@@ -21,7 +19,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent
 import net.minecraftforge.items.CapabilityItemHandler
 import net.minecraftforge.items.IItemHandler
-import net.minecraftforge.items.wrapper.InvWrapper
 import org.jgrapht.graph.DefaultEdge
 import org.jgrapht.graph.Multigraph
 import org.jgrapht.traverse.ClosestFirstIterator
@@ -354,35 +351,37 @@ object Network {
                     val endpoints = graph.vertexSet().filter { it.hasIO }
                     endpoints.forEach {
                         for (pipeType in PipeType.values()) {
-                            val input = it.getInputFacings(pipeType)
-                            for (inputSide in input) {
+                            //active extraction, so only tick on strict output nodes
+                            val outputs = it.getOutputFacings(pipeType, true)
+                            for (outputSide in outputs) {
 
-                                val pipeIn = tick.world.getTileEntity(it.pos) as TileEntityPipe
-                                val tileIn = tick.world.getTileEntity(it.pos.offset(inputSide))!!
+                                val pipeOut = tick.world.getTileEntity(it.pos) as TileEntityPipe
+                                val tileOut = tick.world.getTileEntity(it.pos.offset(outputSide))!!
 
                                 val iterator = ClosestFirstIterator(graph, it)
 
 
                                 iterator@ for (node in iterator) {
-                                    if(!node.hasIO)
-                                        continue
-                                    val outputs = node.getOutputFacings(pipeType)
-                                    if (node.hasOutput(pipeType)) {
-                                        for (outputSide in outputs) {
-                                            if(node == it && inputSide == outputSide)
-                                                continue
+                                    if (!node.hasIO) continue
+                                    val inputs = node.getInputFacings(pipeType, false)
+                                    for (inputSide in inputs) {
+                                        if (node == it && outputSide == inputSide) continue
 
-                                            val pipeOut = tick.world.getTileEntity(node.pos) as TileEntityPipe
-                                            val tileOut = tick.world.getTileEntity(node.pos.offset(outputSide))!!
+                                        val pipeIn = tick.world.getTileEntity(node.pos) as TileEntityPipe
+                                        val tileIn = tick.world.getTileEntity(node.pos.offset(inputSide))!!
 
-                                            if (pipeType.canDoAction(pipeType, pipeIn, pipeOut, tileIn, tileOut,
-                                                            inputSide, outputSide)) {
-                                                //TODO timeout
+                                        if (pipeType.canDoAction(pipeType,
+                                                        pipeIn,
+                                                        pipeOut,
+                                                        tileIn,
+                                                        tileOut,
+                                                        inputSide,
+                                                        outputSide)) {
+                                            //TODO timeout
 
-                                                println("found output")
+                                            println("found output")
 
-                                                break@iterator
-                                            }
+                                            break@iterator
                                         }
                                     }
                                 }
@@ -422,37 +421,25 @@ object Network {
                 return io.isNotEmpty() && io.filter { !it.value.isNullOrEmpty() }.isNotEmpty()
             }
 
-        fun hasInput(type: PipeType): Boolean {
-            return getInputFacings(type).isNotEmpty()
-        }
-
-        fun hasInput(type: PipeType, facing: EnumFacing): Boolean {
-            return getInputFacings(type).any { it == facing }
-        }
-
-        fun hasOutput(type: PipeType): Boolean {
-            return getOutputFacings(type).isNotEmpty()
-        }
-
-        fun hasOutput(type: PipeType, facing: EnumFacing): Boolean {
-            return getOutputFacings(type).any { it == facing }
-        }
-
-        fun getInputFacings(type: PipeType): Set<EnumFacing> {
+        fun getInputFacings(type: PipeType, strictInput: Boolean): Set<EnumFacing> {
             val map = io[type]
             if (map != null) {
                 val combined = mutableSetOf<EnumFacing>()
-                map.filter { it.key != IO.OUTPUT }.forEach { ioEnum, facing -> combined.addAll(facing) }
+                map.filter { if (strictInput) it.key == IO.INPUT else it.key != IO.OUTPUT }.forEach { ioEnum, facing ->
+                    combined.addAll(facing)
+                }
                 return combined
             }
             return emptySet()
         }
 
-        fun getOutputFacings(type: PipeType): Set<EnumFacing> {
+        fun getOutputFacings(type: PipeType, strictOutput: Boolean): Set<EnumFacing> {
             val map = io[type]
             if (map != null) {
                 val combined = mutableSetOf<EnumFacing>()
-                map.filter { it.key != IO.INPUT }.forEach { ioEnum, facing -> combined.addAll(facing) }
+                map.filter { if (strictOutput) it.key == IO.OUTPUT else it.key != IO.INPUT }.forEach { ioEnum, facing ->
+                    combined.addAll(facing)
+                }
                 return combined
             }
             return emptySet()
@@ -513,7 +500,7 @@ object Network {
                         for (slotOut in 0 until handlerOut.slots) {
                             val stackOut = handlerOut.insertItem(slotOut, stackIn, true)
                             if (stackOut.isEmpty || stackIn.count != stackOut.count) {
-                                if(stackOut.isEmpty) {
+                                if (stackOut.isEmpty) {
                                     stackIn = handlerIn.extractItem(slotIn, limit, false)
                                     handlerOut.insertItem(slotOut, stackIn, false)
                                 } else {
