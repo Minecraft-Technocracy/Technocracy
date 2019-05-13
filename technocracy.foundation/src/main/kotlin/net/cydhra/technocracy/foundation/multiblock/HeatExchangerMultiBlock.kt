@@ -91,7 +91,6 @@ class HeatExchangerMultiBlock(world: World) :
      * @return false if the internal structure is invalid, true if it is valid
      */
     private fun recalculatePhysics(validatorCallback: IMultiblockValidator): Boolean {
-        val visited = mutableSetOf<BlockPos>()
         val tubes = mutableListOf<CoolantTube>()
 
         val findNeighbor: (BlockPos, BlockPos?, (TileEntity) -> Boolean) -> Collection<TileEntity> =
@@ -144,13 +143,7 @@ class HeatExchangerMultiBlock(world: World) :
                         comeFrom = currentPipe.pos
                         currentPipe = nextTube.first()
 
-                        if (visited.contains(currentPipe.pos)) {
-                            validatorCallback.setLastError("tube flows converge")
-                            return false
-                        }
-
                         tube.addTube(currentPipe as TileEntityMultiBlockPartHeatExchanger)
-                        visited.add(currentPipe.pos)
                     }
                 }
             }
