@@ -234,7 +234,7 @@ class HeatExchangerMultiBlock(world: World) :
      * A helper structure to organize and manage single tubes inside the heat exchanger with their own fluid storages
      * and flows
      */
-    class CoolantTube(val input: TileEntityHeatExchangerInput, firstPipe: TileEntityMultiBlockPartHeatExchanger) {
+    inner class CoolantTube(val input: TileEntityHeatExchangerInput, firstPipe: TileEntityMultiBlockPartHeatExchanger) {
 
         val isHot: Boolean = when {
             firstPipe.blockType == heatExchangerHotAgentTube -> true
@@ -244,7 +244,9 @@ class HeatExchangerMultiBlock(world: World) :
 
         lateinit var output: TileEntityHeatExchangerOutput
 
-        private val tubeBlocks = mutableListOf<TileEntityMultiBlockPartHeatExchanger>()
+        private val tubeBlocks = mutableListOf<TubePart>()
+
+        val parts: List<TubePart> = tubeBlocks
 
         init {
             addTube(firstPipe)
@@ -252,11 +254,61 @@ class HeatExchangerMultiBlock(world: World) :
 
         fun addTube(tubeEntity: TileEntityMultiBlockPartHeatExchanger) {
             if (tubeEntity.blockType == heatExchangerHotAgentTube && isHot)
-                tubeBlocks.add(tubeEntity)
+                tubeBlocks.add(TubePart(tubeEntity))
             else if (tubeEntity.blockType == heatExchangerColdAgentTube && !isHot)
-                tubeBlocks.add(tubeEntity)
+                tubeBlocks.add(TubePart(tubeEntity))
             else
                 throw IllegalStateException("wrong tile entity for coolant tube")
+        }
+    }
+
+    /**
+     * A wrapper class for tile entities that make up the coolant tubes. The wrapper offers quick access to
+     * neighbored tubes that are required for the processing logic.
+     */
+    inner class TubePart(val part: TileEntityMultiBlockPartHeatExchanger) {
+
+        private var neighborCache: Set<TubePart>? = null
+
+        private var matrixCount = -1
+
+        /**
+         *
+         */
+        fun getMatrixFaceCount(): Int {
+            if (matrixCount < 0) {
+                val neighborPositions = with(this.part.pos) {
+                    arrayOf(up(), down(), north(), east(), south(), west())
+                }
+
+                matrixCount = neighborPositions
+                        .filter { WORLD.getTileEntity(it) == null }
+                        .count()
+            }
+
+            return matrixCount
+        }
+
+        /**
+         * @return a set of [TubePart]s that will take heat from this heat pipe (the method is not intended for cold
+         * pipes)
+         */
+        fun getNeighborCoolingPipes(): Set<TubePart> {
+            if (neighborCache == null) {
+                val neighborPositions = with(this.part.pos) {
+                    arrayOf(up(), down(), north(), east(), south(), west())
+                }
+
+                this.neighborCache = this@HeatExchangerMultiBlock.tubes
+                        .asSequence()
+                        .filter { !it.isHot }
+                        .map { it.parts }
+                        .flatten()
+                        .filter { it.part.pos in neighborPositions }
+                        .toSet()
+            }
+
+            return neighborCache!!
         }
     }
 }
