@@ -83,8 +83,6 @@ open class CommonProxy {
         BlockManager.prepareBlocksForRegistration(kilnBlock, MachineConnectorModel())
         BlockManager.prepareBlocksForRegistration(polymerizationChamberBlock, MachineConnectorModel())
         BlockManager.prepareBlocksForRegistration(pulverizerBlock, MachineConnectorModel())
-        BlockManager.prepareBlocksForRegistration(refineryBlock, MachineConnectorModel())
-        BlockManager.prepareBlocksForRegistration(thermoelectricFreezerBlock, MachineConnectorModel())
 
         BlockManager.prepareBlocksForRegistration(boilerControllerBlock)
         BlockManager.prepareBlocksForRegistration(boilerHeaterBlock)
@@ -140,8 +138,6 @@ open class CommonProxy {
         TileEntityManager.prepareTileEntityForRegistration(TileEntityKiln::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityPolymerizationChamber::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityPulverizer::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityRefinery::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityThermoelectricFreezer::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityPipe::class)
 
         TileEntityManager.prepareTileEntityForRegistration(TileEntityMultiBlockPartBoiler::class)

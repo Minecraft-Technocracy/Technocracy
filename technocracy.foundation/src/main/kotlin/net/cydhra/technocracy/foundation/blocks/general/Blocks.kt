@@ -27,8 +27,6 @@ val electrolysisChamberBlock = MachineBlock("electrolysis_chamber", ::TileEntity
 val kilnBlock = MachineBlock("kiln", ::TileEntityKiln)
 val polymerizationChamberBlock = MachineBlock("polymerization_chamber", ::TileEntityPolymerizationChamber)
 val pulverizerBlock = MachineBlock("pulverizer", ::TileEntityPulverizer)
-val refineryBlock = MachineBlock("refinery", ::TileEntityRefinery)
-val thermoelectricFreezerBlock = MachineBlock("thermoelectric_freezer", ::TileEntityThermoelectricFreezer)
 
 val boilerControllerBlock = MultiBlockRotatableActiveBlock("boiler_controller", ::TileEntityBoilerController)
 val boilerHeaterBlock = MultiBlockActiveBlock("boiler_heater", ::TileEntityBoilerHeater, renderLayer = BlockRenderLayer.CUTOUT)

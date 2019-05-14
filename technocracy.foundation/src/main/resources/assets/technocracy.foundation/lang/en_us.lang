@@ -76,8 +76,6 @@ tile.electrolysis_chamber.name=Electrolysis Chamber
 tile.kiln.name=Pyrolysis Kiln
 tile.polymerization_chamber.name=Polymerization Chamber
 tile.pulverizer.name=Pulverizer
-tile.refinery.name=Refinery
-tile.thermoelectric_freezer.name=Thermoelectric Freezer
 
 tile.iron_beam.name=Steel Beam
 

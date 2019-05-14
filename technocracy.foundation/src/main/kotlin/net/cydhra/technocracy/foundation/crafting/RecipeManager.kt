@@ -69,6 +69,7 @@ object RecipeManager {
         return loadedRecipes[type]
     }
 
+
     /**
      * Load a recipe off a path that has been found by the [CraftingHelper]. The parsed json object is then handed to
      * the given [parser]
@@ -135,7 +136,6 @@ object RecipeManager {
         ELECTRIC_FURNACE,
         ELECTROLYSIS,
         KILN,
-        PULVERIZER,
-        FREEZER
+        PULVERIZER
     }
 }
