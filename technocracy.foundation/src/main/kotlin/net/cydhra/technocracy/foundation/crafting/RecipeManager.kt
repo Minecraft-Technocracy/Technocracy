@@ -45,11 +45,13 @@ object RecipeManager {
      * Called upon post initialization by common proxy. Attempts to load recipes of all different machine types.
      */
     fun initialize() {
-        parseMachineRecipes("pulverizer", PulverizerRecipeParser, RecipeManager.RecipeType.PULVERIZER)
-        parseMachineRecipes("electric_furnace", ElectricFurnaceRecipeParser, RecipeManager.RecipeType.ELECTRIC_FURNACE)
-        parseMachineRecipes("centrifuge", CentrifugeRecipeParser, RecipeManager.RecipeType.CENTRIFUGE)
         parseMachineRecipes("alloy_smeltery", AlloySmelteryRecipeParser, RecipeManager.RecipeType.ALLOY)
+        parseMachineRecipes("centrifuge", CentrifugeRecipeParser, RecipeManager.RecipeType.CENTRIFUGE)
+        parseMachineRecipes("chemical_etching", ChemicalEtchingRecipeParser, RecipeManager.RecipeType.CHEMICAL_ETCHING)
         parseMachineRecipes("chemical_oxidizer", ChemicalOxidizerRecipeParser, RecipeManager.RecipeType.CHEMICAL_OXIDIZER)
+        parseMachineRecipes("chemical_processing", ChemicalProcessingRecipeParser, RecipeManager.RecipeType.CHEMICAL_PROCESSING)
+        parseMachineRecipes("electric_furnace", ElectricFurnaceRecipeParser, RecipeManager.RecipeType.ELECTRIC_FURNACE)
+        parseMachineRecipes("pulverizer", PulverizerRecipeParser, RecipeManager.RecipeType.PULVERIZER)
     }
 
     /**
@@ -119,7 +121,8 @@ object RecipeManager {
      * An enumeration of all custom recipe types parsed by the RecipeManager
      */
     enum class RecipeType {
-        ALLOY, CENTRIFUGE,
+        ALLOY,
+        CENTRIFUGE,
         CHEMICAL_ETCHING,
         CHEMICAL_OXIDIZER,
         CHEMICAL_PROCESSING,
