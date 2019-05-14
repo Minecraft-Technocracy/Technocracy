@@ -73,7 +73,7 @@ open class CommonProxy {
 
         BlockManager.prepareBlocksForRegistration(alloySmelteryBlock, MachineConnectorModel())
         BlockManager.prepareBlocksForRegistration(centrifugeBlock, MachineConnectorModel())
-        BlockManager.prepareBlocksForRegistration(chemicalEnrichmentChamberBlock, MachineConnectorModel())
+        BlockManager.prepareBlocksForRegistration(chemicalProcessingChamberBlock, MachineConnectorModel())
         BlockManager.prepareBlocksForRegistration(chemicalEtchingChamberBlock, MachineConnectorModel())
         BlockManager.prepareBlocksForRegistration(chemicalOxidizerBlock, MachineConnectorModel())
         BlockManager.prepareBlocksForRegistration(chemicalReactionChamberBlock, MachineConnectorModel())
@@ -130,7 +130,7 @@ open class CommonProxy {
 
         TileEntityManager.prepareTileEntityForRegistration(TileEntityAlloySmeltery::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityCentrifuge::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityChemicalEnrichmentChamber::class)
+        TileEntityManager.prepareTileEntityForRegistration(TileEntityChemicalProcessingChamber::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityChemicalEtchingChamber::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityChemicalOxidizer::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityChemicalReactionChamber::class)

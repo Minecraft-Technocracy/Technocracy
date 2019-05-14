@@ -4,9 +4,9 @@
     "particle": "technocracy.foundation:block/machine_bottom",
     "up": "technocracy.foundation:block/machine_bottom",
     "down": "technocracy.foundation:block/machine_bottom",
-    "north": "technocracy.foundation:block/machine_side_bolted",
-    "east": "technocracy.foundation:block/machine_side_vent",
-    "south": "technocracy.foundation:block/machine_side_empty",
-    "west": "technocracy.foundation:block/machine_side_vent"
+    "north": "technocracy.foundation:block/etching_chamber_front",
+    "east": "technocracy.foundation:block/etching_chamber_side",
+    "south": "technocracy.foundation:block/etching_chamber_side",
+    "west": "technocracy.foundation:block/etching_chamber_side"
   }
 }

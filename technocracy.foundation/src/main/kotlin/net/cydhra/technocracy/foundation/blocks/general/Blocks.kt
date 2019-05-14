@@ -17,7 +17,7 @@ import net.minecraft.util.BlockRenderLayer
 
 val alloySmelteryBlock = MachineBlock("alloy_smeltery", ::TileEntityAlloySmeltery)
 val centrifugeBlock = MachineBlock("centrifuge", ::TileEntityCentrifuge)
-val chemicalEnrichmentChamberBlock = MachineBlock("chemical_enrichment_chamber", ::TileEntityChemicalEnrichmentChamber)
+val chemicalProcessingChamberBlock = MachineBlock("chemical_processing_chamber", ::TileEntityChemicalProcessingChamber)
 val chemicalEtchingChamberBlock = MachineBlock("chemical_etching_chamber", ::TileEntityChemicalEtchingChamber)
 val chemicalOxidizerBlock = MachineBlock("chemical_oxidizer", ::TileEntityChemicalOxidizer)
 val chemicalReactionChamberBlock = MachineBlock("chemical_reaction_chamber", ::TileEntityChemicalReactionChamber)

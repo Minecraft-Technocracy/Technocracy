@@ -66,7 +66,7 @@ tile.ore.tin.name=Tin Ore
 
 tile.alloy_smeltery.name=Alloy Smeltery
 tile.centrifuge.name=Centrifuge
-tile.chemical_enrichment_chamber.name=Chemical Enrichment Chamber
+tile.chemical_processing_chamber.name=Chemical Processing Chamber
 tile.chemical_etching_chamber.name=Chemical Etching Chamber
 tile.chemical_oxidizer.name=Chemical Oxidizer
 tile.chemical_reaction_chamber.name=Chemical Reaction Chamber
