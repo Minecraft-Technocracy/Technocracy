@@ -119,6 +119,16 @@ object RecipeManager {
      * An enumeration of all custom recipe types parsed by the RecipeManager
      */
     enum class RecipeType {
-        PULVERIZER, ELECTRIC_FURNACE, CENTRIFUGE, ALLOY, CHEMICAL_OXIDIZER
+        ALLOY, CENTRIFUGE,
+        CHEMICAL_ETCHING,
+        CHEMICAL_OXIDIZER,
+        CHEMICAL_PROCESSING,
+        CHEMICAL_REACTION,
+        COMPACTOR,
+        ELECTRIC_FURNACE,
+        ELECTROLYSIS,
+        KILN,
+        PULVERIZER,
+        FREEZER
     }
 }
