@@ -8,6 +8,8 @@ import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.cydhra.technocracy.foundation.tileentity.components.ComponentPipeTypes
 import net.cydhra.technocracy.foundation.tileentity.components.NetworkComponent
 import net.minecraft.util.EnumFacing
+import net.minecraft.util.math.BlockPos
+import net.minecraftforge.common.capabilities.Capability
 import java.util.*
 
 
@@ -46,8 +48,27 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
         return this
     }
 
+    fun rotateIO() {
+        Network.rotateIO(pos, networkComponent.uuid!!, world)
+    }
+
+    fun calculateIOPorts() {
+        Network.removeIOFromNode(pos, networkComponent.uuid!!, world)
+
+        for (facing in EnumFacing.values()) {
+            val current = pos.offset(facing)
+            val tile = world.getTileEntity(current)
+            if (tile != null && tile !is TileEntityPipe) {
+                val pipe = pipeTypes.types.first()
+                if (tile.hasCapability(pipe.capability!!, facing.opposite)) {
+                    Network.addIOToNode(pos, facing, networkComponent.uuid!!, world, pipe)
+                }
+            }
+        }
+    }
+
     override fun onLoad() {
-        //forge calls onLoad 2x
+        //forge calls onLoad 2x (Client/Server)
         if (networkComponent.uuid != null || world.isRemote) return
 
         var connected = 0
@@ -96,21 +117,6 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
                     world)
         }
 
-        for (facing in EnumFacing.values()) {
-            val current = pos.offset(facing)
-            val tile = world.getTileEntity(current)
-            if (tile != null && tile !is TileEntityPipe) {
-                val pipe = pipeTypes.types.first()
-                if (tile.hasCapability(pipe.capability!!, facing.opposite)) {
-                    Network.addIOToNode(pos, facing, networkComponent.uuid!!, world, pipe)
-                }
-
-                /*if (tile.hasCapability(pipe.capability, facing.opposite)) {
-                    val virtualNode = Network.WrappedBlockPos(current)
-                    virtualNode.isIONode = true
-                    Network.addEdge(Network.WrappedBlockPos(pos), virtualNode, getNetworkId(), world, pipe)
-                }*/
-            }
-        }
+        calculateIOPorts()
     }
 }

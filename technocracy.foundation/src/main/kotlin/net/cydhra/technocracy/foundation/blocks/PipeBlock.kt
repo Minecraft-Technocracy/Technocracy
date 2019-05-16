@@ -90,9 +90,25 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON) {
         return BlockStateContainer(this, PIPETYPE)
     }*/
 
+    override fun onNeighborChange(world: IBlockAccess, pos: BlockPos, neighbor: BlockPos) {
+        if(!(world as World).isRemote)
+            (world.getTileEntity(pos) as TileEntityPipe).calculateIOPorts()
+    }
+
     override fun onBlockActivated(worldIn: World, pos: BlockPos, state: IBlockState, playerIn: EntityPlayer, hand: EnumHand, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean {
+
         if(!playerIn.isSneaking && playerIn.inventory.getCurrentItem().item == Item.getItemFromBlock(this))
             return true
+
+        if(playerIn.isSneaking && playerIn.inventory.getCurrentItem().isEmpty && hand == EnumHand.MAIN_HAND) {
+
+            //todo raytrace
+            //todo chck wrench
+            if(!worldIn.isRemote)
+                (worldIn.getTileEntity(pos) as TileEntityPipe).rotateIO()
+            return false
+        }
+
         return false
     }
 

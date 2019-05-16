@@ -12,9 +12,7 @@ import net.minecraftforge.event.world.WorldEvent
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent
-import org.jgrapht.graph.DefaultEdge
 import org.jgrapht.graph.Multigraph
-import org.jgrapht.traverse.ClosestFirstIterator
 import org.jgrapht.traverse.DepthFirstIterator
 import java.io.File
 import java.io.FileInputStream
@@ -77,6 +75,44 @@ object Network {
             //add IO facing to the node
             set.add(facing)
 
+        }
+        dirty = true
+    }
+
+    fun removeIOFromNode(node: BlockPos, networkId: UUID, world: World) {
+        val node = WrappedBlockPos(node)
+
+        val network = networks[getName(world)]!![networkId]!!
+
+        if (network.containsVertex(node)) {
+            //gets the node instance from the network
+            val currentNode = network.vertexSet().first { it == node }
+            currentNode.io.clear()
+        }
+    }
+
+    fun rotateIO(node: BlockPos, networkId: UUID, world: World) {
+        val node = WrappedBlockPos(node)
+
+        val network = networks[getName(world)]!![networkId]!!
+
+        if (network.containsVertex(node)) {
+            //gets the node instance from the network
+            val currentNode = network.vertexSet().first { it == node }
+
+            val newIo = mutableMapOf<PipeType, MutableMap<Network.IO, MutableSet<EnumFacing>>>()
+
+
+            currentNode.io.forEach { pipetype, map ->
+                val newmap = mutableMapOf<IO, MutableSet<EnumFacing>>()
+
+                for (pair in map) {
+                    newmap[IO.values()[(pair.key.ordinal + 1) % IO.values().size]] = pair.value
+                }
+                newIo[pipetype] = newmap
+            }
+            currentNode.io.clear()
+            currentNode.io.putAll(newIo)
         }
         dirty = true
     }
@@ -346,10 +382,19 @@ object Network {
                         for (pipeType in PipeType.values()) {
                             //active extraction, so only tick on strict output nodes
                             val outputs = it.getOutputFacings(pipeType, true)
-                            for (outputSide in outputs) {
+                            for (extractSide in outputs) {
 
-                                val pipeOut = tick.world.getTileEntity(it.pos) as TileEntityPipe
-                                val tileOut = tick.world.getTileEntity(it.pos.offset(outputSide))!!
+                                val extractionPipe = tick.world.getTileEntity(it.pos) as TileEntityPipe
+                                val extractionTile = tick.world.getTileEntity(it.pos.offset(extractSide))!!
+
+                                pipeType.handler.handle(tick.world,
+                                        it,
+                                        extractionPipe,
+                                        extractionTile,
+                                        extractSide,
+                                        FilteredPipeTypeGraph(graph, pipeType))
+/*
+
 
                                 val iterator = ClosestFirstIterator(FilteredPipeTypeGraph(graph, pipeType), it)
 
@@ -365,12 +410,12 @@ object Network {
                                             val tileIn = tick.world.getTileEntity(node.pos.offset(inputSide))!!
 
                                             if (pipeType.canDoAction(pipeType,
-                                                            pipeIn,
                                                             pipeOut,
-                                                            tileIn,
+                                                            pipeIn,
                                                             tileOut,
-                                                            inputSide,
-                                                            outputSide)) {
+                                                            tileIn,
+                                                            outputSide,
+                                                            inputSide)) {
                                                 //TODO timeout
 
                                                 println("found output")
@@ -379,7 +424,7 @@ object Network {
                                             }
                                         }
                                     }
-                                }
+                                }*/
                             }
                         }
                     }
@@ -387,9 +432,6 @@ object Network {
             }
         }
     }
-
-
-
 
 
     /*enum class PipeTier(val type: PipeType, weight: Double) {
