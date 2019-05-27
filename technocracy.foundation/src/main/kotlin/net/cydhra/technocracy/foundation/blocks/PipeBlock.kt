@@ -123,4 +123,9 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON) {
     override fun isFullCube(state: IBlockState): Boolean {
         return false
     }
+
+    override fun shouldSideBeRendered(blockState: IBlockState, blockAccess: IBlockAccess, pos: BlockPos,
+            side: EnumFacing): Boolean {
+        return false
+    }
 }

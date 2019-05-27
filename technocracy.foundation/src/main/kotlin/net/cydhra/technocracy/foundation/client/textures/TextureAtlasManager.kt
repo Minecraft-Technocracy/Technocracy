@@ -13,11 +13,12 @@ class TextureAtlasManager {
     }
 
     companion object {
-        var connector_energy: TextureAtlasSprite? = null
-        var connector_inventory: TextureAtlasSprite? = null
-        var pipe_item: TextureAtlasSprite? = null
-        var pipe_fluid: TextureAtlasSprite? = null
-        var pipe_energy: TextureAtlasSprite? = null
+        lateinit var connector_energy: TextureAtlasSprite
+        lateinit var connector_inventory: TextureAtlasSprite
+        lateinit var pipe_item: TextureAtlasSprite
+        lateinit var pipe_fluid: TextureAtlasSprite
+        lateinit var pipe_energy: TextureAtlasSprite
+        lateinit var pipe_node: TextureAtlasSprite
     }
 
     @Suppress("unused")
@@ -27,7 +28,8 @@ class TextureAtlasManager {
         connector_inventory = event.map.registerSprite(getIcon("extra/connector_inventory"))
         pipe_item = event.map.registerSprite(getIcon("block/steel"))
         pipe_fluid = event.map.registerSprite(getIcon("block/steel_dark"))
-        pipe_energy = event.map.registerSprite(getIcon("extra/connector_inventory"))
+        pipe_energy = event.map.registerSprite(getIcon("block/boiler_wall"))
+        pipe_node = event.map.registerSprite(getIcon("block/frame_corners"))
     }
 
     fun getIcon(name: String): ResourceLocation {
