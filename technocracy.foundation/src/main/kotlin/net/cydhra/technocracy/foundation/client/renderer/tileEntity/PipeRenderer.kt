@@ -40,7 +40,6 @@ class PipeRenderer : TileEntitySpecialRenderer<TileEntityPipe>() {
         val pos = te.pos
 
         GlStateManager.pushMatrix()
-        GlStateManager.disableLighting()
 
         GlStateManager.color(1F, 1F, 1F, 1F)
 
@@ -147,7 +146,6 @@ class PipeRenderer : TileEntitySpecialRenderer<TileEntityPipe>() {
             }
         }
 
-        GlStateManager.enableLighting()
         GlStateManager.popMatrix()
     }
 
