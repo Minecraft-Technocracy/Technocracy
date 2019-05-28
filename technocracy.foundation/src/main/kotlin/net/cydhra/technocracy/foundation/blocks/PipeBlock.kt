@@ -112,6 +112,7 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON) {
         return false
     }
 
+
     override fun isOpaqueCube(state: IBlockState): Boolean {
         return false
     }

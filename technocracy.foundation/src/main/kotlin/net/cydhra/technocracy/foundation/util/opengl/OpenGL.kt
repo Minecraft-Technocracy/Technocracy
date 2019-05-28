@@ -1,7 +1,6 @@
 package net.cydhra.technocracy.foundation.util.opengl
 
 import net.minecraft.client.renderer.Tessellator
-import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.util.math.AxisAlignedBB
 import org.lwjgl.opengl.GL11
@@ -11,14 +10,14 @@ object OpenGLBoundingBox {
     /**
      * Draws a textured axis aligned bounding box using the minecraft tesselator
      */
-    fun drawTexturedBoundingBox(boundingBox: AxisAlignedBB, texture: TextureAtlasSprite) {
+    fun drawTexturedBoundingBox(boundingBox: AxisAlignedBB) {
         val tessellator = Tessellator.getInstance()
         val buffer = tessellator.buffer
 
-        val minU = texture.minU.toDouble()
-        val maxU = texture.maxU.toDouble()
-        val minV = texture.minV.toDouble()
-        val maxV = texture.maxV.toDouble()
+        val minU = 0.0
+        val maxU = 1.0
+        val minV = 0.0
+        val maxV = 1.0
 
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX)
         //Front Quad
@@ -53,4 +52,5 @@ object OpenGLBoundingBox {
         buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.maxZ).tex(minU, minV).endVertex()
         tessellator.draw()
     }
+
 }

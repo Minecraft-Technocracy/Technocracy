@@ -2,18 +2,41 @@ package net.cydhra.technocracy.foundation.tileentity
 
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.PipeBlock
+import net.cydhra.technocracy.foundation.blocks.general.pipe
 import net.cydhra.technocracy.foundation.pipes.Network
 import net.cydhra.technocracy.foundation.pipes.WrappedBlockPos
 import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.cydhra.technocracy.foundation.tileentity.components.ComponentPipeTypes
 import net.cydhra.technocracy.foundation.tileentity.components.NetworkComponent
+import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.util.EnumFacing
-import net.minecraft.util.math.BlockPos
-import net.minecraftforge.common.capabilities.Capability
+import net.minecraft.util.math.AxisAlignedBB
+import net.minecraft.util.math.Vec3d
 import java.util.*
 
 
 class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
+    companion object {
+        const val size = 0.05
+        const val nodeSize = 0.075
+
+        val node = AxisAlignedBB(Vec3d((0.5 - nodeSize), (0.5 - nodeSize), (0.5 - nodeSize)),
+                Vec3d((0.5 + nodeSize), (0.5 + nodeSize), (0.5 + nodeSize)))
+
+        val connections = mapOf(EnumFacing.NORTH to AxisAlignedBB(Vec3d((0.5 - size), (0.5 - size), 0.0),
+                Vec3d((0.5 + size), (0.5 + size), (0.5 - size))),
+                EnumFacing.SOUTH to AxisAlignedBB(Vec3d((0.5 - size), (0.5 - size), (0.5 + size)),
+                        Vec3d((0.5 + size), (0.5 + size), 1.0)),
+                EnumFacing.EAST to AxisAlignedBB(Vec3d((0.5 + size), (0.5 - size), (0.5 - size)),
+                        Vec3d(1.0, (0.5 + size), (0.5 + size))),
+                EnumFacing.WEST to AxisAlignedBB(Vec3d(0.0, (0.5 - size), (0.5 - size)),
+                        Vec3d((0.5 - size), (0.5 + size), (0.5 + size))),
+                EnumFacing.UP to AxisAlignedBB(Vec3d((0.5 - size), (0.5 + size), (0.5 - size)),
+                        Vec3d((0.5 + size), 1.0, (0.5 + size))),
+                EnumFacing.DOWN to AxisAlignedBB(Vec3d((0.5 - size), 0.0, (0.5 - size)),
+                        Vec3d((0.5 + size), (0.5 - size), (0.5 + size))))
+    }
+    
     private val networkComponent = NetworkComponent()
     private val pipeTypes = ComponentPipeTypes()
 
@@ -118,5 +141,115 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
         }
 
         calculateIOPorts()
+    }
+
+    /**
+     * Returns a list of triples which contain information about the pipe model parts
+     * First is the boundingbox
+     * Second is the PipeType
+     * Third is an integer indicating which model part type it is (0: node, 1: connection)
+     */
+    fun getPipeModelParts(): List<Triple<AxisAlignedBB, PipeType, Int>> {
+        val boxes = mutableListOf<Triple<AxisAlignedBB, PipeType, Int>>()
+
+        //populate connected facings
+        val facings = mutableSetOf<EnumFacing>()
+        this.getInstalledTypes().sorted().forEach { type ->
+            connections.forEach { (facing, _) ->
+                if (world.getBlockState(this.pos.offset(facing)).block == pipe) {
+                    val neighbourPipe = (world.getTileEntity(this.pos.offset(facing)) as TileEntityPipe)
+                    val connected = neighbourPipe.getInstalledTypes().contains(type)
+
+                    if (connected) {
+                        facings.add(facing)
+                    }
+                }
+            }
+        }
+
+        //distinguish multiple entries using a set and decide if a connection is straight or goes around a corner
+        val straight = facings.map { it.axis }.toSet().size == 1
+
+        //Render all nodes and connections
+        this.getInstalledTypes().sorted().forEachIndexed { index, type ->
+            connections.forEach { (facing, boundingBox) ->
+                var nodeConnectionOffset =
+                        (index * node.averageEdgeLength) - ((this.getInstalledTypes().size - 1) * node.averageEdgeLength) / 2
+
+                //The block is a pipe
+                if (world.getBlockState(this.pos.offset(facing)).block == pipe) {
+                    val neighbourPipe = (world.getTileEntity(this.pos.offset(facing)) as TileEntityPipe)
+                    val connected = neighbourPipe.getInstalledTypes().contains(type)
+
+                    //Is connected in any way to the neighbour pipe
+                    if (connected) {
+                        GlStateManager.pushMatrix()
+
+                        //neighbour has less types
+                        if (neighbourPipe.getInstalledTypes().size < this.getInstalledTypes().size) {
+                            //use offset of the neighbour
+                            nodeConnectionOffset =
+                                    if (this.getInstalledTypes().size != 1 && neighbourPipe.getInstalledTypes().size != 1) { // if both type sizes are not one some more calculations are needed
+                                        var neighbourIndex = index
+
+                                        //find the index of the neighbour pipe of the current type
+                                        neighbourPipe.getInstalledTypes().sorted().forEachIndexed { idx, it ->
+                                            if (it == type) {
+                                                neighbourIndex = idx
+                                            }
+                                        }
+
+                                        //apply the the offset with the current neighbour index
+                                        (neighbourIndex * node.averageEdgeLength) - ((neighbourPipe.getInstalledTypes().size - 1) * node.averageEdgeLength) / 2
+                                    } else {
+                                        ((neighbourPipe.getInstalledTypes().size - 1) * node.averageEdgeLength) / 2 //Apply offset for one installed type
+                                    }
+                        } else if (neighbourPipe.getInstalledTypes().size == this.getInstalledTypes().size) { //if has same size of types
+                            var sameTypeCount = 0
+
+                            //calculate the amount of types both lists have
+                            neighbourPipe.getInstalledTypes().sorted().forEach {
+                                if (this.getInstalledTypes().contains(it)) {
+                                    sameTypeCount++
+                                }
+                            }
+
+                            if (sameTypeCount == 1) { //both have exactly one same type
+                                nodeConnectionOffset = 0.0 //no offset is needed at all
+                            }
+                        }
+
+                        //Translate to the offset according to the axis of the connection
+                        when {
+                            facing.axis == EnumFacing.Axis.X -> boundingBox.offset(0.0, 0.0, nodeConnectionOffset)
+                            facing.axis == EnumFacing.Axis.Z -> boundingBox.offset(-nodeConnectionOffset, 0.0, 0.0)
+                            facing.axis.isVertical -> boundingBox.offset(0.0, 0.0, nodeConnectionOffset)
+                        }
+
+                        //Add connection
+                        boxes.add(Triple(boundingBox, type, 1))
+
+                        //Add node
+                        if (straight) {
+                            boxes.add(Triple(node, type, 0))
+                        }
+
+                        GlStateManager.popMatrix()
+                    }
+                }
+            }
+
+            //Draw main node
+            if (!straight) {
+                val expansion = ((this.getInstalledTypes().size - 1) * node.averageEdgeLength) / 2
+                boxes.add(Triple(node.expand(expansion * 2, 0.0, expansion * 2).offset(-expansion, 0.0, -expansion),
+                        type,
+                        0))
+            } else {
+                boxes.add(Triple(node, type, 0))
+            }
+        }
+
+        return boxes
     }
 }
