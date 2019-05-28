@@ -36,7 +36,7 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
                 EnumFacing.DOWN to AxisAlignedBB(Vec3d((0.5 - size), 0.0, (0.5 - size)),
                         Vec3d((0.5 + size), (0.5 - size), (0.5 + size))))
     }
-    
+
     private val networkComponent = NetworkComponent()
     private val pipeTypes = ComponentPipeTypes()
 
@@ -116,7 +116,11 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
                                 pipeTypes.types.first())
                     } else {
                         //is same network add an edge
-                        Network.addEdge(WrappedBlockPos(pos), WrappedBlockPos(current), uuid, world, pipeTypes.types.first())
+                        Network.addEdge(WrappedBlockPos(pos),
+                                WrappedBlockPos(current),
+                                uuid,
+                                world,
+                                pipeTypes.types.first())
                     }
                 } else {
                     setNetworkId(uuid)
@@ -135,9 +139,7 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
             //no network found, create new one
             setNetworkId(UUID.randomUUID())
             //TODO current pipe tier
-            Network.addNode(WrappedBlockPos(pos),
-                    networkComponent.uuid!!,
-                    world)
+            Network.addNode(WrappedBlockPos(pos), networkComponent.uuid!!, world)
         }
 
         calculateIOPorts()
@@ -219,15 +221,13 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
                             }
                         }
 
-                        //Translate to the offset according to the axis of the connection
-                        when {
+                        //Add connection
+                        boxes.add(Triple(when {
                             facing.axis == EnumFacing.Axis.X -> boundingBox.offset(0.0, 0.0, nodeConnectionOffset)
                             facing.axis == EnumFacing.Axis.Z -> boundingBox.offset(-nodeConnectionOffset, 0.0, 0.0)
                             facing.axis.isVertical -> boundingBox.offset(0.0, 0.0, nodeConnectionOffset)
-                        }
-
-                        //Add connection
-                        boxes.add(Triple(boundingBox, type, 1))
+                            else -> boundingBox
+                        }, type, 1))
 
                         //Add node
                         if (straight) {
