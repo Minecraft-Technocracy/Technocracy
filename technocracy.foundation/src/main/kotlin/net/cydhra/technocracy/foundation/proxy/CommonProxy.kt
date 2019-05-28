@@ -105,7 +105,7 @@ open class CommonProxy {
         BlockManager.prepareBlocksForRegistration(ironBeamBlock)
         BlockManager.prepareBlocksForRegistration(oilBlock)
 
-//        BlockManager.prepareBlocksForRegistration(pipe, PipeModel())
+        BlockManager.prepareBlocksForRegistration(pipe)
 
         ItemManager.prepareItemForRegistration(machineFrameItem)
         ItemManager.prepareItemForRegistration(coalDustItem)

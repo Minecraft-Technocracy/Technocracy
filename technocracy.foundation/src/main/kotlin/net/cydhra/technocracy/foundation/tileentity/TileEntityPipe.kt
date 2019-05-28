@@ -185,7 +185,7 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
 
                     //Is connected in any way to the neighbour pipe
                     if (connected) {
-                        GlStateManager.pushMatrix()
+                        //GlStateManager.pushMatrix()
 
                         //neighbour has less types
                         if (neighbourPipe.getInstalledTypes().size < this.getInstalledTypes().size) {
@@ -234,7 +234,7 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
                             boxes.add(Triple(node, type, 0))
                         }
 
-                        GlStateManager.popMatrix()
+                        //GlStateManager.popMatrix()
                     }
                 }
             }
