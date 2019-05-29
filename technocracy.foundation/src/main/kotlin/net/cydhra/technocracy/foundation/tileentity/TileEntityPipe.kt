@@ -8,7 +8,6 @@ import net.cydhra.technocracy.foundation.pipes.WrappedBlockPos
 import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.cydhra.technocracy.foundation.tileentity.components.ComponentPipeTypes
 import net.cydhra.technocracy.foundation.tileentity.components.NetworkComponent
-import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.AxisAlignedBB
 import net.minecraft.util.math.Vec3d
@@ -185,7 +184,6 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
 
                     //Is connected in any way to the neighbour pipe
                     if (connected) {
-                        //GlStateManager.pushMatrix()
 
                         //neighbour has less types
                         if (neighbourPipe.getInstalledTypes().size < this.getInstalledTypes().size) {
@@ -231,10 +229,13 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
 
                         //Add node
                         if (straight) {
-                            boxes.add(Triple(node, type, 0))
+                            boxes.add(Triple(when {
+                                facing.axis == EnumFacing.Axis.X -> node.offset(0.0, 0.0, nodeConnectionOffset)
+                                facing.axis == EnumFacing.Axis.Z -> node.offset(-nodeConnectionOffset, 0.0, 0.0)
+                                facing.axis.isVertical -> node.offset(0.0, 0.0, nodeConnectionOffset)
+                                else -> node
+                            }, type, 0))
                         }
-
-                        //GlStateManager.popMatrix()
                     }
                 }
             }
