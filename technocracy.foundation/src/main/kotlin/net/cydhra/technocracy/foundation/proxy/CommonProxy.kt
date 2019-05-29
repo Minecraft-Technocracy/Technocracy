@@ -5,7 +5,7 @@ import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.general.*
 import net.cydhra.technocracy.foundation.client.gui.handler.TCGuiHandler
 import net.cydhra.technocracy.foundation.client.model.customModel.connector.MachineConnectorModel
-import net.cydhra.technocracy.foundation.client.renderer.tileEntity.PipeRenderer
+import net.cydhra.technocracy.foundation.client.model.pipe.PipeModel
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.items.general.*
 import net.cydhra.technocracy.foundation.liquids.general.*
@@ -29,7 +29,6 @@ import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.animation.ITimeValue
 import net.minecraftforge.common.model.animation.IAnimationStateMachine
-import net.minecraftforge.fml.client.registry.ClientRegistry
 import net.minecraftforge.fml.common.network.NetworkRegistry
 
 
@@ -105,7 +104,7 @@ open class CommonProxy {
         BlockManager.prepareBlocksForRegistration(ironBeamBlock)
         BlockManager.prepareBlocksForRegistration(oilBlock)
 
-        BlockManager.prepareBlocksForRegistration(pipe)
+        BlockManager.prepareBlocksForRegistration(pipe, PipeModel())
 
         ItemManager.prepareItemForRegistration(machineFrameItem)
         ItemManager.prepareItemForRegistration(coalDustItem)
@@ -152,7 +151,7 @@ open class CommonProxy {
         TileEntityManager.prepareTileEntityForRegistration(TileEntityHeatExchangerInput::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityHeatExchangerOutput::class)
 
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPipe::class.java, PipeRenderer())
+        //ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPipe::class.java, PipeRenderer())
 
         PotionManager.preparePotionForRegistration(oilyEffect)
 
