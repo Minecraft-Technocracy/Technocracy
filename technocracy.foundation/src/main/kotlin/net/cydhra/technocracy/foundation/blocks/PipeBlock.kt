@@ -1,7 +1,6 @@
 package net.cydhra.technocracy.foundation.blocks
 
 import net.cydhra.technocracy.foundation.blocks.api.AbstractTileEntityBlock
-import net.cydhra.technocracy.foundation.client.renderer.tileEntity.PipeRenderer
 import net.cydhra.technocracy.foundation.pipes.Network
 import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
@@ -13,7 +12,6 @@ import net.minecraft.block.state.IBlockState
 import net.minecraft.client.Minecraft
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.Entity
-import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack

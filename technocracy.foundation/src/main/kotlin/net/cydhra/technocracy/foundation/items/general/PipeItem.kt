@@ -2,11 +2,9 @@ package net.cydhra.technocracy.foundation.items.general
 
 import net.cydhra.technocracy.foundation.blocks.PipeBlock
 import net.cydhra.technocracy.foundation.blocks.general.pipe
-import net.cydhra.technocracy.foundation.client.renderer.tileEntity.PipeRenderer
 import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
 import net.minecraft.advancements.CriteriaTriggers
-import net.minecraft.client.renderer.tileentity.TileEntityPistonRenderer
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.Entity
 import net.minecraft.entity.player.EntityPlayer
@@ -16,7 +14,6 @@ import net.minecraft.util.EnumActionResult
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumHand
 import net.minecraft.util.NonNullList
-import net.minecraft.util.math.AxisAlignedBB
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
