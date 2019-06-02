@@ -229,12 +229,18 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
 
                         //Add node
                         if (straight) {
-                            boxes.add(Triple(when {
-                                facing.axis == EnumFacing.Axis.X -> node.offset(0.0, 0.0, nodeConnectionOffset)
-                                facing.axis == EnumFacing.Axis.Z -> node.offset(-nodeConnectionOffset, 0.0, 0.0)
-                                facing.axis.isVertical -> node.offset(0.0, 0.0, nodeConnectionOffset)
-                                else -> node
-                            }, type, 0))
+                            //Special case if 2 pipes merge into one
+                            val canRenderNode =
+                                    neighbourPipe.getInstalledTypes().size < this.getInstalledTypes().size && nodeConnectionOffset == 0.0
+
+                            if (!canRenderNode) {
+                                boxes.add(Triple(when {
+                                    facing.axis == EnumFacing.Axis.X -> node.offset(0.0, 0.0, nodeConnectionOffset)
+                                    facing.axis == EnumFacing.Axis.Z -> node.offset(-nodeConnectionOffset, 0.0, 0.0)
+                                    facing.axis.isVertical -> node.offset(0.0, 0.0, nodeConnectionOffset)
+                                    else -> node
+                                }, type, 0))
+                            }
                         }
                     }
                 }
@@ -246,8 +252,6 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
                 boxes.add(Triple(node.expand(expansion * 2, 0.0, expansion * 2).offset(-expansion, 0.0, -expansion),
                         type,
                         0))
-            } else {
-                boxes.add(Triple(node, type, 0))
             }
         }
 

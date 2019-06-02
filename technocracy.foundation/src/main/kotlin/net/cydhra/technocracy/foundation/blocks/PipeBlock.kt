@@ -84,7 +84,12 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON) {
     }*/
 
     override fun onNeighborChange(world: IBlockAccess, pos: BlockPos, neighbor: BlockPos) {
-        if (!(world as World).isRemote) (world.getTileEntity(pos) as TileEntityPipe).calculateIOPorts()
+        val wld = world as World
+        val tileEntity = wld.getTileEntity(pos) as TileEntityPipe
+
+        if (!wld.isRemote) {
+            tileEntity.calculateIOPorts()
+        }
     }
 
     override fun onBlockActivated(worldIn: World, pos: BlockPos, state: IBlockState, playerIn: EntityPlayer,
