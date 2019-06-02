@@ -1,12 +1,13 @@
 package net.cydhra.technocracy.foundation.client.gui.tabs
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
+import net.cydhra.technocracy.foundation.client.gui.components.AbstractProgressbar
 import net.cydhra.technocracy.foundation.client.gui.machine.MachineContainer
 import net.minecraft.client.Minecraft
 
 class WipTab(parent: TCGui) : TCTab("WIP Tab", parent) {
     override fun init() {
-
+//        components.add(AbstractProgressbar(20, 20))
     }
 
     override fun draw(mouseX: Int, mouseY: Int, partialTicks: Float) {

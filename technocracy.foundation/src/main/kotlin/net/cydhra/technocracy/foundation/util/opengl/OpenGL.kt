@@ -53,4 +53,23 @@ object OpenGLBoundingBox {
         tessellator.draw()
     }
 
+
+}
+
+object Rect {
+    /**
+     * Draws a textured rectangle at z = 0. Args: x, y, u, v, width, height, textureWidth, textureHeight
+     */
+    fun drawModalRectWithCustomSizedTexture(x: Int, y: Int, u: Float, v: Float, width: Float, height: Float, textureWidth: Float, textureHeight: Float) {
+        val f = 1.0f / textureWidth
+        val f1 = 1.0f / textureHeight
+        val tessellator = Tessellator.getInstance()
+        val bufferbuilder = tessellator.buffer
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX)
+        bufferbuilder.pos(x.toDouble(), (y + height).toDouble(), 0.0).tex((u * f).toDouble(), ((v + height) * f1).toDouble()).endVertex()
+        bufferbuilder.pos((x + width).toDouble(), (y + height).toDouble(), 0.0).tex(((u + width) * f).toDouble(), ((v + height) * f1).toDouble()).endVertex()
+        bufferbuilder.pos((x + width).toDouble(), y.toDouble(), 0.0).tex(((u + width) * f).toDouble(), (v * f1).toDouble()).endVertex()
+        bufferbuilder.pos(x.toDouble(), y.toDouble(), 0.0).tex((u * f).toDouble(), (v * f1).toDouble()).endVertex()
+        tessellator.draw()
+    }
 }

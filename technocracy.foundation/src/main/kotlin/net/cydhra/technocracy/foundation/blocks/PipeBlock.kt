@@ -77,12 +77,6 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON) {
         }
     }
 
-    /*override fun createBlockState(): BlockStateContainer {
-        println(PIPETYPE)
-        //PIPETYPE = PropertyEnum.create("pipetype", PipeType::class.java)
-        return BlockStateContainer(this, PIPETYPE)
-    }*/
-
     override fun onNeighborChange(world: IBlockAccess, pos: BlockPos, neighbor: BlockPos) {
         val wld = world as World
         val tileEntity = wld.getTileEntity(pos) as TileEntityPipe
@@ -93,7 +87,7 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON) {
     }
 
     override fun onBlockActivated(worldIn: World, pos: BlockPos, state: IBlockState, playerIn: EntityPlayer,
-            hand: EnumHand, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean {
+                                  hand: EnumHand, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean {
 
         if (!playerIn.isSneaking && playerIn.inventory.getCurrentItem().item == Item.getItemFromBlock(this)) return true
 
@@ -126,25 +120,17 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON) {
         return false
     }
 
-    override fun getCollisionBoundingBox(blockState: IBlockState, worldIn: IBlockAccess,
-            pos: BlockPos): AxisAlignedBB? {
-        return TileEntityPipe.node
-    }
-
     /**
      * Return an AABB (in world coords!) that should be highlighted when the player is targeting this Block
      */
     @SideOnly(Side.CLIENT)
-    override fun getSelectedBoundingBox(state: IBlockState, worldIn: World, pos: BlockPos): AxisAlignedBB {
+    override fun getSelectedBoundingBox(state: IBlockState, worldIn: World, pos: BlockPos): AxisAlignedBB? {
         val length = Minecraft.getMinecraft().playerController.blockReachDistance + 1
         val entity = Minecraft.getMinecraft().player
         val startPos = Vec3d(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ)
-        val endPos =
-                startPos.add(Vec3d(entity.lookVec.x * length, entity.lookVec.y * length, entity.lookVec.z * length))
+        val endPos = startPos.addVector(entity.lookVec.x * length, entity.lookVec.y * length, entity.lookVec.z * length)
 
-        val list = (worldIn.getTileEntity(pos) as TileEntityPipe).getPipeModelParts().stream()
-                .map { it.first.second.offset(pos) }
-                        .toList()
+        val list = (worldIn.getTileEntity(pos) as TileEntityPipe).getPipeModelParts().map { it.first.second.offset(pos) }.toList()
 
         return rayTraceBestBB(startPos, endPos, list) ?: TileEntityPipe.node.offset(pos)
     }
@@ -174,29 +160,25 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON) {
     }
 
     override fun addCollisionBoxToList(state: IBlockState, worldIn: World, pos: BlockPos, entityBox: AxisAlignedBB,
-            collidingBoxes: List<AxisAlignedBB>, entityIn: Entity?, isActualState: Boolean) {
-        //todo add all bbs
-
-        val list = (worldIn.getTileEntity(pos) as TileEntityPipe).getPipeModelParts().stream().map { it.first.second }
-                .toList()
+                                       collidingBoxes: List<AxisAlignedBB>, entityIn: Entity?, isActualState: Boolean) {
+        val list = (worldIn.getTileEntity(pos) as TileEntityPipe).getPipeModelParts().map { it.first.second }.toList()
 
         for (bb in list) addCollisionBoxToList(pos, entityBox, collidingBoxes, bb)
     }
 
     override fun collisionRayTrace(blockState: IBlockState, worldIn: World, pos: BlockPos, startIn: Vec3d,
-            endIn: Vec3d): RayTraceResult? {
-
+                                   endIn: Vec3d): RayTraceResult? {
         val start = startIn.subtract(pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble())
         val end = endIn.subtract(pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble())
-        val list = (worldIn.getTileEntity(pos) as TileEntityPipe).getPipeModelParts().stream().map { it.first.second }
-                        .toList()
 
-        //val result = rayTraceBestResult(start, end, list)
+        val list = (worldIn.getTileEntity(pos) as TileEntityPipe).getPipeModelParts().map { it.first.second }.toList()
 
-        val result = list.fold<AxisAlignedBB, RayTraceResult?>(null) { acc, bb -> acc ?: bb.calculateIntercept(start, end) }
+        val bbresult = rayTraceBestBB(start, end, list)
 
-        return if (result == null) null else RayTraceResult(result.hitVec.addVector(pos.x.toDouble(),
-                pos.y.toDouble(),
-                pos.z.toDouble()), result.sideHit, pos)
+        return if (bbresult == null) null else {
+            val result = bbresult.calculateIntercept(start, end)
+            if (result == null) null else RayTraceResult(result.hitVec.addVector(pos.x.toDouble(),
+                    pos.y.toDouble(), pos.z.toDouble()), result.sideHit, pos)
+        }
     }
 }

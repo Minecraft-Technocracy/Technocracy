@@ -2,6 +2,7 @@ package net.cydhra.technocracy.foundation.client.gui
 
 import net.cydhra.technocracy.foundation.client.gui.components.TCSlot
 import net.cydhra.technocracy.foundation.client.gui.tabs.TCTab
+import net.cydhra.technocracy.foundation.client.gui.tabs.WipTab
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.gui.inventory.GuiContainer
@@ -38,6 +39,7 @@ TCContainer)
     init {
         this.xSize = guiWidth
         this.ySize = guiHeight
+//        registerTab(WipTab(this))
     }
 
     override fun drawGuiContainerBackgroundLayer(partialTicks: Float, mouseX: Int, mouseY: Int) {
