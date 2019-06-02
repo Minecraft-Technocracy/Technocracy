@@ -142,8 +142,8 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON) {
         val endPos =
                 startPos.add(Vec3d(entity.lookVec.x * length, entity.lookVec.y * length, entity.lookVec.z * length))
 
-        val list =
-                (worldIn.getTileEntity(pos) as TileEntityPipe).getPipeModelParts().stream().map { it.first.offset(pos) }
+        val list = (worldIn.getTileEntity(pos) as TileEntityPipe).getPipeModelParts().stream()
+                .map { it.first.second.offset(pos) }
                         .toList()
 
         return rayTraceBestBB(startPos, endPos, list) ?: TileEntityPipe.node.offset(pos)
@@ -177,7 +177,8 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON) {
             collidingBoxes: List<AxisAlignedBB>, entityIn: Entity?, isActualState: Boolean) {
         //todo add all bbs
 
-        val list = (worldIn.getTileEntity(pos) as TileEntityPipe).getPipeModelParts().stream().map { it.first }.toList()
+        val list = (worldIn.getTileEntity(pos) as TileEntityPipe).getPipeModelParts().stream().map { it.first.second }
+                .toList()
 
         for (bb in list) addCollisionBoxToList(pos, entityBox, collidingBoxes, bb)
     }
@@ -187,8 +188,7 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON) {
 
         val start = startIn.subtract(pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble())
         val end = endIn.subtract(pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble())
-        val list =
-                (worldIn.getTileEntity(pos) as TileEntityPipe).getPipeModelParts().stream().map { it.first }
+        val list = (worldIn.getTileEntity(pos) as TileEntityPipe).getPipeModelParts().stream().map { it.first.second }
                         .toList()
 
         //val result = rayTraceBestResult(start, end, list)

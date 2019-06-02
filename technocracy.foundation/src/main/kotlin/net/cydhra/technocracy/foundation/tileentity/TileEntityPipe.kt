@@ -150,8 +150,8 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
      * Second is the PipeType
      * Third is an integer indicating which model part type it is (0: node, 1: connection)
      */
-    fun getPipeModelParts(): List<Triple<AxisAlignedBB, PipeType, Int>> {
-        val boxes = mutableListOf<Triple<AxisAlignedBB, PipeType, Int>>()
+    fun getPipeModelParts(): List<Triple<Pair<EnumFacing, AxisAlignedBB>, PipeType, Int>> {
+        val boxes = mutableListOf<Triple<Pair<EnumFacing, AxisAlignedBB>, PipeType, Int>>()
 
         //populate connected facings
         val facings = mutableSetOf<EnumFacing>()
@@ -220,7 +220,7 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
                         }
 
                         //Add connection
-                        boxes.add(Triple(when {
+                        boxes.add(Triple(facing to when {
                             facing.axis == EnumFacing.Axis.X -> boundingBox.offset(0.0, 0.0, nodeConnectionOffset)
                             facing.axis == EnumFacing.Axis.Z -> boundingBox.offset(-nodeConnectionOffset, 0.0, 0.0)
                             facing.axis.isVertical -> boundingBox.offset(0.0, 0.0, nodeConnectionOffset)
@@ -234,7 +234,7 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
                                     neighbourPipe.getInstalledTypes().size < this.getInstalledTypes().size && nodeConnectionOffset == 0.0
 
                             if (!canRenderNode) {
-                                boxes.add(Triple(when {
+                                boxes.add(Triple(facing to when {
                                     facing.axis == EnumFacing.Axis.X -> node.offset(0.0, 0.0, nodeConnectionOffset)
                                     facing.axis == EnumFacing.Axis.Z -> node.offset(-nodeConnectionOffset, 0.0, 0.0)
                                     facing.axis.isVertical -> node.offset(0.0, 0.0, nodeConnectionOffset)
@@ -249,7 +249,9 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
             //Draw main node
             if (!straight) {
                 val expansion = ((this.getInstalledTypes().size - 1) * node.averageEdgeLength) / 2
-                boxes.add(Triple(node.expand(expansion * 2, 0.0, expansion * 2).offset(-expansion, 0.0, -expansion),
+                boxes.add(Triple(EnumFacing.NORTH to node.expand(expansion * 2, 0.0, expansion * 2).offset(-expansion,
+                        0.0,
+                        -expansion),
                         type,
                         0))
             }
