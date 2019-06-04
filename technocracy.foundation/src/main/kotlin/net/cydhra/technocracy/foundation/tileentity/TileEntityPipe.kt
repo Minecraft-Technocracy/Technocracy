@@ -226,35 +226,15 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
                             facing.axis.isVertical -> boundingBox.offset(0.0, 0.0, nodeConnectionOffset)
                             else -> boundingBox
                         }, type, 1))
-
-                        //Add node
-                        if (straight) {
-                            //Special case if 2 pipes merge into one
-                            val canRenderNode =
-                                    neighbourPipe.getInstalledTypes().size < this.getInstalledTypes().size && nodeConnectionOffset == 0.0
-
-                            if (!canRenderNode) {
-                                boxes.add(Triple(facing to when {
-                                    facing.axis == EnumFacing.Axis.X -> node.offset(0.0, 0.0, nodeConnectionOffset)
-                                    facing.axis == EnumFacing.Axis.Z -> node.offset(-nodeConnectionOffset, 0.0, 0.0)
-                                    facing.axis.isVertical -> node.offset(0.0, 0.0, nodeConnectionOffset)
-                                    else -> node
-                                }, type, 0))
-                            }
-                        }
                     }
                 }
             }
 
             //Draw main node
-            if (!straight) {
-                val expansion = ((this.getInstalledTypes().size - 1) * node.averageEdgeLength) / 2
-                boxes.add(Triple(EnumFacing.NORTH to node.expand(expansion * 2, 0.0, expansion * 2).offset(-expansion,
-                        0.0,
-                        -expansion),
-                        type,
-                        0))
-            }
+            val expansion = ((this.getInstalledTypes().size - 1) * node.averageEdgeLength) / 2
+            boxes.add(Triple(EnumFacing.NORTH to node.expand(expansion * 2, 0.0, expansion * 2).offset(-expansion,
+                    0.0,
+                    -expansion), type, 0))
         }
 
         return boxes
