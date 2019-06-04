@@ -1,10 +1,8 @@
 package net.cydhra.technocracy.foundation.client.gui.components
 
+//import net.cydhra.technocracy.foundation.util.opengl.Rect
 import net.cydhra.technocracy.foundation.client.gui.TCGui
-import net.cydhra.technocracy.foundation.util.opengl.OpenGLBoundingBox
-import net.cydhra.technocracy.foundation.util.opengl.Rect
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.client.renderer.GlStateManager
 
 class AbstractProgressbar(val xPosition: Int, val yPosition: Int) : TCComponent {
@@ -20,10 +18,10 @@ class AbstractProgressbar(val xPosition: Int, val yPosition: Int) : TCComponent 
 
         GlStateManager.color(1F, 1F, 1F, 1F)
 
-        Rect.drawModalRectWithCustomSizedTexture(xPosition - 1, yPosition - 1, 0F, 27F, width + 1F, height + 1F, 256F,
-                256F)
-        Rect.drawModalRectWithCustomSizedTexture(xPosition - 1, yPosition - 1, 0F, 27F + height, (width * progress) + 1F, height + 1F, 256F,
-                256F)
+//        Rect.drawModalRectWithCustomSizedTexture(xPosition - 1, yPosition - 1, 0F, 27F, width + 1F, height + 1F, 256F,
+//                256F)
+//        Rect.drawModalRectWithCustomSizedTexture(xPosition - 1, yPosition - 1, 0F, 27F + height, (width * progress) + 1F, height + 1F, 256F,
+//                256F)
 
 
     }
