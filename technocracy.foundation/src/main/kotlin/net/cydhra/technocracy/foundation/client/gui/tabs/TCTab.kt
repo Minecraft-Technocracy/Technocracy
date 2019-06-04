@@ -22,7 +22,7 @@ abstract class TCTab(val name: String, val parent: TCGui, val tint: Int = -1,
     }
 
     open fun update() {
-
+        this.components.forEach(TCComponent::update)
     }
 
     protected fun addPlayerInventorySlots(player: EntityPlayer, x: Int, y: Int) {

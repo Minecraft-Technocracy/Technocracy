@@ -1,0 +1,25 @@
+package net.cydhra.technocracy.foundation.client.gui.components.progressbar
+
+import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
+import net.minecraft.util.math.MathHelper
+
+enum class Orientation() {
+    UP, DOWN, LEFT, RIGHT
+}
+
+abstract class ProgressBar(val posX: Int, val posY: Int, val orientation: Orientation = Orientation.RIGHT) :
+        TCComponent {
+    var progress = 0F
+
+    val width = 22
+    val height = 15
+
+    override fun update() {
+        this.progress += 0.01F
+        this.progress = MathHelper.clamp(this.progress, 0F, 1F)
+
+        if (progress == 1.0F) {
+            this.progress = 0F
+        }
+    }
+}
