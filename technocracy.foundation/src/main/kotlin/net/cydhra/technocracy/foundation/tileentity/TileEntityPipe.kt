@@ -146,9 +146,9 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
 
     /**
      * Returns a list of triples which contain information about the pipe model parts
-     * First is the boundingbox
+     * First is a pair of EnumFacing and corresponding bounding box
      * Second is the PipeType
-     * Third is an integer indicating which model part type it is (0: node, 1: connection)
+     * Third is an integer indicating which type the model part is (0: node, 1: connection)
      */
     fun getPipeModelParts(): List<Triple<Pair<EnumFacing, AxisAlignedBB>, PipeType, Int>> {
         val boxes = mutableListOf<Triple<Pair<EnumFacing, AxisAlignedBB>, PipeType, Int>>()
