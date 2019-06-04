@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.client.textures
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
+import net.minecraft.client.renderer.texture.TextureMap
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.event.TextureStitchEvent
 import net.minecraftforge.common.MinecraftForge
@@ -19,20 +20,33 @@ class TextureAtlasManager {
         lateinit var pipe_fluid: TextureAtlasSprite
         lateinit var pipe_energy: TextureAtlasSprite
         lateinit var pipe_node: TextureAtlasSprite
+
+        private lateinit var textureMap: TextureMap
+
+        /**
+         * Returns a texture atlas sprite for a resource location of the texture map
+         */
+        fun getTextureAtlasSprite(location: ResourceLocation): TextureAtlasSprite {
+            return textureMap.getTextureExtry(location.toString()) ?: textureMap.missingSprite
+        }
+
+        /**
+         * Returns a resource location mapped to the technocracy resource domain
+         */
+        fun getResourceLocation(name: String): ResourceLocation {
+            return ResourceLocation("technocracy.foundation", name)
+        }
     }
 
     @Suppress("unused")
     @SubscribeEvent
     fun registerTextureAtlas(event: TextureStitchEvent.Pre) {
-        connector_energy = event.map.registerSprite(getIcon("extra/connector_energy"))
-        connector_inventory = event.map.registerSprite(getIcon("extra/connector_inventory"))
-        pipe_item = event.map.registerSprite(getIcon("block/steel"))
-        pipe_fluid = event.map.registerSprite(getIcon("block/steel_dark"))
-        pipe_energy = event.map.registerSprite(getIcon("block/boiler_wall"))
-        pipe_node = event.map.registerSprite(getIcon("block/frame_corners"))
-    }
-
-    fun getIcon(name: String): ResourceLocation {
-        return ResourceLocation("technocracy.foundation", name)
+        textureMap = event.map
+        connector_energy = event.map.registerSprite(getResourceLocation("extra/connector_energy"))
+        connector_inventory = event.map.registerSprite(getResourceLocation("extra/connector_inventory"))
+        pipe_item = event.map.registerSprite(getResourceLocation("block/steel"))
+        pipe_fluid = event.map.registerSprite(getResourceLocation("block/steel_dark"))
+        pipe_energy = event.map.registerSprite(getResourceLocation("block/boiler_wall"))
+        pipe_node = event.map.registerSprite(getResourceLocation("block/frame_corners"))
     }
 }
