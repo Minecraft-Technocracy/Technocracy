@@ -57,8 +57,8 @@ class PipeModelBakery : IBakedModel {
             val facing = it.first.first
 
             val texture = when (it.third) {
-                0 -> this.getTextureForNodeType(it.second)
-                1 -> this.getTextureForConnectionType(it.second)
+                0 -> TextureAtlasManager.pipe_node
+                1 -> this.getTextureForConnectionType(it.second!!)
                 else -> error("Box type out of bounds")
             }
 
@@ -77,69 +77,129 @@ class PipeModelBakery : IBakedModel {
             //Front
             val quad1 = UnpackedBakedQuad.Builder(DefaultVertexFormats.POSITION_TEX_COLOR)
             quad1.setTexture(texture)
-            quad1.put(0, maxX, minY, minZ, 1F)
-            quad1.put(1, minU, maxV, 0F, 1F)
-            quad1.put(2, 1F, 1F, 1F, 1F)
-            quad1.put(0, minX, minY, minZ, 1F)
-            quad1.put(1, maxU, maxV, 0F, 1F)
-            quad1.put(2, 1F, 1F, 1F, 1F)
-            quad1.put(0, minX, maxY, minZ, 1F)
-            quad1.put(1, maxU, minV, 0F, 1F)
-            quad1.put(2, 1F, 1F, 1F, 1F)
-            quad1.put(0, maxX, maxY, minZ, 1F)
-            quad1.put(1, minU, minV, 0F, 1F)
-            quad1.put(2, 1F, 1F, 1F, 1F)
+            if (facing.axis == EnumFacing.Axis.Y) {
+                quad1.put(0, maxX, minY, minZ, 1F)
+                quad1.put(1, minU, minV, 0F, 1F)
+                quad1.put(2, 1F, 1F, 1F, 1F)
+                quad1.put(0, minX, minY, minZ, 1F)
+                quad1.put(1, minU, maxV, 0F, 1F)
+                quad1.put(2, 1F, 1F, 1F, 1F)
+                quad1.put(0, minX, maxY, minZ, 1F)
+                quad1.put(1, maxU, maxV, 0F, 1F)
+                quad1.put(2, 1F, 1F, 1F, 1F)
+                quad1.put(0, maxX, maxY, minZ, 1F)
+                quad1.put(1, maxU, minV, 0F, 1F)
+                quad1.put(2, 1F, 1F, 1F, 1F)
+            } else {
+                quad1.put(0, maxX, minY, minZ, 1F)
+                quad1.put(1, minU, maxV, 0F, 1F)
+                quad1.put(2, 1F, 1F, 1F, 1F)
+                quad1.put(0, minX, minY, minZ, 1F)
+                quad1.put(1, maxU, maxV, 0F, 1F)
+                quad1.put(2, 1F, 1F, 1F, 1F)
+                quad1.put(0, minX, maxY, minZ, 1F)
+                quad1.put(1, maxU, minV, 0F, 1F)
+                quad1.put(2, 1F, 1F, 1F, 1F)
+                quad1.put(0, maxX, maxY, minZ, 1F)
+                quad1.put(1, minU, minV, 0F, 1F)
+                quad1.put(2, 1F, 1F, 1F, 1F)
+            }
             quads.add(quad1.build())
 
             //Back
             val quad2 = UnpackedBakedQuad.Builder(DefaultVertexFormats.POSITION_TEX_COLOR)
             quad2.setTexture(texture)
-            quad2.put(0, minX, minY, maxZ, 1F)
-            quad2.put(1, minU, minV, 0F, 1F)
-            quad2.put(2, 1F, 1F, 1F, 1F)
-            quad2.put(0, maxX, minY, maxZ, 1F)
-            quad2.put(1, maxU, minV, 0F, 1F)
-            quad2.put(2, 1F, 1F, 1F, 1F)
-            quad2.put(0, maxX, maxY, maxZ, 1F)
-            quad2.put(1, maxU, maxV, 0F, 1F)
-            quad2.put(2, 1F, 1F, 1F, 1F)
-            quad2.put(0, minX, maxY, maxZ, 1F)
-            quad2.put(1, minU, maxV, 0F, 1F)
-            quad2.put(2, 1F, 1F, 1F, 1F)
+            if (facing.axis == EnumFacing.Axis.Y) {
+                quad2.put(0, minX, minY, maxZ, 1F)
+                quad2.put(1, minU, maxV, 0F, 1F)
+                quad2.put(2, 1F, 1F, 1F, 1F)
+                quad2.put(0, maxX, minY, maxZ, 1F)
+                quad2.put(1, minU, minV, 0F, 1F)
+                quad2.put(2, 1F, 1F, 1F, 1F)
+                quad2.put(0, maxX, maxY, maxZ, 1F)
+                quad2.put(1, maxU, minV, 0F, 1F)
+                quad2.put(2, 1F, 1F, 1F, 1F)
+                quad2.put(0, minX, maxY, maxZ, 1F)
+                quad2.put(1, maxU, maxV, 0F, 1F)
+                quad2.put(2, 1F, 1F, 1F, 1F)
+            } else {
+                quad2.put(0, minX, minY, maxZ, 1F)
+                quad2.put(1, minU, minV, 0F, 1F)
+                quad2.put(2, 1F, 1F, 1F, 1F)
+                quad2.put(0, maxX, minY, maxZ, 1F)
+                quad2.put(1, maxU, minV, 0F, 1F)
+                quad2.put(2, 1F, 1F, 1F, 1F)
+                quad2.put(0, maxX, maxY, maxZ, 1F)
+                quad2.put(1, maxU, maxV, 0F, 1F)
+                quad2.put(2, 1F, 1F, 1F, 1F)
+                quad2.put(0, minX, maxY, maxZ, 1F)
+                quad2.put(1, minU, maxV, 0F, 1F)
+                quad2.put(2, 1F, 1F, 1F, 1F)
+            }
             quads.add(quad2.build())
 
             //Left
             val quad3 = UnpackedBakedQuad.Builder(DefaultVertexFormats.POSITION_TEX_COLOR)
             quad3.setTexture(texture)
-            quad3.put(0, minX, minY, minZ, 1F)
-            quad3.put(1, minU, minV, 0F, 1F)
-            quad3.put(2, 1F, 1F, 1F, 1F)
-            quad3.put(0, minX, minY, maxZ, 1F)
-            quad3.put(1, maxU, minV, 0F, 1F)
-            quad3.put(2, 1F, 1F, 1F, 1F)
-            quad3.put(0, minX, maxY, maxZ, 1F)
-            quad3.put(1, maxU, maxV, 0F, 1F)
-            quad3.put(2, 1F, 1F, 1F, 1F)
-            quad3.put(0, minX, maxY, minZ, 1F)
-            quad3.put(1, minU, maxV, 0F, 1F)
-            quad3.put(2, 1F, 1F, 1F, 1F)
+            if (facing.axis == EnumFacing.Axis.Y) {
+                quad3.put(0, minX, minY, minZ, 1F)
+                quad3.put(1, minU, maxV, 0F, 1F)
+                quad3.put(2, 1F, 1F, 1F, 1F)
+                quad3.put(0, minX, minY, maxZ, 1F)
+                quad3.put(1, minU, minV, 0F, 1F)
+                quad3.put(2, 1F, 1F, 1F, 1F)
+                quad3.put(0, minX, maxY, maxZ, 1F)
+                quad3.put(1, maxU, minV, 0F, 1F)
+                quad3.put(2, 1F, 1F, 1F, 1F)
+                quad3.put(0, minX, maxY, minZ, 1F)
+                quad3.put(1, maxU, maxV, 0F, 1F)
+                quad3.put(2, 1F, 1F, 1F, 1F)
+            } else {
+                quad3.put(0, minX, minY, minZ, 1F)
+                quad3.put(1, minU, minV, 0F, 1F)
+                quad3.put(2, 1F, 1F, 1F, 1F)
+                quad3.put(0, minX, minY, maxZ, 1F)
+                quad3.put(1, maxU, minV, 0F, 1F)
+                quad3.put(2, 1F, 1F, 1F, 1F)
+                quad3.put(0, minX, maxY, maxZ, 1F)
+                quad3.put(1, maxU, maxV, 0F, 1F)
+                quad3.put(2, 1F, 1F, 1F, 1F)
+                quad3.put(0, minX, maxY, minZ, 1F)
+                quad3.put(1, minU, maxV, 0F, 1F)
+                quad3.put(2, 1F, 1F, 1F, 1F)
+            }
             quads.add(quad3.build())
 
             //Right
             val quad4 = UnpackedBakedQuad.Builder(DefaultVertexFormats.POSITION_TEX_COLOR)
             quad4.setTexture(texture)
-            quad4.put(0, maxX, minY, maxZ, 1F)
-            quad4.put(1, minU, minV, 0F, 1F)
-            quad4.put(2, 1F, 1F, 1F, 1F)
-            quad4.put(0, maxX, minY, minZ, 1F)
-            quad4.put(1, maxU, minV, 0F, 1F)
-            quad4.put(2, 1F, 1F, 1F, 1F)
-            quad4.put(0, maxX, maxY, minZ, 1F)
-            quad4.put(1, maxU, maxV, 0F, 1F)
-            quad4.put(2, 1F, 1F, 1F, 1F)
-            quad4.put(0, maxX, maxY, maxZ, 1F)
-            quad4.put(1, minU, maxV, 0F, 1F)
-            quad4.put(2, 1F, 1F, 1F, 1F)
+            if (facing.axis == EnumFacing.Axis.Y) {
+                quad4.put(0, maxX, minY, maxZ, 1F)
+                quad4.put(1, minU, maxV, 0F, 1F)
+                quad4.put(2, 1F, 1F, 1F, 1F)
+                quad4.put(0, maxX, minY, minZ, 1F)
+                quad4.put(1, minU, minV, 0F, 1F)
+                quad4.put(2, 1F, 1F, 1F, 1F)
+                quad4.put(0, maxX, maxY, minZ, 1F)
+                quad4.put(1, maxU, minV, 0F, 1F)
+                quad4.put(2, 1F, 1F, 1F, 1F)
+                quad4.put(0, maxX, maxY, maxZ, 1F)
+                quad4.put(1, maxU, maxV, 0F, 1F)
+                quad4.put(2, 1F, 1F, 1F, 1F)
+            } else {
+                quad4.put(0, maxX, minY, maxZ, 1F)
+                quad4.put(1, minU, minV, 0F, 1F)
+                quad4.put(2, 1F, 1F, 1F, 1F)
+                quad4.put(0, maxX, minY, minZ, 1F)
+                quad4.put(1, maxU, minV, 0F, 1F)
+                quad4.put(2, 1F, 1F, 1F, 1F)
+                quad4.put(0, maxX, maxY, minZ, 1F)
+                quad4.put(1, maxU, maxV, 0F, 1F)
+                quad4.put(2, 1F, 1F, 1F, 1F)
+                quad4.put(0, maxX, maxY, maxZ, 1F)
+                quad4.put(1, minU, maxV, 0F, 1F)
+                quad4.put(2, 1F, 1F, 1F, 1F)
+            }
             quads.add(quad4.build())
 
             val quad5 = UnpackedBakedQuad.Builder(DefaultVertexFormats.POSITION_TEX_COLOR)
@@ -219,12 +279,5 @@ class PipeModelBakery : IBakedModel {
             PipeType.FLUID -> TextureAtlasManager.pipe_fluid
             PipeType.ITEM -> TextureAtlasManager.pipe_item
         }
-    }
-
-    /**
-     * Returns the texture for nodes of a specific pipe type
-     */
-    private fun getTextureForNodeType(type: PipeType): TextureAtlasSprite {
-        return TextureAtlasManager.pipe_node
     }
 }
