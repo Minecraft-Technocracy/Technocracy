@@ -8,12 +8,16 @@ import net.minecraft.block.state.IBlockState
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.client.renderer.block.model.IBakedModel
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms
 import net.minecraft.client.renderer.block.model.ItemOverrideList
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad
+import net.minecraftforge.common.model.TRSRTransformation
 import net.minecraftforge.common.property.IExtendedBlockState
+import org.apache.commons.lang3.tuple.Pair
+import javax.vecmath.Matrix4f
 
 class PipeModelBakery : IBakedModel {
     override fun getParticleTexture(): TextureAtlasSprite {
@@ -34,6 +38,11 @@ class PipeModelBakery : IBakedModel {
 
     override fun getOverrides(): ItemOverrideList {
         return ItemOverrideList.NONE
+    }
+
+    override fun handlePerspective(
+            cameraTransformType: ItemCameraTransforms.TransformType): Pair<out IBakedModel, Matrix4f> {
+        return Pair.of<IBakedModel, Matrix4f>(this, TRSRTransformation.identity().matrix)
     }
 
     override fun getQuads(state: IBlockState?, side: EnumFacing?, rand: Long): MutableList<BakedQuad> {
