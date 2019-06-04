@@ -150,8 +150,8 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
      * Second is the PipeType
      * Third is an integer indicating which type the model part is (0: node, 1: connection)
      */
-    fun getPipeModelParts(): List<Triple<Pair<EnumFacing, AxisAlignedBB>, PipeType, Int>> {
-        val boxes = mutableListOf<Triple<Pair<EnumFacing, AxisAlignedBB>, PipeType, Int>>()
+    fun getPipeModelParts(): List<Triple<Pair<EnumFacing, AxisAlignedBB>, PipeType?, Int>> {
+        val boxes = mutableListOf<Triple<Pair<EnumFacing, AxisAlignedBB>, PipeType?, Int>>()
 
         //populate connected facings
         val facings = mutableSetOf<EnumFacing>()
@@ -229,13 +229,13 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
                     }
                 }
             }
-
-            //Draw main node
-            val expansion = ((this.getInstalledTypes().size - 1) * node.averageEdgeLength) / 2
-            boxes.add(Triple(EnumFacing.NORTH to node.expand(expansion * 2, 0.0, expansion * 2).offset(-expansion,
-                    0.0,
-                    -expansion), type, 0))
         }
+
+        //Draw main node
+        val expansion = ((this.getInstalledTypes().size - 1) * node.averageEdgeLength) / 2
+        boxes.add(Triple(EnumFacing.NORTH to node.expand(expansion * 2, 0.0, expansion * 2).offset(-expansion,
+                0.0,
+                -expansion), null, 0))
 
         return boxes
     }
