@@ -13,6 +13,7 @@ import net.minecraft.client.Minecraft
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.Entity
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.init.Blocks
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.tileentity.TileEntity
@@ -27,13 +28,14 @@ import net.minecraft.world.Explosion
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 import net.minecraftforge.common.property.IExtendedBlockState
+import net.minecraftforge.fml.common.Optional
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
-import kotlin.streams.toList
+import team.chisel.ctm.api.IFacade
 
 
-class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON) {
-
+@Optional.Interface(iface = "team.chisel.ctm.api.IFacade", modid = "ctm")
+class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON) , IFacade {
     companion object {
         var PIPETYPE: PropertyEnum<PipeType> = PropertyEnum.create("pipetype", PipeType::class.java)
     }
@@ -132,7 +134,7 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON) {
 
         val list = (worldIn.getTileEntity(pos) as TileEntityPipe).getPipeModelParts().map { it.first.second.offset(pos) }.toList()
 
-        return rayTraceBestBB(startPos, endPos, list) ?: TileEntityPipe.node.offset(pos)
+        return rayTraceBestBB(startPos, endPos, list) ?: TileEntityPipe.node.offset(0.0,-999999.0,0.0)
     }
 
     fun rayTraceBestBB(start: Vec3d, end: Vec3d, boundingBoxes: List<AxisAlignedBB>): AxisAlignedBB? {
@@ -180,5 +182,9 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON) {
             if (result == null) null else RayTraceResult(result.hitVec.addVector(pos.x.toDouble(),
                     pos.y.toDouble(), pos.z.toDouble()), result.sideHit, pos)
         }
+    }
+
+    override fun getFacade(world: IBlockAccess, pos: BlockPos, side: EnumFacing?): IBlockState {
+        return world.getBlockState(pos)
     }
 }
