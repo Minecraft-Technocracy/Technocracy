@@ -48,8 +48,9 @@ class PipeModelBakery : IBakedModel {
     override fun getQuads(state: IBlockState?, side: EnumFacing?, rand: Long): MutableList<BakedQuad> {
         val quads = mutableListOf<BakedQuad>()
 
+        val pos = (state as IExtendedBlockState).getValue(POSITION)
         val tileEntityPipe =
-                Minecraft.getMinecraft().world.getTileEntity((state as IExtendedBlockState).getValue(POSITION)) as TileEntityPipe
+                Minecraft.getMinecraft().world.getTileEntity(pos) as TileEntityPipe
         val boxes = tileEntityPipe.getPipeModelParts()
 
         boxes.forEach {
@@ -266,6 +267,11 @@ class PipeModelBakery : IBakedModel {
             }
             quads.add(quad6.build())
         }
+
+        //todo add Facades
+        //for (quadFace in EnumFacing.values()) {
+        //    quads.addAll(FacadeBakery.getFacadeQuads(quadFace, Blocks.SPONGE.getStateFromMeta(1), pos))
+        //}
 
         return quads
     }
