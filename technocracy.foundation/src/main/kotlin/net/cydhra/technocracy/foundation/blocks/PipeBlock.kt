@@ -185,6 +185,6 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON) , 
     }
 
     override fun getFacade(world: IBlockAccess, pos: BlockPos, side: EnumFacing?): IBlockState {
-        return world.getBlockState(pos)
+        return Blocks.SPONGE.getStateFromMeta(1)
     }
 }

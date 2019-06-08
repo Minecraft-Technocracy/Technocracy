@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms
 import net.minecraft.client.renderer.block.model.ItemOverrideList
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
+import net.minecraft.init.Blocks
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad
 import net.minecraftforge.common.model.TRSRTransformation
@@ -52,6 +53,9 @@ class PipeModelBakery : IBakedModel {
         val tileEntityPipe =
                 Minecraft.getMinecraft().world.getTileEntity(pos) as TileEntityPipe
         val boxes = tileEntityPipe.getPipeModelParts()
+
+        if (side != null)
+            return quads
 
         boxes.forEach {
             val boundingBox = it.first.second
@@ -268,10 +272,24 @@ class PipeModelBakery : IBakedModel {
             quads.add(quad6.build())
         }
 
-        //todo add Facades
-        //for (quadFace in EnumFacing.values()) {
-        //    quads.addAll(FacadeBakery.getFacadeQuads(quadFace, Blocks.SPONGE.getStateFromMeta(1), pos))
-        //}
+        //TODO propper impementation
+        val faces = BooleanArray(EnumFacing.values().size)
+        val coverFaces = mutableMapOf<EnumFacing, IBlockState>()
+
+        coverFaces[EnumFacing.UP] = Blocks.SPONGE.getStateFromMeta(1)
+        //coverFaces[EnumFacing.DOWN] = Blocks.SPONGE.getStateFromMeta(1)
+        //coverFaces[EnumFacing.SOUTH] = Blocks.SPONGE.getStateFromMeta(1)
+        //coverFaces[EnumFacing.NORTH] = Blocks.SPONGE.getStateFromMeta(1)
+        //coverFaces[EnumFacing.EAST] = Blocks.SPONGE.getStateFromMeta(1)
+        //coverFaces[EnumFacing.WEST] = Blocks.SPONGE.getStateFromMeta(1)
+
+        EnumFacing.values().forEachIndexed { index, enumFacing ->
+            faces[index] = coverFaces.containsKey(enumFacing)
+        }
+
+        coverFaces.forEach { face, coverState ->
+            quads.addAll(FacadeBakery.getFacadeQuads(face, coverState, pos, faces))
+        }
 
         return quads
     }
