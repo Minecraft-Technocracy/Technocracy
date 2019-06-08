@@ -6,6 +6,7 @@ import net.cydhra.technocracy.foundation.blocks.general.BlockManager
 import net.cydhra.technocracy.foundation.items.color.ConstantItemColor
 import net.cydhra.technocracy.foundation.items.general.ColoredItem
 import net.cydhra.technocracy.foundation.items.general.ItemManager
+import net.cydhra.technocracy.foundation.world.gen.OilLakeGen
 import net.cydhra.technocracy.foundation.world.gen.OreGenerator
 import net.minecraft.block.state.IBlockState
 import net.minecraft.block.state.pattern.BlockMatcher
@@ -75,6 +76,7 @@ class MaterialSystem(materialName: String, colorMultiplier: Int,
     fun init() {
         GameRegistry.addSmelting(ore, ItemStack(ingot, 1), 0.5f)
         GameRegistry.addSmelting(dust, ItemStack(ingot, 1), 0.5f)
+        GameRegistry.registerWorldGenerator(OilLakeGen(), 10)
         GameRegistry.registerWorldGenerator(OreGenerator(oreDimensions, replacementPredicate, this.ore.defaultState,
                 this.veinsPerChunk, this.amountPerVein, this.minHeight, this.maxHeight), 0)
     }
