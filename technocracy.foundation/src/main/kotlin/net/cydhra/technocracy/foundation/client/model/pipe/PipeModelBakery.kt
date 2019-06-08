@@ -268,11 +268,6 @@ class PipeModelBakery : IBakedModel {
             quads.add(quad6.build())
         }
 
-        //todo add Facades
-        //for (quadFace in EnumFacing.values()) {
-        //    quads.addAll(FacadeBakery.getFacadeQuads(quadFace, Blocks.SPONGE.getStateFromMeta(1), pos))
-        //}
-
         return quads
     }
 
