@@ -8,6 +8,7 @@ import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityLivingBase
+import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.potion.PotionEffect
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.AxisAlignedBB
@@ -80,7 +81,12 @@ class OilBlock : BaseLiquidBlock(mineralOilFluid, "oil", Material.WATER) {
             entityIn.motionY = -0.01
             entityIn.motionZ *= 0.8
 
-            if(entityIn is EntityLivingBase) {
+            if (entityIn is EntityLivingBase) {
+                if (entityIn is EntityPlayer) {
+                    if (entityIn.isCreative)
+                        return
+                }
+
                 entityIn.addPotionEffect(PotionEffect(oilyEffect, 20 * 45, 0, true, true))
             }
         }
