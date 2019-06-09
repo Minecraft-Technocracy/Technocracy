@@ -48,6 +48,13 @@ open class BaseLiquidBlock(fluid: Fluid,
     }
 
     override fun updateTick(world: World, pos: BlockPos, state: IBlockState, rand: Random) {
+
+
+        super.updateTick(world, pos, state, rand)
+
+        if(true)
+            return
+
         var remainingHeight = quantaPerBlock - state.getValue(BlockFluidBase.LEVEL)
         var currentHeiht = -101
 
@@ -138,14 +145,14 @@ open class BaseLiquidBlock(fluid: Fluid,
                 if (hasVerticalFlow(world, pos)) {
                     flowMeta = 1
                 }
-                fakeSource = true
+                //fakeSource = true
                 val flowTo = getOptimalFlowDirections(world, pos)
 
 
                 for (i in 0..3) {
                     if (flowTo[i]) flowIntoBlock(world, pos.offset(SIDES[i]), flowMeta)
                 }
-                fakeSource = false
+                //fakeSource = false
             }
         }
     }
