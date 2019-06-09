@@ -7,6 +7,7 @@ import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
 import net.minecraft.advancements.CriteriaTriggers
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.Entity
+import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.item.ItemStack
@@ -18,7 +19,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
 
-class PipeItem : BaseItem("pipe") {
+class PipeItem : BaseItem("pipe_item") {
 
     init {
         hasSubtypes = true
@@ -31,10 +32,22 @@ class PipeItem : BaseItem("pipe") {
         val canplace = block.isReplaceable(worldIn, pos)
         val itemstack = player.getHeldItem(hand)
         val blockpos = if (canplace) pos else pos.offset(facing)
+        val offsetPos = pos.offset(facing)
 
         if (!canplace) {
             if (block is PipeBlock) {
                 val tile = worldIn.getTileEntity(pos)!! as TileEntityPipe
+
+                val thisPipeType = PipeType.values()[itemstack.metadata]
+
+                if (!tile.hasPipeType(thisPipeType)) {
+                    tile.addPipeType(thisPipeType)
+                    tile.markForUpdate()
+                    itemstack.shrink(1)
+                    return EnumActionResult.SUCCESS
+                }
+            } else if(worldIn.getBlockState(offsetPos).block is PipeBlock){
+                val tile = worldIn.getTileEntity(offsetPos)!! as TileEntityPipe
 
                 val thisPipeType = PipeType.values()[itemstack.metadata]
 
