@@ -56,13 +56,13 @@ open class BaseLiquidBlock(fluid: Fluid,
             return
 
         var remainingHeight = quantaPerBlock - state.getValue(BlockFluidBase.LEVEL)
-        var currentHeiht = -101
+        val currentHeight: Int
 
         //basic check if it is submerged in a liquid
         if (touchesFluid(world, pos, true)) {
             //check if fluid is lighter, if so go up
             if (canDisplaceLiquid(world, pos.down(densityDir))) {
-                //if a oilblock is underneath add another ontop
+                //if an oil block is underneath add another on top
                 if (isSourceBlock(world, pos) || (/*getFluidLevel(world, pos) == 1 && */world.getBlockState(pos.up(densityDir)).block == this
                                 || touchesFluidWithState(world, pos, getFluidLevel(state) - 1))) {
                     world.setBlockState(pos.down(densityDir), state.withProperty(BlockFluidBase.LEVEL, 1), 2)
@@ -101,27 +101,27 @@ open class BaseLiquidBlock(fluid: Fluid,
                 // new source block
                 if (sourceBlocks >= 2 && (world.getBlockState(pos.up(densityDir)).material.isSolid ||
                                 isSourceBlock(world, pos.up(densityDir)))) {
-                    currentHeiht = quantaPerBlock
+                    currentHeight = quantaPerBlock
                 } else if (hasVerticalFlow(world, pos) ||
                         world.getBlockState(pos.up(densityDir)).block === this && touchesFluid(world, pos.up(densityDir),
                                 true)) {
-                    currentHeiht = quantaPerBlock - 1
+                    currentHeight = quantaPerBlock - 1
                 } else {
                     var maxQuanta = -100
                     for (side in EnumFacing.Plane.HORIZONTAL) {
                         maxQuanta = getLargerQuanta(world, pos.offset(side), maxQuanta)
                     }
-                    currentHeiht = maxQuanta - 1
+                    currentHeight = maxQuanta - 1
                 }// vertical flow into block
 
                 // decay calculation
-                if (currentHeiht != remainingHeight) {
-                    remainingHeight = currentHeiht
+                if (currentHeight != remainingHeight) {
+                    remainingHeight = currentHeight
 
-                    if (currentHeiht <= 0) {
+                    if (currentHeight <= 0) {
                         world.setBlockToAir(pos)
                     } else {
-                        world.setBlockState(pos, state.withProperty(BlockFluidBase.LEVEL, quantaPerBlock - currentHeiht), 2)
+                        world.setBlockState(pos, state.withProperty(BlockFluidBase.LEVEL, quantaPerBlock - currentHeight), 2)
                         world.scheduleUpdate(pos, this, tickRate)
                         world.notifyNeighborsOfStateChange(pos, this, false)
                     }
