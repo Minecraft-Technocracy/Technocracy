@@ -43,7 +43,7 @@ object ItemManager {
     @Suppress("unused")
     @SubscribeEvent
     @JvmStatic
-    fun registerRenders(event: ModelRegistryEvent) {
+    fun registerRenders(@Suppress("UNUSED_PARAMETER") event: ModelRegistryEvent) {
         itemsToRegister.forEach(this::registerItemRender)
         itemsToRegister
                 .filter { it.oreDictName != null }
