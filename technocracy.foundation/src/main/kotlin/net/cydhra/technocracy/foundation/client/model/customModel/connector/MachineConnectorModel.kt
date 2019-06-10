@@ -22,7 +22,8 @@ class MachineConnectorModel : AbstractCustomModel() {
                 "found has it the right name?")
         //Hand renderer
         if (state == null) {
-            return modelBase.bake(state, format, bakedTextureGetter)
+            @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+            return modelBase.bake(null, format, bakedTextureGetter)
         } else {
             val connectors: IModel = ModelLoaderRegistry.getModel(CONNECTORS)
             return MachineConnectorBakedModel(modelBase.bake(state, format, bakedTextureGetter), connectors.bake(state, format,
