@@ -16,7 +16,8 @@ class MachineConnectorModel : AbstractCustomModel() {
 
     private val CONNECTORS = ResourceLocation("technocracy.foundation", "extra/connector")
 
-    override fun bake(state: IModelState, format: VertexFormat, bakedTextureGetter: Function<ResourceLocation, TextureAtlasSprite>): IBakedModel {
+    override fun bake(state: IModelState?, format: VertexFormat, bakedTextureGetter: Function<ResourceLocation,
+            TextureAtlasSprite>): IBakedModel {
         val modelBase: IModel = ModelLoaderRegistry.getModelOrLogError(MODEL_BASE!!, "Model (${MODEL_BASE!!}) not " +
                 "found has it the right name?")
         //Hand renderer
