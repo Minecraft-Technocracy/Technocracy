@@ -28,8 +28,8 @@ class MachineConnectorBakedModel(val baseBakedModel: IBakedModel, val connector:
         quads.addAll(baseBakedModel.getQuads(clean, side, rand))
 
         //get the models with the texture
-        val inventory = getModelWithTexture(clean, connector, TextureAtlasManager.connector_inventory!!)
-        val energy = getModelWithTexture(clean, connector, TextureAtlasManager.connector_energy!!)
+        val inventory = getModelWithTexture(clean, connector, TextureAtlasManager.connector_inventory)
+        val energy = getModelWithTexture(clean, connector, TextureAtlasManager.connector_energy)
 
         //get the position of this model out of the invisible property
         val pos = blockState.getValue(POSITION)
