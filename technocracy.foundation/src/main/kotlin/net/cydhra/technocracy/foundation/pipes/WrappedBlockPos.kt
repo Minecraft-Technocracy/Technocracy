@@ -18,9 +18,8 @@ data class WrappedBlockPos(val pos: BlockPos) {
         val map = io[type]
         if (map != null) {
             val combined = mutableSetOf<EnumFacing>()
-            map.filter { if (strictInput) it.key == Network.IO.INPUT else it.key != Network.IO.OUTPUT }.forEach { ioEnum, facing ->
-                combined.addAll(facing)
-            }
+            map.filter { if (strictInput) it.key == Network.IO.INPUT else it.key != Network.IO.OUTPUT }
+                    .forEach { (_, facing) -> combined.addAll(facing) }
             return combined
         }
         return emptySet()
@@ -30,9 +29,8 @@ data class WrappedBlockPos(val pos: BlockPos) {
         val map = io[type]
         if (map != null) {
             val combined = mutableSetOf<EnumFacing>()
-            map.filter { if (strictOutput) it.key == Network.IO.OUTPUT else it.key != Network.IO.INPUT }.forEach { ioEnum, facing ->
-                combined.addAll(facing)
-            }
+            map.filter { if (strictOutput) it.key == Network.IO.OUTPUT else it.key != Network.IO.INPUT }
+                    .forEach { (_, facing) -> combined.addAll(facing) }
             return combined
         }
         return emptySet()
