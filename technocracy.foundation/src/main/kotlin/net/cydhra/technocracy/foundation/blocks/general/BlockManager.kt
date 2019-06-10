@@ -102,8 +102,8 @@ object BlockManager {
     fun registerBlockColors() {
         blocksToRegister.forEach { block ->
             if (block.colorMultiplier != null) {
-                Minecraft.getMinecraft().blockColors.registerBlockColorHandler(block.colorMultiplier, block as Block)
-                Minecraft.getMinecraft().itemColors.registerItemColorHandler(block.colorMultiplier, block)
+                Minecraft.getMinecraft().blockColors.registerBlockColorHandler(block.colorMultiplier!!, block as Block)
+                Minecraft.getMinecraft().itemColors.registerItemColorHandler(block.colorMultiplier!!, block)
             }
         }
     }
