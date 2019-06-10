@@ -69,12 +69,12 @@ object FacadeBakery {
                 }
                 val quad = SimpleQuad(vertices)
                 if (origQuads.size != 4) {
-                    origQuads.forEachIndexed { index, q ->
+                    origQuads.forEachIndexed { index, bakedQuad ->
 
-                        quad.cloneData(q)
+                        quad.cloneData(bakedQuad)
 
-                        if (q.hasTintIndex()) {
-                            quad.tintColor = Minecraft.getMinecraft().blockColors.colorMultiplier(customState, access, pos, q.tintIndex)
+                        if (bakedQuad.hasTintIndex()) {
+                            quad.tintColor = Minecraft.getMinecraft().blockColors.colorMultiplier(customState, access, pos, bakedQuad.tintIndex)
                         }
 
                         quad.recalculateUV()
@@ -93,6 +93,14 @@ object FacadeBakery {
                     val splits = quad.subdivide(4)
                     origQuads.forEachIndexed { index, bakedQuad ->
                         splits[index].cloneData(bakedQuad)
+
+                        if (bakedQuad.hasTintIndex()) {
+                            splits[index].tintColor = Minecraft.getMinecraft().blockColors.colorMultiplier(customState, access, pos, bakedQuad.tintIndex)
+                        }
+
+                        //todo fix it
+                        //splits[index].recalculateUV(index)
+
                         quads.add(splits[index].bake())
                     }
                 }
@@ -105,7 +113,7 @@ object FacadeBakery {
     fun generate(data: FloatArray, faces: BooleanArray, coverFace: EnumFacing?, facing: EnumFacing, vertices: Int): FloatArray {
 
         val pixelSize = 1 / 16f
-        val size = 6.75f
+        val size = 1f
         val height = pixelSize * size
 
         val minX = 0.0f
