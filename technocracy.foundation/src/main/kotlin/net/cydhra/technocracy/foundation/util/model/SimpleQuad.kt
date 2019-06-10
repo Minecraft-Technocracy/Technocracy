@@ -1,6 +1,7 @@
-package net.cydhra.technocracy.foundation.util
+package net.cydhra.technocracy.foundation.util.model
 
 import com.google.common.collect.Lists
+import com.google.common.collect.MultimapBuilder
 import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
@@ -15,8 +16,9 @@ import org.lwjgl.util.vector.Vector3f
 import org.lwjgl.util.vector.Vector4f
 import java.lang.IllegalStateException
 
+
 class SimpleQuad() {
-    constructor(data: List<Vector3f>, clone: SimpleQuad): this() {
+    constructor(data: List<Vector3f>, clone: SimpleQuad) : this() {
         vertPos.addAll(data)
         face = clone.face
         tintIndex = clone.tintIndex
@@ -24,32 +26,56 @@ class SimpleQuad() {
         applyDiffuseLighting = clone.applyDiffuseLighting
     }
 
-    constructor(data: List<FloatArray>): this() {
-        for(d in data) {
+    constructor(data: List<FloatArray>) : this() {
+        for (d in data) {
             vertPos.add(Vector3f(d[0], d[1], d[2]))
         }
     }
 
-    val format: VertexFormat = DefaultVertexFormats.BLOCK
+    private val format: VertexFormat = DefaultVertexFormats.BLOCK
     var face: EnumFacing? = null
     var tintIndex: Int = -1
+    var tintColor: Int = 0
     var sprite: TextureAtlasSprite? = null
     var applyDiffuseLighting: Boolean = true
 
     val vertPos = mutableListOf<Vector3f>()
     val vertUv = mutableListOf<Vector2f>()
+    val vertLight = mutableListOf<Vector2f>()
+    val vertColor = mutableListOf<Vector4f>()
 
-    val otherData = mutableMapOf<VertexFormatElement.EnumUsage, HashMap<Int, Vector4f>>()
+    val data = MultimapBuilder.enumKeys(VertexFormatElement.EnumUsage::class.java).arrayListValues().build<VertexFormatElement.EnumUsage, FloatArray>()
+
+    fun reset(resetPositions: Boolean) {
+        if (resetPositions)
+            vertPos.clear()
+        vertUv.clear()
+        vertLight.clear()
+        vertColor.clear()
+        data.clear()
+        tintColor = 0
+        tintIndex = 0
+        face = null
+        sprite = null
+        applyDiffuseLighting = true
+    }
 
     fun cloneData(quad: BakedQuad) {
         face = quad.face
         tintIndex = quad.tintIndex
         sprite = quad.sprite
         applyDiffuseLighting = quad.shouldApplyDiffuseLighting()
+        tintColor = 0
+        vertColor.clear()
+        data.clear()
+        //vertUv.clear()
 
-        quad.pipe(DataCloner(this))
+        quad.pipe(QuadCloner(this))
     }
 
+    /**
+     * subdivide code from ctm
+     */
     fun subdivide(count: Int): Array<SimpleQuad> {
         if (count == 1) {
             return arrayOf(this)
@@ -77,6 +103,9 @@ class SimpleQuad() {
         return rects.toTypedArray()
     }
 
+    /**
+     * divide code from ctm
+     */
     private fun divide(vertical: Boolean): Pair<SimpleQuad, SimpleQuad> {
         val f = 0.5f
 
@@ -84,8 +113,8 @@ class SimpleQuad() {
         val secondQuad = mutableListOf<Vector3f>()
         for (i in 0..3) {
             val idx = i % 4
-            firstQuad[i] = Vector3f(vertPos[idx])
-            secondQuad[i] = Vector3f(vertPos[idx])
+            firstQuad.add(Vector3f(vertPos[idx]))
+            secondQuad.add(Vector3f(vertPos[idx]))
         }
 
         val i1 = 0
@@ -116,71 +145,108 @@ class SimpleQuad() {
         return a * (1 - f) + b * f
     }
 
+    fun recalculateUV() {
+        val uvX = Vector4f(vertUv[0].x, vertUv[1].x, vertUv[2].x, vertUv[3].x)
+        val uvY = Vector4f(vertUv[0].y, vertUv[1].y, vertUv[2].y, vertUv[3].y)
+
+        val minUVX = getMin(uvX)
+        val maxUVX = getMax(uvX)
+
+        val distX = maxUVX - minUVX
+
+        val minUVY = getMin(uvY)
+        val maxUVY = getMax(uvY)
+
+        val distY = maxUVY - minUVY
+
+        @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
+        when (face!!.axis) {
+            EnumFacing.Axis.Z -> {
+                for (i in 0 until vertPos.size) {
+                    val changeY = vertPos[i].y / 1f
+                    val changeX = vertPos[i].x / 1f
+                    vertUv[i].y = maxUVY - distY * changeY
+                    vertUv[i].x = maxUVX - distX * changeX
+                }
+            }
+            EnumFacing.Axis.X -> {
+                for (i in 0 until vertPos.size) {
+                    val changeY = vertPos[i].y / 1f
+                    val changeX = vertPos[i].z / 1f
+                    vertUv[i].y = maxUVY - distY * changeY
+                    vertUv[i].x = maxUVX - distX * changeX
+                }
+            }
+            EnumFacing.Axis.Y -> {
+                for (i in 0 until vertPos.size) {
+                    val changeY = vertPos[i].z / 1f
+                    val changeX = vertPos[i].x / 1f
+                    vertUv[i].y = maxUVY - distY * changeY
+                    vertUv[i].x = maxUVX - distX * changeX
+                }
+            }
+        }
+    }
+
+    fun getMin(values: Vector4f): Float {
+        return Math.min(values.x, Math.min(values.y, Math.min(values.z, values.w)))
+    }
+
+    fun getMax(values: Vector4f): Float {
+        return Math.max(values.x, Math.max(values.y, Math.max(values.z, values.w)))
+    }
+
     fun bake(): BakedQuad {
         if (face == null || sprite == null) {
             throw IllegalStateException("Quad data not consistent")
         }
 
         val builder = UnpackedBakedQuad.Builder(format)
-        builder.setQuadOrientation(face)
+        builder.setQuadOrientation(face!!)
         builder.setQuadTint(tintIndex)
         builder.setApplyDiffuseLighting(applyDiffuseLighting)
-        builder.setTexture(sprite)
+        builder.setTexture(sprite!!)
 
         for (v in 0..3) {
             for (i in 0 until format.elementCount) {
                 val ele = format.getElement(i)
                 when (ele.usage) {
                     VertexFormatElement.EnumUsage.UV -> {
-                        val uv = vertUv[v]
-                        builder.put(i, uv.x, uv.y, 0f, 1f)
+                        if (ele.index == 1) {
+                            if (vertLight.size > v) {
+                                val light = vertLight[v]
+                                builder.put(i, light.x, light.y)
+                            } else {
+                                builder.put(i, *data.get(ele.usage)[v])
+                            }
+                        } else if (ele.index == 0) {
+                            val uv = vertUv[v]
+                            builder.put(i, uv.x, uv.y, 0f, 0f)
+                        }
+                    }
+                    VertexFormatElement.EnumUsage.COLOR -> {
+                        val color = vertColor[v]
+
+                        if (tintIndex != -1) {
+                            val r = (tintColor shr 0x10 and 0xFF).toFloat() / 255f
+                            val g = (tintColor shr 0x08 and 0xFF).toFloat() / 255f
+                            val b = (tintColor and 0xFF).toFloat() / 255f
+
+                            builder.put(i, color.x * r, color.y * g, color.z * b, 0x4C / 255F)
+                        } else {
+                            builder.put(i, color.x, color.y, color.z, 0x4C / 255f)
+                        }
                     }
                     VertexFormatElement.EnumUsage.POSITION -> {
                         val p = vertPos[v]
-                        builder.put(i, p.x, p.y, p.z, 1f)
+                        builder.put(i, p.x, p.y, p.z, 0f)
                     }
                     else -> {
+                        builder.put(i, *data.get(ele.usage)[v])
                     }
                 }
             }
         }
-
-        otherData.forEach { enum, map ->
-            map.forEach { index, data ->
-                builder.put(index, data.x, data.y, data.z, data.w)
-            }
-        }
-
         return builder.build()
-    }
-
-    class DataCloner(val quad: SimpleQuad) : IVertexConsumer {
-        override fun getVertexFormat(): VertexFormat {
-            return quad.format
-        }
-
-        override fun put(element: Int, vararg data: Float) {
-            val usage = vertexFormat.getElement(element)
-            if (usage.usage == VertexFormatElement.EnumUsage.UV) {
-                quad.vertUv[element] = Vector2f(data[0], data[1])
-            } else {
-                quad.otherData.getOrPut(usage.usage) {
-                    HashMap()
-                }[element] = Vector4f(data[0], data[1], data[2], data[3])
-            }
-        }
-
-        override fun setQuadOrientation(orientation: EnumFacing) {
-        }
-
-        override fun setTexture(texture: TextureAtlasSprite) {
-        }
-
-        override fun setApplyDiffuseLighting(diffuse: Boolean) {
-        }
-
-        override fun setQuadTint(tint: Int) {
-        }
-
     }
 }
