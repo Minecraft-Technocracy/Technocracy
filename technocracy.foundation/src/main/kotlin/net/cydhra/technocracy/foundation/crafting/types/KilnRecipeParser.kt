@@ -21,8 +21,8 @@ object KilnRecipeParser : RecipeParser<KilnRecipe> {
         check(json.has(JSON_KEY_OUTPUT)) { "recipe is missing output parameter" }
         check(json.has(JSON_KEY_TICK_COST)) { "recipe is missing cost parameter" }
 
-        val inputStack = getFluidStack(json.getAsJsonObject(JSON_KEY_INPUT), context)
-        val outputStack = getFluidStack(json.getAsJsonObject(JSON_KEY_OUTPUT), context)
+        val inputStack = getFluidStack(json.getAsJsonObject(JSON_KEY_INPUT))
+        val outputStack = getFluidStack(json.getAsJsonObject(JSON_KEY_OUTPUT))
 
         return KilnRecipe(inputStack, outputStack, json.get(JSON_KEY_TICK_COST).asInt)
     }

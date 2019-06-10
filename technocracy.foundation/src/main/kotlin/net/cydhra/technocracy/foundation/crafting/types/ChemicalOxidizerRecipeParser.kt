@@ -25,7 +25,7 @@ object ChemicalOxidizerRecipeParser : RecipeParser<ChemicalOxidizerRecipe> {
         check(json.has(JSON_KEY_TICK_COST)) { "recipe is missing cost parameter" }
 
         val inputIngredient = CraftingHelper.getIngredient(json.getAsJsonObject(JSON_KEY_INPUT), context)
-        val outputStack = getFluidStack(json.getAsJsonObject(JSON_KEY_OUTPUT), context)
+        val outputStack = getFluidStack(json.getAsJsonObject(JSON_KEY_OUTPUT))
 
         return ChemicalOxidizerRecipe(inputIngredient, outputStack, json.get(JSON_KEY_TICK_COST).asInt)
     }

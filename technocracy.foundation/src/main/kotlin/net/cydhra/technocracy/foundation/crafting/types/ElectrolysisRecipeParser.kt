@@ -24,8 +24,8 @@ object ElectrolysisRecipeParser : RecipeParser<ElectrolysisRecipe> {
         val outputList = json.getAsJsonArray(JSON_KEY_OUTPUT)
         check(outputList.size() == 2) { "recipe requires exactly two outputs" }
 
-        val input = getFluidStack(json.get(JSON_KEY_INPUT).asJsonObject, context)
-        val ouputs = outputList.map { element -> getFluidStack(element.asJsonObject, context) }
+        val input = getFluidStack(json.get(JSON_KEY_INPUT).asJsonObject)
+        val ouputs = outputList.map { element -> getFluidStack(element.asJsonObject) }
 
         return ElectrolysisRecipe(input, ouputs, json.get(JSON_KEY_TICK_COST).asInt)
     }

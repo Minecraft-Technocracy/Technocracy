@@ -25,7 +25,7 @@ object ChemicalEtchingRecipeParser : RecipeParser<ChemicalProcessingRecipe> {
         check(json.has(JSON_KEY_TICK_COST)) { "recipe is missing cost parameter" }
 
         val input = CraftingHelper.getIngredient(json.get(JSON_KEY_INPUT), context)
-        val fluid = getFluidStack(json.get(JSON_KEY_INPUT_FLUID).asJsonObject, context)
+        val fluid = getFluidStack(json.get(JSON_KEY_INPUT_FLUID).asJsonObject)
         val outputStack = CraftingHelper.getItemStack(json.getAsJsonObject(JSON_KEY_OUTPUT), context)
 
         return ChemicalProcessingRecipe(input, fluid, outputStack, json.get(JSON_KEY_TICK_COST).asInt)

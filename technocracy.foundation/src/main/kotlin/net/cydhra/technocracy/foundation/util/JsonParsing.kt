@@ -1,11 +1,15 @@
 package net.cydhra.technocracy.foundation.util
 
 import com.google.gson.JsonObject
-import net.minecraftforge.common.crafting.JsonContext
 import net.minecraftforge.fluids.FluidRegistry
 import net.minecraftforge.fluids.FluidStack
 
-fun getFluidStack(json: JsonObject, context: JsonContext): FluidStack {
+/**
+ * Utility function to parse fluid stacks from JSON recipes
+ *
+ * @param json the json object that shall be parsed as fluid stack
+ */
+fun getFluidStack(json: JsonObject): FluidStack {
     check(json.has("fluid")) { "json is missing fluid parameter" }
     check(json.has("amount")) { "json is missing amount parameter" }
 

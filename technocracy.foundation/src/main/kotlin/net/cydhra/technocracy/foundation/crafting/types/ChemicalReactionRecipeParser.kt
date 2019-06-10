@@ -2,7 +2,6 @@ package net.cydhra.technocracy.foundation.crafting.types
 
 import com.google.gson.JsonObject
 import net.cydhra.technocracy.foundation.util.getFluidStack
-import net.minecraftforge.common.crafting.CraftingHelper
 import net.minecraftforge.common.crafting.JsonContext
 
 /**
@@ -25,8 +24,8 @@ object ChemicalReactionRecipeParser : RecipeParser<ChemicalReactionRecipe> {
         val inputList = json.getAsJsonArray(JSON_KEY_INPUT)
         check(inputList.size() == 2) { "recipe requires exactly two inputs" }
 
-        val inputIngredientList = inputList.map { element -> getFluidStack(element.asJsonObject, context) }
-        val outputStack = getFluidStack(json.getAsJsonObject(JSON_KEY_OUTPUT), context)
+        val inputIngredientList = inputList.map { element -> getFluidStack(element.asJsonObject) }
+        val outputStack = getFluidStack(json.getAsJsonObject(JSON_KEY_OUTPUT))
 
         return ChemicalReactionRecipe(inputIngredientList, outputStack, json.get(JSON_KEY_TICK_COST).asInt)
     }
