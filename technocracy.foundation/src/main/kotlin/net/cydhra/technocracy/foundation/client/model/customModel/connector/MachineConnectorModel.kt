@@ -14,7 +14,9 @@ import java.util.function.Function
 
 class MachineConnectorModel : AbstractCustomModel() {
 
-    private val CONNECTORS = ResourceLocation("technocracy.foundation", "extra/connector")
+    companion object {
+        private val connectorsLocation = ResourceLocation("technocracy.foundation", "extra/connector")
+    }
 
     override fun bake(state: IModelState?, format: VertexFormat, bakedTextureGetter: Function<ResourceLocation,
             TextureAtlasSprite>): IBakedModel {
@@ -25,14 +27,14 @@ class MachineConnectorModel : AbstractCustomModel() {
             @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
             return modelBase.bake(null, format, bakedTextureGetter)
         } else {
-            val connectors: IModel = ModelLoaderRegistry.getModel(CONNECTORS)
+            val connectors: IModel = ModelLoaderRegistry.getModel(connectorsLocation)
             return MachineConnectorBakedModel(modelBase.bake(state, format, bakedTextureGetter), connectors.bake(state, format,
                     bakedTextureGetter))
         }
     }
 
     override fun getDependencies(): MutableCollection<ResourceLocation> {
-        return ImmutableList.builder<ResourceLocation>().add(MODEL_BASE!!).add(CONNECTORS).build();
+        return ImmutableList.builder<ResourceLocation>().add(MODEL_BASE!!).add(connectorsLocation).build();
     }
 
 
