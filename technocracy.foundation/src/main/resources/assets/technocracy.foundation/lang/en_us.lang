@@ -54,6 +54,8 @@ item.pipe.item.name=Item Pipe
 item.pipe.fluid.name=Fluid Pipe
 item.pipe.energy.name=Energy Pipe
 
+item.facade.name=Facade
+
 tile.oil_sand.name=Oil Sand
 tile.ore.aluminum.name=Aluminum Ore
 tile.ore.copper.name=Copper Ore
@@ -123,6 +125,7 @@ fluid.steam=Steam
 effect.oily=Oily
 
 itemGroup.technocracy=Technocracy
+itemGroup.facades=Facades
 
 multiblock.error.number_of_blocks=%s: Expected %d but found %d
 multiblock.error.too_few_blocks=%s: Expected at least %d but found %d

@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.client.model.pipe
 
+import net.cydhra.technocracy.foundation.blocks.general.heatExchangerGlassBlock
 import net.cydhra.technocracy.foundation.client.textures.TextureAtlasManager
 import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
@@ -57,9 +58,12 @@ class PipeModelBakery : IBakedModel {
         if (side != null)
             return quads
 
-        boxes.forEach {
+        for (it in boxes) {
             val boundingBox = it.first.second
             val facing = it.first.first
+
+            if(it.third == -1)
+                continue
 
             val texture = when (it.third) {
                 0 -> TextureAtlasManager.pipe_node
@@ -274,13 +278,13 @@ class PipeModelBakery : IBakedModel {
 
         //TODO propper impementation
         val faces = BooleanArray(EnumFacing.values().size)
-        val coverFaces = mutableMapOf<EnumFacing, IBlockState>()
+        val coverFaces = tileEntityPipe.getFacades()
 
-        coverFaces[EnumFacing.UP] = Blocks.SPONGE.getStateFromMeta(1)
-        //coverFaces[EnumFacing.DOWN] = Blocks.SPONGE.getStateFromMeta(1)
+        //coverFaces[EnumFacing.UP] = Blocks.PISTON.getStateFromMeta(0)
+        //coverFaces[EnumFacing.DOWN] = Blocks.GRASS.getStateFromMeta(0)
         //coverFaces[EnumFacing.SOUTH] = Blocks.SPONGE.getStateFromMeta(1)
         //coverFaces[EnumFacing.NORTH] = Blocks.SPONGE.getStateFromMeta(1)
-        //coverFaces[EnumFacing.EAST] = Blocks.SPONGE.getStateFromMeta(1)
+        //coverFaces[EnumFacing.EAST] = Blocks.GRASS.getStateFromMeta(0)
         //coverFaces[EnumFacing.WEST] = Blocks.SPONGE.getStateFromMeta(1)
 
         EnumFacing.values().forEachIndexed { index, enumFacing ->

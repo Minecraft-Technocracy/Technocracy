@@ -12,7 +12,7 @@ import org.lwjgl.util.vector.Vector4f
 
 class QuadCloner(val quad: SimpleQuad) : IVertexConsumer {
     override fun getVertexFormat(): VertexFormat {
-        return DefaultVertexFormats.BLOCK
+        return quad.format
     }
 
     override fun put(element: Int, vararg data: Float) {

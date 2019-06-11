@@ -24,3 +24,4 @@ val superconductorItem = AlloyItem("superconductor", ConstantItemColor(0x7AA9DB)
 val metallicPhaseChangeMaterialItem = AlloyItem("mPCM", ConstantItemColor(0xC9BEC9))
 
 val pipeItem = PipeItem()
+val facadeItem = FacadeItem()

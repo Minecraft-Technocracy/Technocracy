@@ -1,10 +1,16 @@
 package net.cydhra.technocracy.foundation.client.model.pipe
 
+import net.cydhra.technocracy.foundation.items.general.FacadeItem
+import net.cydhra.technocracy.foundation.util.getFluidStack
 import net.cydhra.technocracy.foundation.util.model.SimpleQuad
+import net.minecraft.block.Block
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.client.renderer.block.model.IBakedModel
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats
+import net.minecraft.item.ItemBlock
+import net.minecraft.item.ItemStack
 import net.minecraft.util.BlockRenderLayer
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
@@ -12,6 +18,7 @@ import net.minecraft.util.math.MathHelper
 import net.minecraft.world.IBlockAccess
 import net.minecraftforge.client.ForgeHooksClient
 import net.minecraftforge.client.MinecraftForgeClient
+import java.util.ArrayList
 
 
 object FacadeBakery {
@@ -23,11 +30,20 @@ object FacadeBakery {
         }
     }
 
-    fun getFacadeQuads(coverFace: EnumFacing, state: IBlockState, pos: BlockPos, faces: BooleanArray): MutableList<BakedQuad> {
+    fun getFacadeQuads(coverFace: EnumFacing, facadeStack: ItemStack, pos: BlockPos, faces: BooleanArray): MutableList<BakedQuad> {
         val quads = mutableListOf<BakedQuad>()
 
         val mc = Minecraft.getMinecraft()
         val dispatcher = mc.blockRendererDispatcher
+
+        if(facadeStack.isEmpty || facadeStack.item !is FacadeItem)
+            return quads
+
+        val facade = facadeStack.item as FacadeItem
+        val stack = facade.getFacadeFromStack(facadeStack)
+
+        val block = Block.getBlockFromItem(stack.item)
+        val state: IBlockState = block.getStateFromMeta(stack.itemDamage)
 
         //fix for ctm not working
         val fakeWorld = FakeWorld(mc.world, state, pos)
@@ -42,7 +58,7 @@ object FacadeBakery {
             if (state.block.canRenderInLayer(customState, forcedLayer)) {
                 ForgeHooksClient.setRenderLayer(forcedLayer)
 
-                quads.addAll(genQuads(coverModel, customState, coverFace, faces, fakeWorld, pos))
+                quads.addAll(genQuads(coverModel, customState, coverFace, faces, fakeWorld, pos, customState.block.blockLayer == BlockRenderLayer.TRANSLUCENT))
             }
         }
         ForgeHooksClient.setRenderLayer(last)
@@ -51,13 +67,61 @@ object FacadeBakery {
         return quads
     }
 
-    fun genQuads(coverModel: IBakedModel, customState: IBlockState, coverFace: EnumFacing, faces: BooleanArray, access: IBlockAccess, pos: BlockPos): List<BakedQuad> {
+    fun getFacadeItemQuads(facadeItem: ItemStack): MutableList<BakedQuad> {
+        val quads = mutableListOf<BakedQuad>()
+        val coverModel = Minecraft.getMinecraft().renderItem.getItemModelWithOverrides(facadeItem, null, null)
+        val faces = BooleanArray(EnumFacing.values().size)
+
+        EnumFacing.values().forEachIndexed { index, enumFacing ->
+            faces[index] = enumFacing == EnumFacing.NORTH
+        }
+
+        val origQuads = gatherQuads(coverModel)
+
+        for (bakedQuad in origQuads) {
+            val vertices = mutableListOf<FloatArray>()
+            for (i in 0..3) {
+                vertices.add(generate(FloatArray(3), faces, EnumFacing.NORTH, bakedQuad.face, i))
+            }
+
+            val quad = SimpleQuad(vertices)
+            quad.format = DefaultVertexFormats.ITEM
+            quad.cloneData(bakedQuad)
+
+            if (bakedQuad.hasTintIndex()) {
+                quad.tintColor = Minecraft.getMinecraft().itemColors.colorMultiplier(facadeItem, bakedQuad.tintIndex)
+            }
+
+            quad.recalculateUV()
+
+            quads.add(quad.bake())
+        }
+
+        return quads
+    }
+
+    private fun gatherQuads(model: IBakedModel): List<BakedQuad> {
+        val modelQuads = ArrayList<BakedQuad>()
+        for (face in EnumFacing.VALUES) {
+            modelQuads.addAll(model.getQuads(null, face, 0))
+        }
+        modelQuads.addAll(model.getQuads(null, null, 0))
+        return modelQuads
+    }
+
+    fun genQuads(coverModel: IBakedModel, customState: IBlockState?, coverFace: EnumFacing, faces: BooleanArray, access: IBlockAccess?, pos: BlockPos?, transparent: Boolean): List<BakedQuad> {
         val quads = mutableListOf<BakedQuad>()
         var origQuads = coverModel.getQuads(customState, null, 0)
         if (!origQuads.isEmpty()) {
             //TODO maybe generate something
             return quads
         }
+
+        val modelQuads = ArrayList<BakedQuad>()
+        for (face in EnumFacing.VALUES) {
+            modelQuads.addAll(coverModel.getQuads(customState!!.getActualState(access,pos ), face, 0))
+        }
+        modelQuads.addAll(coverModel.getQuads(customState!!.getActualState(access,pos ), null, 0))
 
         for (side in EnumFacing.values()) {
             origQuads = coverModel.getQuads(customState, side, 0)
@@ -67,39 +131,32 @@ object FacadeBakery {
                 for (i in 0..3) {
                     vertices.add(generate(FloatArray(3), faces, coverFace, side, i))
                 }
-                val quad = SimpleQuad(vertices)
+
                 if (origQuads.size != 4) {
                     origQuads.forEachIndexed { index, bakedQuad ->
-
+                        val quad = SimpleQuad(vertices)
+                        quad.format = DefaultVertexFormats.BLOCK
                         quad.cloneData(bakedQuad)
-
-                        if (bakedQuad.hasTintIndex()) {
+                        if (bakedQuad.hasTintIndex() && customState != null) {
                             quad.tintColor = Minecraft.getMinecraft().blockColors.colorMultiplier(customState, access, pos, bakedQuad.tintIndex)
                         }
 
                         quad.recalculateUV()
+                        quad.transparent = transparent
 
-                        //TODO Quick fix for tint bug on grass block
-                        if (origQuads.size == 2) {
-                            if (index == 0) {
-                                quads.add(quad.bake())
-                            }
-                        } else {
-                            quads.add(quad.bake())
-                        }
+                        quads.add(quad.bake())
                     }
-
                 } else {
-                    val splits = quad.subdivide(4)
+                    val splits = SimpleQuad(vertices).subdivide(4)
                     origQuads.forEachIndexed { index, bakedQuad ->
+                        splits[index].format = DefaultVertexFormats.BLOCK
                         splits[index].cloneData(bakedQuad)
-
-                        if (bakedQuad.hasTintIndex()) {
+                        if (bakedQuad.hasTintIndex() && customState != null) {
                             splits[index].tintColor = Minecraft.getMinecraft().blockColors.colorMultiplier(customState, access, pos, bakedQuad.tintIndex)
                         }
 
-                        //todo fix it
                         splits[index].recalculateUV(index)
+                        splits[index].transparent = transparent
 
                         quads.add(splits[index].bake())
                     }
@@ -110,11 +167,11 @@ object FacadeBakery {
         return quads
     }
 
-    fun generate(data: FloatArray, faces: BooleanArray, coverFace: EnumFacing?, facing: EnumFacing, vertices: Int): FloatArray {
+    var facadeSize = 1f
 
+    fun generate(data: FloatArray, faces: BooleanArray, coverFace: EnumFacing?, facing: EnumFacing, vertices: Int): FloatArray {
         val pixelSize = 1 / 16f
-        val size = 1f
-        val height = pixelSize * size
+        val height = pixelSize * facadeSize
 
         val minX = 0.0f
         val minY = 0.0f
@@ -303,6 +360,9 @@ object FacadeBakery {
         data[0] = MathHelper.clamp(data[0], 0f, 1f)
         data[1] = MathHelper.clamp(data[1], 0f, 1f)
         data[2] = MathHelper.clamp(data[2], 0f, 1f)
+
+        //clear data
+
         return data
     }
 }

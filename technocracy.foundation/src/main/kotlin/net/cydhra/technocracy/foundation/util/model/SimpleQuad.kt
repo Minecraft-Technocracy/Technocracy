@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.client.renderer.vertex.VertexFormat
 import net.minecraft.client.renderer.vertex.VertexFormatElement
 import net.minecraft.util.EnumFacing
-import net.minecraftforge.client.model.pipeline.IVertexConsumer
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad
 import org.apache.commons.lang3.tuple.Pair
 import org.lwjgl.util.vector.Vector2f
@@ -32,12 +31,13 @@ class SimpleQuad() {
         }
     }
 
-    private val format: VertexFormat = DefaultVertexFormats.BLOCK
+    var format: VertexFormat = DefaultVertexFormats.BLOCK
     var face: EnumFacing? = null
     var tintIndex: Int = -1
     var tintColor: Int = 0
     var sprite: TextureAtlasSprite? = null
     var applyDiffuseLighting: Boolean = true
+    var transparent = false
 
     val vertPos = mutableListOf<Vector3f>()
     val vertUv = mutableListOf<Vector2f>()
@@ -146,6 +146,8 @@ class SimpleQuad() {
     }
 
     fun recalculateUV(quadNum: Int = -1) {
+        //todo if quad is lower quad only render if slide is over 0.5 big, else just dont render
+        //todo need more infos, maybe give quad enum for its slice
         val uvX = Vector4f(vertUv[0].x, vertUv[1].x, vertUv[2].x, vertUv[3].x)
         val uvY = Vector4f(vertUv[0].y, vertUv[1].y, vertUv[2].y, vertUv[3].y)
 
@@ -161,25 +163,23 @@ class SimpleQuad() {
 
         val minX = 0f
         val minY = 0f
-        val maxX = when(quadNum) {
+        val maxX = when (quadNum) {
             -1 -> 1f
             else -> 0.5f
         }
-        val maxY = when(quadNum) {
+        val maxY = when (quadNum) {
             -1 -> 1f
             else -> 0.5f
         }
 
-        val modX = when(quadNum) {
-            1,2 -> distX
+        val modX = when (quadNum) {
+            1, 2 -> distX
             else -> 0f
         }
-        val modY = when(quadNum) {
-            3,2 -> distY
-            else-> 0f
+        val modY = when (quadNum) {
+            3, 2 -> distY
+            else -> 0f
         }
-
-
 
         @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
         when (face!!.axis) {
@@ -257,9 +257,9 @@ class SimpleQuad() {
                             val g = (tintColor shr 0x08 and 0xFF).toFloat() / 255f
                             val b = (tintColor and 0xFF).toFloat() / 255f
 
-                            builder.put(i, color.x * r, color.y * g, color.z * b, 0x4C / 255F)
+                            builder.put(i, color.x * r, color.y * g, color.z * b, color.w)
                         } else {
-                            builder.put(i, color.x, color.y, color.z, 0x4C / 255f)
+                            builder.put(i, color.x, color.y, color.z, color.w)
                         }
                     }
                     VertexFormatElement.EnumUsage.POSITION -> {

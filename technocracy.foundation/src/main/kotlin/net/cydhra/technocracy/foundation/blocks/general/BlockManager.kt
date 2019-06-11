@@ -52,7 +52,7 @@ object BlockManager {
     fun prepareBlocksForRegistration(block: IBaseBlock, model: AbstractCustomModel): IBaseBlock {
         blocksToRegister += block
         val name = (block as Block).registryName!!.resourcePath
-        customModels["models/block/$name"] = model.initModel(name)
+        customModels["models/block/$name"] = model.initModel("block", name)
         return block
     }
 
