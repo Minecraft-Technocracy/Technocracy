@@ -99,7 +99,7 @@ object FacadeBakery {
                         }
 
                         //todo fix it
-                        //splits[index].recalculateUV(index)
+                        splits[index].recalculateUV(index)
 
                         quads.add(splits[index].bake())
                     }
