@@ -5,6 +5,7 @@ import net.cydhra.technocracy.foundation.blocks.general.pipe
 import net.cydhra.technocracy.foundation.client.technocracyFacadeCreativeTab
 import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
+import net.cydhra.technocracy.foundation.util.FacadeStack
 import net.minecraft.advancements.CriteriaTriggers
 import net.minecraft.block.Block
 import net.minecraft.block.BlockGlass
@@ -36,8 +37,8 @@ class FacadeItem : BaseItem("facade") {
     override fun getItemStackDisplayName(stack: ItemStack): String {
         try {
             val facadeBlock = this.getFacadeFromStack(stack)
-            if (!facadeBlock.isEmpty) {
-                return super.getItemStackDisplayName(stack) + " - " + facadeBlock.displayName
+            if (!facadeBlock.stack.isEmpty) {
+                return super.getItemStackDisplayName(stack) + " - " + facadeBlock.stack.displayName
             }
         } catch (ignored: Throwable) {
         }
@@ -97,15 +98,16 @@ class FacadeItem : BaseItem("facade") {
         }
     }
 
-    fun getFacadeFromStack(stack: ItemStack): ItemStack {
-        val nbt = stack.tagCompound ?: return ItemStack.EMPTY
+    fun getFacadeFromStack(stack: ItemStack): FacadeStack {
+        val nbt = stack.tagCompound ?: return FacadeStack(ItemStack.EMPTY, false)
 
         val meta = nbt.getInteger("facade_meta")
         val name = ResourceLocation(nbt.getString("facade_name"))
+        val transparent = nbt.getBoolean("facade_transparent")
 
-        val item = Item.REGISTRY.getObject(name) ?: return ItemStack.EMPTY
+        val item = Item.REGISTRY.getObject(name) ?: return FacadeStack(ItemStack.EMPTY, false)
 
-        return ItemStack(item, 1, meta)
+        return FacadeStack(ItemStack(item, 1, meta), transparent)
     }
 
     fun createFacadeForItem(stack: ItemStack): ItemStack {
@@ -122,15 +124,16 @@ class FacadeItem : BaseItem("facade") {
 
         val hasTile = block.hasTileEntity(block.getStateFromMeta(metadata))
         val isGlass = block is BlockGlass || block is BlockStainedGlass || block.isTranslucent(block.getStateFromMeta(metadata))
-        val isFullBlock = block.getStateFromMeta(metadata).isFullCube
+        val isFullBlock = block.getStateFromMeta(metadata).isFullBlock
 
         val blockState = block.getStateFromMeta(metadata)
 
-        if (blockState.renderType === EnumBlockRenderType.MODEL && !hasTile && !isGlass && isFullBlock) {
+        if (blockState.renderType === EnumBlockRenderType.MODEL && !hasTile && isFullBlock) {
             val `is` = ItemStack(this)
             val data = NBTTagCompound()
             data.setString("facade_name", stack.item.registryName!!.toString())
             data.setInteger("facade_meta", stack.itemDamage)
+            data.setBoolean("facade_transparent", isGlass)
             `is`.tagCompound = data
             return `is`
         }

@@ -33,14 +33,13 @@ class FacadeItemRedirector(val baseBakedModel: IBakedModel) : IBakedModel by bas
                 val facade = stack.item as FacadeItem
                 val facadeBlock = facade.getFacadeFromStack(stack)
 
-                if (facadeBlock.isEmpty)
+                if (facadeBlock.stack.isEmpty)
                     return originalModel
 
                 val hash = Objects.hash(stack.tagCompound)
 
                 return cache.getOrPut(hash) {
-                    //return Minecraft.getMinecraft().renderItem.getItemModelWithOverrides(facadeBlock, null, null)
-                    return FacadeItemBakedModel(baseBakedModel, facadeBlock)
+                    return FacadeItemBakedModel(baseBakedModel, facadeBlock.stack)
                 }
             }
         }

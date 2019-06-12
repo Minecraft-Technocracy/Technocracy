@@ -18,6 +18,7 @@ import net.minecraft.util.math.MathHelper
 import net.minecraft.world.IBlockAccess
 import net.minecraftforge.client.ForgeHooksClient
 import net.minecraftforge.client.MinecraftForgeClient
+import java.lang.Exception
 import java.util.ArrayList
 
 
@@ -30,39 +31,32 @@ object FacadeBakery {
         }
     }
 
-    fun getFacadeQuads(coverFace: EnumFacing, facadeStack: ItemStack, pos: BlockPos, faces: BooleanArray): MutableList<BakedQuad> {
+    fun getFacadeQuads(coverFace: EnumFacing, facadeStack: ItemStack, pos: BlockPos, faces: BooleanArray, currentLayer: BlockRenderLayer): MutableList<BakedQuad> {
         val quads = mutableListOf<BakedQuad>()
 
         val mc = Minecraft.getMinecraft()
         val dispatcher = mc.blockRendererDispatcher
 
-        if(facadeStack.isEmpty || facadeStack.item !is FacadeItem)
+        if (facadeStack.isEmpty || facadeStack.item !is FacadeItem)
             return quads
 
         val facade = facadeStack.item as FacadeItem
         val stack = facade.getFacadeFromStack(facadeStack)
 
-        val block = Block.getBlockFromItem(stack.item)
-        val state: IBlockState = block.getStateFromMeta(stack.itemDamage)
+        val block = Block.getBlockFromItem(stack.stack.item)
+        val state: IBlockState = block.getStateFromMeta(stack.stack.itemDamage)
 
-        //fix for ctm not working
-        val fakeWorld = FakeWorld(mc.world, state, pos)
+        if (state.block.canRenderInLayer(state, currentLayer)) {
+            //fix for ctm not working
+            val fakeWorld = FakeWorld(mc.world, state, pos)
 
-        var customState = state.getActualState(fakeWorld, pos)
-        val coverModel = dispatcher.getModelForState(customState)
-        customState = customState.block.getExtendedState(customState, fakeWorld, pos)
+            //get the custom state with ctm data
+            var customState = state.getActualState(fakeWorld, pos)
+            val coverModel = dispatcher.getModelForState(customState)
+            customState = customState.block.getExtendedState(customState, fakeWorld, pos)
 
-        val last = MinecraftForgeClient.getRenderLayer()
-
-        for (forcedLayer in BlockRenderLayer.values()) {
-            if (state.block.canRenderInLayer(customState, forcedLayer)) {
-                ForgeHooksClient.setRenderLayer(forcedLayer)
-
-                quads.addAll(genQuads(coverModel, customState, coverFace, faces, fakeWorld, pos, customState.block.blockLayer == BlockRenderLayer.TRANSLUCENT))
-            }
+            quads.addAll(genQuads(coverModel, customState, coverFace, faces, fakeWorld, pos, customState.block.blockLayer == BlockRenderLayer.TRANSLUCENT))
         }
-        ForgeHooksClient.setRenderLayer(last)
-
 
         return quads
     }
@@ -109,7 +103,7 @@ object FacadeBakery {
         return modelQuads
     }
 
-    fun genQuads(coverModel: IBakedModel, customState: IBlockState?, coverFace: EnumFacing, faces: BooleanArray, access: IBlockAccess?, pos: BlockPos?, transparent: Boolean): List<BakedQuad> {
+    fun genQuads(coverModel: IBakedModel, customState: IBlockState, coverFace: EnumFacing, faces: BooleanArray, access: IBlockAccess?, pos: BlockPos?, transparent: Boolean): List<BakedQuad> {
         val quads = mutableListOf<BakedQuad>()
         var origQuads = coverModel.getQuads(customState, null, 0)
         if (!origQuads.isEmpty()) {
@@ -119,47 +113,50 @@ object FacadeBakery {
 
         val modelQuads = ArrayList<BakedQuad>()
         for (face in EnumFacing.VALUES) {
-            modelQuads.addAll(coverModel.getQuads(customState!!.getActualState(access,pos ), face, 0))
+            modelQuads.addAll(coverModel.getQuads(customState.getActualState(access, pos), face, 0))
         }
-        modelQuads.addAll(coverModel.getQuads(customState!!.getActualState(access,pos ), null, 0))
+        modelQuads.addAll(coverModel.getQuads(customState.getActualState(access, pos), null, 0))
 
         for (side in EnumFacing.values()) {
             origQuads = coverModel.getQuads(customState, side, 0)
             if (!origQuads.isEmpty()) {
 
-                val vertices = mutableListOf<FloatArray>()
-                for (i in 0..3) {
-                    vertices.add(generate(FloatArray(3), faces, coverFace, side, i))
-                }
-
-                if (origQuads.size != 4) {
-                    origQuads.forEachIndexed { index, bakedQuad ->
-                        val quad = SimpleQuad(vertices)
-                        quad.format = DefaultVertexFormats.BLOCK
-                        quad.cloneData(bakedQuad)
-                        if (bakedQuad.hasTintIndex() && customState != null) {
-                            quad.tintColor = Minecraft.getMinecraft().blockColors.colorMultiplier(customState, access, pos, bakedQuad.tintIndex)
-                        }
-
-                        quad.recalculateUV()
-                        quad.transparent = transparent
-
-                        quads.add(quad.bake())
+                try {
+                    val vertices = mutableListOf<FloatArray>()
+                    for (i in 0..3) {
+                        vertices.add(generate(FloatArray(3), faces, coverFace, side, i))
                     }
-                } else {
-                    val splits = SimpleQuad(vertices).subdivide(4)
-                    origQuads.forEachIndexed { index, bakedQuad ->
-                        splits[index].format = DefaultVertexFormats.BLOCK
-                        splits[index].cloneData(bakedQuad)
-                        if (bakedQuad.hasTintIndex() && customState != null) {
-                            splits[index].tintColor = Minecraft.getMinecraft().blockColors.colorMultiplier(customState, access, pos, bakedQuad.tintIndex)
+
+                    if (origQuads.size != 4) {
+                        origQuads.forEachIndexed { index, bakedQuad ->
+                            val quad = SimpleQuad(vertices)
+                            quad.format = DefaultVertexFormats.BLOCK
+                            quad.cloneData(bakedQuad)
+                            if (bakedQuad.hasTintIndex()) {
+                                quad.tintColor = Minecraft.getMinecraft().blockColors.colorMultiplier(customState, access, pos, bakedQuad.tintIndex)
+                            }
+
+                            quad.recalculateUV()
+                            quad.transparent = transparent
+
+                            quads.add(quad.bake())
                         }
+                    } else {
+                        val splits = SimpleQuad(vertices).subdivide(4)
+                        origQuads.forEachIndexed { index, bakedQuad ->
+                            splits[index].format = DefaultVertexFormats.BLOCK
+                            splits[index].cloneData(bakedQuad)
+                            if (bakedQuad.hasTintIndex()) {
+                                splits[index].tintColor = Minecraft.getMinecraft().blockColors.colorMultiplier(customState, access, pos, bakedQuad.tintIndex)
+                            }
 
-                        splits[index].recalculateUV(index)
-                        splits[index].transparent = transparent
+                            splits[index].recalculateUV(index)
+                            splits[index].transparent = transparent
 
-                        quads.add(splits[index].bake())
+                            quads.add(splits[index].bake())
+                        }
                     }
+                } catch (e: Exception) {
                 }
             }
         }

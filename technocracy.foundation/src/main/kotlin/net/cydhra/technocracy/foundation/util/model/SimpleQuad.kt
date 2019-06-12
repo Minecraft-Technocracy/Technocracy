@@ -181,33 +181,35 @@ class SimpleQuad() {
             else -> 0f
         }
 
-        @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
-        when (face!!.axis) {
-            EnumFacing.Axis.Z -> {
-                for (i in 0 until vertPos.size) {
-                    val changeY = (minY + vertPos[i].y) / maxY
-                    val changeX = (minX + vertPos[i].x) / maxX
+        if(face != null) {
+            @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
+            when (face!!.axis) {
+                EnumFacing.Axis.Z -> {
+                    for (i in 0 until vertPos.size) {
+                        val changeY = (minY + vertPos[i].y) / maxY
+                        val changeX = (minX + vertPos[i].x) / maxX
 
-                    vertUv[i].y = maxUVY - distY * changeY + modY
-                    vertUv[i].x = maxUVX - distX * changeX + modX
+                        vertUv[i].y = maxUVY - distY * changeY + modY
+                        vertUv[i].x = maxUVX - distX * changeX + modX
+                    }
                 }
-            }
-            EnumFacing.Axis.X -> {
-                for (i in 0 until vertPos.size) {
-                    val changeY = (minY + vertPos[i].y) / maxY
-                    val changeX = (minX + vertPos[i].z) / maxX
+                EnumFacing.Axis.X -> {
+                    for (i in 0 until vertPos.size) {
+                        val changeY = (minY + vertPos[i].y) / maxY
+                        val changeX = (minX + vertPos[i].z) / maxX
 
-                    vertUv[i].y = maxUVY - distY * changeY + modY
-                    vertUv[i].x = maxUVX - distX * changeX + modX
+                        vertUv[i].y = maxUVY - distY * changeY + modY
+                        vertUv[i].x = maxUVX - distX * changeX + modX
+                    }
                 }
-            }
-            EnumFacing.Axis.Y -> {
-                for (i in 0 until vertPos.size) {
-                    val changeY = (minY + vertPos[i].z) / maxY
-                    val changeX = (minX + vertPos[i].x) / maxX
+                EnumFacing.Axis.Y -> {
+                    for (i in 0 until vertPos.size) {
+                        val changeY = (minY + vertPos[i].z) / maxY
+                        val changeX = (minX + vertPos[i].x) / maxX
 
-                    vertUv[i].y = maxUVY - distY * changeY + modY
-                    vertUv[i].x = maxUVX - distX * changeX + modX
+                        vertUv[i].y = maxUVY - distY * changeY + modY
+                        vertUv[i].x = maxUVX - distX * changeX + modX
+                    }
                 }
             }
         }

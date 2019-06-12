@@ -33,10 +33,10 @@ class QuadCloner(val quad: SimpleQuad) : IVertexConsumer {
         }
     }
 
-    override fun setQuadOrientation(orientation: EnumFacing) {
+    override fun setQuadOrientation(orientation: EnumFacing?) {
     }
 
-    override fun setTexture(texture: TextureAtlasSprite) {
+    override fun setTexture(texture: TextureAtlasSprite?) {
     }
 
     override fun setApplyDiffuseLighting(diffuse: Boolean) {
