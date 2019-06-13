@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.foundation.util
+package net.cydhra.technocracy.foundation.util.facade
 
 import net.minecraft.item.ItemStack
 

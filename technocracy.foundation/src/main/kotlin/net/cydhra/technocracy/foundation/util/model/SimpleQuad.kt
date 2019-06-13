@@ -2,12 +2,14 @@ package net.cydhra.technocracy.foundation.util.model
 
 import com.google.common.collect.Lists
 import com.google.common.collect.MultimapBuilder
+import net.cydhra.technocracy.foundation.client.model.pipe.FacadeBakery
 import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.client.renderer.vertex.VertexFormat
 import net.minecraft.client.renderer.vertex.VertexFormatElement
 import net.minecraft.util.EnumFacing
+import net.minecraft.util.math.MathHelper
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad
 import org.apache.commons.lang3.tuple.Pair
 import org.lwjgl.util.vector.Vector2f
@@ -36,13 +38,14 @@ class SimpleQuad() {
     var tintIndex: Int = -1
     var tintColor: Int = 0
     var sprite: TextureAtlasSprite? = null
-    var applyDiffuseLighting: Boolean = true
-    var transparent = false
+    var applyDiffuseLighting = true
+    var clonePosData = false
 
     val vertPos = mutableListOf<Vector3f>()
     val vertUv = mutableListOf<Vector2f>()
     val vertLight = mutableListOf<Vector2f>()
     val vertColor = mutableListOf<Vector4f>()
+    val vertNormal = mutableListOf<Vector3f>()
 
     val data = MultimapBuilder.enumKeys(VertexFormatElement.EnumUsage::class.java).arrayListValues().build<VertexFormatElement.EnumUsage, FloatArray>()
 
@@ -181,7 +184,7 @@ class SimpleQuad() {
             else -> 0f
         }
 
-        if(face != null) {
+        if (face != null) {
             @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
             when (face!!.axis) {
                 EnumFacing.Axis.Z -> {
@@ -215,6 +218,201 @@ class SimpleQuad() {
         }
     }
 
+    fun recalculateVertexPoses(coverFace: EnumFacing, faces: BooleanArray) {
+        val pixelSize = 1 / 16f
+        val height = pixelSize * FacadeBakery.facadeSize
+
+        val minX = getMin(Vector4f(vertPos[0].x,vertPos[1].x,vertPos[2].x,vertPos[3].x))
+        val minY = getMin(Vector4f(vertPos[0].y,vertPos[1].y,vertPos[2].y,vertPos[3].y))
+        val minZ = getMin(Vector4f(vertPos[0].z,vertPos[1].z,vertPos[2].z,vertPos[3].z))
+        val maxX = getMax(Vector4f(vertPos[0].x,vertPos[1].x,vertPos[2].x,vertPos[3].x))
+        val maxY = getMax(Vector4f(vertPos[0].y,vertPos[1].y,vertPos[2].y,vertPos[3].y))
+        val maxZ = getMax(Vector4f(vertPos[0].z,vertPos[1].z,vertPos[2].z,vertPos[3].z))
+
+        val yWidth = when (coverFace) {
+            EnumFacing.UP -> -(1f - height)
+            EnumFacing.DOWN -> 1f - height
+            else -> 0f
+        }
+
+        val xWidth = when (coverFace) {
+            EnumFacing.EAST -> -(1f - height)
+            EnumFacing.WEST -> 1f - height
+            else -> 0f
+        }
+
+        val zWidth = when (coverFace) {
+            EnumFacing.SOUTH -> -(1f - height)
+            EnumFacing.NORTH -> 1f - height
+            else -> 0f
+        }
+
+        val up = faces[EnumFacing.UP.ordinal]
+        val down = faces[EnumFacing.DOWN.ordinal]
+        val north = faces[EnumFacing.NORTH.ordinal]
+        val south = faces[EnumFacing.SOUTH.ordinal]
+        val east = faces[EnumFacing.EAST.ordinal]
+        val west = faces[EnumFacing.WEST.ordinal]
+
+        for(vertices in 0 until 4) {
+            if (this.face == EnumFacing.NORTH) {
+                when (vertices) {
+                    1 -> {
+                        vertPos[vertices].x = maxX - xWidth - if (east && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.UP)) height else 0.0f
+                        vertPos[vertices].y = minY - yWidth + if (down && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.WEST)) height else 0.0f
+                        vertPos[vertices].z = minZ - zWidth + if (north && (coverFace == EnumFacing.UP || coverFace == EnumFacing.WEST)) height else 0.0f
+                    }
+                    2 -> {
+                        vertPos[vertices].x = minX - xWidth + if (west && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.UP)) height else 0.0f
+                        vertPos[vertices].y = minY - yWidth + if (down && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.EAST)) height else 0.0f
+                        vertPos[vertices].z = minZ - zWidth + if (north && (coverFace == EnumFacing.UP || coverFace == EnumFacing.EAST)) height else 0.0f
+                    }
+                    3 -> {
+                        vertPos[vertices].x = minX - xWidth + if (west && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.DOWN)) height else 0.0f
+                        vertPos[vertices].y = maxY - yWidth - if (up && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.EAST)) height else 0.0f
+                        vertPos[vertices].z = minZ - zWidth + if (north && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.EAST)) height else 0.0f
+                    }
+                    0 -> {
+                        vertPos[vertices].x = maxX - xWidth - if (east && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.DOWN)) height else 0.0f
+                        vertPos[vertices].y = maxY - yWidth - if (up && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.WEST)) height else 0.0f
+                        vertPos[vertices].z = minZ - zWidth + if (north && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.WEST)) height else 0.0f
+                    }
+                }
+            }
+
+            if (this.face == EnumFacing.SOUTH) {
+                when (vertices) {
+                    1 -> {
+                        vertPos[vertices].x = minX - xWidth + if (west && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.UP)) height else 0.0f
+                        vertPos[vertices].y = minY - yWidth + if (down && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.EAST)) height else 0.0f
+                        vertPos[vertices].z = maxZ - zWidth - if (south && (coverFace == EnumFacing.UP || coverFace == EnumFacing.EAST)) height else 0.0f
+                    }
+                    2 -> {
+                        vertPos[vertices].x = maxX - xWidth - if (east && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.UP)) height else 0.0f
+                        vertPos[vertices].y = minY - yWidth + if (down && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.WEST)) height else 0.0f
+                        vertPos[vertices].z = maxZ - zWidth - if (south && (coverFace == EnumFacing.UP || coverFace == EnumFacing.WEST)) height else 0.0f
+                    }
+                    3 -> {
+                        vertPos[vertices].x = maxX - xWidth - if (east && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.DOWN)) height else 0.0f
+                        vertPos[vertices].y = maxY - yWidth - if (up && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.WEST)) height else 0.0f
+                        vertPos[vertices].z = maxZ - zWidth - if (south && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.WEST)) height else 0.0f
+                    }
+                    0 -> {
+                        vertPos[vertices].x = minX - xWidth + if (west && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.DOWN)) height else 0.0f
+                        vertPos[vertices].y = maxY - yWidth - if (up && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.EAST)) height else 0.0f
+                        vertPos[vertices].z = maxZ - zWidth - if (south && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.EAST)) height else 0.0f
+                    }
+                }
+            }
+
+            if (this.face == EnumFacing.WEST) {
+                when (vertices) {
+                    1 -> {
+                        vertPos[vertices].x = minX - xWidth + if (west && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.UP)) height else 0.0f
+                        vertPos[vertices].y = minY - yWidth + if (down && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.EAST)) height else 0.0f
+                        vertPos[vertices].z = minZ - zWidth + if (north && (coverFace == EnumFacing.UP || coverFace == EnumFacing.EAST)) height else 0.0f
+                    }
+                    2 -> {
+                        vertPos[vertices].x = minX - xWidth + if (west && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.UP)) height else 0.0f
+                        vertPos[vertices].y = minY - yWidth + if (down && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.EAST)) height else 0.0f
+                        vertPos[vertices].z = maxZ - zWidth - if (south && (coverFace == EnumFacing.UP || coverFace == EnumFacing.EAST)) height else 0.0f
+                    }
+                    3 -> {
+                        vertPos[vertices].x = minX - xWidth + if (west && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.DOWN)) height else 0.0f
+                        vertPos[vertices].y = maxY - yWidth - if (up && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.EAST)) height else 0.0f
+                        vertPos[vertices].z = maxZ - zWidth - if (south && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.EAST)) height else 0.0f
+                    }
+                    0 -> {
+                        vertPos[vertices].x = minX - xWidth + if (west && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.DOWN)) height else 0.0f
+                        vertPos[vertices].y = maxY - yWidth - if (up && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.EAST)) height else 0.0f
+                        vertPos[vertices].z = minZ - zWidth + if (north && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.EAST)) height else 0.0f
+                    }
+                }
+            }
+
+            if (this.face == EnumFacing.EAST) {
+                when (vertices) {
+                    1 -> {
+                        vertPos[vertices].x = maxX - xWidth - if (east && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.UP)) height else 0.0f
+                        vertPos[vertices].y = minY - yWidth + if (down && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.WEST)) height else 0.0f
+                        vertPos[vertices].z = maxZ - zWidth - if (south && (coverFace == EnumFacing.UP || coverFace == EnumFacing.WEST)) height else 0.0f
+                    }
+                    2 -> {
+                        vertPos[vertices].x = maxX - xWidth - if (east && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.UP)) height else 0.0f
+                        vertPos[vertices].y = minY - yWidth + if (down && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.WEST)) height else 0.0f
+                        vertPos[vertices].z = minZ - zWidth + if (north && (coverFace == EnumFacing.UP || coverFace == EnumFacing.WEST)) height else 0.0f
+                    }
+                    3 -> {
+                        vertPos[vertices].x = maxX - xWidth - if (east && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.DOWN)) height else 0.0f
+                        vertPos[vertices].y = maxY - yWidth - if (up && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.WEST)) height else 0.0f
+                        vertPos[vertices].z = minZ - zWidth + if (north && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.WEST)) height else 0.0f
+                    }
+                    0 -> {
+                        vertPos[vertices].x = maxX - xWidth - if (east && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.DOWN)) height else 0.0f
+                        vertPos[vertices].y = maxY - yWidth - if (up && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.WEST)) height else 0.0f
+                        vertPos[vertices].z = maxZ - zWidth - if (south && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.WEST)) height else 0.0f
+                    }
+                }
+            }
+
+            if (this.face == EnumFacing.UP) {
+                when (vertices) {
+                    0 -> {//2
+                        vertPos[vertices].x = minX - xWidth + if (west && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.DOWN)) height else 0.0f
+                        vertPos[vertices].y = maxY - yWidth - if (up && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.EAST)) height else 0.0f
+                        vertPos[vertices].z = minZ - zWidth + if (north && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.EAST)) height else 0.0f
+                    }
+                    1 -> {//3
+                        vertPos[vertices].x = minX - xWidth + if (west && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.DOWN)) height else 0.0f
+                        vertPos[vertices].y = maxY - yWidth - if (up && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.EAST)) height else 0.0f
+                        vertPos[vertices].z = maxZ - zWidth - if (south && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.EAST)) height else 0.0f
+                    }
+                    2 -> {//0
+                        vertPos[vertices].x = maxX - xWidth - if (east && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.DOWN)) height else 0.0f
+                        vertPos[vertices].y = maxY - yWidth - if (up && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.WEST)) height else 0.0f
+                        vertPos[vertices].z = maxZ - zWidth - if (south && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.WEST)) height else 0.0f
+                    }
+                    3 -> {//1
+                        vertPos[vertices].x = maxX - xWidth - if (east && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.DOWN)) height else 0.0f
+                        vertPos[vertices].y = maxY - yWidth - if (up && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.WEST)) height else 0.0f
+                        vertPos[vertices].z = minZ - zWidth + if (north && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.WEST)) height else 0.0f
+                    }
+                }
+            }
+
+            if (this.face == EnumFacing.DOWN) {
+                when (vertices) {
+                    1 -> {
+                        vertPos[vertices].x = minX - xWidth + if (west && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.UP)) height else 0.0f
+                        vertPos[vertices].y = minY - yWidth + if (down && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.EAST)) height else 0.0f
+                        vertPos[vertices].z = minZ - zWidth + if (north && (coverFace == EnumFacing.UP || coverFace == EnumFacing.EAST)) height else 0.0f
+                    }
+                    2 -> {
+                        vertPos[vertices].x = maxX - xWidth - if (east && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.UP)) height else 0.0f
+                        vertPos[vertices].y = minY - yWidth + if (down && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.WEST)) height else 0.0f
+                        vertPos[vertices].z = minZ - zWidth + if (north && (coverFace == EnumFacing.UP || coverFace == EnumFacing.WEST)) height else 0.0f
+                    }
+                    3 -> {
+                        vertPos[vertices].x = maxX - xWidth - if (east && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.UP)) height else 0.0f
+                        vertPos[vertices].y = minY - yWidth + if (down && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.WEST)) height else 0.0f
+                        vertPos[vertices].z = maxZ - zWidth - if (south && (coverFace == EnumFacing.UP || coverFace == EnumFacing.WEST)) height else 0.0f
+                    }
+                    0 -> {
+                        vertPos[vertices].x = minX - xWidth + if (west && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.UP)) height else 0.0f
+                        vertPos[vertices].y = minY - yWidth + if (down && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.EAST)) height else 0.0f
+                        vertPos[vertices].z = maxZ - zWidth - if (south && (coverFace == EnumFacing.UP || coverFace == EnumFacing.EAST)) height else 0.0f
+                    }
+                }
+            }
+
+            //clamp
+
+            vertPos[vertices].x = MathHelper.clamp(vertPos[vertices].x, 0f, 1f)
+            vertPos[vertices].y = MathHelper.clamp(vertPos[vertices].y, 0f, 1f)
+            vertPos[vertices].z = MathHelper.clamp(vertPos[vertices].z, 0f, 1f)
+        }
+    }
+
     fun getMin(values: Vector4f): Float {
         return Math.min(values.x, Math.min(values.y, Math.min(values.z, values.w)))
     }
@@ -238,6 +436,10 @@ class SimpleQuad() {
             for (i in 0 until format.elementCount) {
                 val ele = format.getElement(i)
                 when (ele.usage) {
+                    VertexFormatElement.EnumUsage.POSITION -> {
+                        val pos = vertPos[v]
+                        builder.put(i, pos.x, pos.y, pos.z, 0f)
+                    }
                     VertexFormatElement.EnumUsage.UV -> {
                         if (ele.index == 1) {
                             if (vertLight.size > v) {
@@ -264,9 +466,13 @@ class SimpleQuad() {
                             builder.put(i, color.x, color.y, color.z, color.w)
                         }
                     }
-                    VertexFormatElement.EnumUsage.POSITION -> {
-                        val p = vertPos[v]
-                        builder.put(i, p.x, p.y, p.z, 0f)
+                    VertexFormatElement.EnumUsage.NORMAL -> {
+                        if (vertNormal.size > v) {
+                            val normal = vertNormal[v]
+                            builder.put(i, normal.x, normal.y, normal.z)
+                        } else {
+                            builder.put(i, *data.get(ele.usage)[v])
+                        }
                     }
                     else -> {
                         builder.put(i, *data.get(ele.usage)[v])

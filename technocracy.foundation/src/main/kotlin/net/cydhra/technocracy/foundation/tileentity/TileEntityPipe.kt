@@ -254,7 +254,7 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
         val expansion = ((this.getInstalledTypes().size - 1) * node.averageEdgeLength) / 2
         boxes.add(Triple(EnumFacing.NORTH to node.expand(expansion * 2, 0.0, expansion * 2).offset(-expansion,
                 0.0,
-                -expansion), null, 0))
+                -expansion), if(getInstalledTypes().size == 1) getInstalledTypes().first() else null, 0))
 
         //Calc facades
 

@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.vertex.VertexFormatElement
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.client.model.pipeline.IVertexConsumer
 import org.lwjgl.util.vector.Vector2f
+import org.lwjgl.util.vector.Vector3f
 import org.lwjgl.util.vector.Vector4f
 
 
@@ -28,9 +29,17 @@ class QuadCloner(val quad: SimpleQuad) : IVertexConsumer {
             }
         } else if (usage.usage == VertexFormatElement.EnumUsage.COLOR && data.isNotEmpty()) {
             quad.vertColor.add(Vector4f(data[0], data[1], data[2], data[3]))
-        } else if (usage.usage != VertexFormatElement.EnumUsage.POSITION) {
-            quad.data.put(usage.usage, data)
-        }
+        } else if (usage.usage == VertexFormatElement.EnumUsage.NORMAL && data.isNotEmpty()) {
+            quad.vertNormal.add(Vector3f(data[0], data[1], data[2]))
+        } else if (quad.clonePosData && usage.usage == VertexFormatElement.EnumUsage.POSITION) {
+            quad.vertPos.add(Vector3f(data[0], data[1], data[2]))
+        } else
+            if (usage.usage != VertexFormatElement.EnumUsage.POSITION) {
+
+                usage.usage
+
+                quad.data.put(usage.usage, data)
+            }
     }
 
     override fun setQuadOrientation(orientation: EnumFacing?) {

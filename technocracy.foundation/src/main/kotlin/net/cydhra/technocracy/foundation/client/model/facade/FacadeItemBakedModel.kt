@@ -1,7 +1,6 @@
 package net.cydhra.technocracy.foundation.client.model.facade
 
 import net.cydhra.technocracy.foundation.client.model.pipe.FacadeBakery
-import net.cydhra.technocracy.foundation.util.FacadeStack
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.client.renderer.block.model.IBakedModel
@@ -18,6 +17,7 @@ class FacadeItemBakedModel(val baseBakedModel: IBakedModel, val facadeBlock: Ite
         if (side != null) {
             return Collections.emptyList()
         }
+        //TODO cache
         val quads = ArrayList<BakedQuad>()
         quads.addAll(FacadeBakery.getFacadeItemQuads(facadeBlock))
         quads.addAll(baseBakedModel.getQuads(state, side, rand))

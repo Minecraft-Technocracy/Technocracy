@@ -1,20 +1,14 @@
 package net.cydhra.technocracy.foundation.items.general
 
 import net.cydhra.technocracy.foundation.blocks.PipeBlock
-import net.cydhra.technocracy.foundation.blocks.general.pipe
 import net.cydhra.technocracy.foundation.client.technocracyFacadeCreativeTab
-import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
-import net.cydhra.technocracy.foundation.util.FacadeStack
-import net.minecraft.advancements.CriteriaTriggers
+import net.cydhra.technocracy.foundation.util.facade.FacadeStack
 import net.minecraft.block.Block
 import net.minecraft.block.BlockGlass
 import net.minecraft.block.BlockStainedGlass
-import net.minecraft.block.state.IBlockState
 import net.minecraft.creativetab.CreativeTabs
-import net.minecraft.entity.Entity
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.init.Blocks
 import net.minecraft.init.Items
 import net.minecraft.item.Item
@@ -122,13 +116,14 @@ class FacadeItem : BaseItem("facade") {
 
         val metadata = stack.item.getMetadata(stack.itemDamage)
 
-        val hasTile = block.hasTileEntity(block.getStateFromMeta(metadata))
-        val isGlass = block is BlockGlass || block is BlockStainedGlass || block.isTranslucent(block.getStateFromMeta(metadata))
-        val isFullBlock = block.getStateFromMeta(metadata).isFullBlock
-
         val blockState = block.getStateFromMeta(metadata)
 
-        if (blockState.renderType === EnumBlockRenderType.MODEL && !hasTile && isFullBlock) {
+        val hasTile = block.hasTileEntity(blockState)
+        val isGlass = block is BlockGlass || block is BlockStainedGlass
+        val isFullCube = block.isFullCube(blockState)
+        val model = blockState.renderType == EnumBlockRenderType.MODEL;
+
+        if ((isFullCube || isGlass) && model && !hasTile) {
             val `is` = ItemStack(this)
             val data = NBTTagCompound()
             data.setString("facade_name", stack.item.registryName!!.toString())

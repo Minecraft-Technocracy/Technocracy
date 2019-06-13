@@ -28,15 +28,15 @@ class MachineConnectorBakedModel(val baseBakedModel: IBakedModel, val connector:
         quads.addAll(baseBakedModel.getQuads(clean, side, rand))
 
         //get the models with the texture
-        val inventory = getModelWithTexture(clean, connector, TextureAtlasManager.connector_inventory!!)
-        val energy = getModelWithTexture(clean, connector, TextureAtlasManager.connector_energy!!)
+        val inventory = getModelWithTexture(clean, connector, TextureAtlasManager.connector_inventory)
+        val energy = getModelWithTexture(clean, connector, TextureAtlasManager.connector_energy)
 
         //get the position of this model out of the invisible property
         val pos = blockState.getValue(POSITION)
 
         //use direct call to world, as this is client side and thus can only be in the currently loaded world
-        val tile = Minecraft.getMinecraft().world.getTileEntity(pos) ?: return quads
-        val machine = tile as MachineTileEntity
+        val tile = Minecraft.getMinecraft().world.getTileEntity(pos) as? MachineTileEntity ?: return quads
+        val machine = tile
 
         //get all components of the TileEntity
         val comp = machine.getComponents()
@@ -65,7 +65,6 @@ class MachineConnectorBakedModel(val baseBakedModel: IBakedModel, val connector:
                     quads.add(quad)
             }
         }
-
         return quads
     }
 
