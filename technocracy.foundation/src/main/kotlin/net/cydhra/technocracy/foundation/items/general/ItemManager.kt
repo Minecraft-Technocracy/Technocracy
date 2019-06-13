@@ -1,11 +1,17 @@
 package net.cydhra.technocracy.foundation.items.general
 
 import net.cydhra.technocracy.foundation.TCFoundation
+import net.cydhra.technocracy.foundation.blocks.general.BlockManager
+import net.cydhra.technocracy.foundation.client.model.AbstractCustomModel
+import net.cydhra.technocracy.foundation.client.model.CustomModelProvider
+import net.minecraft.block.Block
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.block.model.ModelResourceLocation
 import net.minecraft.item.Item
 import net.minecraftforge.client.event.ModelRegistryEvent
+import net.minecraftforge.client.model.IModel
 import net.minecraftforge.client.model.ModelLoader
+import net.minecraftforge.client.model.ModelLoaderRegistry
 import net.minecraftforge.event.RegistryEvent
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -24,12 +30,24 @@ object ItemManager {
      */
     private val itemsToRegister = mutableListOf<BaseItem>()
 
+    private val customModels = mutableMapOf<String, IModel>()
+
     /**
      * Schedule an item for registration. Registration will be done, as soon as the registration event marks
      * registration phase.
      */
     fun prepareItemForRegistration(item: BaseItem) {
         itemsToRegister += item
+    }
+
+    /**
+     * Schedule an item for registration. Registration will be done, as soon as the registration event marks
+     * registration phase, with custom model
+     */
+    fun prepareItemForRegistration(item: BaseItem, model: AbstractCustomModel) {
+        itemsToRegister += item
+        val name = item.registryName!!.resourcePath
+        customModels["models/item/$name"] = model.initModel("item", name)
     }
 
     @Suppress("unused")
@@ -43,7 +61,9 @@ object ItemManager {
     @Suppress("unused")
     @SubscribeEvent
     @JvmStatic
-    fun registerRenders(@Suppress("UNUSED_PARAMETER") event: ModelRegistryEvent) {
+    fun registerRenders(event: ModelRegistryEvent) {
+        ModelLoaderRegistry.registerLoader(CustomModelProvider(customModels))
+
         itemsToRegister.forEach(this::registerItemRender)
         itemsToRegister
                 .filter { it.oreDictName != null }

@@ -3,15 +3,19 @@ package net.cydhra.technocracy.foundation.tileentity
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.PipeBlock
 import net.cydhra.technocracy.foundation.blocks.general.pipe
+import net.cydhra.technocracy.foundation.client.model.pipe.FacadeBakery
 import net.cydhra.technocracy.foundation.pipes.Network
 import net.cydhra.technocracy.foundation.pipes.WrappedBlockPos
 import net.cydhra.technocracy.foundation.pipes.types.PipeType
+import net.cydhra.technocracy.foundation.tileentity.components.ComponentFacade
 import net.cydhra.technocracy.foundation.tileentity.components.ComponentPipeTypes
 import net.cydhra.technocracy.foundation.tileentity.components.NetworkComponent
+import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.AxisAlignedBB
 import net.minecraft.util.math.Vec3d
 import java.util.*
+import kotlin.collections.HashMap
 
 
 class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
@@ -38,12 +42,27 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
 
     private val networkComponent = NetworkComponent()
     private val pipeTypes = ComponentPipeTypes()
+    private val facades = ComponentFacade()
 
     init {
         registerComponent(networkComponent, "network")
         registerComponent(pipeTypes, "pipeTypes")
+        registerComponent(facades, "facades")
 
         pipeTypes.types.add(PipeType.values()[meta])
+    }
+
+    fun addFacadeOnSide(stack: ItemStack, side: EnumFacing): Boolean {
+        if (facades.facades[side] != null)
+            return false
+        facades.facades[side] = stack
+        markForUpdate()
+        this.world.checkLight(this.pos)
+        return true
+    }
+
+    fun getFacades(): Map<EnumFacing, ItemStack> {
+        return facades.facades
     }
 
     fun hasPipeType(type: PipeType): Boolean {
@@ -235,7 +254,37 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
         val expansion = ((this.getInstalledTypes().size - 1) * node.averageEdgeLength) / 2
         boxes.add(Triple(EnumFacing.NORTH to node.expand(expansion * 2, 0.0, expansion * 2).offset(-expansion,
                 0.0,
-                -expansion), null, 0))
+                -expansion), if(getInstalledTypes().size == 1) getInstalledTypes().first() else null, 0))
+
+        //Calc facades
+
+        val pixelSize = 1 / 16f
+        val height = pixelSize * FacadeBakery.facadeSize.toDouble()
+
+        this.facades.facades.forEach { facing, stack ->
+            var bb = when (facing) {
+                EnumFacing.UP -> {
+                    AxisAlignedBB(0.0, 1.0 - height, 0.0, 1.0, 1.0, 1.0)
+                }
+                EnumFacing.DOWN -> {
+                    AxisAlignedBB(0.0, 0.0, 0.0, 1.0, height, 1.0)
+                }
+                EnumFacing.SOUTH -> {
+                    AxisAlignedBB(0.0, 0.0, 1.0 - height, 1.0, 1.0, 1.0)
+                }
+                EnumFacing.NORTH -> {
+                    AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 1.0, height)
+                }
+                EnumFacing.EAST -> {
+                    AxisAlignedBB(1.0 - height, 0.0, 0.0, 1.0, 1.0, 1.0)
+                }
+                EnumFacing.WEST -> {
+                    AxisAlignedBB(0.0, 0.0, 0.0, height, 1.0, 1.0)
+                }
+            }
+            boxes.add(Triple(facing to bb, null, -1))
+
+        }
 
         return boxes
     }

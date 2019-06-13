@@ -5,6 +5,8 @@ import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.general.*
 import net.cydhra.technocracy.foundation.client.gui.handler.TCGuiHandler
 import net.cydhra.technocracy.foundation.client.model.customModel.connector.MachineConnectorModel
+import net.cydhra.technocracy.foundation.client.model.facade.FacadeItemModel
+import net.cydhra.technocracy.foundation.client.model.facade.FacadeItemRedirector
 import net.cydhra.technocracy.foundation.client.model.pipe.PipeModel
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.items.general.*
@@ -125,6 +127,7 @@ open class CommonProxy {
         ItemManager.prepareItemForRegistration(superconductorItem)
         ItemManager.prepareItemForRegistration(metallicPhaseChangeMaterialItem)
         ItemManager.prepareItemForRegistration(pipeItem)
+        ItemManager.prepareItemForRegistration(facadeItem, FacadeItemModel())
 
         TileEntityManager.prepareTileEntityForRegistration(TileEntityAlloySmeltery::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityCentrifuge::class)

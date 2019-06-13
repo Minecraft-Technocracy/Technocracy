@@ -15,7 +15,7 @@ class CustomModelProvider(val builtInModels: Map<String, IModel>) : ICustomModel
     }
 
     override fun loadModel(modelLocation: ResourceLocation): IModel? {
-        return this.builtInModels.get(modelLocation.getResourcePath());
+        return this.builtInModels[modelLocation.resourcePath]
     }
 
     override fun onResourceManagerReload(resourceManager: IResourceManager) {
@@ -25,6 +25,4 @@ class CustomModelProvider(val builtInModels: Map<String, IModel>) : ICustomModel
             }
         }
     }
-
-
 }

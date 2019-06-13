@@ -9,9 +9,7 @@ import net.minecraftforge.common.model.IModelState
 import java.util.function.Function
 
 class PipeModel : AbstractCustomModel() {
-    override fun bake(state: IModelState, format: VertexFormat,
-            bakedTextureGetter: Function<ResourceLocation, TextureAtlasSprite>): IBakedModel {
-
+    override fun bake(state: IModelState, format: VertexFormat, bakedTextureGetter: Function<ResourceLocation, TextureAtlasSprite>): IBakedModel {
         return PipeModelBakery()
     }
 }
