@@ -12,7 +12,7 @@ import net.minecraftforge.fml.relauncher.SideOnly
  */
 val technocracyCreativeTabs = object : CreativeTabs("technocracy") {
     init {
-        this.backgroundImageName = "item_search.png"
+        this.backgroundImageName = "items.png"
     }
 
     override fun getTabIconItem(): ItemStack {
@@ -25,25 +25,24 @@ val technocracyCreativeTabs = object : CreativeTabs("technocracy") {
 }
 
 val technocracyFacadeCreativeTab = object : CreativeTabs("facades") {
-    override fun getTabIconItem(): ItemStack {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     lateinit var stack: ItemStack
     var last: Long = -1
 
     init {
         this.backgroundImageName = "items.png"
-
     }
 
     @SideOnly(Side.CLIENT)
     override fun getIconItemStack(): ItemStack {
-        if(last < System.currentTimeMillis()) {
+        if (last < System.currentTimeMillis()) {
             last = System.currentTimeMillis() + 1000 * 5
-            stack = facadeItem.getRandomFacade()
+            stack = tabIconItem
         }
         return stack
+    }
+
+    override fun getTabIconItem(): ItemStack {
+        return facadeItem.getRandomFacade()
     }
 
     override fun hasSearchBar(): Boolean {

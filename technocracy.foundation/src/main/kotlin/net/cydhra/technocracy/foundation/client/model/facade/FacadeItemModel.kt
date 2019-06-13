@@ -13,7 +13,7 @@ import net.minecraftforge.common.model.IModelState
 import java.util.function.Function
 
 
-class FacadeItemModel: AbstractCustomModel() {
+class FacadeItemModel : AbstractCustomModel() {
     override fun bake(state: IModelState, format: VertexFormat, bakedTextureGetter: Function<ResourceLocation, TextureAtlasSprite>): IBakedModel {
         val bakedBaseModel = ModelLoaderRegistry.getModel(MODEL_BASE!!).bake(state, format, bakedTextureGetter)
 
