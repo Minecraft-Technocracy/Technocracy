@@ -61,7 +61,7 @@ object ItemManager {
     @Suppress("unused")
     @SubscribeEvent
     @JvmStatic
-    fun registerRenders(event: ModelRegistryEvent) {
+    fun registerRenders(@Suppress("UNUSED_PARAMETER") event: ModelRegistryEvent) {
         ModelLoaderRegistry.registerLoader(CustomModelProvider(customModels))
 
         itemsToRegister.forEach(this::registerItemRender)
