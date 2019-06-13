@@ -167,7 +167,7 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
                 return ItemStack(pipeItem, 1, triple.second!!.ordinal)
             } else {
                 val raytrace = collisionRayTrace(state, world, pos, startPos, endPos)
-                return tile.getFacades()[raytrace!!.sideHit]?: ItemStack.EMPTY
+                return tile.getFacades()[raytrace!!.sideHit] ?: ItemStack.EMPTY
             }
         }
         return super.getPickBlock(state, target, world, pos, player)
@@ -376,7 +376,10 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
         val facade = stack.item as FacadeItem
         val facadeStack = facade.getFacadeFromStack(stack)
         val block = Block.getBlockFromItem(facadeStack.stack.item)
-        return block.onEntityWalk(world, pos, entityIn)
+        block.onEntityWalk(world, pos, entityIn)
+        //normaly is only called when player is inside hitbox of the block
+        block.onEntityCollidedWithBlock(world, pos, block.getStateFromMeta(facadeStack.stack.itemDamage), entityIn)
+        return
     }
 
     override fun onFallenUpon(world: World, pos: BlockPos, entityIn: Entity, fallDistance: Float) {
