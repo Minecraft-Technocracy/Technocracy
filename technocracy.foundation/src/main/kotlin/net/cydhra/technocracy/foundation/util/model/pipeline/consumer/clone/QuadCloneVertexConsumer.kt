@@ -1,7 +1,7 @@
-package net.cydhra.technocracy.foundation.util.model
+package net.cydhra.technocracy.foundation.util.model.pipeline.consumer.clone
 
+import net.cydhra.technocracy.foundation.util.model.SimpleQuad
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.client.renderer.vertex.VertexFormat
 import net.minecraft.client.renderer.vertex.VertexFormatElement
 import net.minecraft.util.EnumFacing
@@ -11,7 +11,7 @@ import org.lwjgl.util.vector.Vector3f
 import org.lwjgl.util.vector.Vector4f
 
 
-class QuadCloner(val quad: SimpleQuad) : IVertexConsumer {
+class QuadCloneVertexConsumer(val quad: SimpleQuad, val clonePos: Boolean) : IVertexConsumer {
     override fun getVertexFormat(): VertexFormat {
         return quad.format
     }
@@ -31,13 +31,10 @@ class QuadCloner(val quad: SimpleQuad) : IVertexConsumer {
             quad.vertColor.add(Vector4f(data[0], data[1], data[2], data[3]))
         } else if (usage.usage == VertexFormatElement.EnumUsage.NORMAL && data.isNotEmpty()) {
             quad.vertNormal.add(Vector3f(data[0], data[1], data[2]))
-        } else if (quad.clonePosData && usage.usage == VertexFormatElement.EnumUsage.POSITION) {
+        } else if (clonePos && usage.usage == VertexFormatElement.EnumUsage.POSITION) {
             quad.vertPos.add(Vector3f(data[0], data[1], data[2]))
         } else
             if (usage.usage != VertexFormatElement.EnumUsage.POSITION) {
-
-                usage.usage
-
                 quad.data.put(usage.usage, data)
             }
     }

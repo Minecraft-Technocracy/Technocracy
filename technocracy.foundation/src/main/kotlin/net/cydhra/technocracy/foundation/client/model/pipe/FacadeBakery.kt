@@ -4,6 +4,11 @@ import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.items.general.FacadeItem
 import net.cydhra.technocracy.foundation.util.facade.FakeBlockAccess
 import net.cydhra.technocracy.foundation.util.model.SimpleQuad
+import net.cydhra.technocracy.foundation.util.model.pipeline.QuadPipeline
+import net.cydhra.technocracy.foundation.util.model.pipeline.consumer.QuadFacadeTransformer
+import net.cydhra.technocracy.foundation.util.model.pipeline.consumer.clone.QuadCloneConsumer
+import net.cydhra.technocracy.foundation.util.model.pipeline.consumer.QuadTinter
+import net.cydhra.technocracy.foundation.util.model.pipeline.consumer.QuadUVTransformer
 import net.minecraft.block.Block
 import net.minecraft.block.BlockDirectional
 import net.minecraft.block.BlockHorizontal
@@ -19,7 +24,6 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.MathHelper
 import net.minecraft.world.IBlockAccess
 import java.lang.Exception
-import java.util.ArrayList
 
 
 object FacadeBakery {
@@ -70,56 +74,47 @@ object FacadeBakery {
             faces[index] = enumFacing == EnumFacing.NORTH
         }
 
-        val origQuads = gatherQuads(coverModel)
+        val origQuads = mutableListOf<BakedQuad>()
+        for (face in EnumFacing.VALUES) {
+            origQuads.addAll(coverModel.getQuads(null, face, 0))
+        }
+        origQuads.addAll(coverModel.getQuads(null, null, 0))
+
+        val pipeline = QuadPipeline().addConsumer(QuadCloneConsumer, QuadTinter, QuadFacadeTransformer, QuadUVTransformer)
+        QuadCloneConsumer.clonePos = true
+        QuadFacadeTransformer.coverFace = EnumFacing.NORTH
+        QuadFacadeTransformer.faces = faces
 
         for (bakedQuad in origQuads) {
-            val quad = SimpleQuad()
-            quad.clonePosData = true
-            quad.format = DefaultVertexFormats.ITEM
-            quad.cloneData(bakedQuad)
+            val quad = SimpleQuad(DefaultVertexFormats.ITEM)
 
-            if (bakedQuad.hasTintIndex()) {
-                quad.tintColor = Minecraft.getMinecraft().itemColors.colorMultiplier(facadeItem, bakedQuad.tintIndex)
-            }
+            QuadTinter.tint = Minecraft.getMinecraft().itemColors.colorMultiplier(facadeItem, bakedQuad.tintIndex)
 
-            quad.recalculateVertexPoses(EnumFacing.NORTH, faces)
-            quad.recalculateUV()
-
+            pipeline.pipe(quad, bakedQuad)
             quads.add(quad.bake())
         }
 
         return quads
     }
 
-    private fun gatherQuads(model: IBakedModel): List<BakedQuad> {
-        val modelQuads = ArrayList<BakedQuad>()
-        for (face in EnumFacing.VALUES) {
-            modelQuads.addAll(model.getQuads(null, face, 0))
-        }
-        modelQuads.addAll(model.getQuads(null, null, 0))
-        return modelQuads
-    }
-
     fun genQuads(coverModel: IBakedModel, customState: IBlockState, coverFace: EnumFacing, faces: BooleanArray, access: IBlockAccess, pos: BlockPos, transparent: Boolean): List<BakedQuad> {
         val quads = mutableListOf<BakedQuad>()
         var origQuads = coverModel.getQuads(customState, null, 0)
 
+
+        val pipeline = QuadPipeline().addConsumer(QuadCloneConsumer, QuadTinter, QuadFacadeTransformer, QuadUVTransformer)
+        QuadFacadeTransformer.coverFace = coverFace
+        QuadFacadeTransformer.faces = faces
+        QuadCloneConsumer.clonePos = true
+
         //TODO cleanup
         if (!origQuads.isEmpty()) {
+
             //Custom model
             origQuads.forEachIndexed { index, bakedQuad ->
-                val quad = SimpleQuad()
-                quad.clonePosData = true
-                quad.format = DefaultVertexFormats.BLOCK
-                quad.cloneData(bakedQuad)
-                if (bakedQuad.hasTintIndex()) {
-                    quad.tintColor = Minecraft.getMinecraft().blockColors.colorMultiplier(customState, access, pos, bakedQuad.tintIndex)
-                }
-
-                quad.recalculateVertexPoses(coverFace, faces)
-                quad.recalculateUV()
-
-                quads.add(quad.bake())
+                val quad = SimpleQuad(DefaultVertexFormats.BLOCK)
+                QuadTinter.tint = Minecraft.getMinecraft().blockColors.colorMultiplier(customState, access, pos, bakedQuad.tintIndex)
+                quads.add(pipeline.pipe(quad, bakedQuad).bake())
             }
         }
 
@@ -130,20 +125,13 @@ object FacadeBakery {
                     if (origQuads.size != 4) {
                         //Normal block
                         origQuads.forEachIndexed { index, bakedQuad ->
-                            val quad = SimpleQuad()
-                            quad.clonePosData = true
-                            quad.format = DefaultVertexFormats.BLOCK
-                            quad.cloneData(bakedQuad)
-                            if (bakedQuad.hasTintIndex()) {
-                                quad.tintColor = Minecraft.getMinecraft().blockColors.colorMultiplier(customState, access, pos, bakedQuad.tintIndex)
-                            }
-
-                            quad.recalculateVertexPoses(coverFace, faces)
-                            quad.recalculateUV()
-
-                            quads.add(quad.bake())
+                            val quad = SimpleQuad(DefaultVertexFormats.BLOCK)
+                            QuadTinter.tint = Minecraft.getMinecraft().blockColors.colorMultiplier(customState, access, pos, bakedQuad.tintIndex)
+                            quads.add(pipeline.pipe(quad, bakedQuad).bake())
                         }
                     } else {
+                        pipeline.removeConsumer(QuadFacadeTransformer)
+                        QuadCloneConsumer.clonePos = false
                         //ctm block
                         val vertices = mutableListOf<FloatArray>()
                         for (i in 0..3) {
@@ -152,21 +140,15 @@ object FacadeBakery {
                         val splits = SimpleQuad(vertices).subdivide(4)
                         origQuads.forEachIndexed { index, bakedQuad ->
                             splits[index].format = DefaultVertexFormats.BLOCK
-                            splits[index].cloneData(bakedQuad)
-                            if (bakedQuad.hasTintIndex()) {
-                                splits[index].tintColor = Minecraft.getMinecraft().blockColors.colorMultiplier(customState, access, pos, bakedQuad.tintIndex)
-                            }
-
-                            splits[index].recalculateUV(index)
-
-                            quads.add(splits[index].bake())
+                            QuadTinter.tint = Minecraft.getMinecraft().blockColors.colorMultiplier(customState, access, pos, bakedQuad.tintIndex)
+                            QuadUVTransformer.quadNum = index
+                            quads.add(pipeline.pipe(splits[index], bakedQuad).bake())
                         }
                     }
                 } catch (e: Exception) {
                 }
             }
         }
-
 
         return quads
     }
