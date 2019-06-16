@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.client.textures
 
+import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.client.renderer.texture.TextureMap
 import net.minecraft.util.ResourceLocation
@@ -35,6 +36,17 @@ class TextureAtlasManager {
          */
         fun getResourceLocation(name: String): ResourceLocation {
             return ResourceLocation("technocracy.foundation", name)
+        }
+
+        /**
+         * Returns the texture for connections of a specific pipe type
+         */
+        fun getTextureForConnectionType(type: PipeType): TextureAtlasSprite {
+            return when (type) {
+                PipeType.ENERGY -> TextureAtlasManager.pipe_energy
+                PipeType.FLUID -> TextureAtlasManager.pipe_fluid
+                PipeType.ITEM -> TextureAtlasManager.pipe_item
+            }
         }
     }
 

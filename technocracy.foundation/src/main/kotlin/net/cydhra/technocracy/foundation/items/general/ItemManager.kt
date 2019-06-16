@@ -8,6 +8,8 @@ import net.minecraft.block.Block
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.block.model.ModelResourceLocation
 import net.minecraft.item.Item
+import net.minecraft.item.ItemStack
+import net.minecraft.util.NonNullList
 import net.minecraftforge.client.event.ModelRegistryEvent
 import net.minecraftforge.client.model.IModel
 import net.minecraftforge.client.model.ModelLoader
@@ -86,7 +88,11 @@ object ItemManager {
      * @param item a [BaseItem] instance
      */
     private fun registerItemRender(item: BaseItem) {
-        registerItemRender(item, 0)
+        val list = NonNullList.create<ItemStack>()
+        item.getSubItems(item.creativeTab!!,list)
+        for(subs in list) {
+            registerItemRender(item, subs.metadata)
+        }
     }
 
     /**

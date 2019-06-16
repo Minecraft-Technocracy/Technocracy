@@ -7,6 +7,7 @@ import net.cydhra.technocracy.foundation.client.gui.handler.TCGuiHandler
 import net.cydhra.technocracy.foundation.client.model.customModel.connector.MachineConnectorModel
 import net.cydhra.technocracy.foundation.client.model.facade.FacadeItemModel
 import net.cydhra.technocracy.foundation.client.model.facade.FacadeItemRedirector
+import net.cydhra.technocracy.foundation.client.model.pipe.PipeItemModel
 import net.cydhra.technocracy.foundation.client.model.pipe.PipeModel
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.items.general.*
@@ -126,7 +127,7 @@ open class CommonProxy {
         ItemManager.prepareItemForRegistration(siliconBronzeItem)
         ItemManager.prepareItemForRegistration(superconductorItem)
         ItemManager.prepareItemForRegistration(metallicPhaseChangeMaterialItem)
-        ItemManager.prepareItemForRegistration(pipeItem)
+        ItemManager.prepareItemForRegistration(pipeItem, PipeItemModel())
         ItemManager.prepareItemForRegistration(facadeItem, FacadeItemModel())
 
         TileEntityManager.prepareTileEntityForRegistration(TileEntityAlloySmeltery::class)

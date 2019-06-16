@@ -22,6 +22,7 @@ import net.minecraftforge.client.MinecraftForgeClient
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad
 import net.minecraftforge.common.model.TRSRTransformation
 import net.minecraftforge.common.property.IExtendedBlockState
+import net.minecraftforge.event.world.ChunkEvent
 import org.apache.commons.lang3.tuple.Pair
 import javax.vecmath.Matrix4f
 
@@ -73,7 +74,7 @@ class PipeModelBakery : IBakedModel {
 
                 val texture = when (it.third) {
                     0 -> TextureAtlasManager.pipe_node
-                    1 -> this.getTextureForConnectionType(it.second!!)
+                    1 -> TextureAtlasManager.getTextureForConnectionType(it.second!!)
                     else -> error("Box type out of bounds")
                 }
 
@@ -295,16 +296,5 @@ class PipeModelBakery : IBakedModel {
         }
 
         return quads
-    }
-
-    /**
-     * Returns the texture for connections of a specific pipe type
-     */
-    private fun getTextureForConnectionType(type: PipeType): TextureAtlasSprite {
-        return when (type) {
-            PipeType.ENERGY -> TextureAtlasManager.pipe_energy
-            PipeType.FLUID -> TextureAtlasManager.pipe_fluid
-            PipeType.ITEM -> TextureAtlasManager.pipe_item
-        }
     }
 }
