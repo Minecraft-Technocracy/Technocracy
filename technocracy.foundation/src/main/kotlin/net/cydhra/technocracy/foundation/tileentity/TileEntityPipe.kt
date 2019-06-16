@@ -252,9 +252,29 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
 
         //Draw main node
         val expansion = ((this.getInstalledTypes().size - 1) * node.averageEdgeLength) / 2
-        boxes.add(Triple(EnumFacing.NORTH to node.expand(expansion * 2, 0.0, expansion * 2).offset(-expansion,
-                0.0,
-                -expansion), if(getInstalledTypes().size == 1) getInstalledTypes().first() else null, 0))
+        if (straight) {
+            when (facings.first().axis) {
+                EnumFacing.Axis.X -> {
+                    boxes.add(Triple(EnumFacing.NORTH to node.expand(0.0, 0.0, expansion * 2)
+                            .offset(0.0, 0.0, -expansion)
+                            , if (getInstalledTypes().size == 1) getInstalledTypes().first() else null, 0))
+                }
+                EnumFacing.Axis.Y -> {
+                    boxes.add(Triple(EnumFacing.NORTH to node.expand(0.0, 0.0, expansion * 2)
+                            .offset(0.0, 0.0, -expansion)
+                            , if (getInstalledTypes().size == 1) getInstalledTypes().first() else null, 0))
+                }
+                EnumFacing.Axis.Z -> {
+                    boxes.add(Triple(EnumFacing.NORTH to node.expand(expansion * 2, 0.0, 0.0)
+                            .offset(-expansion, 0.0, 0.0)
+                            , if (getInstalledTypes().size == 1) getInstalledTypes().first() else null, 0))
+                }
+            }
+        } else {
+            boxes.add(Triple(EnumFacing.NORTH to node.expand(expansion * 2, 0.0, expansion * 2).offset(-expansion,
+                    0.0,
+                    -expansion), if (getInstalledTypes().size == 1) getInstalledTypes().first() else null, 0))
+        }
 
         //Calc facades
 
