@@ -17,7 +17,7 @@ import java.util.*
 class FacadeItemRedirector(val baseBakedModel: IBakedModel) : IBakedModel by baseBakedModel {
 
     companion object {
-        private val cache = mutableMapOf<Int, FacadeItemRedirector>()
+        private val cache = mutableMapOf<Int, IBakedModel>()
     }
 
     override fun getQuads(state: IBlockState?, side: EnumFacing?, rand: Long): MutableList<BakedQuad> {
@@ -39,7 +39,7 @@ class FacadeItemRedirector(val baseBakedModel: IBakedModel) : IBakedModel by bas
                 val hash = Objects.hash(stack.tagCompound)
 
                 return cache.getOrPut(hash) {
-                    return FacadeItemBakedModel(baseBakedModel, facadeBlock.stack)
+                    FacadeItemBakedModel(baseBakedModel, facadeBlock.stack)
                 }
             }
         }

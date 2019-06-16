@@ -13,15 +13,21 @@ import javax.vecmath.Matrix4f
 
 
 class FacadeItemBakedModel(val baseBakedModel: IBakedModel, val facadeBlock: ItemStack) : IBakedModel by baseBakedModel {
+
+    val cache = mutableListOf<BakedQuad>()
+
     override fun getQuads(state: IBlockState?, side: EnumFacing?, rand: Long): MutableList<BakedQuad> {
         if (side != null) {
             return Collections.emptyList()
         }
-        //TODO cache
-        val quads = ArrayList<BakedQuad>()
-        quads.addAll(FacadeBakery.getFacadeItemQuads(facadeBlock))
-        quads.addAll(baseBakedModel.getQuads(state, side, rand))
-        return quads
+        if (cache.isEmpty()) {
+            val quads = ArrayList<BakedQuad>()
+            quads.addAll(FacadeBakery.getFacadeItemQuads(facadeBlock))
+            quads.addAll(baseBakedModel.getQuads(state, side, rand))
+            cache.addAll(quads)
+            return quads
+        }
+        return cache
     }
 
     override fun handlePerspective(type: ItemCameraTransforms.TransformType): org.apache.commons.lang3.tuple.Pair<out IBakedModel, Matrix4f> {
