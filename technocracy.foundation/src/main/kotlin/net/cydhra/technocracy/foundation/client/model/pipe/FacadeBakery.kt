@@ -25,7 +25,6 @@ import net.minecraft.util.math.MathHelper
 import net.minecraft.world.IBlockAccess
 import java.lang.Exception
 
-
 object FacadeBakery {
     fun getFacadeQuads(coverFace: EnumFacing, facadeStack: ItemStack, pos: BlockPos, faces: BooleanArray, currentLayer: BlockRenderLayer): MutableList<BakedQuad> {
         val quads = mutableListOf<BakedQuad>()

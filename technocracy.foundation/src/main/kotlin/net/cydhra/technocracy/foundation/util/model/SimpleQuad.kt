@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.client.renderer.vertex.VertexFormat
 import net.minecraft.client.renderer.vertex.VertexFormatElement
 import net.minecraft.util.EnumFacing
+import net.minecraft.util.math.MathHelper
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad
 import org.apache.commons.lang3.tuple.Pair
 import org.lwjgl.util.vector.Vector2f
@@ -37,7 +38,7 @@ class SimpleQuad() {
     }
 
     lateinit var format: VertexFormat
-    var face: EnumFacing? = null
+    var face: EnumFacing = EnumFacing.UP
     var tintIndex: Int = -1
     var tintColor: Int = 0
     var sprite: TextureAtlasSprite? = null
@@ -61,7 +62,9 @@ class SimpleQuad() {
         return this
     }
 
-    fun addLight(block: Byte, sky: Byte): SimpleQuad {
+    fun addLight(blockIn: Int, skyIn: Int): SimpleQuad {
+        val block = MathHelper.clamp(blockIn, 0, 15)
+        val sky = MathHelper.clamp(skyIn, 0, 15)
         vertLight.add(Vector2f(block * 0x20 / 0xFFFF.toFloat(), sky * 0x20 / 0xFFFF.toFloat()))
         return this
     }
@@ -101,34 +104,9 @@ class SimpleQuad() {
         return this
     }
 
-    fun normalize(min: Float, max: Float, x: Float): Float {
-        return (x - min) / (max - min)
-    }
-
     fun rotate(amount: Int): SimpleQuad {
-        val uvs = arrayOfNulls<Vector2f>(4)
-
-        val s = sprite!!
-
-        for (i in 0..3) {
-            val normalized = Vector2f(normalize(s.minU, s.maxU, vertUv[i].x), normalize(s.minV, s.maxV, vertUv[i].y))
-            val uv: Vector2f
-            when (amount) {
-                1 -> uv = Vector2f(normalized.y, 1 - normalized.x)
-                2 -> uv = Vector2f(1 - normalized.x, 1 - normalized.y)
-                3 -> uv = Vector2f(1 - normalized.y, normalized.x)
-                else -> uv = Vector2f(normalized.x, normalized.y)
-            }
-            uvs[i] = uv
-        }
-
-        for (i in uvs.indices) {
-            uvs[i] = Vector2f(lerp(s.minU, s.maxU, uvs[i]!!.x), lerp(s.minV, s.maxV, uvs[i]!!.y))
-        }
-
-        this.vertUv.clear()
-        for(u in uvs)
-            this.vertUv.add(u!!)
+        if (amount != 0 && amount % this.vertUv.size != 0)
+            Collections.rotate(this.vertUv, amount)
 
         return this
     }
@@ -207,7 +185,7 @@ class SimpleQuad() {
 
     fun bake(): BakedQuad {
         if (face == null || sprite == null) {
-            throw IllegalStateException("Quad data not consistent")
+            throw IllegalStateException("no face or sprite set")
         }
 
         val builder = UnpackedBakedQuad.Builder(format)
@@ -238,16 +216,20 @@ class SimpleQuad() {
                         }
                     }
                     VertexFormatElement.EnumUsage.COLOR -> {
-                        val color = vertColor[v]
-
-                        if (tintIndex != -1) {
-                            val r = (tintColor shr 0x10 and 0xFF).toFloat() / 255f
-                            val g = (tintColor shr 0x08 and 0xFF).toFloat() / 255f
-                            val b = (tintColor and 0xFF).toFloat() / 255f
-
-                            builder.put(i, color.x * r, color.y * g, color.z * b, color.w)
+                        if (vertColor.isEmpty()) {
+                            builder.put(i, 1f, 1f, 1f, 1f)
                         } else {
-                            builder.put(i, color.x, color.y, color.z, color.w)
+                            val color = vertColor[v]
+
+                            if (tintIndex != -1) {
+                                val r = (tintColor shr 0x10 and 0xFF).toFloat() / 255f
+                                val g = (tintColor shr 0x08 and 0xFF).toFloat() / 255f
+                                val b = (tintColor and 0xFF).toFloat() / 255f
+
+                                builder.put(i, color.x * r, color.y * g, color.z * b, color.w)
+                            } else {
+                                builder.put(i, color.x, color.y, color.z, color.w)
+                            }
                         }
                     }
                     VertexFormatElement.EnumUsage.NORMAL -> {

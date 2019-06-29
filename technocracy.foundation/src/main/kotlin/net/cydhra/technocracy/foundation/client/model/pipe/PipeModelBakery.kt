@@ -1,10 +1,8 @@
 package net.cydhra.technocracy.foundation.client.model.pipe
 
-import net.cydhra.technocracy.foundation.blocks.general.heatExchangerGlassBlock
 import net.cydhra.technocracy.foundation.client.textures.TextureAtlasManager
-import net.cydhra.technocracy.foundation.items.general.facadeItem
-import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
+import net.cydhra.technocracy.foundation.util.model.SimpleQuad
 import net.cydhra.technocracy.foundation.util.propertys.POSITION
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.Minecraft
@@ -14,15 +12,11 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms
 import net.minecraft.client.renderer.block.model.ItemOverrideList
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
-import net.minecraft.init.Blocks
 import net.minecraft.util.BlockRenderLayer
 import net.minecraft.util.EnumFacing
-import net.minecraftforge.client.ForgeHooksClient
 import net.minecraftforge.client.MinecraftForgeClient
-import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad
 import net.minecraftforge.common.model.TRSRTransformation
 import net.minecraftforge.common.property.IExtendedBlockState
-import net.minecraftforge.event.world.ChunkEvent
 import org.apache.commons.lang3.tuple.Pair
 import javax.vecmath.Matrix4f
 
@@ -90,197 +84,39 @@ class PipeModelBakery : IBakedModel {
                 val maxY = boundingBox.maxY.toFloat()
                 val maxZ = boundingBox.maxZ.toFloat()
 
-                //Front
-                val quad1 = UnpackedBakedQuad.Builder(DefaultVertexFormats.POSITION_TEX_COLOR)
-                quad1.setTexture(texture)
-                if (facing.axis == EnumFacing.Axis.Y) {
-                    quad1.put(0, maxX, minY, minZ, 1F)
-                    quad1.put(1, minU, minV, 0F, 1F)
-                    quad1.put(2, 1F, 1F, 1F, 1F)
-                    quad1.put(0, minX, minY, minZ, 1F)
-                    quad1.put(1, minU, maxV, 0F, 1F)
-                    quad1.put(2, 1F, 1F, 1F, 1F)
-                    quad1.put(0, minX, maxY, minZ, 1F)
-                    quad1.put(1, maxU, maxV, 0F, 1F)
-                    quad1.put(2, 1F, 1F, 1F, 1F)
-                    quad1.put(0, maxX, maxY, minZ, 1F)
-                    quad1.put(1, maxU, minV, 0F, 1F)
-                    quad1.put(2, 1F, 1F, 1F, 1F)
-                } else {
-                    quad1.put(0, maxX, minY, minZ, 1F)
-                    quad1.put(1, minU, maxV, 0F, 1F)
-                    quad1.put(2, 1F, 1F, 1F, 1F)
-                    quad1.put(0, minX, minY, minZ, 1F)
-                    quad1.put(1, maxU, maxV, 0F, 1F)
-                    quad1.put(2, 1F, 1F, 1F, 1F)
-                    quad1.put(0, minX, maxY, minZ, 1F)
-                    quad1.put(1, maxU, minV, 0F, 1F)
-                    quad1.put(2, 1F, 1F, 1F, 1F)
-                    quad1.put(0, maxX, maxY, minZ, 1F)
-                    quad1.put(1, minU, minV, 0F, 1F)
-                    quad1.put(2, 1F, 1F, 1F, 1F)
-                }
-                quads.add(quad1.build())
+                val rotateY = if (facing.axis == EnumFacing.Axis.Y) 1 else 0
+                val rotateX = if (facing.axis == EnumFacing.Axis.X) 0 else 1
 
-                //Back
-                val quad2 = UnpackedBakedQuad.Builder(DefaultVertexFormats.POSITION_TEX_COLOR)
-                quad2.setTexture(texture)
-                if (facing.axis == EnumFacing.Axis.Y) {
-                    quad2.put(0, minX, minY, maxZ, 1F)
-                    quad2.put(1, minU, maxV, 0F, 1F)
-                    quad2.put(2, 1F, 1F, 1F, 1F)
-                    quad2.put(0, maxX, minY, maxZ, 1F)
-                    quad2.put(1, minU, minV, 0F, 1F)
-                    quad2.put(2, 1F, 1F, 1F, 1F)
-                    quad2.put(0, maxX, maxY, maxZ, 1F)
-                    quad2.put(1, maxU, minV, 0F, 1F)
-                    quad2.put(2, 1F, 1F, 1F, 1F)
-                    quad2.put(0, minX, maxY, maxZ, 1F)
-                    quad2.put(1, maxU, maxV, 0F, 1F)
-                    quad2.put(2, 1F, 1F, 1F, 1F)
-                } else {
-                    quad2.put(0, minX, minY, maxZ, 1F)
-                    quad2.put(1, minU, minV, 0F, 1F)
-                    quad2.put(2, 1F, 1F, 1F, 1F)
-                    quad2.put(0, maxX, minY, maxZ, 1F)
-                    quad2.put(1, maxU, minV, 0F, 1F)
-                    quad2.put(2, 1F, 1F, 1F, 1F)
-                    quad2.put(0, maxX, maxY, maxZ, 1F)
-                    quad2.put(1, maxU, maxV, 0F, 1F)
-                    quad2.put(2, 1F, 1F, 1F, 1F)
-                    quad2.put(0, minX, maxY, maxZ, 1F)
-                    quad2.put(1, minU, maxV, 0F, 1F)
-                    quad2.put(2, 1F, 1F, 1F, 1F)
-                }
-                quads.add(quad2.build())
 
-                //Left
-                val quad3 = UnpackedBakedQuad.Builder(DefaultVertexFormats.POSITION_TEX_COLOR)
-                quad3.setTexture(texture)
-                if (facing.axis == EnumFacing.Axis.Y) {
-                    quad3.put(0, minX, minY, minZ, 1F)
-                    quad3.put(1, minU, maxV, 0F, 1F)
-                    quad3.put(2, 1F, 1F, 1F, 1F)
-                    quad3.put(0, minX, minY, maxZ, 1F)
-                    quad3.put(1, minU, minV, 0F, 1F)
-                    quad3.put(2, 1F, 1F, 1F, 1F)
-                    quad3.put(0, minX, maxY, maxZ, 1F)
-                    quad3.put(1, maxU, minV, 0F, 1F)
-                    quad3.put(2, 1F, 1F, 1F, 1F)
-                    quad3.put(0, minX, maxY, minZ, 1F)
-                    quad3.put(1, maxU, maxV, 0F, 1F)
-                    quad3.put(2, 1F, 1F, 1F, 1F)
-                } else {
-                    quad3.put(0, minX, minY, minZ, 1F)
-                    quad3.put(1, minU, minV, 0F, 1F)
-                    quad3.put(2, 1F, 1F, 1F, 1F)
-                    quad3.put(0, minX, minY, maxZ, 1F)
-                    quad3.put(1, maxU, minV, 0F, 1F)
-                    quad3.put(2, 1F, 1F, 1F, 1F)
-                    quad3.put(0, minX, maxY, maxZ, 1F)
-                    quad3.put(1, maxU, maxV, 0F, 1F)
-                    quad3.put(2, 1F, 1F, 1F, 1F)
-                    quad3.put(0, minX, maxY, minZ, 1F)
-                    quad3.put(1, minU, maxV, 0F, 1F)
-                    quad3.put(2, 1F, 1F, 1F, 1F)
-                }
-                quads.add(quad3.build())
+                val north = SimpleQuad(DefaultVertexFormats.POSITION_TEX_COLOR).setTexture(texture).setFace(EnumFacing.NORTH)
+                north.addPos(maxX, maxY, minZ).addPos(maxX, minY, minZ).addPos(minX, minY, minZ).addPos(minX, maxY, minZ)
+                north.addUV(minU, minV).addUV(minU, maxV).addUV(maxU, maxV).addUV(maxU, minV).rotate(rotateY)
+                quads.add(north.bake())
 
-                //Right
-                val quad4 = UnpackedBakedQuad.Builder(DefaultVertexFormats.POSITION_TEX_COLOR)
-                quad4.setTexture(texture)
-                if (facing.axis == EnumFacing.Axis.Y) {
-                    quad4.put(0, maxX, minY, maxZ, 1F)
-                    quad4.put(1, minU, maxV, 0F, 1F)
-                    quad4.put(2, 1F, 1F, 1F, 1F)
-                    quad4.put(0, maxX, minY, minZ, 1F)
-                    quad4.put(1, minU, minV, 0F, 1F)
-                    quad4.put(2, 1F, 1F, 1F, 1F)
-                    quad4.put(0, maxX, maxY, minZ, 1F)
-                    quad4.put(1, maxU, minV, 0F, 1F)
-                    quad4.put(2, 1F, 1F, 1F, 1F)
-                    quad4.put(0, maxX, maxY, maxZ, 1F)
-                    quad4.put(1, maxU, maxV, 0F, 1F)
-                    quad4.put(2, 1F, 1F, 1F, 1F)
-                } else {
-                    quad4.put(0, maxX, minY, maxZ, 1F)
-                    quad4.put(1, minU, minV, 0F, 1F)
-                    quad4.put(2, 1F, 1F, 1F, 1F)
-                    quad4.put(0, maxX, minY, minZ, 1F)
-                    quad4.put(1, maxU, minV, 0F, 1F)
-                    quad4.put(2, 1F, 1F, 1F, 1F)
-                    quad4.put(0, maxX, maxY, minZ, 1F)
-                    quad4.put(1, maxU, maxV, 0F, 1F)
-                    quad4.put(2, 1F, 1F, 1F, 1F)
-                    quad4.put(0, maxX, maxY, maxZ, 1F)
-                    quad4.put(1, minU, maxV, 0F, 1F)
-                    quad4.put(2, 1F, 1F, 1F, 1F)
-                }
-                quads.add(quad4.build())
+                val south = SimpleQuad(DefaultVertexFormats.POSITION_TEX_COLOR).setTexture(texture).setFace(EnumFacing.SOUTH)
+                south.addPos(minX, maxY, maxZ).addPos(minX, minY, maxZ).addPos(maxX, minY, maxZ).addPos(maxX, maxY, maxZ)
+                south.addUV(minU, minV).addUV(minU, maxV).addUV(maxU, maxV).addUV(maxU, minV).rotate(rotateY)
+                quads.add(south.bake())
 
-                val quad5 = UnpackedBakedQuad.Builder(DefaultVertexFormats.POSITION_TEX_COLOR)
-                quad5.setTexture(texture)
-                //Top
-                if (facing.axis == EnumFacing.Axis.X) {
-                    quad5.put(0, maxX, maxY, minZ, 1F)
-                    quad5.put(1, minU, maxV, 0F, 1F)
-                    quad5.put(2, 1F, 1F, 1F, 1F)
-                    quad5.put(0, minX, maxY, minZ, 1F)
-                    quad5.put(1, maxU, maxV, 0F, 1F)
-                    quad5.put(2, 1F, 1F, 1F, 1F)
-                    quad5.put(0, minX, maxY, maxZ, 1F)
-                    quad5.put(1, maxU, minV, 0F, 1F)
-                    quad5.put(2, 1F, 1F, 1F, 1F)
-                    quad5.put(0, maxX, maxY, maxZ, 1F)
-                    quad5.put(1, minU, minV, 0F, 1F)
-                    quad5.put(2, 1F, 1F, 1F, 1F)
-                } else {
-                    quad5.put(0, maxX, maxY, minZ, 1F)
-                    quad5.put(1, minU, minV, 0F, 1F)
-                    quad5.put(2, 1F, 1F, 1F, 1F)
-                    quad5.put(0, minX, maxY, minZ, 1F)
-                    quad5.put(1, minU, maxV, 0F, 1F)
-                    quad5.put(2, 1F, 1F, 1F, 1F)
-                    quad5.put(0, minX, maxY, maxZ, 1F)
-                    quad5.put(1, maxU, maxV, 0F, 1F)
-                    quad5.put(2, 1F, 1F, 1F, 1F)
-                    quad5.put(0, maxX, maxY, maxZ, 1F)
-                    quad5.put(1, maxU, minV, 0F, 1F)
-                    quad5.put(2, 1F, 1F, 1F, 1F)
-                }
-                quads.add(quad5.build())
+                val west = SimpleQuad(DefaultVertexFormats.POSITION_TEX_COLOR).setTexture(texture).setFace(EnumFacing.WEST)
+                west.addPos(minX, maxY, minZ).addPos(minX, minY, minZ).addPos(minX, minY, maxZ).addPos(minX, maxY, maxZ)
+                west.addUV(maxU, minV).addUV(minU, minV).addUV(minU, maxV).addUV(maxU, maxV).rotate(1 - rotateY)
+                quads.add(west.bake())
 
-                val quad6 = UnpackedBakedQuad.Builder(DefaultVertexFormats.POSITION_TEX_COLOR)
-                quad6.setTexture(texture)
-                //Down
-                if (facing.axis == EnumFacing.Axis.X) {
-                    quad6.put(0, minX, minY, minZ, 1F)
-                    quad6.put(1, minU, maxV, 0F, 1F)
-                    quad6.put(2, 1F, 1F, 1F, 1F)
-                    quad6.put(0, maxX, minY, minZ, 1F)
-                    quad6.put(1, maxU, maxV, 0F, 1F)
-                    quad6.put(2, 1F, 1F, 1F, 1F)
-                    quad6.put(0, maxX, minY, maxZ, 1F)
-                    quad6.put(1, maxU, minV, 0F, 1F)
-                    quad6.put(2, 1F, 1F, 1F, 1F)
-                    quad6.put(0, minX, minY, maxZ, 1F)
-                    quad6.put(1, minU, minV, 0F, 1F)
-                    quad6.put(2, 1F, 1F, 1F, 1F)
-                } else {
-                    quad6.put(0, minX, minY, minZ, 1F)
-                    quad6.put(1, minU, minV, 0F, 1F)
-                    quad6.put(2, 1F, 1F, 1F, 1F)
-                    quad6.put(0, maxX, minY, minZ, 1F)
-                    quad6.put(1, minU, maxV, 0F, 1F)
-                    quad6.put(2, 1F, 1F, 1F, 1F)
-                    quad6.put(0, maxX, minY, maxZ, 1F)
-                    quad6.put(1, maxU, maxV, 0F, 1F)
-                    quad6.put(2, 1F, 1F, 1F, 1F)
-                    quad6.put(0, minX, minY, maxZ, 1F)
-                    quad6.put(1, maxU, minV, 0F, 1F)
-                    quad6.put(2, 1F, 1F, 1F, 1F)
-                }
-                quads.add(quad6.build())
+                val east = SimpleQuad(DefaultVertexFormats.POSITION_TEX_COLOR).setTexture(texture).setFace(EnumFacing.EAST)
+                east.addPos(maxX, maxY, maxZ).addPos(maxX, minY, maxZ).addPos(maxX, minY, minZ).addPos(maxX, maxY, minZ)
+                east.addUV(maxU, minV).addUV(minU, minV).addUV(minU, maxV).addUV(maxU, maxV).rotate(1 - rotateY)
+                quads.add(east.bake())
+
+                val up = SimpleQuad(DefaultVertexFormats.POSITION_TEX_COLOR).setTexture(texture).setFace(EnumFacing.UP)
+                up.addPos(maxX, maxY, maxZ).addPos(maxX, maxY, minZ).addPos(minX, maxY, minZ).addPos(minX, maxY, maxZ)
+                up.addUV(minU, maxV).addUV(minU, minV).addUV(maxU, minV).addUV(maxU, maxV).rotate(rotateX)
+                quads.add(up.bake())
+
+                val bottom = SimpleQuad(DefaultVertexFormats.POSITION_TEX_COLOR).setTexture(texture).setFace(EnumFacing.DOWN)
+                bottom.addPos(minX, minY, maxZ).addPos(minX, minY, minZ).addPos(maxX, minY, minZ).addPos(maxX, minY, maxZ)
+                bottom.addUV(minU, maxV).addUV(minU, minV).addUV(maxU, minV).addUV(maxU, maxV).rotate(rotateX)
+                quads.add(bottom.bake())
             }
         }
 

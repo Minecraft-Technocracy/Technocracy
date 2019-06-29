@@ -39,7 +39,6 @@ import net.minecraftforge.fml.common.Optional
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import team.chisel.ctm.api.IFacade
-import java.util.function.Supplier
 
 
 @Optional.Interface(iface = "team.chisel.ctm.api.IFacade", modid = "ctm")
@@ -125,7 +124,7 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
             if (block is BlockWorkbench) {
 
                 if (worldIn.isRemote) {
-                    return false
+                    return true
                 } else {
                     playerIn.displayGui(InterfaceFacadeCraftingTable(worldIn, pos))
                     playerIn.addStat(StatList.CRAFTING_TABLE_INTERACTION)
@@ -258,18 +257,31 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
     override fun collisionRayTrace(blockState: IBlockState, worldIn: World, pos: BlockPos, startIn: Vec3d,
                                    endIn: Vec3d): RayTraceResult? {
 
-        val start = startIn.subtract(pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble())
-        val end = endIn.subtract(pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble())
+        val list = (worldIn.getTileEntity(pos) as TileEntityPipe).getPipeModelParts().map { it.first.second.offset(pos) }.toList()
 
-        val list = (worldIn.getTileEntity(pos) as TileEntityPipe).getPipeModelParts().map { it.first.second }.toList()
+        var result: RayTraceResult? = null
 
-        val bbresult = rayTraceBestBB(start, end, list)
+        for(bb in list) {
+            val ray = bb.calculateIntercept(startIn, endIn)
+            if(ray != null && (result == null || result.hitVec.squareDistanceTo(startIn) > ray.hitVec.squareDistanceTo(startIn)))
+                result = ray
+        }
+
+        return if (result == null) null else RayTraceResult(result.hitVec.addVector(pos.x.toDouble(),
+                pos.y.toDouble(), pos.z.toDouble()), result.sideHit, pos)
+
+        /*println("start $startIn")
+        println("end $endIn")
+
+
+
+        val bbresult = rayTraceBestBB(startIn, endIn, list)
 
         return if (bbresult == null) null else {
-            val result = bbresult.calculateIntercept(start, end)
+            val result = bbresult.calculateIntercept(startIn, endIn)
             if (result == null) null else RayTraceResult(result.hitVec.addVector(pos.x.toDouble(),
                     pos.y.toDouble(), pos.z.toDouble()), result.sideHit, pos)
-        }
+        }*/
     }
 
     override fun canPlaceBlockOnSide(world: World, pos: BlockPos, side: EnumFacing): Boolean {
