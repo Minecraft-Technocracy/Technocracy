@@ -5,7 +5,6 @@ import net.cydhra.technocracy.foundation.util.INumberProvider
 import net.cydhra.technocracy.foundation.util.WeightedBlock
 import net.minecraft.init.Blocks
 import net.minecraft.util.math.BlockPos
-import net.minecraft.world.EnumSkyBlock
 import net.minecraft.world.World
 import java.util.*
 import net.minecraft.block.Block
@@ -37,38 +36,117 @@ class WorldGenAdvLakes(resource: List<WeightedBlock>, block: List<WeightedBlock>
     }
 
     fun generate(world: World, rand: Random, pos: BlockPos): Boolean {
-        var xStart = pos.getX()
-        var yStart = pos.getY()
-        var zStart = pos.getZ()
-
         val data = INumberProvider.DataHolder(pos)
 
         val width = this.width!!.intValue(world, rand, data)
         val height = this.height!!.intValue(world, rand, data)
 
-        val widthOff = width / 2
-        var heightOff = height / 2 + 1
+        val offX = (rand.nextInt(10) + 5) / 100.0
+        val offZ = (rand.nextInt(10) + 5) / 100.0
 
-        xStart -= widthOff
-        zStart -= widthOff
+        val xSize = width.toDouble() - rand.nextDouble() * rand.nextInt((Math.max((width * offX).toInt(), 1)))
+        val zSize = width.toDouble() - rand.nextDouble() * rand.nextInt((Math.max((width * offZ).toInt(), 1)))
+        val ySize = height - rand.nextDouble() * rand.nextInt(width / 6)
 
-        yStart -= widthOff
+        //val spawnBlock = Array(width) { Array(height) { BooleanArray(width) } }
+        // val outline = Array(width + 1) { Array(height + 1) { BooleanArray(width + 1) } }
 
-        while (yStart > heightOff && world.isAirBlock(BlockPos(xStart, yStart, zStart))) {
-            --yStart
+        val xCenter = width / 2
+        val zCenter = width / 2
+        val yCenter = height / 2
+
+        val halfx = xSize.toInt() / 2
+        val halfy = ySize.toInt() / 2
+        val halfz = zSize.toInt() / 2
+
+        val distx = (rand.nextInt(4) + 2)
+        val distz = (rand.nextInt(4) + 2)
+
+        val liquidheight = (0.4 + (rand.nextInt(5) / 10.0))
+
+        for (x in xCenter - halfx..xCenter + halfx) {
+            for (z in zCenter - halfz..zCenter + halfz) {
+                for (y in yCenter - halfy..yCenter + halfy) {
+                    val xDist = (x - xCenter) / (xSize / distx.toDouble())
+                    val zDist = (z - zCenter) / (zSize / distz.toDouble())
+                    val yDist = (y - yCenter) / (ySize / 2.0)
+                    val distXZInner = xDist * xDist + zDist * zDist
+                    val distXYZInner = xDist * xDist + yDist * yDist + zDist * zDist
+
+
+                    var spawn = false
+
+                    if (y < height * (0.2 + rand.nextInt(3) / 10) && y > height * 0.3) {
+                        //Oil
+                        if (distXZInner < 1)
+                            spawn = true
+                        //spawnBlock[x][y][z] = true
+                    } else {
+                        if (distXYZInner < 1 - 0.25 * rand.nextDouble()) {//noise at the top and bottom
+                            spawn = true
+                            //spawnBlock[x][y][z] = true
+                        }
+                    }
+                    if (spawn) {
+                        if (y < height * liquidheight) {
+                            generateBlock(world, rand, xCenter + pos.x + x - xSize.toInt() / 2, yCenter.toInt() + pos.y + y - ySize.toInt() / 2, zCenter.toInt() + pos.z + z - zSize.toInt() / 2, cluster)
+                        } else {
+                            generateBlock(world, rand, xCenter + pos.x + x - xSize.toInt() / 2, yCenter.toInt() + pos.y + y - ySize.toInt() / 2, zCenter.toInt() + pos.z + z - zSize.toInt() / 2, gapBlock)
+                        }
+                    }
+                }
+            }
         }
-        --heightOff
-        if (yStart <= heightOff) {
-            return false
+        /*
+
+        for (x in 0 until width - 1) {
+            for (z in 0 until width - 1) {
+                for (y in 0 until height - 1) {
+                    val flag = spawnBlock[x][y][z] && (x >= width || spawnBlock[x + 1][y][z]) && (x < 1 || spawnBlock[x - 1][y][z]) && (z >= width || spawnBlock[x][y][z + 1]) && (z < 1 || spawnBlock[x][y][z - 1]) && (y >= height || spawnBlock[x][y + 1][z]) && (y < 1 || spawnBlock[x][y - 1][z])
+
+                    if (flag) {
+                        if (y < height * 0.7) {
+                            generateBlock(world, rand, xCenter + pos.x + x - xSize.toInt() / 2, yCenter.toInt() + pos.y + y - ySize.toInt() / 2, zCenter.toInt() + pos.z + z - zSize.toInt() / 2, cluster)
+                        } else {
+                            generateBlock(world, rand, xCenter + pos.x + x - xSize.toInt() / 2, yCenter.toInt() + pos.y + y - ySize.toInt() / 2, zCenter.toInt() + pos.z + z - zSize.toInt() / 2, gapBlock)
+                        }
+                    }
+                }
+            }
         }
 
-        yStart -= heightOff
-        val spawnBlock = BooleanArray(width * width * height)
+        if (outlineBlock != null) {
+            for (x in 0 until width - 1) {
+                for (z in 0 until width - 1) {
+                    for (y in 0 until height - 1) {
 
-        val W = width - 1
-        val H = height - 1
 
-        var i = 0
+                        val flag = outline[x][y][z] && !spawnBlock[x][y][z]
+                        if (flag) {
+                            if (y < height * 0.7) {
+                                generateBlock(world, rand, xCenter + pos.x + x - xSize.toInt() / 2, yCenter.toInt() + pos.y + y - ySize.toInt() / 2, zCenter.toInt() + pos.z + z - zSize.toInt() / 2, outlineBlock!!)
+                            } else {
+                                generateBlock(world, rand, xCenter + pos.x + x - xSize.toInt() / 2, yCenter.toInt() + pos.y + y - ySize.toInt() / 2, zCenter.toInt() + pos.z + z - zSize.toInt() / 2, gapBlock)
+                            }
+                        }
+                        //val flag = !spawnBlock[x][y][z] && ((x <= width && spawnBlock[x + 1][y][z]) || (x > 1 && spawnBlock[x - 1][y][z]) || (z <= width && spawnBlock[x][y][z + 1]) || (z > 1 && spawnBlock[x][y][z - 1]) || (y <= height && spawnBlock[x][y + 1][z]) || (y > 1 && spawnBlock[x][y - 1][z]))
+
+                        /*val flag = !spawnBlock[x][y][z] && (x < width && spawnBlock[x + 1][y][z] || x > 0 && spawnBlock[x - 1][y][z] || z < width && spawnBlock[x][y][z + 1] || z > 0 && spawnBlock[x][y][z + 1] || y < height && spawnBlock[x][y + 1][z] || y > 0 && spawnBlock[x][y - 1][z])
+
+
+                        if (flag) {
+                            if (y < height * 0.7) {
+                                generateBlock(world, rand, xCenter + pos.x + x - xSize.toInt() / 2, yCenter.toInt() + pos.y + y - ySize.toInt() / 2, zCenter.toInt() + pos.z + z - zSize.toInt() / 2, outlineBlock!!)
+                            } else {
+                                generateBlock(world, rand, xCenter + pos.x + x - xSize.toInt() / 2, yCenter.toInt() + pos.y + y - ySize.toInt() / 2, zCenter.toInt() + pos.z + z - zSize.toInt() / 2, gapBlock)
+                            }
+                        }*/
+                    }
+                }
+            }
+        }
+
+        /*var i = 0
         val e = rand.nextInt(4) + 4
         while (i < e) {
             val xSize = rand.nextDouble() * 6.0 + 3.0
@@ -86,7 +164,7 @@ class WorldGenAdvLakes(resource: List<WeightedBlock>, block: List<WeightedBlock>
                         val zDist = (z - zCenter) / (zSize / 2.0)
                         val dist = xDist * xDist + yDist * yDist + zDist * zDist
 
-                        if (dist < 1.0) {
+                        if (dist < 1.0 || true) {
                             spawnBlock[(x * width + z) * height + y] = true
                         }
                     }
@@ -183,6 +261,8 @@ class WorldGenAdvLakes(resource: List<WeightedBlock>, block: List<WeightedBlock>
             }
         }
 
+        return true*/*/
+
         return true
     }
 
@@ -226,61 +306,6 @@ class WorldGenAdvLakes(resource: List<WeightedBlock>, block: List<WeightedBlock>
 
         this.outlineBlock = blocks
         return this
-    }
-
-    fun setGapBlock(blocks: List<WeightedBlock>): WorldGenAdvLakes {
-
-        this.gapBlock = blocks
-        return this
-    }
-
-    fun fabricateList(resource: WeightedBlock): List<WeightedBlock> {
-
-        val list = ArrayList<WeightedBlock>()
-        list.add(resource)
-        return list
-    }
-
-    fun fabricateList(resource: Block): List<WeightedBlock> {
-
-        val list = ArrayList<WeightedBlock>()
-        list.add(WeightedBlock(ItemStack(resource, 1, 0)))
-        return list
-    }
-
-    fun canGenerateInBlock(world: World, x: Int, y: Int, z: Int, mat: Array<WeightedBlock>?): Boolean {
-
-        return true//canGenerateInBlock(world, BlockPos(x, y, z), mat)
-    }
-
-    fun canGenerateInBlock(world: World, pos: BlockPos, mat: Array<WeightedBlock>?): Boolean {
-
-        if (mat == null || mat.size == 0) {
-            return true
-        }
-
-        val state = world.getBlockState(pos)
-        var j = 0
-        val e = mat.size
-        while (j < e) {
-            val genBlock = mat[j]
-            if ((-1 == genBlock.metadata || genBlock.metadata == state.block.getMetaFromState(state)) && (state.block.isReplaceableOreGen(state, world, pos, BlockMatcher.forBlock(genBlock.block)) || state.block.isAssociatedBlock(genBlock.block))) {
-                return true
-            }
-            ++j
-        }
-        return false
-    }
-
-    fun generateBlock(world: World, rand: Random, x: Int, y: Int, z: Int, mat: Array<WeightedBlock>?, o: List<WeightedBlock>): Boolean {
-
-        if (mat == null || mat.size == 0) {
-            return generateBlock(world, rand, x, y, z, o)
-        }
-
-        return if (canGenerateInBlock(world, x, y, z, mat)) {
-            generateBlock(world, rand, x, y, z, o)
-        } else false
     }
 
     fun generateBlock(world: World, rand: Random, x: Int, y: Int, z: Int, o: List<WeightedBlock>): Boolean {
