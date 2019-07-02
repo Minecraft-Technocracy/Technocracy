@@ -76,7 +76,7 @@ class MaterialSystem(materialName: String, colorMultiplier: Int,
     fun init() {
         GameRegistry.addSmelting(ore, ItemStack(ingot, 1), 0.5f)
         GameRegistry.addSmelting(dust, ItemStack(ingot, 1), 0.5f)
-        GameRegistry.registerWorldGenerator(OilLakeGen(), 10)
+        GameRegistry.registerWorldGenerator(OilLakeGen(), 0)
         GameRegistry.registerWorldGenerator(OreGenerator(oreDimensions, replacementPredicate, this.ore.defaultState,
                 this.veinsPerChunk, this.amountPerVein, this.minHeight, this.maxHeight), 0)
     }
