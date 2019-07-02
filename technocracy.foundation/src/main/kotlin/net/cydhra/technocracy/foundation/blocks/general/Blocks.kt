@@ -54,6 +54,7 @@ val heatExchangerOutputBlock = MultiBlockRotatableActiveBlock("heat_exchanger_ou
         renderLayer = BlockRenderLayer.CUTOUT)
 
 val oilSandBlock = OilSand()
+val oilStone = OilStone()
 val ironBeamBlock = IronBeamBlock()
 
 val oilBlock = OilBlock()

@@ -104,6 +104,7 @@ open class CommonProxy {
         BlockManager.prepareBlocksForRegistration(heatExchangerOutputBlock)
 
         BlockManager.prepareBlocksForRegistration(oilSandBlock)
+        BlockManager.prepareBlocksForRegistration(oilStone)
         BlockManager.prepareBlocksForRegistration(ironBeamBlock)
         BlockManager.prepareBlocksForRegistration(oilBlock)
 
