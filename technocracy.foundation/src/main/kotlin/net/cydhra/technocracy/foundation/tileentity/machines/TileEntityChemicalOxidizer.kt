@@ -18,21 +18,11 @@ import net.minecraft.util.EnumFacing
  */
 class TileEntityChemicalOxidizer : MachineTileEntity(), TEInventoryProvider {
 
-    /**
-     * Input inventory for the pulverizer with one slot
-     */
     private val inputInventoryComponent = InventoryComponent(1, this, EnumFacing.WEST)
 
-    /**
-     * Output inventory for the pulverizer with one slot
-     */
     private val outputInventoryComponent = FluidComponent(4000,
             tanktype = DynamicFluidHandler.TankType.OUTPUT, facing = mutableSetOf(EnumFacing.EAST))
 
-    /**
-     * All recipes of the pulverizer; loaded lazily so they are not loaded before game loop, as they might not have
-     * been registered yet.
-     */
     private val recipes: Collection<IMachineRecipe> by lazy {
         (RecipeManager.getRecipesByType(RecipeManager.RecipeType.CHEMICAL_OXIDIZER) ?: emptyList())
     }
