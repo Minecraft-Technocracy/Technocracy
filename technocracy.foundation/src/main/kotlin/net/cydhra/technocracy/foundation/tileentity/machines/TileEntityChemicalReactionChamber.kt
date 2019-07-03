@@ -5,4 +5,6 @@ import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
 /**
  *
  */
-class TileEntityChemicalReactionChamber : MachineTileEntity()
+class TileEntityChemicalReactionChamber : MachineTileEntity() {
+
+}
