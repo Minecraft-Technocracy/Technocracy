@@ -15,7 +15,6 @@ import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.AxisAlignedBB
 import net.minecraft.util.math.Vec3d
 import java.util.*
-import kotlin.collections.HashMap
 
 
 class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
@@ -281,8 +280,8 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
         val pixelSize = 1 / 16f
         val height = pixelSize * FacadeBakery.facadeSize.toDouble()
 
-        this.facades.facades.forEach { facing, stack ->
-            var bb = when (facing) {
+        this.facades.facades.forEach { (facing, _) ->
+            val bb = when (facing) {
                 EnumFacing.UP -> {
                     AxisAlignedBB(0.0, 1.0 - height, 0.0, 1.0, 1.0, 1.0)
                 }
