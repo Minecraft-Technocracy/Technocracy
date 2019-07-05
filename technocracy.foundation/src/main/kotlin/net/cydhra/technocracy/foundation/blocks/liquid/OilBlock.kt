@@ -25,13 +25,14 @@ class OilBlock : BaseLiquidBlock(mineralOilFluid, "oil", Material.WATER) {
     }
 
     override fun shouldSideBeRendered(state: IBlockState, world: IBlockAccess, pos: BlockPos, side: EnumFacing): Boolean {
-        val neighbor = world.getBlockState(pos.offset(side))
+        return super.shouldSideBeRendered(state, world, pos, side)
+        /*val neighbor = world.getBlockState(pos.offset(side))
         if (neighbor.material === state.material && neighbor.block == state.block) {
             return false
         }
         return if (side == (if (densityDir < 0) EnumFacing.UP else EnumFacing.DOWN)) {
             true
-        } else true
+        } else true*/
     }
 
     //TODO add entity move event with core mod for usable water physic
