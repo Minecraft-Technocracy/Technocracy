@@ -50,7 +50,7 @@ class OilLakeGen : IWorldGenerator {
 
     fun generateHugeOilFields(world: World, blockX: Int, blockZ: Int): Boolean {
         val biome = world.getBiome(BlockPos(blockX * 16, 0, blockZ * 16))
-        return net.minecraftforge.common.BiomeManager.oceanBiomes.contains(biome) || biome is BiomeMesa || biome is BiomeDesert
+        return net.minecraftforge.common.BiomeManager.oceanBiomes.contains(biome) || biome is BiomeMesa
     }
 
     fun getSurfaceBlockY(world: World, x: Int, z: Int): Int {
