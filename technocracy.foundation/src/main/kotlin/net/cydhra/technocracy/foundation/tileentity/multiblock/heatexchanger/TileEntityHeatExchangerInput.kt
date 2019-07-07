@@ -26,7 +26,7 @@ class TileEntityHeatExchangerInput : TileEntityMultiBlockPart<HeatExchangerMulti
     private val internalFluidHandler = DynamicFluidHandler(4000, allowedFluid = mutableListOf(),
             tanktype = DynamicFluidHandler.TankType.INPUT)
 
-    private val fluidComponent = FluidComponent(internalFluidHandler, mutableSetOf(EnumFacing.NORTH, EnumFacing.EAST,
+    val fluidComponent = FluidComponent(internalFluidHandler, mutableSetOf(EnumFacing.NORTH, EnumFacing.EAST,
             EnumFacing.SOUTH, EnumFacing.WEST))
 
     init {
