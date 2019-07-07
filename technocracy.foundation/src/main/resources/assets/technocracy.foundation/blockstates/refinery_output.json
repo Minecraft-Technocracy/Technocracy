@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "technocracy.foundation:refinery_input"
+    },
+    "facing=east": {
+      "model": "technocracy.foundation:refinery_input",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "technocracy.foundation:refinery_input",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "technocracy.foundation:refinery_input",
+      "y": 270
+    }
+  }
+}
