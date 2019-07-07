@@ -21,6 +21,7 @@ import net.cydhra.technocracy.foundation.tileentity.machines.*
 import net.cydhra.technocracy.foundation.tileentity.management.TileEntityManager
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartBoiler
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartHeatExchanger
+import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartRefinery
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerHeater
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerInput
@@ -28,6 +29,11 @@ import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntity
 import net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger.TileEntityHeatExchangerController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger.TileEntityHeatExchangerInput
 import net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger.TileEntityHeatExchangerOutput
+import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryController
+import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryHeater
+import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryInput
+import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryOutput
+import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.animation.ITimeValue
@@ -103,6 +109,12 @@ open class CommonProxy {
         BlockManager.prepareBlocksForRegistration(heatExchangerInputBlock)
         BlockManager.prepareBlocksForRegistration(heatExchangerOutputBlock)
 
+        BlockManager.prepareBlocksForRegistration(refineryControllerBlock)
+        BlockManager.prepareBlocksForRegistration(refineryWallBlock)
+        BlockManager.prepareBlocksForRegistration(refineryInputBlock)
+        BlockManager.prepareBlocksForRegistration(refineryOutputBlock)
+        BlockManager.prepareBlocksForRegistration(refineryHeaterBlock)
+
         BlockManager.prepareBlocksForRegistration(oilSandBlock)
         BlockManager.prepareBlocksForRegistration(oilStone)
         BlockManager.prepareBlocksForRegistration(ironBeamBlock)
@@ -155,6 +167,12 @@ open class CommonProxy {
         TileEntityManager.prepareTileEntityForRegistration(TileEntityHeatExchangerController::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityHeatExchangerInput::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityHeatExchangerOutput::class)
+
+        TileEntityManager.prepareTileEntityForRegistration(TileEntityRefineryController::class)
+        TileEntityManager.prepareTileEntityForRegistration(TileEntityRefineryInput::class)
+        TileEntityManager.prepareTileEntityForRegistration(TileEntityRefineryOutput::class)
+        TileEntityManager.prepareTileEntityForRegistration(TileEntityRefineryHeater::class)
+        TileEntityManager.prepareTileEntityForRegistration(TileEntityMultiBlockPartRefinery::class)
 
         //ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPipe::class.java, PipeRenderer())
 

@@ -5,6 +5,7 @@ import net.cydhra.technocracy.foundation.blocks.liquid.OilBlock
 import net.cydhra.technocracy.foundation.tileentity.machines.*
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartBoiler
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartHeatExchanger
+import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartRefinery
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerHeater
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerInput
@@ -12,6 +13,10 @@ import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntity
 import net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger.TileEntityHeatExchangerController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger.TileEntityHeatExchangerInput
 import net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger.TileEntityHeatExchangerOutput
+import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryController
+import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryHeater
+import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryInput
+import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryOutput
 import net.minecraft.block.material.Material
 import net.minecraft.util.BlockRenderLayer
 
@@ -52,6 +57,12 @@ val heatExchangerInputBlock = MultiBlockRotatableActiveBlock("heat_exchanger_inp
         renderLayer = BlockRenderLayer.CUTOUT)
 val heatExchangerOutputBlock = MultiBlockRotatableActiveBlock("heat_exchanger_output", ::TileEntityHeatExchangerOutput,
         renderLayer = BlockRenderLayer.CUTOUT)
+
+val refineryControllerBlock = MultiBlockRotatableActiveBlock("refinery_controller", ::TileEntityRefineryController)
+val refineryWallBlock = PlainMultiBlockPartBlock("refinery_wall", ::TileEntityMultiBlockPartRefinery)
+val refineryInputBlock = MultiBlockRotatableActiveBlock("refinery_input", ::TileEntityRefineryInput)
+val refineryOutputBlock = MultiBlockRotatableActiveBlock("refinery_output", ::TileEntityRefineryOutput)
+val refineryHeaterBlock = MultiBlockRotatableActiveBlock("refinery_heater", ::TileEntityRefineryHeater)
 
 val oilSandBlock = OilSand()
 val oilStone = OilStone()
