@@ -14,8 +14,10 @@ import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.AxisAlignedBB
 import net.minecraft.util.math.Vec3d
+import net.minecraft.world.biome.Biome
+import net.minecraft.world.biome.BiomeDesert
+import net.minecraftforge.client.ForgeClientHandler
 import java.util.*
-import kotlin.collections.HashMap
 
 
 class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
@@ -253,23 +255,19 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
         //Draw main node
         val expansion = ((this.getInstalledTypes().size - 1) * node.averageEdgeLength) / 2
         if (straight) {
-            when (facings.first().axis) {
-                EnumFacing.Axis.X -> {
-                    boxes.add(Triple(EnumFacing.NORTH to node.expand(0.0, 0.0, expansion * 2)
-                            .offset(0.0, 0.0, -expansion)
-                            , if (getInstalledTypes().size == 1) getInstalledTypes().first() else null, 0))
-                }
-                EnumFacing.Axis.Y -> {
-                    boxes.add(Triple(EnumFacing.NORTH to node.expand(0.0, 0.0, expansion * 2)
-                            .offset(0.0, 0.0, -expansion)
-                            , if (getInstalledTypes().size == 1) getInstalledTypes().first() else null, 0))
-                }
-                EnumFacing.Axis.Z -> {
-                    boxes.add(Triple(EnumFacing.NORTH to node.expand(expansion * 2, 0.0, 0.0)
-                            .offset(-expansion, 0.0, 0.0)
-                            , if (getInstalledTypes().size == 1) getInstalledTypes().first() else null, 0))
-                }
+            val expX: Double = when (facings.first().axis) {
+                EnumFacing.Axis.Z -> expansion
+                else -> 0.0
             }
+            val expZ: Double = when (facings.first().axis) {
+                EnumFacing.Axis.Z -> 0.0
+                else -> expansion
+            }
+
+            boxes.add(Triple(EnumFacing.NORTH to node.expand(expX * 2, 0.0, expZ * 2)
+                    .offset(-expX, 0.0, -expZ)
+                    , if (getInstalledTypes().size == 1) getInstalledTypes().first() else null, 0))
+
         } else {
             boxes.add(Triple(EnumFacing.NORTH to node.expand(expansion * 2, 0.0, expansion * 2).offset(-expansion,
                     0.0,
@@ -281,8 +279,8 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
         val pixelSize = 1 / 16f
         val height = pixelSize * FacadeBakery.facadeSize.toDouble()
 
-        this.facades.facades.forEach { facing, stack ->
-            var bb = when (facing) {
+        this.facades.facades.forEach { (facing, _) ->
+            val bb = when (facing) {
                 EnumFacing.UP -> {
                     AxisAlignedBB(0.0, 1.0 - height, 0.0, 1.0, 1.0, 1.0)
                 }
