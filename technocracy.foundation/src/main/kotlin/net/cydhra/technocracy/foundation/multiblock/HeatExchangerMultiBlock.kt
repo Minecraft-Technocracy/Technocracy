@@ -242,7 +242,11 @@ class HeatExchangerMultiBlock(world: World) :
             else -> throw AssertionError("neither hot nor cold tube")
         }
 
-        lateinit var output: TileEntityHeatExchangerOutput
+        var output: TileEntityHeatExchangerOutput? = null
+            set(value) {
+                field = value!!
+                this.parts.forEach { it.tubeOutput = value }
+            }
 
         private val tubeBlocks = mutableListOf<TubePart>()
 
@@ -254,9 +258,9 @@ class HeatExchangerMultiBlock(world: World) :
 
         fun addTube(tubeEntity: TileEntityMultiBlockPartHeatExchanger) {
             if (tubeEntity.blockType == heatExchangerHotAgentTube && isHot)
-                tubeBlocks.add(TubePart(tubeEntity))
+                tubeBlocks.add(TubePart(tubeEntity, input))
             else if (tubeEntity.blockType == heatExchangerColdAgentTube && !isHot)
-                tubeBlocks.add(TubePart(tubeEntity))
+                tubeBlocks.add(TubePart(tubeEntity, input))
             else
                 throw IllegalStateException("wrong tile entity for coolant tube")
         }
@@ -265,12 +269,17 @@ class HeatExchangerMultiBlock(world: World) :
     /**
      * A wrapper class for tile entities that make up the coolant tubes. The wrapper offers quick access to
      * neighbored tubes that are required for the processing logic.
+     *
+     * @param part the tile entity of the tube represented by this part
+     * @param tubeInput the start of the tube
      */
-    inner class TubePart(val part: TileEntityMultiBlockPartHeatExchanger) {
+    inner class TubePart(val part: TileEntityMultiBlockPartHeatExchanger, val tubeInput: TileEntityHeatExchangerInput) {
 
         private var neighborCache: Set<TubePart>? = null
 
         private var matrixCount = -1
+
+        lateinit var tubeOutput: TileEntityHeatExchangerOutput
 
         /**
          *
