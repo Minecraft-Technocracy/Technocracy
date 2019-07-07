@@ -50,10 +50,10 @@ class HeatExchangerMultiBlock(world: World) :
     /**
      * A list of all closed tubes inside the machine
      */
-    private var tubes: List<CoolantTube> = emptyList()
+    var tubes: List<CoolantTube> = emptyList()
 
     override fun updateServer(): Boolean {
-
+        controllerTileEntity?.doWork()
         return true
     }
 
@@ -151,34 +151,7 @@ class HeatExchangerMultiBlock(world: World) :
             tubes.add(tube)
         }
 
-        // count heat matrix
-        val interiorMin = this.minimumCoord.add(1, 1, 1)
-        val interiorMax = this.maximumCoord.add(-1, -1, -1)
-
-        var matrixType: Block? = null
-        var matrix = 0
-        for (x in interiorMin.x..interiorMax.x) {
-            for (y in interiorMin.y..interiorMax.y) {
-                for (z in interiorMin.z..interiorMax.z) {
-                    val block = WORLD.getBlockState(BlockPos(x, y, z))
-                    if (block.block == heatExchangerColdAgentTube || block.block == heatExchangerHotAgentTube)
-                        continue
-
-                    if (matrixType == null) {
-                        matrixType = block.block
-                    } else if (matrixType != block.block) {
-                        validatorCallback.setLastError("matrix consists of different materials ${matrixType.localizedName} and " +
-                                block.block.localizedName)
-                        return false
-                    }
-
-                    matrix++
-                }
-            }
-        }
-
         this.tubes = tubes
-        this.controllerTileEntity!!.updatePhysics(matrix, matrixType)
         return true
     }
 
