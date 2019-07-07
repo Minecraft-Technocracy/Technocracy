@@ -60,9 +60,12 @@ val heatExchangerOutputBlock = MultiBlockRotatableActiveBlock("heat_exchanger_ou
 
 val refineryControllerBlock = MultiBlockRotatableActiveBlock("refinery_controller", ::TileEntityRefineryController)
 val refineryWallBlock = PlainMultiBlockPartBlock("refinery_wall", ::TileEntityMultiBlockPartRefinery)
-val refineryInputBlock = MultiBlockRotatableActiveBlock("refinery_input", ::TileEntityRefineryInput)
-val refineryOutputBlock = MultiBlockRotatableActiveBlock("refinery_output", ::TileEntityRefineryOutput)
-val refineryHeaterBlock = MultiBlockRotatableActiveBlock("refinery_heater", ::TileEntityRefineryHeater)
+val refineryInputBlock = MultiBlockRotatableActiveBlock("refinery_input", ::TileEntityRefineryInput,
+        renderLayer = BlockRenderLayer.CUTOUT)
+val refineryOutputBlock = MultiBlockRotatableActiveBlock("refinery_output", ::TileEntityRefineryOutput,
+        renderLayer = BlockRenderLayer.CUTOUT)
+val refineryHeaterBlock = MultiBlockActiveBlock("refinery_heater", ::TileEntityRefineryHeater,
+        renderLayer = BlockRenderLayer.CUTOUT)
 
 val oilSandBlock = OilSand()
 val oilStone = OilStone()
