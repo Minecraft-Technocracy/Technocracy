@@ -13,7 +13,7 @@ import net.minecraftforge.common.capabilities.Capability
 class TileEntityRefineryHeater : TileEntityMultiBlockPart<RefineryMultiBlock>(RefineryMultiBlock::class,
         ::RefineryMultiBlock), TCAggregatable by AggregatableDelegate() {
 
-    private val energyStorageComponent: EnergyStorageComponent = EnergyStorageComponent(mutableSetOf(EnumFacing.DOWN))
+    val energyStorageComponent: EnergyStorageComponent = EnergyStorageComponent(mutableSetOf(EnumFacing.DOWN))
 
     init {
         this.registerComponent(energyStorageComponent, "energy")
