@@ -15,6 +15,7 @@ import net.minecraft.init.Blocks
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.world.World
 import net.minecraftforge.fluids.FluidStack
+import net.minecraftforge.fluids.capability.IFluidHandler
 import java.util.function.Predicate
 
 class RefineryMultiBlock(world: World) : BaseMultiBlock(
@@ -39,12 +40,15 @@ class RefineryMultiBlock(world: World) : BaseMultiBlock(
         (RecipeManager.getRecipesByType(RecipeManager.RecipeType.REFINERY) ?: emptyList())
     }
 
-    private var controllerTileEntity: TileEntityRefineryController? = null
+    var controllerTileEntity: TileEntityRefineryController? = null
     private var inputPort: TileEntityRefineryInput? = null
     private var outputPorts: List<TileEntityRefineryOutput> = emptyList()
     private var heater: TileEntityRefineryHeater? = null
 
     private var effictiveHeight = 0
+
+    private var topOutput: TileEntityRefineryOutput? = null
+    private var bottomOutput: TileEntityRefineryOutput? = null
 
     override fun isMachineWhole(validatorCallback: IMultiblockValidator): Boolean {
         if (!super.isMachineWhole(validatorCallback)) return false
@@ -66,17 +70,44 @@ class RefineryMultiBlock(world: World) : BaseMultiBlock(
                 this@RefineryMultiBlock.outputPorts = outputPorts
                 this@RefineryMultiBlock.heater = heaters.first()
 
-                this@RefineryMultiBlock.recalculatePhysics()
-                return@finishUp true
+                return@finishUp this@RefineryMultiBlock.recalculatePhysics(validatorCallback)
             }
         }
     }
 
-    private fun recalculatePhysics() {
+    private fun recalculatePhysics(validatorCallback: IMultiblockValidator): Boolean {
         val interiorMin = minimumCoord.add(1, 1, 1)
         val interiorMax = maximumCoord.add(-1, -1, -1)
-
         effictiveHeight = interiorMax.y - interiorMin.y
+
+        this.topOutput = null
+        this.bottomOutput = null
+        val firstPort = this.outputPorts[0]
+
+        if (firstPort.pos.y - interiorMin.y > effictiveHeight / 2.0) {
+            topOutput = firstPort
+        } else {
+            bottomOutput = firstPort
+        }
+
+        val secondPort = this.outputPorts[1]
+        if (secondPort.pos.y - interiorMin.y > effictiveHeight / 2.0) {
+            if (topOutput != null) {
+                validatorCallback.setLastError("both output ports are in the top part of the machine")
+                return false
+            } else {
+                topOutput = secondPort
+            }
+        } else {
+            if (bottomOutput != null) {
+                validatorCallback.setLastError("both output ports are in the bottom part of the machine")
+                return false
+            } else {
+                bottomOutput = secondPort
+            }
+        }
+
+        return true
     }
 
     override fun updateServer(): Boolean {
@@ -144,5 +175,13 @@ class RefineryMultiBlock(world: World) : BaseMultiBlock(
     }
 
     override fun onMachineDisassembled() {
+    }
+
+    fun getOutputTank(tileEntityRefineryOutput: TileEntityRefineryOutput): IFluidHandler? {
+        return if (tileEntityRefineryOutput == topOutput) {
+            controllerTileEntity?.topTank
+        } else {
+            controllerTileEntity?.bottomTank
+        }
     }
 }
