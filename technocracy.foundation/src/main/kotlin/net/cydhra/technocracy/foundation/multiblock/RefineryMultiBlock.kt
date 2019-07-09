@@ -76,7 +76,7 @@ class RefineryMultiBlock(world: World) : BaseMultiBlock(
     }
 
     override fun updateServer(): Boolean {
-        if (this.inputPort!!.fluidComponent.fluid.capacity > 0) {
+        if (this.inputPort!!.fluidComponent.fluid.currentFluid?.amount ?: 0 > 0) {
             val drained = this.inputPort!!.fluidComponent.fluid.drain(this.effictiveHeight, true)
         }
         return true
