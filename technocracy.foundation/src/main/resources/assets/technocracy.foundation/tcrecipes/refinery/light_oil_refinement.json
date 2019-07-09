@@ -1,0 +1,17 @@
+{
+  "input": {
+    "fluid": "light_oil_hot",
+    "amount": 1
+  },
+  "outputs": [
+    {
+      "fluid": "propene",
+      "amount": 1
+    },
+    {
+      "fluid": "benzene",
+      "amount": 1
+    }
+  ],
+  "cost": 4
+}

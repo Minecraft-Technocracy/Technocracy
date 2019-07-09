@@ -1,0 +1,17 @@
+{
+  "input": {
+    "fluid": "heavy_oil_hot",
+    "amount": 1
+  },
+  "outputs": [
+    {
+      "fluid": "light_oil",
+      "amount": 1
+    },
+    {
+      "fluid": "kerosene",
+      "amount": 1
+    }
+  ],
+  "cost": 8
+}
