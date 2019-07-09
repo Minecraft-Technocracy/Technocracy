@@ -1,0 +1,17 @@
+{
+  "input": {
+    "fluid": "mineral_oil_hot",
+    "amount": 1
+  },
+  "outputs": [
+    {
+      "fluid": "light_oil",
+      "amount": 1
+    },
+    {
+      "fluid": "heavy_oil",
+      "amount": 1
+    }
+  ],
+  "cost": 4
+}
