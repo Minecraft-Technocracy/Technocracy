@@ -5,6 +5,8 @@ import it.zerono.mods.zerocore.api.multiblock.MultiblockControllerBase
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import it.zerono.mods.zerocore.lib.block.ModTileEntity
 import net.cydhra.technocracy.foundation.blocks.general.*
+import net.cydhra.technocracy.foundation.crafting.IMachineRecipe
+import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryHeater
 import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryInput
@@ -12,6 +14,7 @@ import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEnti
 import net.minecraft.init.Blocks
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.world.World
+import net.minecraftforge.fluids.FluidStack
 import java.util.function.Predicate
 
 class RefineryMultiBlock(world: World) : BaseMultiBlock(
@@ -32,12 +35,13 @@ class RefineryMultiBlock(world: World) : BaseMultiBlock(
         world = world
 ) {
 
+    private val recipes: Collection<IMachineRecipe> by lazy {
+        (RecipeManager.getRecipesByType(RecipeManager.RecipeType.REFINERY) ?: emptyList())
+    }
+
     private var controllerTileEntity: TileEntityRefineryController? = null
-
     private var inputPort: TileEntityRefineryInput? = null
-
     private var outputPorts: List<TileEntityRefineryOutput> = emptyList()
-
     private var heater: TileEntityRefineryHeater? = null
 
     private var effictiveHeight = 0
@@ -76,14 +80,28 @@ class RefineryMultiBlock(world: World) : BaseMultiBlock(
     }
 
     override fun updateServer(): Boolean {
-        val oilProduced = this.effictiveHeight
-        val energyConsumption = oilProduced * 4
+        val inputFluid = this.inputPort!!.fluidComponent.fluid.currentFluid
 
-        if (this.inputPort!!.fluidComponent.fluid.currentFluid?.amount ?: 0 >= oilProduced &&
-                this.heater!!.energyStorageComponent.energyStorage.currentEnergy >= energyConsumption) {
-            this.inputPort!!.fluidComponent.fluid.drain(this.effictiveHeight, true)
-            this.heater!!.energyStorageComponent.energyStorage.consumeEnergy(energyConsumption)
+        if (inputFluid != null) {
+            val recipe = this.recipes.single { it.conforms(stacks = emptyList(), fluids = listOf(inputFluid)) }
 
+            val oilProduced = this.effictiveHeight
+            val energyConsumption = oilProduced * recipe.processingCost
+
+            if (this.inputPort!!.fluidComponent.fluid.currentFluid?.amount ?: 0 >= oilProduced &&
+                    this.heater!!.energyStorageComponent.energyStorage.currentEnergy >= energyConsumption &&
+                    this.controllerTileEntity!!.topTank.currentFluid?.amount ?: 0 < this.controllerTileEntity!!
+                            .topTank.capacity &&
+                    this.controllerTileEntity!!.bottomTank.currentFluid?.amount ?: 0 < this.controllerTileEntity!!
+                            .bottomTank.capacity) {
+                this.inputPort!!.fluidComponent.fluid.drain(this.effictiveHeight, true)
+                this.heater!!.energyStorageComponent.energyStorage.consumeEnergy(energyConsumption)
+
+                this.controllerTileEntity!!.topTank
+                        .fill(FluidStack(recipe.getFluidOutput()[0].fluid, oilProduced), true)
+                this.controllerTileEntity!!.bottomTank
+                        .fill(FluidStack(recipe.getFluidOutput()[1].fluid, oilProduced), true)
+            }
         }
         return true
     }
