@@ -3,8 +3,10 @@ package net.cydhra.technocracy.foundation.liquids.general
 import java.awt.Color
 
 
-val mineralOilFluid = BaseFluid("oil", Color(25, 25, 25), opaqueTexture = true, secondaryTemperature = 700)
-        .setViscosity(3000).setDensity(900)
+val mineralOilFluid = BaseFluid("oil", Color(25, 25, 25), opaqueTexture = true, secondaryTemperature = 700).apply {
+    this.viscosity = 3000
+    this.density = 900
+}
 val sulfurDioxideFluid = BaseFluid("sulfurdioxide", Color(255, 230, 104), opaqueTexture = false)
 val oxygenFluid = BaseFluid("oxygen", Color(243, 255, 255), opaqueTexture = false)
 val sulfurTrioxideFluid = BaseFluid("sulfurtrioxide", Color(255, 210, 177), opaqueTexture = false)

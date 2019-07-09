@@ -1,6 +1,9 @@
 package net.cydhra.technocracy.foundation.tileentity.multiblock.refinery
 
 import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandler
+import net.cydhra.technocracy.foundation.liquids.general.heavyOilFluid
+import net.cydhra.technocracy.foundation.liquids.general.lightOilFluid
+import net.cydhra.technocracy.foundation.liquids.general.mineralOilFluid
 import net.cydhra.technocracy.foundation.multiblock.RefineryMultiBlock
 import net.cydhra.technocracy.foundation.tileentity.AggregatableDelegate
 import net.cydhra.technocracy.foundation.tileentity.api.TCAggregatable
@@ -12,7 +15,9 @@ import net.minecraft.util.EnumFacing
 class TileEntityRefineryInput : TileEntityMultiBlockPart<RefineryMultiBlock>(RefineryMultiBlock::class,
         ::RefineryMultiBlock), TCAggregatable by AggregatableDelegate() {
 
-    private val internalFluidHandler = DynamicFluidHandler(4000, allowedFluid = mutableListOf(),
+    private val internalFluidHandler = DynamicFluidHandler(4000,
+            allowedFluid = mutableListOf(mineralOilFluid.hotFluid.name, heavyOilFluid.hotFluid.name,
+                    lightOilFluid.hotFluid.name),
             tanktype = DynamicFluidHandler.TankType.INPUT)
 
     val fluidComponent = FluidComponent(internalFluidHandler, mutableSetOf(EnumFacing.NORTH, EnumFacing.EAST,
