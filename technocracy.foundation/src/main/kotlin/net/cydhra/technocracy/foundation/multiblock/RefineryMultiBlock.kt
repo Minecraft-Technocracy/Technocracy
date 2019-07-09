@@ -38,7 +38,9 @@ class RefineryMultiBlock(world: World) : BaseMultiBlock(
 
     private var outputPorts: List<TileEntityRefineryOutput> = emptyList()
 
-    private var heaters: TileEntityRefineryHeater? = null
+    private var heater: TileEntityRefineryHeater? = null
+
+    private var effictiveHeight = 0
 
     override fun isMachineWhole(validatorCallback: IMultiblockValidator): Boolean {
         if (!super.isMachineWhole(validatorCallback)) return false
@@ -58,7 +60,7 @@ class RefineryMultiBlock(world: World) : BaseMultiBlock(
                 this@RefineryMultiBlock.controllerTileEntity = controllers.first()
                 this@RefineryMultiBlock.inputPort = inputPorts.first()
                 this@RefineryMultiBlock.outputPorts = outputPorts
-                this@RefineryMultiBlock.heaters = heaters.first()
+                this@RefineryMultiBlock.heater = heaters.first()
 
                 this@RefineryMultiBlock.recalculatePhysics()
                 return@finishUp true
@@ -67,10 +69,16 @@ class RefineryMultiBlock(world: World) : BaseMultiBlock(
     }
 
     private fun recalculatePhysics() {
+        val interiorMin = minimumCoord.add(1, 1, 1)
+        val interiorMax = maximumCoord.add(-1, -1, -1)
 
+        effictiveHeight = interiorMax.y - interiorMin.y
     }
 
     override fun updateServer(): Boolean {
+        if (this.inputPort!!.fluidComponent.fluid.capacity > 0) {
+            val drained = this.inputPort!!.fluidComponent.fluid.drain(this.effictiveHeight, true)
+        }
         return true
     }
 
