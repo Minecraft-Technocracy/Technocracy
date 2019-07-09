@@ -3,14 +3,10 @@ package net.cydhra.technocracy.foundation.liquids.general
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.BaseLiquidBlock
 import net.cydhra.technocracy.foundation.blocks.general.BlockManager
-import net.minecraft.block.Block
 import net.minecraft.block.material.Material
-import net.minecraftforge.client.event.ModelRegistryEvent
-import net.minecraftforge.event.RegistryEvent
 import net.minecraftforge.fluids.Fluid
 import net.minecraftforge.fluids.FluidRegistry
 import net.minecraftforge.fml.common.Mod
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 @Mod.EventBusSubscriber(modid = TCFoundation.MODID)
 object FluidManager {
@@ -27,16 +23,17 @@ object FluidManager {
         if (fluid is BaseFluidPlaceable) {
             BlockManager.prepareBlocksForRegistration(BaseLiquidBlock(fluid, fluid.name, if (fluid.isGaseous) Material.AIR else Material.WATER))
         }
+        if (fluid is BaseFluid) {
+            registerSecondaryFluid(fluid)
+        }
     }
 
-    fun registerFluid(fluid: BaseFluid) {
+    fun registerSecondaryFluid(fluid: BaseFluid) {
         if (fluid.secondaryTemperature != null) {
             val hot = BaseFluid(fluid.name + "_hot", fluid.color, opaqueTexture = fluid.opaqueTexture,
                     isGas = fluid.isGaseous, temperature = fluid.secondaryTemperature)
             fluid.hotFluid = hot
             registerFluid(hot)
         }
-
-        registerFluid(fluid as Fluid)
     }
 }

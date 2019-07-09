@@ -6,7 +6,6 @@ import net.cydhra.technocracy.foundation.blocks.general.*
 import net.cydhra.technocracy.foundation.client.gui.handler.TCGuiHandler
 import net.cydhra.technocracy.foundation.client.model.customModel.connector.MachineConnectorModel
 import net.cydhra.technocracy.foundation.client.model.facade.FacadeItemModel
-import net.cydhra.technocracy.foundation.client.model.facade.FacadeItemRedirector
 import net.cydhra.technocracy.foundation.client.model.pipe.PipeItemModel
 import net.cydhra.technocracy.foundation.client.model.pipe.PipeModel
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
@@ -33,7 +32,6 @@ import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEnti
 import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryHeater
 import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryInput
 import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryOutput
-import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.animation.ITimeValue
