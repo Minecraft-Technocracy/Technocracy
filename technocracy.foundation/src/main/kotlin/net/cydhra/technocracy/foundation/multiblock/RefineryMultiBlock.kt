@@ -111,7 +111,7 @@ class RefineryMultiBlock(world: World) : BaseMultiBlock(
     }
 
     override fun updateServer(): Boolean {
-        val inputFluid = this.inputPort!!.fluidComponent.fluid.currentFluid
+        val inputFluid = this.controllerTileEntity!!.inputComponent.fluid.currentFluid
 
         if (inputFluid != null) {
             val recipe = this.recipes.single { it.conforms(stacks = emptyList(), fluids = listOf(inputFluid)) }
@@ -119,13 +119,13 @@ class RefineryMultiBlock(world: World) : BaseMultiBlock(
             val oilProduced = this.effictiveHeight
             val energyConsumption = oilProduced * recipe.processingCost
 
-            if (this.inputPort!!.fluidComponent.fluid.currentFluid?.amount ?: 0 >= oilProduced &&
+            if (this.controllerTileEntity!!.inputComponent.fluid.currentFluid?.amount ?: 0 >= oilProduced &&
                     this.heater!!.energyStorageComponent.energyStorage.currentEnergy >= energyConsumption &&
                     this.controllerTileEntity!!.topTank.currentFluid?.amount ?: 0 < this.controllerTileEntity!!
                             .topTank.capacity &&
                     this.controllerTileEntity!!.bottomTank.currentFluid?.amount ?: 0 < this.controllerTileEntity!!
                             .bottomTank.capacity) {
-                this.inputPort!!.fluidComponent.fluid.drain(this.effictiveHeight, true)
+                this.controllerTileEntity!!.inputComponent.fluid.drain(this.effictiveHeight, true)
                 this.heater!!.energyStorageComponent.energyStorage.consumeEnergy(energyConsumption)
 
                 this.controllerTileEntity!!.topTank
