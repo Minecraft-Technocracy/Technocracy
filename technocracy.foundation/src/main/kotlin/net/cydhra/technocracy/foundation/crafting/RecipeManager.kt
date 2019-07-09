@@ -56,6 +56,7 @@ object RecipeManager {
         parseMachineRecipes("electrolysis", ElectrolysisRecipeParser, RecipeManager.RecipeType.ELECTROLYSIS)
         parseMachineRecipes("kiln", ElectrolysisRecipeParser, RecipeManager.RecipeType.KILN)
         parseMachineRecipes("pulverizer", PulverizerRecipeParser, RecipeManager.RecipeType.PULVERIZER)
+        parseMachineRecipes("refinery", RefineryRecipeParser, RecipeManager.RecipeType.REFINERY)
     }
 
     /**
@@ -136,6 +137,7 @@ object RecipeManager {
         ELECTRIC_FURNACE,
         ELECTROLYSIS,
         KILN,
-        PULVERIZER
+        PULVERIZER,
+        REFINERY
     }
 }
