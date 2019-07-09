@@ -4,17 +4,17 @@
     "model": "forge:fluid"
   },
   "variants": {
-    "oil": [
+    "mineral_oil": [
       {
         "custom": {
-          "fluid": "oil"
+          "fluid": "mineral_oil"
         }
       }
     ],
-    "sulfurdioxide": [
+    "sulfur_dioxide": [
       {
         "custom": {
-          "fluid": "sulfurdioxide"
+          "fluid": "sulfur_dioxide"
         }
       }
     ],
@@ -25,17 +25,17 @@
         }
       }
     ],
-    "sulfurtrioxide": [
+    "sulfur_trioxide": [
       {
         "custom": {
-          "fluid": "sulfurtrioxide"
+          "fluid": "sulfur_trioxide"
         }
       }
     ],
-    "sulfuricacid": [
+    "sulfuric_acid": [
       {
         "custom": {
-          "fluid": "sulfuricacid"
+          "fluid": "sulfuric_acid"
         }
       }
     ],
@@ -46,10 +46,10 @@
         }
       }
     ],
-    "acrylicacid": [
+    "acrylic_acid": [
       {
         "custom": {
-          "fluid": "acrylicacid"
+          "fluid": "acrylic_acid"
         }
       }
     ],
@@ -74,10 +74,10 @@
         }
       }
     ],
-    "rocketfuel": [
+    "rocket_fuel": [
       {
         "custom": {
-          "fluid": "rocketfuel"
+          "fluid": "rocket_fuel"
         }
       }
     ],
@@ -109,24 +109,38 @@
         }
       }
     ],
-    "cryogenicgel": [
+    "cryogenic_gel": [
       {
         "custom": {
-          "fluid": "cryogenicgel"
+          "fluid": "cryogenic_gel"
         }
       }
     ],
-    "heavyoil": [
+    "heavy_oil": [
       {
         "custom": {
-          "fluid": "heavyoil"
+          "fluid": "heavy_oil"
         }
       }
     ],
-    "lightoil": [
+    "light_oil": [
       {
         "custom": {
-          "fluid": "lightoil"
+          "fluid": "light_oil"
+        }
+      }
+    ],
+    "heavy_oil_hot": [
+      {
+        "custom": {
+          "fluid": "heavy_oil_hot"
+        }
+      }
+    ],
+    "light_oil_hot": [
+      {
+        "custom": {
+          "fluid": "light_oil_hot"
         }
       }
     ],
@@ -144,10 +158,10 @@
         }
       }
     ],
-    "hydrochloricacid": [
+    "hydrochloric_acid": [
       {
         "custom": {
-          "fluid": "hydrochloricacid"
+          "fluid": "hydrochloric_acid"
         }
       }
     ],
