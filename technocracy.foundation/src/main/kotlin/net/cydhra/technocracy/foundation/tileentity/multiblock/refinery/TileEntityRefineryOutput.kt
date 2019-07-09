@@ -6,7 +6,4 @@ import net.cydhra.technocracy.foundation.tileentity.api.TCAggregatable
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPart
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
-class TileEntityRefineryOutput : TileEntityMultiBlockPart<RefineryMultiBlock>(RefineryMultiBlock::class,
-        ::RefineryMultiBlock), TCAggregatable by AggregatableDelegate() {
-
-}
+class TileEntityRefineryOutput : TileEntityMultiBlockPart<RefineryMultiBlock>(RefineryMultiBlock::class, ::RefineryMultiBlock)
