@@ -17,6 +17,9 @@ open class BaseFluid(fluidName: String, val color: Color, val opaqueTexture: Boo
         ResourceLocation("technocracy.foundation", "liquid/fluid_${if (opaqueTexture) "opaque_" else ""}still"),
         ResourceLocation("technocracy.foundation", "liquid/fluid_${if (opaqueTexture) "opaque_" else ""}flow"),
         color) {
+
+    lateinit var hotFluid: Fluid
+
     init {
         isGaseous = isGas
     }

@@ -32,6 +32,7 @@ object FluidManager {
     fun registerFluid(fluid: BaseFluid) {
         if (fluid.generateHotFluid) {
             val hot = BaseFluid(fluid.name + "_hot", fluid.color, fluid.opaqueTexture, fluid.isGaseous)
+            fluid.hotFluid = hot
             registerFluid(hot)
         }
 
