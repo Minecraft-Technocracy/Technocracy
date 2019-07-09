@@ -10,7 +10,7 @@ import net.minecraftforge.common.crafting.JsonContext
 object RefineryRecipeParser : RecipeParser<RefineryRecipe> {
 
     const val JSON_KEY_INPUT = "input"
-    const val JSON_KEY_OUTPUT = "output"
+    const val JSON_KEY_OUTPUT = "outputs"
     const val JSON_KEY_TICK_COST = "cost"
 
     /**
@@ -23,7 +23,7 @@ object RefineryRecipeParser : RecipeParser<RefineryRecipe> {
 
         val input = getFluidStack(json.getAsJsonObject(JSON_KEY_INPUT))
 
-        val outputsArray = json.getAsJsonArray(JSON_KEY_INPUT)
+        val outputsArray = json.getAsJsonArray(JSON_KEY_OUTPUT)
         check(outputsArray.size() == 2) { "recipe requires exactly two outputs" }
 
         val outputIngredientList = outputsArray.map { element -> getFluidStack(element.asJsonObject) }
