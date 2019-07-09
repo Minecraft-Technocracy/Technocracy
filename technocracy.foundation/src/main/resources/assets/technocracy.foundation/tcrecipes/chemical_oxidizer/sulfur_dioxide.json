@@ -4,7 +4,7 @@
     "ore": "dustSulfur"
   },
   "output": {
-    "fluid": "sulfurdioxide",
+    "fluid": "sulfur_dioxide",
     "amount": 200
   },
   "cost": 40
