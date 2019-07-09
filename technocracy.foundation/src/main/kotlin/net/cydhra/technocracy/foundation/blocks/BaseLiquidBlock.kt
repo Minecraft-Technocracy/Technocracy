@@ -22,9 +22,8 @@ import java.util.*
 
 @Mod.EventBusSubscriber(modid = TCFoundation.MODID)
 open class BaseLiquidBlock(fluid: Fluid,
-                           unlocalizedName: String,
                            material: Material,
-                           registryName: String = unlocalizedName,
+                           registryName: String = fluid.unlocalizedName,
                            mapColor: MapColor = material.materialMapColor,
                            override val colorMultiplier: ConstantBlockColor? = null)
     : BlockFluidClassic(fluid, material, mapColor), IBaseBlock {

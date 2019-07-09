@@ -21,7 +21,7 @@ object FluidManager {
         FluidRegistry.addBucketForFluid(fluid)
 
         if (fluid is BaseFluidPlaceable) {
-            BlockManager.prepareBlocksForRegistration(BaseLiquidBlock(fluid, fluid.name, if (fluid.isGaseous) Material.AIR else Material.WATER))
+            BlockManager.prepareBlocksForRegistration(BaseLiquidBlock(fluid, if (fluid.isGaseous) Material.AIR else Material.WATER))
         }
         if (fluid is BaseFluid) {
             registerSecondaryFluid(fluid)
