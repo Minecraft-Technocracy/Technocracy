@@ -60,5 +60,10 @@ class TextureAtlasManager {
         pipe_fluid = event.map.registerSprite(getResourceLocation("block/steel_dark"))
         pipe_energy = event.map.registerSprite(getResourceLocation("block/boiler_wall"))
         pipe_node = event.map.registerSprite(getResourceLocation("block/frame_corners"))
+
+        event.map.registerSprite(ResourceLocation("technocracy.foundation", "liquid/fluid_opaque_still"))
+        event.map.registerSprite(ResourceLocation("technocracy.foundation", "liquid/fluid_still"))
+        event.map.registerSprite(ResourceLocation("technocracy.foundation", "liquid/fluid_opaque_flow"))
+        event.map.registerSprite(ResourceLocation("technocracy.foundation", "liquid/fluid_flow"))
     }
 }
