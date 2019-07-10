@@ -1,0 +1,11 @@
+{
+  "input": {
+    "fluid": "heavy_oil",
+    "amount": 1
+  },
+  "output": {
+    "fluid": "tar",
+    "amount": 1
+  },
+  "cost": 100
+}

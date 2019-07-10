@@ -1,0 +1,11 @@
+{
+  "input": {
+    "fluid": "tar",
+    "amount": 1
+  },
+  "output": {
+    "fluid": "styrene",
+    "amount": 1
+  },
+  "cost": 120
+}
