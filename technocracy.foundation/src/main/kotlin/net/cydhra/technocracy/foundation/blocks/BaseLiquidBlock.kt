@@ -22,13 +22,14 @@ import java.util.*
 
 @Mod.EventBusSubscriber(modid = TCFoundation.MODID)
 open class BaseLiquidBlock(fluid: Fluid,
+                           unlocalizedName: String,
                            material: Material,
-                           registryName: String = fluid.unlocalizedName,
+                           registryName: String = fluid.name,
                            mapColor: MapColor = material.materialMapColor,
                            override val colorMultiplier: ConstantBlockColor? = null)
     : BlockFluidClassic(fluid, material, mapColor), IBaseBlock {
 
-    override val modelLocation: String = unlocalizedName
+    override val modelLocation: String = registryName
 
     override val generateItem: Boolean
         get() = true

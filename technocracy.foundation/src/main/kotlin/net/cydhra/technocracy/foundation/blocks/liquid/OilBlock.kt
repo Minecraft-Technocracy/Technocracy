@@ -19,7 +19,7 @@ import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 
 
-class OilBlock : BaseLiquidBlock(mineralOilFluid, Material.WATER) {
+class OilBlock : BaseLiquidBlock(mineralOilFluid, "mineral_oil", Material.WATER) {
     override fun onEntityCollidedWithBlock(worldIn: World, pos: BlockPos, state: IBlockState, entityIn: Entity) {
         handleMaterialAcceleration(worldIn, entityIn.entityBoundingBox, this.blockMaterial, entityIn)
     }
