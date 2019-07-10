@@ -1,0 +1,17 @@
+{
+  "input": [
+    {
+      "fluid": "propylene_oxide",
+      "amount": 1
+    },
+    {
+      "fluid": "water",
+      "amount": 2
+    }
+  ],
+  "output": {
+    "fluid": "propylene_glycol",
+    "amount": 1
+  },
+  "cost": 300
+}

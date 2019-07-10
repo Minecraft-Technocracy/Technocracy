@@ -1,0 +1,17 @@
+{
+  "input": [
+    {
+      "fluid": "kerosene",
+      "amount": 1
+    },
+    {
+      "fluid": "oxygen",
+      "amount": 3
+    }
+  ],
+  "output": {
+    "fluid": "rocket_fuel",
+    "amount": 2
+  },
+  "cost": 150
+}
