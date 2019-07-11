@@ -32,11 +32,14 @@ import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEnti
 import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryHeater
 import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryInput
 import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryOutput
+import net.cydhra.technocracy.foundation.world.gen.OilLakeGen
+import net.cydhra.technocracy.foundation.world.gen.OilSandGen
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.animation.ITimeValue
 import net.minecraftforge.common.model.animation.IAnimationStateMachine
 import net.minecraftforge.fml.common.network.NetworkRegistry
+import net.minecraftforge.fml.common.registry.GameRegistry
 
 
 /**
@@ -174,6 +177,9 @@ open class CommonProxy {
         //ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPipe::class.java, PipeRenderer())
 
         PotionManager.preparePotionForRegistration(oilyEffect)
+
+        GameRegistry.registerWorldGenerator(OilLakeGen(), 0)
+        GameRegistry.registerWorldGenerator(OilSandGen(), 0)
 
         NetworkRegistry.INSTANCE.registerGuiHandler(TCFoundation, TCGuiHandler())
     }
