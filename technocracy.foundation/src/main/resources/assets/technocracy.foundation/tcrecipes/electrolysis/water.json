@@ -1,0 +1,17 @@
+{
+  "input": {
+    "fluid": "water",
+    "amount": 1
+  },
+  "output": [
+    {
+      "fluid": "oxygen",
+      "amount": 1
+    },
+    {
+      "fluid": "hydrogen",
+      "amount": 2
+    }
+  ],
+  "cost": 128
+}

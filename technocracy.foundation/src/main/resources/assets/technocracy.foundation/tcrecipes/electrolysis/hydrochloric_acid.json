@@ -1,0 +1,17 @@
+{
+  "input": {
+    "fluid": "hydrochloric_acid",
+    "amount": 1
+  },
+  "output": [
+    {
+      "fluid": "chlorine",
+      "amount": 1
+    },
+    {
+      "fluid": "hydrogen",
+      "amount": 1
+    }
+  ],
+  "cost": 128
+}
