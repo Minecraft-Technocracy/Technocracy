@@ -126,7 +126,6 @@ open class CommonProxy {
         ItemManager.prepareItemForRegistration(ironSheetItem)
         ItemManager.prepareItemForRegistration(sulfur)
         ItemManager.prepareItemForRegistration(batteryItem)
-        ItemManager.prepareItemForRegistration(akkumulatorItem)
         ItemManager.prepareItemForRegistration(siliconItem)
         ItemManager.prepareItemForRegistration(bedrockiumItem)
         ItemManager.prepareItemForRegistration(phenoplastItem)
