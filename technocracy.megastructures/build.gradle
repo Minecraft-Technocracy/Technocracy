@@ -8,6 +8,7 @@ buildscript {
         jcenter()
         maven { url = "https://files.minecraftforge.net/maven" }
     }
+    
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: project.forge_plugin_version
         classpath group: 'org.jetbrains.kotlin', name: 'kotlin-gradle-plugin', version: project.kotlin_version
@@ -18,4 +19,12 @@ apply from: '../configuration.gradle'
 
 dependencies {
     compile group: 'net.cydhra.technocracy', name: 'technocracy.foundation', version: project.version
+    compile group: 'net.cydhra.technocracy', name: 'technocracy.astronautics', version: project.version
+}
+
+// jar configuration
+jar {
+    manifest {
+        attributes 'FMLAT': 'technocracy.megastructures_at.cfg'
+    }
 }
