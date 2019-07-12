@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.megastructures.world
 
+import net.cydhra.technocracy.megastructures.dyson.DysonSphereController
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
@@ -21,7 +22,7 @@ class WrappedWorldProvider(val provider : WorldProvider) : WorldProvider() {
      */
     @SideOnly(Side.CLIENT)
     override fun getSunBrightness(par1: Float): Float {
-        return provider.getSunBrightness(par1) * 0.2f
+        return provider.getSunBrightness(par1) * (1f - DysonSphereController.sphereAmount)
     }
 
     /**
@@ -37,17 +38,17 @@ class WrappedWorldProvider(val provider : WorldProvider) : WorldProvider() {
      */
     @SideOnly(Side.CLIENT)
     override fun getFogColor(p_76562_1_: Float, p_76562_2_: Float): Vec3d {
-        return provider.getFogColor(p_76562_1_, p_76562_2_).scale(0.2)
+        return provider.getFogColor(p_76562_1_, p_76562_2_).scale((1.0 - DysonSphereController.sphereAmount))
     }
 
     @SideOnly(Side.CLIENT)
     override fun getSkyColor(cameraEntity: net.minecraft.entity.Entity, partialTicks: Float): Vec3d {
-        return provider.getSkyColor(cameraEntity, partialTicks).scale(0.2)
+        return provider.getSkyColor(cameraEntity, partialTicks).scale((1.0 - DysonSphereController.sphereAmount))
     }
 
     @SideOnly(Side.CLIENT)
     override fun getCloudColor(partialTicks: Float): Vec3d {
-        return provider.getCloudColor(partialTicks).scale(0.2)
+        return provider.getCloudColor(partialTicks).scale((1.0 - DysonSphereController.sphereAmount))
     }
 
     /**
@@ -55,7 +56,7 @@ class WrappedWorldProvider(val provider : WorldProvider) : WorldProvider() {
      */
     @SideOnly(Side.CLIENT)
     override fun getStarBrightness(par1: Float): Float {
-        return 0.8f//provider.getStarBrightness(par1)
+        return provider.getStarBrightness(par1) + (Math.max(DysonSphereController.sphereAmount - 0.3f, 0f))
     }
 
     /**
@@ -67,7 +68,7 @@ class WrappedWorldProvider(val provider : WorldProvider) : WorldProvider() {
      * @return The current brightness factor
      */
     override fun getSunBrightnessFactor(par1: Float): Float {
-        return provider.getSunBrightnessFactor(par1) * 0.2f
+        return provider.getSunBrightnessFactor(par1) * (1f - DysonSphereController.sphereAmount)
     }
 
     override fun getDimensionType(): DimensionType {
