@@ -31,7 +31,6 @@ class PipeItemRedirector(val baseBakedModel: IBakedModel) : IBakedModel by baseB
                     return originalModel
 
                 return cache.getOrPut(stack.metadata) {
-                    println("added new")
                     getModelWithTexture(null, baseBakedModel, TextureAtlasManager.getTextureForConnectionType(PipeType.values()[stack.metadata]))
                 }
             }

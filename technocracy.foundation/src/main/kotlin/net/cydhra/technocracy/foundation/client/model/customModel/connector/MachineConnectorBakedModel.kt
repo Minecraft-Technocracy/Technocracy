@@ -20,6 +20,10 @@ class MachineConnectorBakedModel(val baseBakedModel: IBakedModel, val connector:
 
     override fun getQuads(state: IBlockState?, side: EnumFacing?, rand: Long): MutableList<BakedQuad> {
 
+        if(state !is IExtendedBlockState) {
+            return baseBakedModel.getQuads(state, side, rand)
+        }
+
         val blockState = state as IExtendedBlockState
         val clean = blockState.clean
 
