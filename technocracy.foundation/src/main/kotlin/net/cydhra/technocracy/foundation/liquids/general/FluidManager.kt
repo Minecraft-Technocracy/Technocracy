@@ -6,10 +6,10 @@ import net.cydhra.technocracy.foundation.blocks.general.BlockManager
 import net.minecraft.block.material.Material
 import net.minecraftforge.fluids.Fluid
 import net.minecraftforge.fluids.FluidRegistry
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.Mod
 
-@Mod.EventBusSubscriber(modid = TCFoundation.MODID)
-object FluidManager {
+class FluidManager(private val blockManager: BlockManager) {
 
     /**
      * Register a fluid at the FluidRegistry. Since fluids must be registered before their respective fluid blocks,
@@ -21,7 +21,7 @@ object FluidManager {
         FluidRegistry.addBucketForFluid(fluid)
 
         if (fluid is BaseFluidPlaceable) {
-            BlockManager.prepareBlocksForRegistration(BaseLiquidBlock(fluid, fluid.name, if (fluid.isGaseous)
+            blockManager.prepareBlocksForRegistration(BaseLiquidBlock(fluid, fluid.name, if (fluid.isGaseous)
                 Material.AIR
             else Material.WATER))
         }

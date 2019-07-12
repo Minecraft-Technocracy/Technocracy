@@ -64,12 +64,12 @@ class MaterialSystem(materialName: String, colorMultiplier: Int,
     /**
      * Must be called in pre-init. Registers all the components at forge
      */
-    fun preInit() {
-        ItemManager.prepareItemForRegistration(this.ingot)
-        ItemManager.prepareItemForRegistration(this.dust)
-        ItemManager.prepareItemForRegistration(this.sheet)
-        ItemManager.prepareItemForRegistration(this.gear)
-        BlockManager.prepareBlocksForRegistration(this.ore)
+    fun preInit(blockManager: BlockManager, itemManager: ItemManager) {
+        itemManager.prepareItemForRegistration(this.ingot)
+        itemManager.prepareItemForRegistration(this.dust)
+        itemManager.prepareItemForRegistration(this.sheet)
+        itemManager.prepareItemForRegistration(this.gear)
+        blockManager.prepareBlocksForRegistration(this.ore)
     }
 
     fun init() {

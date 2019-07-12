@@ -1,9 +1,7 @@
 package net.cydhra.technocracy.foundation.blocks.general
 
-import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.BaseLiquidBlock
 import net.cydhra.technocracy.foundation.blocks.api.IBaseBlock
-import net.cydhra.technocracy.foundation.blocks.general.BlockManager.prepareBlocksForRegistration
 import net.cydhra.technocracy.foundation.client.model.AbstractCustomModel
 import net.cydhra.technocracy.foundation.client.model.CustomModelProvider
 import net.cydhra.technocracy.foundation.util.StateMapper
@@ -18,7 +16,6 @@ import net.minecraftforge.client.model.IModel
 import net.minecraftforge.client.model.ModelLoader
 import net.minecraftforge.client.model.ModelLoaderRegistry
 import net.minecraftforge.event.RegistryEvent
-import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 
@@ -28,8 +25,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
  * register them at the event bus. It furthermore handles additional block-related registration processes such as
  * [ItemBlock] registration, model and renderer registration and so on.
  */
-@Mod.EventBusSubscriber(modid = TCFoundation.MODID)
-object BlockManager {
+class BlockManager {
 
     /**
      * A list that saves all blocks to be registered

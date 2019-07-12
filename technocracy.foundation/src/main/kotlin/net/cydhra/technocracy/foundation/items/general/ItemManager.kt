@@ -15,7 +15,6 @@ import net.minecraftforge.client.model.IModel
 import net.minecraftforge.client.model.ModelLoader
 import net.minecraftforge.client.model.ModelLoaderRegistry
 import net.minecraftforge.event.RegistryEvent
-import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.oredict.OreDictionary
 
@@ -24,8 +23,7 @@ import net.minecraftforge.oredict.OreDictionary
  *
  * @see ItemManager.prepareItemForRegistration
  */
-@Mod.EventBusSubscriber(modid = TCFoundation.MODID)
-object ItemManager {
+class ItemManager {
 
     /**
      * Items scheduled for registering
@@ -54,7 +52,6 @@ object ItemManager {
 
     @Suppress("unused")
     @SubscribeEvent
-    @JvmStatic
     fun registerItems(event: RegistryEvent.Register<Item>) {
         event.registry.registerAll(*itemsToRegister.toTypedArray())
 
@@ -62,7 +59,6 @@ object ItemManager {
 
     @Suppress("unused")
     @SubscribeEvent
-    @JvmStatic
     fun registerRenders(@Suppress("UNUSED_PARAMETER") event: ModelRegistryEvent) {
         ModelLoaderRegistry.registerLoader(CustomModelProvider(customModels))
 
