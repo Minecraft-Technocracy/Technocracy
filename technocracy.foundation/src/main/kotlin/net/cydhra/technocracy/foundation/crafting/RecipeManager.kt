@@ -114,13 +114,15 @@ object RecipeManager {
      * @param type type of recipe that is loaded
      */
     private fun parseMachineRecipes(endpoint: String, parser: RecipeParser<*>, type: RecipeType) {
-        CraftingHelper.findFiles(
-                Loader.instance().indexedModList[TCFoundation.MODID],
-                "assets/${TCFoundation.MODID}/$RECIPE_ASSETS_FOLDER/$endpoint",
-                { true },
-                { _, path -> this.loadRecipe(path, parser, type) },
-                true,
-                true)
+        Loader.instance().indexedModList.forEach { (modId, modContainer) ->
+            CraftingHelper.findFiles(
+                    modContainer,
+                    "assets/$modId/$RECIPE_ASSETS_FOLDER/$endpoint",
+                    { true },
+                    { _, path -> this.loadRecipe(path, parser, type) },
+                    true,
+                    true)
+        }
     }
 
     /**
