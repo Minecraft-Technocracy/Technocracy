@@ -9,7 +9,7 @@ import net.minecraftforge.fluids.FluidStack
 data class KilnRecipe(val inputFluid: FluidStack, val output: FluidStack,
                       override val processingCost: Int) : IMachineRecipe {
     override fun conforms(stacks: List<ItemStack>, fluids: List<FluidStack>): Boolean {
-        return inputFluid.isFluidEqual(fluids[0])
+        return fluids.size == 1 && inputFluid.isFluidEqual(fluids[0])
     }
 
     override fun getFluidInput(): List<FluidStack> {
