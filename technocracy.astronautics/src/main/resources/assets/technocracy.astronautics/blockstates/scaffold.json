@@ -2,7 +2,7 @@
   "variants": {
     "normal": [
       {
-        "model": "technocracy.foundation:scaffold"
+        "model": "technocracy.astronautics:scaffold"
       }
     ]
   }

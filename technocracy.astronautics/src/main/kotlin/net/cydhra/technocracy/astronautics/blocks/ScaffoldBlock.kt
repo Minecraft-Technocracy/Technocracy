@@ -35,7 +35,6 @@ class ScaffoldBlock : AbstractBaseBlock("scaffold", Material.IRON) {
         return false
     }
 
-
     fun getTopMostBlock(worldIn: World, start: BlockPos): BlockPos {
         var i = 0
         while (i < 64 && worldIn.getBlockState(start.add(0, i, 0)).block == this) {
@@ -75,14 +74,14 @@ class ScaffoldBlock : AbstractBaseBlock("scaffold", Material.IRON) {
             val limit = 0.15
             entityIn.motionX = MathHelper.clamp(entityIn.motionX, -limit, limit)
             entityIn.motionZ = MathHelper.clamp(entityIn.motionZ, -limit, limit)
-            if (entityIn.isSneaking && entityIn is EntityPlayer) {
+            if (entityIn.collidedHorizontally) {
+                entityIn.motionY = 0.3
+            } else if (entityIn.isSneaking && entityIn is EntityPlayer) {
                 if (entityIn.isInWater()) {
                     entityIn.motionY = 0.02
                 } else {
                     entityIn.motionY = 0.08
                 }
-            } else if (entityIn.collidedHorizontally) {
-                entityIn.motionY = 0.3
             } else {
                 entityIn.motionY = Math.max(entityIn.motionY, -0.15)
             }
