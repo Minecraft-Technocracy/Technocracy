@@ -47,9 +47,9 @@ object RecipeManager {
     fun initialize() {
         parseMachineRecipes("alloy_smeltery", AlloySmelteryRecipeParser, RecipeManager.RecipeType.ALLOY)
         parseMachineRecipes("centrifuge", CentrifugeRecipeParser, RecipeManager.RecipeType.CENTRIFUGE)
-        parseMachineRecipes("chemical_etching", ChemicalEtchingRecipeParser, RecipeManager.RecipeType.CHEMICAL_ETCHING)
+        parseMachineRecipes("chemical_etching", ChemicalEtchingParser, RecipeManager.RecipeType.CHEMICAL_ETCHING)
         parseMachineRecipes("chemical_oxidizer", ChemicalOxidizerRecipeParser, RecipeManager.RecipeType.CHEMICAL_OXIDIZER)
-        parseMachineRecipes("chemical_processing", ChemicalProcessingRecipeParser, RecipeManager.RecipeType.CHEMICAL_PROCESSING)
+        parseMachineRecipes("chemical_processing", ChemicalProcessingParser, RecipeManager.RecipeType.CHEMICAL_PROCESSING)
         parseMachineRecipes("chemical_reaction", ChemicalReactionRecipeParser, RecipeManager.RecipeType.CHEMICAL_REACTION)
         parseMachineRecipes("compactor", CompactorRecipeParser, RecipeManager.RecipeType.COMPACTOR)
         parseMachineRecipes("electric_furnace", ElectricFurnaceRecipeParser, RecipeManager.RecipeType.ELECTRIC_FURNACE)

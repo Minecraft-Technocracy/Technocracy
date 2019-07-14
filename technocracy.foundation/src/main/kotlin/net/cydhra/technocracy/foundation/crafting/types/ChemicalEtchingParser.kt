@@ -7,7 +7,7 @@ import net.minecraftforge.common.crafting.JsonContext
 /**
  * Parser for [ChemicalEtchingRecipe]
  */
-object ChemicalProcessingRecipeParser : RecipeParser<ChemicalEtchingRecipe> {
+object ChemicalEtchingParser : RecipeParser<ChemicalEtchingRecipe> {
 
     const val JSON_KEY_INPUT = "input"
     const val JSON_KEY_OUTPUT = "output"
