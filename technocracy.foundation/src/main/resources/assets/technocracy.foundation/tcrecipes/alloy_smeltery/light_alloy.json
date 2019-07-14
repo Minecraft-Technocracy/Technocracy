@@ -1,0 +1,17 @@
+{
+  "input": [
+    {
+      "type": "forge:ore_dict",
+      "ore": "ingotAluminum"
+    },
+    {
+      "type": "forge:ore_dict",
+      "ore": "ingotLithium"
+    }
+  ],
+  "output": {
+    "item": "technocracy.foundation:ingot.light_alloy",
+    "count": 2
+  },
+  "cost": 640
+}

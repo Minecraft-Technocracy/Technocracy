@@ -1,0 +1,21 @@
+{
+  "input": [
+    {
+      "type": "forge:ore_dict",
+      "ore": "blockObsidian"
+    },
+    {
+      "type": "forge:ore_dict",
+      "ore": "ingotLead"
+    },
+    {
+      "type": "forge:ore_dict",
+      "ore": "ingotNickel"
+    }
+  ],
+  "output": {
+    "item": "technocracy.foundation:ingot.tough_alloy",
+    "count": 1
+  },
+  "cost": 640
+}
