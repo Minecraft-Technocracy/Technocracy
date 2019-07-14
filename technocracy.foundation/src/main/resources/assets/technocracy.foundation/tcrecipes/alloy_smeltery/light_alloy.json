@@ -10,7 +10,7 @@
     }
   ],
   "output": {
-    "item": "technocracy.foundation:ingot.light_alloy",
+    "item": "technocracy.foundation:ingot.lightAlloy",
     "count": 2
   },
   "cost": 640

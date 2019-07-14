@@ -14,7 +14,7 @@
     }
   ],
   "output": {
-    "item": "technocracy.foundation:ingot.tough_alloy",
+    "item": "technocracy.foundation:ingot.toughAlloy",
     "count": 1
   },
   "cost": 120

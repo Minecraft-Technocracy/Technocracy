@@ -14,7 +14,7 @@
     }
   ],
   "output": {
-    "item": "technocracy.foundation:ingot.silicon_bronze",
+    "item": "technocracy.foundation:ingot.siliconBronze",
     "count": 2
   },
   "cost": 80
