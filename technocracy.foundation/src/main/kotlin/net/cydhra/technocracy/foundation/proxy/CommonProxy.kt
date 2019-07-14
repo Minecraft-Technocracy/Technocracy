@@ -154,6 +154,9 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(polypropyleneItem)
         itemManager.prepareItemForRegistration(polystyreneItem)
         itemManager.prepareItemForRegistration(nanotubesItem)
+        itemManager.prepareItemForRegistration(mirrorItem)
+        itemManager.prepareItemForRegistration(polishedMirrorItem)
+
         itemManager.prepareItemForRegistration(invarItem)
         itemManager.prepareItemForRegistration(siliconBronzeItem)
         itemManager.prepareItemForRegistration(superconductorItem)
@@ -162,6 +165,7 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(bronzeItem)
         itemManager.prepareItemForRegistration(lightAlloyItem)
         itemManager.prepareItemForRegistration(toughAlloyItem)
+
         itemManager.prepareItemForRegistration(pipeItem, PipeItemModel())
         itemManager.prepareItemForRegistration(facadeItem, FacadeItemModel())
 

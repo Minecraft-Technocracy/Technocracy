@@ -21,6 +21,8 @@ val saltItem = BaseItem("salt", oreDictName = "dustSalt")
 val sodiumAcrylateItem = BaseItem("sodium_acrylate", oreDictName = "dustSodiumAcrylate")
 val rubberItem = BaseItem("rubber", oreDictName = "itemRubber")
 val calciumAcetateItem = BaseItem("calcium_acetate", oreDictName = "dustCalciumAcetate")
+val mirrorItem = BaseItem("mirror")
+val polishedMirrorItem = BaseItem("polished_mirror")
 
 val invarItem = AlloyItem("invar", ConstantItemColor(0xDDC2BE))
 val steelItem = AlloyItem("steel", ConstantItemColor(0x707680))

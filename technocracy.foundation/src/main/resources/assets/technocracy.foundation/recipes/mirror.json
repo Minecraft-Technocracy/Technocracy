@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sss",
+    "lll"
+  ],
+  "key": {
+    "s": {
+      "type": "forge:ore_dict",
+      "ore": "sheetSilver"
+    },
+    "l": {
+      "type": "forge:ore_dict",
+      "ore": "ingotLightAlloy"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:mirror",
+    "count": 1
+  }
+}
