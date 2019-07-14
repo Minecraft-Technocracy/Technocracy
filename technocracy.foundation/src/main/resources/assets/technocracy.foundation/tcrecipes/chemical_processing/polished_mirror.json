@@ -1,0 +1,15 @@
+{
+  "input": {
+    "item": "technocracy.foundation:mirror",
+    "count": 1
+  },
+  "fluid": {
+    "fluid": "pitch",
+    "amount": 100
+  },
+  "output": {
+    "item": "technocracy.foundation:polished_mirror",
+    "count": 1
+  },
+  "cost": 200
+}
