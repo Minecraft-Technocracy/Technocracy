@@ -20,8 +20,7 @@ class TileEntityChemicalProcessingChamber : MachineTileEntity(), TEInventoryProv
     private val inputInventoryComponent = InventoryComponent(1, this, EnumFacing.WEST)
     private val inputFluidComponent = FluidComponent(4000,
             tanktype = DynamicFluidHandler.TankType.INPUT, facing = mutableSetOf(EnumFacing.UP))
-    private val outputInventoryComponent = FluidComponent(4000,
-            tanktype = DynamicFluidHandler.TankType.OUTPUT, facing = mutableSetOf(EnumFacing.EAST))
+    private val outputInventoryComponent = InventoryComponent(1, this, EnumFacing.EAST)
 
     private val recipes: Collection<IMachineRecipe> by lazy {
         (RecipeManager.getRecipesByType(RecipeManager.RecipeType.CHEMICAL_PROCESSING) ?: emptyList())
@@ -36,7 +35,7 @@ class TileEntityChemicalProcessingChamber : MachineTileEntity(), TEInventoryProv
                 recipeType = RecipeManager.RecipeType.CHEMICAL_PROCESSING,
                 inputInventory = this.inputInventoryComponent.inventory,
                 inputFluidSlots = arrayOf(inputFluidComponent.fluid),
-                outputFluidSlots = arrayOf(this.outputInventoryComponent.fluid),
+                outputInventory = outputInventoryComponent.inventory,
                 energyStorage = this.energyStorageComponent.energyStorage,
                 machineUpgrades = this.machineUpgradesComponent,
                 baseTickEnergyCost = 40
