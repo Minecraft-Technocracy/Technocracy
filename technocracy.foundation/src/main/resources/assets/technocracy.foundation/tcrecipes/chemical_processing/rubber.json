@@ -1,0 +1,15 @@
+{
+  "input": {
+    "type": "forge:ore_dict",
+    "ore": "itemSodiumAcrylate"
+  },
+  "fluid": {
+    "fluid": "styrene",
+    "amount": 100
+  },
+  "output": {
+    "item": "technocracy.foundation:rubber",
+    "count": 1
+  },
+  "cost": 80
+}

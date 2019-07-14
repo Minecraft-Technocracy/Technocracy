@@ -1,0 +1,10 @@
+{
+  "input": {
+    "item": "minecraft:coal",
+    "data": 1
+  },
+  "output_primary": {
+    "item": "technocracy.foundation:calcium_acetate"
+  },
+  "cost": 60
+}

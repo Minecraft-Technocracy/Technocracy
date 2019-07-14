@@ -1,0 +1,15 @@
+{
+  "input": {
+    "type": "forge:ore_dict",
+    "ore": "itemSalt"
+  },
+  "fluid": {
+    "fluid": "acrylic_acid",
+    "amount": 100
+  },
+  "output": {
+    "item": "technocracy.foundation:sodium_acrylate",
+    "count": 1
+  },
+  "cost": 80
+}

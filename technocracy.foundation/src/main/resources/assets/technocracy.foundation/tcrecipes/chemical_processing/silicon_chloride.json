@@ -1,0 +1,15 @@
+{
+  "input": {
+    "type": "forge:ore_dict",
+    "ore": "itemSilicon"
+  },
+  "fluid": {
+    "fluid": "chlorine",
+    "amount": 100
+  },
+  "output": {
+    "item": "technocracy.foundation:silicon_chloride",
+    "count": 1
+  },
+  "cost": 20
+}
