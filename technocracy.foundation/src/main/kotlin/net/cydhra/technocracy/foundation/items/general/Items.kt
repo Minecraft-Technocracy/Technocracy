@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.items.general
 
+import net.cydhra.technocracy.foundation.items.ItemPolishedMirror
 import net.cydhra.technocracy.foundation.items.color.ConstantItemColor
 
 val coalDustItem = ColoredItem("dust", "coal", ConstantItemColor(0x2f2f2f))
@@ -22,7 +23,7 @@ val sodiumAcrylateItem = BaseItem("sodium_acrylate", oreDictName = "dustSodiumAc
 val rubberItem = BaseItem("rubber", oreDictName = "itemRubber")
 val calciumAcetateItem = BaseItem("calcium_acetate", oreDictName = "dustCalciumAcetate")
 val mirrorItem = BaseItem("mirror")
-val polishedMirrorItem = BaseItem("polished_mirror")
+val polishedMirrorItem = ItemPolishedMirror()
 
 val invarItem = AlloyItem("invar", ConstantItemColor(0xDDC2BE))
 val steelItem = AlloyItem("steel", ConstantItemColor(0x707680))
