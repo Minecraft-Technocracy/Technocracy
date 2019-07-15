@@ -22,6 +22,7 @@ open class CommonProxy {
         MinecraftForge.EVENT_BUS.register(blockManager)
         MinecraftForge.EVENT_BUS.register(fluidManager)
         MinecraftForge.EVENT_BUS.register(itemManager)
+        MinecraftForge.EVENT_BUS.register(CapabilityEventBusHandler())
 
         blockManager.prepareBlocksForRegistration(scaffoldBlock)
     }
@@ -29,7 +30,6 @@ open class CommonProxy {
     open fun init() {
         CapabilityManager.INSTANCE.register(ISatelliteOrbit::class.java, SatelliteOrbitStorage(),
                 ::DefaultSatelliteOrbit)
-        MinecraftForge.EVENT_BUS.register(CapabilityEventBusHandler())
     }
 
     open fun postInit() {
