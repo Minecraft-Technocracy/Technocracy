@@ -21,6 +21,6 @@ class DefaultSatelliteOrbit : ISatelliteOrbit {
     }
 
     override fun tick() {
-
+        this.registeredSatellites.forEach(ISatellite::tick)
     }
 }

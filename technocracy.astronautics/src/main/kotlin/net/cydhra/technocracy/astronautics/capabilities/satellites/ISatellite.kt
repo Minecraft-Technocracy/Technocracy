@@ -21,4 +21,9 @@ interface ISatellite {
      * Deserialize data from given compound into this instance
      */
     fun deserializeNbt(element: NBTTagCompound)
+
+    /**
+     * Tick the satellite for work it may have to do
+     */
+    fun tick()
 }

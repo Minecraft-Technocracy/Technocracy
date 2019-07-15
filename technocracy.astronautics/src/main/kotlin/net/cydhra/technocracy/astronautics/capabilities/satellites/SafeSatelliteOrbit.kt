@@ -29,7 +29,7 @@ class SafeSatelliteOrbit(private val chunk: Chunk) : ISatelliteOrbit {
     }
 
     override fun tick() {
-
+        this.registeredSatellites.forEach(ISatellite::tick)
     }
 
 }
