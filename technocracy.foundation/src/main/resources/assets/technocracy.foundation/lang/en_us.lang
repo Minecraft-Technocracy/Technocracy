@@ -72,6 +72,8 @@ item.pipe_item.energy.name=Energy Pipe
 
 item.facade.name=Facade
 
+item.structure_marker.name=Structure Marker
+
 tile.oil_sand.name=Oil Sand
 tile.ore.aluminum.name=Aluminum Ore
 tile.ore.copper.name=Copper Ore

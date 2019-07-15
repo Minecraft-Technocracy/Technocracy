@@ -36,3 +36,4 @@ val toughAlloyItem = AlloyItem("toughAlloy", ConstantItemColor(0x003030))
 
 val pipeItem = PipeItem()
 val facadeItem = FacadeItem()
+val structureMarker = StructureMarker()
