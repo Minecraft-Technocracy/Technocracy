@@ -34,6 +34,7 @@ import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEnti
 import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryOutput
 import net.cydhra.technocracy.foundation.world.gen.OilLakeGen
 import net.cydhra.technocracy.foundation.world.gen.OilSandGen
+import net.minecraft.client.Minecraft
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.animation.ITimeValue
@@ -168,6 +169,12 @@ open class CommonProxy {
 
         itemManager.prepareItemForRegistration(pipeItem, PipeItemModel())
         itemManager.prepareItemForRegistration(facadeItem, FacadeItemModel())
+
+        if (!Minecraft.getMinecraft().isSingleplayer) {
+            //Dev tools
+            itemManager.prepareItemForRegistration(structureMarker)
+            MinecraftForge.EVENT_BUS.register(structureMarker)
+        }
 
         TileEntityManager.prepareTileEntityForRegistration(TileEntityAlloySmeltery::class)
         TileEntityManager.prepareTileEntityForRegistration(TileEntityCentrifuge::class)
