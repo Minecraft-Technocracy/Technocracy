@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent
 /**
  * Utility class listening to events for the capability system
  */
+@Suppress("unused")
 class CapabilityEventBusHandler {
 
     /**
