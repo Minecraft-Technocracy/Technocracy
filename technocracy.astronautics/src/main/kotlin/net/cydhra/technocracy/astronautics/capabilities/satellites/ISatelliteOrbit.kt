@@ -17,4 +17,9 @@ interface ISatelliteOrbit {
      * @param markDirty whether to mark the chunk for memory update
      */
     fun add(satellite: ISatellite, markDirty: Boolean)
+
+    /**
+     * Tick this orbit
+     */
+    fun tick()
 }

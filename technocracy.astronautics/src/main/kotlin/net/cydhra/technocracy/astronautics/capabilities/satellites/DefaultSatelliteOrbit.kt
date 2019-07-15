@@ -1,10 +1,9 @@
 package net.cydhra.technocracy.astronautics.capabilities.satellites
 
 /**
- * Default implementation for a satellite orbit
+ * Default implementation for a satellite orbit that does not mark modified chunks as dirty.
  */
 class DefaultSatelliteOrbit : ISatelliteOrbit {
-
     /**
      * List of satellites in this orbit
      */
@@ -21,4 +20,7 @@ class DefaultSatelliteOrbit : ISatelliteOrbit {
         return registeredSatellites
     }
 
+    override fun tick() {
+
+    }
 }

@@ -6,7 +6,6 @@ import net.minecraft.world.chunk.Chunk
  * Default implementation for a satellite orbit
  */
 class SafeSatelliteOrbit(private val chunk: Chunk) : ISatelliteOrbit {
-
     /**
      * List of satellites in this orbit
      */
@@ -27,6 +26,10 @@ class SafeSatelliteOrbit(private val chunk: Chunk) : ISatelliteOrbit {
 
     override fun getSatellites(): List<ISatellite> {
         return registeredSatellites
+    }
+
+    override fun tick() {
+
     }
 
 }
