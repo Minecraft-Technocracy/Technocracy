@@ -23,7 +23,6 @@ dependencies {
     deobfCompile group: 'mezz.jei', name: "jei_$project.minecraft_version", version: project.jei_version
     deobfCompile group: "it.zerono.mods.zerocore", name: "zerocore", version: project.zerocore_version
     deobfCompile group: "team.chisel.ctm", name: "CTM", version: project.ctm_version
-    compile group: 'net.katsstuff.teamnightclipse', name: 'mirror', version: project.mirror_version
 }
 
 // jar configuration

@@ -20,10 +20,6 @@ repositories {
         url "http://maven.zerono.it/"
     }
     maven {
-        name "team-nightclipse Bintray Repository"
-        url "https://dl.bintray.com/team-nightclipse/maven"
-    }
-    maven {
         name "chisel Repository"
         url "https://maven.tterrag.com"
     }
