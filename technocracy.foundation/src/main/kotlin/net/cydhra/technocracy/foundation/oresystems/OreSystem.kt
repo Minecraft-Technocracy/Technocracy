@@ -31,7 +31,7 @@ class OreSystem(
         val dust: Item,
         val gear: ColoredItem?,
         val sheet: ColoredItem?,
-        val dross: BaseFluid,
+        val slag: BaseFluid,
         val preInit: OreSystem.(BlockManager, ItemManager, FluidManager) -> Unit,
         val init: OreSystem.() -> Unit)
 
@@ -118,7 +118,7 @@ class OreSystemBuilder {
                 dust = this.dust,
                 gear = gear,
                 sheet = sheet,
-                dross = BaseFluid("dross.$name", Color(this.color), opaqueTexture = true),
+                slag = BaseFluid("slag.$name", Color(this.color), opaqueTexture = true),
                 preInit = { blockManager, itemManager, fluidManager ->
                     if (this.ingot is BaseItem)
                         itemManager.prepareItemForRegistration(this.ingot)
@@ -131,7 +131,7 @@ class OreSystemBuilder {
                     if (this.ore is OreBlock)
                         blockManager.prepareBlocksForRegistration(this.ore)
 
-                    fluidManager.registerFluid(this.dross)
+                    fluidManager.registerFluid(this.slag)
                 },
                 init = {
                     if (generateOre)

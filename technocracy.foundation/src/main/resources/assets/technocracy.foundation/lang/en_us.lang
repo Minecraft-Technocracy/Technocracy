@@ -150,16 +150,16 @@ fluid.hydrogen=Hydrogen
 fluid.silica=Silica
 fluid.steam=Steam
 
-fluid.dross.aluminum=Aluminum Dross
-fluid.dross.copper=Copper Dross
-fluid.dross.lead=Lead Dross
-fluid.dross.lithium=Lithium Dross
-fluid.dross.nickel=Nickel Dross
-fluid.dross.niobium=Niobium Dross
-fluid.dross.silver=Silver Dross
-fluid.dross.tin=Tin Dross
-fluid.dross.iron=Iron Dross
-fluid.dross.gold=Gold Dross
+fluid.slag.aluminum=Aluminum Slag
+fluid.slag.copper=Copper Slag
+fluid.slag.lead=Lead Slag
+fluid.slag.lithium=Lithium Slag
+fluid.slag.nickel=Nickel Slag
+fluid.slag.niobium=Niobium Slag
+fluid.slag.silver=Silver Slag
+fluid.slag.tin=Tin Slag
+fluid.slag.iron=Iron Slag
+fluid.slag.gold=Gold Slag
 
 effect.oily=Oily
 
