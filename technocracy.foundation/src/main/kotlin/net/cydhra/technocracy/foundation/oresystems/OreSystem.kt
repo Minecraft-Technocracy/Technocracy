@@ -29,9 +29,13 @@ class OreSystem(
         val ore: Block,
         val ingot: Item,
         val dust: Item,
+        val crystal: ColoredItem,
+        val grit: ColoredItem,
         val gear: ColoredItem?,
         val sheet: ColoredItem?,
         val slag: BaseFluid,
+        val slurry: BaseFluid,
+        val enrichedSlurry: BaseFluid,
         val preInit: OreSystem.(BlockManager, ItemManager, FluidManager) -> Unit,
         val init: OreSystem.() -> Unit)
 
@@ -96,18 +100,18 @@ class OreSystemBuilder {
             this.ore = OreBlock(this.name, this.color)
 
         if (generateIngot)
-            this.ingot = ColoredItem("ingot", this.name, itemColor)
+            this.ingot = ColoredItem("ingot", this.name, itemColor, true)
 
         if (generateDust)
-            this.dust = ColoredItem("dust", this.name, itemColor)
+            this.dust = ColoredItem("dust", this.name, itemColor, true)
 
         val sheet = if (IntermediateProductType.SHEET in intermediates)
-            ColoredItem("sheet", this.name, itemColor)
+            ColoredItem("sheet", this.name, itemColor, true)
         else
             null
 
         val gear = if (IntermediateProductType.GEAR in intermediates)
-            ColoredItem("gear", this.name, itemColor)
+            ColoredItem("gear", this.name, itemColor, true)
         else
             null
 
@@ -116,9 +120,13 @@ class OreSystemBuilder {
                 ore = this.ore,
                 ingot = this.ingot,
                 dust = this.dust,
+                crystal = ColoredItem("crystal", this.name, itemColor, true),
+                grit = ColoredItem("grit", this.name, itemColor, true),
                 gear = gear,
                 sheet = sheet,
                 slag = BaseFluid("slag.$name", Color(this.color), opaqueTexture = true),
+                slurry = BaseFluid("slurry.$name", Color(this.color).darker(), opaqueTexture = true),
+                enrichedSlurry = BaseFluid("enriched_slurry.$name", Color(this.color).darker().darker(), opaqueTexture = true),
                 preInit = { blockManager, itemManager, fluidManager ->
                     if (this.ingot is BaseItem)
                         itemManager.prepareItemForRegistration(this.ingot)
@@ -128,10 +136,16 @@ class OreSystemBuilder {
                         itemManager.prepareItemForRegistration(this.sheet)
                     if (this.gear != null)
                         itemManager.prepareItemForRegistration(this.gear)
+
+                    itemManager.prepareItemForRegistration(this.crystal)
+                    itemManager.prepareItemForRegistration(this.grit)
+
                     if (this.ore is OreBlock)
                         blockManager.prepareBlocksForRegistration(this.ore)
 
                     fluidManager.registerFluid(this.slag)
+                    fluidManager.registerFluid(this.slurry)
+                    fluidManager.registerFluid(this.enrichedSlurry)
                 },
                 init = {
                     if (generateOre)

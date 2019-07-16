@@ -1,43 +1,20 @@
-item.ingot.aluminum.name=Aluminum Ingot
-item.ingot.copper.name=Copper Ingot
-item.ingot.lead.name=Lead Ingot
-item.ingot.lithium.name=Lithium Ingot
-item.ingot.nickel.name=Nickel Ingot
-item.ingot.niobium.name=Niobium Ingot
-item.ingot.silver.name=Silver Ingot
-item.ingot.tin.name=Tin Ingot
+system.ingot.name=%s Ingot
+system.dust.name=%s Dust
+system.sheet.name=%s Sheet
+system.gear.name=%s Gear
+system.crystal.name=%s Crystal
+system.grit.name=%s Grit
 
-item.dust.aluminum.name=Aluminum Dust
-item.dust.copper.name=Copper Dust
-item.dust.lead.name=Lead Dust
-item.dust.lithium.name=Lithium Dust
-item.dust.nickel.name=Nickel Dust
-item.dust.niobium.name=Niobium Dust
-item.dust.silver.name=Silver Dust
-item.dust.tin.name=Tin Dust
-item.dust.coal.name=Coal Dust
-item.dust.iron.name=Iron Dust
-
-item.sheet.aluminum.name=Aluminum Sheet
-item.sheet.copper.name=Copper Sheet
-item.sheet.lead.name=Lead Sheet
-item.sheet.lithium.name=Lithium Sheet
-item.sheet.nickel.name=Nickel Sheet
-item.sheet.niobium.name=Niobium Sheet
-item.sheet.silver.name=Silver Sheet
-item.sheet.tin.name=Tin Sheet
-item.sheet.iron.name=Iron Sheet
-
-item.gear.aluminum.name=Aluminum Gear
-item.gear.copper.name=Copper Gear
-item.gear.lead.name=Lead Gear
-item.gear.lithium.name=Lithium Gear
-item.gear.nickel.name=Nickel Gear
-item.gear.niobium.name=Niobium Gear
-item.gear.silver.name=Silver Gear
-item.gear.tin.name=Tin Gear
-item.gear.iron.name=Iron Gear
-item.gear.gold.name=Gold Gear
+system.aluminum=Aluminum
+system.copper=Copper
+system.lead=Lead
+system.lithium=Lithium
+system.nickel=Nickel
+system.niobium=Niobium
+system.silver=Silver
+system.tin=Tin
+system.iron=Iron
+system.gold=Gold
 
 item.machine_frame.name=Machine Frame
 item.sulfur.name=Sulfur
@@ -57,6 +34,7 @@ item.rubber.name=Rubber
 item.calcium_acetate.name=Calcium Acetate
 item.mirror.name=Mirror
 item.polished_mirror.name=Polished Mirror
+item.dust.coal.name=Coal Dust
 
 item.ingot.invar.name=Invar Ingot
 item.ingot.steel.name=Steel Ingot
@@ -160,6 +138,28 @@ fluid.slag.silver=Silver Slag
 fluid.slag.tin=Tin Slag
 fluid.slag.iron=Iron Slag
 fluid.slag.gold=Gold Slag
+
+fluid.slurry.aluminum=Aluminum Slurry
+fluid.slurry.copper=Copper Slurry
+fluid.slurry.lead=Lead Slurry
+fluid.slurry.lithium=Lithium Slurry
+fluid.slurry.nickel=Nickel Slurry
+fluid.slurry.niobium=Niobium Slurry
+fluid.slurry.silver=Silver Slurry
+fluid.slurry.tin=Tin Slurry
+fluid.slurry.iron=Iron Slurry
+fluid.slurry.gold=Gold Slurry
+
+fluid.enriched_slurry.aluminum=Enriched Aluminum Slurry
+fluid.enriched_slurry.copper=Enriched Copper Slurry
+fluid.enriched_slurry.lead=Enriched Lead Slurry
+fluid.enriched_slurry.lithium=Enriched Lithium Slurry
+fluid.enriched_slurry.nickel=Enriched Nickel Slurry
+fluid.enriched_slurry.niobium=Enriched Niobium Slurry
+fluid.enriched_slurry.silver=Enriched Silver Slurry
+fluid.enriched_slurry.tin=Enriched Tin Slurry
+fluid.enriched_slurry.iron=Enriched Iron Slurry
+fluid.enriched_slurry.gold=Enriched Gold Slurry
 
 effect.oily=Oily
 
