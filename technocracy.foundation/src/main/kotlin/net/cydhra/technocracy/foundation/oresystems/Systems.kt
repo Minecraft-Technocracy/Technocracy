@@ -1,7 +1,7 @@
-package net.cydhra.technocracy.foundation.materialsystems
+package net.cydhra.technocracy.foundation.oresystems
 
-import net.cydhra.technocracy.foundation.materialsystems.OreSystemBuilder.IntermediateProductType.GEAR
-import net.cydhra.technocracy.foundation.materialsystems.OreSystemBuilder.IntermediateProductType.SHEET
+import net.cydhra.technocracy.foundation.oresystems.OreSystemBuilder.IntermediateProductType.GEAR
+import net.cydhra.technocracy.foundation.oresystems.OreSystemBuilder.IntermediateProductType.SHEET
 import net.minecraft.init.Blocks
 import net.minecraft.init.Items
 

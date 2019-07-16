@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.client
 
 import net.cydhra.technocracy.foundation.items.general.facadeItem
-import net.cydhra.technocracy.foundation.materialsystems.niobiumSystem
+import net.cydhra.technocracy.foundation.oresystems.niobiumSystem
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.relauncher.Side

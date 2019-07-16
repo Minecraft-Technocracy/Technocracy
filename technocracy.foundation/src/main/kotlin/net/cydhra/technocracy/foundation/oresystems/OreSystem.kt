@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package net.cydhra.technocracy.foundation.materialsystems
+package net.cydhra.technocracy.foundation.oresystems
 
 import com.google.common.base.Predicate
 import net.cydhra.technocracy.foundation.blocks.OreBlock
