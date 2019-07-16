@@ -37,6 +37,7 @@ item.gear.niobium.name=Niobium Gear
 item.gear.silver.name=Silver Gear
 item.gear.tin.name=Tin Gear
 item.gear.iron.name=Iron Gear
+item.gear.gold.name=Gold Gear
 
 item.machine_frame.name=Machine Frame
 item.sulfur.name=Sulfur
@@ -148,6 +149,17 @@ fluid.hydrochloric_acid=Hydrochloric Acid
 fluid.hydrogen=Hydrogen
 fluid.silica=Silica
 fluid.steam=Steam
+
+fluid.dross.aluminum=Aluminum Dross
+fluid.dross.copper=Copper Dross
+fluid.dross.lead=Lead Dross
+fluid.dross.lithium=Lithium Dross
+fluid.dross.nickel=Nickel Dross
+fluid.dross.niobium=Niobium Dross
+fluid.dross.silver=Silver Dross
+fluid.dross.tin=Tin Dross
+fluid.dross.iron=Iron Dross
+fluid.dross.gold=Gold Dross
 
 effect.oily=Oily
 
