@@ -9,6 +9,8 @@ import net.cydhra.technocracy.foundation.items.color.ConstantItemColor
 import net.cydhra.technocracy.foundation.items.general.BaseItem
 import net.cydhra.technocracy.foundation.items.general.ColoredItem
 import net.cydhra.technocracy.foundation.items.general.ItemManager
+import net.cydhra.technocracy.foundation.liquids.general.BaseFluid
+import net.cydhra.technocracy.foundation.liquids.general.FluidManager
 import net.cydhra.technocracy.foundation.world.gen.OreGenerator
 import net.minecraft.block.Block
 import net.minecraft.block.state.IBlockState
@@ -18,6 +20,7 @@ import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.world.DimensionType
 import net.minecraftforge.fml.common.registry.GameRegistry
+import java.awt.Color
 
 fun oreSystem(block: OreSystemBuilder.() -> Unit) = OreSystemBuilder().apply(block).build()
 
@@ -28,7 +31,8 @@ class OreSystem(
         val dust: Item,
         val gear: ColoredItem?,
         val sheet: ColoredItem?,
-        val preInit: OreSystem.(BlockManager, ItemManager) -> Unit,
+        val dross: BaseFluid,
+        val preInit: OreSystem.(BlockManager, ItemManager, FluidManager) -> Unit,
         val init: OreSystem.() -> Unit)
 
 class OreSystemBuilder {
@@ -114,7 +118,8 @@ class OreSystemBuilder {
                 dust = this.dust,
                 gear = gear,
                 sheet = sheet,
-                preInit = { blockManager, itemManager ->
+                dross = BaseFluid("dross.$name", Color(this.color), opaqueTexture = true),
+                preInit = { blockManager, itemManager, fluidManager ->
                     if (this.ingot is BaseItem)
                         itemManager.prepareItemForRegistration(this.ingot)
                     if (this.dust is BaseItem)
@@ -125,6 +130,8 @@ class OreSystemBuilder {
                         itemManager.prepareItemForRegistration(this.gear)
                     if (this.ore is OreBlock)
                         blockManager.prepareBlocksForRegistration(this.ore)
+
+                    fluidManager.registerFluid(this.dross)
                 },
                 init = {
                     if (generateOre)

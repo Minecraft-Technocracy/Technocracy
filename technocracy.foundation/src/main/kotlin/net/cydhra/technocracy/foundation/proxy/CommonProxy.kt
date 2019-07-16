@@ -70,7 +70,7 @@ open class CommonProxy {
         MinecraftForge.EVENT_BUS.register(fluidManager)
         MinecraftForge.EVENT_BUS.register(itemManager)
 
-        materialSystems.forEach { it.preInit(it, blockManager, itemManager) }
+        materialSystems.forEach { it.preInit(it, blockManager, itemManager, fluidManager) }
 
         fluidManager.registerFluid(mineralOilFluid)
         fluidManager.registerFluid(sulfurDioxideFluid)
