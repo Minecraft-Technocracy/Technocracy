@@ -49,14 +49,16 @@ import net.minecraftforge.fml.common.registry.GameRegistry
  */
 open class CommonProxy {
 
-    private val materialSystems = arrayOf(aluminiumSystem,
+    private val materialSystems = arrayOf(aluminumSystem,
             copperSystem,
             leadSystem,
             lithiumSystem,
             nickelSystem,
             niobiumSystem,
             silverSystem,
-            tinSystem)
+            tinSystem,
+            ironSystem,
+            goldSystem)
 
     protected val blockManager = BlockManager()
     protected val fluidManager = FluidManager(blockManager)
@@ -68,7 +70,7 @@ open class CommonProxy {
         MinecraftForge.EVENT_BUS.register(fluidManager)
         MinecraftForge.EVENT_BUS.register(itemManager)
 
-        materialSystems.forEach { it.preInit(blockManager, itemManager) }
+        materialSystems.forEach { it.preInit(it, blockManager, itemManager) }
 
         fluidManager.registerFluid(mineralOilFluid)
         fluidManager.registerFluid(sulfurDioxideFluid)
@@ -139,8 +141,6 @@ open class CommonProxy {
 
         itemManager.prepareItemForRegistration(machineFrameItem)
         itemManager.prepareItemForRegistration(coalDustItem)
-        itemManager.prepareItemForRegistration(ironDustItem)
-        itemManager.prepareItemForRegistration(ironSheetItem)
         itemManager.prepareItemForRegistration(sulfurItem)
         itemManager.prepareItemForRegistration(batteryItem)
         itemManager.prepareItemForRegistration(siliconItem)
@@ -218,7 +218,7 @@ open class CommonProxy {
     }
 
     open fun init() {
-        materialSystems.forEach(MaterialSystem::init)
+        materialSystems.forEach { it.init(it) }
     }
 
     open fun postInit() {
