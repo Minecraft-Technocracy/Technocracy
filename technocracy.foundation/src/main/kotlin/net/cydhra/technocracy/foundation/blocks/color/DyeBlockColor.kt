@@ -1,26 +1,21 @@
 package net.cydhra.technocracy.foundation.blocks.color
 
+import net.minecraft.block.properties.PropertyEnum
 import net.minecraft.block.state.IBlockState
+import net.minecraft.item.EnumDyeColor
 import net.minecraft.item.ItemStack
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockAccess
 
-/**
- * Implementation of [IBlockColor] that does return the same color in any case. Used for tinting blocks independent
- * of state and location
- */
-class ConstantBlockColor(private val constantItemColor: Int) : IBlockColor {
+
+object DyeBlockColor : IBlockColor {
+    val COLOR = PropertyEnum.create("color", EnumDyeColor::class.java)
+
     override fun colorMultiplier(state: IBlockState, worldIn: IBlockAccess?, pos: BlockPos?, tintIndex: Int): Int {
-        return if (tintIndex == 1)
-            this.constantItemColor
-        else
-            -1
+        return (state.properties[COLOR] as EnumDyeColor).colorValue
     }
 
     override fun colorMultiplier(stack: ItemStack, tintIndex: Int): Int {
-        return if (tintIndex == 1)
-            this.constantItemColor
-        else
-            -1
+        return EnumDyeColor.values()[stack.metadata].colorValue
     }
 }

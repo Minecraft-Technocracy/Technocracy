@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.blocks.api
 
-import net.cydhra.technocracy.foundation.blocks.color.ConstantBlockColor
+import net.cydhra.technocracy.foundation.blocks.color.IBlockColor
 import net.minecraft.block.ITileEntityProvider
 import net.minecraft.block.material.Material
 
@@ -16,6 +16,6 @@ import net.minecraft.block.material.Material
  */
 abstract class AbstractTileEntityBlock(unlocalizedName: String,
                                        registryName: String = unlocalizedName,
-                                       colorMultiplier: ConstantBlockColor? = null,
+                                       colorMultiplier: IBlockColor? = null,
                                        material: Material)
     : AbstractBaseBlock(unlocalizedName, material, registryName, colorMultiplier), ITileEntityProvider
