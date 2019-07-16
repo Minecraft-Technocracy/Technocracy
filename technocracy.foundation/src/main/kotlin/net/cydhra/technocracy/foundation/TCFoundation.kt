@@ -1,6 +1,8 @@
 package net.cydhra.technocracy.foundation
 
+import net.cydhra.technocracy.foundation.commands.GenerateTemplateCommand
 import net.cydhra.technocracy.foundation.proxy.CommonProxy
+import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fluids.FluidRegistry
 import net.minecraftforge.fml.common.FMLLog
 import net.minecraftforge.fml.common.Mod
@@ -9,6 +11,7 @@ import net.minecraftforge.fml.common.SidedProxy
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent
 import org.apache.logging.log4j.Logger
 
 @Mod(modid = TCFoundation.MODID, name = TCFoundation.NAME, version = TCFoundation.VERSION,
@@ -60,6 +63,8 @@ object TCFoundation {
     @EventHandler
     fun preInit(@Suppress("UNUSED_PARAMETER") event: FMLPreInitializationEvent) {
         logger = FMLLog.log
+        MinecraftForge.EVENT_BUS.register(proxy)
+
         proxy.preInit()
     }
 
@@ -73,5 +78,12 @@ object TCFoundation {
     @EventHandler
     fun postInit(@Suppress("UNUSED_PARAMETER") event: FMLPostInitializationEvent) {
         proxy.postInit()
+    }
+
+    @Mod.EventHandler
+    fun serverStarting(start: FMLServerStartingEvent) {
+        if (start.server.isSinglePlayer) {
+            start.registerServerCommand(GenerateTemplateCommand())
+        }
     }
 }
