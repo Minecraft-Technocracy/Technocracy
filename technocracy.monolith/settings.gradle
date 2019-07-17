@@ -3,6 +3,9 @@ rootProject.name = "technocracy.monolith"
 if (file("../technocracy.foundation").exists()) {
     includeBuild "../technocracy.foundation"
 }
+if (file("../technocracy.astronautics").exists()) {
+    includeBuild "../technocracy.astronautics"
+}
 if (file("../technocracy.megastructures").exists()) {
     includeBuild "../technocracy.megastructures"
 }
