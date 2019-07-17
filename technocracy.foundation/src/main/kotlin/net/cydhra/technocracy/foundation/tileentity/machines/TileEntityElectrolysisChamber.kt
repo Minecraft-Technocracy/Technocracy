@@ -14,17 +14,21 @@ class TileEntityElectrolysisChamber : MachineTileEntity() {
     private val inputInventoryComponent = FluidComponent(4000,
             tanktype = DynamicFluidHandler.TankType.OUTPUT, facing = mutableSetOf(EnumFacing.WEST))
 
-    private val outputInventoryComponent = FluidComponent(4000,
+    private val outputInventoryComponent1 = FluidComponent(4000,
             tanktype = DynamicFluidHandler.TankType.OUTPUT, facing = mutableSetOf(EnumFacing.EAST))
+
+    private val outputInventoryComponent2 = FluidComponent(4000,
+            tanktype = DynamicFluidHandler.TankType.OUTPUT, facing = mutableSetOf(EnumFacing.SOUTH))
 
     init {
         this.registerComponent(inputInventoryComponent, "input_inventory")
-        this.registerComponent(outputInventoryComponent, "output_inventory")
+        this.registerComponent(outputInventoryComponent1, "output_inventory1")
+        this.registerComponent(outputInventoryComponent2, "output_inventory2")
 
         this.addLogicStrategy(ItemProcessingLogic(
                 recipeType = RecipeManager.RecipeType.ELECTROLYSIS,
                 inputFluidSlots = arrayOf(this.inputInventoryComponent.fluid),
-                outputFluidSlots = arrayOf(this.outputInventoryComponent.fluid),
+                outputFluidSlots = arrayOf(this.outputInventoryComponent1.fluid, this.outputInventoryComponent2.fluid),
                 energyStorage = this.energyStorageComponent.energyStorage,
                 machineUpgrades = this.machineUpgradesComponent,
                 baseTickEnergyCost = 120
