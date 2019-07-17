@@ -9,7 +9,6 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import net.minecraftforge.common.DimensionManager
 import net.minecraftforge.event.world.WorldEvent
-import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent
 import org.jgrapht.graph.Multigraph
@@ -19,7 +18,6 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.util.*
 
-@Mod.EventBusSubscriber(modid = TCFoundation.MODID)
 object Network {
     var networks = mutableMapOf<String, MutableMap<UUID, Multigraph<WrappedBlockPos, WrappedPipeType>>>()
 
