@@ -109,7 +109,7 @@ val tinSystem = oreSystem {
 
 val ironSystem = oreSystem {
     name = "iron"
-    color = 0xCAFEBAB
+    color = 0xD8D8D8
 
     importOre(Blocks.IRON_ORE)
     importIngot(Items.IRON_INGOT)
@@ -119,7 +119,7 @@ val ironSystem = oreSystem {
 
 val goldSystem = oreSystem {
     name = "gold"
-    color = 0xCAFEBAB
+    color = 0xEAEE57
 
     importOre(Blocks.GOLD_ORE)
     importIngot(Items.GOLD_INGOT)
