@@ -43,7 +43,7 @@ class TileEntityCrystallizationChamber : MachineTileEntity(), TEInventoryProvide
         this.registerComponent(outputInventoryComponent, "output_inventory")
 
         this.addLogicStrategy(ItemProcessingLogic(
-                recipeType = RecipeManager.RecipeType.COMPACTOR,
+                recipeType = RecipeManager.RecipeType.CRYSTALLIZATION,
                 inputFluidSlots = arrayOf(this.inputFluidComponent.fluid),
                 outputInventory = this.outputInventoryComponent.inventory,
                 energyStorage = this.energyStorageComponent.energyStorage,
