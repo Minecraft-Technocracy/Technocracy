@@ -27,6 +27,9 @@ open class CommonProxy {
         MinecraftForge.EVENT_BUS.register(CapabilityEventBusHandler())
 
         blockManager.prepareBlocksForRegistration(scaffoldBlock)
+        blockManager.prepareBlocksForRegistration(reinforcedConcrete)
+        blockManager.prepareBlocksForRegistration(wetConcrete)
+        blockManager.prepareBlocksForRegistration(wetReinforcedConcrete)
     }
 
     open fun init() {
@@ -35,6 +38,5 @@ open class CommonProxy {
     }
 
     open fun postInit() {
-
     }
 }
