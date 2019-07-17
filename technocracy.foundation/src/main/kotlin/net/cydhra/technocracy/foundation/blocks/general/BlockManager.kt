@@ -10,8 +10,11 @@ import net.minecraft.block.Block
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.block.model.ModelBakery
 import net.minecraft.client.renderer.block.model.ModelResourceLocation
+import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.Item
 import net.minecraft.item.ItemBlock
+import net.minecraft.item.ItemStack
+import net.minecraft.util.NonNullList
 import net.minecraftforge.client.event.ModelRegistryEvent
 import net.minecraftforge.client.model.IModel
 import net.minecraftforge.client.model.ModelLoader
@@ -26,7 +29,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
  * register them at the event bus. It furthermore handles additional block-related registration processes such as
  * [ItemBlock] registration, model and renderer registration and so on.
  */
-class BlockManager {
+class BlockManager(val defaultCreativeTab: CreativeTabs) {
 
     /**
      * A list that saves all blocks to be registered
@@ -59,7 +62,7 @@ class BlockManager {
     @Suppress("unused")
     @SubscribeEvent
     fun onRegister(event: RegistryEvent.Register<Block>) {
-        event.registry.registerAll(*blocksToRegister.map { it as Block }.toTypedArray())
+        event.registry.registerAll(*blocksToRegister.map { it as Block }.map { it.apply { if (it.creativeTabToDisplayOn == null) it.setCreativeTab(defaultCreativeTab) } }.toTypedArray())
     }
 
     /**
@@ -87,8 +90,12 @@ class BlockManager {
                 .map { it as Block }
                 .map(Item::getItemFromBlock)
                 .forEach { item ->
-                    ModelLoader.setCustomModelResourceLocation(item as ItemBlock, 0,
-                            ModelResourceLocation(((item).block as IBaseBlock).modelLocation, "inventory"))
+                    val list = NonNullList.create<ItemStack>()
+                    item.getSubItems(item.creativeTab!!, list)
+                    for (subs in list) {
+                        ModelLoader.setCustomModelResourceLocation(subs.item, subs.metadata,
+                                ModelResourceLocation(((subs.item as ItemBlock).block as IBaseBlock).modelLocation, "inventory"))
+                    }
                 }
         registerCustomBlockModels()
     }

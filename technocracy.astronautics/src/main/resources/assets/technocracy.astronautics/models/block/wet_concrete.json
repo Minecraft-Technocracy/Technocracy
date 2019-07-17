@@ -1,6 +1,6 @@
 {
   "parent": "technocracy.foundation:block/simple_colorable",
   "textures": {
-    "all": "technocracy.astronautics:block/reinforced_concrete"
+    "all": "technocracy.astronautics:block/wet_concrete"
   }
 }

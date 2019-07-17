@@ -8,6 +8,7 @@ import net.cydhra.technocracy.foundation.client.model.customModel.connector.Mach
 import net.cydhra.technocracy.foundation.client.model.facade.FacadeItemModel
 import net.cydhra.technocracy.foundation.client.model.pipe.PipeItemModel
 import net.cydhra.technocracy.foundation.client.model.pipe.PipeModel
+import net.cydhra.technocracy.foundation.client.technocracyCreativeTabs
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.items.general.*
 import net.cydhra.technocracy.foundation.liquids.general.*
@@ -60,9 +61,9 @@ open class CommonProxy {
             ironSystem,
             goldSystem)
 
-    protected val blockManager = BlockManager()
+    protected val blockManager = BlockManager(technocracyCreativeTabs)
     protected val fluidManager = FluidManager(blockManager)
-    protected val itemManager = ItemManager()
+    protected val itemManager = ItemManager(technocracyCreativeTabs)
 
     open fun preInit() {
         MinecraftForge.EVENT_BUS.register(Network)

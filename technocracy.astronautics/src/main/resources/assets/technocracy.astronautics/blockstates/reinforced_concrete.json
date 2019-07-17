@@ -1,0 +1,25 @@
+{
+  "variants": {
+    "color=white": { "model": "technocracy.astronautics:reinforced_concrete" },
+    "color=orange": { "model": "technocracy.astronautics:reinforced_concrete" },
+    "color=magenta": { "model": "technocracy.astronautics:reinforced_concrete" },
+    "color=light_blue": { "model": "technocracy.astronautics:reinforced_concrete" },
+    "color=yellow": { "model": "technocracy.astronautics:reinforced_concrete" },
+    "color=lime": { "model": "technocracy.astronautics:reinforced_concrete" },
+    "color=pink": { "model": "technocracy.astronautics:reinforced_concrete" },
+    "color=gray": { "model": "technocracy.astronautics:reinforced_concrete" },
+    "color=silver": { "model": "technocracy.astronautics:reinforced_concrete" },
+    "color=cyan": { "model": "technocracy.astronautics:reinforced_concrete" },
+    "color=purple": { "model": "technocracy.astronautics:reinforced_concrete" },
+    "color=blue": { "model": "technocracy.astronautics:reinforced_concrete" },
+    "color=brown": { "model": "technocracy.astronautics:reinforced_concrete" },
+    "color=green": { "model": "technocracy.astronautics:reinforced_concrete" },
+    "color=red": { "model": "technocracy.astronautics:reinforced_concrete" },
+    "color=black": { "model": "technocracy.astronautics:reinforced_concrete" },
+    "normal": [
+      {
+        "model": "technocracy.astronautics:reinforced_concrete"
+      }
+    ]
+  }
+}
