@@ -70,6 +70,18 @@ object RecipeManager {
         return loadedRecipes[type]
     }
 
+    /**
+     * Add a recipe outside from the recipe json model data. Be aware that the usage of this function is unsafe, as
+     * incompatible recipe types can be registered, which will later cause [ClassCastException]s when trying to parse
+     * them.
+     *
+     * @param type recipe type
+     * @param recipe recipe model
+     */
+    fun registerRecipe(type: RecipeType, recipe: IMachineRecipe) {
+        loadedRecipes.put(type, recipe)
+    }
+
 
     /**
      * Load a recipe off a path that has been found by the [CraftingHelper]. The parsed json object is then handed to
