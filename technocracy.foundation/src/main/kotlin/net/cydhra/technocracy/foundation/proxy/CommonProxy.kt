@@ -66,6 +66,7 @@ open class CommonProxy {
     protected val itemManager = ItemManager(technocracyCreativeTabs)
 
     open fun preInit() {
+        MinecraftForge.EVENT_BUS.register(TileEntityManager)
         MinecraftForge.EVENT_BUS.register(Network)
         MinecraftForge.EVENT_BUS.register(blockManager)
         MinecraftForge.EVENT_BUS.register(fluidManager)
