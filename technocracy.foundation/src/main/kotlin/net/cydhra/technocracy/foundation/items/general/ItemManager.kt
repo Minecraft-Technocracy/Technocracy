@@ -7,6 +7,7 @@ import net.cydhra.technocracy.foundation.client.model.CustomModelProvider
 import net.minecraft.block.Block
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.block.model.ModelResourceLocation
+import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.util.NonNullList
@@ -23,7 +24,7 @@ import net.minecraftforge.oredict.OreDictionary
  *
  * @see ItemManager.prepareItemForRegistration
  */
-class ItemManager {
+class ItemManager(val defaultCreativeTab: CreativeTabs) {
 
     /**
      * Items scheduled for registering
@@ -53,7 +54,7 @@ class ItemManager {
     @Suppress("unused")
     @SubscribeEvent
     fun registerItems(event: RegistryEvent.Register<Item>) {
-        event.registry.registerAll(*itemsToRegister.toTypedArray())
+        event.registry.registerAll(*itemsToRegister.map { it.apply { if (it.creativeTab == null) it.creativeTab = defaultCreativeTab } }.toTypedArray())
 
     }
 
@@ -85,8 +86,8 @@ class ItemManager {
      */
     private fun registerItemRender(item: BaseItem) {
         val list = NonNullList.create<ItemStack>()
-        item.getSubItems(item.creativeTab!!,list)
-        for(subs in list) {
+        item.getSubItems(item.creativeTab!!, list)
+        for (subs in list) {
             registerItemRender(item, subs.metadata)
         }
     }

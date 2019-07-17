@@ -29,6 +29,5 @@ abstract class AbstractFallingBaseBlock(unlocalizedName: String,
     init {
         this.unlocalizedName = unlocalizedName
         this.setRegistryName(registryName)
-        this.setCreativeTab(technocracyCreativeTabs)
     }
 }

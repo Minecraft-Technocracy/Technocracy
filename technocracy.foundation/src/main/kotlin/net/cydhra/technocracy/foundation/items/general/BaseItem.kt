@@ -18,6 +18,5 @@ open class BaseItem(unlocalizedName: String,
     init {
         this.unlocalizedName = unlocalizedName
         this.setRegistryName(registryName)
-        this.creativeTab = technocracyCreativeTabs
     }
 }
