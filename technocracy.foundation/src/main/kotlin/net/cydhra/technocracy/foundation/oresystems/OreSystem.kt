@@ -15,6 +15,7 @@ import net.cydhra.technocracy.foundation.items.general.ItemManager
 import net.cydhra.technocracy.foundation.liquids.general.BaseFluid
 import net.cydhra.technocracy.foundation.liquids.general.FluidManager
 import net.cydhra.technocracy.foundation.liquids.general.drossFluid
+import net.cydhra.technocracy.foundation.liquids.general.hydrochloricAcidFluid
 import net.cydhra.technocracy.foundation.world.gen.OreGenerator
 import net.minecraft.block.Block
 import net.minecraft.block.state.IBlockState
@@ -162,7 +163,11 @@ class OreSystemBuilder {
                     GameRegistry.addSmelting(dust, ItemStack(ingot, 1), 0.5f)
 
                     // add slag recipe
-                    // TODO: there is now way to combine item and fluid to fluid
+                    RecipeManager.registerRecipe(RecipeManager.RecipeType.DISSOLUTION,
+                            DissolutionRecipe(Ingredient.fromItem(Item.getItemFromBlock(ore)),
+                                    FluidStack(hydrochloricAcidFluid, 250),
+                                    FluidStack(slag, 1000),
+                                    80))
 
                     // add slurry recipe
                     RecipeManager.registerRecipe(RecipeManager.RecipeType.ELECTROLYSIS,
@@ -177,7 +182,10 @@ class OreSystemBuilder {
                                     200))
 
                     // add crystal recipe
-                    // TODO add crystallizer machine
+                    RecipeManager.registerRecipe(RecipeManager.RecipeType.CRYSTALLIZATION,
+                            CrystallizationRecipe(FluidStack(enrichedSlurry, 250),
+                                    ItemStack(crystal),
+                                    200))
 
                     // add grit recipe
                     RecipeManager.registerRecipe(RecipeManager.RecipeType.PULVERIZER,
