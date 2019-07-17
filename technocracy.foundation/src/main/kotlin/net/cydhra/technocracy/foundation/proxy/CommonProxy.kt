@@ -96,6 +96,7 @@ open class CommonProxy {
         fluidManager.registerFluid(hydrogenFluid)
         fluidManager.registerFluid(silicaFluid)
         fluidManager.registerFluid(steamFluid)
+        fluidManager.registerFluid(drossFluid)
 
         blockManager.prepareBlocksForRegistration(alloySmelteryBlock, MachineConnectorModel())
         blockManager.prepareBlocksForRegistration(centrifugeBlock, MachineConnectorModel())

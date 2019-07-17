@@ -31,3 +31,4 @@ val hydrochloricAcidFluid = BaseFluid("hydrochloric_acid", Color(130, 255, 141),
 val hydrogenFluid = BaseFluid("hydrogen", Color(215, 255, 247), opaqueTexture = false)
 val silicaFluid = BaseFluid("silica", Color(241, 230, 255), opaqueTexture = false)
 val steamFluid = BaseFluid("steam", Color(160, 160, 160), opaqueTexture = false, isGas = true, temperature = 380)
+val drossFluid = BaseFluid("dross", Color(100, 100, 100), opaqueTexture = true)
