@@ -1,0 +1,11 @@
+{
+  "fluid": {
+    "fluid": "dross",
+    "amount": 4000
+  },
+  "output": {
+    "item": "minecraft:quartz",
+    "count": 1
+  },
+  "cost": 200
+}
