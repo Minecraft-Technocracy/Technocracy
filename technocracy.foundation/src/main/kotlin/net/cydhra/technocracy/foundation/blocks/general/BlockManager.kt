@@ -4,6 +4,7 @@ import net.cydhra.technocracy.foundation.blocks.BaseLiquidBlock
 import net.cydhra.technocracy.foundation.blocks.api.IBaseBlock
 import net.cydhra.technocracy.foundation.client.model.AbstractCustomModel
 import net.cydhra.technocracy.foundation.client.model.CustomModelProvider
+import net.cydhra.technocracy.foundation.items.general.ItemSubBlock
 import net.cydhra.technocracy.foundation.util.StateMapper
 import net.minecraft.block.Block
 import net.minecraft.client.Minecraft
@@ -70,7 +71,7 @@ class BlockManager {
         event.registry.registerAll(*blocksToRegister.filter { it.generateItem }
                 .filter { it !is BaseLiquidBlock }
                 .map { it as Block }
-                .map(::ItemBlock)
+                .map(::ItemSubBlock)
                 .map { it.apply { it.registryName = it.block.registryName } }
                 .toTypedArray())
     }

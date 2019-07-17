@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.blocks.api
 
 import net.cydhra.technocracy.foundation.blocks.api.AbstractRotateableBlock.Companion.facingProperty
-import net.cydhra.technocracy.foundation.blocks.color.ConstantBlockColor
+import net.cydhra.technocracy.foundation.blocks.color.IBlockColor
 import net.cydhra.technocracy.foundation.util.propertys.POSITION
 import net.minecraft.block.BlockHorizontal
 import net.minecraft.block.material.Material
@@ -30,7 +30,7 @@ import net.minecraftforge.common.property.IExtendedBlockState
 abstract class AbstractRotateableBlock(unlocalizedName: String,
                                        material: Material,
                                        registryName: String = unlocalizedName,
-                                       colorMultiplier: ConstantBlockColor? = null)
+                                       colorMultiplier: IBlockColor? = null)
     : AbstractBaseBlock(unlocalizedName, material, registryName, colorMultiplier) {
 
     companion object {

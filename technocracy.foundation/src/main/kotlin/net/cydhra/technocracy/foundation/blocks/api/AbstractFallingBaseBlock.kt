@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.blocks.api
 
 import net.cydhra.technocracy.foundation.blocks.color.ConstantBlockColor
+import net.cydhra.technocracy.foundation.blocks.color.IBlockColor
 import net.cydhra.technocracy.foundation.client.technocracyCreativeTabs
 import net.minecraft.block.BlockFalling
 import net.minecraft.block.material.Material
@@ -17,7 +18,7 @@ import net.minecraft.block.material.Material
 abstract class AbstractFallingBaseBlock(unlocalizedName: String,
                                         material: Material,
                                         registryName: String = unlocalizedName,
-                                        override val colorMultiplier: ConstantBlockColor? = null) : BlockFalling(material), IBaseBlock {
+                                        override val colorMultiplier: IBlockColor? = null) : BlockFalling(material), IBaseBlock {
 
     override val modelLocation: String
         get() = this.registryName.toString()

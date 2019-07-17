@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.blocks.api
 
-import net.cydhra.technocracy.foundation.blocks.color.ConstantBlockColor
+import net.cydhra.technocracy.foundation.blocks.color.IBlockColor
 
 /**
  * To simplify handling blocks within this modification, every block that is being added by this modification has to
@@ -20,7 +20,7 @@ interface IBaseBlock {
      * use this information during registration and no further steps are required. If no special block color is
      * required, this field is set to null.
      */
-    val colorMultiplier: ConstantBlockColor?
+    val colorMultiplier: IBlockColor?
 
     val generateItem: Boolean
 }
