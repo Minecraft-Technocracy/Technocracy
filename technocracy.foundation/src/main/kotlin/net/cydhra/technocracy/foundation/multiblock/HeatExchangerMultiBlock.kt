@@ -9,7 +9,6 @@ import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBl
 import net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger.TileEntityHeatExchangerController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger.TileEntityHeatExchangerInput
 import net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger.TileEntityHeatExchangerOutput
-import net.minecraft.block.Block
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.math.BlockPos
@@ -108,7 +107,7 @@ class HeatExchangerMultiBlock(world: World) :
 
             assert(neighbor.size <= 1)
             if (neighbor.isEmpty()) {
-                validatorCallback.setLastError("unused input port")
+                validatorCallback.setLastError("multiblock.error.unused_input_port")
                 return false
             }
 
@@ -128,11 +127,11 @@ class HeatExchangerMultiBlock(world: World) :
 
                 when {
                     nextTube.size > 1 -> {
-                        validatorCallback.setLastError("tube flow diverges")
+                        validatorCallback.setLastError("multiblock.error.tube_flow_diverges")
                         return false
                     }
                     nextTube.isEmpty() -> {
-                        validatorCallback.setLastError("tube is missing exit")
+                        validatorCallback.setLastError("multiblock.error.tube_missing_exit")
                         return false
                     }
                     nextTube.first() is TileEntityHeatExchangerOutput -> {

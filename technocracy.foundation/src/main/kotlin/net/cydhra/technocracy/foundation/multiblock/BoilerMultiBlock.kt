@@ -115,11 +115,11 @@ class BoilerMultiBlock(world: World) : BaseMultiBlock(
         val interiorMin = minimumCoord.add(1, 1, 1)
         val interiorMax = maximumCoord.add(-1, -1, -1)
 
-        val height = interiorMax.y - interiorMin.y
-        val averageWidth = ((interiorMax.x - interiorMin.x + interiorMax.z - interiorMin.z) / 2.0).roundToInt()
+        val height = interiorMax.y - interiorMin.y + 1
+        val averageWidth = ((interiorMax.x - interiorMin.x + interiorMax.z - interiorMin.z) / 2.0).roundToInt() + 1
 
         if (height < averageWidth) {
-            validatorCallback.setLastError("machine must be at least as high as the average side length")
+            validatorCallback.setLastError("multiblock.error.wider_than_high", averageWidth, height)
             return false
         }
 
