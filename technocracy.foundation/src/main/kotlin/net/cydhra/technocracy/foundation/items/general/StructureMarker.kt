@@ -1,6 +1,5 @@
 package net.cydhra.technocracy.foundation.items.general
 
-import javafx.scene.paint.Color
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.RenderGlobal
@@ -15,6 +14,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import net.minecraftforge.client.event.RenderWorldLastEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import java.awt.Color
 
 
 class StructureMarker : BaseItem("structure_marker") {
@@ -75,7 +75,7 @@ class StructureMarker : BaseItem("structure_marker") {
             GlStateManager.disableTexture2D()
 
             if (controller != null) {
-                val col = Color.hsb(((mc.player.ticksExisted * 2) % 360).toDouble(), 1.0, 1.0)
+                val col = Color.getHSBColor(((mc.player.ticksExisted * 2) % 360).toFloat(), 1.0f, 1.0f)
                 RenderGlobal.drawSelectionBoundingBox(AxisAlignedBB(controller!!, controller!!.add(1.0, 1.0, 1.0)).offset(-mc.renderManager.viewerPosX, -mc.renderManager.viewerPosY, -mc.renderManager.viewerPosZ), col.red.toFloat(), col.green.toFloat(), col.blue.toFloat(), 0.8f)
             }
 
