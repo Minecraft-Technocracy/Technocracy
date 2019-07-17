@@ -3,14 +3,18 @@
 package net.cydhra.technocracy.foundation.oresystems
 
 import com.google.common.base.Predicate
+import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.OreBlock
 import net.cydhra.technocracy.foundation.blocks.general.BlockManager
+import net.cydhra.technocracy.foundation.crafting.RecipeManager
+import net.cydhra.technocracy.foundation.crafting.types.*
 import net.cydhra.technocracy.foundation.items.color.ConstantItemColor
 import net.cydhra.technocracy.foundation.items.general.BaseItem
 import net.cydhra.technocracy.foundation.items.general.ColoredItem
 import net.cydhra.technocracy.foundation.items.general.ItemManager
 import net.cydhra.technocracy.foundation.liquids.general.BaseFluid
 import net.cydhra.technocracy.foundation.liquids.general.FluidManager
+import net.cydhra.technocracy.foundation.liquids.general.drossFluid
 import net.cydhra.technocracy.foundation.world.gen.OreGenerator
 import net.minecraft.block.Block
 import net.minecraft.block.state.IBlockState
@@ -18,7 +22,10 @@ import net.minecraft.block.state.pattern.BlockMatcher
 import net.minecraft.init.Blocks
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
+import net.minecraft.item.crafting.Ingredient
+import net.minecraft.util.ResourceLocation
 import net.minecraft.world.DimensionType
+import net.minecraftforge.fluids.FluidStack
 import net.minecraftforge.fml.common.registry.GameRegistry
 import java.awt.Color
 
@@ -148,10 +155,54 @@ class OreSystemBuilder {
                     fluidManager.registerFluid(this.enrichedSlurry)
                 },
                 init = {
-                    if (generateOre)
-                        GameRegistry.addSmelting(ore, ItemStack(ingot, 1), 0.5f)
-                    if (generateDust)
-                        GameRegistry.addSmelting(dust, ItemStack(ingot, 1), 0.5f)
+                    // add default ingot recipe
+                    GameRegistry.addSmelting(ore, ItemStack(ingot, 1), 0.5f)
+
+                    // add dust smelting recipe
+                    GameRegistry.addSmelting(dust, ItemStack(ingot, 1), 0.5f)
+
+                    // add slag recipe
+                    // TODO: there is now way to combine item and fluid to fluid
+
+                    // add slurry recipe
+                    RecipeManager.registerRecipe(RecipeManager.RecipeType.ELECTROLYSIS,
+                            ElectrolysisRecipe(FluidStack(slag, 1000),
+                                    listOf(FluidStack(slurry, 500), FluidStack(drossFluid, 500)),
+                                    200))
+
+                    // add slurry enriching recipe
+                    RecipeManager.registerRecipe(RecipeManager.RecipeType.KILN,
+                            KilnRecipe(FluidStack(slurry, 500),
+                                    FluidStack(enrichedSlurry, 500),
+                                    200))
+
+                    // add crystal recipe
+                    // TODO add crystallizer machine
+
+                    // add grit recipe
+                    RecipeManager.registerRecipe(RecipeManager.RecipeType.PULVERIZER,
+                            PulverizerRecipe(Ingredient.fromItem(crystal),
+                                    ItemStack(grit, 2),
+                                    100))
+
+                    // add dust recipe
+                    RecipeManager.registerRecipe(RecipeManager.RecipeType.CENTRIFUGE,
+                            CentrifugeRecipe(Ingredient.fromItem(grit),
+                                    ItemStack(dust, 1),
+                                    null,
+                                    100))
+
+                    // add gear recipe
+                    if (gear != null)
+                        GameRegistry.addShapedRecipe(ResourceLocation(TCFoundation.MODID, gear.registryName!!
+                                .resourcePath + "_recipe"), null, ItemStack(gear), " # ", "# #", " # ", '#', ingot)
+
+                    // add sheet recipe
+                    if (sheet != null)
+                        RecipeManager.registerRecipe(RecipeManager.RecipeType.COMPACTOR,
+                                CompactorRecipe(Ingredient.fromItem(ingot),
+                                        ItemStack(sheet),
+                                        40))
 
                     if (generateOre)
                         GameRegistry.registerWorldGenerator(OreGenerator(
