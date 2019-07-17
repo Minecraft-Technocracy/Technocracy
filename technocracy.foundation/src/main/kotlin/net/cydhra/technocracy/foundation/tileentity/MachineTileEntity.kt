@@ -24,7 +24,7 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
     /**
      * The machines internal energy storage and transfer limit state
      */
-    protected val energyStorageComponent = EnergyStorageComponent(mutableSetOf(EnumFacing.UP))
+    protected val energyStorageComponent = EnergyStorageComponent(mutableSetOf(EnumFacing.DOWN))
 
     /**
      * The machine upgrades component.
