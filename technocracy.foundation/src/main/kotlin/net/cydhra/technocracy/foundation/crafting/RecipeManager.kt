@@ -52,6 +52,8 @@ object RecipeManager {
         parseMachineRecipes("chemical_processing", ChemicalProcessingParser, RecipeManager.RecipeType.CHEMICAL_PROCESSING)
         parseMachineRecipes("chemical_reaction", ChemicalReactionRecipeParser, RecipeManager.RecipeType.CHEMICAL_REACTION)
         parseMachineRecipes("compactor", CompactorRecipeParser, RecipeManager.RecipeType.COMPACTOR)
+        parseMachineRecipes("crystallization", CrystallizationRecipeParser, RecipeManager.RecipeType.CRYSTALLIZATION)
+        parseMachineRecipes("dissolution", DissolutionRecipeParser, RecipeManager.RecipeType.DISSOLUTION)
         parseMachineRecipes("electric_furnace", ElectricFurnaceRecipeParser, RecipeManager.RecipeType.ELECTRIC_FURNACE)
         parseMachineRecipes("electrolysis", ElectrolysisRecipeParser, RecipeManager.RecipeType.ELECTROLYSIS)
         parseMachineRecipes("kiln", KilnRecipeParser, RecipeManager.RecipeType.KILN)
