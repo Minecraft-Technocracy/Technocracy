@@ -148,6 +148,8 @@ object RecipeManager {
         CHEMICAL_PROCESSING,
         CHEMICAL_REACTION,
         COMPACTOR,
+        CRYSTALLIZATION,
+        DISSOLUTION,
         ELECTRIC_FURNACE,
         ELECTROLYSIS,
         KILN,
