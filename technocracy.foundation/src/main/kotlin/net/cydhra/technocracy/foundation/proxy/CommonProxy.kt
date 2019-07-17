@@ -61,9 +61,9 @@ open class CommonProxy {
             ironSystem,
             goldSystem)
 
-    protected val blockManager = BlockManager(technocracyCreativeTabs)
+    protected val blockManager = BlockManager(TCFoundation.MODID,technocracyCreativeTabs)
     protected val fluidManager = FluidManager(blockManager)
-    protected val itemManager = ItemManager(technocracyCreativeTabs)
+    protected val itemManager = ItemManager(TCFoundation.MODID, technocracyCreativeTabs)
 
     open fun preInit() {
         MinecraftForge.EVENT_BUS.register(Network)

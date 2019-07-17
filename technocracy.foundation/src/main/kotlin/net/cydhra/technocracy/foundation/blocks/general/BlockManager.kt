@@ -29,7 +29,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
  * register them at the event bus. It furthermore handles additional block-related registration processes such as
  * [ItemBlock] registration, model and renderer registration and so on.
  */
-class BlockManager(val defaultCreativeTab: CreativeTabs) {
+class BlockManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
 
     /**
      * A list that saves all blocks to be registered
@@ -52,7 +52,7 @@ class BlockManager(val defaultCreativeTab: CreativeTabs) {
     fun prepareBlocksForRegistration(block: IBaseBlock, model: AbstractCustomModel): IBaseBlock {
         blocksToRegister += block
         val name = (block as Block).registryName!!.resourcePath
-        customModels["models/block/$name"] = model.initModel("block", name)
+        customModels["models/block/$name"] = model.initModel(modName, "block", name)
         return block
     }
 

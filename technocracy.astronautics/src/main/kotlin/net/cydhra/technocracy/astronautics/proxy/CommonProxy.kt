@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.astronautics.proxy
 
+import net.cydhra.technocracy.astronautics.TCAstronautics
 import net.cydhra.technocracy.astronautics.blocks.general.reinforcedConcrete
 import net.cydhra.technocracy.astronautics.blocks.general.scaffoldBlock
 import net.cydhra.technocracy.astronautics.blocks.general.wetConcrete
@@ -16,9 +17,9 @@ import net.minecraftforge.common.capabilities.CapabilityManager
 
 open class CommonProxy {
 
-    protected val blockManager = BlockManager(astronauticsCreativeTabs)
+    protected val blockManager = BlockManager(TCAstronautics.MODID, astronauticsCreativeTabs)
     protected val fluidManager = FluidManager(blockManager)
-    protected val itemManager = ItemManager(astronauticsCreativeTabs)
+    protected val itemManager = ItemManager(TCAstronautics.MODID, astronauticsCreativeTabs)
 
     open fun preInit() {
         MinecraftForge.EVENT_BUS.register(blockManager)

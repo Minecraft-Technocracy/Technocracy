@@ -24,7 +24,7 @@ import net.minecraftforge.oredict.OreDictionary
  *
  * @see ItemManager.prepareItemForRegistration
  */
-class ItemManager(val defaultCreativeTab: CreativeTabs) {
+class ItemManager(val modName: String,val defaultCreativeTab: CreativeTabs) {
 
     /**
      * Items scheduled for registering
@@ -48,7 +48,7 @@ class ItemManager(val defaultCreativeTab: CreativeTabs) {
     fun prepareItemForRegistration(item: BaseItem, model: AbstractCustomModel) {
         itemsToRegister += item
         val name = item.registryName!!.resourcePath
-        customModels["models/item/$name"] = model.initModel("item", name)
+        customModels["models/item/$name"] = model.initModel(modName, "item", name)
     }
 
     @Suppress("unused")
