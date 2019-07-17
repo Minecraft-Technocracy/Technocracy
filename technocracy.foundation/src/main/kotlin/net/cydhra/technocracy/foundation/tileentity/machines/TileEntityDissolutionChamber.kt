@@ -33,7 +33,7 @@ class TileEntityDissolutionChamber : MachineTileEntity(), TEInventoryProvider {
         this.registerComponent(outputFluidComponent, "output_fluid")
 
         this.addLogicStrategy(ItemProcessingLogic(
-                recipeType = RecipeManager.RecipeType.CHEMICAL_PROCESSING,
+                recipeType = RecipeManager.RecipeType.DISSOLUTION,
                 inputInventory = this.inputInventoryComponent.inventory,
                 inputFluidSlots = arrayOf(inputFluidComponent.fluid),
                 outputFluidSlots = arrayOf(outputFluidComponent.fluid),
