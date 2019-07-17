@@ -10,6 +10,7 @@ import net.minecraft.block.material.Material
 import net.minecraft.block.state.BlockStateContainer
 import net.minecraft.block.state.IBlockState
 import net.minecraft.creativetab.CreativeTabs
+import net.minecraft.entity.Entity
 import net.minecraft.item.EnumDyeColor
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
@@ -17,9 +18,10 @@ import net.minecraft.util.NonNullList
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.text.translation.I18n
 import net.minecraft.world.IBlockAccess
+import net.minecraft.world.World
 
 
-class ReinforcedConcrete : AbstractBaseBlock("reinforced_concrete", Material.ROCK, colorMultiplier = DyeBlockColor), IDynamicStackDisplayName {
+class ReinforcedConcrete : AbstractBaseBlock("reinforced_concrete", Material.IRON, colorMultiplier = DyeBlockColor), IDynamicStackDisplayName {
 
     init {
         setHardness(10F)
@@ -34,6 +36,11 @@ class ReinforcedConcrete : AbstractBaseBlock("reinforced_concrete", Material.ROC
         for (enumdyecolor in EnumDyeColor.values()) {
             items.add(ItemStack(this, 1, enumdyecolor.metadata))
         }
+    }
+
+    override fun onEntityWalk(worldIn: World, pos: BlockPos, entityIn: Entity) {
+        entityIn.motionX *= 1.2
+        entityIn.motionZ *= 1.2
     }
 
     override fun damageDropped(state: IBlockState): Int {

@@ -3,7 +3,7 @@ package net.cydhra.technocracy.astronautics.blocks
 import net.cydhra.technocracy.foundation.blocks.api.AbstractBaseBlock
 import net.cydhra.technocracy.foundation.blocks.color.DyeBlockColor
 import net.cydhra.technocracy.foundation.items.general.IDynamicStackDisplayName
-import net.minecraft.block.BlockCarrot
+import net.minecraft.block.SoundType
 import net.minecraft.block.material.MapColor
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.BlockStateContainer
@@ -16,11 +16,12 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockAccess
 
 
-class WetReinforcedConcrete : AbstractBaseBlock("wet_reinforced_concrete", Material.CLOTH, colorMultiplier = DyeBlockColor), IDynamicStackDisplayName {
+class WetReinforcedConcrete : AbstractBaseBlock("wet_reinforced_concrete", Material.IRON, colorMultiplier = DyeBlockColor), IDynamicStackDisplayName {
     init {
         setHardness(2F)
         setResistance(10.0f)
         this.defaultState = this.blockState.baseState.withProperty(DyeBlockColor.COLOR, EnumDyeColor.WHITE)
+        soundType = SoundType.GROUND
     }
 
     /**

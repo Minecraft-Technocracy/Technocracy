@@ -3,6 +3,7 @@ package net.cydhra.technocracy.astronautics.blocks
 import net.cydhra.technocracy.foundation.blocks.api.AbstractBaseBlock
 import net.cydhra.technocracy.foundation.blocks.color.DyeBlockColor
 import net.cydhra.technocracy.foundation.items.general.IDynamicStackDisplayName
+import net.minecraft.block.SoundType
 import net.minecraft.block.material.MapColor
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.BlockStateContainer
@@ -15,17 +16,19 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockAccess
 
 
-class WetConcrete : AbstractBaseBlock("wet_concrete", Material.CLOTH, colorMultiplier = DyeBlockColor), IDynamicStackDisplayName {
+class WetConcrete : AbstractBaseBlock("wet_concrete", Material.ROCK, colorMultiplier = DyeBlockColor), IDynamicStackDisplayName {
     init {
         setHardness(2F)
         setResistance(10.0f)
         this.defaultState = this.blockState.baseState.withProperty(DyeBlockColor.COLOR, EnumDyeColor.WHITE)
+        setCreativeTab(CreativeTabs.SEARCH)
+        soundType = SoundType.GROUND
     }
 
     /**
      * returns a list of blocks with the same ID, but different meta (eg: wood returns 4 blocks)
      */
-    override fun getSubBlocks(itemIn: CreativeTabs, items: NonNullList<ItemStack>) {
+    override fun getSubBlocks(itemIn: CreativeTabs?, items: NonNullList<ItemStack>) {
         if (itemIn == CreativeTabs.SEARCH) {
             for (enumdyecolor in EnumDyeColor.values()) {
                 items.add(ItemStack(this, 1, enumdyecolor.metadata))
