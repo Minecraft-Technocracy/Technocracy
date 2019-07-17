@@ -14,6 +14,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import java.util.*
 import java.util.function.Predicate
+import kotlin.math.roundToInt
 
 class BoilerMultiBlock(world: World) : BaseMultiBlock(
         frameBlockWhitelist = Predicate {
@@ -102,8 +103,7 @@ class BoilerMultiBlock(world: World) : BaseMultiBlock(
                 this@BoilerMultiBlock.controllerTileEntity = controllerTileEntities.single()
                 this@BoilerMultiBlock.heaterElements = heaterTileEntities
 
-                this@BoilerMultiBlock.recalculateContents()
-                return@finishUp true
+                return@finishUp this@BoilerMultiBlock.recalculateContents(validatorCallback)
             }
         }
     }
@@ -111,9 +111,17 @@ class BoilerMultiBlock(world: World) : BaseMultiBlock(
     /**
      * Recalculate how much water can be stored
      */
-    private fun recalculateContents() {
+    private fun recalculateContents(validatorCallback: IMultiblockValidator): Boolean {
         val interiorMin = minimumCoord.add(1, 1, 1)
         val interiorMax = maximumCoord.add(-1, -1, -1)
+
+        val height = interiorMax.y - interiorMin.y
+        val averageWidth = ((interiorMax.x - interiorMin.x + interiorMax.z - interiorMin.z) / 2.0).roundToInt()
+
+        if (height < averageWidth) {
+            validatorCallback.setLastError("machine must be at least as high as the average side length")
+            return false
+        }
 
         var spaceInside = 0
         val heatQueue = ArrayDeque<BlockPos>()
@@ -204,6 +212,8 @@ class BoilerMultiBlock(world: World) : BaseMultiBlock(
 
         // update fluid capacity
         this.controllerTileEntity!!.updateCapacity(spaceInside * 4000)
+
+        return true
     }
 
     override fun onBlockAdded(p0: IMultiblockPart?) {
