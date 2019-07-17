@@ -1,6 +1,12 @@
 package net.cydhra.technocracy.astronautics.proxy
 
-class ClientProxy : CommonProxy() {
+import net.cydhra.technocracy.foundation.tileentity.management.TileEntityManager
 
+class ClientProxy : CommonProxy() {
+    override fun init() {
+        super.init()
+        itemManager.registerItemColors()
+        blockManager.registerBlockColors()
+    }
 
 }
