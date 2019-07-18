@@ -1,1 +1,22 @@
 tile.scaffold.name=Scaffold
+tile.wet_reinforced_concrete.name=Wet Reinforced Concrete
+tile.wet_concrete.name=Wet Concrete
+
+color.white.name=White
+color.orange.name=Orange
+color.magenta.name=Magenta
+color.lightBlue.name=Light Blue
+color.yellow.name=Yellow
+color.lime.name=Lime
+color.pink.name=Pink
+color.gray.name=Gray
+color.silver.name=Light Gray
+color.cyan.name=Cyan
+color.purple.name=Purple
+color.blue.name=Blue
+color.brown.name=Brown
+color.green.name=Green
+color.black.name=Black
+
+item.concrete_sprayer_empty.name=Empty Concrete Sprayer
+item.concrete_sprayer.name=Empty Concrete Sprayer

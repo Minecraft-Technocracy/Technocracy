@@ -7,6 +7,7 @@ import net.cydhra.technocracy.astronautics.items.color.ConcreteSprayerColor
 import net.cydhra.technocracy.astronautics.items.general.concreteCan
 import net.cydhra.technocracy.foundation.blocks.color.DyeBlockColor
 import net.cydhra.technocracy.foundation.items.general.BaseItem
+import net.cydhra.technocracy.foundation.items.general.emptyCan
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayer
@@ -45,9 +46,12 @@ class ConcreteSprayerItem : BaseItem("concrete_sprayer", itemColor = ConcreteSpr
             val amount = getConcreteAmount(stack)
 
             if (type != null) {
-                val can = ItemStack(concreteCan)
-                if (amount > 0)
+                var can = ItemStack(concreteCan)
+                if (amount > 0) {
                     can.tagCompound = stack.tagCompound
+                } else {
+                    can = ItemStack(emptyCan)
+                }
 
                 stack.tagCompound = null
 
@@ -67,7 +71,6 @@ class ConcreteSprayerItem : BaseItem("concrete_sprayer", itemColor = ConcreteSpr
                     val itemstack = player.inventory.getStackInSlot(i)
 
                     if (this.isCan(itemstack)) {
-                        itemstack.shrink(1)
                         return itemstack
                     }
                 }
@@ -108,48 +111,56 @@ class ConcreteSprayerItem : BaseItem("concrete_sprayer", itemColor = ConcreteSpr
         val scaffoldOnly = worldIn.getBlockState(pos).block is ScaffoldBlock
         val stack = player.getHeldItem(hand)
         val color = getConcreteType(stack)
+        val maxBlocks = getConcreteAmount(stack)
 
         if (color == null) {
             val ammo = findAmmo(player)
-            stack.tagCompound = ammo.tagCompound
+            if (!ammo.isEmpty) {
+                stack.tagCompound = ammo.tagCompound
 
-            ammo.shrink(1)
+                ammo.shrink(1)
 
-            if (ammo.isEmpty) {
-                player.inventory.deleteStack(ammo)
+                if (ammo.isEmpty) {
+                    player.inventory.deleteStack(ammo)
+                }
             }
 
             return EnumActionResult.FAIL
         }
 
-        var maxX = 2.0
-        var maxY = 2.0
-        var maxZ = 2.0
-
-        if (scaffoldOnly) {
-            if (facing.axis == EnumFacing.Axis.X) {
-                maxX = 0.0
-            }
-            if (facing.axis == EnumFacing.Axis.Y) {
-                maxY = 0.0
-            }
-            if (facing.axis == EnumFacing.Axis.Z) {
-                maxZ = 0.0
-            }
+        if (maxBlocks <= 0) {
+            stack.tagCompound = null
+            val can = ItemStack(emptyCan)
+            player.inventory.addItemStackToInventory(can)
+            return EnumActionResult.FAIL
         }
-
-        if (player.isSneaking) {
-            maxX = 0.0
-            maxY = 0.0
-            maxZ = 0.0
-        }
-
-        val maxBlocks = getConcreteAmount(stack)
 
         var placed = 0
 
         if (maxBlocks > 0) {
             if (scaffoldOnly) {
+                var maxX = 2.0
+                var maxY = 2.0
+                var maxZ = 2.0
+
+                if (scaffoldOnly) {
+                    if (facing.axis == EnumFacing.Axis.X) {
+                        maxX = 0.0
+                    }
+                    if (facing.axis == EnumFacing.Axis.Y) {
+                        maxY = 0.0
+                    }
+                    if (facing.axis == EnumFacing.Axis.Z) {
+                        maxZ = 0.0
+                    }
+                }
+
+                if (player.isSneaking) {
+                    maxX = 0.0
+                    maxY = 0.0
+                    maxZ = 0.0
+                }
+
                 for (x in -maxX.toInt()..maxX.toInt()) {
                     for (z in -maxZ.toInt()..maxZ.toInt()) {
                         for (y in -maxY.toInt()..maxY.toInt()) {

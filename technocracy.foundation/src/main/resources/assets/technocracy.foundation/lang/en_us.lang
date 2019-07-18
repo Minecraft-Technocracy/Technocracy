@@ -35,6 +35,7 @@ item.calcium_acetate.name=Calcium Acetate
 item.mirror.name=Mirror
 item.polished_mirror.name=Polished Mirror
 item.dust.coal.name=Coal Dust
+item.empty_can.name=Empty Can
 
 item.ingot.invar.name=Invar Ingot
 item.ingot.steel.name=Steel Ingot
