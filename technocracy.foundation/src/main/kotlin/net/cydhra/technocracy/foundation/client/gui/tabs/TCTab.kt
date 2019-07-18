@@ -2,7 +2,7 @@ package net.cydhra.technocracy.foundation.client.gui.tabs
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
-import net.cydhra.technocracy.foundation.client.gui.components.TCSlot
+import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlot
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.ResourceLocation
 

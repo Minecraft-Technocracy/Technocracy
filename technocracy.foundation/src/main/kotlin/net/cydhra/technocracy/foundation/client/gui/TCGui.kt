@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.client.gui
 
-import net.cydhra.technocracy.foundation.client.gui.components.TCSlot
+import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlot
 import net.cydhra.technocracy.foundation.client.gui.tabs.TCTab
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
