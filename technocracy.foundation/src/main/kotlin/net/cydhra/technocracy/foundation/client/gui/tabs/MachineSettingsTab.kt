@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.client.gui.tabs
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
+import net.cydhra.technocracy.foundation.client.gui.components.redstonemode.DefaultRedstoneModeControl
 import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
 import net.cydhra.technocracy.foundation.tileentity.components.RedstoneModeComponent
 import net.minecraft.client.Minecraft
@@ -13,7 +14,7 @@ class MachineSettingsTab(parent: TCGui, val machine: MachineTileEntity, val play
     override fun init() {
         machine.getComponents().forEach {
             if(it.second is RedstoneModeComponent) {
-
+                components.add(DefaultRedstoneModeControl(97, 20, it.second as RedstoneModeComponent))
             }
         }
     }
