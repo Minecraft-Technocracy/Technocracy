@@ -6,4 +6,7 @@ interface TCComponent {
 
     fun update()
 
+    fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int)
+    fun isMouseOnComponent(mouseX: Int, mouseY: Int): Boolean
+
 }

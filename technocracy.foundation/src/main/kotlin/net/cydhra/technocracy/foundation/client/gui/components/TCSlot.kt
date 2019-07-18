@@ -20,6 +20,14 @@ class TCSlot(inventoryIn: IInventory, index: Int, xPosition: Int, yPosition: Int
                 256F)
     }
 
+    override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
+        // handled elsewhere
+    }
+
+    override fun isMouseOnComponent(mouseX: Int, mouseY: Int): Boolean {
+        return mouseX > xPos && mouseX < xPos + 18 && mouseY > yPos && mouseY < yPos + 18
+    }
+
     private var enabled: Boolean = true
 
     override fun isEnabled(): Boolean {

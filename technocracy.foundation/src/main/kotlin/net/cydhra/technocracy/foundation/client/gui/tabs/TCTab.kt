@@ -25,6 +25,13 @@ abstract class TCTab(val name: String, val parent: TCGui, val tint: Int = -1,
         this.components.forEach(TCComponent::update)
     }
 
+    open fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton:Int) {
+        components.forEach {
+            if(it.isMouseOnComponent(mouseX, mouseY))
+                it.mouseClicked(mouseX, mouseY, mouseButton)
+        }
+    }
+
     protected fun addPlayerInventorySlots(player: EntityPlayer, x: Int, y: Int) {
         for (row in 0..2) {
             for (slot in 0..8) {

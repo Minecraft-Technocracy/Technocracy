@@ -3,7 +3,7 @@ package net.cydhra.technocracy.foundation.client.gui.components.energymeter
 import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
 import net.minecraft.util.math.MathHelper
 
-abstract class EnergyMeter(posX: Int, posY: Int) : TCComponent {
+abstract class EnergyMeter(val posX: Int, val posY: Int) : TCComponent {
 
     /**
      * energy level from 0.0 to 1.0
@@ -20,5 +20,13 @@ abstract class EnergyMeter(posX: Int, posY: Int) : TCComponent {
         if (level == 1.0F) {
             this.level = 0F
         }
+    }
+
+    override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
+
+    }
+
+    override fun isMouseOnComponent(mouseX: Int, mouseY: Int): Boolean {
+        return mouseX > posX && mouseX < posX + width && mouseY > posY && mouseY < posY + height
     }
 }
