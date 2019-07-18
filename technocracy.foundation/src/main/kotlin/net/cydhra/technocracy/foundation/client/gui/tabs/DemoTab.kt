@@ -29,6 +29,6 @@ class DemoTab(parent: TCGui, val machine: MachineTileEntity, val player: EntityP
 
     override fun init() {
         addPlayerInventorySlots(player, 8, 84)
-        components.add(DefaultEnergyMeter(10, 20))
+        //components.add(DefaultEnergyMeter(10, 20))
     }
 }
