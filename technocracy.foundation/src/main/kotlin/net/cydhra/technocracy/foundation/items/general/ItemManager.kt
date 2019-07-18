@@ -61,7 +61,7 @@ class ItemManager(val modName: String,val defaultCreativeTab: CreativeTabs) {
     @Suppress("unused")
     @SubscribeEvent
     fun registerRenders(@Suppress("UNUSED_PARAMETER") event: ModelRegistryEvent) {
-        ModelLoaderRegistry.registerLoader(CustomModelProvider(customModels))
+        ModelLoaderRegistry.registerLoader(CustomModelProvider(customModels, modName))
 
         itemsToRegister.forEach(this::registerItemRender)
         itemsToRegister

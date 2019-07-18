@@ -69,8 +69,8 @@ val refineryOutputBlock = MultiBlockRotatableActiveBlock("refinery_output", ::Ti
 val refineryHeaterBlock = MultiBlockActiveBlock("refinery_heater", ::TileEntityRefineryHeater,
         renderLayer = BlockRenderLayer.CUTOUT)
 
-val oilSandBlock = OilSand()
-val oilStone = OilStone()
+val oilSandBlock = OilSandBlock()
+val oilStone = OilStoneBlock()
 val ironBeamBlock = IronBeamBlock()
 
 val oilBlock = OilBlock()

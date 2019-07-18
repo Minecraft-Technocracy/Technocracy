@@ -104,31 +104,49 @@ class Template {
         return true
     }
 
-    //todo return wildcard elements
-    fun matches(worldIn: World, pos: BlockPos, fullMirror: Boolean = false): Boolean {
-        if (fullMirror) {
-            for (rot in Rotation.values()) {
-                if (matches(worldIn, pos, rot)) return true
+    fun matches(worldIn: World, pos: BlockPos, fullMirror: Boolean = false): MutableList<BlockPos>? {
+        val rots = if (fullMirror) Rotation.values() else arrayOf(Rotation.NONE, Rotation.CLOCKWISE_90)
+
+        for (rot in rots) {
+            if (matches(worldIn, pos, rot)) {
+                val list = mutableListOf<BlockPos>()
+                for (block in blocks) {
+                    if (block.meta == -1) {
+                        list.add(pos.add(block.pos.rotate(rot)))
+                    }
+                }
+                return list
             }
-        } else {
-            if (matches(worldIn, pos, Rotation.NONE)) return true
-            if (matches(worldIn, pos, Rotation.CLOCKWISE_90)) return true
         }
 
-        return false
+        return null
     }
 
-    fun matches(worldIn: World, pos: BlockPos, rotation: Rotation): Boolean {
+    private fun matches(worldIn: World, pos: BlockPos, rotation: Rotation): Boolean {
         for (block in blocks) {
             val wildcard = block.meta == -1
-            val state = worldIn.getBlockState(pos.add(block.pos.rotate(rotation)))
+            val pos = pos.add(block.pos.rotate(rotation))
+            val state = worldIn.getBlockState(pos)
             val worldBlock = state.block
             if (wildcard) {
                 if (worldBlock != block.block) return false
             } else {
+
+                var nbt = false
+
+                if (block.nbt != null) {
+                    val tile = worldIn.getTileEntity(pos)
+                    if (tile != null) {
+                        val tag = tile.writeToNBT(NBTTagCompound())
+                        tag.removeTag("x")
+                        tag.removeTag("y")
+                        tag.removeTag("z")
+                        nbt = tag != block.nbt
+                    }
+                }
+
                 val rotState = block.block.getStateFromMeta(block.meta).withRotation(rotation)
-                //todo nbt check
-                if (worldBlock != block.block || worldBlock.getMetaFromState(state) != block.block.getMetaFromState(rotState)) return false
+                if (worldBlock != block.block || worldBlock.getMetaFromState(state) != block.block.getMetaFromState(rotState) || nbt) return false
             }
         }
         return true

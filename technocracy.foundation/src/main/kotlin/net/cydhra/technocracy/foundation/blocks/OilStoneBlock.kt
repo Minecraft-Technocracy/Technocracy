@@ -16,7 +16,7 @@ import net.minecraftforge.fml.relauncher.SideOnly
 import java.util.*
 
 
-class OilStone : AbstractBaseBlock("oil_stone", Material.ROCK, colorMultiplier = ConstantBlockColor(0x1C1004)) {
+class OilStoneBlock : AbstractBaseBlock("oil_stone", Material.ROCK, colorMultiplier = ConstantBlockColor(0x1C1004)) {
     @SideOnly(Side.CLIENT)
     override fun getBlockLayer(): BlockRenderLayer {
         return BlockRenderLayer.CUTOUT

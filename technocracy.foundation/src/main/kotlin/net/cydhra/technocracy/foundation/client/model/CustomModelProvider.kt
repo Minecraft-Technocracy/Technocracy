@@ -7,9 +7,9 @@ import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.model.ICustomModelLoader
 import net.minecraftforge.client.model.IModel
 
-class CustomModelProvider(val builtInModels: Map<String, IModel>) : ICustomModelLoader {
+class CustomModelProvider(val builtInModels: Map<String, IModel>, val modName: String) : ICustomModelLoader {
     override fun accepts(modelLocation: ResourceLocation): Boolean {
-        return if (modelLocation.resourceDomain != TCFoundation.MODID) {
+        return if (modelLocation.resourceDomain != modName) {
             false
         } else this.builtInModels.containsKey(modelLocation.resourcePath)
     }
