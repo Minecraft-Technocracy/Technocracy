@@ -2,6 +2,7 @@ package net.cydhra.technocracy.foundation.tileentity
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.machine.MachineContainer
+import net.cydhra.technocracy.foundation.client.gui.tabs.DemoTab
 import net.cydhra.technocracy.foundation.client.gui.tabs.TCTab
 import net.cydhra.technocracy.foundation.client.gui.tabs.WipTab
 import net.cydhra.technocracy.foundation.tileentity.api.TCMachineTileEntity
@@ -41,6 +42,7 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
 
     override fun getGui(player: EntityPlayer): TCGui {
         val gui = TCGui(player, container = MachineContainer(this))
+        gui.registerTab(DemoTab(gui, this, player))
         gui.registerTab(object : TCTab("Tab mit Inventar", gui, icon = ResourceLocation("technocracy.foundation",
                 "textures/item/silicon.png")) {
 
