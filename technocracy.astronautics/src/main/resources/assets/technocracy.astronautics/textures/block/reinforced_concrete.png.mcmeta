@@ -1,0 +1,9 @@
+{
+    "ctm":{
+        "ctm_version": 1,
+        "type":"CTM",
+        "textures":[
+            "technocracy.astronautics:block/reinforced_concrete_ctm"
+        ]
+    }
+}

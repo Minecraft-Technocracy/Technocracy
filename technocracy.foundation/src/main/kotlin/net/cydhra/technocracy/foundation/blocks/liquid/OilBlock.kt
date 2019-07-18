@@ -17,6 +17,7 @@ import net.minecraft.util.math.MathHelper
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
+import net.minecraftforge.fluids.IFluidBlock
 
 
 class OilBlock : BaseLiquidBlock(mineralOilFluid, "mineral_oil", Material.WATER) {
@@ -25,14 +26,11 @@ class OilBlock : BaseLiquidBlock(mineralOilFluid, "mineral_oil", Material.WATER)
     }
 
     override fun shouldSideBeRendered(state: IBlockState, world: IBlockAccess, pos: BlockPos, side: EnumFacing): Boolean {
-        return super.shouldSideBeRendered(state, world, pos, side)
-        /*val neighbor = world.getBlockState(pos.offset(side))
-        if (neighbor.material === state.material && neighbor.block == state.block) {
-            return false
+        val neighbor = world.getBlockState(pos.offset(side))
+        if ((neighbor.block is IFluidBlock || neighbor.block is BlockLiquid) && neighbor.block != this) {
+            return true
         }
-        return if (side == (if (densityDir < 0) EnumFacing.UP else EnumFacing.DOWN)) {
-            true
-        } else true*/
+        return super.shouldSideBeRendered(state, world, pos, side)
     }
 
     //TODO add entity move event with core mod for usable water physic

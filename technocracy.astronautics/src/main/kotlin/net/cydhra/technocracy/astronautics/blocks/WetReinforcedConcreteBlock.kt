@@ -16,7 +16,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockAccess
 
 
-class WetReinforcedConcrete : AbstractBaseBlock("wet_reinforced_concrete", Material.IRON, colorMultiplier = DyeBlockColor), IDynamicStackDisplayName {
+class WetReinforcedConcreteBlock : AbstractBaseBlock("wet_reinforced_concrete", Material.IRON, colorMultiplier = DyeBlockColor), IDynamicStackDisplayName {
     init {
         setHardness(2F)
         setResistance(10.0f)
@@ -31,7 +31,6 @@ class WetReinforcedConcrete : AbstractBaseBlock("wet_reinforced_concrete", Mater
         for (enumdyecolor in EnumDyeColor.values()) {
             items.add(ItemStack(this, 1, enumdyecolor.metadata))
         }
-
     }
 
     override fun damageDropped(state: IBlockState): Int {
@@ -65,6 +64,6 @@ class WetReinforcedConcrete : AbstractBaseBlock("wet_reinforced_concrete", Mater
     }
 
     override fun getUnlocalizedName(stack: ItemStack): String {
-        return unlocalizedName + "." + EnumDyeColor.byMetadata(stack.metadata).unlocalizedName
+        return "color." + EnumDyeColor.byMetadata(stack.metadata).unlocalizedName + ".name " + unlocalizedName
     }
 }

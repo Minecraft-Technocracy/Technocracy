@@ -113,7 +113,7 @@ class BlockManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
     }
 
     private fun registerCustomBlockModels() {
-        ModelLoaderRegistry.registerLoader(CustomModelProvider(customModels))
+        ModelLoaderRegistry.registerLoader(CustomModelProvider(customModels, modName))
         blocksToRegister.filter { it is BaseLiquidBlock }
                 .map { it as BaseLiquidBlock }
                 .forEach { liquid ->

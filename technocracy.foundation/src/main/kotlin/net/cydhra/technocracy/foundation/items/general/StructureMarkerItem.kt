@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.awt.Color
 
 
-class StructureMarker : BaseItem("structure_marker") {
+class StructureMarkerItem : BaseItem("structure_marker") {
 
     companion object {
         var firstPos: BlockPos? = null

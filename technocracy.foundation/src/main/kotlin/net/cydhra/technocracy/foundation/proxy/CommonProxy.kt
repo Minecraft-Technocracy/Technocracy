@@ -162,6 +162,7 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(nanotubesItem)
         itemManager.prepareItemForRegistration(mirrorItem)
         itemManager.prepareItemForRegistration(polishedMirrorItem)
+        itemManager.prepareItemForRegistration(emptyCan)
 
         itemManager.prepareItemForRegistration(invarItem)
         itemManager.prepareItemForRegistration(siliconBronzeItem)

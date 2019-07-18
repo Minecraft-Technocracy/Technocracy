@@ -17,7 +17,7 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import java.util.*
 
-class OilSand : AbstractFallingBaseBlock("oil_sand", colorMultiplier = ConstantBlockColor(0x1C1004),
+class OilSandBlock : AbstractFallingBaseBlock("oil_sand", colorMultiplier = ConstantBlockColor(0x1C1004),
         material = Material.SAND) {
 
     init {

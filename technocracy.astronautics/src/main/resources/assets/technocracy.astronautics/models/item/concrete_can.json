@@ -1,0 +1,7 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "technocracy.foundation:item/full_can",
+        "layer1": "technocracy.astronautics:item/can_paper_overlay"
+    }
+}

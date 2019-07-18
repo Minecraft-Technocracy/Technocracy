@@ -74,6 +74,6 @@ class ReinforcedConcrete : AbstractBaseBlock("reinforced_concrete", Material.IRO
     }
 
     override fun getUnlocalizedName(stack: ItemStack): String {
-        return unlocalizedName + "." + EnumDyeColor.byMetadata(stack.metadata).unlocalizedName
+        return "color." + EnumDyeColor.byMetadata(stack.metadata).unlocalizedName + ".name " + unlocalizedName
     }
 }
