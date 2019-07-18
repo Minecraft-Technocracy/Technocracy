@@ -9,6 +9,9 @@ import net.cydhra.technocracy.astronautics.capabilities.satellites.DefaultSatell
 import net.cydhra.technocracy.astronautics.capabilities.satellites.ISatelliteOrbit
 import net.cydhra.technocracy.astronautics.capabilities.satellites.SatelliteOrbitStorage
 import net.cydhra.technocracy.astronautics.client.astronauticsCreativeTabs
+import net.cydhra.technocracy.astronautics.client.model.concreteSprayer.ConcreteSprayerItemModel
+import net.cydhra.technocracy.astronautics.items.general.concreteCan
+import net.cydhra.technocracy.astronautics.items.general.concreteSprayer
 import net.cydhra.technocracy.foundation.blocks.general.BlockManager
 import net.cydhra.technocracy.foundation.items.general.ItemManager
 import net.cydhra.technocracy.foundation.liquids.general.FluidManager
@@ -31,6 +34,9 @@ open class CommonProxy {
         blockManager.prepareBlocksForRegistration(reinforcedConcrete)
         blockManager.prepareBlocksForRegistration(wetConcrete)
         blockManager.prepareBlocksForRegistration(wetReinforcedConcrete)
+
+        itemManager.prepareItemForRegistration(concreteSprayer, ConcreteSprayerItemModel())
+        itemManager.prepareItemForRegistration(concreteCan)
     }
 
     open fun init() {

@@ -16,7 +16,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockAccess
 
 
-class WetConcrete : AbstractBaseBlock("wet_concrete", Material.ROCK, colorMultiplier = DyeBlockColor), IDynamicStackDisplayName {
+class WetConcreteBlock : AbstractBaseBlock("wet_concrete", Material.ROCK, colorMultiplier = DyeBlockColor), IDynamicStackDisplayName {
     init {
         setHardness(2F)
         setResistance(10.0f)
@@ -67,6 +67,6 @@ class WetConcrete : AbstractBaseBlock("wet_concrete", Material.ROCK, colorMultip
     }
 
     override fun getUnlocalizedName(stack: ItemStack): String {
-        return unlocalizedName + "." + EnumDyeColor.byMetadata(stack.metadata).unlocalizedName
+        return "color." + EnumDyeColor.byMetadata(stack.metadata).unlocalizedName + ".name " + unlocalizedName
     }
 }

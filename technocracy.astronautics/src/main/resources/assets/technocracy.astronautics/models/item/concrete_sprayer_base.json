@@ -1,0 +1,7 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "technocracy.astronautics:item/concrete_sprayer_empty",
+        "layer1": "technocracy.astronautics:item/concrete_sprayer_empty"
+    }
+}
