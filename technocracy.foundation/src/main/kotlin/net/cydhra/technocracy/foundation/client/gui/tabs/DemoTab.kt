@@ -27,35 +27,8 @@ class DemoTab(parent: TCGui, val machine: MachineTileEntity, val player: EntityP
         Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(str, 8F, 8F, -1)
     }
 
-    override fun update() {
-        /*machine.getLogicStrategies().forEach {
-            if (it is ItemProcessingLogic) {
-                // if running
-               progressBar.progress += it.getTickProgressAmount() / 100f
-            }
-        }*/
-        super.update()
-    }
-
     override fun init() {
         addPlayerInventorySlots(player, 8, 84)
-        components.add(DefaultEnergyMeter(10, 20))
-
-
-        /*machine.getLogicStrategies().forEach {
-            if (it is ItemProcessingLogic) {
-                if(it.energyStorage != null)
-                    components.add(DefaultEnergyMeter(10, 20))
-                if (it.inputInventory != null)
-                    for (i in 0 until it.inputInventory.slots)
-                        components.add(TCSlotIO(it.inputInventory as IItemHandler, i, 40 + i * 20, 50))
-                if(it.inputInventory != null && it.outputInventory != null) {
-                    components.add(DefaultProgressBar(100, 50, Orientation.RIGHT))
-                }
-                if (it.outputInventory != null)
-                    for (i in 0 until it.outputInventory.slots)
-                        components.add(TCSlotIO(it.outputInventory as IItemHandler, i, 125 + i * 20, 50))
-            }
-        }*/
+        //components.add(DefaultEnergyMeter(10, 20))
     }
 }

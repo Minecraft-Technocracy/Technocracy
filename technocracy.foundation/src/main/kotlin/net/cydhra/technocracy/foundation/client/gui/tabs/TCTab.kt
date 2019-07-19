@@ -2,7 +2,7 @@ package net.cydhra.technocracy.foundation.client.gui.tabs
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
-import net.cydhra.technocracy.foundation.client.gui.components.TCSlot
+import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlot
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.ResourceLocation
 
@@ -23,6 +23,13 @@ abstract class TCTab(val name: String, val parent: TCGui, val tint: Int = -1,
 
     open fun update() {
         this.components.forEach(TCComponent::update)
+    }
+
+    open fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton:Int) {
+        components.forEach {
+            if(it.isMouseOnComponent(mouseX, mouseY))
+                it.mouseClicked(mouseX, mouseY, mouseButton)
+        }
     }
 
     protected fun addPlayerInventorySlots(player: EntityPlayer, x: Int, y: Int) {
