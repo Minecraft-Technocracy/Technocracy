@@ -18,7 +18,7 @@ class DefaultEnergyMeter(posX: Int, posY: Int, val component: EnergyStorageCompo
     }
 
     override fun drawTooltip(mouseX: Int, mouseY: Int, partialTicks: Float) {
-        val str = "${(level * component.energyStorage.capacity).roundToInt()}/${component.energyStorage.capacity}"
+        val str = "${(level * component.energyStorage.capacity).roundToInt()}RF/${component.energyStorage.capacity}RF"
         gui.renderTooltip(mutableListOf(str), mouseX, mouseY)
     }
 }
