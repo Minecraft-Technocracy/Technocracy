@@ -8,12 +8,12 @@ import net.cydhra.technocracy.foundation.client.gui.components.progressbar.Defau
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.Orientation
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
 import net.cydhra.technocracy.foundation.client.gui.machine.MachineContainer
-import net.cydhra.technocracy.foundation.client.gui.tabs.*
+import net.cydhra.technocracy.foundation.client.gui.tabs.BaseMachineTab
+import net.cydhra.technocracy.foundation.client.gui.tabs.MachineSettingsTab
 import net.cydhra.technocracy.foundation.tileentity.api.TCMachineTileEntity
 import net.cydhra.technocracy.foundation.tileentity.components.*
 import net.cydhra.technocracy.foundation.tileentity.logic.ILogicClient
 import net.cydhra.technocracy.foundation.tileentity.logic.LogicClientDelegate
-import net.minecraft.client.Minecraft
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.ResourceLocation
@@ -54,7 +54,7 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
                 this@MachineTileEntity.getComponents().forEach {
                     when {
                         it.second is EnergyStorageComponent -> {
-                            components.add(DefaultEnergyMeter(10, 20, it.second as EnergyStorageComponent))
+                            components.add(DefaultEnergyMeter(10, 20, it.second as EnergyStorageComponent, gui))
                             if (inputNearestToTheMiddle < 20)
                                 inputNearestToTheMiddle = 20
                         }
@@ -62,12 +62,12 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
                             val component: FluidComponent = it.second as FluidComponent
                             when {
                                 component.fluid.tanktype == DynamicFluidHandler.TankType.INPUT -> {
-                                    components.add(DefaultFluidMeter(25, 20, component))
+                                    components.add(DefaultFluidMeter(25, 20, component, gui))
                                     if (inputNearestToTheMiddle < 35)
                                         inputNearestToTheMiddle = 35
                                 }
                                 component.fluid.tanktype == DynamicFluidHandler.TankType.OUTPUT -> {
-                                    components.add(DefaultFluidMeter(145, 20, component))
+                                    components.add(DefaultFluidMeter(145, 20, component, gui))
                                     if (outputNearestToTheMiddle > 145)
                                         outputNearestToTheMiddle = 145
                                 }
@@ -81,7 +81,7 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
                             when {
                                 it.first.contains("input") -> {
                                     for (i in 0 until component.inventory.slots) {
-                                        components.add(TCSlotIO(component.inventory, i, 40 + i * 20, 40))
+                                        components.add(TCSlotIO(component.inventory, i, 40 + i * 20, 40, gui))
                                         val newX = 40 + (i + 1) * 20
                                         if (inputNearestToTheMiddle < newX)
                                             inputNearestToTheMiddle = newX
@@ -90,7 +90,7 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
                                 }
                                 it.first.contains("output") -> {
                                     for (i in component.inventory.slots - 1 downTo 0) {
-                                        components.add(TCSlotIO(component.inventory, i, 125 + i * 20, 40))
+                                        components.add(TCSlotIO(component.inventory, i, 125 + i * 20, 40, gui))
                                         val newX = 125 + i * 20
                                         if (outputNearestToTheMiddle > newX)
                                             outputNearestToTheMiddle = newX
@@ -100,8 +100,7 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
                         }
                     }
                 }
-
-                components.add(DefaultProgressBar((outputNearestToTheMiddle - inputNearestToTheMiddle) / 2 - 11 + inputNearestToTheMiddle, 40, Orientation.RIGHT))
+                components.add(DefaultProgressBar((outputNearestToTheMiddle - inputNearestToTheMiddle) / 2 - 11 + inputNearestToTheMiddle, 40, Orientation.RIGHT, gui))
             }
         })
         gui.registerTab(MachineSettingsTab(gui, this, player))

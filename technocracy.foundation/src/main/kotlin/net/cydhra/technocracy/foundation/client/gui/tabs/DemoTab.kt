@@ -17,8 +17,6 @@ import net.minecraft.util.ResourceLocation
 class DemoTab(parent: TCGui, val machine: MachineTileEntity, val player: EntityPlayer) : TCTab("Machine Tab", parent, icon = ResourceLocation("technocracy.foundation",
         "textures/item/silicon.png")) {
 
-    private val progressBar: ProgressBar = DefaultProgressBar(100, 50, Orientation.RIGHT)
-
     override fun draw(mouseX: Int, mouseY: Int, partialTicks: Float) {
         super.draw(mouseX, mouseY, partialTicks)
 
@@ -29,6 +27,5 @@ class DemoTab(parent: TCGui, val machine: MachineTileEntity, val player: EntityP
 
     override fun init() {
         addPlayerInventorySlots(player, 8, 84)
-        //components.add(DefaultEnergyMeter(10, 20))
     }
 }

@@ -15,4 +15,8 @@ abstract class RedstoneModeControl(val posX: Int, val posY: Int) : TCComponent {
     override fun isMouseOnComponent(mouseX: Int, mouseY: Int): Boolean {
         return mouseX > posX && mouseX < posX + width && mouseY > posY && mouseY < posY + height
     }
+
+    override fun update() {
+
+    }
 }

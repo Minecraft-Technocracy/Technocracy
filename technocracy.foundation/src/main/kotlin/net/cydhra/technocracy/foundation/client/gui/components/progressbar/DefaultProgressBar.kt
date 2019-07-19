@@ -4,8 +4,9 @@ import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
+import kotlin.math.roundToInt
 
-class DefaultProgressBar(posX: Int, posY: Int, orientation: Orientation) : ProgressBar(posX, posY, orientation) {
+class DefaultProgressBar(posX: Int, posY: Int, orientation: Orientation, val gui: TCGui) : ProgressBar(posX, posY, orientation) {
     override fun draw(mouseX: Int, mouseY: Int, partialTicks: Float) {
         Minecraft.getMinecraft().textureManager.bindTexture(TCGui.guiComponents)
 
@@ -69,5 +70,10 @@ class DefaultProgressBar(posX: Int, posY: Int, orientation: Orientation) : Progr
                 }
             }
         }
+    }
+
+    override fun drawTooltip(mouseX: Int, mouseY: Int, partialTicks: Float) {
+        val str = "${(progress * 100).roundToInt()}%"
+        gui.renderTooltip(mutableListOf(str), mouseX, mouseY)
     }
 }

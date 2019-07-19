@@ -14,7 +14,7 @@ class MachineSettingsTab(parent: TCGui, val machine: MachineTileEntity, val play
     override fun init() {
         machine.getComponents().forEach {
             if(it.second is RedstoneModeComponent) {
-                components.add(DefaultRedstoneModeControl(97, 20, it.second as RedstoneModeComponent))
+                components.add(DefaultRedstoneModeControl(97, 20, it.second as RedstoneModeComponent, parent))
             }
         }
     }
@@ -26,7 +26,4 @@ class MachineSettingsTab(parent: TCGui, val machine: MachineTileEntity, val play
         Minecraft.getMinecraft().fontRenderer.drawStringWithShadow("Redstone Mode: ", 10f, 24f, -1)
     }
 
-    override fun update() {
-        super.update()
-    }
 }
