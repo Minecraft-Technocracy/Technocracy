@@ -71,7 +71,6 @@ val refineryHeaterBlock = MultiBlockActiveBlock("refinery_heater", ::TileEntityR
 
 val oilSandBlock = OilSandBlock()
 val oilStone = OilStoneBlock()
-val ironBeamBlock = IronBeamBlock()
 
 val oilBlock = OilBlock()
 

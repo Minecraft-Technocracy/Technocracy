@@ -79,8 +79,6 @@ tile.kiln.name=Pyrolysis Kiln
 tile.polymerization_chamber.name=Polymerization Chamber
 tile.pulverizer.name=Pulverizer
 
-tile.iron_beam.name=Steel Beam
-
 tile.boiler_controller.name=Boiler Controller
 tile.boiler_wall.name=Boiler Frame
 tile.boiler_glass.name=Boiler Glass Frame
