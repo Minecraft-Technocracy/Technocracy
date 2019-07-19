@@ -49,6 +49,7 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
             override fun init() {
                 addPlayerInventorySlots(player, 8, 84)
 
+                var nextOutput = 125
                 var inputNearestToTheMiddle = 0
                 var outputNearestToTheMiddle = parent.guiWidth // nice names
                 this@MachineTileEntity.getComponents().forEach {
@@ -67,9 +68,10 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
                                         inputNearestToTheMiddle = 35
                                 }
                                 component.fluid.tanktype == DynamicFluidHandler.TankType.OUTPUT -> {
-                                    components.add(DefaultFluidMeter(145, 20, component, gui))
-                                    if (outputNearestToTheMiddle > 145)
-                                        outputNearestToTheMiddle = 145
+                                    components.add(DefaultFluidMeter(nextOutput, 20, component, gui))
+                                    if (outputNearestToTheMiddle > nextOutput)
+                                        outputNearestToTheMiddle = nextOutput
+                                    nextOutput += 15
                                 }
                                 component.fluid.tanktype == DynamicFluidHandler.TankType.BOTH -> {
                                     TODO("not implemented")
