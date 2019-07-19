@@ -14,7 +14,7 @@ class DefaultRedstoneModeControl(posX: Int, posY: Int, val component: RedstoneMo
         val clr = if(hovered) 0.7f else 1f
         GlStateManager.color(clr, clr, clr, 1f)
         Minecraft.getMinecraft().textureManager.bindTexture(TCGui.guiComponents)
-        Gui.drawModalRectWithCustomSizedTexture(posX, posY, component.redstoneMode.ordinal * 16f, 60f, width, height, 256f, 256f)
+        Gui.drawModalRectWithCustomSizedTexture(posX, posY, component.redstoneMode.ordinal * 16f, 59f, width, height, 256f, 256f)
     }
 
     override fun drawTooltip(mouseX: Int, mouseY: Int, partialTicks: Float) {
