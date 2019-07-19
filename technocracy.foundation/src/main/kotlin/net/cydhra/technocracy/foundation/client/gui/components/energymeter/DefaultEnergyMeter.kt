@@ -3,21 +3,22 @@ package net.cydhra.technocracy.foundation.client.gui.components.energymeter
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.tileentity.components.EnergyStorageComponent
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
-import java.awt.Color
 import kotlin.math.roundToInt
 
 class DefaultEnergyMeter(posX: Int, posY: Int, val component: EnergyStorageComponent, val gui: TCGui) : EnergyMeter(posX, posY) {
 
     override fun draw(mouseX: Int, mouseY: Int, partialTicks: Float) {
         GlStateManager.color(1F, 1F, 1F, 1F)
-        Gui.drawRect(posX, posY, posX + width, posY + height, Color(0.3f, 0.3f, 0.3f).rgb)
         if (level > 0f) {
             Minecraft.getMinecraft().textureManager.bindTexture(TCGui.guiComponents)
             GlStateManager.enableBlend()
+            GlStateManager.color(0.4f, 0.4f, 0.4f, 1f)
+            for(i in 0 until 10) {
+                drawModalRectWithCustomSizedTexture(posX, posY + (9 - i) * 5, posX + width, posY + (9 - i) * 5 + 5, 45f, 0f, 256f, 256f)
+            }
             GlStateManager.color(1f, 1f, 1f, 1f)
             for (i in 0 until (level * 10).toInt()) {
                 drawModalRectWithCustomSizedTexture(posX, posY + (9 - i) * 5, posX + width, posY + (9 - i) * 5 + 5, 45f, 0f, 256f, 256f)
