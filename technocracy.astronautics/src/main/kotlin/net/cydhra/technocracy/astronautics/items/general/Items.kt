@@ -4,5 +4,5 @@ import net.cydhra.technocracy.astronautics.items.ConcreteCanItem
 import net.cydhra.technocracy.astronautics.items.ConcreteSprayerItem
 
 
-val concreteSprayer = ConcreteSprayerItem()
-val concreteCan = ConcreteCanItem()
+val concreteSprayerItem = ConcreteSprayerItem()
+val concreteCanItem = ConcreteCanItem()
