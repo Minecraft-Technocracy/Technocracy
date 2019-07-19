@@ -1,10 +1,10 @@
 package net.cydhra.technocracy.astronautics.items
 
 import net.cydhra.technocracy.astronautics.blocks.ScaffoldBlock
-import net.cydhra.technocracy.astronautics.blocks.general.wetConcrete
-import net.cydhra.technocracy.astronautics.blocks.general.wetReinforcedConcrete
+import net.cydhra.technocracy.astronautics.blocks.general.wetConcreteBlock
+import net.cydhra.technocracy.astronautics.blocks.general.wetReinforcedConcreteBlock
 import net.cydhra.technocracy.astronautics.items.color.ConcreteSprayerColor
-import net.cydhra.technocracy.astronautics.items.general.concreteCan
+import net.cydhra.technocracy.astronautics.items.general.concreteCanItem
 import net.cydhra.technocracy.foundation.blocks.color.DyeBlockColor
 import net.cydhra.technocracy.foundation.items.general.BaseItem
 import net.cydhra.technocracy.foundation.items.general.emptyCan
@@ -46,7 +46,7 @@ class ConcreteSprayerItem : BaseItem("concrete_sprayer", itemColor = ConcreteSpr
             val amount = getConcreteAmount(stack)
 
             if (type != null) {
-                var can = ItemStack(concreteCan)
+                var can = ItemStack(concreteCanItem)
                 if (amount > 0) {
                     can.tagCompound = stack.tagCompound
                 } else {
@@ -171,7 +171,7 @@ class ConcreteSprayerItem : BaseItem("concrete_sprayer", itemColor = ConcreteSpr
                                 val block = worldIn.getBlockState(newPos).block
 
                                 if (block is ScaffoldBlock)
-                                    worldIn.setBlockState(newPos, wetReinforcedConcrete.defaultState.withProperty(DyeBlockColor.COLOR, color))
+                                    worldIn.setBlockState(newPos, wetReinforcedConcreteBlock.defaultState.withProperty(DyeBlockColor.COLOR, color))
                             }
                         }
                     }
@@ -201,7 +201,7 @@ class ConcreteSprayerItem : BaseItem("concrete_sprayer", itemColor = ConcreteSpr
                                 if (distXYZInner < 1.0) {
                                     if (placed < maxBlocks) {
                                         placed++
-                                        worldIn.setBlockState(newPos, wetConcrete.defaultState.withProperty(DyeBlockColor.COLOR, color))
+                                        worldIn.setBlockState(newPos, wetConcreteBlock.defaultState.withProperty(DyeBlockColor.COLOR, color))
                                     }
                                 }
                             }

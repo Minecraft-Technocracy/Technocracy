@@ -21,7 +21,7 @@ import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 
 
-class ReinforcedConcrete : AbstractBaseBlock("reinforced_concrete", Material.IRON, colorMultiplier = DyeBlockColor), IDynamicStackDisplayName {
+class ReinforcedConcreteBlock : AbstractBaseBlock("reinforced_concrete", Material.IRON, colorMultiplier = DyeBlockColor), IDynamicStackDisplayName {
 
     init {
         setHardness(10F)

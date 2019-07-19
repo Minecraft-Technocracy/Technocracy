@@ -1,19 +1,25 @@
 package net.cydhra.technocracy.astronautics.blocks
 
+import net.cydhra.technocracy.astronautics.blocks.general.reinforcedConcreteBlock
 import net.cydhra.technocracy.foundation.blocks.api.AbstractBaseBlock
 import net.cydhra.technocracy.foundation.blocks.color.DyeBlockColor
 import net.cydhra.technocracy.foundation.items.general.IDynamicStackDisplayName
+import net.minecraft.block.BlockColored
+import net.minecraft.block.BlockIce
 import net.minecraft.block.SoundType
 import net.minecraft.block.material.MapColor
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.BlockStateContainer
 import net.minecraft.block.state.IBlockState
 import net.minecraft.creativetab.CreativeTabs
+import net.minecraft.entity.Entity
 import net.minecraft.item.EnumDyeColor
 import net.minecraft.item.ItemStack
 import net.minecraft.util.NonNullList
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockAccess
+import net.minecraft.world.World
+import java.util.*
 
 
 class WetReinforcedConcreteBlock : AbstractBaseBlock("wet_reinforced_concrete", Material.IRON, colorMultiplier = DyeBlockColor), IDynamicStackDisplayName {
@@ -22,6 +28,21 @@ class WetReinforcedConcreteBlock : AbstractBaseBlock("wet_reinforced_concrete", 
         setResistance(10.0f)
         this.defaultState = this.blockState.baseState.withProperty(DyeBlockColor.COLOR, EnumDyeColor.WHITE)
         soundType = SoundType.GROUND
+    }
+
+    override fun randomTick(worldIn: World, pos: BlockPos, state: IBlockState, random: Random) {
+        if (random.nextInt(10) <= 2) {
+            worldIn.setBlockState(pos,reinforcedConcreteBlock.defaultState.withProperty(BlockColored.COLOR, state.getValue(DyeBlockColor.COLOR)))
+        }
+    }
+
+    override fun getTickRandomly(): Boolean {
+        return true
+    }
+
+    override fun onEntityWalk(worldIn: World, pos: BlockPos, entityIn: Entity) {
+        entityIn.motionX /= 1.2
+        entityIn.motionZ /= 1.2
     }
 
     /**
