@@ -1,13 +1,14 @@
-package net.cydhra.technocracy.foundation.client.gui.components
+package net.cydhra.technocracy.foundation.client.gui.components.slot
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
+import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.inventory.IInventory
 import net.minecraft.inventory.Slot
 
-class TCSlot(inventoryIn: IInventory, index: Int, xPosition: Int, yPosition: Int) : Slot(inventoryIn, index,
+open class TCSlot(inventoryIn: IInventory, index: Int, xPosition: Int, yPosition: Int) : Slot(inventoryIn, index,
         xPosition, yPosition), TCComponent {
 
     override fun update() {
@@ -18,6 +19,14 @@ class TCSlot(inventoryIn: IInventory, index: Int, xPosition: Int, yPosition: Int
         GlStateManager.color(1F, 1F, 1F, 1F)
         GuiContainer.drawModalRectWithCustomSizedTexture(xPos - 1, yPos - 1, 0F, 10F, 18, 18, 256F,
                 256F)
+    }
+
+    override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
+        // handled elsewhere
+    }
+
+    override fun isMouseOnComponent(mouseX: Int, mouseY: Int): Boolean {
+        return mouseX > xPos && mouseX < xPos + 18 && mouseY > yPos && mouseY < yPos + 18
     }
 
     private var enabled: Boolean = true

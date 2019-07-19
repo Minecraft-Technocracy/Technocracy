@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.client.gui
 
-import net.cydhra.technocracy.foundation.client.gui.components.TCSlot
+import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlot
 import net.cydhra.technocracy.foundation.client.gui.tabs.TCTab
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
@@ -32,6 +32,8 @@ TCContainer)
     }
 
     val tabs: ArrayList<TCTab> = ArrayList()
+    var guiX: Int = 0
+    var guiY: Int = 0
 
     private var tab: Int = 0
 
@@ -41,11 +43,11 @@ TCContainer)
     }
 
     override fun drawGuiContainerBackgroundLayer(partialTicks: Float, mouseX: Int, mouseY: Int) {
-        val x = (width - xSize) / 2
-        val y = (height - ySize) / 2
+        guiX = (width - xSize) / 2
+        guiY = (height - ySize) / 2
 
         GlStateManager.pushMatrix()
-        GlStateManager.translate(x.toDouble(), y.toDouble(), 0.0)
+        GlStateManager.translate(guiX.toDouble(), guiY.toDouble(), 0.0)
 
         drawWindow(0.0, 0.0, xSize, ySize)
 
@@ -53,12 +55,14 @@ TCContainer)
             drawTabs(partialTicks, mouseX, mouseY)
         }
 
-        this.tabs[this.tab].draw(mouseX, mouseY, partialTicks)
+        this.tabs[this.tab].draw(mouseX - guiX, mouseY - guiY, partialTicks)
         GlStateManager.popMatrix()
     }
 
     override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
         super.mouseClicked(mouseX, mouseY, mouseButton)
+
+        tabs[tab].mouseClicked(mouseX - guiX, mouseY - guiY, mouseButton)
 
         this.tabs.indices.filterNot { it == this.tab }.forEach {
             val x = xSize + 3

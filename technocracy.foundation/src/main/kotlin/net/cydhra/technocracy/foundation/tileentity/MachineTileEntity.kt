@@ -1,14 +1,16 @@
 package net.cydhra.technocracy.foundation.tileentity
 
+import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandler
 import net.cydhra.technocracy.foundation.client.gui.TCGui
+import net.cydhra.technocracy.foundation.client.gui.components.energymeter.DefaultEnergyMeter
+import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.DefaultFluidMeter
+import net.cydhra.technocracy.foundation.client.gui.components.progressbar.DefaultProgressBar
+import net.cydhra.technocracy.foundation.client.gui.components.progressbar.Orientation
+import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
 import net.cydhra.technocracy.foundation.client.gui.machine.MachineContainer
-import net.cydhra.technocracy.foundation.client.gui.tabs.DemoTab
-import net.cydhra.technocracy.foundation.client.gui.tabs.TCTab
-import net.cydhra.technocracy.foundation.client.gui.tabs.WipTab
+import net.cydhra.technocracy.foundation.client.gui.tabs.*
 import net.cydhra.technocracy.foundation.tileentity.api.TCMachineTileEntity
-import net.cydhra.technocracy.foundation.tileentity.components.EnergyStorageComponent
-import net.cydhra.technocracy.foundation.tileentity.components.MachineUpgradesComponents
-import net.cydhra.technocracy.foundation.tileentity.components.RedstoneModeComponent
+import net.cydhra.technocracy.foundation.tileentity.components.*
 import net.cydhra.technocracy.foundation.tileentity.logic.ILogicClient
 import net.cydhra.technocracy.foundation.tileentity.logic.LogicClientDelegate
 import net.minecraft.client.Minecraft
@@ -42,26 +44,67 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
 
     override fun getGui(player: EntityPlayer): TCGui {
         val gui = TCGui(player, container = MachineContainer(this))
-        gui.registerTab(DemoTab(gui, this, player))
-        gui.registerTab(object : TCTab("Tab mit Inventar", gui, icon = ResourceLocation("technocracy.foundation",
+        gui.registerTab(object : BaseMachineTab(this, gui, ResourceLocation("technocracy.foundation",
                 "textures/item/silicon.png")) {
-
-            override fun draw(mouseX: Int, mouseY: Int, partialTicks: Float) {
-                super.draw(mouseX, mouseY, partialTicks)
-
-                Minecraft.getMinecraft().fontRenderer.drawStringWithShadow("Dies ist ein Tab mit Inventar", 8F, 8F, -1)
-            }
-
-            override fun update() {
-            }
-
             override fun init() {
-                this.addPlayerInventorySlots(player, 8, 84)
+                addPlayerInventorySlots(player, 8, 84)
+
+                var inputNearestToTheMiddle = 0
+                var outputNearestToTheMiddle = parent.guiWidth // nice names
+                this@MachineTileEntity.getComponents().forEach {
+                    when {
+                        it.second is EnergyStorageComponent -> {
+                            components.add(DefaultEnergyMeter(10, 20, it.second as EnergyStorageComponent))
+                            if (inputNearestToTheMiddle < 20)
+                                inputNearestToTheMiddle = 20
+                        }
+                        it.second is FluidComponent -> {
+                            val component: FluidComponent = it.second as FluidComponent
+                            when {
+                                component.fluid.tanktype == DynamicFluidHandler.TankType.INPUT -> {
+                                    components.add(DefaultFluidMeter(25, 20, component))
+                                    if (inputNearestToTheMiddle < 35)
+                                        inputNearestToTheMiddle = 35
+                                }
+                                component.fluid.tanktype == DynamicFluidHandler.TankType.OUTPUT -> {
+                                    components.add(DefaultFluidMeter(145, 20, component))
+                                    if (outputNearestToTheMiddle > 145)
+                                        outputNearestToTheMiddle = 145
+                                }
+                                component.fluid.tanktype == DynamicFluidHandler.TankType.BOTH -> {
+                                    TODO("not implemented")
+                                }
+                            }
+                        }
+                        it.second is InventoryComponent -> {
+                            val component: InventoryComponent = it.second as InventoryComponent
+                            when {
+                                it.first.contains("input") -> {
+                                    for (i in 0 until component.inventory.slots) {
+                                        components.add(TCSlotIO(component.inventory, i, 40 + i * 20, 40))
+                                        val newX = 40 + (i + 1) * 20
+                                        if (inputNearestToTheMiddle < newX)
+                                            inputNearestToTheMiddle = newX
+                                    }
+
+                                }
+                                it.first.contains("output") -> {
+                                    for (i in component.inventory.slots - 1 downTo 0) {
+                                        components.add(TCSlotIO(component.inventory, i, 125 + i * 20, 40))
+                                        val newX = 125 + i * 20
+                                        if (outputNearestToTheMiddle > newX)
+                                            outputNearestToTheMiddle = newX
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                components.add(DefaultProgressBar((outputNearestToTheMiddle - inputNearestToTheMiddle) / 2 - 11 + inputNearestToTheMiddle, 40, Orientation.RIGHT))
             }
-
         })
-        gui.registerTab(WipTab(gui))
-
+        gui.registerTab(MachineSettingsTab(gui, this, player))
         return gui
     }
 

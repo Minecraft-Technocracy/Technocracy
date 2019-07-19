@@ -1,12 +1,12 @@
-package net.cydhra.technocracy.foundation.client.gui.components.energymeter
+package net.cydhra.technocracy.foundation.client.gui.components.fluidmeter
 
 import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
 import net.minecraft.util.math.MathHelper
 
-abstract class EnergyMeter(val posX: Int, val posY: Int) : TCComponent {
+abstract class FluidMeter(val posX: Int, val posY: Int): TCComponent {
 
     /**
-     * energy level from 0.0 to 1.0
+     * fluid level from 0.0 to 1.0
      */
     var level = 0.0f
 
@@ -22,11 +22,11 @@ abstract class EnergyMeter(val posX: Int, val posY: Int) : TCComponent {
         }
     }
 
-    override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
-
-    }
-
     override fun isMouseOnComponent(mouseX: Int, mouseY: Int): Boolean {
         return mouseX > posX && mouseX < posX + width && mouseY > posY && mouseY < posY + height
+    }
+
+    override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
+
     }
 }
