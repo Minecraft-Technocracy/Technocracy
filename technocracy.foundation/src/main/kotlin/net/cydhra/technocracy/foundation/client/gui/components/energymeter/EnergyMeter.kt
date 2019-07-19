@@ -14,12 +14,10 @@ abstract class EnergyMeter(val posX: Int, val posY: Int) : TCComponent {
     val height = 50
 
     override fun update() {
-        this.level += 0.01F
-        this.level = MathHelper.clamp(this.level, 0F, 1F)
+        this.level += 0.01f
+        if (level > 1.1f)
+            this.level = 0f
 
-        if (level == 1.0F) {
-            this.level = 0F
-        }
     }
 
     override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
