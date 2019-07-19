@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.client.gui.components.slot
 
+import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.IInventory
 import net.minecraft.inventory.InventoryBasic
@@ -8,8 +9,8 @@ import net.minecraft.item.ItemStack
 import net.minecraftforge.items.IItemHandler
 import net.minecraftforge.items.IItemHandlerModifiable
 
-class TCSlotIO(val itemHandler: IItemHandler, val index: Int, xPosition: Int, yPosition: Int) :
-        TCSlot(InventoryBasic("[null]", true, 1) as IInventory, index, xPosition, yPosition) {
+class TCSlotIO(val itemHandler: IItemHandler, val index: Int, xPosition: Int, yPosition: Int, gui: TCGui) :
+        TCSlot(InventoryBasic("[null]", true, 1) as IInventory, index, xPosition, yPosition, gui) {
 
     override fun isItemValid(stack: ItemStack): Boolean {
         if (stack.isEmpty || !itemHandler.isItemValid(index, stack))

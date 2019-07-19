@@ -4,10 +4,13 @@ import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlot
 import net.cydhra.technocracy.foundation.client.gui.tabs.TCTab
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
+import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.client.renderer.RenderHelper
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.ResourceLocation
+import net.minecraftforge.fml.client.config.GuiUtils
 
 open class TCGui(val player: EntityPlayer, val guiWidth: Int = 176, val guiHeight: Int = 166, val container:
 TCContainer)
@@ -101,6 +104,7 @@ TCContainer)
                 drawModalRectWithCustomSizedTexture(0, 0, 0F, 0F, 17, 17, 17F, 17F)
                 GlStateManager.popMatrix()
             }
+
         }
 
         val activeTab: TCTab = this.tabs[this.tab]
@@ -118,6 +122,16 @@ TCContainer)
             GlStateManager.color(1F, 1F, 1F, 1F)
             drawModalRectWithCustomSizedTexture(0, 0, 0F, 0F, 17, 17, 17F, 17F)
             GlStateManager.popMatrix()
+        }
+
+        tabs.withIndex().forEach {(i, tab)->
+            val x = xSize.toDouble() + 3
+            val y = (i * 28).toDouble() + 3
+            val width = 25
+            val height = 25
+            if(mouseX - guiX > x && mouseX - guiX < x + width && mouseY - guiY > y && mouseY - guiY < y + height) {
+                renderTooltip(mutableListOf(tab.name), mouseX - guiX + 10, mouseY - guiY)
+            }
         }
     }
 
@@ -174,4 +188,129 @@ TCContainer)
     fun unregisterTab(tab: TCTab) {
         this.tabs.remove(tab)
     }
+
+    fun renderHoveredItemToolTip(mouseX: Int, mouseY: Int) {
+        super.renderHoveredToolTip(mouseX, mouseY)
+    }
+
+    fun renderTooltip(_str: MutableList<String>, mouseX: Int, mouseY: Int) { // have to modify the one of forge, because forge makes it unusable
+        if (_str.isNotEmpty()) {
+            var str = _str
+            val sr = ScaledResolution(Minecraft.getMinecraft())
+            val screenWidth = sr.scaledWidth
+            val screenHeight = sr.scaledHeight
+            val maxTextWidth = 100
+            val font = Minecraft.getMinecraft().fontRenderer
+
+            GlStateManager.disableRescaleNormal()
+            RenderHelper.disableStandardItemLighting()
+            GlStateManager.disableLighting()
+            GlStateManager.disableDepth()
+            var tooltipTextWidth = 0
+
+            for (textLine in str) {
+                val textLineWidth = font.getStringWidth(textLine)
+
+                if (textLineWidth > tooltipTextWidth) {
+                    tooltipTextWidth = textLineWidth
+                }
+            }
+
+            var needsWrap = false
+
+            var titleLinesCount = 1
+            var tooltipX = mouseX + 12
+            if (tooltipX + tooltipTextWidth + 4 > screenWidth) {
+                tooltipX = mouseX - 16 - tooltipTextWidth
+                if (tooltipX < 4) {
+                    tooltipTextWidth = if (mouseX > screenWidth / 2) {
+                        mouseX - 12 - 8
+                    } else {
+                        screenWidth - 16 - mouseX
+                    }
+                    needsWrap = true
+                }
+            }
+
+            if (maxTextWidth in 1 until tooltipTextWidth) {
+                tooltipTextWidth = maxTextWidth
+                needsWrap = true
+            }
+
+            if (needsWrap) {
+                var wrappedTooltipWidth = 0
+                val wrappedTextLines = mutableListOf<String>()
+                for (i in str.indices) {
+                    val textLine = str[i]
+                    val wrappedLine = font.listFormattedStringToWidth(textLine, tooltipTextWidth)
+                    if (i == 0) {
+                        titleLinesCount = wrappedLine.size
+                    }
+
+                    for (line in wrappedLine) {
+                        val lineWidth = font.getStringWidth(line)
+                        if (lineWidth > wrappedTooltipWidth) {
+                            wrappedTooltipWidth = lineWidth
+                        }
+                        wrappedTextLines.add(line)
+                    }
+                }
+                tooltipTextWidth = wrappedTooltipWidth
+                str = wrappedTextLines
+
+                tooltipX = if (mouseX > screenWidth / 2) {
+                    mouseX - 16 - tooltipTextWidth
+                } else {
+                    mouseX + 12
+                }
+            }
+
+            var tooltipY = mouseY - 12
+            var tooltipHeight = 8
+
+            if (str.size > 1) {
+                tooltipHeight += (str.size - 1) * 10
+                if (str.size > titleLinesCount) {
+                    tooltipHeight += 2
+                }
+            }
+
+            if (tooltipY < 4) {
+                tooltipY = 4
+            } else if (tooltipY + tooltipHeight + 4 > screenHeight) {
+                tooltipY = screenHeight - tooltipHeight - 4
+            }
+
+            val zLevel = 300
+            val backgroundColor = -0xfeffff0
+            val borderColorStart = 0x505000FF
+            val borderColorEnd = borderColorStart and 0xFEFEFE shr 1 or (borderColorStart and -0x1000000)
+            GuiUtils.drawGradientRect(zLevel, tooltipX - 3, tooltipY - 4, tooltipX + tooltipTextWidth + 3, tooltipY - 3, backgroundColor, backgroundColor)
+            GuiUtils.drawGradientRect(zLevel, tooltipX - 3, tooltipY + tooltipHeight + 3, tooltipX + tooltipTextWidth + 3, tooltipY + tooltipHeight + 4, backgroundColor, backgroundColor)
+            GuiUtils.drawGradientRect(zLevel, tooltipX - 3, tooltipY - 3, tooltipX + tooltipTextWidth + 3, tooltipY + tooltipHeight + 3, backgroundColor, backgroundColor)
+            GuiUtils.drawGradientRect(zLevel, tooltipX - 4, tooltipY - 3, tooltipX - 3, tooltipY + tooltipHeight + 3, backgroundColor, backgroundColor)
+            GuiUtils.drawGradientRect(zLevel, tooltipX + tooltipTextWidth + 3, tooltipY - 3, tooltipX + tooltipTextWidth + 4, tooltipY + tooltipHeight + 3, backgroundColor, backgroundColor)
+            GuiUtils.drawGradientRect(zLevel, tooltipX - 3, tooltipY - 3 + 1, tooltipX - 3 + 1, tooltipY + tooltipHeight + 3 - 1, borderColorStart, borderColorEnd)
+            GuiUtils.drawGradientRect(zLevel, tooltipX + tooltipTextWidth + 2, tooltipY - 3 + 1, tooltipX + tooltipTextWidth + 3, tooltipY + tooltipHeight + 3 - 1, borderColorStart, borderColorEnd)
+            GuiUtils.drawGradientRect(zLevel, tooltipX - 3, tooltipY - 3, tooltipX + tooltipTextWidth + 3, tooltipY - 3 + 1, borderColorStart, borderColorStart)
+            GuiUtils.drawGradientRect(zLevel, tooltipX - 3, tooltipY + tooltipHeight + 2, tooltipX + tooltipTextWidth + 3, tooltipY + tooltipHeight + 3, borderColorEnd, borderColorEnd)
+
+            for (lineNumber in str.indices) {
+                val line = str[lineNumber]
+                font.drawStringWithShadow(line, tooltipX.toFloat(), tooltipY.toFloat(), -1)
+
+                if (lineNumber + 1 == titleLinesCount) {
+                    tooltipY += 2
+                }
+
+                tooltipY += 10
+            }
+
+            // GlStateManager.enableLighting() // should stay disabled
+            GlStateManager.enableDepth()
+            //RenderHelper.enableStandardItemLighting() // should stay disabled
+            GlStateManager.enableRescaleNormal()
+        }
+    }
+
 }

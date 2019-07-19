@@ -8,10 +8,10 @@ import net.minecraft.client.Minecraft
 
 class WipTab(parent: TCGui) : TCTab("WIP Tab", parent) {
     override fun init() {
-        components.add(DefaultProgressBar(20, 20, Orientation.RIGHT))
-        components.add(DefaultProgressBar(20, 40, Orientation.LEFT))
-        components.add(DefaultProgressBar(20, 60, Orientation.UP))
-        components.add(DefaultProgressBar(20, 90, Orientation.DOWN))
+        components.add(DefaultProgressBar(20, 20, Orientation.RIGHT, parent))
+        components.add(DefaultProgressBar(20, 40, Orientation.LEFT, parent))
+        components.add(DefaultProgressBar(20, 60, Orientation.UP, parent))
+        components.add(DefaultProgressBar(20, 90, Orientation.DOWN, parent))
     }
 
     override fun draw(mouseX: Int, mouseY: Int, partialTicks: Float) {
@@ -26,7 +26,4 @@ class WipTab(parent: TCGui) : TCTab("WIP Tab", parent) {
 
     }
 
-    override fun update() {
-        super.update()
-    }
 }
