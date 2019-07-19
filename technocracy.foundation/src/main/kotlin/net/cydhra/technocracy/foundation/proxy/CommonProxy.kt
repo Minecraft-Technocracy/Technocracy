@@ -12,6 +12,9 @@ import net.cydhra.technocracy.foundation.client.technocracyCreativeTabs
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.items.general.*
 import net.cydhra.technocracy.foundation.liquids.general.*
+import net.cydhra.technocracy.foundation.network.ItemKeyBindPacket
+import net.cydhra.technocracy.foundation.network.PacketHandler
+import net.cydhra.technocracy.foundation.network.ItemScrollPacket
 import net.cydhra.technocracy.foundation.oresystems.*
 import net.cydhra.technocracy.foundation.pipes.Network
 import net.cydhra.technocracy.foundation.potions.PotionManager
@@ -42,6 +45,7 @@ import net.minecraftforge.common.animation.ITimeValue
 import net.minecraftforge.common.model.animation.IAnimationStateMachine
 import net.minecraftforge.fml.common.network.NetworkRegistry
 import net.minecraftforge.fml.common.registry.GameRegistry
+import net.minecraftforge.fml.relauncher.Side
 
 
 /**
@@ -222,6 +226,9 @@ open class CommonProxy {
         GameRegistry.registerWorldGenerator(OilSandGen(), 0)
 
         NetworkRegistry.INSTANCE.registerGuiHandler(TCFoundation, TCGuiHandler())
+
+        PacketHandler.registerPacket(ItemScrollPacket::class.java, ItemScrollPacket::class.java, Side.SERVER)
+        PacketHandler.registerPacket(ItemKeyBindPacket::class.java, ItemKeyBindPacket::class.java, Side.SERVER)
     }
 
     open fun init() {
