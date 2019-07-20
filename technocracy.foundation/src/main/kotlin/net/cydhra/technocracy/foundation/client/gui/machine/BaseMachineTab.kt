@@ -1,7 +1,7 @@
-package net.cydhra.technocracy.foundation.client.gui.tabs
+package net.cydhra.technocracy.foundation.client.gui.machine
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
-import net.cydhra.technocracy.foundation.client.gui.machine.MachineContainer
+import net.cydhra.technocracy.foundation.client.gui.tabs.TCTab
 import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.GlStateManager

@@ -1,17 +1,14 @@
 package net.cydhra.technocracy.foundation.tileentity.multiblock.refinery
 
 import net.cydhra.technocracy.foundation.multiblock.RefineryMultiBlock
-import net.cydhra.technocracy.foundation.tileentity.AggregatableDelegate
-import net.cydhra.technocracy.foundation.tileentity.api.TCAggregatable
 import net.cydhra.technocracy.foundation.tileentity.components.EnergyStorageComponent
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPart
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
 
-@Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 class TileEntityRefineryHeater : TileEntityMultiBlockPart<RefineryMultiBlock>(RefineryMultiBlock::class,
-        ::RefineryMultiBlock), TCAggregatable by AggregatableDelegate() {
+        ::RefineryMultiBlock) {
 
     val energyStorageComponent: EnergyStorageComponent = EnergyStorageComponent(mutableSetOf(EnumFacing.DOWN))
 

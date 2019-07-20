@@ -17,15 +17,13 @@ import net.minecraftforge.common.capabilities.Capability
 /**
  * The tile entity for the controller block of a boiler multi-block structure
  */
-@Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
-class TileEntityBoilerHeater : TileEntityMultiBlockPart<BoilerMultiBlock>(BoilerMultiBlock::class, ::BoilerMultiBlock),
-        TCAggregatable by AggregatableDelegate() {
+class TileEntityBoilerHeater : TileEntityMultiBlockPart<BoilerMultiBlock>(BoilerMultiBlock::class, ::BoilerMultiBlock) {
 
     /**
      *The energy storage of this block. It is not part of the boiler structure, as heating is decoupled from it and
      * could be done by other means than energy.
      */
-    private val energyStorageComponent: EnergyStorageComponent = EnergyStorageComponent(mutableSetOf(EnumFacing.DOWN))
+    val energyStorageComponent: EnergyStorageComponent = EnergyStorageComponent(mutableSetOf(EnumFacing.DOWN))
 
     init {
         this.registerComponent(energyStorageComponent, "energy")

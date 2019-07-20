@@ -43,7 +43,7 @@ class RefineryMultiBlock(world: World) : BaseMultiBlock(
     var controllerTileEntity: TileEntityRefineryController? = null
     private var inputPort: TileEntityRefineryInput? = null
     private var outputPorts: List<TileEntityRefineryOutput> = emptyList()
-    private var heater: TileEntityRefineryHeater? = null
+    var heater: TileEntityRefineryHeater? = null
 
     private var effictiveHeight = 0
 

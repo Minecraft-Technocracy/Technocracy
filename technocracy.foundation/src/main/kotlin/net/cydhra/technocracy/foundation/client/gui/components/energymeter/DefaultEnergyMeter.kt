@@ -2,23 +2,52 @@ package net.cydhra.technocracy.foundation.client.gui.components.energymeter
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.tileentity.components.EnergyStorageComponent
-import net.minecraft.client.gui.Gui
+import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.GlStateManager
-import java.awt.Color
+import net.minecraft.client.renderer.Tessellator
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import kotlin.math.roundToInt
 
 class DefaultEnergyMeter(posX: Int, posY: Int, val component: EnergyStorageComponent, val gui: TCGui) : EnergyMeter(posX, posY) {
 
     override fun draw(mouseX: Int, mouseY: Int, partialTicks: Float) {
         GlStateManager.color(1F, 1F, 1F, 1F)
-        Gui.drawRect(posX, posY, posX + width, posY + height, Color(0.3f, 0.3f, 0.3f).rgb)
         if (level > 0f) {
-            Gui.drawRect(posX, ((1f - level) * height).toInt() + posY, posX + width, posY + height, Color(0.9f, 0.2f, 0.2f).rgb)
+            Minecraft.getMinecraft().textureManager.bindTexture(TCGui.guiComponents)
+            GlStateManager.enableBlend()
+            GlStateManager.color(0.4f, 0.4f, 0.4f, 1f)
+            for(i in 0 until 10) {
+                drawModalRectWithCustomSizedTexture(posX, posY + (9 - i) * 5, posX + width, posY + (9 - i) * 5 + 5, 45f, 0f, 256f, 256f)
+            }
+            GlStateManager.color(1f, 1f, 1f, 1f)
+            for (i in 0 until (level * 10).toInt()) {
+                drawModalRectWithCustomSizedTexture(posX, posY + (9 - i) * 5, posX + width, posY + (9 - i) * 5 + 5, 45f, 0f, 256f, 256f)
+            }
+            GlStateManager.disableBlend()
         }
+    }
+
+    override fun update() {
+        super.update()
+        //level = component.energyStorage.currentEnergy.toFloat() / component.energyStorage.capacity.toFloat()
     }
 
     override fun drawTooltip(mouseX: Int, mouseY: Int, partialTicks: Float) {
         val str = "${(level * component.energyStorage.capacity).roundToInt()}RF/${component.energyStorage.capacity}RF"
         gui.renderTooltip(mutableListOf(str), mouseX, mouseY)
     }
+
+    fun drawModalRectWithCustomSizedTexture(left: Int, top: Int, right: Int, bottom: Int, texX: Float, texY: Float, textureWidth: Float, textureHeight: Float) {
+        val f = 1.0f / textureWidth
+        val f1 = 1.0f / textureHeight
+        val tessellator = Tessellator.getInstance()
+        val bufferbuilder = tessellator.buffer
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX)
+        bufferbuilder.pos(left.toDouble(), bottom.toDouble(), 0.0).tex((texX * f).toDouble(), ((texY + (bottom - top).toFloat()) * f1).toDouble()).endVertex()
+        bufferbuilder.pos(right.toDouble(), bottom.toDouble(), 0.0).tex(((texX + (right - left).toFloat()) * f).toDouble(), ((texY + (bottom - top).toFloat()) * f1).toDouble()).endVertex()
+        bufferbuilder.pos(right.toDouble(), top.toDouble(), 0.0).tex(((texX + (right - left).toFloat()) * f).toDouble(), (texY * f1).toDouble()).endVertex()
+        bufferbuilder.pos(left.toDouble(), top.toDouble(), 0.0).tex((texX * f).toDouble(), (texY * f1).toDouble()).endVertex()
+        tessellator.draw()
+    }
+
 }

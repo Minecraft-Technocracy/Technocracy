@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.client.gui.components.fluidmeter
 
+import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandler
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.tileentity.components.FluidComponent
 import net.minecraft.client.Minecraft
@@ -9,6 +10,7 @@ import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.fluids.Fluid
+import org.lwjgl.opengl.GL11
 import java.awt.Color
 import kotlin.math.roundToInt
 
@@ -18,7 +20,7 @@ class DefaultFluidMeter(posX: Int, posY: Int, val component: FluidComponent, val
 
     override fun draw(mouseX: Int, mouseY: Int, partialTicks: Float) {
         GlStateManager.color(1f, 1f, 1f, 1f)
-        Gui.drawRect(posX, posY, posX + width, posY + height, Color(0.3f, 0.3f, 0.3f).rgb)
+        GlStateManager.enableBlend()
         if (level > 0f) {
             /*if(component.fluid.currentFluid == null) {
                 Gui.drawRect(posX, ((1f - level) * height).toInt() + posY, posX + width, posY + height, Color(0.3f, 0.3f, 0.9f).rgb)
@@ -29,12 +31,17 @@ class DefaultFluidMeter(posX: Int, posY: Int, val component: FluidComponent, val
             val fluid: Fluid = net.cydhra.technocracy.foundation.liquids.general.acrylicAcidFluid // placeholder
             val color = Color(fluid.color)
 
-            GlStateManager.enableBlend()
             GlStateManager.color(color.red / 255f, color.green / 255f, color.blue / 255f, 1f)
             Minecraft.getMinecraft().textureManager.bindTexture(ResourceLocation(fluid.flowing.resourceDomain, "textures/${fluid.flowing.resourcePath}.png"))
             drawModalRectWithCustomSizedTexture(posX, ((1f - level) * height).toInt() + posY, posX + width, posY + height, 11f, flow.toFloat(), 32f, 1024f)
-            GlStateManager.disableBlend()
         }
+
+        GlStateManager.color(1f, 1f, 1f, 1f)
+        Minecraft.getMinecraft().textureManager.bindTexture(TCGui.guiComponents)
+        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
+        Gui.drawModalRectWithCustomSizedTexture(posX, posY, if(component.fluid.tanktype == DynamicFluidHandler.TankType.INPUT) 10f else 0f, 75f, width, height, 256f, 256f)
+
+        GlStateManager.disableBlend()
     }
 
     override fun drawTooltip(mouseX: Int, mouseY: Int, partialTicks: Float) {

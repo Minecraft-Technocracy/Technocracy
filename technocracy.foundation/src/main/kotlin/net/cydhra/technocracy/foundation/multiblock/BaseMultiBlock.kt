@@ -4,8 +4,6 @@ import it.zerono.mods.zerocore.api.multiblock.IMultiblockPart
 import it.zerono.mods.zerocore.api.multiblock.rectangular.RectangularMultiblockControllerBase
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import it.zerono.mods.zerocore.api.multiblock.validation.ValidationError
-import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
-import net.cydhra.technocracy.foundation.tileentity.api.TCMachineTileEntity
 import net.minecraft.block.state.IBlockState
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.text.TextComponentTranslation
@@ -25,7 +23,7 @@ abstract class BaseMultiBlock(
         private val maximumSizeXZ: Int,
         private val maximumSizeY: Int,
         world: World)
-    : RectangularMultiblockControllerBase(world), TCMachineTileEntity by MachineTileEntity() {
+    : RectangularMultiblockControllerBase(world) {
 
     override fun isBlockGoodForSides(world: World, x: Int, y: Int, z: Int, validator: IMultiblockValidator): Boolean {
         return sideBlockWhitelist == null || sideBlockWhitelist.test(world.getBlockState(BlockPos(x, y, z)))
