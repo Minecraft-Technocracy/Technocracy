@@ -14,8 +14,7 @@ class TCWailaPlugin : IWailaPlugin {
     val machineProvider = MachineWailaProvider()
     val multiBlockProvider = MultiBlockWailaProvider()
 
-    override fun register(registrar: IWailaRegistrar?) {
-        registrar!!
+    override fun register(registrar: IWailaRegistrar) {
         registrar.registerBodyProvider(machineProvider, MachineBlock::class.java)
         registrar.registerNBTProvider(machineProvider, MachineBlock::class.java)
 

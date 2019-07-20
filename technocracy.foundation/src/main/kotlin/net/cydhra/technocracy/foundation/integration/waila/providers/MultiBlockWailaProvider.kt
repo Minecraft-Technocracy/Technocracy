@@ -16,11 +16,7 @@ import net.minecraft.world.World
 
 class MultiBlockWailaProvider : IWailaDataProvider {
 
-    override fun getWailaBody(itemStack: ItemStack?, tooltip: MutableList<String>?, accessor: IWailaDataAccessor?, config: IWailaConfigHandler?): MutableList<String> {
-        accessor!!
-        tooltip!!
-        config!!
-
+    override fun getWailaBody(itemStack: ItemStack, tooltip: MutableList<String>, accessor: IWailaDataAccessor, config: IWailaConfigHandler): MutableList<String> {
         val tag: NBTTagCompound = accessor.nbtData.getCompoundTag("TCMultiBlock")
         if(tag.hasKey("currentEnergy") && tag.hasKey("maxEnergy") && config.getConfig("capability.energyinfo")) {
             tooltip.add(SpecialChars.getRenderString("technocracy.energy", tag.getInteger("currentEnergy").toString(), tag.getInteger("maxEnergy").toString()))
@@ -28,19 +24,19 @@ class MultiBlockWailaProvider : IWailaDataProvider {
         return tooltip
     }
 
-    override fun getNBTData(player: EntityPlayerMP?, te: TileEntity?, tag: NBTTagCompound?, world: World?, pos: BlockPos?): NBTTagCompound {
+    override fun getNBTData(player: EntityPlayerMP, te: TileEntity, tag: NBTTagCompound, world: World, pos: BlockPos): NBTTagCompound {
         if(te is TileEntityMultiBlockPart<*>) {
             val compound = NBTTagCompound()
-            if(!te.validateStructure()) return tag!!
+            if(!te.validateStructure()) return tag
             (te.multiblockController as BaseMultiBlock).getComponents().forEach {
                 if(it.second is EnergyStorageComponent) {
                     compound.setInteger("currentEnergy", (it.second as EnergyStorageComponent).energyStorage.currentEnergy)
                     compound.setInteger("maxEnergy", (it.second as EnergyStorageComponent).energyStorage.capacity)
-                    tag!!.setTag("TCMultiBlock", compound)
+                    tag.setTag("TCMultiBlock", compound)
                 }
             }
         }
-        return tag!!
+        return tag
     }
 
 }

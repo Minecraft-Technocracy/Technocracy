@@ -12,8 +12,8 @@ import net.minecraftforge.fml.relauncher.SideOnly
 @WailaPlugin
 class TCWailaClientPlugin : IWailaPlugin {
 
-    override fun register(registrar: IWailaRegistrar?) {
-        registrar!!.registerTooltipRenderer("technocracy.text", TCStringRenderer())
+    override fun register(registrar: IWailaRegistrar) {
+        registrar.registerTooltipRenderer("technocracy.text", TCStringRenderer())
         registrar.registerTooltipRenderer("technocracy.energy", TCEnergyRenderer())
     }
 }
