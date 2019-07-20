@@ -1,7 +1,8 @@
-package net.cydhra.technocracy.foundation.client.gui.tabs
+package net.cydhra.technocracy.foundation.client.gui.machine
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.components.redstonemode.DefaultRedstoneModeControl
+import net.cydhra.technocracy.foundation.client.gui.tabs.TCTab
 import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
 import net.cydhra.technocracy.foundation.tileentity.components.RedstoneModeComponent
 import net.minecraft.client.Minecraft

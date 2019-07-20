@@ -8,8 +8,8 @@ import net.cydhra.technocracy.foundation.client.gui.components.progressbar.Defau
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.Orientation
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
 import net.cydhra.technocracy.foundation.client.gui.machine.MachineContainer
-import net.cydhra.technocracy.foundation.client.gui.tabs.BaseMachineTab
-import net.cydhra.technocracy.foundation.client.gui.tabs.MachineSettingsTab
+import net.cydhra.technocracy.foundation.client.gui.machine.BaseMachineTab
+import net.cydhra.technocracy.foundation.client.gui.machine.MachineSettingsTab
 import net.cydhra.technocracy.foundation.tileentity.api.TCMachineTileEntity
 import net.cydhra.technocracy.foundation.tileentity.components.*
 import net.cydhra.technocracy.foundation.tileentity.logic.ILogicClient
