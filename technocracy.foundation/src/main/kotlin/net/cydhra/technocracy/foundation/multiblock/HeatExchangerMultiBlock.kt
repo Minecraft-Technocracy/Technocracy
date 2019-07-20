@@ -5,6 +5,7 @@ import it.zerono.mods.zerocore.api.multiblock.MultiblockControllerBase
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import it.zerono.mods.zerocore.lib.block.ModTileEntity
 import net.cydhra.technocracy.foundation.blocks.general.*
+import net.cydhra.technocracy.foundation.tileentity.components.IComponent
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartHeatExchanger
 import net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger.TileEntityHeatExchangerController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger.TileEntityHeatExchangerInput
@@ -292,4 +293,13 @@ class HeatExchangerMultiBlock(world: World) :
             return neighborCache!!
         }
     }
+
+    override fun getComponents(): MutableList<Pair<String, IComponent>> {
+        val components = mutableListOf<Pair<String, IComponent>>()
+        inputPorts.forEach { components.addAll(it.getComponents()) }
+        outputPorts.forEach { components.addAll(it.getComponents()) }
+        components.addAll(controllerTileEntity!!.getComponents())
+        return components
+    }
+
 }

@@ -5,6 +5,7 @@ import it.zerono.mods.zerocore.api.multiblock.MultiblockControllerBase
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import it.zerono.mods.zerocore.lib.block.ModTileEntity
 import net.cydhra.technocracy.foundation.blocks.general.*
+import net.cydhra.technocracy.foundation.tileentity.components.IComponent
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerHeater
 import net.minecraft.block.BlockAir
@@ -263,4 +264,12 @@ class BoilerMultiBlock(world: World) : BaseMultiBlock(
     override fun getMinimumNumberOfBlocksForAssembledMachine(): Int {
         return 26
     }
+
+    override fun getComponents(): MutableList<Pair<String, IComponent>> {
+        val components = mutableListOf<Pair<String, IComponent>>()
+        heaterElements.forEach { components.addAll(it.getComponents()) }
+        components.addAll(controllerTileEntity!!.getComponents())
+        return components
+    }
+
 }
