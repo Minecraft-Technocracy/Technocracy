@@ -19,7 +19,7 @@ class ItemScrollPacket(var direction: Int = 0) : IMessage, IMessageHandler<ItemS
     override fun onMessage(message: ItemScrollPacket, ctx: MessageContext): IMessage? {
         val player = ctx.serverHandler.player
         val stack = player.heldItemMainhand
-        (stack.item as IItemScrollEvent).mouseScroll(player, stack, direction)
+        if (stack.item is IItemScrollEvent) (stack.item as IItemScrollEvent).mouseScroll(player, stack, direction)
         return null
     }
 }
