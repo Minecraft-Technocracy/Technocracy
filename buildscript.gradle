@@ -1,7 +1,7 @@
 project.ext {
     jvm_target='1.8'
 
-    kotlin_version='1.3.21'
+    kotlin_version='1.3.40'
     forgelin_version='1.8.2'
     jgrapht_version='1.3.0'
     jei_version='4.15.0.268'
