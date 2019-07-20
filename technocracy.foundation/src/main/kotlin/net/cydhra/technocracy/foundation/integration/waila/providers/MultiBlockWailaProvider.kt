@@ -3,6 +3,7 @@ package net.cydhra.technocracy.foundation.integration.waila.providers
 import mcp.mobius.waila.api.IWailaConfigHandler
 import mcp.mobius.waila.api.IWailaDataAccessor
 import mcp.mobius.waila.api.IWailaDataProvider
+import mcp.mobius.waila.api.SpecialChars
 import net.cydhra.technocracy.foundation.multiblock.BaseMultiBlock
 import net.cydhra.technocracy.foundation.tileentity.components.EnergyStorageComponent
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPart
@@ -13,7 +14,7 @@ import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-class MultiBlockProvider : IWailaDataProvider {
+class MultiBlockWailaProvider : IWailaDataProvider {
 
     override fun getWailaBody(itemStack: ItemStack?, tooltip: MutableList<String>?, accessor: IWailaDataAccessor?, config: IWailaConfigHandler?): MutableList<String> {
         accessor!!
@@ -22,7 +23,7 @@ class MultiBlockProvider : IWailaDataProvider {
 
         val tag: NBTTagCompound = accessor.nbtData.getCompoundTag("TCMultiBlock")
         if(tag.hasKey("currentEnergy") && tag.hasKey("maxEnergy") && config.getConfig("capability.energyinfo")) {
-            tooltip.add("${tag.getInteger("currentEnergy")}RF/${tag.getInteger("maxEnergy")}RF")
+            tooltip.add(SpecialChars.getRenderString("technocracy.energy", tag.getInteger("currentEnergy").toString(), tag.getInteger("maxEnergy").toString()))
         }
         return tooltip
     }
