@@ -12,19 +12,19 @@ class DefaultEnergyMeter(posX: Int, posY: Int, val component: EnergyStorageCompo
 
     override fun draw(mouseX: Int, mouseY: Int, partialTicks: Float) {
         GlStateManager.color(1F, 1F, 1F, 1F)
+        Minecraft.getMinecraft().textureManager.bindTexture(TCGui.guiComponents)
+        GlStateManager.enableBlend()
+        GlStateManager.color(0.4f, 0.4f, 0.4f, 1f)
+        for(i in 0 until 10) {
+            drawModalRectWithCustomSizedTexture(posX, posY + (9 - i) * 5, posX + width, posY + (9 - i) * 5 + 5, 45f, 0f, 256f, 256f)
+        }
         if (level > 0f) {
-            Minecraft.getMinecraft().textureManager.bindTexture(TCGui.guiComponents)
-            GlStateManager.enableBlend()
-            GlStateManager.color(0.4f, 0.4f, 0.4f, 1f)
-            for(i in 0 until 10) {
-                drawModalRectWithCustomSizedTexture(posX, posY + (9 - i) * 5, posX + width, posY + (9 - i) * 5 + 5, 45f, 0f, 256f, 256f)
-            }
             GlStateManager.color(1f, 1f, 1f, 1f)
             for (i in 0 until (level * 10).toInt()) {
                 drawModalRectWithCustomSizedTexture(posX, posY + (9 - i) * 5, posX + width, posY + (9 - i) * 5 + 5, 45f, 0f, 256f, 256f)
             }
-            GlStateManager.disableBlend()
         }
+        GlStateManager.disableBlend()
     }
 
     override fun update() {
