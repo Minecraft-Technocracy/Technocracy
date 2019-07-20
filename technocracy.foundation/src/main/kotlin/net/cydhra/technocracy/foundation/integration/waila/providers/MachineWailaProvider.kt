@@ -12,13 +12,10 @@ import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-class MachineProvider: IWailaDataProvider {
+class MachineWailaProvider : IWailaDataProvider {
 
-    override fun getWailaBody(itemStack: ItemStack?, tooltip: MutableList<String>?, accessor: IWailaDataAccessor?, config: IWailaConfigHandler?): MutableList<String> {
-        accessor!!
-        tooltip!!
-        config!!
-
+    override fun getWailaBody(itemStack: ItemStack, tooltip: MutableList<String>, accessor: IWailaDataAccessor,
+            config: IWailaConfigHandler): MutableList<String> {
         if(!accessor.nbtData.hasKey("TCMachine")) return tooltip
         val tag: NBTTagCompound = accessor.nbtData.getCompoundTag("TCMachine")
         if(tag.hasKey("currentEnergy") && tag.hasKey("maxEnergy") && config.getConfig("capability.energyinfo")) {
@@ -27,18 +24,19 @@ class MachineProvider: IWailaDataProvider {
         return tooltip
     }
 
-    override fun getNBTData(player: EntityPlayerMP?, te: TileEntity?, tag: NBTTagCompound?, world: World?, pos: BlockPos?): NBTTagCompound {
+    override fun getNBTData(player: EntityPlayerMP, te: TileEntity, tag: NBTTagCompound, world: World,
+            pos: BlockPos): NBTTagCompound {
         if(te is MachineTileEntity) {
             val compound = NBTTagCompound()
             te.getComponents().forEach {
                 if(it.second is EnergyStorageComponent) {
                     compound.setInteger("currentEnergy", (it.second as EnergyStorageComponent).energyStorage.currentEnergy)
                     compound.setInteger("maxEnergy", (it.second as EnergyStorageComponent).energyStorage.capacity)
-                    tag!!.setTag("TCMachine", compound)
+                    tag.setTag("TCMachine", compound)
                 }
             }
         }
-        return tag!!
+        return tag
     }
 
 }

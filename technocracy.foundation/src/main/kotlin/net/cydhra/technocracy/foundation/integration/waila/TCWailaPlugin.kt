@@ -5,14 +5,13 @@ import mcp.mobius.waila.api.IWailaRegistrar
 import mcp.mobius.waila.api.WailaPlugin
 import net.cydhra.technocracy.foundation.blocks.MachineBlock
 import net.cydhra.technocracy.foundation.blocks.MultiBlockRotatableActiveBlock
-import net.cydhra.technocracy.foundation.integration.waila.providers.MachineProvider
+import net.cydhra.technocracy.foundation.integration.waila.providers.MachineWailaProvider
 import net.cydhra.technocracy.foundation.integration.waila.providers.MultiBlockProvider
-import net.cydhra.technocracy.foundation.multiblock.BaseMultiBlock
 
 @WailaPlugin
 class TCWailaPlugin : IWailaPlugin {
 
-    val machineProvider = MachineProvider()
+    val machineProvider = MachineWailaProvider()
     val multiBlockProvider = MultiBlockProvider()
 
     override fun register(registrar: IWailaRegistrar?) {
