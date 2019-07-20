@@ -167,8 +167,8 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
                 if(!foundEnergyInput) { //TODO every multiblock should gimme energy component for free >:(
                     if(multiblockController is BoilerMultiBlock) {
                         val fakeComponent = EnergyStorageComponent(mutableSetOf(EnumFacing.DOWN))
+                        fakeComponent.energyStorage.capacity = 0
                         (multiblockController as BoilerMultiBlock).heaterElements.forEach {
-                            fakeComponent.energyStorage.capacity = 0
                             fakeComponent.energyStorage.capacity += it.energyStorageComponent.energyStorage.capacity
                             fakeComponent.energyStorage.receiveEnergy(it.energyStorageComponent.energyStorage.currentEnergy, false)
                         }
