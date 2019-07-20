@@ -13,8 +13,8 @@ import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.items.general.*
 import net.cydhra.technocracy.foundation.liquids.general.*
 import net.cydhra.technocracy.foundation.network.ItemKeyBindPacket
-import net.cydhra.technocracy.foundation.network.PacketHandler
 import net.cydhra.technocracy.foundation.network.ItemScrollPacket
+import net.cydhra.technocracy.foundation.network.PacketHandler
 import net.cydhra.technocracy.foundation.oresystems.*
 import net.cydhra.technocracy.foundation.pipes.Network
 import net.cydhra.technocracy.foundation.potions.PotionManager
@@ -54,20 +54,32 @@ import net.minecraftforge.fml.relauncher.Side
  */
 open class CommonProxy {
 
-    private val materialSystems = arrayOf(aluminumSystem,
-            copperSystem,
-            leadSystem,
-            lithiumSystem,
-            nickelSystem,
-            niobiumSystem,
-            silverSystem,
-            tinSystem,
-            ironSystem,
-            goldSystem)
+    private lateinit var materialSystems: Array<OreSystem>
 
-    protected val blockManager = BlockManager(TCFoundation.MODID,technocracyCreativeTabs)
-    protected val fluidManager = FluidManager(blockManager)
-    protected val itemManager = ItemManager(TCFoundation.MODID, technocracyCreativeTabs)
+    protected lateinit var blockManager: BlockManager
+    protected lateinit var fluidManager: FluidManager
+    protected lateinit var itemManager: ItemManager
+
+    /**
+     * Initialize the class properties. This should not be done earlier, as contents of the properties might access
+     * the config, which isn't loaded at instantiation of the proxy.
+     */
+    fun initializeProxy() {
+        materialSystems = arrayOf(aluminumSystem,
+                copperSystem,
+                leadSystem,
+                lithiumSystem,
+                nickelSystem,
+                niobiumSystem,
+                silverSystem,
+                tinSystem,
+                ironSystem,
+                goldSystem)
+
+        blockManager = BlockManager(TCFoundation.MODID, technocracyCreativeTabs)
+        fluidManager = FluidManager(blockManager)
+        itemManager = ItemManager(TCFoundation.MODID, technocracyCreativeTabs)
+    }
 
     open fun preInit() {
         MinecraftForge.EVENT_BUS.register(TileEntityManager)

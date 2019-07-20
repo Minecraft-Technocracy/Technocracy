@@ -23,6 +23,10 @@ repositories {
         name "chisel Repository"
         url "https://maven.tterrag.com"
     }
+    maven {
+        name "waila Repository"
+        url "http://tehnut.info/maven"
+    }
 }
 
 minecraft {

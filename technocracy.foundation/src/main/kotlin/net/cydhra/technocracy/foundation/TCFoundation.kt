@@ -3,6 +3,7 @@ package net.cydhra.technocracy.foundation
 import net.cydhra.technocracy.foundation.commands.GenerateTemplateCommand
 import net.cydhra.technocracy.foundation.proxy.CommonProxy
 import net.minecraftforge.common.MinecraftForge
+import net.minecraftforge.common.config.Configuration
 import net.minecraftforge.fluids.FluidRegistry
 import net.minecraftforge.fml.common.FMLLog
 import net.minecraftforge.fml.common.Mod
@@ -54,6 +55,12 @@ object TCFoundation {
      */
     lateinit var logger: Logger
 
+    /**
+     * Configuration instance
+     */
+    lateinit var config: Configuration
+        private set
+
     @SidedProxy(
             serverSide = "net.cydhra.technocracy.foundation.proxy.CommonProxy",
             clientSide = "net.cydhra.technocracy.foundation.proxy.ClientProxy")
@@ -63,8 +70,11 @@ object TCFoundation {
     @EventHandler
     fun preInit(@Suppress("UNUSED_PARAMETER") event: FMLPreInitializationEvent) {
         logger = FMLLog.log
+        config = Configuration(event.suggestedConfigurationFile)
+        config.load()
         MinecraftForge.EVENT_BUS.register(proxy)
 
+        proxy.initializeProxy()
         proxy.preInit()
     }
 

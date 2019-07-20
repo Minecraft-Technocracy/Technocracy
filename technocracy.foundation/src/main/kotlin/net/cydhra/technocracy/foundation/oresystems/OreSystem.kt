@@ -6,6 +6,8 @@ import com.google.common.base.Predicate
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.OreBlock
 import net.cydhra.technocracy.foundation.blocks.general.BlockManager
+import net.cydhra.technocracy.foundation.config.BooleanConfigurable
+import net.cydhra.technocracy.foundation.config.IntegerConfigurable
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.crafting.types.*
 import net.cydhra.technocracy.foundation.items.color.ConstantItemColor
@@ -26,26 +28,59 @@ import net.minecraft.item.ItemStack
 import net.minecraft.item.crafting.Ingredient
 import net.minecraft.util.ResourceLocation
 import net.minecraft.world.DimensionType
+import net.minecraftforge.common.config.Configuration
 import net.minecraftforge.fluids.FluidStack
 import net.minecraftforge.fml.common.registry.GameRegistry
 import java.awt.Color
 
 fun oreSystem(block: OreSystemBuilder.() -> Unit) = OreSystemBuilder().apply(block).build()
 
-class OreSystem(
-        val materialName: String,
-        val ore: Block,
-        val ingot: Item,
-        val dust: Item,
-        val crystal: ColoredItem,
-        val grit: ColoredItem,
-        val gear: ColoredItem?,
-        val sheet: ColoredItem?,
-        val slag: BaseFluid,
-        val slurry: BaseFluid,
-        val enrichedSlurry: BaseFluid,
-        val preInit: OreSystem.(BlockManager, ItemManager, FluidManager) -> Unit,
-        val init: OreSystem.() -> Unit)
+class OreSystem(val materialName: String, val ore: Block, val ingot: Item, val dust: Item, val crystal: ColoredItem,
+        val grit: ColoredItem, val gear: ColoredItem?, val sheet: ColoredItem?, val slag: BaseFluid,
+        val slurry: BaseFluid, val enrichedSlurry: BaseFluid,
+        val oreGeneratorSettings: OreSystemBuilder.OreGeneratorSettings,
+        val preInit: OreSystem.(BlockManager, ItemManager, FluidManager) -> Unit, val init: OreSystem.() -> Unit) {
+    private val oreSystemCategory = "ores${Configuration.CATEGORY_SPLITTER}$materialName"
+
+    val oreEnabled by BooleanConfigurable(TCFoundation.config,
+            oreSystemCategory,
+            "enabled",
+            true,
+            "whether $materialName ore is generated in worlds.")
+
+    val oreVeinsPerChunk by IntegerConfigurable(TCFoundation.config,
+            oreSystemCategory,
+            "veinsPerChunk",
+            oreGeneratorSettings.veinsPerChunk,
+            "how many ore veins are generated per chunk",
+            1,
+            24)
+
+
+    val blocksPerVein by IntegerConfigurable(TCFoundation.config,
+            oreSystemCategory,
+            "blocksPerVein",
+            oreGeneratorSettings.amountPerVein,
+            "how many ore blocks are generated per vein",
+            1,
+            24)
+
+    val minOreHeight by IntegerConfigurable(TCFoundation.config,
+            oreSystemCategory,
+            "minHeight",
+            oreGeneratorSettings.minHeight,
+            "minimum height at which ores are generated",
+            0,
+            127)
+
+    val maxOreHeight by IntegerConfigurable(TCFoundation.config,
+            oreSystemCategory,
+            "maxHeight",
+            oreGeneratorSettings.maxHeight,
+            "maximum height at which ores are generated",
+            0,
+            127)
+}
 
 class OreSystemBuilder {
     lateinit var name: String
@@ -104,27 +139,24 @@ class OreSystemBuilder {
     fun build(): OreSystem {
         val itemColor = ConstantItemColor(this.color)
 
-        if (generateOre)
+        if (generateOre) {
             this.ore = OreBlock(this.name, this.color)
+        } else {
+            // dummy settings. if no ore is generated, those will not be used
+            this.oreGeneratorSettings = OreGeneratorSettings()
+        }
 
-        if (generateIngot)
-            this.ingot = ColoredItem("ingot", this.name, itemColor, true)
+        if (generateIngot) this.ingot = ColoredItem("ingot", this.name, itemColor, true)
 
-        if (generateDust)
-            this.dust = ColoredItem("dust", this.name, itemColor, true)
+        if (generateDust) this.dust = ColoredItem("dust", this.name, itemColor, true)
 
-        val sheet = if (IntermediateProductType.SHEET in intermediates)
-            ColoredItem("sheet", this.name, itemColor, true)
-        else
-            null
+        val sheet = if (IntermediateProductType.SHEET in intermediates) ColoredItem("sheet", this.name, itemColor, true)
+        else null
 
-        val gear = if (IntermediateProductType.GEAR in intermediates)
-            ColoredItem("gear", this.name, itemColor, true)
-        else
-            null
+        val gear = if (IntermediateProductType.GEAR in intermediates) ColoredItem("gear", this.name, itemColor, true)
+        else null
 
-        return OreSystem(
-                materialName = this.name,
+        return OreSystem(materialName = this.name,
                 ore = this.ore,
                 ingot = this.ingot,
                 dust = this.dust,
@@ -134,22 +166,20 @@ class OreSystemBuilder {
                 sheet = sheet,
                 slag = BaseFluid("slag.$name", Color(this.color), opaqueTexture = true),
                 slurry = BaseFluid("slurry.$name", Color(this.color).darker(), opaqueTexture = true),
-                enrichedSlurry = BaseFluid("enriched_slurry.$name", Color(this.color).darker().darker(), opaqueTexture = true),
+                enrichedSlurry = BaseFluid("enriched_slurry.$name",
+                        Color(this.color).darker().darker(),
+                        opaqueTexture = true),
+                oreGeneratorSettings = oreGeneratorSettings,
                 preInit = { blockManager, itemManager, fluidManager ->
-                    if (this.ingot is BaseItem)
-                        itemManager.prepareItemForRegistration(this.ingot)
-                    if (this.dust is BaseItem)
-                        itemManager.prepareItemForRegistration(this.dust)
-                    if (this.sheet != null)
-                        itemManager.prepareItemForRegistration(this.sheet)
-                    if (this.gear != null)
-                        itemManager.prepareItemForRegistration(this.gear)
+                    if (this.ingot is BaseItem) itemManager.prepareItemForRegistration(this.ingot)
+                    if (this.dust is BaseItem) itemManager.prepareItemForRegistration(this.dust)
+                    if (this.sheet != null) itemManager.prepareItemForRegistration(this.sheet)
+                    if (this.gear != null) itemManager.prepareItemForRegistration(this.gear)
 
                     itemManager.prepareItemForRegistration(this.crystal)
                     itemManager.prepareItemForRegistration(this.grit)
 
-                    if (this.ore is OreBlock)
-                        blockManager.prepareBlocksForRegistration(this.ore)
+                    if (this.ore is OreBlock) blockManager.prepareBlocksForRegistration(this.ore)
 
                     fluidManager.registerFluid(this.slag)
                     fluidManager.registerFluid(this.slurry)
@@ -177,52 +207,47 @@ class OreSystemBuilder {
 
                     // add slurry enriching recipe
                     RecipeManager.registerRecipe(RecipeManager.RecipeType.KILN,
-                            KilnRecipe(FluidStack(slurry, 500),
-                                    FluidStack(enrichedSlurry, 500),
-                                    200))
+                            KilnRecipe(FluidStack(slurry, 500), FluidStack(enrichedSlurry, 500), 200))
 
                     // add crystal recipe
                     RecipeManager.registerRecipe(RecipeManager.RecipeType.CRYSTALLIZATION,
-                            CrystallizationRecipe(FluidStack(enrichedSlurry, 250),
-                                    ItemStack(crystal),
-                                    200))
+                            CrystallizationRecipe(FluidStack(enrichedSlurry, 250), ItemStack(crystal), 200))
 
                     // add grit recipe
                     RecipeManager.registerRecipe(RecipeManager.RecipeType.PULVERIZER,
-                            PulverizerRecipe(Ingredient.fromItem(crystal),
-                                    ItemStack(grit, 2),
-                                    100))
+                            PulverizerRecipe(Ingredient.fromItem(crystal), ItemStack(grit, 2), 100))
 
                     // add dust recipe
                     RecipeManager.registerRecipe(RecipeManager.RecipeType.CENTRIFUGE,
-                            CentrifugeRecipe(Ingredient.fromItem(grit),
-                                    ItemStack(dust, 1),
-                                    null,
-                                    100))
+                            CentrifugeRecipe(Ingredient.fromItem(grit), ItemStack(dust, 1), null, 100))
 
                     // add gear recipe
-                    if (gear != null)
-                        GameRegistry.addShapedRecipe(ResourceLocation(TCFoundation.MODID, gear.registryName!!
-                                .resourcePath + "_recipe"), null, ItemStack(gear), " # ", "# #", " # ", '#', ingot)
+                    if (gear != null) GameRegistry.addShapedRecipe(ResourceLocation(TCFoundation.MODID,
+                            gear.registryName!!.resourcePath + "_recipe"),
+                            null,
+                            ItemStack(gear),
+                            " # ",
+                            "# #",
+                            " # ",
+                            '#',
+                            ingot)
 
                     // add sheet recipe
-                    if (sheet != null)
-                        RecipeManager.registerRecipe(RecipeManager.RecipeType.COMPACTOR,
-                                CompactorRecipe(Ingredient.fromItem(ingot),
-                                        ItemStack(sheet),
-                                        40))
+                    if (sheet != null) RecipeManager.registerRecipe(RecipeManager.RecipeType.COMPACTOR,
+                            CompactorRecipe(Ingredient.fromItem(ingot), ItemStack(sheet), 40))
 
-                    if (generateOre)
-                        GameRegistry.registerWorldGenerator(OreGenerator(
-                                oreGeneratorSettings.oreDimensions,
-                                oreGeneratorSettings.replacementPredicate,
-                                this.ore.defaultState,
-                                oreGeneratorSettings.veinsPerChunk,
-                                oreGeneratorSettings.amountPerVein,
-                                oreGeneratorSettings.minHeight,
-                                oreGeneratorSettings.maxHeight), 0)
-                }
-        )
+                    if (generateOre) {
+                        if (oreEnabled) {
+                            GameRegistry.registerWorldGenerator(OreGenerator(oreGeneratorSettings.oreDimensions,
+                                    oreGeneratorSettings.replacementPredicate,
+                                    this.ore.defaultState,
+                                    this.oreVeinsPerChunk,
+                                    this.blocksPerVein,
+                                    this.minOreHeight,
+                                    this.maxOreHeight), 0)
+                        }
+                    }
+                })
     }
 
     /**
