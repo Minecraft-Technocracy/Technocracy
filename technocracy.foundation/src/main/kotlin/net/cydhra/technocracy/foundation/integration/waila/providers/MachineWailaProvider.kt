@@ -3,6 +3,7 @@ package net.cydhra.technocracy.foundation.integration.waila.providers
 import mcp.mobius.waila.api.IWailaConfigHandler
 import mcp.mobius.waila.api.IWailaDataAccessor
 import mcp.mobius.waila.api.IWailaDataProvider
+import mcp.mobius.waila.api.SpecialChars
 import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
 import net.cydhra.technocracy.foundation.tileentity.components.EnergyStorageComponent
 import net.minecraft.entity.player.EntityPlayerMP
@@ -19,7 +20,7 @@ class MachineWailaProvider : IWailaDataProvider {
         if(!accessor.nbtData.hasKey("TCMachine")) return tooltip
         val tag: NBTTagCompound = accessor.nbtData.getCompoundTag("TCMachine")
         if(tag.hasKey("currentEnergy") && tag.hasKey("maxEnergy") && config.getConfig("capability.energyinfo")) {
-            tooltip.add("${tag.getInteger("currentEnergy")}RF/${tag.getInteger("maxEnergy")}RF")
+            tooltip.add(SpecialChars.getRenderString("technocracy.energy", tag.getInteger("currentEnergy").toString(), tag.getInteger("maxEnergy").toString()))
         }
         return tooltip
     }
