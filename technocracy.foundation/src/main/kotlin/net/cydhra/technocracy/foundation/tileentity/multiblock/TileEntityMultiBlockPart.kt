@@ -15,9 +15,6 @@ import net.cydhra.technocracy.foundation.client.gui.multiblock.BaseMultiblockTab
 import net.cydhra.technocracy.foundation.client.gui.multiblock.MultiblockContainer
 import net.cydhra.technocracy.foundation.client.gui.multiblock.MultiblockSettingsTab
 import net.cydhra.technocracy.foundation.multiblock.BaseMultiBlock
-import net.cydhra.technocracy.foundation.multiblock.BoilerMultiBlock
-import net.cydhra.technocracy.foundation.multiblock.HeatExchangerMultiBlock
-import net.cydhra.technocracy.foundation.multiblock.RefineryMultiBlock
 import net.cydhra.technocracy.foundation.tileentity.AbstractRectangularMultiBlockTileEntity
 import net.cydhra.technocracy.foundation.tileentity.AggregatableDelegate
 import net.cydhra.technocracy.foundation.tileentity.api.TCAggregatable
@@ -112,12 +109,10 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
                 var nextOutput = 125
                 var inputNearestToTheMiddle = 0
                 var outputNearestToTheMiddle = parent.guiWidth // nice names
-                var foundEnergyInput = false
-                this@TileEntityMultiBlockPart.getComponents().forEach {
+                (this@TileEntityMultiBlockPart.multiblockController as BaseMultiBlock).getComponents().forEach {
                     when {
                         it.second is EnergyStorageComponent -> {
                             components.add(DefaultEnergyMeter(10, 20, it.second as EnergyStorageComponent, gui))
-                            foundEnergyInput = true
                             if (inputNearestToTheMiddle < 20)
                                 inputNearestToTheMiddle = 20
                         }
@@ -162,23 +157,6 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
                                 }
                             }
                         }
-                    }
-                }
-                if(!foundEnergyInput) { //TODO every multiblock should gimme energy component for free >:(
-                    if(multiblockController is BoilerMultiBlock) {
-                        val fakeComponent = EnergyStorageComponent(mutableSetOf(EnumFacing.DOWN))
-                        fakeComponent.energyStorage.capacity = 0
-                        (multiblockController as BoilerMultiBlock).heaterElements.forEach {
-                            fakeComponent.energyStorage.capacity += it.energyStorageComponent.energyStorage.capacity
-                            fakeComponent.energyStorage.receiveEnergy(it.energyStorageComponent.energyStorage.currentEnergy, false)
-                        }
-                        this.components.add(DefaultEnergyMeter(10, 20, fakeComponent, gui))
-                        if(inputNearestToTheMiddle < 20) inputNearestToTheMiddle = 20
-                    } else if(multiblockController is RefineryMultiBlock) {
-                        this.components.add(DefaultEnergyMeter(10, 20, (multiblockController as RefineryMultiBlock).heater!!.energyStorageComponent, gui))
-                        if(inputNearestToTheMiddle < 20) inputNearestToTheMiddle = 20
-                    } else if(multiblockController !is HeatExchangerMultiBlock) {
-                        println("no energy input found (controller: $name)")
                     }
                 }
                 components.add(DefaultProgressBar((outputNearestToTheMiddle - inputNearestToTheMiddle) / 2 - 11 + inputNearestToTheMiddle, 40, Orientation.RIGHT, gui))
