@@ -3,6 +3,7 @@ package net.cydhra.technocracy.foundation.integration.waila.providers
 import mcp.mobius.waila.api.IWailaConfigHandler
 import mcp.mobius.waila.api.IWailaDataAccessor
 import mcp.mobius.waila.api.IWailaDataProvider
+import net.cydhra.technocracy.foundation.multiblock.BaseMultiBlock
 import net.cydhra.technocracy.foundation.tileentity.components.EnergyStorageComponent
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPart
 import net.minecraft.entity.player.EntityPlayerMP
@@ -23,14 +24,14 @@ class MultiBlockProvider : IWailaDataProvider {
         if(tag.hasKey("currentEnergy") && tag.hasKey("maxEnergy") && config.getConfig("capability.energyinfo")) {
             tooltip.add("${tag.getInteger("currentEnergy")}RF/${tag.getInteger("maxEnergy")}RF")
         }
-        tooltip.add("hello world")
         return tooltip
     }
 
     override fun getNBTData(player: EntityPlayerMP?, te: TileEntity?, tag: NBTTagCompound?, world: World?, pos: BlockPos?): NBTTagCompound {
         if(te is TileEntityMultiBlockPart<*>) {
             val compound = NBTTagCompound()
-            te.getComponents().forEach {
+            if(!te.validateStructure()) return tag!!
+            (te.multiblockController as BaseMultiBlock).getComponents().forEach {
                 if(it.second is EnergyStorageComponent) {
                     compound.setInteger("currentEnergy", (it.second as EnergyStorageComponent).energyStorage.currentEnergy)
                     compound.setInteger("maxEnergy", (it.second as EnergyStorageComponent).energyStorage.capacity)
