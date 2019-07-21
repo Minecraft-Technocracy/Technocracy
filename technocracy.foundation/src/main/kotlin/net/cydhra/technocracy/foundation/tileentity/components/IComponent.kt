@@ -22,6 +22,14 @@ interface IComponent {
 
 }
 
-enum class ComponentType {
-    ENERGY, FLUID, INVENTORY, FACADE, PIPE_TYPES, HEAT, UPGRADES, NETWORK, REDSTONE_MODE
+enum class ComponentType(val wailaSupport: Boolean = false) {
+    ENERGY(true),
+    FLUID(true),
+    INVENTORY,
+    FACADE,
+    PIPE_TYPES(true),
+    HEAT(true),
+    UPGRADES(true),
+    NETWORK,
+    REDSTONE_MODE(true)
 }
