@@ -24,6 +24,7 @@ dependencies {
     deobfCompile group: "it.zerono.mods.zerocore", name: "zerocore", version: project.zerocore_version
     deobfCompile group: "team.chisel.ctm", name: "CTM", version: project.ctm_version
     deobfCompile group: "mcp.mobius.waila", name: "Hwyla", version: project.waila_version, classifier: 'api'
+    deobfCompile group: "mcjty.theoneprobe", name: "TheOneProbe-1.12", version: project.top_version
 }
 
 // jar configuration

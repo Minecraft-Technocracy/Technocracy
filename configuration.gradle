@@ -27,6 +27,10 @@ repositories {
         name "waila Repository"
         url "http://tehnut.info/maven"
     }
+    maven { // TOP
+        name 'tterrag maven'
+        url "https://maven.tterrag.com/"
+    }
 }
 
 minecraft {

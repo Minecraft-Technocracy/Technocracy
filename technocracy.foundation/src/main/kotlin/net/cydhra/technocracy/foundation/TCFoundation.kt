@@ -1,14 +1,13 @@
 package net.cydhra.technocracy.foundation
 
 import net.cydhra.technocracy.foundation.commands.GenerateTemplateCommand
+import net.cydhra.technocracy.foundation.integration.top.TOPIntegration
 import net.cydhra.technocracy.foundation.proxy.CommonProxy
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.config.Configuration
 import net.minecraftforge.fluids.FluidRegistry
-import net.minecraftforge.fml.common.FMLLog
-import net.minecraftforge.fml.common.Mod
+import net.minecraftforge.fml.common.*
 import net.minecraftforge.fml.common.Mod.EventHandler
-import net.minecraftforge.fml.common.SidedProxy
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
@@ -88,6 +87,8 @@ object TCFoundation {
     @EventHandler
     fun postInit(@Suppress("UNUSED_PARAMETER") event: FMLPostInitializationEvent) {
         proxy.postInit()
+        if(Loader.isModLoaded("theoneprobe"))
+            TOPIntegration().init()
     }
 
     @Mod.EventHandler
