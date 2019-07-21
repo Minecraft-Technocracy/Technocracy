@@ -22,7 +22,7 @@ interface IComponent {
 
 }
 
-enum class ComponentType(val wailaSupport: Boolean = false) {
+enum class ComponentType(val supportsWaila: Boolean = false) {
     ENERGY(true),
     FLUID(true),
     INVENTORY,
