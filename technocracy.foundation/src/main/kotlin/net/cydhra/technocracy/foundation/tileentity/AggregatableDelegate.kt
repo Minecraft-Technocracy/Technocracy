@@ -1,9 +1,12 @@
 package net.cydhra.technocracy.foundation.tileentity
 
+import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.tileentity.api.TCAggregatable
 import net.cydhra.technocracy.foundation.tileentity.components.AbstractCapabilityComponent
 import net.cydhra.technocracy.foundation.tileentity.components.IComponent
+import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.nbt.NBTTagList
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
 
@@ -68,4 +71,22 @@ class AggregatableDelegate : TCAggregatable {
                 ?.getCapability(capability, facing)
     }
 
+    override fun generateNbtUpdateCompound(player: EntityPlayerMP, tag: NBTTagCompound): NBTTagCompound {
+        val compound = NBTTagCompound()
+        val components = NBTTagList()
+        this.getComponents()
+                .filter { it.second.type.supportsWaila }
+                .forEach { (name, component) ->
+                    val index = NBTTagCompound()
+                    index.setInteger("index", components.tagCount())
+                    index.setInteger("type", component.type.ordinal)
+
+                    compound.setTag(name, index)
+                    components.appendTag(component.serializeNBT())
+                }
+
+        compound.setTag("list", components)
+        tag.setTag(TCFoundation.MODID, compound)
+        return tag
+    }
 }

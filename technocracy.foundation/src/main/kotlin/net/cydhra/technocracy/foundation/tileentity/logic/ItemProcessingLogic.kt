@@ -113,6 +113,7 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
                     }
 
                     // insert output fluids
+                    // TODO there is a bug in here probably, since centrifuge recipe output is doubled
                     recipeFluidOutput.zip(0 until this.outputFluidSlots.size).forEach { (fluidStack, outputSlot) ->
                         this.outputFluidSlots[outputSlot].fill(fluidStack, true)
                     }
