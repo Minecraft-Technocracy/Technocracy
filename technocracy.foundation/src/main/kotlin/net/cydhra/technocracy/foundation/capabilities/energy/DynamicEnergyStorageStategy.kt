@@ -6,10 +6,10 @@ import net.minecraftforge.energy.IEnergyStorage
 
 object DynamicEnergyStorageStategy {
 
-    private const val KEY_CAPACITY = "capacity"
+    const val KEY_CAPACITY = "capacity"
     private const val KEY_MAX_RECEIVE = "limit_receive"
     private const val KEY_MAX_EXTRACT = "limit_extract"
-    private const val KEY_CURRENT_AMOUNT = "amount"
+    const val KEY_CURRENT_AMOUNT = "amount"
 
     fun readNBT(instance: IEnergyStorage, nbt: NBTBase) {
         with(instance as DynamicEnergyStorage) {
