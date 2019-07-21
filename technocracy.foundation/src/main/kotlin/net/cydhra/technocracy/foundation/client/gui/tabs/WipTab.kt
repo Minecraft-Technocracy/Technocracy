@@ -1,17 +1,15 @@
 package net.cydhra.technocracy.foundation.client.gui.tabs
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
-import net.cydhra.technocracy.foundation.client.gui.components.progressbar.DefaultProgressBar
-import net.cydhra.technocracy.foundation.client.gui.components.progressbar.Orientation
 import net.cydhra.technocracy.foundation.client.gui.machine.MachineContainer
 import net.minecraft.client.Minecraft
 
 class WipTab(parent: TCGui) : TCTab("WIP Tab", parent) {
     override fun init() {
-        components.add(DefaultProgressBar(20, 20, Orientation.RIGHT, parent))
+        /*components.add(DefaultProgressBar(20, 20, Orientation.RIGHT, parent))
         components.add(DefaultProgressBar(20, 40, Orientation.LEFT, parent))
         components.add(DefaultProgressBar(20, 60, Orientation.UP, parent))
-        components.add(DefaultProgressBar(20, 90, Orientation.DOWN, parent))
+        components.add(DefaultProgressBar(20, 90, Orientation.DOWN, parent))*/
     }
 
     override fun draw(mouseX: Int, mouseY: Int, partialTicks: Float) {

@@ -23,6 +23,7 @@ import net.cydhra.technocracy.foundation.tileentity.api.TCTileEntityGuiProvider
 import net.cydhra.technocracy.foundation.tileentity.components.EnergyStorageComponent
 import net.cydhra.technocracy.foundation.tileentity.components.FluidComponent
 import net.cydhra.technocracy.foundation.tileentity.components.InventoryComponent
+import net.cydhra.technocracy.foundation.tileentity.components.ProgressComponent
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumHand
@@ -92,7 +93,7 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
     override fun onActivate(world: World, pos: BlockPos, player: EntityPlayer, hand: EnumHand, facing: EnumFacing) {
         if (!player.isSneaking) {
             if (!world.isRemote) {
-                if(this is ITileEntityMultiblockController && validateStructure()) {
+                if (this is ITileEntityMultiblockController && validateStructure()) {
                     player.openGui(TCFoundation, TCGuiHandler.multiblockGui, world, pos.x, pos.y, pos.z)
                 }
             }
@@ -109,6 +110,7 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
                 var nextOutput = 125
                 var inputNearestToTheMiddle = 0
                 var outputNearestToTheMiddle = parent.guiWidth // nice names
+                var foundProgressComponent: ProgressComponent? = null
                 (this@TileEntityMultiBlockPart.multiblockController as BaseMultiBlock).getComponents().forEach {
                     when {
                         it.second is EnergyStorageComponent -> {
@@ -157,9 +159,13 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
                                 }
                             }
                         }
+                        it.second is ProgressComponent -> {
+                            foundProgressComponent = it.second as ProgressComponent
+                        }
                     }
                 }
-                components.add(DefaultProgressBar((outputNearestToTheMiddle - inputNearestToTheMiddle) / 2 - 11 + inputNearestToTheMiddle, 40, Orientation.RIGHT, gui))
+                if(foundProgressComponent != null)
+                    components.add(DefaultProgressBar((outputNearestToTheMiddle - inputNearestToTheMiddle) / 2 - 11 + inputNearestToTheMiddle, 40, Orientation.RIGHT, foundProgressComponent as ProgressComponent, gui))
             }
         })
         gui.registerTab(MultiblockSettingsTab(gui, this, player))

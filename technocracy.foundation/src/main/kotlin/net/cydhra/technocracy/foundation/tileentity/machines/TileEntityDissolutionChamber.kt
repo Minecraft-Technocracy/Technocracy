@@ -39,7 +39,8 @@ class TileEntityDissolutionChamber : MachineTileEntity(), TEInventoryProvider {
                 outputFluidSlots = arrayOf(outputFluidComponent.fluid),
                 energyStorage = this.energyStorageComponent.energyStorage,
                 machineUpgrades = this.machineUpgradesComponent,
-                baseTickEnergyCost = 40
+                baseTickEnergyCost = 40,
+                progress = this.progressComponent
         ))
     }
 

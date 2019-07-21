@@ -48,7 +48,8 @@ class TileEntityCrystallizationChamber : MachineTileEntity(), TEInventoryProvide
                 outputInventory = this.outputInventoryComponent.inventory,
                 energyStorage = this.energyStorageComponent.energyStorage,
                 machineUpgrades = this.machineUpgradesComponent,
-                baseTickEnergyCost = 60))
+                baseTickEnergyCost = 60,
+                progress = this.progressComponent))
     }
 
     override fun isItemValid(inventory: DynamicInventoryHandler, slot: Int, stack: ItemStack): Boolean {

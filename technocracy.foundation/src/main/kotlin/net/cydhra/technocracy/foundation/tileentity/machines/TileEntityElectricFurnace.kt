@@ -43,7 +43,8 @@ class TileEntityElectricFurnace : MachineTileEntity(), TEInventoryProvider {
                 outputInventory = this.outputInventoryComponent.inventory,
                 energyStorage = this.energyStorageComponent.energyStorage,
                 machineUpgrades = this.machineUpgradesComponent,
-                baseTickEnergyCost = 20))
+                baseTickEnergyCost = 20,
+                progress = this.progressComponent))
     }
 
     override fun isItemValid(inventory: DynamicInventoryHandler, slot: Int, stack: ItemStack): Boolean {

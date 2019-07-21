@@ -30,7 +30,8 @@ class TileEntityChemicalReactionChamber : MachineTileEntity() {
                 outputFluidSlots = arrayOf(this.outputInventoryComponent.fluid),
                 energyStorage = this.energyStorageComponent.energyStorage,
                 machineUpgrades = this.machineUpgradesComponent,
-                baseTickEnergyCost = 40
+                baseTickEnergyCost = 40,
+                progress = this.progressComponent
         ))
     }
 }
