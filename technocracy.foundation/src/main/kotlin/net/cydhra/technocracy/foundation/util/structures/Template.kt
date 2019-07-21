@@ -2,6 +2,8 @@ package net.cydhra.technocracy.foundation.util.structures
 
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.minecraft.block.Block
+import net.minecraft.block.BlockStone
+import net.minecraft.block.state.IBlockState
 import net.minecraft.client.Minecraft
 import net.minecraft.init.Blocks
 import net.minecraft.nbt.*
@@ -17,6 +19,7 @@ import java.nio.file.Files
 
 class Template {
     val blocks = mutableListOf<BlockInfo>()
+    var modules = mutableMapOf<Int, MutableList<BlockPos>>()
     lateinit var controller: BlockPos
 
     fun loadFromAssets(name: String): Template {
@@ -35,21 +38,32 @@ class Template {
     private fun read(compound: NBTTagCompound): Boolean {
         this.blocks.clear()
 
-        val nbttaglist3 = compound.getTagList("blocks", 10)
-        controller = NBTUtil.getPosFromTag(compound.getCompoundTag("controller"))
+        val blocks = compound.getTagList("blocks", 10)
+        val modules = compound.getTagList("modules", 10)
 
-        for (j in 0 until nbttaglist3.tagCount()) {
-            val nbttagcompound = nbttaglist3.getCompoundTagAt(j)
-            val blockpos = NBTUtil.getPosFromTag(nbttagcompound.getCompoundTag("pos"))
-            val name = nbttagcompound.getString("block")
-            val meta = nbttagcompound.getInteger("meta")
-            var nbttagcompound1: NBTTagCompound? = null
+        for (j in 0 until blocks.tagCount()) {
+            val blockTag = blocks.getCompoundTagAt(j)
+            val blockpos = NBTUtil.getPosFromTag(blockTag.getCompoundTag("pos"))
+            val name = blockTag.getString("block")
+            val meta = blockTag.getInteger("meta")
+            var blockNBT: NBTTagCompound? = null
 
-            if (nbttagcompound.hasKey("nbt")) {
-                nbttagcompound1 = nbttagcompound.getCompoundTag("nbt")
+            if (blockTag.hasKey("nbt")) {
+                blockNBT = blockTag.getCompoundTag("nbt")
             }
 
-            this.blocks.add(BlockInfo(blockpos, Block.getBlockFromName(name)!!, meta, nbttagcompound1))
+            this.blocks.add(BlockInfo(blockpos, Block.getBlockFromName(name)!!, meta, blockNBT))
+        }
+
+        for (j in 0 until modules.tagCount()) {
+            val singleModule = blocks.getCompoundTagAt(j)
+            val poses = singleModule.getTagList("poses", 10)
+            val list = mutableListOf<BlockPos>()
+            for (posPos in 0 until modules.tagCount()) {
+                list.add(NBTUtil.getPosFromTag(poses.getCompoundTagAt(posPos)))
+            }
+            this.modules[j] = list
+
         }
 
         return true
@@ -70,19 +84,43 @@ class Template {
             })
         }
 
+        val modulesList = NBTTagList()
+        for (block in this.modules.entries) {
+            modulesList.appendTag(NBTTagList().apply {
+                for (pos in block.value) {
+                    appendTag(NBTUtil.createPosTag(pos))
+                }
+            })
+        }
+
         nbt.setTag("blocks", nbttaglist)
+        nbt.setTag("modules", modulesList)
         return nbt
     }
 
-    fun generateTemplate(startPos: BlockPos, endPos: BlockPos, controller: BlockPos, wildcard: MutableList<BlockPos>, worldIn: World, name: String): Boolean {
+    fun generateTemplate(startPos: BlockPos, endPos: BlockPos, controller: BlockPos, wildcard: MutableList<BlockPos>, modules: MutableMap<Int, MutableList<BlockPos>>, ignoreAir: Boolean, worldIn: World, name: String): Boolean {
         this.controller = controller
 
-        for (boxBlocks in BlockPos.getAllInBoxMutable(startPos, endPos)) {
+        modules.forEach { id, list ->
+            val newList = mutableListOf<BlockPos>()
+            list.forEach { b ->
+                newList.add(b.subtract(controller))
+            }
+            this.modules[id] = newList
+        }
+
+        label@ for (boxBlocks in BlockPos.getAllInBoxMutable(startPos, endPos)) {
             val relativePos = boxBlocks.subtract(controller)
+
             val state = worldIn.getBlockState(boxBlocks)
             val block = state.block
 
-            if (block != Blocks.BARRIER) {
+            for (mod in this.modules.values) {
+                if (mod.contains(relativePos))
+                    continue@label
+            }
+
+            if (ignoreAir && block != Blocks.AIR) {
                 val tileentity = worldIn.getTileEntity(boxBlocks)
 
                 if (tileentity != null && !wildcard.contains(boxBlocks)) {
@@ -104,11 +142,11 @@ class Template {
         return true
     }
 
-    fun matches(worldIn: World, pos: BlockPos, fullMirror: Boolean = false): MutableList<BlockPos>? {
+    fun matches(worldIn: World, pos: BlockPos, fullMirror: Boolean = false, valid: (state: IBlockState, block: Block, layer: Int) -> Boolean): MutableList<BlockPos>? {
         val rots = if (fullMirror) Rotation.values() else arrayOf(Rotation.NONE, Rotation.CLOCKWISE_90)
 
         for (rot in rots) {
-            if (matches(worldIn, pos, rot)) {
+            if (matches(worldIn, pos, rot, valid)) {
                 val list = mutableListOf<BlockPos>()
                 for (block in blocks) {
                     if (block.meta == -1) {
@@ -122,16 +160,24 @@ class Template {
         return null
     }
 
-    private fun matches(worldIn: World, pos: BlockPos, rotation: Rotation): Boolean {
-        for (block in blocks) {
+    private fun matches(worldIn: World, pos: BlockPos, rotation: Rotation, valid: (state: IBlockState, block: Block, layer: Int) -> Boolean): Boolean {
+        label@ for (block in blocks) {
             val wildcard = block.meta == -1
+
+            for (mod in this.modules.values) {
+                if (mod.contains(block.pos))
+                    continue@label
+            }
+
             val pos = pos.add(block.pos.rotate(rotation))
             val state = worldIn.getBlockState(pos)
             val worldBlock = state.block
-            if (wildcard) {
-                if (worldBlock != block.block) return false
-            } else {
 
+            if (wildcard) {
+                if (worldBlock != block.block) {
+                    return false
+                }
+            } else {
                 var nbt = false
 
                 if (block.nbt != null) {
@@ -146,7 +192,24 @@ class Template {
                 }
 
                 val rotState = block.block.getStateFromMeta(block.meta).withRotation(rotation)
-                if (worldBlock != block.block || worldBlock.getMetaFromState(state) != block.block.getMetaFromState(rotState) || nbt) return false
+
+
+
+                if (worldBlock != block.block || worldBlock.getMetaFromState(state) != block.block.getMetaFromState(rotState) || nbt) {
+                    return false
+                }
+            }
+        }
+
+        for (module in modules) {
+            val id = module.key
+
+            for (modPos in module.value) {
+                val pos = pos.add(modPos.rotate(rotation))
+                val state = worldIn.getBlockState(pos)
+                val worldBlock = state.block
+
+                if (!valid.invoke(state, worldBlock, id)) return false
             }
         }
         return true

@@ -16,6 +16,10 @@ class GenerateTemplateCommand : CommandBase() {
     override fun execute(server: MinecraftServer, sender: ICommandSender, args: Array<String>) {
         if (!server.isSinglePlayer) return
 
+        if (args.size != 2) {
+            return sender.sendMessage(TextComponentString("generateTemplate <Name> <IgnoreAir>"))
+        }
+
         if (StructureMarkerItem.controller == null)
             return sender.sendMessage(TextComponentString("Controller not set"))
 
@@ -25,6 +29,7 @@ class GenerateTemplateCommand : CommandBase() {
         if (args.isEmpty())
             return sender.sendMessage(TextComponentString("No name set"))
 
+        val ignoreAir = parseBoolean(args[1])
 
         val controller = StructureMarkerItem.controller!!
         val firstPos = StructureMarkerItem.firstPos!!
@@ -38,8 +43,13 @@ class GenerateTemplateCommand : CommandBase() {
         val minZ = Math.min(firstPos.z, secondPos.z)
         val maxZ = Math.max(firstPos.z, secondPos.z)
 
-        val template = net.cydhra.technocracy.foundation.util.structures.Template()
-        template.generateTemplate(BlockPos(minX, minY, minZ), BlockPos(maxX, maxY, maxZ), controller, StructureMarkerItem.wildcard, sender.entityWorld, args[0])
+
+        template.generateTemplate(BlockPos(minX, minY, minZ), BlockPos(maxX, maxY, maxZ), controller, StructureMarkerItem.wildcard, StructureMarkerItem.modules, ignoreAir, sender.entityWorld, args[0])
+    }
+
+
+    companion object {
+        var template = net.cydhra.technocracy.foundation.util.structures.Template()
     }
 
     override fun getUsage(sender: ICommandSender): String {
