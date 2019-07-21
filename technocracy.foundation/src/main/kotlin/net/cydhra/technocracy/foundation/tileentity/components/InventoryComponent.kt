@@ -16,6 +16,7 @@ import net.minecraftforge.items.CapabilityItemHandler
 class InventoryComponent(size: Int, provider: TEInventoryProvider, val facing: EnumFacing? = null) :
         AbstractCapabilityComponent() {
 
+    override val type: ComponentType = ComponentType.INVENTORY
     /**
      * Inventory capability of the machine
      */

@@ -8,6 +8,8 @@ import net.minecraft.nbt.NBTBase
  */
 interface IComponent {
 
+    val type: ComponentType
+
     /**
      * Write the component's state to an NBT value
      */
@@ -18,4 +20,8 @@ interface IComponent {
      */
     fun deserializeNBT(nbt: NBTBase)
 
+}
+
+enum class ComponentType {
+    ENERGY, FLUID, INVENTORY, FACADE, PIPE_TYPES, HEAT, UPGRADES, NETWORK, REDSTONE_MODE
 }

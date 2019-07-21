@@ -9,6 +9,8 @@ import net.minecraft.util.EnumFacing
 class ComponentFacade : IComponent {
     var facades = mutableMapOf<EnumFacing, ItemStack>()
 
+    override val type: ComponentType = ComponentType.FACADE
+
     override fun serializeNBT(): NBTBase {
         val base = NBTTagCompound()
         for (facing in EnumFacing.values()) {

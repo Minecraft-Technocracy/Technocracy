@@ -14,6 +14,8 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler
 class FluidComponent(val fluid: DynamicFluidHandler, val facing: MutableSet<EnumFacing>) :
         AbstractCapabilityComponent() {
 
+    override val type: ComponentType = ComponentType.FLUID
+
     /**
      * @param size amount of fluid in millibucket
      * @param allowedFluid list of allowed input fluids

@@ -7,6 +7,8 @@ import java.util.*
 
 class NetworkComponent : IComponent {
 
+    override val type: ComponentType = ComponentType.NETWORK
+
     var uuid: UUID? = null
 
     override fun serializeNBT(): NBTBase {

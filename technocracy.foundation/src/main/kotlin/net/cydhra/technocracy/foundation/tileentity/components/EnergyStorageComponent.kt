@@ -14,6 +14,8 @@ import net.minecraftforge.common.capabilities.Capability
  */
 class EnergyStorageComponent(val facing: MutableSet<EnumFacing>) : AbstractCapabilityComponent() {
 
+    override val type: ComponentType = ComponentType.ENERGY
+
     /**
      * The energy storage capability instance containing energy storage state
      */

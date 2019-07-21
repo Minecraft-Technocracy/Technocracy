@@ -11,6 +11,8 @@ import net.minecraft.nbt.NBTTagInt
  */
 class RedstoneModeComponent : IComponent {
 
+    override val type: ComponentType = ComponentType.REDSTONE_MODE
+
     /**
      * The current set mode on the machine.
      */

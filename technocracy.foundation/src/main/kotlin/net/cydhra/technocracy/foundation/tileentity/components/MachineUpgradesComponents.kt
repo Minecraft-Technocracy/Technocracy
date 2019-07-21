@@ -12,6 +12,8 @@ class MachineUpgradesComponents : IComponent {
         private const val NBT_KEY_UPGRADES = "upgrades"
     }
 
+    override val type: ComponentType = ComponentType.UPGRADES
+
     /**
      * Allowed Upgrades and maximum amount
      */

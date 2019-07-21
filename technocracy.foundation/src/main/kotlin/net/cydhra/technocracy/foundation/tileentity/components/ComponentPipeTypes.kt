@@ -8,6 +8,8 @@ import java.util.*
 
 class ComponentPipeTypes : IComponent {
 
+    override val type: ComponentType = ComponentType.PIPE_TYPES
+
     var types = mutableSetOf<PipeType>()
 
     override fun serializeNBT(): NBTBase {
