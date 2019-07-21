@@ -14,6 +14,7 @@ import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
+import net.minecraftforge.common.util.Constants
 
 class MachineWailaProvider : IWailaDataProvider {
 
@@ -23,20 +24,20 @@ class MachineWailaProvider : IWailaDataProvider {
             return tooltip
 
         val tag: NBTTagCompound = accessor.nbtData.getCompoundTag(TCFoundation.MODID)
-        val componentList = tag.getTagList("list", 10)
+        val componentList = tag.getTagList("list", Constants.NBT.TAG_COMPOUND)
         tag.keySet
                 .filter { it != "list" }
                 .forEach { componentName ->
                     val componentIndex = tag.getCompoundTag(componentName)
-                    val componentTag = componentList.get(componentIndex.getInteger("index"))
+                    val componentTag = componentList.get(componentIndex.getInteger("index")) as NBTTagCompound
                     val type = componentIndex.getInteger("type")
 
                     when (ComponentType.values()[type]) {
                         ComponentType.ENERGY -> {
                             if (config.getConfig("capability.energyinfo")) {
                                 tooltip.add(SpecialChars.getRenderString("technocracy.energy",
-                                        tag.getInteger(DynamicEnergyStorageStategy.KEY_CURRENT_AMOUNT).toString(),
-                                        tag.getInteger(DynamicEnergyStorageStategy.KEY_CAPACITY).toString()))
+                                        componentTag.getInteger(DynamicEnergyStorageStategy.KEY_CURRENT_AMOUNT).toString(),
+                                        componentTag.getInteger(DynamicEnergyStorageStategy.KEY_CAPACITY).toString()))
                             }
                         }
                         ComponentType.FLUID -> {
