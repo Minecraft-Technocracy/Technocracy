@@ -1,6 +1,5 @@
 package net.cydhra.technocracy.foundation.tileentity.components
 
-import net.minecraft.nbt.NBTBase
 import net.minecraft.nbt.NBTTagCompound
 import java.util.*
 
@@ -11,7 +10,7 @@ class NetworkComponent : IComponent {
 
     var uuid: UUID? = null
 
-    override fun serializeNBT(): NBTBase {
+    override fun serializeNBT(): NBTTagCompound {
         val base = NBTTagCompound()
         if(uuid != null)
             base.setUniqueId("id", uuid!!)
@@ -19,7 +18,7 @@ class NetworkComponent : IComponent {
         return base
     }
 
-    override fun deserializeNBT(nbt: NBTBase) {
+    override fun deserializeNBT(nbt: NBTTagCompound) {
         if((nbt as NBTTagCompound).hasUniqueId("id")) {
             uuid = nbt.getUniqueId("id")
         } else {

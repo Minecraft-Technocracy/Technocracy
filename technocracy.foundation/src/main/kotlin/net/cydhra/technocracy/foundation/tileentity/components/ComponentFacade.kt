@@ -2,7 +2,6 @@ package net.cydhra.technocracy.foundation.tileentity.components
 
 import net.cydhra.technocracy.foundation.items.general.facadeItem
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.NBTBase
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 
@@ -11,7 +10,7 @@ class ComponentFacade : IComponent {
 
     override val type: ComponentType = ComponentType.FACADE
 
-    override fun serializeNBT(): NBTBase {
+    override fun serializeNBT(): NBTTagCompound {
         val base = NBTTagCompound()
         for (facing in EnumFacing.values()) {
             if (facades.containsKey(facing)) {
@@ -23,7 +22,7 @@ class ComponentFacade : IComponent {
         return base
     }
 
-    override fun deserializeNBT(nbt: NBTBase) {
+    override fun deserializeNBT(nbt: NBTTagCompound) {
         val base = nbt as NBTTagCompound
         for (facing in EnumFacing.values()) {
             if (base.hasKey(facing.name)) {

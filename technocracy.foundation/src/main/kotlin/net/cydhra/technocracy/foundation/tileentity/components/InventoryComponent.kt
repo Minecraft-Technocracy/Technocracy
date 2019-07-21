@@ -2,7 +2,6 @@ package net.cydhra.technocracy.foundation.tileentity.components
 
 import net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryHandler
 import net.cydhra.technocracy.foundation.tileentity.management.TEInventoryProvider
-import net.minecraft.nbt.NBTBase
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
@@ -33,11 +32,11 @@ class InventoryComponent(size: Int, provider: TEInventoryProvider, val facing: E
             null
     }
 
-    override fun serializeNBT(): NBTBase {
+    override fun serializeNBT(): NBTTagCompound {
         return inventory.serializeNBT()
     }
 
-    override fun deserializeNBT(nbt: NBTBase) {
+    override fun deserializeNBT(nbt: NBTTagCompound) {
         inventory.deserializeNBT(nbt as NBTTagCompound)
     }
 }

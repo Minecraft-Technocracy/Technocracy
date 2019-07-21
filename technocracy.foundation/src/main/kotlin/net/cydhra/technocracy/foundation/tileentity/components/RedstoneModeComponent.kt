@@ -1,8 +1,7 @@
 package net.cydhra.technocracy.foundation.tileentity.components
 
 import net.cydhra.technocracy.foundation.tileentity.components.RedstoneModeComponent.RedstoneMode
-import net.minecraft.nbt.NBTBase
-import net.minecraft.nbt.NBTTagInt
+import net.minecraft.nbt.NBTTagCompound
 
 /**
  * A component for machines to accept redstone signals as a on/off switch.
@@ -18,12 +17,12 @@ class RedstoneModeComponent : IComponent {
      */
     var redstoneMode = RedstoneMode.IGNORE
 
-    override fun serializeNBT(): NBTBase {
-        return NBTTagInt(redstoneMode.ordinal)
+    override fun serializeNBT(): NBTTagCompound {
+        return NBTTagCompound().apply { setInteger("type", redstoneMode.ordinal) }
     }
 
-    override fun deserializeNBT(nbt: NBTBase) {
-        redstoneMode = RedstoneMode.values()[(nbt as NBTTagInt).int]
+    override fun deserializeNBT(nbt: NBTTagCompound) {
+        redstoneMode = RedstoneMode.values()[nbt.getInteger("type")]
     }
 
     /**

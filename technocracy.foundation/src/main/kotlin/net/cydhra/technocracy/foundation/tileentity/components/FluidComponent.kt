@@ -1,7 +1,6 @@
 package net.cydhra.technocracy.foundation.tileentity.components
 
 import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandler
-import net.minecraft.nbt.NBTBase
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
@@ -38,11 +37,11 @@ class FluidComponent(val fluid: DynamicFluidHandler, val facing: MutableSet<Enum
             null
     }
 
-    override fun serializeNBT(): NBTBase {
+    override fun serializeNBT(): NBTTagCompound {
         return fluid.serializeNBT()
     }
 
-    override fun deserializeNBT(nbt: NBTBase) {
+    override fun deserializeNBT(nbt: NBTTagCompound) {
         fluid.deserializeNBT(nbt as NBTTagCompound)
     }
 }

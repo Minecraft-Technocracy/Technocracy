@@ -1,6 +1,5 @@
 package net.cydhra.technocracy.foundation.tileentity.components
 
-import net.minecraft.nbt.NBTBase
 import net.minecraft.nbt.NBTTagCompound
 
 /**
@@ -23,7 +22,7 @@ class HeatStorageComponent(initialHeat: Int, var heatCapacity: Int = 1000, var d
 
     var heat: Int = initialHeat
 
-    override fun serializeNBT(): NBTBase {
+    override fun serializeNBT(): NBTTagCompound {
         val compound = NBTTagCompound()
 
         compound.setInteger(NBT_KEY_HEAT, this.heat)
@@ -33,7 +32,7 @@ class HeatStorageComponent(initialHeat: Int, var heatCapacity: Int = 1000, var d
         return compound
     }
 
-    override fun deserializeNBT(nbt: NBTBase) {
+    override fun deserializeNBT(nbt: NBTTagCompound) {
         if (nbt is NBTTagCompound) {
             this.heat = nbt.getInteger(NBT_KEY_HEAT)
             this.heatCapacity = nbt.getInteger(NBT_KEY_CAPACITY)

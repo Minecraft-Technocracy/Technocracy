@@ -1,6 +1,5 @@
 package net.cydhra.technocracy.foundation.tileentity.components
 
-import net.minecraft.nbt.NBTBase
 import net.minecraft.nbt.NBTTagCompound
 
 /**
@@ -24,7 +23,7 @@ class MachineUpgradesComponents : IComponent {
      */
     private val installedUpgrades = HashMap<UpgradeType, Int>()
 
-    override fun serializeNBT(): NBTBase {
+    override fun serializeNBT(): NBTTagCompound {
         val tag = NBTTagCompound()
 
         for ((upgrade, amount) in installedUpgrades) {
@@ -34,7 +33,7 @@ class MachineUpgradesComponents : IComponent {
         return tag
     }
 
-    override fun deserializeNBT(nbt: NBTBase) {
+    override fun deserializeNBT(nbt: NBTTagCompound) {
         for (upgrade in UpgradeType.values()) {
             if ((nbt as NBTTagCompound).hasKey(upgrade.name)) {
                 installedUpgrades[upgrade] = nbt.getInteger(upgrade.name)
