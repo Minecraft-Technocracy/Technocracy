@@ -44,7 +44,7 @@ class DefaultFluidMeter(posX: Int, posY: Int, val component: FluidComponent, val
         GlStateManager.disableBlend()
     }
 
-    override fun drawTooltip(mouseX: Int, mouseY: Int, partialTicks: Float) {
+    override fun drawTooltip(mouseX: Int, mouseY: Int) {
         val str = "${(level * component.fluid.capacity).roundToInt()}mb/${component.fluid.capacity}mb"
         gui.renderTooltip(mutableListOf(str), mouseX, mouseY)
     }

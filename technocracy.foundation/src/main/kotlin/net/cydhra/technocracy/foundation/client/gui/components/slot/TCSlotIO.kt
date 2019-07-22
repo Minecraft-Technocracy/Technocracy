@@ -1,84 +1,36 @@
 package net.cydhra.technocracy.foundation.client.gui.components.slot
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
-import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.inventory.IInventory
-import net.minecraft.inventory.InventoryBasic
-import net.minecraft.inventory.Slot
-import net.minecraft.item.ItemStack
+import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
+import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.inventory.GuiContainer
+import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.init.Items
 import net.minecraftforge.items.IItemHandler
-import net.minecraftforge.items.IItemHandlerModifiable
+import net.minecraftforge.items.SlotItemHandler
 
-class TCSlotIO(val itemHandler: IItemHandler, val index: Int, xPosition: Int, yPosition: Int, gui: TCGui) :
-        TCSlot(InventoryBasic("[null]", true, 1) as IInventory, index, xPosition, yPosition, gui) {
+class TCSlotIO(itemHandler: IItemHandler, index: Int, xPosition: Int, yPosition: Int, val gui: TCGui) : SlotItemHandler(itemHandler, index, xPosition, yPosition), TCComponent {
 
-    override fun isItemValid(stack: ItemStack): Boolean {
-        if (stack.isEmpty || !itemHandler.isItemValid(index, stack))
-            return false
-        val handler: IItemHandler = this.itemHandler
-        val reminder: ItemStack
-        if (handler is IItemHandlerModifiable) {
-            val currentStack: ItemStack = handler.getStackInSlot(index)
-            handler.setStackInSlot(index, ItemStack.EMPTY)
-            reminder = handler.insertItem(index, stack, true)
-            handler.setStackInSlot(index, currentStack)
-        } else {
-            reminder = handler.insertItem(index, stack, true)
-        }
-        return reminder.count < stack.count
+    override fun update() {
     }
 
-    override fun getStack(): ItemStack {
-        return itemHandler.getStackInSlot(index)
+    override fun draw(mouseX: Int, mouseY: Int, partialTicks: Float) {
+        Minecraft.getMinecraft().textureManager.bindTexture(TCGui.guiComponents)
+        GlStateManager.color(1F, 1F, 1F, 1F)
+        GuiContainer.drawModalRectWithCustomSizedTexture(xPos - 1, yPos - 1, 0F, 10F, 18, 18, 256F,
+                256F)
     }
 
-    override fun putStack(stack: ItemStack) {
-        if (itemHandler is IItemHandlerModifiable) {
-            this.itemHandler.setStackInSlot(index, stack)
-            onSlotChanged()
-        }
+    override fun drawTooltip(mouseX: Int, mouseY: Int) {
+        val stack = itemHandler.getStackInSlot(slotIndex)
+        if(stack.item != Items.AIR)
+            gui.renderHoveredItemToolTip(mouseX, mouseY)
     }
 
-    override fun onSlotChange(p_75220_1_: ItemStack, p_75220_2_: ItemStack) {
+    override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {}
 
+    override fun isMouseOnComponent(mouseX: Int, mouseY: Int): Boolean {
+        return mouseX > xPos && mouseX < xPos + 18 && mouseY > yPos && mouseY < yPos + 18
     }
-
-    override fun getSlotStackLimit(): Int {
-        return itemHandler.getSlotLimit(index)
-    }
-
-    override fun getItemStackLimit(stack: ItemStack): Int {
-        val add: ItemStack = stack.copy()
-        val max: Int = stack.maxStackSize
-        add.count = max
-        val currentStack: ItemStack = itemHandler.getStackInSlot(index)
-
-        if(itemHandler is IItemHandlerModifiable) {
-            itemHandler.setStackInSlot(index, ItemStack.EMPTY)
-            val remainder: ItemStack = itemHandler.insertItem(index, add, true)
-            itemHandler.setStackInSlot(index, currentStack)
-            return max - remainder.count
-        } else {
-            val remainder: ItemStack = itemHandler.insertItem(index, add, true)
-            return currentStack.count + (max - remainder.count)
-        }
-
-    }
-
-    override fun canTakeStack(playerIn: EntityPlayer): Boolean {
-        return !itemHandler.extractItem(index, 1, true).isEmpty
-    }
-
-    override fun decrStackSize(amount: Int): ItemStack {
-        return itemHandler.extractItem(index, amount, false)
-    }
-
-    override fun isSameInventory(other: Slot): Boolean {
-        return other is TCSlotIO && other.itemHandler == this.itemHandler
-    }
-
-
-
-
 
 }

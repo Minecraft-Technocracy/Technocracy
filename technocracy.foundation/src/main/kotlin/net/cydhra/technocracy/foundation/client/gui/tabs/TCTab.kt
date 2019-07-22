@@ -19,9 +19,12 @@ abstract class TCTab(val name: String, val parent: TCGui, val tint: Int = -1,
         this.components.forEach {
             it.draw(mouseX, mouseY, partialTicks)
         }
+    }
+
+    open fun drawToolTips(mouseX: Int, mouseY: Int) {
         components.forEach {
             if(it.isMouseOnComponent(mouseX, mouseY))
-                it.drawTooltip(mouseX, mouseY, partialTicks)
+                it.drawTooltip(mouseX, mouseY)
         }
     }
 

@@ -5,7 +5,6 @@ import net.cydhra.technocracy.foundation.tileentity.components.RedstoneModeCompo
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
-import kotlin.math.roundToInt
 
 class DefaultRedstoneModeControl(posX: Int, posY: Int, val component: RedstoneModeComponent, val gui: TCGui) : RedstoneModeControl(posX, posY) {
 
@@ -17,7 +16,7 @@ class DefaultRedstoneModeControl(posX: Int, posY: Int, val component: RedstoneMo
         Gui.drawModalRectWithCustomSizedTexture(posX, posY, component.redstoneMode.ordinal * 16f, 59f, width, height, 256f, 256f)
     }
 
-    override fun drawTooltip(mouseX: Int, mouseY: Int, partialTicks: Float) {
+    override fun drawTooltip(mouseX: Int, mouseY: Int) {
         val str = "Redstone Mode: ${component.redstoneMode.name}"
         gui.renderTooltip(mutableListOf(str), mouseX, mouseY)
     }

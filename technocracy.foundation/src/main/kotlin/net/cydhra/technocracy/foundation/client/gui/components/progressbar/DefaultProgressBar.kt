@@ -77,7 +77,7 @@ class DefaultProgressBar(posX: Int, posY: Int, orientation: Orientation, val com
         progress = component.progress / 100f
     }
 
-    override fun drawTooltip(mouseX: Int, mouseY: Int, partialTicks: Float) {
+    override fun drawTooltip(mouseX: Int, mouseY: Int) {
         val str = "${(progress * 100).roundToInt()}%"
         gui.renderTooltip(mutableListOf(str), mouseX, mouseY)
     }
