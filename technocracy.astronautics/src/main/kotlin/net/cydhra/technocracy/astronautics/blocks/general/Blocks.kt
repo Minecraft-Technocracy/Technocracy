@@ -13,3 +13,4 @@ val rocketControllerBlock = RocketControllerBlock()
 
 val rocketHullBlock = ColoredPlainBlock("rocket_hull", Material.IRON)
 val rocketDriveBlock = PlainBlock("rocket_drive", Material.IRON)
+val rocketTipBlock = PlainBlock("rocket_tip", Material.IRON)

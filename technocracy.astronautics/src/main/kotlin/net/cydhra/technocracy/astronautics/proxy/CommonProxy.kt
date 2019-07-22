@@ -49,6 +49,7 @@ open class CommonProxy {
         blockManager.prepareBlocksForRegistration(rocketControllerBlock)
         blockManager.prepareBlocksForRegistration(rocketHullBlock)
         blockManager.prepareBlocksForRegistration(rocketDriveBlock)
+        blockManager.prepareBlocksForRegistration(rocketTipBlock)
 
         itemManager.prepareItemForRegistration(concreteSprayerItem, ConcreteSprayerItemModel())
         itemManager.prepareItemForRegistration(concreteCanItem)
