@@ -111,7 +111,7 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
 
                     // insert output items
                     recipeOutput.zip(0 until (this.outputInventory?.slots ?: 0)).forEach { (outputStack, outputSlot) ->
-                        this.outputInventory!!.insertItem(outputSlot, outputStack, false)
+                        this.outputInventory!!.insertItem(outputSlot, outputStack.copy(), false)
                     }
 
                     // insert output fluids
