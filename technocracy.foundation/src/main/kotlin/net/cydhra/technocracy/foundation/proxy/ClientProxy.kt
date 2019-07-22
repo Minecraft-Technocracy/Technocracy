@@ -43,6 +43,6 @@ class ClientProxy : CommonProxy() {
         super.init()
         itemManager.registerItemColors()
         blockManager.registerBlockColors()
-        TileEntityManager.onClientInitialize()
+        tileEntityManager.onClientInitialize()
     }
 }
