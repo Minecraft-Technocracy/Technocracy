@@ -10,20 +10,33 @@ import net.cydhra.technocracy.astronautics.client.model.concreteSprayer.Concrete
 import net.cydhra.technocracy.astronautics.items.general.concreteCanItem
 import net.cydhra.technocracy.astronautics.items.general.concreteSprayerItem
 import net.cydhra.technocracy.astronautics.tileentity.RocketControllerTileEntity
+import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.general.BlockManager
+import net.cydhra.technocracy.foundation.client.technocracyCreativeTabs
 import net.cydhra.technocracy.foundation.items.general.ItemManager
 import net.cydhra.technocracy.foundation.liquids.general.FluidManager
+import net.cydhra.technocracy.foundation.oresystems.*
 import net.cydhra.technocracy.foundation.tileentity.management.TileEntityManager
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.capabilities.CapabilityManager
 
 open class CommonProxy {
 
-    protected val blockManager = BlockManager(TCAstronautics.MODID, astronauticsCreativeTabs)
-    protected val fluidManager = FluidManager(blockManager)
-    protected val itemManager = ItemManager(TCAstronautics.MODID, astronauticsCreativeTabs)
-    protected var tileEntityManager = TileEntityManager(TCAstronautics.MODID)
+    protected lateinit var blockManager: BlockManager
+    protected lateinit var fluidManager: FluidManager
+    protected lateinit var itemManager: ItemManager
+    protected lateinit var tileEntityManager: TileEntityManager
 
+    /**
+     * Initialize the class properties. This should not be done earlier, as contents of the properties might access
+     * the config, which isn't loaded at instantiation of the proxy.
+     */
+    fun initializeProxy() {
+        blockManager = BlockManager(TCAstronautics.MODID, astronauticsCreativeTabs)
+        fluidManager = FluidManager(blockManager)
+        itemManager = ItemManager(TCAstronautics.MODID, astronauticsCreativeTabs)
+        tileEntityManager = TileEntityManager(TCAstronautics.MODID)
+    }
 
     open fun preInit() {
         MinecraftForge.EVENT_BUS.register(blockManager)

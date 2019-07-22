@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.astronautics
 
 import net.cydhra.technocracy.astronautics.proxy.CommonProxy
+import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.FMLLog
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.SidedProxy
@@ -54,6 +55,9 @@ object TCAstronautics {
     @Mod.EventHandler
     fun preInit(@Suppress("UNUSED_PARAMETER") event: FMLPreInitializationEvent) {
         logger = FMLLog.log
+
+        MinecraftForge.EVENT_BUS.register(proxy)
+        proxy.initializeProxy()
         proxy.preInit()
     }
 

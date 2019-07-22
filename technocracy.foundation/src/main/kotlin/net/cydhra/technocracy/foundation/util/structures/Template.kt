@@ -20,6 +20,8 @@ import java.nio.file.Files
 class Template {
     val blocks = mutableListOf<BlockInfo>()
     var modules = mutableMapOf<Int, MutableList<BlockPos>>()
+
+    var init = false
     lateinit var controller: BlockPos
 
     fun loadFromAssets(name: String): Template {
@@ -36,6 +38,7 @@ class Template {
     }
 
     private fun read(compound: NBTTagCompound): Boolean {
+        init = true
         this.blocks.clear()
 
         val blocks = compound.getTagList("blocks", 10)
@@ -99,6 +102,7 @@ class Template {
     }
 
     fun generateTemplate(startPos: BlockPos, endPos: BlockPos, controller: BlockPos, wildcard: MutableList<BlockPos>, modules: MutableMap<Int, MutableList<BlockPos>>, ignoreAir: Boolean, worldIn: World, name: String): Boolean {
+        init = true
         this.controller = controller
 
         modules.forEach { id, list ->
