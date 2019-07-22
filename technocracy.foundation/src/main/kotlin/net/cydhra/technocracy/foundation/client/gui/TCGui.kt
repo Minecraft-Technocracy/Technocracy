@@ -62,6 +62,11 @@ TCContainer)
         GlStateManager.popMatrix()
     }
 
+    override fun drawGuiContainerForegroundLayer(mouseX: Int, mouseY: Int) {
+        super.drawGuiContainerForegroundLayer(mouseX, mouseY) // draws f.e. items in slots
+        this.tabs[tab].drawToolTips(mouseX - guiX, mouseY - guiY)
+    }
+
     override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
         super.mouseClicked(mouseX, mouseY, mouseButton)
 

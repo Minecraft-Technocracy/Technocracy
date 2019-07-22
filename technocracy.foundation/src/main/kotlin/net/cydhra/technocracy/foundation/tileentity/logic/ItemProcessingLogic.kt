@@ -6,6 +6,7 @@ import net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventory
 import net.cydhra.technocracy.foundation.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.tileentity.components.MachineUpgradesComponents
+import net.cydhra.technocracy.foundation.tileentity.components.ProgressComponent
 import net.minecraft.item.ItemStack
 
 class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
@@ -15,7 +16,8 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
                           private val outputFluidSlots: Array<DynamicFluidHandler> = emptyArray(),
                           private val energyStorage: DynamicEnergyStorage,
                           private val machineUpgrades: MachineUpgradesComponents,
-                          private val baseTickEnergyCost: Int) : ILogic {
+                          private val baseTickEnergyCost: Int,
+                          private val progress: ProgressComponent) : ILogic {
 
     companion object {
         // TODO this could be a value obtained from config
@@ -109,7 +111,7 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
 
                     // insert output items
                     recipeOutput.zip(0 until (this.outputInventory?.slots ?: 0)).forEach { (outputStack, outputSlot) ->
-                        this.outputInventory!!.insertItem(outputSlot, outputStack, false)
+                        this.outputInventory!!.insertItem(outputSlot, outputStack.copy(), false)
                     }
 
                     // insert output fluids
@@ -122,8 +124,9 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
                     this.processingProgress = 0
                 }
             }
-
         }
+
+        progress.progress = if(activeRecipe != null) ((processingProgress.toFloat() / activeRecipe.processingCost.toFloat()) * 100f).toInt() else 0
     }
 
     /**

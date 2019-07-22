@@ -36,10 +36,13 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
         at least handle it from subclass*/
     protected val machineUpgradesComponent = MachineUpgradesComponents()
 
+    protected val progressComponent = ProgressComponent()
+
     init {
         this.registerComponent(redstoneModeComponent, "redstone_mode")
         this.registerComponent(energyStorageComponent, "energy")
         this.registerComponent(machineUpgradesComponent, "upgrades")
+        this.registerComponent(progressComponent, "progress")
     }
 
     override fun getGui(player: EntityPlayer): TCGui {
@@ -52,6 +55,7 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
                 var nextOutput = 125
                 var inputNearestToTheMiddle = 0
                 var outputNearestToTheMiddle = parent.guiWidth // nice names
+                var foundProgressComponent: ProgressComponent? = null
                 this@MachineTileEntity.getComponents().forEach {
                     when {
                         it.second is EnergyStorageComponent -> {
@@ -100,9 +104,13 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
                                 }
                             }
                         }
+                        it.second is ProgressComponent -> {
+                            foundProgressComponent = it.second as ProgressComponent
+                        }
                     }
                 }
-                components.add(DefaultProgressBar((outputNearestToTheMiddle - inputNearestToTheMiddle) / 2 - 11 + inputNearestToTheMiddle, 40, Orientation.RIGHT, gui))
+                if(foundProgressComponent != null)
+                    components.add(DefaultProgressBar((outputNearestToTheMiddle - inputNearestToTheMiddle) / 2 - 11 + inputNearestToTheMiddle, 40, Orientation.RIGHT, foundProgressComponent as ProgressComponent, gui))
             }
         })
         gui.registerTab(MachineSettingsTab(gui, this, player))

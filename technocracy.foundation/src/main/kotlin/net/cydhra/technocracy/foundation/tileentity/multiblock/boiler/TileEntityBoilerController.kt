@@ -4,6 +4,7 @@ import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandler
 import net.cydhra.technocracy.foundation.liquids.general.steamFluid
 import net.cydhra.technocracy.foundation.multiblock.BoilerMultiBlock
 import net.cydhra.technocracy.foundation.tileentity.components.FluidComponent
+import net.cydhra.technocracy.foundation.tileentity.components.ProgressComponent
 import net.cydhra.technocracy.foundation.tileentity.multiblock.ITileEntityMultiblockController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPart
 import net.minecraft.nbt.NBTTagCompound
@@ -32,6 +33,7 @@ class TileEntityBoilerController
 
     private val waterComponent = FluidComponent(internalFluidHandler, mutableSetOf())
     private val steamComponent = FluidComponent(internalSteamHandler, mutableSetOf())
+    private val progressComponent = ProgressComponent()
 
     /**
      * The fluid storage of this boiler structure. If the structure isn't fully assembled, it is null
@@ -56,6 +58,7 @@ class TileEntityBoilerController
     init {
         this.registerComponent(waterComponent, "water")
         this.registerComponent(steamComponent, "steam")
+        this.registerComponent(progressComponent, "progress")
     }
 
     fun doWork() {

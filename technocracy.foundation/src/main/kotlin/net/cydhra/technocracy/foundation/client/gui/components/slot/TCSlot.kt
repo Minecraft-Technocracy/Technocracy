@@ -22,8 +22,8 @@ open class TCSlot(inventoryIn: IInventory, index: Int, xPosition: Int, yPosition
                 256F)
     }
 
-    override fun drawTooltip(mouseX: Int, mouseY: Int, partialTicks: Float) {
-        val stack = inventory.getStackInSlot(slotNumber)
+    override fun drawTooltip(mouseX: Int, mouseY: Int) {
+        val stack = inventory.getStackInSlot(slotIndex)
         if(stack.item != Items.AIR)
             gui.renderHoveredItemToolTip(mouseX, mouseY)
     }

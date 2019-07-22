@@ -31,7 +31,8 @@ class TileEntityElectrolysisChamber : MachineTileEntity() {
                 outputFluidSlots = arrayOf(this.outputInventoryComponent1.fluid, this.outputInventoryComponent2.fluid),
                 energyStorage = this.energyStorageComponent.energyStorage,
                 machineUpgrades = this.machineUpgradesComponent,
-                baseTickEnergyCost = 120
+                baseTickEnergyCost = 120,
+                progress = this.progressComponent
         ))
     }
 }

@@ -28,7 +28,8 @@ class TileEntityKiln : MachineTileEntity() {
                 outputFluidSlots = arrayOf(this.outputInventoryComponent.fluid),
                 energyStorage = this.energyStorageComponent.energyStorage,
                 machineUpgrades = this.machineUpgradesComponent,
-                baseTickEnergyCost = 120
+                baseTickEnergyCost = 120,
+                progress = this.progressComponent
         ))
     }
 }

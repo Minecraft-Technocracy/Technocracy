@@ -31,5 +31,6 @@ enum class ComponentType(val supportsWaila: Boolean = false) {
     HEAT(true),
     UPGRADES(true),
     NETWORK,
-    REDSTONE_MODE(true)
+    REDSTONE_MODE(true),
+    PROGRESS(true)
 }
