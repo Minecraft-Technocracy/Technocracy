@@ -14,7 +14,7 @@ import kotlin.reflect.KClass
 /**
  * Utility class that handles registration of tile entities and their subsequent dependencies like renderers.
  */
-class TileEntityManager(val modName: String) {
+object TileEntityManager {
 
     /**
      * A list of all prepared tile entities that are registered during block registration phase
@@ -40,7 +40,7 @@ class TileEntityManager(val modName: String) {
     fun onRegister(@Suppress("UNUSED_PARAMETER") event: RegistryEvent.Register<Block>) {
         preparedTileEntities.forEach { tileEntityClass ->
             GameRegistry.registerTileEntity(tileEntityClass.java,
-                    ResourceLocation("$modName:${tileEntityClass.simpleName}"))
+                    ResourceLocation("${TCFoundation.MODID}:${tileEntityClass.simpleName}"))
         }
     }
 
