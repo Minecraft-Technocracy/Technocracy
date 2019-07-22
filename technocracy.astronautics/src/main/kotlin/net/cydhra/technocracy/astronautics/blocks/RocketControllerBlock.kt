@@ -2,7 +2,6 @@ package net.cydhra.technocracy.astronautics.blocks
 
 import net.cydhra.technocracy.astronautics.tileentity.RocketControllerTileEntity
 import net.cydhra.technocracy.foundation.blocks.api.AbstractTileEntityBlock
-import net.cydhra.technocracy.foundation.commands.GenerateTemplateCommand
 import net.cydhra.technocracy.foundation.util.structures.Template
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
@@ -27,9 +26,7 @@ class RocketControllerBlock : AbstractTileEntityBlock("rocket_controller", mater
             launchpad.loadFromAssets("launchpad")
         }
 
-        val matches = launchpad.matches(worldIn, pos, true, valid = { _, _, _ ->
-            return@matches true
-        })
+        val matches = launchpad.matches(worldIn, pos, true)
 
         if (matches != null)
             playerIn.sendStatusMessage(TextComponentString("Launchpad built"), true)

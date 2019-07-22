@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.megastructures.proxy
 
+import net.cydhra.technocracy.megastructures.dyson.DysonSphereController
 import net.minecraftforge.common.MinecraftForge
-import net.minecraftforge.common.capabilities.CapabilityManager
 
 
 open class CommonProxy {
@@ -14,6 +14,6 @@ open class CommonProxy {
     }
 
     open fun postInit() {
-
+        DysonSphereController.initialize()
     }
 }

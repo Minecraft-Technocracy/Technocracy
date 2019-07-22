@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.blocks
 
 import net.cydhra.technocracy.foundation.blocks.api.AbstractBaseBlock
+import net.cydhra.technocracy.foundation.blocks.color.IBlockColor
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
 import net.minecraft.util.BlockRenderLayer
@@ -11,11 +12,12 @@ import net.minecraft.util.BlockRenderLayer
  * @param unlocalizedName registry and language file name
  * @param material minecraft [Material] of the block
  */
-class PlainBlock(unlocalizedName: String,
-                 material: Material,
-                 private val opaque: Boolean = true,
-                 private val renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID)
-    : AbstractBaseBlock(unlocalizedName, material) {
+open class PlainBlock(unlocalizedName: String,
+                      material: Material,
+                      private val opaque: Boolean = true,
+                      private val renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID,
+                      colorMultiplier: IBlockColor? = null)
+    : AbstractBaseBlock(unlocalizedName, material, colorMultiplier = colorMultiplier) {
 
     override fun isOpaqueCube(state: IBlockState): Boolean {
         return this.opaque
