@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.commands
 
 import net.cydhra.technocracy.foundation.items.general.StructureMarkerItem
+import net.cydhra.technocracy.foundation.util.structures.Template
 import net.minecraft.command.CommandBase
 import net.minecraft.command.ICommandSender
 import net.minecraft.server.MinecraftServer
@@ -43,6 +44,7 @@ class GenerateTemplateCommand : CommandBase() {
         val minZ = Math.min(firstPos.z, secondPos.z)
         val maxZ = Math.max(firstPos.z, secondPos.z)
 
+        template = Template()
 
         template.generateTemplate(BlockPos(minX, minY, minZ), BlockPos(maxX, maxY, maxZ), controller, StructureMarkerItem.wildcard, StructureMarkerItem.modules, ignoreAir, sender.entityWorld, args[0])
     }
