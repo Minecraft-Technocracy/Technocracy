@@ -10,12 +10,9 @@ import net.cydhra.technocracy.astronautics.client.model.concreteSprayer.Concrete
 import net.cydhra.technocracy.astronautics.items.general.concreteCanItem
 import net.cydhra.technocracy.astronautics.items.general.concreteSprayerItem
 import net.cydhra.technocracy.astronautics.tileentity.RocketControllerTileEntity
-import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.general.BlockManager
-import net.cydhra.technocracy.foundation.client.technocracyCreativeTabs
 import net.cydhra.technocracy.foundation.items.general.ItemManager
 import net.cydhra.technocracy.foundation.liquids.general.FluidManager
-import net.cydhra.technocracy.foundation.oresystems.*
 import net.cydhra.technocracy.foundation.tileentity.management.TileEntityManager
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.capabilities.CapabilityManager
@@ -50,6 +47,8 @@ open class CommonProxy {
         blockManager.prepareBlocksForRegistration(wetConcreteBlock)
         blockManager.prepareBlocksForRegistration(wetReinforcedConcreteBlock)
         blockManager.prepareBlocksForRegistration(rocketControllerBlock)
+        blockManager.prepareBlocksForRegistration(rocketHullBlock)
+        blockManager.prepareBlocksForRegistration(rocketDriveBlock)
 
         itemManager.prepareItemForRegistration(concreteSprayerItem, ConcreteSprayerItemModel())
         itemManager.prepareItemForRegistration(concreteCanItem)
