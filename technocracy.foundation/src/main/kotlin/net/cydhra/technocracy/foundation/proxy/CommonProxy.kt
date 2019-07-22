@@ -59,6 +59,7 @@ open class CommonProxy {
     protected lateinit var blockManager: BlockManager
     protected lateinit var fluidManager: FluidManager
     protected lateinit var itemManager: ItemManager
+    protected lateinit var tileEntityManager: TileEntityManager
 
     /**
      * Initialize the class properties. This should not be done earlier, as contents of the properties might access
@@ -79,10 +80,11 @@ open class CommonProxy {
         blockManager = BlockManager(TCFoundation.MODID, technocracyCreativeTabs)
         fluidManager = FluidManager(blockManager)
         itemManager = ItemManager(TCFoundation.MODID, technocracyCreativeTabs)
+        tileEntityManager = TileEntityManager(TCFoundation.MODID)
     }
 
     open fun preInit() {
-        MinecraftForge.EVENT_BUS.register(TileEntityManager)
+        MinecraftForge.EVENT_BUS.register(tileEntityManager)
         MinecraftForge.EVENT_BUS.register(Network)
         MinecraftForge.EVENT_BUS.register(blockManager)
         MinecraftForge.EVENT_BUS.register(fluidManager)
@@ -197,38 +199,38 @@ open class CommonProxy {
             MinecraftForge.EVENT_BUS.register(structureMarker)
         }
 
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityAlloySmeltery::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityCentrifuge::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityChemicalProcessingChamber::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityChemicalEtchingChamber::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityChemicalOxidizer::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityChemicalReactionChamber::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityCompactor::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityCrystallizationChamber::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityDissolutionChamber::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityElectricFurnace::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityElectrolysisChamber::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityKiln::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityPolymerizationChamber::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityPulverizer::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityPipe::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityAlloySmeltery::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityCentrifuge::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityChemicalProcessingChamber::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityChemicalEtchingChamber::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityChemicalOxidizer::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityChemicalReactionChamber::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityCompactor::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityCrystallizationChamber::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityDissolutionChamber::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityElectricFurnace::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityElectrolysisChamber::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityKiln::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityPolymerizationChamber::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityPulverizer::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityPipe::class)
 
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityMultiBlockPartBoiler::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityBoilerController::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityBoilerHeater::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityBoilerInput::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityBoilerOutput::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityMultiBlockPartBoiler::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityBoilerController::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityBoilerHeater::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityBoilerInput::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityBoilerOutput::class)
 
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityMultiBlockPartHeatExchanger::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityHeatExchangerController::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityHeatExchangerInput::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityHeatExchangerOutput::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityMultiBlockPartHeatExchanger::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityHeatExchangerController::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityHeatExchangerInput::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityHeatExchangerOutput::class)
 
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityRefineryController::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityRefineryInput::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityRefineryOutput::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityRefineryHeater::class)
-        TileEntityManager.prepareTileEntityForRegistration(TileEntityMultiBlockPartRefinery::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityRefineryController::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityRefineryInput::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityRefineryOutput::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityRefineryHeater::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityMultiBlockPartRefinery::class)
 
         //ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPipe::class.java, PipeRenderer())
 
