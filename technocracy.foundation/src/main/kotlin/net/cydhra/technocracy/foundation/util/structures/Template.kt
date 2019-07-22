@@ -2,11 +2,13 @@ package net.cydhra.technocracy.foundation.util.structures
 
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.minecraft.block.Block
-import net.minecraft.block.BlockStone
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.Minecraft
 import net.minecraft.init.Blocks
-import net.minecraft.nbt.*
+import net.minecraft.nbt.CompressedStreamTools
+import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.nbt.NBTTagList
+import net.minecraft.nbt.NBTUtil
 import net.minecraft.util.Rotation
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
@@ -146,7 +148,11 @@ class Template {
         return true
     }
 
-    fun matches(worldIn: World, pos: BlockPos, fullMirror: Boolean = false, valid: (state: IBlockState, block: Block, layer: Int) -> Boolean): MutableList<BlockPos>? {
+    fun matches(worldIn: World,
+                pos: BlockPos,
+                fullMirror: Boolean = false,
+                valid: (state: IBlockState, block: Block, layer: Int) -> Boolean = { _, _, _ -> true }):
+            MutableList<BlockPos>? {
         val rots = if (fullMirror) Rotation.values() else arrayOf(Rotation.NONE, Rotation.CLOCKWISE_90)
 
         for (rot in rots) {
