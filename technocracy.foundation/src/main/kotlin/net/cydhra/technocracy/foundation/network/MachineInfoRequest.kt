@@ -1,7 +1,9 @@
 package net.cydhra.technocracy.foundation.network
 
 import io.netty.buffer.ByteBuf
+import net.cydhra.technocracy.foundation.multiblock.BaseMultiBlock
 import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
+import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPart
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.math.BlockPos
 import net.minecraftforge.common.DimensionManager
@@ -29,6 +31,13 @@ class MachineInfoRequest(var dim: Int = 0, var pos: BlockPos = BlockPos.ORIGIN) 
             if (te is MachineTileEntity) {
                 val tag = NBTTagCompound()
                 te.getComponents().forEach { (name, component) ->
+                    tag.setTag(name, component.serializeNBT())
+                }
+                tag.setLong("pos", packet.pos.toLong())
+                PacketHandler.sendToClient(MachineInfoResponse(tag), context.serverHandler.player)
+            } else if(te is TileEntityMultiBlockPart<*>) {
+                val tag = NBTTagCompound()
+                (te.multiblockController as BaseMultiBlock).getComponents().forEach { (name, component) ->
                     tag.setTag(name, component.serializeNBT())
                 }
                 tag.setLong("pos", packet.pos.toLong())

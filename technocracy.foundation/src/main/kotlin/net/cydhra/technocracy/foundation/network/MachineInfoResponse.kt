@@ -1,7 +1,9 @@
 package net.cydhra.technocracy.foundation.network
 
 import io.netty.buffer.ByteBuf
+import net.cydhra.technocracy.foundation.multiblock.BaseMultiBlock
 import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
+import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPart
 import net.minecraft.client.Minecraft
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.math.BlockPos
@@ -24,6 +26,11 @@ class MachineInfoResponse(var compound: NBTTagCompound = NBTTagCompound()) : IMe
         val te = Minecraft.getMinecraft().world.getTileEntity((BlockPos.fromLong(packet.compound.getLong("pos"))))
         if (te is MachineTileEntity) {
             te.getComponents().forEach { (name, component) ->
+                val tag = packet.compound.getCompoundTag(name)
+                component.deserializeNBT(tag)
+            }
+        } else if(te is TileEntityMultiBlockPart<*>) {
+            (te.multiblockController as BaseMultiBlock).getComponents().forEach { (name, component) ->
                 val tag = packet.compound.getCompoundTag(name)
                 component.deserializeNBT(tag)
             }
