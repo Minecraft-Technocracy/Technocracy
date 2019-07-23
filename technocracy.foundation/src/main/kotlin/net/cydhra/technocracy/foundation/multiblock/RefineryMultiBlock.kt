@@ -188,10 +188,10 @@ class RefineryMultiBlock(world: World) : BaseMultiBlock(
 
     override fun getComponents(): MutableList<Pair<String, IComponent>> {
         val components = mutableListOf<Pair<String, IComponent>>()
-        components.addAll(heater!!.getComponents())
+        if (heater != null) components.addAll(heater!!.getComponents())
         //components.addAll(inputPort!!.getComponents())
         //outputPorts.forEach { components.addAll(it.getComponents()) }
-        components.addAll(controllerTileEntity!!.getComponents())
+        if (controllerTileEntity != null) components.addAll(controllerTileEntity!!.getComponents())
         return components
     }
 }
