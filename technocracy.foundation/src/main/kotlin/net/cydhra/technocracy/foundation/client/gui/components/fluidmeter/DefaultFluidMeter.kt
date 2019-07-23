@@ -16,24 +16,20 @@ import kotlin.math.roundToInt
 
 class DefaultFluidMeter(posX: Int, posY: Int, val component: FluidComponent, val gui: TCGui) : FluidMeter(posX, posY) {
 
-    var flow: Int = 0
+    private var flowAnimation: Int = 0
 
     override fun draw(mouseX: Int, mouseY: Int, partialTicks: Float) {
         GlStateManager.color(1f, 1f, 1f, 1f)
         GlStateManager.enableBlend()
         if (level > 0f) {
-            /*if(component.fluid.currentFluid == null) {
-                Gui.drawRect(posX, ((1f - level) * height).toInt() + posY, posX + width, posY + height, Color(0.3f, 0.3f, 0.9f).rgb)
-                return
-            }*/
+            if(component.fluid.currentFluid != null) {
+                val fluid: Fluid = component.fluid.currentFluid!!.fluid
+                val color = Color(fluid.color)
 
-            //val fluid: Fluid = component.fluid.currentFluid!!.fluid
-            val fluid: Fluid = net.cydhra.technocracy.foundation.liquids.general.acrylicAcidFluid // placeholder
-            val color = Color(fluid.color)
-
-            GlStateManager.color(color.red / 255f, color.green / 255f, color.blue / 255f, 1f)
-            Minecraft.getMinecraft().textureManager.bindTexture(ResourceLocation(fluid.flowing.resourceDomain, "textures/${fluid.flowing.resourcePath}.png"))
-            drawModalRectWithCustomSizedTexture(posX, ((1f - level) * height).toInt() + posY, posX + width, posY + height, 11f, flow.toFloat(), 32f, 1024f)
+                GlStateManager.color(color.red / 255f, color.green / 255f, color.blue / 255f, 1f)
+                Minecraft.getMinecraft().textureManager.bindTexture(ResourceLocation(fluid.flowing.resourceDomain, "textures/${fluid.flowing.resourcePath}.png"))
+                drawModalRectWithCustomSizedTexture(posX, ((1f - level) * height).toInt() + posY, posX + width, posY + height, 11f, flowAnimation.toFloat(), 32f, 1024f)
+            }
         }
 
         GlStateManager.color(1f, 1f, 1f, 1f)
@@ -50,10 +46,10 @@ class DefaultFluidMeter(posX: Int, posY: Int, val component: FluidComponent, val
     }
 
     override fun update() {
-        super.update()
-        flow++
-        if (flow > 1024)
-            flow = 0
+        level = if(component.fluid.currentFluid != null) component.fluid.currentFluid!!.amount.toFloat() / component.fluid.capacity.toFloat() else 0f
+        flowAnimation++
+        if (flowAnimation > 1024)
+            flowAnimation = 0
     }
 
     fun drawModalRectWithCustomSizedTexture(left: Int, top: Int, right: Int, bottom: Int, texX: Float, texY: Float, textureWidth: Float, textureHeight: Float) {

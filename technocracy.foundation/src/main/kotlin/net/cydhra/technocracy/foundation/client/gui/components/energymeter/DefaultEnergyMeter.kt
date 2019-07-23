@@ -28,8 +28,7 @@ class DefaultEnergyMeter(posX: Int, posY: Int, val component: EnergyStorageCompo
     }
 
     override fun update() {
-        super.update()
-        //level = component.energyStorage.currentEnergy.toFloat() / component.energyStorage.capacity.toFloat()
+        level = component.energyStorage.currentEnergy.toFloat() / component.energyStorage.capacity.toFloat()
     }
 
     override fun drawTooltip(mouseX: Int, mouseY: Int) {

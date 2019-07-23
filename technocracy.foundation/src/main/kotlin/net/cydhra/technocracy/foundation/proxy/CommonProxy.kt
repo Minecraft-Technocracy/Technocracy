@@ -12,9 +12,7 @@ import net.cydhra.technocracy.foundation.client.technocracyCreativeTabs
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.items.general.*
 import net.cydhra.technocracy.foundation.liquids.general.*
-import net.cydhra.technocracy.foundation.network.ItemKeyBindPacket
-import net.cydhra.technocracy.foundation.network.ItemScrollPacket
-import net.cydhra.technocracy.foundation.network.PacketHandler
+import net.cydhra.technocracy.foundation.network.*
 import net.cydhra.technocracy.foundation.oresystems.*
 import net.cydhra.technocracy.foundation.pipes.Network
 import net.cydhra.technocracy.foundation.potions.PotionManager
@@ -243,6 +241,8 @@ open class CommonProxy {
 
         PacketHandler.registerPacket(ItemScrollPacket::class.java, ItemScrollPacket::class.java, Side.SERVER)
         PacketHandler.registerPacket(ItemKeyBindPacket::class.java, ItemKeyBindPacket::class.java, Side.SERVER)
+        PacketHandler.registerPacket(MachineInfoRequest::class.java, MachineInfoRequest::class.java, Side.SERVER)
+        PacketHandler.registerPacket(MachineInfoResponse::class.java, MachineInfoResponse::class.java, Side.CLIENT)
     }
 
     open fun init() {

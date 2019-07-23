@@ -17,7 +17,6 @@ class TCWailaPlugin : IWailaPlugin {
     override fun register(registrar: IWailaRegistrar) {
         registrar.registerBodyProvider(machineProvider, MachineBlock::class.java)
         registrar.registerNBTProvider(machineProvider, MachineBlock::class.java)
-
         registrar.registerBodyProvider(multiBlockProvider, MultiBlockRotatableActiveBlock::class.java)
         registrar.registerNBTProvider(multiBlockProvider, MultiBlockRotatableActiveBlock::class.java)
     }

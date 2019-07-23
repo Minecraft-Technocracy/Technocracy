@@ -12,7 +12,7 @@ import net.minecraft.util.EnumFacing
  */
 class TileEntityElectrolysisChamber : MachineTileEntity() {
     private val inputInventoryComponent = FluidComponent(4000,
-            tanktype = DynamicFluidHandler.TankType.OUTPUT, facing = mutableSetOf(EnumFacing.WEST))
+            tanktype = DynamicFluidHandler.TankType.INPUT, facing = mutableSetOf(EnumFacing.WEST))
 
     private val outputInventoryComponent1 = FluidComponent(4000,
             tanktype = DynamicFluidHandler.TankType.OUTPUT, facing = mutableSetOf(EnumFacing.EAST))
