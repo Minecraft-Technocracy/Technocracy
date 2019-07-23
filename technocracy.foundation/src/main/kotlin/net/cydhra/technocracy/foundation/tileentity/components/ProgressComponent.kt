@@ -16,7 +16,7 @@ class ProgressComponent: IComponent {
     }
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
-        progress = nbt.getInteger("type")
+        progress = nbt.getInteger("progress")
     }
 
 }

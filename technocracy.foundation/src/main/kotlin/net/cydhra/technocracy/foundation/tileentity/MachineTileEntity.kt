@@ -118,7 +118,8 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
     }
 
     override fun update() {
-        // update ILogic strategies
-        this.tick()
+        // update ILogic strategies, but only server side
+        if(!world.isRemote)
+            this.tick()
     }
 }
