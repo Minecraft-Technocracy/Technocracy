@@ -1,8 +1,7 @@
 package net.cydhra.technocracy.foundation.tileentity.multiblock.refinery
 
+import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandler
 import net.cydhra.technocracy.foundation.multiblock.RefineryMultiBlock
-import net.cydhra.technocracy.foundation.tileentity.AggregatableDelegate
-import net.cydhra.technocracy.foundation.tileentity.api.TCAggregatable
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPart
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
@@ -17,9 +16,10 @@ class TileEntityRefineryOutput : TileEntityMultiBlockPart<RefineryMultiBlock>(Re
     }
 
     override fun <T> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
-        return if (hasCapability(capability, facing))
+        val ret = if (hasCapability(capability, facing))
             CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.multiblockController?.getOutputTank(this))
         else
             null
+        return if(ret == null) DynamicFluidHandler(1, allowedFluid = mutableListOf()) as T? else ret
     }
 }

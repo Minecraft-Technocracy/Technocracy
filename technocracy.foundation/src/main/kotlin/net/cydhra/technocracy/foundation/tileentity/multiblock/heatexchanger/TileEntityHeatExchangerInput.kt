@@ -13,7 +13,6 @@ import net.minecraft.util.EnumHand
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import net.minecraftforge.common.capabilities.Capability
-import net.minecraftforge.fluids.FluidRegistry
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
@@ -42,7 +41,8 @@ class TileEntityHeatExchangerInput : TileEntityMultiBlockPart<HeatExchangerMulti
     }
 
     override fun <T> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
-        return this.castCapability(capability, facing) ?: super.getCapability(capability, facing)
+        val ret = this.castCapability(capability, facing) ?: super.getCapability(capability, facing)
+        return if(ret == null) DynamicFluidHandler(1, allowedFluid = mutableListOf()) as T? else ret
     }
 
     override fun writeToNBT(data: NBTTagCompound): NBTTagCompound {

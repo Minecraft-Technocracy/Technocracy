@@ -38,7 +38,8 @@ class TileEntityHeatExchangerOutput : TileEntityMultiBlockPart<HeatExchangerMult
     }
 
     override fun <T> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
-        return this.castCapability(capability, facing) ?: super.getCapability(capability, facing)
+        val ret = this.castCapability(capability, facing) ?: super.getCapability(capability, facing)
+        return if(ret == null) DynamicFluidHandler(1, allowedFluid = mutableListOf()) as T? else ret
     }
 
     override fun writeToNBT(data: NBTTagCompound): NBTTagCompound {
