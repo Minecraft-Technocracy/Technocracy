@@ -31,7 +31,6 @@ class MachineInfoRequest(var dim: Int = 0, var pos: BlockPos = BlockPos.ORIGIN) 
                 te.getComponents().forEach { (name, component) ->
                     tag.setTag(name, component.serializeNBT())
                 }
-                tag.setInteger("dim", packet.dim)
                 tag.setLong("pos", packet.pos.toLong())
                 PacketHandler.sendToClient(MachineInfoResponse(tag), context.serverHandler.player)
             }
