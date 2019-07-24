@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.items.general
 
-import net.cydhra.technocracy.foundation.items.ItemPolishedMirror
+import net.cydhra.technocracy.foundation.items.*
 import net.cydhra.technocracy.foundation.items.color.ConstantItemColor
 
 val coalDustItem = ColoredItem("dust", "coal", ConstantItemColor(0x2f2f2f))

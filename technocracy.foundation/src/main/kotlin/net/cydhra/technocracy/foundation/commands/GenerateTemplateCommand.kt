@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.commands
 
-import net.cydhra.technocracy.foundation.items.general.StructureMarkerItem
+import net.cydhra.technocracy.foundation.items.StructureMarkerItem
 import net.cydhra.technocracy.foundation.util.structures.Template
 import net.minecraft.command.CommandBase
 import net.minecraft.command.ICommandSender

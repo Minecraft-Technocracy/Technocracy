@@ -1,5 +1,7 @@
-package net.cydhra.technocracy.foundation.items.general
+package net.cydhra.technocracy.foundation.items
 
+import net.cydhra.technocracy.foundation.items.general.BaseItem
+import net.cydhra.technocracy.foundation.items.general.IItemScrollEvent
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.RenderGlobal

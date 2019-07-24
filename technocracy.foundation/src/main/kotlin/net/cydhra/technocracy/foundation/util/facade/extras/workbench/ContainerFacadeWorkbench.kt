@@ -1,7 +1,6 @@
 package net.cydhra.technocracy.foundation.util.facade.extras.workbench
 
-import net.cydhra.technocracy.foundation.blocks.general.pipe
-import net.cydhra.technocracy.foundation.items.general.FacadeItem
+import net.cydhra.technocracy.foundation.items.FacadeItem
 import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
 import net.minecraft.block.Block
 import net.minecraft.block.BlockWorkbench

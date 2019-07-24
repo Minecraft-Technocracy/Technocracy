@@ -1,14 +1,14 @@
 package net.cydhra.technocracy.foundation.client.model.pipe
 
 import net.cydhra.technocracy.foundation.TCFoundation
-import net.cydhra.technocracy.foundation.items.general.FacadeItem
+import net.cydhra.technocracy.foundation.items.FacadeItem
 import net.cydhra.technocracy.foundation.util.facade.FakeBlockAccess
 import net.cydhra.technocracy.foundation.util.model.SimpleQuad
 import net.cydhra.technocracy.foundation.util.model.pipeline.QuadPipeline
 import net.cydhra.technocracy.foundation.util.model.pipeline.consumer.QuadFacadeTransformer
-import net.cydhra.technocracy.foundation.util.model.pipeline.consumer.clone.QuadCloneConsumer
 import net.cydhra.technocracy.foundation.util.model.pipeline.consumer.QuadTinter
 import net.cydhra.technocracy.foundation.util.model.pipeline.consumer.QuadUVTransformer
+import net.cydhra.technocracy.foundation.util.model.pipeline.consumer.clone.QuadCloneConsumer
 import net.minecraft.block.Block
 import net.minecraft.block.BlockDirectional
 import net.minecraft.block.BlockHorizontal
@@ -23,7 +23,6 @@ import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.MathHelper
 import net.minecraft.world.IBlockAccess
-import java.lang.Exception
 
 object FacadeBakery {
     fun getFacadeQuads(coverFace: EnumFacing, facadeStack: ItemStack, pos: BlockPos, faces: BooleanArray, currentLayer: BlockRenderLayer): MutableList<BakedQuad> {

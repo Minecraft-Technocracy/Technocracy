@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.blocks
 
 import net.cydhra.technocracy.foundation.blocks.api.AbstractTileEntityBlock
-import net.cydhra.technocracy.foundation.items.general.FacadeItem
+import net.cydhra.technocracy.foundation.items.FacadeItem
 import net.cydhra.technocracy.foundation.items.general.pipeItem
 import net.cydhra.technocracy.foundation.pipes.Network
 import net.cydhra.technocracy.foundation.pipes.types.PipeType
