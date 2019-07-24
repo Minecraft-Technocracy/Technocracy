@@ -37,7 +37,13 @@ abstract class Configurable<T : Any>(protected val config: Configuration,
         var cache = mutableMapOf<Pair<String, String>, Any>()
     }
 
-    operator fun getValue(thisRef: Any, property: KProperty<*>): T {
+    init {
+        readValueFromConfig()
+    }
+
+    operator fun getValue(thisRef: Any, property: KProperty<*>): T = readValueFromConfig()
+
+    fun readValueFromConfig(): T {
         try {
             val key = category to name
             if (cache.containsKey(key)) {
@@ -49,7 +55,6 @@ abstract class Configurable<T : Any>(protected val config: Configuration,
             return option
         } finally {
             if (config.hasChanged()) {
-                cache.clear()
                 config.save()
             }
         }

@@ -40,26 +40,6 @@ class BoilerMultiBlock(world: World) : BaseMultiBlock(
         maximumSizeY = 16,
         world = world) {
 
-    companion object {
-        // TODO balancing and config
-
-        /**
-         * the base energy usage of one heated block in the interior
-         */
-        const val BASE_ENERGY_USAGE = 20
-
-        /**
-         * The temperature of the heat conductors. It spreads with a falloff of 1 to nearby blocks. Every block that
-         * has a temperature multiplier of more than zero produces [BASE_STEAM_GEN] * [CONDUCTOR_TEMPERATURE_MULTIPLIER]
-         */
-        const val CONDUCTOR_TEMPERATURE_MULTIPLIER = 4
-
-        /**
-         * The base steam gen of heated blocks in the boilers interior.
-         */
-        const val BASE_STEAM_GEN = 2
-    }
-
     /**
      * The controller tile entity of this multi block structure. Null until the block is found by [isMachineWhole]
      */
@@ -162,8 +142,8 @@ class BoilerMultiBlock(world: World) : BaseMultiBlock(
                 val block = this.WORLD.getBlockState(BlockPos(pos.x, pos.y, pos.z)).block
                 if (block == boilerConductorBlock) {
                     heatMap[pos] = when {
-                        heatMap[pos.down()] == CONDUCTOR_TEMPERATURE_MULTIPLIER -> CONDUCTOR_TEMPERATURE_MULTIPLIER
-                        WORLD.getBlockState(pos.down()).block == boilerHeaterBlock -> CONDUCTOR_TEMPERATURE_MULTIPLIER
+                        heatMap[pos.down()] == MultiBlockPhysics.conductorTemperature -> MultiBlockPhysics.conductorTemperature
+                        WORLD.getBlockState(pos.down()).block == boilerHeaterBlock -> MultiBlockPhysics.conductorTemperature
                         else -> 0
                     }
 
@@ -175,7 +155,7 @@ class BoilerMultiBlock(world: World) : BaseMultiBlock(
                     // calculate maximal heat of all neighbor blocks
                     val neighborHeat =
                             if (WORLD.getBlockState(pos.down()).block == boilerHeaterBlock)
-                                CONDUCTOR_TEMPERATURE_MULTIPLIER
+                                MultiBlockPhysics.conductorTemperature
                             else
                                 arrayOf(pos.down(), pos.north(), pos.east(), pos.south(), pos.west())
                                         .mapNotNull { heatMap[it] }
@@ -196,14 +176,14 @@ class BoilerMultiBlock(world: World) : BaseMultiBlock(
             var totalSteamProduction = 0
 
             heatMap.values
-                    .filter { heat -> heat in 1..CONDUCTOR_TEMPERATURE_MULTIPLIER }
+                    .filter { heat -> heat in 1..MultiBlockPhysics.conductorTemperature }
                     .forEach { heat ->
                         // increase energy cost for every heated block
-                        totalEnergyUsage += BASE_ENERGY_USAGE
+                        totalEnergyUsage += MultiBlockPhysics.baseEnergyUsage
 
                         // increase steam production for every heated block that is not a conductor
-                        if (heat < CONDUCTOR_TEMPERATURE_MULTIPLIER)
-                            totalSteamProduction += BASE_STEAM_GEN * heat
+                        if (heat < MultiBlockPhysics.conductorTemperature)
+                            totalSteamProduction += MultiBlockPhysics.baseSteamGeneration * heat
                     }
 
             this.steamPerHeaterPerTick = totalSteamProduction / heaterElements.size
