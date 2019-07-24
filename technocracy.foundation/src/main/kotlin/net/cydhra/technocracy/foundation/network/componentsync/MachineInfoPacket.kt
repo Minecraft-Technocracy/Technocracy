@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.foundation.network
+package net.cydhra.technocracy.foundation.network.componentsync
 
 import io.netty.buffer.ByteBuf
 import net.cydhra.technocracy.foundation.multiblock.BaseMultiBlock
@@ -12,26 +12,26 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext
 
-class MachineInfoResponse(var compound: NBTTagCompound = NBTTagCompound()) : IMessage, IMessageHandler<MachineInfoResponse, IMessage> {
+class MachineInfoPacket(var tag: NBTTagCompound = NBTTagCompound()) : IMessage, IMessageHandler<MachineInfoPacket, IMessage> {
 
-    override fun fromBytes(buf: ByteBuf?) {
-        compound = ByteBufUtils.readTag(buf)!!
+    override fun fromBytes(buf: ByteBuf) {
+        tag = ByteBufUtils.readTag(buf)!!
     }
 
-    override fun toBytes(buf: ByteBuf?) {
-        ByteBufUtils.writeTag(buf, compound)
+    override fun toBytes(buf: ByteBuf) {
+        ByteBufUtils.writeTag(buf, tag)
     }
 
-    override fun onMessage(packet: MachineInfoResponse, context: MessageContext): IMessage? {
-        val te = Minecraft.getMinecraft().world.getTileEntity((BlockPos.fromLong(packet.compound.getLong("pos"))))
+    override fun onMessage(packet: MachineInfoPacket, context: MessageContext): IMessage? {
+        val te = Minecraft.getMinecraft().world.getTileEntity((BlockPos.fromLong(packet.tag.getLong("pos"))))
         if (te is MachineTileEntity) {
             te.getComponents().forEach { (name, component) ->
-                val tag = packet.compound.getCompoundTag(name)
+                val tag = packet.tag.getCompoundTag(name)
                 component.deserializeNBT(tag)
             }
-        } else if(te is TileEntityMultiBlockPart<*>) {
+        } else if (te is TileEntityMultiBlockPart<*>) {
             (te.multiblockController as BaseMultiBlock).getComponents().forEach { (name, component) ->
-                val tag = packet.compound.getCompoundTag(name)
+                val tag = packet.tag.getCompoundTag(name)
                 component.deserializeNBT(tag)
             }
         }
