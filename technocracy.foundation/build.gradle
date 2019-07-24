@@ -20,7 +20,7 @@ dependencies {
     compile group: 'org.jgrapht', name: 'jgrapht-core', version: project.jgrapht_version
 
     deobfCompile group: 'net.shadowfacts', name: 'Forgelin', version: project.forgelin_version
-    deobfCompile group: 'mezz.jei', name: "jei_$project.minecraft_version", version: project.jei_version
+    deobfCompile group: 'mezz.jei', name: "jei_$project.minecraft_version", version: project.jei_version, classifier: 'api'
     deobfCompile group: "it.zerono.mods.zerocore", name: "zerocore", version: project.zerocore_version
     deobfCompile group: "team.chisel.ctm", name: "CTM", version: project.ctm_version
     deobfCompile group: "mcp.mobius.waila", name: "Hwyla", version: project.waila_version, classifier: 'api'
