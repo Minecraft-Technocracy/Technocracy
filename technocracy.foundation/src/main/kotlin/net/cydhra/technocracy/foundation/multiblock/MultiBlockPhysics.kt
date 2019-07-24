@@ -4,6 +4,11 @@ import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.config.IntegerConfigurable
 import net.minecraftforge.common.config.Configuration
 
+/**
+ * This object collects configuration options about different physics related in-game parameters. They are collected
+ * here, so they can be initialized and added to the configuration at start of game, so the configuration file is
+ * complete.
+ */
 object MultiBlockPhysics {
 
     private const val BOILER_CATEGORY = "structures${Configuration.CATEGORY_SPLITTER}boiler"
