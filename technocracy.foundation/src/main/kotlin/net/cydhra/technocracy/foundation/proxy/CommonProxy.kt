@@ -17,7 +17,6 @@ import net.cydhra.technocracy.foundation.network.ItemScrollPacket
 import net.cydhra.technocracy.foundation.network.PacketHandler
 import net.cydhra.technocracy.foundation.network.componentsync.GuiUpdateListener
 import net.cydhra.technocracy.foundation.network.componentsync.MachineGuiClosePacket
-import net.cydhra.technocracy.foundation.network.componentsync.MachineGuiOpenPacket
 import net.cydhra.technocracy.foundation.network.componentsync.MachineInfoPacket
 import net.cydhra.technocracy.foundation.oresystems.*
 import net.cydhra.technocracy.foundation.pipes.Network
@@ -249,7 +248,6 @@ open class CommonProxy {
         PacketHandler.registerPacket(ItemScrollPacket::class.java, ItemScrollPacket::class.java, Side.SERVER)
         PacketHandler.registerPacket(ItemKeyBindPacket::class.java, ItemKeyBindPacket::class.java, Side.SERVER)
         PacketHandler.registerPacket(MachineInfoPacket::class.java, MachineInfoPacket::class.java, Side.CLIENT)
-        PacketHandler.registerPacket(MachineGuiOpenPacket::class.java, MachineGuiOpenPacket::class.java, Side.SERVER)
         PacketHandler.registerPacket(MachineGuiClosePacket::class.java, MachineGuiClosePacket::class.java, Side.SERVER)
     }
 
