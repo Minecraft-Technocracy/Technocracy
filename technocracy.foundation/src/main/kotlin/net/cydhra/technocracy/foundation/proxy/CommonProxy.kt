@@ -87,6 +87,7 @@ open class CommonProxy {
         MinecraftForge.EVENT_BUS.register(blockManager)
         MinecraftForge.EVENT_BUS.register(fluidManager)
         MinecraftForge.EVENT_BUS.register(itemManager)
+        MinecraftForge.EVENT_BUS.register(PotionManager)
 
         materialSystems.forEach { it.preInit(it, blockManager, itemManager, fluidManager) }
 
