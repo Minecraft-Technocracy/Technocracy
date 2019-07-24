@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.tileentity.components
 
 import net.cydhra.technocracy.foundation.capabilities.energy.DynamicEnergyStorage
-import net.cydhra.technocracy.foundation.capabilities.energy.DynamicEnergyStorageStategy
+import net.cydhra.technocracy.foundation.capabilities.energy.DynamicEnergyStorageStrategy
 import net.cydhra.technocracy.foundation.capabilities.energy.EnergyCapabilityProvider
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
@@ -35,10 +35,10 @@ class EnergyStorageComponent(val facing: MutableSet<EnumFacing>) : AbstractCapab
     }
 
     override fun serializeNBT(): NBTTagCompound {
-        return DynamicEnergyStorageStategy.writeNBT(this.energyStorage) as NBTTagCompound
+        return DynamicEnergyStorageStrategy.writeNBT(this.energyStorage) as NBTTagCompound
     }
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
-        DynamicEnergyStorageStategy.readNBT(this.energyStorage, nbt)
+        DynamicEnergyStorageStrategy.readNBT(this.energyStorage, nbt)
     }
 }
