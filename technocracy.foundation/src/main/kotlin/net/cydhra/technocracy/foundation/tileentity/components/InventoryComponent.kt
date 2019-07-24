@@ -37,6 +37,6 @@ class InventoryComponent(size: Int, provider: TEInventoryProvider, val facing: E
     }
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
-        inventory.deserializeNBT(nbt as NBTTagCompound)
+        inventory.deserializeNBT(nbt)
     }
 }

@@ -5,7 +5,7 @@ import mcp.mobius.waila.api.IWailaDataAccessor
 import mcp.mobius.waila.api.IWailaDataProvider
 import mcp.mobius.waila.api.SpecialChars
 import net.cydhra.technocracy.foundation.TCFoundation
-import net.cydhra.technocracy.foundation.capabilities.energy.DynamicEnergyStorageStategy
+import net.cydhra.technocracy.foundation.capabilities.energy.DynamicEnergyStorageStrategy
 import net.cydhra.technocracy.foundation.tileentity.api.TCAggregatable
 import net.cydhra.technocracy.foundation.tileentity.components.ComponentType
 import net.minecraft.entity.player.EntityPlayerMP
@@ -36,8 +36,8 @@ class MachineWailaProvider : IWailaDataProvider {
                         ComponentType.ENERGY -> {
                             if (config.getConfig("capability.energyinfo")) {
                                 tooltip.add(SpecialChars.getRenderString("technocracy.energy",
-                                        componentTag.getInteger(DynamicEnergyStorageStategy.KEY_CURRENT_AMOUNT).toString(),
-                                        componentTag.getInteger(DynamicEnergyStorageStategy.KEY_CAPACITY).toString()))
+                                        componentTag.getInteger(DynamicEnergyStorageStrategy.KEY_CURRENT_AMOUNT).toString(),
+                                        componentTag.getInteger(DynamicEnergyStorageStrategy.KEY_CAPACITY).toString()))
                             }
                         }
                         ComponentType.FLUID -> {

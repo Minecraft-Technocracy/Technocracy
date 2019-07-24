@@ -22,12 +22,11 @@ class ComponentPipeTypes : IComponent {
     }
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
-        val base = nbt as NBTTagCompound
-        if (base.hasKey("amount")) {
-            val amount = base.getInteger("amount")
+        if (nbt.hasKey("amount")) {
+            val amount = nbt.getInteger("amount")
 
             for (i in 0 until amount) {
-                val name = base.getString("$i")
+                val name = nbt.getString("$i")
                 val optional = Arrays.stream(PipeType.values()).filter { it.name == name }.findFirst()
                 if (optional.isPresent)
                     types.add(optional.get())

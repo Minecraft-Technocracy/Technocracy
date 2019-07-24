@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.client.model.pipe
 
 import net.cydhra.technocracy.foundation.client.textures.TextureAtlasManager
-import net.cydhra.technocracy.foundation.items.general.PipeItem
+import net.cydhra.technocracy.foundation.items.PipeItem
 import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.renderer.block.model.*

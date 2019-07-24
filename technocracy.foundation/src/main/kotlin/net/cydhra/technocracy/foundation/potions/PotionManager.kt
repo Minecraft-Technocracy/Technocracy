@@ -1,18 +1,13 @@
 package net.cydhra.technocracy.foundation.potions
 
-import net.cydhra.technocracy.foundation.TCFoundation
 import net.minecraft.potion.Potion
 import net.minecraftforge.event.RegistryEvent
-import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 
 /**
  * This Manager object is responsible for collecting potion effects and registering them in registering phase.
- *
- * @see ItemManager.prepareItemForRegistration
  */
-@Mod.EventBusSubscriber(modid = TCFoundation.MODID)
 object PotionManager {
 
     /**

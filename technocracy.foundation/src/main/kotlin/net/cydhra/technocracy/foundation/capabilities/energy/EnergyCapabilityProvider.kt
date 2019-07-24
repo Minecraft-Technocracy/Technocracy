@@ -26,10 +26,10 @@ class EnergyCapabilityProvider(private val instance: DynamicEnergyStorage) : ICa
     }
 
     override fun deserializeNBT(nbt: NBTBase) {
-        DynamicEnergyStorageStategy.readNBT(this.instance, nbt)
+        DynamicEnergyStorageStrategy.readNBT(this.instance, nbt)
     }
 
     override fun serializeNBT(): NBTBase {
-        return DynamicEnergyStorageStategy.writeNBT(this.instance)
+        return DynamicEnergyStorageStrategy.writeNBT(this.instance)
     }
 }

@@ -12,7 +12,7 @@ import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.crafting.types.*
 import net.cydhra.technocracy.foundation.items.color.ConstantItemColor
 import net.cydhra.technocracy.foundation.items.general.BaseItem
-import net.cydhra.technocracy.foundation.items.general.ColoredItem
+import net.cydhra.technocracy.foundation.items.general.ColoredPrefixedItem
 import net.cydhra.technocracy.foundation.items.general.ItemManager
 import net.cydhra.technocracy.foundation.liquids.general.BaseFluid
 import net.cydhra.technocracy.foundation.liquids.general.FluidManager
@@ -35,11 +35,11 @@ import java.awt.Color
 
 fun oreSystem(block: OreSystemBuilder.() -> Unit) = OreSystemBuilder().apply(block).build()
 
-class OreSystem(val materialName: String, val ore: Block, val ingot: Item, val dust: Item, val crystal: ColoredItem,
-        val grit: ColoredItem, val gear: ColoredItem?, val sheet: ColoredItem?, val slag: BaseFluid,
-        val slurry: BaseFluid, val enrichedSlurry: BaseFluid,
-        val oreGeneratorSettings: OreSystemBuilder.OreGeneratorSettings,
-        val preInit: OreSystem.(BlockManager, ItemManager, FluidManager) -> Unit, val init: OreSystem.() -> Unit) {
+class OreSystem(val materialName: String, val ore: Block, val ingot: Item, val dust: Item, val crystal: ColoredPrefixedItem,
+                val grit: ColoredPrefixedItem, val gear: ColoredPrefixedItem?, val sheet: ColoredPrefixedItem?, val slag: BaseFluid,
+                val slurry: BaseFluid, val enrichedSlurry: BaseFluid,
+                val oreGeneratorSettings: OreSystemBuilder.OreGeneratorSettings,
+                val preInit: OreSystem.(BlockManager, ItemManager, FluidManager) -> Unit, val init: OreSystem.() -> Unit) {
     private val oreSystemCategory = "ores${Configuration.CATEGORY_SPLITTER}$materialName"
 
     val oreEnabled by BooleanConfigurable(TCFoundation.config,
@@ -146,22 +146,22 @@ class OreSystemBuilder {
             this.oreGeneratorSettings = OreGeneratorSettings()
         }
 
-        if (generateIngot) this.ingot = ColoredItem("ingot", this.name, itemColor, true)
+        if (generateIngot) this.ingot = ColoredPrefixedItem("ingot", this.name, itemColor, true)
 
-        if (generateDust) this.dust = ColoredItem("dust", this.name, itemColor, true)
+        if (generateDust) this.dust = ColoredPrefixedItem("dust", this.name, itemColor, true)
 
-        val sheet = if (IntermediateProductType.SHEET in intermediates) ColoredItem("sheet", this.name, itemColor, true)
+        val sheet = if (IntermediateProductType.SHEET in intermediates) ColoredPrefixedItem("sheet", this.name, itemColor, true)
         else null
 
-        val gear = if (IntermediateProductType.GEAR in intermediates) ColoredItem("gear", this.name, itemColor, true)
+        val gear = if (IntermediateProductType.GEAR in intermediates) ColoredPrefixedItem("gear", this.name, itemColor, true)
         else null
 
         return OreSystem(materialName = this.name,
                 ore = this.ore,
                 ingot = this.ingot,
                 dust = this.dust,
-                crystal = ColoredItem("crystal", this.name, itemColor, true),
-                grit = ColoredItem("grit", this.name, itemColor, true),
+                crystal = ColoredPrefixedItem("crystal", this.name, itemColor, true),
+                grit = ColoredPrefixedItem("grit", this.name, itemColor, true),
                 gear = gear,
                 sheet = sheet,
                 slag = BaseFluid("slag.$name", Color(this.color), opaqueTexture = true),

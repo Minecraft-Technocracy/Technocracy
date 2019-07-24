@@ -4,6 +4,7 @@ import net.cydhra.technocracy.foundation.TCFoundation
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.EntityEquipmentSlot
 import net.minecraft.item.ItemStack
+import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent
 import net.minecraftforge.event.entity.living.LivingEvent
 import net.minecraftforge.fml.common.Mod
@@ -12,6 +13,10 @@ import java.util.concurrent.ThreadLocalRandom
 
 @Mod.EventBusSubscriber(modid = TCFoundation.MODID)
 class OilyEffect : BasePotion("oily", true, 0x1A1A1A) {
+
+    init {
+        MinecraftForge.EVENT_BUS.register(this)
+    }
 
     override fun hasStatusIcon(): Boolean {
         return false

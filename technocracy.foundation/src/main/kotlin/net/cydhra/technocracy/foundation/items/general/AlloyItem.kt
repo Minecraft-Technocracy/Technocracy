@@ -7,7 +7,7 @@ import net.cydhra.technocracy.foundation.items.color.ConstantItemColor
  * Any additional ingots created by this mod are ultimately an instance of this class
  */
 class AlloyItem(ingotMaterialName: String, color: ConstantItemColor)
-    : ColoredItem("ingot", ingotMaterialName, color) {
+    : ColoredPrefixedItem("ingot", ingotMaterialName, color) {
 
     override val modelLocation: String = "${TCFoundation.MODID}:alloy"
 }
