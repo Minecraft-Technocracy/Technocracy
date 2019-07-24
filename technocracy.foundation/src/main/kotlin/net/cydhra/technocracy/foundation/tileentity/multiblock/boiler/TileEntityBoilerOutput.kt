@@ -24,12 +24,11 @@ class TileEntityBoilerOutput : TileEntityMultiBlockPart<BoilerMultiBlock>(Boiler
     }
 
     override fun <T> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
-        val ret = if (hasCapability(capability, facing))
+        return (if (hasCapability(capability, facing))
             CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.multiblockController
                     ?.controllerTileEntity?.steamHandler)
         else
-            null
-        return if(ret == null) DynamicFluidHandler(1, allowedFluid = mutableListOf()) as T? else ret
+            null) ?: DynamicFluidHandler(1, allowedFluid = mutableListOf()) as T
     }
 
     override fun onActivate(world: World, pos: BlockPos, player: EntityPlayer, hand: EnumHand, facing: EnumFacing) {

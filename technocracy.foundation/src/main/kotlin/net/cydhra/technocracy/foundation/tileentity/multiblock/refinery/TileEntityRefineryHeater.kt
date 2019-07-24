@@ -31,7 +31,7 @@ class TileEntityRefineryHeater : TileEntityMultiBlockPart<RefineryMultiBlock>(Re
     }
 
     override fun <T : Any?> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
-        val ret = this.castCapability(capability, facing) ?: super.getCapability(capability, facing)
-        return if(ret == null) DynamicEnergyStorage(0, 1, extractionLimit = 0) as T? else ret
+        return castCapability(capability, facing) ?: super.getCapability(capability, facing)
+        ?: DynamicEnergyStorage(0, 1, extractionLimit = 0) as T
     }
 }
