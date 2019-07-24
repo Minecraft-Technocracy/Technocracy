@@ -42,6 +42,6 @@ class FluidComponent(val fluid: DynamicFluidHandler, val facing: MutableSet<Enum
     }
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
-        fluid.deserializeNBT(nbt as NBTTagCompound)
+        fluid.deserializeNBT(nbt)
     }
 }

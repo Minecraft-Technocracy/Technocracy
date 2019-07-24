@@ -33,10 +33,8 @@ class HeatStorageComponent(initialHeat: Int, var heatCapacity: Int = 1000, var d
     }
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
-        if (nbt is NBTTagCompound) {
-            this.heat = nbt.getInteger(NBT_KEY_HEAT)
-            this.heatCapacity = nbt.getInteger(NBT_KEY_CAPACITY)
-            this.drainEfficiency = nbt.getFloat(NBT_KEY_EFFICIENCY)
-        } else error("expected compound value")
+        this.heat = nbt.getInteger(NBT_KEY_HEAT)
+        this.heatCapacity = nbt.getInteger(NBT_KEY_CAPACITY)
+        this.drainEfficiency = nbt.getFloat(NBT_KEY_EFFICIENCY)
     }
 }

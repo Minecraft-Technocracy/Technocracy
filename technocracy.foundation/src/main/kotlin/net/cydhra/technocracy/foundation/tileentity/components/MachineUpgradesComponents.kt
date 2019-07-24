@@ -35,7 +35,7 @@ class MachineUpgradesComponents : IComponent {
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
         for (upgrade in UpgradeType.values()) {
-            if ((nbt as NBTTagCompound).hasKey(upgrade.name)) {
+            if (nbt.hasKey(upgrade.name)) {
                 installedUpgrades[upgrade] = nbt.getInteger(upgrade.name)
             }
         }

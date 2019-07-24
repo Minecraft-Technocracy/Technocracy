@@ -19,11 +19,11 @@ class NetworkComponent : IComponent {
     }
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
-        if((nbt as NBTTagCompound).hasUniqueId("id")) {
-            uuid = nbt.getUniqueId("id")
+        uuid = if (nbt.hasUniqueId("id")) {
+            nbt.getUniqueId("id")
         } else {
             System.err.println("PIPE HAS NO NETWORK UUID")
-            uuid = UUID.randomUUID()
+            UUID.randomUUID()
         }
     }
 }
