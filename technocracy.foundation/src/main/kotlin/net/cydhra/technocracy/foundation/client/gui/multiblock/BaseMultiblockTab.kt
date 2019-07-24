@@ -2,8 +2,6 @@ package net.cydhra.technocracy.foundation.client.gui.multiblock
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.tabs.TCTab
-import net.cydhra.technocracy.foundation.network.PacketHandler
-import net.cydhra.technocracy.foundation.network.componentsync.MachineGuiClosePacket
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPart
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.GlStateManager
@@ -15,10 +13,6 @@ abstract class BaseMultiblockTab(val controller: TileEntityMultiBlockPart<*>, pa
         GlStateManager.color(1f, 1f, 1f, 1f)
         Minecraft.getMinecraft().fontRenderer.drawString(controller.blockType.localizedName, 8f, 8f, -1, true)
         super.draw(mouseX, mouseY, partialTicks)
-    }
-
-    override fun onClose() {
-        PacketHandler.sendToServer(MachineGuiClosePacket())
     }
 
 }

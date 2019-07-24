@@ -2,8 +2,6 @@ package net.cydhra.technocracy.foundation.client.gui.machine
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.tabs.TCTab
-import net.cydhra.technocracy.foundation.network.PacketHandler
-import net.cydhra.technocracy.foundation.network.componentsync.MachineGuiClosePacket
 import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.GlStateManager
@@ -15,10 +13,6 @@ abstract class BaseMachineTab(val machine: MachineTileEntity, parent: TCGui, ico
         GlStateManager.color(1f, 1f, 1f, 1f)
         Minecraft.getMinecraft().fontRenderer.drawString(machine.blockType.localizedName, 8f, 8f, -1, true)
         super.draw(mouseX, mouseY, partialTicks)
-    }
-
-    override fun onClose() {
-        PacketHandler.sendToServer(MachineGuiClosePacket())
     }
 
 }
