@@ -8,10 +8,10 @@ import net.minecraft.util.text.translation.I18n
 /**
  * Any additional ingots created by this mod are ultimately an instance of this class
  */
-open class ColoredItem(val prefix: String,
-                       val ingotMaterialName: String,
-                       color: ConstantItemColor,
-                       val isFromOreSystem: Boolean = false)
+open class ColoredPrefixedItem(val prefix: String,
+                               val ingotMaterialName: String,
+                               color: ConstantItemColor,
+                               val isFromOreSystem: Boolean = false)
     : BaseItem("$prefix.$ingotMaterialName", oreDictName = "$prefix${ingotMaterialName.capitalize()}", itemColor = color) {
 
     override val modelLocation: String = "${TCFoundation.MODID}:$prefix"
