@@ -13,7 +13,7 @@ import net.minecraft.util.math.Vec3d
 import java.util.*
 
 
-class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
+class TileEntityPipe(meta: Int = -1) : AggregatableTileEntity() {
     companion object {
         const val size = 0.05
         const val nodeSize = 0.075
@@ -44,7 +44,8 @@ class TileEntityPipe(meta: Int = 0) : AggregatableTileEntity() {
         registerComponent(pipeTypes, "pipeTypes")
         registerComponent(facades, "facades")
 
-        pipeTypes.types.add(PipeType.values()[meta])
+        if (meta > -1)
+            pipeTypes.types.add(PipeType.values()[meta])
     }
 
     fun addFacadeOnSide(stack: ItemStack, side: EnumFacing): Boolean {
