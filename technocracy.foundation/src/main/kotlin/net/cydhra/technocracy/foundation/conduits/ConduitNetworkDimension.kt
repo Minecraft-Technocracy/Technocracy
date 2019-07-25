@@ -16,7 +16,7 @@ internal class ConduitNetworkDimension(private val dimensionId: Int) {
      * @param chunk the newly loaded chunk
      */
     internal fun loadChunk(chunk: Chunk) {
-        TODO("not implemented")
+        println("load: ${chunk.pos}")
     }
 
     /**
@@ -28,7 +28,8 @@ internal class ConduitNetworkDimension(private val dimensionId: Int) {
      * @return true, if no more chunks are loaded in this dimension, false otherwise
      */
     internal fun unloadChunk(chunk: Chunk): Boolean {
-        TODO("not implemented")
+        println("unload: ${chunk.pos}")
+        return false
     }
 
     /**
