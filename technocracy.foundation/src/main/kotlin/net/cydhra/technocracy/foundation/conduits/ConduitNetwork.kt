@@ -2,6 +2,7 @@ package net.cydhra.technocracy.foundation.conduits
 
 import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.ChunkPos
 import net.minecraft.world.WorldServer
 
 /**
@@ -10,6 +11,11 @@ import net.minecraft.world.WorldServer
  * in a declarative way (i.e. adding a node by its position and type, not by any wrapper object instance)
  */
 object ConduitNetwork {
+
+    /**
+     * A map of all dimensions that have at least one chunk loaded.
+     */
+    private val dimensions: MutableMap<Int, ConduitNetworkDimension> = mutableMapOf()
 
     /**
      * Add a node to the conduit network. This method does only add this one node to the network: no additional nodes
@@ -22,9 +28,14 @@ object ConduitNetwork {
      * same block must be added individually.
      *
      * @throws IllegalStateException if the node already exists
+     * @throws IllegalStateException if the respective chunk is not loaded
      */
     fun addConduitNode(world: WorldServer, pos: BlockPos, type: PipeType) {
-        TODO("not implemented")
+        val dimension = dimensions[world.provider.dimension]
+                ?: throw IllegalStateException("the dimension is not loaded")
+        val chunk = dimension.getChunkAt(ChunkPos(pos)) ?: throw IllegalStateException("the chunk is not loaded")
+
+        chunk.insertNode(world, pos, type)
     }
 
     /**
@@ -36,9 +47,14 @@ object ConduitNetwork {
      * @param type pipe type that was removed.
      *
      * @throws IllegalStateException if the node does not exist
+     * @throws IllegalStateException if the respective chunk is not loaded
      */
     fun removeConduitNode(world: WorldServer, pos: BlockPos, type: PipeType) {
-        TODO("not implemented")
+        val dimension = dimensions[world.provider.dimension]
+                ?: throw IllegalStateException("the dimension is not loaded")
+        val chunk = dimension.getChunkAt(ChunkPos(pos)) ?: throw IllegalStateException("the chunk is not loaded")
+
+        chunk.removeNode(world, pos, type)
     }
 
     /**
