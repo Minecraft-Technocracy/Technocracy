@@ -96,14 +96,11 @@ class DynamicFluidHandler(var capacity: Int = 1000, val allowedFluid: MutableLis
     }
 
     override fun serializeNBT(): NBTTagCompound {
-        if (currentFluid != null) {
-            val tag = NBTTagCompound()
-            tag.setInteger("Amount", this.currentFluid?.amount ?: 0)
-            tag.setInteger("Capacity", this.capacity)
-            tag.setString("FluidName", this.currentFluid?.localizedName ?: "")
-            return tag
-        }
-        return NBTTagCompound()
+        val tag = NBTTagCompound()
+        tag.setInteger("Amount", this.currentFluid?.amount ?: 0)
+        tag.setInteger("Capacity", this.capacity)
+        tag.setString("FluidName", this.currentFluid?.localizedName ?: "")
+        return tag
     }
 
     enum class TankType {

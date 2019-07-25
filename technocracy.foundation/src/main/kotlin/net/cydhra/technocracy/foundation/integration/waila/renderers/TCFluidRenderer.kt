@@ -32,6 +32,7 @@ class TCFluidRenderer: IWailaTooltipRenderer {
     }
 
     fun getBarSuffix(params: Array<String>): String {
+        if(params.size < 3) return "" // dunno why, but if there is no fluid there are only 2 elements. might be caused by wailas way of interpreting arguments
         return params[2]
     }
 }
