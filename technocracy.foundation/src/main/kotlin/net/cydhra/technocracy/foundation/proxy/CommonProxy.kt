@@ -15,7 +15,6 @@ import net.cydhra.technocracy.foundation.liquids.general.*
 import net.cydhra.technocracy.foundation.network.*
 import net.cydhra.technocracy.foundation.network.componentsync.*
 import net.cydhra.technocracy.foundation.oresystems.*
-import net.cydhra.technocracy.foundation.pipes.Network
 import net.cydhra.technocracy.foundation.potions.PotionManager
 import net.cydhra.technocracy.foundation.potions.oilyEffect
 import net.cydhra.technocracy.foundation.tileentity.TileEntityDrum
@@ -85,7 +84,6 @@ open class CommonProxy {
 
     open fun preInit() {
         MinecraftForge.EVENT_BUS.register(tileEntityManager)
-        MinecraftForge.EVENT_BUS.register(Network)
         MinecraftForge.EVENT_BUS.register(blockManager)
         MinecraftForge.EVENT_BUS.register(fluidManager)
         MinecraftForge.EVENT_BUS.register(itemManager)
