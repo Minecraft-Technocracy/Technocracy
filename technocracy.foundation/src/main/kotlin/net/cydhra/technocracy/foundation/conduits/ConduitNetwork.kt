@@ -4,6 +4,9 @@ import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.world.WorldServer
+import net.minecraftforge.event.world.ChunkDataEvent
+import net.minecraftforge.event.world.ChunkEvent
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 /**
  * Global facade to the conduit network. All components that interact with the conduit network shall talk to this
@@ -90,5 +93,63 @@ object ConduitNetwork {
      */
     fun removeConduitEdge(world: WorldServer, nodeA: BlockPos, nodeB: BlockPos, type: PipeType) {
         TODO("not implemented")
+    }
+
+    /**
+     * When a chunk is read from NBT, it is being loaded, thus we can read the network chunk model and add it to the
+     * respective dimension. If the dimension network does not exist yet, this is the first chunk being loaded and we
+     * can create the dimension instance
+     */
+    @Suppress("unused")
+    @SubscribeEvent
+    fun onChunkDataLoad(@Suppress("UNUSED_PARAMETER") event: ChunkEvent.Load) {
+        if (event.world.isRemote)
+            return
+
+        val dimensionId = event.world.provider.dimension
+        val dimension = dimensions[dimensionId] ?: ConduitNetworkDimension(dimensionId).apply {
+            dimensions[dimensionId] = this
+        }
+
+        dimension.loadChunk(event.chunk)
+    }
+
+    /**
+     * When a chunk is being saved to NBT, but does not exist within the network, it is being generated. We can add
+     * it to the list of loaded chunks as it is being loaded obviously.
+     */
+    @Suppress("unused")
+    @SubscribeEvent
+    fun onChunkDataSave(@Suppress("UNUSED_PARAMETER") event: ChunkDataEvent.Save) {
+        if (event.world.isRemote)
+            return
+
+        val dimensionId = event.world.provider.dimension
+        val dimension = dimensions[dimensionId] ?: ConduitNetworkDimension(dimensionId).apply {
+            dimensions[dimensionId] = this
+        }
+
+        if (dimension.getChunkAt(event.chunk.pos) == null && !event.chunk.unloadQueued) {
+//            println("loaded by save")
+//            dimension.loadChunk(event.chunk)
+        }
+    }
+
+    /**
+     * When a chunk gets unloaded, remove it from the dimension. If the dimension has no more chunks loaded, the
+     * dimension can be unloaded as well.
+     */
+    @Suppress("unused")
+    @SubscribeEvent
+    fun onChunkUnload(@Suppress("UNUSED_PARAMETER") event: ChunkEvent.Unload) {
+        if (event.world.isRemote)
+            return
+
+        val dimensionId = event.world.provider.dimension
+        val dimension = dimensions[dimensionId]!!
+
+        if (dimension.unloadChunk(event.chunk)) {
+            dimensions.remove(dimensionId)
+        }
     }
 }

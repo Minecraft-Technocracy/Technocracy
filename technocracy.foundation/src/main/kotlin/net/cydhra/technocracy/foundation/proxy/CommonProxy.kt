@@ -9,11 +9,15 @@ import net.cydhra.technocracy.foundation.client.model.facade.FacadeItemModel
 import net.cydhra.technocracy.foundation.client.model.pipe.PipeItemModel
 import net.cydhra.technocracy.foundation.client.model.pipe.PipeModel
 import net.cydhra.technocracy.foundation.client.technocracyCreativeTabs
+import net.cydhra.technocracy.foundation.conduits.ConduitNetwork
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.items.general.*
 import net.cydhra.technocracy.foundation.liquids.general.*
-import net.cydhra.technocracy.foundation.network.*
-import net.cydhra.technocracy.foundation.network.componentsync.*
+import net.cydhra.technocracy.foundation.network.ItemKeyBindPacket
+import net.cydhra.technocracy.foundation.network.ItemScrollPacket
+import net.cydhra.technocracy.foundation.network.PacketHandler
+import net.cydhra.technocracy.foundation.network.componentsync.GuiUpdateListener
+import net.cydhra.technocracy.foundation.network.componentsync.MachineInfoPacket
 import net.cydhra.technocracy.foundation.oresystems.*
 import net.cydhra.technocracy.foundation.potions.PotionManager
 import net.cydhra.technocracy.foundation.potions.oilyEffect
@@ -89,6 +93,7 @@ open class CommonProxy {
         MinecraftForge.EVENT_BUS.register(itemManager)
         MinecraftForge.EVENT_BUS.register(GuiUpdateListener())
         MinecraftForge.EVENT_BUS.register(PotionManager)
+        MinecraftForge.EVENT_BUS.register(ConduitNetwork)
 
         materialSystems.forEach { it.preInit(it, blockManager, itemManager, fluidManager) }
 
