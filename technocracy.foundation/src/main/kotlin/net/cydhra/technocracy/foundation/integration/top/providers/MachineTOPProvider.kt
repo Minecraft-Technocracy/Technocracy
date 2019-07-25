@@ -8,6 +8,7 @@ import mcjty.theoneprobe.apiimpl.styles.ProgressStyle
 import net.cydhra.technocracy.foundation.multiblock.BaseMultiBlock
 import net.cydhra.technocracy.foundation.tileentity.api.TCAggregatable
 import net.cydhra.technocracy.foundation.tileentity.components.EnergyStorageComponent
+import net.cydhra.technocracy.foundation.tileentity.components.FluidComponent
 import net.cydhra.technocracy.foundation.tileentity.components.IComponent
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPart
 import net.minecraft.block.state.IBlockState
@@ -17,6 +18,7 @@ import net.minecraft.world.World
 class MachineTOPProvider : IProbeInfoProvider {
 
     private val energyStyle: ProgressStyle = ProgressStyle().suffix("RF").filledColor(0xffff0000.toInt()).borderColor(0xff555555.toInt()).alternateFilledColor(0xff000000.toInt())
+    private val fluidStyle: ProgressStyle = ProgressStyle().suffix("mb").filledColor(0xff0000ff.toInt()).borderColor(0xff555555.toInt()).alternateFilledColor(0xff000000.toInt())
 
     override fun addProbeInfo(mode: ProbeMode, probeInfo: IProbeInfo, player: EntityPlayer, world: World, blockState: IBlockState, data: IProbeHitData) {
         val te = world.getTileEntity(data.pos) as? TCAggregatable ?: return
@@ -27,10 +29,11 @@ class MachineTOPProvider : IProbeInfoProvider {
         } else {
             te.getComponents()
         }
-        components.forEach {
-            if (it.second is EnergyStorageComponent) {
-                val component = it.second as EnergyStorageComponent
+        components.forEach { (_, component) ->
+            if (component is EnergyStorageComponent) {
                 info.horizontal().progress(component.energyStorage.currentEnergy, component.energyStorage.capacity, energyStyle)
+            } else if(component is FluidComponent) {
+                info.horizontal().progress(component.fluid.currentFluid?.amount ?: 0, component.fluid.capacity, fluidStyle).text(component.fluid.currentFluid?.localizedName ?: "")
             }
         }
     }
