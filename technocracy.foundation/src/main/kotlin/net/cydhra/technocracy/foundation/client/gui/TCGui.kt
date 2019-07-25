@@ -318,4 +318,7 @@ TCContainer)
         }
     }
 
+    override fun onGuiClosed() {
+        tabs[tab].onClose()
+    }
 }
