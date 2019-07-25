@@ -15,7 +15,7 @@ class TCEnergyRenderer : IWailaTooltipRenderer {
         return Dimension(55 + Minecraft.getMinecraft().fontRenderer.getStringWidth(getEnergyString(Integer.valueOf(params[0]), Integer.valueOf(params[1]))), 10)
     }
 
-    override fun draw(params: Array<String>, accessor: IWailaCommonAccessor) { // math is pretty ugly, might need a recode later
+    override fun draw(params: Array<String>, accessor: IWailaCommonAccessor) { // code is pretty ugly, needs a recode later
         val currentEnergy = Integer.valueOf(params[0])
         val maxEnergy = Integer.valueOf(params[1])
         val level = currentEnergy.toFloat() / maxEnergy.toFloat()

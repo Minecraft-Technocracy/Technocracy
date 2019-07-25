@@ -97,7 +97,11 @@ class DynamicFluidHandler(var capacity: Int = 1000, val allowedFluid: MutableLis
 
     override fun serializeNBT(): NBTTagCompound {
         if (currentFluid != null) {
-            return currentFluid!!.writeToNBT(NBTTagCompound())
+            val tag = NBTTagCompound()
+            tag.setInteger("Amount", this.currentFluid?.amount ?: 0)
+            tag.setInteger("Capacity", this.capacity)
+            tag.setString("FluidName", this.currentFluid?.localizedName ?: "")
+            return tag
         }
         return NBTTagCompound()
     }

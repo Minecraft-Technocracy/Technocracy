@@ -38,12 +38,18 @@ class MachineWailaProvider : IWailaDataProvider {
                     when (ComponentType.values()[type]) {
                         ComponentType.ENERGY -> {
                             if (config.getConfig("capability.energyinfo")) {
-                                tooltip.add(SpecialChars.getRenderString("technocracy.energy",
+                                tooltip.add(SpecialChars.getRenderString("${TCFoundation.MODID}.energy",
                                         componentTag.getInteger(DynamicEnergyStorageStrategy.KEY_CURRENT_AMOUNT).toString(),
                                         componentTag.getInteger(DynamicEnergyStorageStrategy.KEY_CAPACITY).toString()))
                             }
                         }
                         ComponentType.FLUID -> {
+                            if (config.getConfig("capability.tankinfo")) {
+                                tooltip.add(SpecialChars.getRenderString("${TCFoundation.MODID}.fluid",
+                                        componentTag.getInteger("Amount").toString(),
+                                        componentTag.getInteger("Capacity").toString(),
+                                        componentTag.getString("FluidName").toString()))
+                            }
                         }
                         ComponentType.PIPE_TYPES -> {
                         }
