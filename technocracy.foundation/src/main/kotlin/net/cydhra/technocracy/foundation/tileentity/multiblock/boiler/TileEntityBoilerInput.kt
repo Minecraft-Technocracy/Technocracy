@@ -25,7 +25,7 @@ class TileEntityBoilerInput : TileEntityMultiBlockPart<BoilerMultiBlock>(BoilerM
 
     override fun <T> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
         return (if (hasCapability(capability, facing))
-            CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this.multiblockController
+            CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast<T>(this.multiblockController
                     ?.controllerTileEntity?.fluidHandler)
         else
             null) ?: DynamicFluidHandler(1, allowedFluid = mutableListOf()) as T
