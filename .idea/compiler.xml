@@ -6,6 +6,9 @@
       <module name="Technocracy.foundation.main" target="1.8" />
       <module name="Technocracy.foundation.test" target="1.8" />
       <module name="Technocracy.main" target="1.8" />
+      <module name="technocracy.monolith.api" target="1.8" />
+      <module name="technocracy.monolith.main" target="1.8" />
+      <module name="technocracy.monolith.test" target="1.8" />
       <module name="Technocracy.test" target="1.8" />
     </bytecodeTargetLevel>
   </component>

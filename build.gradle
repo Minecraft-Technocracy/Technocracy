@@ -1,5 +1,5 @@
 buildscript {
-    apply from: '../buildscript.gradle'
+    apply from: 'buildscript.gradle'
 
     ext.mod_id = 'technocracy.monolith'
 
@@ -15,7 +15,7 @@ buildscript {
     }
 }
 
-apply from: '../configuration.gradle'
+apply from: 'configuration.gradle'
 
 dependencies {
     compile group: 'net.cydhra.technocracy', name: 'technocracy.foundation', version: project.version
