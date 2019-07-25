@@ -6,11 +6,14 @@ import mcp.mobius.waila.api.IWailaDataProvider
 import mcp.mobius.waila.api.SpecialChars
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.capabilities.energy.DynamicEnergyStorageStrategy
+import net.cydhra.technocracy.foundation.multiblock.BaseMultiBlock
 import net.cydhra.technocracy.foundation.tileentity.api.TCAggregatable
 import net.cydhra.technocracy.foundation.tileentity.components.ComponentType
+import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPart
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.nbt.NBTTagList
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
@@ -52,12 +55,30 @@ class MachineWailaProvider : IWailaDataProvider {
                         }
                     }
                 }
+
         return tooltip
     }
 
     override fun getNBTData(player: EntityPlayerMP, te: TileEntity, tag: NBTTagCompound, world: World,
                             pos: BlockPos): NBTTagCompound {
-        if (te is TCAggregatable) {
+        if (te is TileEntityMultiBlockPart<*>) {
+            if(te.multiblockController == null) return tag
+            val compound = NBTTagCompound()
+            val components = NBTTagList()
+            (te.multiblockController as BaseMultiBlock).getComponents()
+                    .filter { it.second.type.supportsWaila }
+                    .forEach { (name, component) ->
+                        val index = NBTTagCompound()
+                        index.setInteger("index", components.tagCount())
+                        index.setInteger("type", component.type.ordinal)
+
+                        compound.setTag(name, index)
+                        components.appendTag(component.serializeNBT())
+                    }
+
+            compound.setTag("list", components)
+            tag.setTag(TCFoundation.MODID, compound)
+        } else if (te is TCAggregatable) {
             te.generateNbtUpdateCompound(player, tag)
         }
         return tag
