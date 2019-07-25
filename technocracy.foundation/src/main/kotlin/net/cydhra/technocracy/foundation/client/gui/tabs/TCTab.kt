@@ -32,6 +32,8 @@ abstract class TCTab(val name: String, val parent: TCGui, val tint: Int = -1,
         this.components.forEach(TCComponent::update)
     }
 
+    open fun onClose() {}
+
     open fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton:Int) {
         components.forEach {
             if(it.isMouseOnComponent(mouseX, mouseY))

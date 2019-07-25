@@ -15,6 +15,7 @@ import net.cydhra.technocracy.foundation.client.gui.multiblock.BaseMultiblockTab
 import net.cydhra.technocracy.foundation.client.gui.multiblock.MultiblockContainer
 import net.cydhra.technocracy.foundation.client.gui.multiblock.MultiblockSettingsTab
 import net.cydhra.technocracy.foundation.multiblock.BaseMultiBlock
+import net.cydhra.technocracy.foundation.network.componentsync.guiInfoPacketSubscribers
 import net.cydhra.technocracy.foundation.tileentity.AbstractRectangularMultiBlockTileEntity
 import net.cydhra.technocracy.foundation.tileentity.AggregatableDelegate
 import net.cydhra.technocracy.foundation.tileentity.api.TCAggregatable
@@ -25,6 +26,7 @@ import net.cydhra.technocracy.foundation.tileentity.components.FluidComponent
 import net.cydhra.technocracy.foundation.tileentity.components.InventoryComponent
 import net.cydhra.technocracy.foundation.tileentity.components.ProgressComponent
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumHand
 import net.minecraft.util.ResourceLocation
@@ -95,6 +97,7 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
             if (!world.isRemote) {
                 if (this is ITileEntityMultiblockController && validateStructure()) {
                     player.openGui(TCFoundation, TCGuiHandler.multiblockGui, world, pos.x, pos.y, pos.z)
+                    guiInfoPacketSubscribers[player as EntityPlayerMP] =  Pair(pos, world.provider.dimension)
                 }
             }
         }

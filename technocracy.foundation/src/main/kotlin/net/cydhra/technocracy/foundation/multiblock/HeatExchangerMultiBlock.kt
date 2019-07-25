@@ -298,7 +298,7 @@ class HeatExchangerMultiBlock(world: World) :
         val components = mutableListOf<Pair<String, IComponent>>()
         inputPorts.forEach { components.addAll(it.getComponents()) }
         outputPorts.forEach { components.addAll(it.getComponents()) }
-        components.addAll(controllerTileEntity!!.getComponents())
+        if (controllerTileEntity != null) components.addAll(controllerTileEntity!!.getComponents())
         return components
     }
 

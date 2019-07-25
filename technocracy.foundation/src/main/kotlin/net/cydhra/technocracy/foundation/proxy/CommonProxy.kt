@@ -13,6 +13,7 @@ import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.items.general.*
 import net.cydhra.technocracy.foundation.liquids.general.*
 import net.cydhra.technocracy.foundation.network.*
+import net.cydhra.technocracy.foundation.network.componentsync.*
 import net.cydhra.technocracy.foundation.oresystems.*
 import net.cydhra.technocracy.foundation.pipes.Network
 import net.cydhra.technocracy.foundation.potions.PotionManager
@@ -87,6 +88,7 @@ open class CommonProxy {
         MinecraftForge.EVENT_BUS.register(blockManager)
         MinecraftForge.EVENT_BUS.register(fluidManager)
         MinecraftForge.EVENT_BUS.register(itemManager)
+        MinecraftForge.EVENT_BUS.register(GuiUpdateListener())
         MinecraftForge.EVENT_BUS.register(PotionManager)
 
         materialSystems.forEach { it.preInit(it, blockManager, itemManager, fluidManager) }
@@ -242,8 +244,7 @@ open class CommonProxy {
 
         PacketHandler.registerPacket(ItemScrollPacket::class.java, ItemScrollPacket::class.java, Side.SERVER)
         PacketHandler.registerPacket(ItemKeyBindPacket::class.java, ItemKeyBindPacket::class.java, Side.SERVER)
-        PacketHandler.registerPacket(MachineInfoRequest::class.java, MachineInfoRequest::class.java, Side.SERVER)
-        PacketHandler.registerPacket(MachineInfoResponse::class.java, MachineInfoResponse::class.java, Side.CLIENT)
+        PacketHandler.registerPacket(MachineInfoPacket::class.java, MachineInfoPacket::class.java, Side.CLIENT)
     }
 
     open fun init() {

@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.tileentity.multiblock.refinery
 
+import net.cydhra.technocracy.foundation.capabilities.energy.DynamicEnergyStorage
 import net.cydhra.technocracy.foundation.multiblock.RefineryMultiBlock
 import net.cydhra.technocracy.foundation.tileentity.components.EnergyStorageComponent
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPart
@@ -30,6 +31,7 @@ class TileEntityRefineryHeater : TileEntityMultiBlockPart<RefineryMultiBlock>(Re
     }
 
     override fun <T : Any?> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
-        return this.castCapability(capability, facing) ?: super.getCapability(capability, facing)
+        return castCapability(capability, facing) ?: super.getCapability(capability, facing)
+        ?: DynamicEnergyStorage(0, 1, extractionLimit = 0) as T
     }
 }

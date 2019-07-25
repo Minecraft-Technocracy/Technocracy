@@ -2,9 +2,11 @@ package net.cydhra.technocracy.foundation.blocks
 
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.client.gui.handler.TCGuiHandler
+import net.cydhra.technocracy.foundation.network.componentsync.guiInfoPacketSubscribers
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumHand
@@ -31,6 +33,7 @@ class MachineBlock(name: String, private val tileEntityConstructor: () -> TileEn
         if (!playerIn.isSneaking) {
             if (!worldIn.isRemote) {
                 playerIn.openGui(TCFoundation, TCGuiHandler.machineGui, worldIn, pos.x, pos.y, pos.z)
+                guiInfoPacketSubscribers[playerIn as EntityPlayerMP] =  Pair(pos, worldIn.provider.dimension)
             }
 
             return true
