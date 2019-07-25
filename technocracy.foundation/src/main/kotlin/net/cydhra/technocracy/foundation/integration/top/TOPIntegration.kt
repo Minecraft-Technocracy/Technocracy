@@ -9,7 +9,6 @@ class TOPIntegration {
 
     fun init() {
         TheOneProbe.theOneProbeImp.registerProvider(MachineTOPProvider())
-        TheOneProbe.theOneProbeImp.registerProvider(MultiBlockTOPProvider())
     }
 
 }
