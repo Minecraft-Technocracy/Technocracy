@@ -1,9 +1,8 @@
 rootProject.name = 'technocracy.megastructures'
 
-if (file("../technocracy.foundation").exists()) {
-    includeBuild "../technocracy.foundation"
-}
+boolean inComposite = gradle.parent != null
 
-if (file("../technocracy.astronautics").exists()) {
+if (!inComposite) {
+    includeBuild "../technocracy.foundation"
     includeBuild "../technocracy.astronautics"
 }
