@@ -48,7 +48,7 @@ class MachineWailaProvider : IWailaDataProvider {
                                 tooltip.add(SpecialChars.getRenderString("${TCFoundation.MODID}.fluid",
                                         componentTag.getInteger("Amount").toString(),
                                         componentTag.getInteger("Capacity").toString(),
-                                        componentTag.getString("FluidName").toString()))
+                                        componentTag.getString("FluidName")))
                             }
                         }
                         ComponentType.PIPE_TYPES -> {
