@@ -2,6 +2,7 @@ package net.cydhra.technocracy.foundation.conduits
 
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.world.chunk.Chunk
+import net.minecraftforge.event.world.ChunkDataEvent
 
 internal class ConduitNetworkDimension(private val dimensionId: Int) {
 
@@ -11,12 +12,17 @@ internal class ConduitNetworkDimension(private val dimensionId: Int) {
     private val loadedChunks: MutableMap<ChunkPos, ConduitNetworkChunk> = mutableMapOf()
 
     /**
+     * A map of chunks marked for removal
+     */
+    private val markedForRemoval: MutableMap<ChunkPos, ConduitNetworkChunk> = mutableMapOf()
+
+    /**
      * Called when a chunk loads so the chunk can be parsed and inserted into the dimension network.
      *
      * @param chunk the newly loaded chunk
      */
     internal fun loadChunk(chunk: Chunk) {
-        println("load: ${chunk.pos}")
+        loadedChunks[chunk.pos] = ConduitNetworkChunk(chunk.pos)
     }
 
     /**
@@ -24,12 +30,9 @@ internal class ConduitNetworkDimension(private val dimensionId: Int) {
      * [ConduitNetworkChunk] does not necessarily goes out of scope immediately.
      *
      * @param chunk the chunk that is being unloaded
-     *
-     * @return true, if no more chunks are loaded in this dimension, false otherwise
      */
-    internal fun unloadChunk(chunk: Chunk): Boolean {
-        println("unload: ${chunk.pos}")
-        return false
+    internal fun unloadChunk(chunk: Chunk) {
+        markedForRemoval[chunk.pos] = loadedChunks.remove(chunk.pos)!!
     }
 
     /**
@@ -39,5 +42,19 @@ internal class ConduitNetworkDimension(private val dimensionId: Int) {
      */
     internal fun getChunkAt(pos: ChunkPos): ConduitNetworkChunk? {
         return loadedChunks[pos]
+    }
+
+    /**
+     * Save all conduit data to the chunk's NBT data
+     */
+    fun saveChunkData(event: ChunkDataEvent.Save) {
+        TODO("not implemented")
+    }
+
+    /**
+     * Read conduit data from provided NBT data and apply it to this instance
+     */
+    fun loadChunkData(event: ChunkDataEvent.Load) {
+        TODO("not implemented")
     }
 }

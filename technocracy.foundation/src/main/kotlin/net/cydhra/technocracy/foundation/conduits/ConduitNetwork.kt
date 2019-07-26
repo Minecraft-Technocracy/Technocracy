@@ -96,13 +96,43 @@ object ConduitNetwork {
     }
 
     /**
-     * When a chunk is read from NBT, it is being loaded, thus we can read the network chunk model and add it to the
-     * respective dimension. If the dimension network does not exist yet, this is the first chunk being loaded and we
-     * can create the dimension instance
+     * When a chunk is read from NBT, it has been loaded before and might have conduit data written to it. That must
+     * be retrieved
      */
     @Suppress("unused")
     @SubscribeEvent
-    fun onChunkDataLoad(@Suppress("UNUSED_PARAMETER") event: ChunkEvent.Load) {
+    fun onChunkDataLoad(event: ChunkDataEvent.Load) {
+        if (event.world.isRemote)
+            return
+
+        val dimensionId = event.world.provider.dimension
+        val dimension = dimensions[dimensionId]!!
+
+        dimension.loadChunkData(event)
+    }
+
+    /**
+     * When a chunk is being saved to NBT, but does not exist within the network, it is being generated. We can add
+     * it to the list of loaded chunks as it is being loaded obviously.
+     */
+    @Suppress("unused")
+    @SubscribeEvent
+    fun onChunkDataSave(event: ChunkDataEvent.Save) {
+        if (event.world.isRemote)
+            return
+
+        val dimensionId = event.world.provider.dimension
+        val dimension = dimensions[dimensionId]!!
+
+        dimension.saveChunkData(event)
+    }
+
+    /**
+     * When a chunk gets loaded, it must be added to the dimension network
+     */
+    @Suppress("unused")
+    @SubscribeEvent
+    fun onChunkLoad(event: ChunkEvent.Load) {
         if (event.world.isRemote)
             return
 
@@ -115,41 +145,17 @@ object ConduitNetwork {
     }
 
     /**
-     * When a chunk is being saved to NBT, but does not exist within the network, it is being generated. We can add
-     * it to the list of loaded chunks as it is being loaded obviously.
+     * When a chunk gets unloaded, remove it from the dimension.
      */
     @Suppress("unused")
     @SubscribeEvent
-    fun onChunkDataSave(@Suppress("UNUSED_PARAMETER") event: ChunkDataEvent.Save) {
-        if (event.world.isRemote)
-            return
-
-        val dimensionId = event.world.provider.dimension
-        val dimension = dimensions[dimensionId] ?: ConduitNetworkDimension(dimensionId).apply {
-            dimensions[dimensionId] = this
-        }
-
-        if (dimension.getChunkAt(event.chunk.pos) == null && !event.chunk.unloadQueued) {
-//            println("loaded by save")
-//            dimension.loadChunk(event.chunk)
-        }
-    }
-
-    /**
-     * When a chunk gets unloaded, remove it from the dimension. If the dimension has no more chunks loaded, the
-     * dimension can be unloaded as well.
-     */
-    @Suppress("unused")
-    @SubscribeEvent
-    fun onChunkUnload(@Suppress("UNUSED_PARAMETER") event: ChunkEvent.Unload) {
+    fun onChunkUnload(event: ChunkEvent.Unload) {
         if (event.world.isRemote)
             return
 
         val dimensionId = event.world.provider.dimension
         val dimension = dimensions[dimensionId]!!
 
-        if (dimension.unloadChunk(event.chunk)) {
-            dimensions.remove(dimensionId)
-        }
+        dimension.unloadChunk(event.chunk)
     }
 }
