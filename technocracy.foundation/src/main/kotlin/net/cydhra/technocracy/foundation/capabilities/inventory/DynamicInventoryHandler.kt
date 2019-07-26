@@ -16,7 +16,7 @@ class DynamicInventoryHandler(size: Int = 0, private val machine: TEInventoryPro
         IItemHandlerModifiable,
         INBTSerializable<NBTTagCompound> {
 
-    private var stacks: NonNullList<ItemStack>
+    var stacks: NonNullList<ItemStack>
 
     init {
         stacks = NonNullList.withSize(size, ItemStack.EMPTY)
