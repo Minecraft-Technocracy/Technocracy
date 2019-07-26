@@ -10,9 +10,11 @@ import net.cydhra.technocracy.foundation.tileentity.api.TCAggregatable
 import net.cydhra.technocracy.foundation.tileentity.components.EnergyStorageComponent
 import net.cydhra.technocracy.foundation.tileentity.components.FluidComponent
 import net.cydhra.technocracy.foundation.tileentity.components.IComponent
+import net.cydhra.technocracy.foundation.tileentity.components.InventoryComponent
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPart
 import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.item.ItemStack
 import net.minecraft.world.World
 
 class MachineTOPProvider : IProbeInfoProvider {
@@ -24,16 +26,23 @@ class MachineTOPProvider : IProbeInfoProvider {
         val te = world.getTileEntity(data.pos) as? TCAggregatable ?: return
         val info = probeInfo.vertical()
         val components: MutableList<Pair<String, IComponent>>
-        components = if(te is TileEntityMultiBlockPart<*>) {
-            if(te.multiblockController != null) (te.multiblockController as BaseMultiBlock).getComponents() else mutableListOf()
+        components = if (te is TileEntityMultiBlockPart<*>) {
+            if (te.multiblockController != null) (te.multiblockController as BaseMultiBlock).getComponents() else mutableListOf()
         } else {
             te.getComponents()
         }
         components.forEach { (_, component) ->
-            if (component is EnergyStorageComponent) {
-                info.horizontal().progress(component.energyStorage.currentEnergy, component.energyStorage.capacity, energyStyle)
-            } else if(component is FluidComponent) {
-                info.horizontal().progress(component.fluid.currentFluid?.amount ?: 0, component.fluid.capacity, fluidStyle).text(component.fluid.currentFluid?.localizedName ?: "")
+            when (component) {
+                is EnergyStorageComponent -> info.horizontal().progress(component.energyStorage.currentEnergy, component.energyStorage.capacity, energyStyle)
+                is FluidComponent -> info.horizontal().progress(component.fluid.currentFluid?.amount
+                        ?: 0, component.fluid.capacity, fluidStyle).text(component.fluid.currentFluid?.localizedName
+                        ?: "")
+                is InventoryComponent -> {
+                    for (i in 0 until component.inventory.stacks.size) {
+                        if(component.inventory.getStackInSlot(i) != ItemStack.EMPTY)
+                            info.horizontal().item(component.inventory.getStackInSlot(i)).text(component.inventory.getStackInSlot(i).displayName)
+                    }
+                }
             }
         }
     }
