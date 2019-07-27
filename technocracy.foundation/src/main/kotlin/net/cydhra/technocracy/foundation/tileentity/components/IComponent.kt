@@ -25,7 +25,7 @@ interface IComponent {
 enum class ComponentType(val supportsWaila: Boolean = false) {
     ENERGY(true),
     FLUID(true),
-    INVENTORY,
+    INVENTORY(true),
     FACADE,
     PIPE_TYPES(true),
     HEAT(true),
