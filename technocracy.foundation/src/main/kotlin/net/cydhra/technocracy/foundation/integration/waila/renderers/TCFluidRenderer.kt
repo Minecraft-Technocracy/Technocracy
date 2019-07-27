@@ -5,6 +5,8 @@ import mcp.mobius.waila.api.IWailaTooltipRenderer
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
+import net.minecraftforge.fluids.FluidRegistry
+import net.minecraftforge.fluids.FluidStack
 import java.awt.Color
 import java.awt.Dimension
 
@@ -33,6 +35,7 @@ class TCFluidRenderer: IWailaTooltipRenderer {
 
     fun getBarSuffix(params: Array<String>): String {
         if(params.size < 3) return "" // dunno why, but if there is no fluid there are only 2 elements. might be caused by wailas way of interpreting arguments
-        return params[2]
+        val fluid = FluidRegistry.getFluid(params[2])
+        return fluid.getLocalizedName(FluidStack(fluid, 1))
     }
 }
