@@ -2,6 +2,7 @@ package net.cydhra.technocracy.foundation.blocks.general
 
 import net.cydhra.technocracy.foundation.blocks.*
 import net.cydhra.technocracy.foundation.blocks.liquid.OilBlock
+import net.cydhra.technocracy.foundation.blocks.liquid.SulfuricAcidBlock
 import net.cydhra.technocracy.foundation.tileentity.machines.*
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartBoiler
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartHeatExchanger
@@ -73,6 +74,7 @@ val oilSandBlock = OilSandBlock()
 val oilStone = OilStoneBlock()
 
 val oilBlock = OilBlock()
+val sulfuricAcidBlock = SulfuricAcidBlock()
 
 val pipe = PipeBlock()
 val drum = DrumBlock()
