@@ -38,12 +38,18 @@ class MachineWailaProvider : IWailaDataProvider {
                     when (ComponentType.values()[type]) {
                         ComponentType.ENERGY -> {
                             if (config.getConfig("capability.energyinfo")) {
-                                tooltip.add(SpecialChars.getRenderString("technocracy.energy",
+                                tooltip.add(SpecialChars.getRenderString("${TCFoundation.MODID}.energy",
                                         componentTag.getInteger(DynamicEnergyStorageStrategy.KEY_CURRENT_AMOUNT).toString(),
                                         componentTag.getInteger(DynamicEnergyStorageStrategy.KEY_CAPACITY).toString()))
                             }
                         }
                         ComponentType.FLUID -> {
+                            if (config.getConfig("capability.tankinfo")) {
+                                tooltip.add(SpecialChars.getRenderString("${TCFoundation.MODID}.fluid",
+                                        componentTag.getInteger("Amount").toString(),
+                                        componentTag.getInteger("Capacity").toString(),
+                                        componentTag.getString("FluidName")))
+                            }
                         }
                         ComponentType.PIPE_TYPES -> {
                         }
@@ -52,6 +58,13 @@ class MachineWailaProvider : IWailaDataProvider {
                         ComponentType.UPGRADES -> {
                         }
                         ComponentType.REDSTONE_MODE -> {
+                        }
+                        ComponentType.INVENTORY -> {
+                            val items = componentTag.getTagList("Items", Constants.NBT.TAG_COMPOUND)
+                            items.forEach {
+                                val compound = it as NBTTagCompound
+                                tooltip.add(SpecialChars.getRenderString("${TCFoundation.MODID}.item", compound.getString("id"), compound.getInteger("Count").toString()))
+                            }
                         }
                     }
                 }

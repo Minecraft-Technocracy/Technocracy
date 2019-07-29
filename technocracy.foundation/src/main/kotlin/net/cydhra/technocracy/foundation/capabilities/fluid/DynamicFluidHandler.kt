@@ -2,6 +2,7 @@ package net.cydhra.technocracy.foundation.capabilities.fluid
 
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.common.util.INBTSerializable
+import net.minecraftforge.fluids.FluidRegistry
 import net.minecraftforge.fluids.FluidStack
 import net.minecraftforge.fluids.capability.IFluidHandler
 import net.minecraftforge.fluids.capability.IFluidTankProperties
@@ -96,10 +97,11 @@ class DynamicFluidHandler(var capacity: Int = 1000, val allowedFluid: MutableLis
     }
 
     override fun serializeNBT(): NBTTagCompound {
-        if (currentFluid != null) {
-            return currentFluid!!.writeToNBT(NBTTagCompound())
-        }
-        return NBTTagCompound()
+        val tag = NBTTagCompound()
+        tag.setInteger("Amount", this.currentFluid?.amount ?: 0)
+        tag.setInteger("Capacity", this.capacity)
+        tag.setString("FluidName", if (currentFluid != null) FluidRegistry.getFluidName(this.currentFluid) else "")
+        return tag
     }
 
     enum class TankType {
