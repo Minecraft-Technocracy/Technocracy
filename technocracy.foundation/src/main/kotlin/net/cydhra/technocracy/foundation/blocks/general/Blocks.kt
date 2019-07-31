@@ -75,3 +75,4 @@ val oilStone = OilStoneBlock()
 val oilBlock = OilBlock()
 
 val pipe = PipeBlock()
+val drum = DrumBlock()
