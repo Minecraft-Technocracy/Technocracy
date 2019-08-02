@@ -22,6 +22,11 @@ class TextureAtlasManager {
         lateinit var pipe_energy: TextureAtlasSprite
         lateinit var pipe_node: TextureAtlasSprite
 
+        lateinit var drum_iron: TextureAtlasSprite
+        lateinit var drum_iron_top: TextureAtlasSprite
+        lateinit var drum_steel: TextureAtlasSprite
+        lateinit var drum_steel_top: TextureAtlasSprite
+
         private lateinit var textureMap: TextureMap
 
         /**
@@ -60,6 +65,11 @@ class TextureAtlasManager {
         pipe_fluid = event.map.registerSprite(getResourceLocation("block/steel_dark"))
         pipe_energy = event.map.registerSprite(getResourceLocation("block/boiler_wall"))
         pipe_node = event.map.registerSprite(getResourceLocation("block/frame_corners"))
+
+        drum_iron = event.map.registerSprite(getResourceLocation("block/drum/drum_iron"))
+        drum_iron_top = event.map.registerSprite(getResourceLocation("block/drum/drum_iron_top"))
+        drum_steel = event.map.registerSprite(getResourceLocation("block/drum/drum_steel"))
+        drum_steel_top = event.map.registerSprite(getResourceLocation("block/drum/drum_steel_top"))
 
         event.map.registerSprite(ResourceLocation("technocracy.foundation", "liquid/fluid_opaque_still"))
         event.map.registerSprite(ResourceLocation("technocracy.foundation", "liquid/fluid_still"))

@@ -1,3 +1,23 @@
 {
-  "parent": "technocracy.foundation:block/drum"
+  "parent": "technocracy.foundation:block/drum/drum",
+  "overrides": [
+    {
+      "predicate": {
+        "type": 0.0000000
+      },
+      "model": "technocracy.foundation:block/drum/drum_iron"
+    },
+    {
+      "predicate": {
+        "type": 0.0625
+      },
+      "model": "technocracy.foundation:block/drum/drum_steel"
+    },
+    {
+      "predicate": {
+        "type": 0.125
+      },
+      "model": "technocracy.foundation:block/drum/drum_bedrock"
+    }
+  ]
 }

@@ -5,6 +5,7 @@ import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.general.*
 import net.cydhra.technocracy.foundation.client.gui.handler.TCGuiHandler
 import net.cydhra.technocracy.foundation.client.model.customModel.connector.MachineConnectorModel
+import net.cydhra.technocracy.foundation.client.model.drum.DrumItemModel
 import net.cydhra.technocracy.foundation.client.model.facade.FacadeItemModel
 import net.cydhra.technocracy.foundation.client.model.pipe.PipeItemModel
 import net.cydhra.technocracy.foundation.client.model.pipe.PipeModel
@@ -21,6 +22,7 @@ import net.cydhra.technocracy.foundation.network.componentsync.MachineInfoPacket
 import net.cydhra.technocracy.foundation.oresystems.*
 import net.cydhra.technocracy.foundation.potions.PotionManager
 import net.cydhra.technocracy.foundation.potions.oilyEffect
+import net.cydhra.technocracy.foundation.tileentity.TileEntityDrum
 import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
 import net.cydhra.technocracy.foundation.tileentity.machines.*
 import net.cydhra.technocracy.foundation.tileentity.management.TileEntityManager
@@ -236,6 +238,8 @@ open class CommonProxy {
         tileEntityManager.prepareTileEntityForRegistration(TileEntityRefineryOutput::class)
         tileEntityManager.prepareTileEntityForRegistration(TileEntityRefineryHeater::class)
         tileEntityManager.prepareTileEntityForRegistration(TileEntityMultiBlockPartRefinery::class)
+
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityDrum::class)
 
         //ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPipe::class.java, PipeRenderer())
 
