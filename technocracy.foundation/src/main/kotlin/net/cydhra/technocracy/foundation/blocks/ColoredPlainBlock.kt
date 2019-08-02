@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.blocks
 
 import net.cydhra.technocracy.foundation.blocks.color.DyeBlockColor
-import net.cydhra.technocracy.foundation.items.general.IDynamicStackDisplayName
+import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockDisplayName
 import net.minecraft.block.material.MapColor
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.BlockStateContainer
@@ -18,7 +18,7 @@ class ColoredPlainBlock(unlocalizedName: String,
                         material: Material,
                         opaque: Boolean = true,
                         renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID)
-    : PlainBlock(unlocalizedName, material, opaque, renderLayer, DyeBlockColor), IDynamicStackDisplayName {
+    : PlainBlock(unlocalizedName, material, opaque, renderLayer, DyeBlockColor), IDynamicBlockDisplayName {
 
     init {
         this.defaultState = this.blockState.baseState.withProperty(DyeBlockColor.COLOR, EnumDyeColor.WHITE)
