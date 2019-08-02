@@ -2,9 +2,8 @@ package net.cydhra.technocracy.astronautics.blocks
 
 import net.cydhra.technocracy.foundation.blocks.api.AbstractBaseBlock
 import net.cydhra.technocracy.foundation.blocks.color.DyeBlockColor
-import net.cydhra.technocracy.foundation.items.general.IDynamicStackDisplayName
+import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockDisplayName
 import net.minecraft.block.BlockColored
-import net.minecraft.block.BlockConcretePowder
 import net.minecraft.block.SoundType
 import net.minecraft.block.material.MapColor
 import net.minecraft.block.material.Material
@@ -22,7 +21,7 @@ import net.minecraft.world.World
 import java.util.*
 
 
-class WetConcreteBlock : AbstractBaseBlock("wet_concrete", Material.ROCK, colorMultiplier = DyeBlockColor), IDynamicStackDisplayName {
+class WetConcreteBlock : AbstractBaseBlock("wet_concrete", Material.ROCK, colorMultiplier = DyeBlockColor), IDynamicBlockDisplayName {
     init {
         setHardness(2F)
         setResistance(10.0f)

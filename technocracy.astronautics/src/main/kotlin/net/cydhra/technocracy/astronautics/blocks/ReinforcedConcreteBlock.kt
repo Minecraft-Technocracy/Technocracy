@@ -2,9 +2,7 @@ package net.cydhra.technocracy.astronautics.blocks
 
 import net.cydhra.technocracy.foundation.blocks.api.AbstractBaseBlock
 import net.cydhra.technocracy.foundation.blocks.color.DyeBlockColor
-import net.cydhra.technocracy.foundation.items.general.IDynamicStackDisplayName
-import net.minecraft.block.BlockColored
-import net.minecraft.block.BlockConcretePowder
+import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockDisplayName
 import net.minecraft.block.material.MapColor
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.BlockStateContainer
@@ -13,15 +11,13 @@ import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.Entity
 import net.minecraft.item.EnumDyeColor
 import net.minecraft.item.ItemStack
-import net.minecraft.util.EnumFacing
 import net.minecraft.util.NonNullList
 import net.minecraft.util.math.BlockPos
-import net.minecraft.util.text.translation.I18n
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 
 
-class ReinforcedConcreteBlock : AbstractBaseBlock("reinforced_concrete", Material.IRON, colorMultiplier = DyeBlockColor), IDynamicStackDisplayName {
+class ReinforcedConcreteBlock : AbstractBaseBlock("reinforced_concrete", Material.IRON, colorMultiplier = DyeBlockColor), IDynamicBlockDisplayName {
 
     init {
         setHardness(10F)

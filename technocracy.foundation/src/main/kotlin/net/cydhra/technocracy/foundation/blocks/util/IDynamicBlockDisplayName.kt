@@ -1,8 +1,8 @@
-package net.cydhra.technocracy.foundation.items.general
+package net.cydhra.technocracy.foundation.blocks.util
 
 import net.minecraft.item.ItemStack
 
 
-interface IDynamicStackDisplayName {
+interface IDynamicBlockDisplayName {
     fun getUnlocalizedName(stack: ItemStack): String
 }
