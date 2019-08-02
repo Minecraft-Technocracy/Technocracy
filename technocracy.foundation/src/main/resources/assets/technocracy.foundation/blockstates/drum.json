@@ -1,9 +1,13 @@
 {
   "variants": {
-    "normal": [
-      {
-        "model": "technocracy.foundation:drum"
-      }
-    ]
+    "drumtype=iron": {
+      "model": "technocracy.foundation:drum/drum_iron"
+    },
+    "drumtype=steel": {
+      "model": "technocracy.foundation:drum/drum_steel"
+    },
+    "drumtype=bedrock": {
+      "model": "technocracy.foundation:drum/drum_bedrock"
+    }
   }
 }

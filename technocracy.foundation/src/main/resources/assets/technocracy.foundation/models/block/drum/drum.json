@@ -1,9 +1,9 @@
 {
 	"__comment": "Designed by Pokemonplatin with Cubik Studio - https://cubik.studio",
 	"textures": {
-		"texture": "technocracy.foundation:block/drum",
-		"particle": "technocracy.foundation:block/drum",
-		"drum_top": "technocracy.foundation:block/drum_top"
+		"texture": "technocracy.foundation:block/drum/drum_iron",
+		"particle": "technocracy.foundation:block/drum/drum_iron",
+		"drum_top": "technocracy.foundation:block/drum/drum_iron_top"
 	},
 	"elements": [ 	 
 		{
