@@ -34,7 +34,7 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK), IDy
             if (entityIn == null) {
                 0.0f
             } else {
-                 (1f / 16f) * stack.metadata.toFloat()
+                (1f / 16f) * stack.metadata.toFloat()
             }
         }
         return map

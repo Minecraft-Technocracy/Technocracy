@@ -5,7 +5,6 @@ import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.general.*
 import net.cydhra.technocracy.foundation.client.gui.handler.TCGuiHandler
 import net.cydhra.technocracy.foundation.client.model.customModel.connector.MachineConnectorModel
-import net.cydhra.technocracy.foundation.client.model.drum.DrumItemModel
 import net.cydhra.technocracy.foundation.client.model.facade.FacadeItemModel
 import net.cydhra.technocracy.foundation.client.model.pipe.PipeItemModel
 import net.cydhra.technocracy.foundation.client.model.pipe.PipeModel
