@@ -9,7 +9,7 @@ import net.cydhra.technocracy.foundation.multiblock.BaseMultiBlock
 import net.cydhra.technocracy.foundation.tileentity.api.TCAggregatable
 import net.cydhra.technocracy.foundation.tileentity.components.EnergyStorageComponent
 import net.cydhra.technocracy.foundation.tileentity.components.FluidComponent
-import net.cydhra.technocracy.foundation.tileentity.components.IComponent
+import net.cydhra.technocracy.foundation.tileentity.components.AbstractComponent
 import net.cydhra.technocracy.foundation.tileentity.components.InventoryComponent
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPart
 import net.minecraft.block.state.IBlockState
@@ -25,7 +25,7 @@ class MachineTOPProvider : IProbeInfoProvider {
     override fun addProbeInfo(mode: ProbeMode, probeInfo: IProbeInfo, player: EntityPlayer, world: World, blockState: IBlockState, data: IProbeHitData) {
         val te = world.getTileEntity(data.pos) as? TCAggregatable ?: return
         val info = probeInfo.vertical()
-        val components: MutableList<Pair<String, IComponent>>
+        val components: MutableList<Pair<String, AbstractComponent>>
         components = if (te is TileEntityMultiBlockPart<*>) {
             if (te.multiblockController != null) (te.multiblockController as BaseMultiBlock).getComponents() else mutableListOf()
         } else {

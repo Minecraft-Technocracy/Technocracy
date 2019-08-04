@@ -3,7 +3,7 @@ package net.cydhra.technocracy.foundation.network.componentsync
 import net.cydhra.technocracy.foundation.multiblock.BaseMultiBlock
 import net.cydhra.technocracy.foundation.network.PacketHandler
 import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
-import net.cydhra.technocracy.foundation.tileentity.components.IComponent
+import net.cydhra.technocracy.foundation.tileentity.components.AbstractComponent
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPart
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.nbt.NBTTagCompound
@@ -53,7 +53,7 @@ class GuiUpdateListener {
         }
     }
 
-    fun getTagForMachine(components: MutableList<Pair<String, IComponent>>): NBTTagCompound {
+    fun getTagForMachine(components: MutableList<Pair<String, AbstractComponent>>): NBTTagCompound {
         val tag = NBTTagCompound()
         components.forEach { (name, component) ->
             tag.setTag(name, component.serializeNBT())

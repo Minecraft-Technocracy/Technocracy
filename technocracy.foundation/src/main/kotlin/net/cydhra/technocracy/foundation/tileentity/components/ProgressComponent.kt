@@ -2,7 +2,7 @@ package net.cydhra.technocracy.foundation.tileentity.components
 
 import net.minecraft.nbt.NBTTagCompound
 
-class ProgressComponent: IComponent {
+class ProgressComponent: AbstractComponent() {
 
     override val type: ComponentType = ComponentType.PROGRESS
 

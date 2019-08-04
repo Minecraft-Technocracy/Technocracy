@@ -4,7 +4,7 @@ import net.minecraft.nbt.NBTTagCompound
 import java.util.*
 
 
-class NetworkComponent : IComponent {
+class NetworkComponent : AbstractComponent() {
 
     override val type: ComponentType = ComponentType.NETWORK
 

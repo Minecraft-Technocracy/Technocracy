@@ -1,19 +1,23 @@
 package net.cydhra.technocracy.foundation.tileentity.api
 
-import net.cydhra.technocracy.foundation.tileentity.components.IComponent
+import net.cydhra.technocracy.foundation.tileentity.AbstractTileEntity
+import net.cydhra.technocracy.foundation.tileentity.components.AbstractComponent
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
 
 /**
- * Aggregation of [IComponent] implementations used for tile entities. Note, that this interface is not necessarily
+ * Aggregation of [AbstractComponent] implementations used for tile entities. Note, that this interface is not necessarily
  * implemented by a tile entity, but can be implemented as a delegate instead.
  */
 interface TCAggregatable {
-    fun getComponents(): MutableList<Pair<String, IComponent>>
 
-    fun registerComponent(component: IComponent, name: String)
+    var tile: AbstractTileEntity
+
+    fun getComponents(): MutableList<Pair<String, AbstractComponent>>
+
+    fun registerComponent(component: AbstractComponent, name: String)
 
     fun serializeNBT(compound: NBTTagCompound): NBTTagCompound
 

@@ -3,7 +3,7 @@ package net.cydhra.technocracy.foundation.tileentity
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.tileentity.api.TCAggregatable
 import net.cydhra.technocracy.foundation.tileentity.components.AbstractCapabilityComponent
-import net.cydhra.technocracy.foundation.tileentity.components.IComponent
+import net.cydhra.technocracy.foundation.tileentity.components.AbstractComponent
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTTagList
@@ -15,10 +15,12 @@ import net.minecraftforge.common.capabilities.Capability
  */
 class AggregatableDelegate : TCAggregatable {
 
+    override lateinit var tile: AbstractTileEntity
+
     /**
      * All machine components that are saved to NBT and possibly accessible from GUI
      */
-    private val components: MutableList<Pair<String, IComponent>> = mutableListOf()
+    private val components: MutableList<Pair<String, AbstractComponent>> = mutableListOf()
 
     /**
      * All components that also offer a capability. They must also be added to [components] but for speed they are
@@ -29,17 +31,19 @@ class AggregatableDelegate : TCAggregatable {
     /**
      * @return all registered components
      */
-    override fun getComponents(): MutableList<Pair<String, IComponent>> {
+    override fun getComponents(): MutableList<Pair<String, AbstractComponent>> {
         return this.components
     }
 
     /**
      * Register a machine component. Should happen during construction of the tile entity instance.
      *
-     * @param component [IComponent] implementation
+     * @param component [AbstractComponent] implementation
      * @param name machine-unique name for the component. Used in NBT serialization
      */
-    override fun registerComponent(component: IComponent, name: String) {
+    override fun registerComponent(component: AbstractComponent, name: String) {
+        component.tile = tile
+
         this.components += name to component
 
         if (component is AbstractCapabilityComponent) {

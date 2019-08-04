@@ -7,7 +7,7 @@ import it.zerono.mods.zerocore.lib.block.ModTileEntity
 import net.cydhra.technocracy.foundation.blocks.general.*
 import net.cydhra.technocracy.foundation.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
-import net.cydhra.technocracy.foundation.tileentity.components.IComponent
+import net.cydhra.technocracy.foundation.tileentity.components.AbstractComponent
 import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryHeater
 import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryInput
@@ -186,8 +186,8 @@ class RefineryMultiBlock(world: World) : BaseMultiBlock(
         }
     }
 
-    override fun getComponents(): MutableList<Pair<String, IComponent>> {
-        val components = mutableListOf<Pair<String, IComponent>>()
+    override fun getComponents(): MutableList<Pair<String, AbstractComponent>> {
+        val components = mutableListOf<Pair<String, AbstractComponent>>()
         if (heater != null) components.addAll(heater!!.getComponents())
         //components.addAll(inputPort!!.getComponents())
         //outputPorts.forEach { components.addAll(it.getComponents()) }

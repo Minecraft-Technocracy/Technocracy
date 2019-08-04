@@ -7,7 +7,11 @@ import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
-open class AggregatableTileEntity : AbstractTileEntity(), TCAggregatableTileEntity, TCAggregatable by AggregatableDelegate() {
+open class AggregatableTileEntity() : AbstractTileEntity(), TCAggregatableTileEntity, TCAggregatable by AggregatableDelegate() {
+
+    init {
+        this.tile = this
+    }
 
     override fun writeToNBT(compound: NBTTagCompound): NBTTagCompound {
         super.writeToNBT(compound)

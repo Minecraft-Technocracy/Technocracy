@@ -8,7 +8,7 @@ import net.minecraft.nbt.NBTTagCompound
  *
  * @see RedstoneMode
  */
-class RedstoneModeComponent : IComponent {
+class RedstoneModeComponent : AbstractComponent() {
 
     override val type: ComponentType = ComponentType.REDSTONE_MODE
 

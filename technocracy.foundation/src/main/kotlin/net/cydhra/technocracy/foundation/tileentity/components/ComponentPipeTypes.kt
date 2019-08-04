@@ -5,7 +5,7 @@ import net.minecraft.nbt.NBTTagCompound
 import java.util.*
 
 
-class ComponentPipeTypes : IComponent {
+class ComponentPipeTypes : AbstractComponent() {
 
     override val type: ComponentType = ComponentType.PIPE_TYPES
 
