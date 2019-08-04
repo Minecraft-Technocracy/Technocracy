@@ -14,7 +14,7 @@ class TileEntityDrum() : AggregatableTileEntity() {
 
     override fun onLoad() {
         val state = world.getBlockState(getPos())
-        fluidCapability.capacity = state.block.getMetaFromState(state)
+        fluidCapability.capacity = DrumBlock.DrumType.values()[state.block.getMetaFromState(state)].amount
     }
 
     init {
