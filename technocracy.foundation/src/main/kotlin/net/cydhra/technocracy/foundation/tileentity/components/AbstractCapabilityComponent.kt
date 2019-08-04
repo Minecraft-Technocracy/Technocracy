@@ -6,7 +6,7 @@ import net.minecraftforge.common.capabilities.Capability
 /**
  * Defines structure for capabilities that also implement a capability.
  */
-abstract class AbstractCapabilityComponent : IComponent {
+abstract class AbstractCapabilityComponent : AbstractComponent() {
 
     /**
      * Returns true, if this component implements the capability that is given through [capability].

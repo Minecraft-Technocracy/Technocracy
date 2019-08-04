@@ -1,24 +1,27 @@
 package net.cydhra.technocracy.foundation.tileentity.components
 
+import net.cydhra.technocracy.foundation.tileentity.AbstractTileEntity
 import net.minecraft.nbt.NBTTagCompound
 
 /**
- * Interface defining a common component of machine tile entity implementations. All components define some ability
+ * Class defining a common component of machine tile entity implementations. All components define some ability
  * of a machine that requires saved state.
  */
-interface IComponent {
+abstract class AbstractComponent {
 
-    val type: ComponentType
+    lateinit var tile: AbstractTileEntity
+
+    abstract val type: ComponentType
 
     /**
      * Write the component's state to an NBT value
      */
-    fun serializeNBT(): NBTTagCompound
+    abstract fun serializeNBT(): NBTTagCompound
 
     /**
      * deserialize and apply the component's state from the given tag
      */
-    fun deserializeNBT(nbt: NBTTagCompound)
+    abstract fun deserializeNBT(nbt: NBTTagCompound)
 
 }
 

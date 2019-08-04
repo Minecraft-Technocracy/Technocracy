@@ -10,7 +10,7 @@ import net.minecraft.nbt.NBTTagCompound
  * @param drainEfficiency a multiplier between 0 and 1 on how much heat is lost on draining heat from the component
  */
 class HeatStorageComponent(initialHeat: Int, var heatCapacity: Int = 1000, var drainEfficiency: Float = 1.0f) :
-        IComponent {
+        AbstractComponent() {
 
     override val type: ComponentType = ComponentType.HEAT
 

@@ -5,7 +5,7 @@ import net.minecraft.nbt.NBTTagCompound
 /**
  * A machine component that handles all machine upgrades.
  */
-class MachineUpgradesComponents : IComponent {
+class MachineUpgradesComponents : AbstractComponent() {
 
     companion object {
         private const val NBT_KEY_UPGRADES = "upgrades"

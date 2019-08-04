@@ -4,7 +4,7 @@ import it.zerono.mods.zerocore.api.multiblock.IMultiblockPart
 import it.zerono.mods.zerocore.api.multiblock.rectangular.RectangularMultiblockControllerBase
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import it.zerono.mods.zerocore.api.multiblock.validation.ValidationError
-import net.cydhra.technocracy.foundation.tileentity.components.IComponent
+import net.cydhra.technocracy.foundation.tileentity.components.AbstractComponent
 import net.minecraft.block.state.IBlockState
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.text.TextComponentTranslation
@@ -58,7 +58,7 @@ abstract class BaseMultiBlock(
         return this.maximumSizeXZ
     }
 
-    abstract fun getComponents(): MutableList<Pair<String, IComponent>>
+    abstract fun getComponents(): MutableList<Pair<String, AbstractComponent>>
 
     /**
      * Helper function to easily assemble a multi-block structure. This method is supposed t be called from
