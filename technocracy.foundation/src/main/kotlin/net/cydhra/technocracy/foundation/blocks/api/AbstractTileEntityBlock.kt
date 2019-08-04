@@ -1,8 +1,22 @@
 package net.cydhra.technocracy.foundation.blocks.api
 
 import net.cydhra.technocracy.foundation.blocks.color.IBlockColor
+import net.minecraft.block.Block
+import net.minecraft.block.BlockFlowerPot
 import net.minecraft.block.ITileEntityProvider
 import net.minecraft.block.material.Material
+import net.minecraft.block.state.IBlockState
+import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.item.ItemStack
+import net.minecraft.stats.StatList
+import net.minecraft.tileentity.TileEntity
+import net.minecraft.util.NonNullList
+import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.RayTraceResult
+import net.minecraft.world.IBlockAccess
+import net.minecraft.world.IWorldNameable
+import net.minecraft.world.World
+
 
 /**
  * An implementation of [IBaseBlock] that creates a tile entity with it. It inherits [AbstractRotateableBlock] so it
@@ -18,4 +32,63 @@ abstract class AbstractTileEntityBlock(unlocalizedName: String,
                                        registryName: String = unlocalizedName,
                                        colorMultiplier: IBlockColor? = null,
                                        material: Material)
-    : AbstractBaseBlock(unlocalizedName, material, registryName, colorMultiplier), ITileEntityProvider
+    : AbstractBaseBlock(unlocalizedName, material, registryName, colorMultiplier), ITileEntityProvider {
+
+    /**
+     * Returns the ItemStack of the TileEntity if it gets destroyed
+     */
+    protected abstract fun getDropItem(state: IBlockState, world: IBlockAccess, pos: BlockPos): ItemStack
+
+    /**
+     * Used together with [Block.removedByPlayer].
+     * This is like Vanilla's [Block.harvestBlock] except that uses the custom [ItemStack]
+     * from [Block.getItemDropped]
+     *
+     * @author Forge
+     * @see [BlockFlowerPot.harvestBlock]
+     */
+    override fun harvestBlock(worldIn: World, player: EntityPlayer, pos: BlockPos, state: IBlockState, te: TileEntity?, stack: ItemStack) {
+
+        player.addStat(StatList.getBlockStats(this)!!)
+        player.addExhaustion(0.005f)
+        if (!worldIn.isRemote) {
+            val dropItem = getDropItem(state, worldIn, pos)
+            if (te is IWorldNameable) {
+                dropItem.setStackDisplayName((te as IWorldNameable).name)
+            }
+            spawnAsEntity(worldIn, pos, dropItem)
+        }
+        //Set it to air like the flower pot's harvestBlock method
+        worldIn.setBlockToAir(pos)
+    }
+
+
+    override fun getPickBlock(state: IBlockState, target: RayTraceResult, world: World, pos: BlockPos, player: EntityPlayer): ItemStack? {
+        return getDropItem(state, world, pos)
+    }
+
+    override fun getDrops(drops: NonNullList<ItemStack>, world: IBlockAccess, pos: BlockPos, state: IBlockState, fortune: Int) {
+        drops.add(getDropItem(state, world, pos))
+    }
+
+    /**
+     * Returns that this "cannot" be silk touched. This is so that [Block.getSilkTouchDrop] is not called, because only [Block.getDrops] supports tile entities.
+     * Our blocks keep their inventory and other behave like they are being silk touched by default anyway.
+     *
+     * @return false
+     */
+    override fun canSilkHarvest(): Boolean {
+        return false
+    }
+
+    /**
+     * Keep tile entity in world until after [Block.getDrops]. Used together with [Block.harvestBlock].
+     *
+     * @author Forge
+     * @see BlockFlowerPot.removedByPlayer
+     */
+    override fun removedByPlayer(state: IBlockState, world: World, pos: BlockPos, player: EntityPlayer, willHarvest: Boolean): Boolean {
+        return willHarvest || super.removedByPlayer(state, world, pos, player, false)
+    }
+
+}

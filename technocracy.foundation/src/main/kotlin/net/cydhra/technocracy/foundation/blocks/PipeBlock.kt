@@ -57,6 +57,10 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
 
     var lastFallLoc: BlockPos? = null
 
+    override fun getDropItem(state: IBlockState, world: IBlockAccess, pos: BlockPos): ItemStack {
+        return ItemStack(this, 1, getMetaFromState(state))
+    }
+
     override fun getExtendedState(state: IBlockState, world: IBlockAccess?, pos: BlockPos?): IExtendedBlockState {
         return (state as IExtendedBlockState).withProperty(POSITION, pos)
     }

@@ -24,6 +24,9 @@ import net.minecraftforge.fml.relauncher.SideOnly
 
 
 class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK), IDynamicBlockItemProperty, IDynamicBlockDisplayName {
+    override fun getDropItem(state: IBlockState, world: IBlockAccess, pos: BlockPos): ItemStack {
+        return ItemStack(this)
+    }
     override fun getUnlocalizedName(stack: ItemStack): String {
         return DrumType.values()[stack.metadata].getDrumName()
     }

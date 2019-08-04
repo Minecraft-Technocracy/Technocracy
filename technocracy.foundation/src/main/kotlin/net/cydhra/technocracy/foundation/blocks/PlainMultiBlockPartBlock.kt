@@ -7,6 +7,7 @@ import net.cydhra.technocracy.foundation.blocks.api.TCMultiBlock
 import net.cydhra.technocracy.foundation.tileentity.api.TCMultiBlockActiveTileEntity
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
+import net.minecraft.item.ItemStack
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.BlockRenderLayer
 import net.minecraft.util.EnumFacing
@@ -62,5 +63,9 @@ class PlainMultiBlockPartBlock<T>(
         }
 
         return super.shouldSideBeRendered(blockState, blockAccess, pos, side)
+    }
+
+    override fun getDropItem(state: IBlockState, world: IBlockAccess, pos: BlockPos): ItemStack {
+        return ItemStack(this)
     }
 }
