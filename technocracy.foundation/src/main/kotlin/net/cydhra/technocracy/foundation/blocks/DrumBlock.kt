@@ -69,7 +69,7 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
     }
 
     override fun createNewTileEntity(worldIn: World, meta: Int): TileEntity? {
-        return TileEntityDrum(meta)
+        return TileEntityDrum()
     }
 
     companion object {
