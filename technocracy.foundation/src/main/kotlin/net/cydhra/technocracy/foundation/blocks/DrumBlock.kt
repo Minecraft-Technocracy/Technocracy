@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.blocks
 
 import net.cydhra.technocracy.foundation.blocks.api.AbstractTileEntityBlock
+import net.cydhra.technocracy.foundation.blocks.color.IBlockColor
 import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockDisplayName
 import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockItemProperty
 import net.cydhra.technocracy.foundation.tileentity.TileEntityDrum
@@ -19,14 +20,38 @@ import net.minecraft.util.math.AxisAlignedBB
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
-import net.minecraftforge.fml.relauncher.Side
-import net.minecraftforge.fml.relauncher.SideOnly
+import net.minecraftforge.fluids.Fluid
+import net.minecraftforge.fluids.FluidStack
 
 
-class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK), IDynamicBlockItemProperty, IDynamicBlockDisplayName {
+class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colorMultiplier = object : IBlockColor {
+    override fun colorMultiplier(state: IBlockState, worldIn: IBlockAccess?, pos: BlockPos?, tintIndex: Int): Int {
+        val tile = (worldIn!!.getTileEntity(pos!!) ?: return -1) as TileEntityDrum
+        return (tile.fluidCapability.currentFluid ?: return -1).fluid!!.color
+    }
+
+    override fun colorMultiplier(stack: ItemStack, tintIndex: Int): Int {
+        if (stack.hasTagCompound()) {
+            val fluid = getFluid(stack.tagCompound)
+            if (fluid != null) {
+                return fluid.color
+            }
+        }
+
+        return -1
+    }
+
+    fun getFluid(nbt: NBTTagCompound?): Fluid? {
+        val stack = FluidStack.loadFluidStackFromNBT(nbt) ?: return null
+        return stack.fluid
+    }
+
+}), IDynamicBlockItemProperty, IDynamicBlockDisplayName {
+
     override fun getDropItem(state: IBlockState, world: IBlockAccess, pos: BlockPos): ItemStack {
         return ItemStack(this)
     }
+
     override fun getUnlocalizedName(stack: ItemStack): String {
         return DrumType.values()[stack.metadata].getDrumName()
     }
@@ -82,9 +107,8 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK), IDy
 
     val boundingBox = AxisAlignedBB(0.1, 0.0, 0.1, 0.9, 1.0, 0.9)
 
-    @SideOnly(Side.CLIENT)
-    override fun getBlockLayer(): BlockRenderLayer {
-        return BlockRenderLayer.CUTOUT
+    override fun canRenderInLayer(state: IBlockState, layer: BlockRenderLayer): Boolean {
+        return layer == BlockRenderLayer.CUTOUT
     }
 
     override fun isOpaqueCube(state: IBlockState): Boolean {
@@ -120,7 +144,7 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK), IDy
         }
 
         fun getDrumName(): String {
-            return "tile.drum.${getName()}.name"
+            return "tile.drum.${getName()}"
         }
     }
 }
