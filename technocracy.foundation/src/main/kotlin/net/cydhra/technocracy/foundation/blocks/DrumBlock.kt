@@ -29,8 +29,6 @@ import net.minecraftforge.fml.relauncher.FMLLaunchHandler.side
 import sun.audio.AudioPlayer.player
 
 
-
-
 class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colorMultiplier = object : IBlockColor {
     override fun colorMultiplier(state: IBlockState, worldIn: IBlockAccess?, pos: BlockPos?, tintIndex: Int): Int {
         val tile = (worldIn!!.getTileEntity(pos!!) ?: return -1) as? TileEntityDrum ?: return -1
@@ -56,7 +54,7 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
 }), IDynamicBlockItemProperty, IDynamicBlockDisplayName, IDynamicBlockPlaceBehavior {
 
     override fun placeBlockAt(place: Boolean, stack: ItemStack, player: EntityPlayer, world: World, pos: BlockPos, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float, newState: IBlockState): Boolean {
-        if(!stack.hasTagCompound()) return place
+        if (!stack.hasTagCompound()) return place
         val tile = world.getTileEntity(pos) as? TileEntityDrum ?: return place
 
         tile.deserializeNBT(stack.tagCompound!!)
@@ -80,11 +78,7 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
     override fun getOverrides(): Map<ResourceLocation, IItemPropertyGetter> {
         val map = mutableMapOf<ResourceLocation, IItemPropertyGetter>()
         map[ResourceLocation("type")] = IItemPropertyGetter { stack, worldIn, entityIn ->
-            if (entityIn == null) {
-                0.0f
-            } else {
-                (1f / 16f) * stack.metadata.toFloat()
-            }
+            (1f / 16f) * stack.metadata.toFloat()
         }
         return map
     }
@@ -116,12 +110,7 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
     override fun getSubBlocks(itemIn: CreativeTabs, items: NonNullList<ItemStack>) {
         if (this.creativeTabToDisplayOn == itemIn) {
             for (type in DrumType.values()) {
-                val stack = ItemStack(this, 1, type.ordinal)
-                val compound = NBTTagCompound()
-                compound.setInteger("fluidAmount", 0)
-                compound.setString("fluidType", "")
-                stack.tagCompound = compound
-                items.add(stack)
+                items.add(ItemStack(this, 1, type.ordinal))
             }
         }
     }
