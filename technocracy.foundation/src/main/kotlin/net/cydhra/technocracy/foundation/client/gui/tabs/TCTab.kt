@@ -3,6 +3,8 @@ package net.cydhra.technocracy.foundation.client.gui.tabs
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlot
+import net.minecraft.client.Minecraft
+import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.ResourceLocation
 
@@ -16,6 +18,8 @@ abstract class TCTab(val name: String, val parent: TCGui, val tint: Int = -1,
     abstract fun init()
 
     open fun draw(mouseX: Int, mouseY: Int, partialTicks: Float) {
+        GlStateManager.color(1f, 1f, 1f, 1f)
+        Minecraft.getMinecraft().fontRenderer.drawString(name, 8f, 8f, -1, true)
         this.components.forEach {
             it.draw(mouseX, mouseY, partialTicks)
         }
