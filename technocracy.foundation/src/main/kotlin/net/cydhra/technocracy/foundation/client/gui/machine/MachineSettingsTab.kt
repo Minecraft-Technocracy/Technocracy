@@ -22,8 +22,6 @@ class MachineSettingsTab(parent: TCGui, val machine: MachineTileEntity, val play
 
     override fun draw(mouseX: Int, mouseY: Int, partialTicks: Float) {
         super.draw(mouseX, mouseY, partialTicks)
-
-        Minecraft.getMinecraft().fontRenderer.drawStringWithShadow("Settings", 8f, 8f, -1)
         Minecraft.getMinecraft().fontRenderer.drawStringWithShadow("Redstone Mode: ", 10f, 24f, -1)
     }
 
