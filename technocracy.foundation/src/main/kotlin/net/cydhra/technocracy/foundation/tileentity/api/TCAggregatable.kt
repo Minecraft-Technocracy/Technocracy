@@ -4,6 +4,7 @@ import net.cydhra.technocracy.foundation.tileentity.AbstractTileEntity
 import net.cydhra.technocracy.foundation.tileentity.components.AbstractComponent
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
 
@@ -13,7 +14,7 @@ import net.minecraftforge.common.capabilities.Capability
  */
 interface TCAggregatable {
 
-    var tile: AbstractTileEntity
+    var tile: TileEntity
 
     fun getComponents(): MutableList<Pair<String, AbstractComponent>>
 

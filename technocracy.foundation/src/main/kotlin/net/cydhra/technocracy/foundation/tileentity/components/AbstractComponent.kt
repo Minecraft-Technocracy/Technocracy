@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.tileentity.components
 
-import net.cydhra.technocracy.foundation.tileentity.AbstractTileEntity
 import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.tileentity.TileEntity
 
 /**
  * Class defining a common component of machine tile entity implementations. All components define some ability
@@ -9,16 +9,14 @@ import net.minecraft.nbt.NBTTagCompound
  */
 abstract class AbstractComponent {
 
-    lateinit var tile: AbstractTileEntity
+    lateinit var tile: TileEntity
 
     var syncToClient = false
 
     fun markDirty(needsClientRerender: Boolean = false) {
-
         if (syncToClient && needsClientRerender) {
-            tile.markRenderUpdate()
+            tile.world.notifyBlockUpdate(tile.pos, tile.world.getBlockState(tile.pos), tile.world.getBlockState(tile.pos), 0)
         }
-            //tile.world.notifyBlockUpdate(tile.pos, tile.getBlockState(), tile.getBlockState(), 3)
         tile.markDirty()
     }
 

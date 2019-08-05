@@ -54,6 +54,6 @@ abstract class AbstractTileEntity : TileEntity(), TCTileEntity {
     }
 
     fun markRenderUpdate() {
-        world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 0);
+        world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 0)
     }
 }
