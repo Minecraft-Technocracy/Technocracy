@@ -37,7 +37,7 @@ class RocketControllerBlock : AbstractTileEntityBlock("rocket_controller", mater
         return false
     }
 
-    override fun getDropItem(state: IBlockState, world: IBlockAccess, pos: BlockPos): ItemStack {
+    override fun getDropItem(state: IBlockState, world: IBlockAccess, pos: BlockPos, te: TileEntity?): ItemStack {
         return ItemStack(this)
     }
 }

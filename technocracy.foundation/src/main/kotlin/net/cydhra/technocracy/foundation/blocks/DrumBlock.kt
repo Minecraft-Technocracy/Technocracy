@@ -4,6 +4,7 @@ import net.cydhra.technocracy.foundation.blocks.api.AbstractTileEntityBlock
 import net.cydhra.technocracy.foundation.blocks.color.IBlockColor
 import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockDisplayName
 import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockItemProperty
+import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockPlaceBehavior
 import net.cydhra.technocracy.foundation.tileentity.TileEntityDrum
 import net.minecraft.block.material.Material
 import net.minecraft.block.properties.PropertyEnum
@@ -11,6 +12,8 @@ import net.minecraft.block.state.BlockStateContainer
 import net.minecraft.block.state.IBlockState
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.Entity
+import net.minecraft.entity.EntityLivingBase
+import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.IItemPropertyGetter
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
@@ -22,6 +25,10 @@ import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 import net.minecraftforge.fluids.Fluid
 import net.minecraftforge.fluids.FluidStack
+import net.minecraftforge.fml.relauncher.FMLLaunchHandler.side
+import sun.audio.AudioPlayer.player
+
+
 
 
 class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colorMultiplier = object : IBlockColor {
@@ -32,7 +39,7 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
 
     override fun colorMultiplier(stack: ItemStack, tintIndex: Int): Int {
         if (stack.hasTagCompound()) {
-            val fluid = getFluid(stack.tagCompound)
+            val fluid = getFluid(stack.tagCompound!!)
             if (fluid != null) {
                 return fluid.color
             }
@@ -41,15 +48,29 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
         return -1
     }
 
-    fun getFluid(nbt: NBTTagCompound?): Fluid? {
-        val stack = FluidStack.loadFluidStackFromNBT(nbt) ?: return null
+    fun getFluid(nbt: NBTTagCompound): Fluid? {
+        val stack = FluidStack.loadFluidStackFromNBT(nbt.getCompoundTag("fluid")) ?: return null
         return stack.fluid
     }
 
-}), IDynamicBlockItemProperty, IDynamicBlockDisplayName {
+}), IDynamicBlockItemProperty, IDynamicBlockDisplayName, IDynamicBlockPlaceBehavior {
 
-    override fun getDropItem(state: IBlockState, world: IBlockAccess, pos: BlockPos): ItemStack {
-        return ItemStack(this)
+    override fun placeBlockAt(place: Boolean, stack: ItemStack, player: EntityPlayer, world: World, pos: BlockPos, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float, newState: IBlockState): Boolean {
+        if(!stack.hasTagCompound()) return place
+        val tile = world.getTileEntity(pos) as? TileEntityDrum ?: return place
+
+        tile.deserializeNBT(stack.tagCompound!!)
+        return place
+    }
+
+    override fun getDropItem(state: IBlockState, world: IBlockAccess, pos: BlockPos, te: TileEntity?): ItemStack {
+        val stack = ItemStack(this, 1, getMetaFromState(state))
+        if (te != null && te is TileEntityDrum && te.fluidCapability.currentFluid != null) {
+            val comp = NBTTagCompound()
+            te.serializeNBT(comp)
+            stack.tagCompound = comp
+        }
+        return stack
     }
 
     override fun getUnlocalizedName(stack: ItemStack): String {
@@ -98,7 +119,7 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
                 val stack = ItemStack(this, 1, type.ordinal)
                 val compound = NBTTagCompound()
                 compound.setInteger("fluidAmount", 0)
-                compound.setString("fluidType", "d")
+                compound.setString("fluidType", "")
                 stack.tagCompound = compound
                 items.add(stack)
             }

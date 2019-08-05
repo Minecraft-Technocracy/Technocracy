@@ -37,7 +37,7 @@ abstract class AbstractTileEntityBlock(unlocalizedName: String,
     /**
      * Returns the ItemStack of the TileEntity if it gets destroyed
      */
-    protected abstract fun getDropItem(state: IBlockState, world: IBlockAccess, pos: BlockPos): ItemStack
+    protected abstract fun getDropItem(state: IBlockState, world: IBlockAccess, pos: BlockPos, te: TileEntity?): ItemStack
 
     /**
      * Used together with [Block.removedByPlayer].
@@ -52,7 +52,7 @@ abstract class AbstractTileEntityBlock(unlocalizedName: String,
         player.addStat(StatList.getBlockStats(this)!!)
         player.addExhaustion(0.005f)
         if (!worldIn.isRemote) {
-            val dropItem = getDropItem(state, worldIn, pos)
+            val dropItem = getDropItem(state, worldIn, pos, te)
             if (te is IWorldNameable) {
                 dropItem.setStackDisplayName((te as IWorldNameable).name)
             }
@@ -64,11 +64,11 @@ abstract class AbstractTileEntityBlock(unlocalizedName: String,
 
 
     override fun getPickBlock(state: IBlockState, target: RayTraceResult, world: World, pos: BlockPos, player: EntityPlayer): ItemStack? {
-        return getDropItem(state, world, pos)
+        return getDropItem(state, world, pos, world.getTileEntity(pos))
     }
 
     override fun getDrops(drops: NonNullList<ItemStack>, world: IBlockAccess, pos: BlockPos, state: IBlockState, fortune: Int) {
-        drops.add(getDropItem(state, world, pos))
+        drops.add(getDropItem(state, world, pos, world.getTileEntity(pos)))
     }
 
     /**
