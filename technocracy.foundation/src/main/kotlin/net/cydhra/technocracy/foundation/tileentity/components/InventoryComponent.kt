@@ -15,11 +15,16 @@ import net.minecraftforge.items.CapabilityItemHandler
 class InventoryComponent(size: Int, provider: TEInventoryProvider, val facing: EnumFacing? = null) :
         AbstractCapabilityComponent() {
 
-    override val type: ComponentType = ComponentType.INVENTORY
     /**
      * Inventory capability of the machine
      */
-    val inventory = DynamicInventoryHandler(size, provider)
+    val inventory: DynamicInventoryHandler = DynamicInventoryHandler(size, provider)
+
+    override val type: ComponentType = ComponentType.INVENTORY
+
+    init {
+        inventory.componentParent = this
+    }
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
         return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && this.facing?.equals(facing) ?: true

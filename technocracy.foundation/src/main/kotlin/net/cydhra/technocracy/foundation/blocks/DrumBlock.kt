@@ -26,7 +26,7 @@ import net.minecraftforge.fluids.FluidStack
 
 class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colorMultiplier = object : IBlockColor {
     override fun colorMultiplier(state: IBlockState, worldIn: IBlockAccess?, pos: BlockPos?, tintIndex: Int): Int {
-        val tile = (worldIn!!.getTileEntity(pos!!) ?: return -1) as TileEntityDrum
+        val tile = (worldIn!!.getTileEntity(pos!!) ?: return -1) as? TileEntityDrum ?: return -1
         return (tile.fluidCapability.currentFluid ?: return -1).fluid!!.color
     }
 

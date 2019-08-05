@@ -1,5 +1,7 @@
 package net.cydhra.technocracy.foundation.capabilities.inventory
 
+import net.cydhra.technocracy.foundation.capabilities.AbstractDynamicHandler
+import net.cydhra.technocracy.foundation.tileentity.components.AbstractCapabilityComponent
 import net.cydhra.technocracy.foundation.tileentity.management.TEInventoryProvider
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
@@ -14,7 +16,7 @@ import net.minecraftforge.items.ItemHandlerHelper
 
 class DynamicInventoryHandler(size: Int = 0, private val machine: TEInventoryProvider) : IItemHandler,
         IItemHandlerModifiable,
-        INBTSerializable<NBTTagCompound> {
+        INBTSerializable<NBTTagCompound>, AbstractDynamicHandler() {
 
     var stacks: NonNullList<ItemStack>
 

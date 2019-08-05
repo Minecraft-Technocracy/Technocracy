@@ -18,6 +18,7 @@ class TileEntityDrum() : AggregatableTileEntity() {
     }
 
     init {
+        fluidComponent.syncToClient = true
         this.registerComponent(fluidComponent, "fluid")
     }
 }

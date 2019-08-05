@@ -13,6 +13,10 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler
 class FluidComponent(val fluid: DynamicFluidHandler, val facing: MutableSet<EnumFacing>) :
         AbstractCapabilityComponent() {
 
+    init {
+        fluid.componentParent = this
+    }
+
     override val type: ComponentType = ComponentType.FLUID
 
     /**
