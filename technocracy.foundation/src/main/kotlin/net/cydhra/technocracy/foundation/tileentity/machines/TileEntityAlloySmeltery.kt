@@ -1,6 +1,9 @@
 package net.cydhra.technocracy.foundation.tileentity.machines
 
 import net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryHandler
+import net.cydhra.technocracy.foundation.client.gui.TCGui
+import net.cydhra.technocracy.foundation.client.gui.components.label.DefaultLabel
+import net.cydhra.technocracy.foundation.client.gui.tabs.TCTab
 import net.cydhra.technocracy.foundation.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
@@ -55,5 +58,13 @@ class TileEntityAlloySmeltery : MachineTileEntity(), TEInventoryProvider {
                 && (0 until this.inputInventoryComponent.inventory.slots).all { index ->
             index == slot || !this.inputInventoryComponent.inventory.getStackInSlot(index).isItemEqual(stack)
         }
+    }
+
+    override fun initGui(gui: TCGui) {
+        gui.registerTab(object: TCTab("Example", gui) {
+            override fun init() {
+                addComponent(DefaultLabel(10, 20, "Hello World"))
+            }
+        })
     }
 }
