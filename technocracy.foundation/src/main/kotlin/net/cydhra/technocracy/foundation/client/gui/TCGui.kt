@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.client.gui
 
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlot
+import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
 import net.cydhra.technocracy.foundation.client.gui.tabs.TCTab
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
@@ -9,6 +10,7 @@ import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.RenderHelper
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.inventory.Slot
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.fml.client.config.GuiUtils
 
@@ -81,13 +83,15 @@ TCContainer)
             if (this.isPointInRegion(x, y, width, height, mouseX, mouseY)) {
                 this.tab = it
 
-                this.tabs.withIndex()
-                        .forEach { (index, tab) ->
-                            tab.components
-                                    .filterIsInstance<TCSlot>()
-                                    .map { index to it }
-                                    .forEach { pair -> pair.second.isEnabled = pair.first == it }
+                this.tabs.withIndex().forEach { (index, tab) ->
+                    tab.components.filterIsInstance<Slot>().map { index to it }.forEach { pair ->
+                        if(pair.second is TCSlot) {
+                            (pair.second as TCSlot).isEnabled = pair.first == it
+                        } else if(pair.second is TCSlotIO) {
+                            (pair.second as TCSlotIO).isEnabled = pair.first == it
                         }
+                    }
+                }
             }
         }
     }
