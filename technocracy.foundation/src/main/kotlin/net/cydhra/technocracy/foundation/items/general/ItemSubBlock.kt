@@ -2,10 +2,17 @@ package net.cydhra.technocracy.foundation.items.general
 
 import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockDisplayName
 import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockItemProperty
+import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockPlaceBehavior
 import net.minecraft.block.Block
+import net.minecraft.block.state.IBlockState
+import net.minecraft.client.util.ITooltipFlag
+import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemBlock
 import net.minecraft.item.ItemStack
+import net.minecraft.util.EnumFacing
 import net.minecraft.util.NonNullList
+import net.minecraft.util.math.BlockPos
+import net.minecraft.world.World
 
 
 class ItemSubBlock(block: Block) : ItemBlock(block) {
@@ -33,5 +40,15 @@ class ItemSubBlock(block: Block) : ItemBlock(block) {
         }
 
         return super.getUnlocalizedName(stack)
+    }
+
+    override fun placeBlockAt(stack: ItemStack, player: EntityPlayer, world: World, pos: BlockPos, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float, newState: IBlockState): Boolean {
+        val place = super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState)
+
+        if (block is IDynamicBlockPlaceBehavior) {
+            return block.placeBlockAt(place,stack, player, world, pos, side, hitX, hitY, hitZ, newState)
+        }
+
+        return place
     }
 }

@@ -45,7 +45,7 @@ class MultiBlockActiveBlock<out T>(name: String, tileEntityConstructor: () -> T,
         return super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ)
     }
 
-    override fun getDropItem(state: IBlockState, world: IBlockAccess, pos: BlockPos): ItemStack {
+    override fun getDropItem(state: IBlockState, world: IBlockAccess, pos: BlockPos, te: TileEntity?): ItemStack {
         return ItemStack(this)
     }
 

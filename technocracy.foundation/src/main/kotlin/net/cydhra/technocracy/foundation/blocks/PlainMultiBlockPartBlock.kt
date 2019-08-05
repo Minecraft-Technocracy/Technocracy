@@ -65,7 +65,7 @@ class PlainMultiBlockPartBlock<T>(
         return super.shouldSideBeRendered(blockState, blockAccess, pos, side)
     }
 
-    override fun getDropItem(state: IBlockState, world: IBlockAccess, pos: BlockPos): ItemStack {
+    override fun getDropItem(state: IBlockState, world: IBlockAccess, pos: BlockPos, te: TileEntity?): ItemStack {
         return ItemStack(this)
     }
 }
