@@ -22,7 +22,7 @@ internal class ConduitNetworkDimension(private val dimensionId: Int) {
      * @param chunk the newly loaded chunk
      */
     internal fun loadChunk(chunk: Chunk) {
-        loadedChunks[chunk.pos] = ConduitNetworkChunk(chunk.pos)
+        loadedChunks[chunk.pos] = ConduitNetworkChunkDataCache.popChunkData(chunk.pos) ?: ConduitNetworkChunk(chunk.pos)
     }
 
     /**
@@ -48,13 +48,20 @@ internal class ConduitNetworkDimension(private val dimensionId: Int) {
      * Save all conduit data to the chunk's NBT data
      */
     fun saveChunkData(event: ChunkDataEvent.Save) {
-        TODO("not implemented")
+        // TODO saving
+
+        markedForRemoval.remove(event.chunk.pos)
     }
 
     /**
-     * Read conduit data from provided NBT data and apply it to this instance
+     * Read conduit data from provided NBT data and apply it to a new instance of [ConduitNetworkChunk]. The chunk is
+     * then pushed into the chunk data cache, so it can be retrieved whenever the chunk is actually loaded through
+     * [loadChunk]
      */
     fun loadChunkData(event: ChunkDataEvent.Load) {
-        TODO("not implemented")
+        val chunkData = ConduitNetworkChunk(event.chunk.pos)
+        // TODO loading
+
+        ConduitNetworkChunkDataCache.enqueueChunkData(event.chunk.pos, chunkData)
     }
 }
