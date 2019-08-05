@@ -106,7 +106,9 @@ object ConduitNetwork {
             return
 
         val dimensionId = event.world.provider.dimension
-        val dimension = dimensions[dimensionId]!!
+        val dimension = dimensions[dimensionId] ?: ConduitNetworkDimension(dimensionId).apply {
+            dimensions[dimensionId] = this
+        }
 
         dimension.loadChunkData(event)
     }
