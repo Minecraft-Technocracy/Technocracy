@@ -45,6 +45,10 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
     : TCAggregatableTileEntity, TCAggregatable by AggregatableDelegate(), TCTileEntityGuiProvider, AbstractRectangularMultiBlockTileEntity()
         where T : MultiblockControllerBase {
 
+    init {
+        this.tile = this
+    }
+
     override fun createNewMultiblock(): T {
         return constructController(this.world)
     }

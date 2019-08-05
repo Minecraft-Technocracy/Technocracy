@@ -7,6 +7,7 @@ import net.cydhra.technocracy.foundation.tileentity.components.AbstractComponent
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTTagList
+import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
 
@@ -15,7 +16,7 @@ import net.minecraftforge.common.capabilities.Capability
  */
 class AggregatableDelegate : TCAggregatable {
 
-    override lateinit var tile: AbstractTileEntity
+    override lateinit var tile: TileEntity
 
     /**
      * All machine components that are saved to NBT and possibly accessible from GUI
