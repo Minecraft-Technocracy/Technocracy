@@ -11,6 +11,8 @@ import net.minecraftforge.items.SlotItemHandler
 
 class TCSlotIO(itemHandler: IItemHandler, index: Int, xPosition: Int, yPosition: Int, val gui: TCGui) : SlotItemHandler(itemHandler, index, xPosition, yPosition), TCComponent {
 
+    private var enabled: Boolean = true
+
     override fun update() {
     }
 
@@ -31,6 +33,14 @@ class TCSlotIO(itemHandler: IItemHandler, index: Int, xPosition: Int, yPosition:
 
     override fun isMouseOnComponent(mouseX: Int, mouseY: Int): Boolean {
         return mouseX > xPos && mouseX < xPos + 18 && mouseY > yPos && mouseY < yPos + 18
+    }
+
+    override fun isEnabled(): Boolean {
+        return this.enabled
+    }
+
+    fun setEnabled(enabled: Boolean) {
+        this.enabled = enabled
     }
 
 }
