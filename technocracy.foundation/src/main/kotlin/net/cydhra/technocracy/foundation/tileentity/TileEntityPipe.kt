@@ -10,7 +10,6 @@ import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.AxisAlignedBB
 import net.minecraft.util.math.Vec3d
-import java.util.*
 
 
 class TileEntityPipe : AggregatableTileEntity() {
@@ -70,16 +69,6 @@ class TileEntityPipe : AggregatableTileEntity() {
 
     fun getInstalledTypes(): List<PipeType> {
         return listOf(*pipeTypes.types.toTypedArray())
-    }
-
-    fun getNetworkId(): UUID {
-        return networkComponent.uuid!!
-    }
-
-    fun setNetworkId(uuid: UUID): TileEntityPipe {
-        networkComponent.uuid = uuid
-        markForUpdate()
-        return this
     }
 
     override fun onLoad() {
