@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.capabilities.fluid
 
+import net.cydhra.technocracy.foundation.capabilities.AbstractDynamicHandler
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.common.util.INBTSerializable
 import net.minecraftforge.fluids.FluidRegistry
@@ -14,7 +15,7 @@ import net.minecraftforge.fluids.capability.IFluidTankProperties
  */
 class DynamicFluidHandler(var capacity: Int = 1000, val allowedFluid: MutableList<String>,
                           var tanktype: TankType = TankType.BOTH) :
-        IFluidHandler, INBTSerializable<NBTTagCompound> {
+        IFluidHandler, INBTSerializable<NBTTagCompound>, AbstractDynamicHandler() {
 
     var currentFluid: FluidStack? = null
         private set
@@ -22,6 +23,9 @@ class DynamicFluidHandler(var capacity: Int = 1000, val allowedFluid: MutableLis
     val simpleTankProperty = arrayOf<IFluidTankProperties>(SimpleTankProperty(this))
 
     override fun drain(resource: FluidStack, doDrain: Boolean): FluidStack? {
+
+        val lastFluid = currentFluid
+
         if (currentFluid == null || !currentFluid!!.isFluidEqual(resource)) {
             return null
         }
@@ -38,10 +42,16 @@ class DynamicFluidHandler(var capacity: Int = 1000, val allowedFluid: MutableLis
             currentFluid = null
         }
 
+        if (doDrain) {
+            markDirty(currentFluid != lastFluid)
+        }
+
         return out
     }
 
     override fun drain(maxDrain: Int, doDrain: Boolean): FluidStack? {
+        val lastFluid = currentFluid
+
         if (currentFluid == null)
             return null
 
@@ -57,10 +67,16 @@ class DynamicFluidHandler(var capacity: Int = 1000, val allowedFluid: MutableLis
             currentFluid = null
         }
 
+        if (doDrain) {
+            markDirty(currentFluid != lastFluid)
+        }
+
         return out
     }
 
     override fun fill(resource: FluidStack, doFill: Boolean): Int {
+        val lastFluid = currentFluid
+
         if (!allowedFluid.contains(resource.fluid.name) && !allowedFluid.isEmpty()) {
             return 0
         }
@@ -78,6 +94,9 @@ class DynamicFluidHandler(var capacity: Int = 1000, val allowedFluid: MutableLis
             val fill = Math.min(resource.amount, capacity - currentFluid!!.amount)
 
             currentFluid!!.amount += fill
+
+            markDirty(currentFluid != lastFluid)
+
             return fill
         } else {
             if (currentFluid == null) {

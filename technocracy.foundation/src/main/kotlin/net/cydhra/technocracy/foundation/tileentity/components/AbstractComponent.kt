@@ -11,6 +11,17 @@ abstract class AbstractComponent {
 
     lateinit var tile: AbstractTileEntity
 
+    var syncToClient = false
+
+    fun markDirty(needsClientRerender: Boolean = false) {
+
+        if (syncToClient && needsClientRerender) {
+            tile.markRenderUpdate()
+        }
+            //tile.world.notifyBlockUpdate(tile.pos, tile.getBlockState(), tile.getBlockState(), 3)
+        tile.markDirty()
+    }
+
     abstract val type: ComponentType
 
     /**

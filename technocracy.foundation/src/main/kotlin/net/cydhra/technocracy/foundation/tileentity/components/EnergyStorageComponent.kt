@@ -25,6 +25,9 @@ class EnergyStorageComponent(val facing: MutableSet<EnumFacing>) : AbstractCapab
             extractionLimit = 0,
             receivingLimit = 8000)
 
+    init {
+        energyStorage.componentParent = this
+    }
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
         return capability == EnergyCapabilityProvider.CAPABILITY_ENERGY && this.facing.contains(facing)
