@@ -252,6 +252,7 @@ open class CommonProxy {
         PacketHandler.registerPacket(ItemScrollPacket::class.java, ItemScrollPacket::class.java, Side.SERVER)
         PacketHandler.registerPacket(ItemKeyBindPacket::class.java, ItemKeyBindPacket::class.java, Side.SERVER)
         PacketHandler.registerPacket(MachineInfoPacket::class.java, MachineInfoPacket::class.java, Side.CLIENT)
+        PacketHandler.registerPacket(ClientComponentUpdatePacket::class.java, ClientComponentUpdatePacket::class.java, Side.SERVER)
     }
 
     open fun init() {
