@@ -2,6 +2,7 @@ package net.cydhra.technocracy.foundation.conduits
 
 import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.world.WorldServer
@@ -24,6 +25,18 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
         private set
 
     /**
+     * A mutable mapping of block positions to their respective node types
+     */
+    private val nodes: MutableMap<BlockPos, MutableSet<PipeType>> = mutableMapOf()
+
+    /**
+     * A mutable mapping of block positions to a mapping of pipe types to a set of directions this type has edges in.
+     * All edges are saved twice, so both connected block positions have an entry for the edge. This increases memory
+     * use, but is considered worth for the reduced complexity of obtaining edge lists
+     */
+    private val edges: MutableMap<BlockPos, MutableMap<PipeType, MutableSet<EnumFacing>>> = mutableMapOf()
+
+    /**
      * Add a node to the conduit network. This method does only add this one node to the network: no additional nodes
      * are discovered in the neighborhood of the block. If the node already exists, an [IllegalStateException] is
      * thrown. No edges are inserted into the network. It is asserted that [pos] is within the chunk modeled by this
@@ -37,7 +50,16 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      * @throws IllegalStateException if the node already exists
      */
     internal fun insertNode(world: WorldServer, pos: BlockPos, type: PipeType) {
-        TODO("not implemented")
+        if (this.nodes[pos]?.contains(type) == true)
+            throw IllegalStateException("the inserted node already exists within the network")
+
+        if (!this.nodes.contains(pos)) {
+            this.nodes[pos] = mutableSetOf()
+        }
+
+        this.nodes[pos]!!.add(type)
+        this.recalculatePaths()
+        this.markDirty()
     }
 
     /**
@@ -52,7 +74,12 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      * @throws IllegalStateException if the node does not exist
      */
     internal fun removeNode(world: WorldServer, pos: BlockPos, type: PipeType) {
-        TODO("not implemented")
+        if (this.nodes[pos]?.contains(type) == false)
+            throw IllegalStateException("the removed node does not exist within the network")
+
+        this.nodes[pos]!!.remove(type)
+        this.recalculatePaths()
+        this.markDirty()
     }
 
     /**
@@ -72,7 +99,42 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      * @throws [IllegalStateException] if the edge already exists
      */
     internal fun insertEdge(world: WorldServer, nodeA: BlockPos, nodeB: BlockPos, type: PipeType) {
-        TODO("not implemented")
+        val directionFromA = EnumFacing.values().firstOrNull { nodeA.add(it.directionVec) == nodeB }
+                ?: throw IllegalArgumentException("the positions are not adjacent")
+
+        if (this.nodes[nodeA]?.contains(type) == false)
+            throw IllegalArgumentException("position A does not contain a node of type $type")
+
+        if (this.nodes[nodeB]?.contains(type) == false)
+            throw IllegalArgumentException("position B does not contain a node of type $type")
+
+        if (this.edges[nodeA]?.get(type)?.contains(directionFromA) == true) {
+            throw IllegalStateException("the edge already existed")
+        }
+
+        assert(this.edges[nodeB]?.get(type)?.contains(directionFromA.opposite) == false)
+
+        if (!this.edges.containsKey(nodeA)) {
+            this.edges[nodeA] = mutableMapOf()
+        }
+
+        if (!this.edges[nodeA]!!.containsKey(type)) {
+            this.edges[nodeA]!![type] = mutableSetOf()
+        }
+
+        this.edges[nodeA]!![type]!! += directionFromA
+
+        if (!this.edges.containsKey(nodeB)) {
+            this.edges[nodeB] = mutableMapOf()
+        }
+
+        if (!this.edges[nodeB]!!.containsKey(type)) {
+            this.edges[nodeB]!![type] = mutableSetOf()
+        }
+
+        this.edges[nodeB]!![type]!! += directionFromA.opposite
+        this.recalculatePaths()
+        this.markDirty()
     }
 
     /**
@@ -89,7 +151,20 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      * @throws [IllegalStateException] if the edge does not exist
      */
     internal fun removeEdge(world: WorldServer, nodeA: BlockPos, nodeB: BlockPos, type: PipeType) {
-        TODO("not implemented")
+        val directionFromA = EnumFacing.values().firstOrNull { nodeA.add(it.directionVec) == nodeB }
+                ?: throw IllegalArgumentException("the positions are not adjacent")
+
+        if (this.edges[nodeA]?.get(type)?.contains(directionFromA) == false) {
+            throw IllegalStateException("the edge does not exist")
+        }
+
+        assert(this.edges[nodeB]?.get(type)?.contains(directionFromA.opposite) == true)
+
+        this.edges[nodeA]!![type]!!.remove(directionFromA)
+        this.edges[nodeB]!![type]!!.remove(directionFromA.opposite)
+
+        this.recalculatePaths()
+        this.markDirty()
     }
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
@@ -109,5 +184,12 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      */
     private fun markDirty() {
         cacheValidationCounter++
+    }
+
+    /**
+     * Recalculate the internal transit network
+     */
+    private fun recalculatePaths() {
+        // TODO recalculate transit model
     }
 }
