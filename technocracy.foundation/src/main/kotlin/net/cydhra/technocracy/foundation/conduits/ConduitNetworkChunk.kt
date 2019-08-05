@@ -1,9 +1,11 @@
 package net.cydhra.technocracy.foundation.conduits
 
 import net.cydhra.technocracy.foundation.pipes.types.PipeType
+import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.world.WorldServer
+import net.minecraftforge.common.util.INBTSerializable
 
 /**
  * A model for a chunk of the conduit network. Can be removed from the conduit network dimension without breaking
@@ -12,7 +14,7 @@ import net.minecraft.world.WorldServer
  *
  * @param chunkPos the chunk position in the dimension
  */
-internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) {
+internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSerializable<NBTTagCompound> {
 
     /**
      * A counter that gets increased, every time the conduit network within this chunk is modified. Checking this
@@ -88,6 +90,18 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) {
      */
     internal fun removeEdge(world: WorldServer, nodeA: BlockPos, nodeB: BlockPos, type: PipeType) {
         TODO("not implemented")
+    }
+
+    override fun deserializeNBT(nbt: NBTTagCompound) {
+        // TODO reading
+    }
+
+    override fun serializeNBT(): NBTTagCompound {
+        val compound = NBTTagCompound()
+
+        // TODO writing
+
+        return compound
     }
 
     /**

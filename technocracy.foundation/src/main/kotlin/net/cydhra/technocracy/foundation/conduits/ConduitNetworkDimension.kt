@@ -6,6 +6,10 @@ import net.minecraftforge.event.world.ChunkDataEvent
 
 internal class ConduitNetworkDimension(private val dimensionId: Int) {
 
+    companion object {
+        private const val NBT_KEY_NETWORK_DATA = "conduits"
+    }
+
     /**
      * A map of all chunks currently loaded
      */
@@ -15,6 +19,7 @@ internal class ConduitNetworkDimension(private val dimensionId: Int) {
      * A map of chunks marked for removal
      */
     private val markedForRemoval: MutableMap<ChunkPos, ConduitNetworkChunk> = mutableMapOf()
+
 
     /**
      * Called when a chunk loads so the chunk can be parsed and inserted into the dimension network.
@@ -48,9 +53,8 @@ internal class ConduitNetworkDimension(private val dimensionId: Int) {
      * Save all conduit data to the chunk's NBT data
      */
     fun saveChunkData(event: ChunkDataEvent.Save) {
-        // TODO saving
-
-        markedForRemoval.remove(event.chunk.pos)
+        val chunk = markedForRemoval.remove(event.chunk.pos) ?: this.getChunkAt(event.chunk.pos)!!
+        event.data.setTag(NBT_KEY_NETWORK_DATA, chunk.serializeNBT())
     }
 
     /**
@@ -60,7 +64,7 @@ internal class ConduitNetworkDimension(private val dimensionId: Int) {
      */
     fun loadChunkData(event: ChunkDataEvent.Load) {
         val chunkData = ConduitNetworkChunk(event.chunk.pos)
-        // TODO loading
+        chunkData.deserializeNBT(event.data.getCompoundTag(NBT_KEY_NETWORK_DATA))
 
         ConduitNetworkChunkDataCache.enqueueChunkData(event.chunk.pos, chunkData)
     }
