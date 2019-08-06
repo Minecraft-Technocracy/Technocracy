@@ -6,6 +6,7 @@ import net.cydhra.technocracy.foundation.util.facade.FakeBlockAccess
 import net.cydhra.technocracy.foundation.util.model.SimpleQuad
 import net.cydhra.technocracy.foundation.util.model.pipeline.QuadPipeline
 import net.cydhra.technocracy.foundation.util.model.pipeline.consumer.QuadFacadeTransformer
+import net.cydhra.technocracy.foundation.util.model.pipeline.consumer.QuadShrinker
 import net.cydhra.technocracy.foundation.util.model.pipeline.consumer.QuadTinter
 import net.cydhra.technocracy.foundation.util.model.pipeline.consumer.QuadUVTransformer
 import net.cydhra.technocracy.foundation.util.model.pipeline.consumer.clone.QuadCloneConsumer
@@ -78,10 +79,10 @@ object FacadeBakery {
         }
         origQuads.addAll(coverModel.getQuads(null, null, 0))
 
-        val pipeline = QuadPipeline().addConsumer(QuadCloneConsumer, QuadTinter, QuadFacadeTransformer, QuadUVTransformer)
+        val pipeline = QuadPipeline().addConsumer(QuadCloneConsumer, QuadTinter, QuadShrinker, QuadUVTransformer)
         QuadCloneConsumer.clonePos = true
-        QuadFacadeTransformer.coverFace = EnumFacing.NORTH
-        QuadFacadeTransformer.faces = faces
+        QuadShrinker.coverFace = EnumFacing.NORTH
+        QuadShrinker.faces = faces
 
         for (bakedQuad in origQuads) {
             val quad = SimpleQuad(DefaultVertexFormats.ITEM)
@@ -100,7 +101,9 @@ object FacadeBakery {
         var origQuads = coverModel.getQuads(customState, null, 0)
 
 
-        val pipeline = QuadPipeline().addConsumer(QuadCloneConsumer, QuadTinter, QuadFacadeTransformer, QuadUVTransformer)
+        val pipeline = QuadPipeline().addConsumer(QuadCloneConsumer, QuadTinter, QuadShrinker,QuadFacadeTransformer, QuadUVTransformer)
+        QuadShrinker.coverFace = coverFace
+        QuadShrinker.faces = faces
         QuadFacadeTransformer.coverFace = coverFace
         QuadFacadeTransformer.faces = faces
         QuadCloneConsumer.clonePos = true
@@ -128,6 +131,7 @@ object FacadeBakery {
                             quads.add(pipeline.pipe(quad, bakedQuad).bake())
                         }
                     } else {
+                        pipeline.removeConsumer(QuadShrinker)
                         pipeline.removeConsumer(QuadFacadeTransformer)
                         QuadCloneConsumer.clonePos = false
                         //ctm block
@@ -191,7 +195,7 @@ object FacadeBakery {
             EnumFacing.NORTH -> 1 - height
             else -> 0.0f
         }
-
+        
         if (facing == EnumFacing.NORTH) {
             when (vertices) {
                 1 -> {

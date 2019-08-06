@@ -5,9 +5,11 @@ import net.cydhra.technocracy.foundation.items.FacadeItem
 import net.cydhra.technocracy.foundation.items.general.pipeItem
 import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
+import net.cydhra.technocracy.foundation.util.facade.FacadeStack
 import net.cydhra.technocracy.foundation.util.facade.extras.workbench.InterfaceFacadeCraftingTable
 import net.cydhra.technocracy.foundation.util.propertys.POSITION
 import net.minecraft.block.Block
+import net.minecraft.block.BlockRedstoneOre
 import net.minecraft.block.BlockWorkbench
 import net.minecraft.block.material.Material
 import net.minecraft.block.properties.PropertyEnum
@@ -38,6 +40,11 @@ import net.minecraftforge.fml.common.Optional
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import team.chisel.ctm.api.IFacade
+import java.util.function.BiFunction
+import java.util.function.Function
+import java.util.function.Supplier
+import java.util.stream.Stream
+import kotlin.math.max
 
 
 @Optional.Interface(iface = "team.chisel.ctm.api.IFacade", modid = "ctm")
@@ -98,34 +105,23 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
     @SideOnly(Side.CLIENT)
     override fun isTranslucent(state: IBlockState): Boolean {
         //todo only if facade is transparent
-        return false
+        return true
     }
 
     override fun onBlockActivated(worldIn: World, pos: BlockPos, state: IBlockState, playerIn: EntityPlayer,
                                   hand: EnumHand, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean {
 
         val tile = worldIn.getTileEntity(pos) as? TileEntityPipe ?: return false
-        val stack = tile.getFacades()[facing]
-        if (stack != null && !playerIn.isSneaking) {
-            if (stack.isEmpty) return false
-            val facade = stack.item as FacadeItem
-            val facadeStack = facade.getFacadeFromStack(stack)
-            val block = Block.getBlockFromItem(facadeStack.stack.item)
 
-            if (block is BlockWorkbench) {
-
-                if (worldIn.isRemote) {
-                    return true
-                } else {
+        if (!playerIn.isSneaking) {
+            val pair = getBlockOnFacing(tile, facing)
+            if (pair != null && pair.first is BlockWorkbench) {
+                if (!worldIn.isRemote) {
                     playerIn.displayGui(InterfaceFacadeCraftingTable(worldIn, pos))
                     playerIn.addStat(StatList.CRAFTING_TABLE_INTERACTION)
-                    return true
                 }
-
-                //val customState = block.getStateFromMeta(facadeStack.stack.itemDamage)
-                //return block.onBlockActivated(FakeWorld(worldIn, customState, pos), pos, customState, playerIn, hand, facing, hitX, hitY, hitZ)
+                return true
             }
-
         }
 
         if (!playerIn.isSneaking && playerIn.inventory.getCurrentItem().item == Item.getItemFromBlock(this)) return true
@@ -138,29 +134,6 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
         }
 
         return false
-    }
-
-    override fun getPickBlock(state: IBlockState, target: RayTraceResult, world: World, pos: BlockPos, player: EntityPlayer): ItemStack? {
-
-        val length = Minecraft.getMinecraft().playerController.blockReachDistance + 1
-        val entity = Minecraft.getMinecraft().player
-        val startPos = Vec3d(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ)
-        val endPos = startPos.addVector(entity.lookVec.x * length, entity.lookVec.y * length, entity.lookVec.z * length)
-        val tile = world.getTileEntity(pos) as TileEntityPipe
-        val map = tile.getPipeModelParts()
-
-        val triple = rayTraceBestBB(startPos, endPos, map, pos)
-
-        if (triple != null) {
-            if (triple.second != null) {
-                return ItemStack(pipeItem, 1, triple.second!!.ordinal)
-            } else {
-                val raytrace = collisionRayTrace(state, world, pos, startPos, endPos)
-                return tile.getFacades()[raytrace!!.sideHit] ?: ItemStack.EMPTY
-            }
-        }
-        return super.getPickBlock(state, target, world, pos, player)
-
     }
 
     override fun isOpaqueCube(state: IBlockState): Boolean {
@@ -193,6 +166,27 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
         val list = (worldIn.getTileEntity(pos) as TileEntityPipe).getPipeModelParts().map { it.first.second.offset(pos) }.toList()
 
         return rayTraceBestBB(startPos, endPos, list) ?: TileEntityPipe.node.offset(0.0, -999999.0, 0.0)
+    }
+
+    override fun getPickBlock(state: IBlockState, target: RayTraceResult, world: World, pos: BlockPos, player: EntityPlayer): ItemStack? {
+        val length = Minecraft.getMinecraft().playerController.blockReachDistance + 1
+        val entity = Minecraft.getMinecraft().player
+        val startPos = Vec3d(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ)
+        val endPos = startPos.addVector(entity.lookVec.x * length, entity.lookVec.y * length, entity.lookVec.z * length)
+        val tile = world.getTileEntity(pos) as TileEntityPipe
+        val map = tile.getPipeModelParts()
+
+        val triple = rayTraceBestBB(startPos, endPos, map, pos)
+
+        if (triple != null) {
+            if (triple.second != null) {
+                return ItemStack(pipeItem, 1, triple.second!!.ordinal)
+            } else {
+                val raytrace = collisionRayTrace(state, world, pos, startPos, endPos)
+                return tile.getFacades()[raytrace!!.sideHit] ?: ItemStack.EMPTY
+            }
+        }
+        return super.getPickBlock(state, target, world, pos, player)
     }
 
     fun rayTraceBestBB(start: Vec3d, end: Vec3d, boundingBoxes: List<Triple<Pair<EnumFacing, AxisAlignedBB>, PipeType?, Int>>, offset: BlockPos): Triple<Pair<EnumFacing, AxisAlignedBB>, PipeType?, Int>? {
@@ -238,7 +232,6 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
     override fun addCollisionBoxToList(state: IBlockState, worldIn: World, pos: BlockPos, entityBox: AxisAlignedBB,
                                        collidingBoxes: List<AxisAlignedBB>, entityIn: Entity?, isActualState: Boolean) {
         val list = (worldIn.getTileEntity(pos) as TileEntityPipe).getPipeModelParts().map { it.first.second }.toList()
-
         for (bb in list) {
             addCollisionBoxToList(pos, entityBox, collidingBoxes, bb)
         }
@@ -246,175 +239,120 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
 
     override fun collisionRayTrace(blockState: IBlockState, worldIn: World, pos: BlockPos, startIn: Vec3d,
                                    endIn: Vec3d): RayTraceResult? {
-
         val list = (worldIn.getTileEntity(pos) as TileEntityPipe).getPipeModelParts().map { it.first.second.offset(pos) }.toList()
 
         var result: RayTraceResult? = null
 
-        for(bb in list) {
+        for (bb in list) {
             val ray = bb.calculateIntercept(startIn, endIn)
-            if(ray != null && (result == null || result.hitVec.squareDistanceTo(startIn) > ray.hitVec.squareDistanceTo(startIn)))
+            if (ray != null && (result == null || result.hitVec.squareDistanceTo(startIn) > ray.hitVec.squareDistanceTo(startIn)))
                 result = ray
         }
 
         return if (result == null) null else RayTraceResult(result.hitVec.addVector(pos.x.toDouble(),
                 pos.y.toDouble(), pos.z.toDouble()), result.sideHit, pos)
-
-        /*println("start $startIn")
-        println("end $endIn")
-
-
-
-        val bbresult = rayTraceBestBB(startIn, endIn, list)
-
-        return if (bbresult == null) null else {
-            val result = bbresult.calculateIntercept(startIn, endIn)
-            if (result == null) null else RayTraceResult(result.hitVec.addVector(pos.x.toDouble(),
-                    pos.y.toDouble(), pos.z.toDouble()), result.sideHit, pos)
-        }*/
-    }
-
-    override fun canPlaceBlockOnSide(world: World, pos: BlockPos, side: EnumFacing): Boolean {
-        val tile = world.getTileEntity(pos) as? TileEntityPipe ?: return false
-        val stack = tile.getFacades()[side] ?: return false
-        if (stack.isEmpty) return false
-        val facade = stack.item as FacadeItem
-        val facadeStack = facade.getFacadeFromStack(stack)
-        val block = Block.getBlockFromItem(facadeStack.stack.item)
-        return block.canPlaceBlockOnSide(world, pos, side)
-    }
-
-    override fun canPlaceTorchOnTop(state: IBlockState, world: IBlockAccess, pos: BlockPos): Boolean {
-        val tile = world.getTileEntity(pos) as? TileEntityPipe ?: return false
-        val stack = tile.getFacades()[EnumFacing.UP] ?: return false
-        if (stack.isEmpty) return false
-        val facade = stack.item as FacadeItem
-        val facadeStack = facade.getFacadeFromStack(stack)
-        val block = Block.getBlockFromItem(facadeStack.stack.item)
-        return block.canPlaceTorchOnTop(block.getStateFromMeta(facadeStack.stack.itemDamage), world, pos)
     }
 
     override fun getEnchantPowerBonus(world: World, pos: BlockPos): Float {
         val tile = world.getTileEntity(pos) as? TileEntityPipe ?: return 0f
-        var maxEnch = 0f
-
-        for (facing in EnumFacing.values()) {
-            val stack = tile.getFacades()[facing] ?: continue
-            if (stack.isEmpty) continue
-            val facade = stack.item as FacadeItem
-            val facadeStack = facade.getFacadeFromStack(stack)
-            val block = Block.getBlockFromItem(facadeStack.stack.item)
-            maxEnch = Math.max(block.getEnchantPowerBonus(world, pos), maxEnch)
-        }
-        return maxEnch
+        return getMaxValue(tile, valueGetter = BiFunction { b, _ -> b.getEnchantPowerBonus(world, pos) })
     }
 
     override fun getSlipperiness(state: IBlockState, world: IBlockAccess, pos: BlockPos, entity: Entity?): Float {
         val tile = world.getTileEntity(pos) as? TileEntityPipe
                 ?: return super.getSlipperiness(state, world, pos, entity)
-        val stack = tile.getFacades()[EnumFacing.UP] ?: return super.getSlipperiness(state, world, pos, entity)
-        if (stack.isEmpty) return super.getSlipperiness(state, world, pos, entity)
-        val facade = stack.item as FacadeItem
-        val facadeStack = facade.getFacadeFromStack(stack)
-        val block = Block.getBlockFromItem(facadeStack.stack.item)
-        return block.getSlipperiness(block.getStateFromMeta(facadeStack.stack.itemDamage), world, pos, entity)
+
+        return getMaxValue(tile, arrayOf(EnumFacing.UP),
+                BiFunction { t, stack -> t.getSlipperiness(t.getStateFromMeta(stack.stack.itemDamage), world, pos, entity) },
+                Supplier { super.getSlipperiness(state, world, pos, entity) })
     }
 
     override fun getExplosionResistance(world: World, pos: BlockPos, exploder: Entity?, explosion: Explosion): Float {
         val tile = world.getTileEntity(pos) as? TileEntityPipe
                 ?: return super.getExplosionResistance(world, pos, exploder, explosion)
-        var maxResistence = 0f
 
-        for (facing in EnumFacing.values()) {
-            val stack = tile.getFacades()[facing] ?: continue
-            if (stack.isEmpty) continue
-            val facade = stack.item as FacadeItem
-            val facadeStack = facade.getFacadeFromStack(stack)
-            val block = Block.getBlockFromItem(facadeStack.stack.item)
-            maxResistence = Math.max(block.getExplosionResistance(world, pos, exploder, explosion), maxResistence)
-        }
-        return maxResistence
+        return getMaxValue(tile, valueGetter = BiFunction { b, _ -> b.getExplosionResistance(world, pos, exploder, explosion) })
     }
 
     override fun getLightValue(state: IBlockState, world: IBlockAccess, pos: BlockPos): Int {
         val tile = world.getTileEntity(pos) as? TileEntityPipe ?: return 0
-        var maxLight = 0
 
-        for (facing in EnumFacing.values()) {
-            val stack = tile.getFacades()[facing] ?: continue
-            if (stack.isEmpty) continue
-            val facade = stack.item as FacadeItem
-            val facadeStack = facade.getFacadeFromStack(stack)
-            val block = Block.getBlockFromItem(facadeStack.stack.item)
-            maxLight = Math.max(block.getLightValue(block.getStateFromMeta(facadeStack.stack.itemDamage)), maxLight)
-        }
-        return maxLight
+        return getMaxValue(tile, valueGetter = BiFunction { b, stack -> b.getLightValue(b.getStateFromMeta(stack.stack.itemDamage)).toFloat() }).toInt()
     }
 
     override fun canBeConnectedTo(world: IBlockAccess, pos: BlockPos, facing: EnumFacing): Boolean {
         val tile = world.getTileEntity(pos) as? TileEntityPipe ?: return false
-        val stack = tile.getFacades()[facing] ?: return false
-        if (stack.isEmpty) return false
-        val facade = stack.item as FacadeItem
-        val facadeStack = facade.getFacadeFromStack(stack)
-        val block = Block.getBlockFromItem(facadeStack.stack.item)
-        return block.canBeConnectedTo(world, pos, facing)
+        val pair = getBlockOnFacing(tile, facing) ?: return false
+        return pair.first.canBeConnectedTo(world, pos, facing)
     }
 
     override fun getBlockFaceShape(world: IBlockAccess, state: IBlockState, pos: BlockPos, side: EnumFacing): BlockFaceShape {
         val tile = world.getTileEntity(pos) as? TileEntityPipe ?: return BlockFaceShape.UNDEFINED
-        val stack = tile.getFacades()[side] ?: return BlockFaceShape.UNDEFINED
-        if (stack.isEmpty) return BlockFaceShape.UNDEFINED
-        val facade = stack.item as FacadeItem
-        val facadeStack = facade.getFacadeFromStack(stack)
-        val block = Block.getBlockFromItem(facadeStack.stack.item)
-        return block.getBlockFaceShape(world, block.getStateFromMeta(facadeStack.stack.itemDamage), pos, side)
+        val pair = getBlockOnFacing(tile, side) ?: return BlockFaceShape.UNDEFINED
+        return pair.first.getBlockFaceShape(world, pair.first.getStateFromMeta(pair.second.stack.itemDamage), pos, side)
     }
 
     override fun onEntityWalk(world: World, pos: BlockPos, entityIn: Entity) {
         val tile = world.getTileEntity(pos) as? TileEntityPipe ?: return
-        val stack = tile.getFacades()[EnumFacing.UP] ?: return
-        if (stack.isEmpty) return
-        val facade = stack.item as FacadeItem
-        val facadeStack = facade.getFacadeFromStack(stack)
-        val block = Block.getBlockFromItem(facadeStack.stack.item)
-        block.onEntityWalk(world, pos, entityIn)
+        val pair = getBlockOnFacing(tile, EnumFacing.UP) ?: return
+        if (pair.first is BlockRedstoneOre) return
+        pair.first.onEntityWalk(world, pos, entityIn)
         //normaly is only called when player is inside hitbox of the block
-        block.onEntityCollidedWithBlock(world, pos, block.getStateFromMeta(facadeStack.stack.itemDamage), entityIn)
+        pair.first.onEntityCollidedWithBlock(world, pos, pair.first.getStateFromMeta(pair.second.stack.itemDamage), entityIn)
         return
     }
 
     override fun onFallenUpon(world: World, pos: BlockPos, entityIn: Entity, fallDistance: Float) {
         val tile = world.getTileEntity(pos) as? TileEntityPipe ?: return
-        val stack = tile.getFacades()[EnumFacing.UP] ?: return
-        if (stack.isEmpty) return
-        val facade = stack.item as FacadeItem
-        val facadeStack = facade.getFacadeFromStack(stack)
-        val block = Block.getBlockFromItem(facadeStack.stack.item)
+        val pair = getBlockOnFacing(tile, EnumFacing.UP) ?: return
         //can use current pos as onLanded is called in same method
         lastFallLoc = pos
-        return block.onFallenUpon(world, pos, entityIn, fallDistance)
+        return pair.first.onFallenUpon(world, pos, entityIn, fallDistance)
     }
 
     override fun onLanded(world: World, entityIn: Entity) {
         if (lastFallLoc == null) return
 
         val tile = world.getTileEntity(lastFallLoc!!) as? TileEntityPipe ?: return
-        val stack = tile.getFacades()[EnumFacing.UP] ?: return
-        if (stack.isEmpty) return
+        val pair = getBlockOnFacing(tile, EnumFacing.UP) ?: return
+        return pair.first.onLanded(world, entityIn)
+    }
+
+    override fun canPlaceBlockOnSide(world: World, pos: BlockPos, side: EnumFacing): Boolean {
+        val tile = world.getTileEntity(pos) as? TileEntityPipe ?: return false
+        val pair = getBlockOnFacing(tile, side) ?: return false
+        return pair.first.canPlaceBlockOnSide(world, pos, side)
+    }
+
+    override fun canPlaceTorchOnTop(state: IBlockState, world: IBlockAccess, pos: BlockPos): Boolean {
+        val tile = world.getTileEntity(pos) as? TileEntityPipe ?: return false
+        val pair = getBlockOnFacing(tile, EnumFacing.UP) ?: return false
+        return pair.first.canPlaceTorchOnTop(pair.first.getStateFromMeta(pair.second.stack.itemDamage), world, pos)
+    }
+
+    fun getMaxValue(tile: TileEntityPipe, faces: Array<EnumFacing> = EnumFacing.values(), valueGetter: BiFunction<in Block, in FacadeStack, out Float>, fallback: Supplier<Float> = Supplier { 0f }): Float {
+        var max = 0f
+        var used = false
+
+        for (facing in faces) {
+            val pair = getBlockOnFacing(tile, facing) ?: continue
+            max = max(valueGetter.apply(pair.first, pair.second), max)
+            used = true
+        }
+        return if (used) max else fallback.get()
+    }
+
+    fun getBlockOnFacing(tile: TileEntityPipe, facing: EnumFacing): Pair<Block, FacadeStack>? {
+        val stack = tile.getFacades()[facing] ?: return null
+        if (stack.isEmpty) return null
         val facade = stack.item as FacadeItem
         val facadeStack = facade.getFacadeFromStack(stack)
-        val block = Block.getBlockFromItem(facadeStack.stack.item)
-        return block.onLanded(world, entityIn)
+        return getBlockFromItem(facadeStack.stack.item) to facadeStack
     }
 
     override fun getFacade(world: IBlockAccess, pos: BlockPos, side: EnumFacing?): IBlockState {
         val tile = world.getTileEntity(pos) as? TileEntityPipe ?: return defaultState
-        val stack = tile.getFacades()[side] ?: return defaultState
-        if (stack.isEmpty) return defaultState
-        val facade = stack.item as FacadeItem
-        val facadeStack = facade.getFacadeFromStack(stack)
-        val block = Block.getBlockFromItem(facadeStack.stack.item)
-        return block.getStateFromMeta(facadeStack.stack.itemDamage)
+        val pair = side?.let { getBlockOnFacing(tile, it) } ?: return defaultState
+        return pair.first.getStateFromMeta(pair.second.stack.itemDamage)
     }
 }
