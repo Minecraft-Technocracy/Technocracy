@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.util.model.pipeline.consumer
 
+import net.cydhra.technocracy.foundation.client.model.pipe.FacadeBakery
 import net.cydhra.technocracy.foundation.util.model.SimpleQuad
 import net.cydhra.technocracy.foundation.util.model.pipeline.IQuadConsumer
 import net.minecraft.client.renderer.block.model.BakedQuad
@@ -18,23 +19,26 @@ object QuadShrinker : IQuadConsumer {
     var faces: BooleanArray? = null
 
     override fun consume(quad: SimpleQuad) {
+        val pixelSize = 1 / 16f
+        val size = pixelSize * FacadeBakery.facadeSize
+
         for (vertPo in quad.vertPos) {
             if (coverFace!!.axis == EnumFacing.Axis.X) {
-                vertPo.x /= 16f
+                vertPo.x *= size
                 if (coverFace!!.axisDirection == POSITIVE)
-                    vertPo.x += 1 - 1 / 16f
+                    vertPo.x += 1 - size
             }
 
             if (coverFace!!.axis == EnumFacing.Axis.Y) {
-                vertPo.y /= 16f
+                vertPo.y *= size
                 if (coverFace!!.axisDirection == POSITIVE)
-                    vertPo.y += 1 - 1 / 16f
+                    vertPo.y += 1 - size
             }
 
             if (coverFace!!.axis == EnumFacing.Axis.Z) {
-                vertPo.z /= 16f
+                vertPo.z *= size
                 if (coverFace!!.axisDirection == POSITIVE)
-                    vertPo.z += 1 - 1 / 16f
+                    vertPo.z += 1 - size
             }
         }
     }
