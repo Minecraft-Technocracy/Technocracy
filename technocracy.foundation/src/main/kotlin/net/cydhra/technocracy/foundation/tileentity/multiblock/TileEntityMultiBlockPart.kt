@@ -175,8 +175,11 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
                     components.add(DefaultProgressBar((outputNearestToTheMiddle - inputNearestToTheMiddle) / 2 - 11 + inputNearestToTheMiddle, 40, Orientation.RIGHT, foundProgressComponent as ProgressComponent, gui))
             }
         })
+        initGui(gui)
         gui.registerTab(MultiblockSettingsTab(gui, this, player))
         return gui
     }
+
+    open fun initGui(gui: TCGui) {}
 
 }
