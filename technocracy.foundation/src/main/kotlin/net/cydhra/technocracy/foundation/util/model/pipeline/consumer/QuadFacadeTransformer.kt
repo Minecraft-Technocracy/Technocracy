@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.MathHelper
 import org.lwjgl.util.vector.Vector4f
+import kotlin.math.abs
 
 
 object QuadFacadeTransformer : IQuadConsumer {
@@ -37,28 +38,34 @@ object QuadFacadeTransformer : IQuadConsumer {
         val east = faces[EnumFacing.EAST.ordinal]
         val west = faces[EnumFacing.WEST.ordinal]
 
+
         for (vertices in 0 until 4) {
+
+            var x = 0f
+            var y = 0f
+            var z = 0f
+
             if (quad.face == EnumFacing.NORTH) {
                 when (vertices) {
                     1 -> {
-                        quad.vertPos[vertices].x -= if (east && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.UP)) height else 0.0f
-                        quad.vertPos[vertices].y += if (down && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.WEST)) height else 0.0f
-                        quad.vertPos[vertices].z += if (north && (coverFace == EnumFacing.UP || coverFace == EnumFacing.WEST)) height else 0.0f
+                        x -= if (east && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.UP)) height else 0.0f
+                        y += if (down && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.WEST)) height else 0.0f
+                        z += if (north && (coverFace == EnumFacing.UP || coverFace == EnumFacing.WEST)) height else 0.0f
                     }
                     2 -> {
-                        quad.vertPos[vertices].x += if (west && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.UP)) height else 0.0f
-                        quad.vertPos[vertices].y += if (down && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.EAST)) height else 0.0f
-                        quad.vertPos[vertices].z += if (north && (coverFace == EnumFacing.UP || coverFace == EnumFacing.EAST)) height else 0.0f
+                        x += if (west && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.UP)) height else 0.0f
+                        y += if (down && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.EAST)) height else 0.0f
+                        z += if (north && (coverFace == EnumFacing.UP || coverFace == EnumFacing.EAST)) height else 0.0f
                     }
                     3 -> {
-                        quad.vertPos[vertices].x += if (west && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.DOWN)) height else 0.0f
-                        quad.vertPos[vertices].y -= if (up && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.EAST)) height else 0.0f
-                        quad.vertPos[vertices].z += if (north && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.EAST)) height else 0.0f
+                        x += if (west && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.DOWN)) height else 0.0f
+                        y -= if (up && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.EAST)) height else 0.0f
+                        z += if (north && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.EAST)) height else 0.0f
                     }
                     0 -> {
-                        quad.vertPos[vertices].x -= if (east && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.DOWN)) height else 0.0f
-                        quad.vertPos[vertices].y -= if (up && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.WEST)) height else 0.0f
-                        quad.vertPos[vertices].z += if (north && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.WEST)) height else 0.0f
+                        x -= if (east && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.DOWN)) height else 0.0f
+                        y -= if (up && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.WEST)) height else 0.0f
+                        z += if (north && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.WEST)) height else 0.0f
                     }
                 }
             }
@@ -66,24 +73,24 @@ object QuadFacadeTransformer : IQuadConsumer {
             if (quad.face == EnumFacing.SOUTH) {
                 when (vertices) {
                     1 -> {
-                        quad.vertPos[vertices].x += if (west && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.UP)) height else 0.0f
-                        quad.vertPos[vertices].y += if (down && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.EAST)) height else 0.0f
-                        quad.vertPos[vertices].z -= if (south && (coverFace == EnumFacing.UP || coverFace == EnumFacing.EAST)) height else 0.0f
+                        x += if (west && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.UP)) height else 0.0f
+                        y += if (down && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.EAST)) height else 0.0f
+                        z -= if (south && (coverFace == EnumFacing.UP || coverFace == EnumFacing.EAST)) height else 0.0f
                     }
                     2 -> {
-                        quad.vertPos[vertices].x -= if (east && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.UP)) height else 0.0f
-                        quad.vertPos[vertices].y += if (down && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.WEST)) height else 0.0f
-                        quad.vertPos[vertices].z -= if (south && (coverFace == EnumFacing.UP || coverFace == EnumFacing.WEST)) height else 0.0f
+                        x -= if (east && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.UP)) height else 0.0f
+                        y += if (down && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.WEST)) height else 0.0f
+                        z -= if (south && (coverFace == EnumFacing.UP || coverFace == EnumFacing.WEST)) height else 0.0f
                     }
                     3 -> {
-                        quad.vertPos[vertices].x -= if (east && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.DOWN)) height else 0.0f
-                        quad.vertPos[vertices].y -= if (up && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.WEST)) height else 0.0f
-                        quad.vertPos[vertices].z -= if (south && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.WEST)) height else 0.0f
+                        x -= if (east && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.DOWN)) height else 0.0f
+                        y -= if (up && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.WEST)) height else 0.0f
+                        z -= if (south && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.WEST)) height else 0.0f
                     }
                     0 -> {
-                        quad.vertPos[vertices].x += if (west && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.DOWN)) height else 0.0f
-                        quad.vertPos[vertices].y -= if (up && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.EAST)) height else 0.0f
-                        quad.vertPos[vertices].z -= if (south && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.EAST)) height else 0.0f
+                        x += if (west && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.DOWN)) height else 0.0f
+                        y -= if (up && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.EAST)) height else 0.0f
+                        z -= if (south && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.EAST)) height else 0.0f
                     }
                 }
             }
@@ -91,24 +98,24 @@ object QuadFacadeTransformer : IQuadConsumer {
             if (quad.face == EnumFacing.WEST) {
                 when (vertices) {
                     1 -> {
-                        quad.vertPos[vertices].x += if (west && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.UP)) height else 0.0f
-                        quad.vertPos[vertices].y += if (down && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.EAST)) height else 0.0f
-                        quad.vertPos[vertices].z += if (north && (coverFace == EnumFacing.UP || coverFace == EnumFacing.EAST)) height else 0.0f
+                        x += if (west && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.UP)) height else 0.0f
+                        y += if (down && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.EAST)) height else 0.0f
+                        z += if (north && (coverFace == EnumFacing.UP || coverFace == EnumFacing.EAST)) height else 0.0f
                     }
                     2 -> {
-                        quad.vertPos[vertices].x += if (west && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.UP)) height else 0.0f
-                        quad.vertPos[vertices].y += if (down && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.EAST)) height else 0.0f
-                        quad.vertPos[vertices].z -= if (south && (coverFace == EnumFacing.UP || coverFace == EnumFacing.EAST)) height else 0.0f
+                        x += if (west && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.UP)) height else 0.0f
+                        y += if (down && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.EAST)) height else 0.0f
+                        z -= if (south && (coverFace == EnumFacing.UP || coverFace == EnumFacing.EAST)) height else 0.0f
                     }
                     3 -> {
-                        quad.vertPos[vertices].x += if (west && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.DOWN)) height else 0.0f
-                        quad.vertPos[vertices].y -= if (up && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.EAST)) height else 0.0f
-                        quad.vertPos[vertices].z -= if (south && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.EAST)) height else 0.0f
+                        x += if (west && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.DOWN)) height else 0.0f
+                        y -= if (up && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.EAST)) height else 0.0f
+                        z -= if (south && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.EAST)) height else 0.0f
                     }
                     0 -> {
-                        quad.vertPos[vertices].x += if (west && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.DOWN)) height else 0.0f
-                        quad.vertPos[vertices].y -= if (up && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.EAST)) height else 0.0f
-                        quad.vertPos[vertices].z += if (north && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.EAST)) height else 0.0f
+                        x += if (west && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.DOWN)) height else 0.0f
+                        y -= if (up && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.EAST)) height else 0.0f
+                        z += if (north && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.EAST)) height else 0.0f
                     }
                 }
             }
@@ -116,24 +123,24 @@ object QuadFacadeTransformer : IQuadConsumer {
             if (quad.face == EnumFacing.EAST) {
                 when (vertices) {
                     1 -> {
-                        quad.vertPos[vertices].x -= if (east && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.UP)) height else 0.0f
-                        quad.vertPos[vertices].y += if (down && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.WEST)) height else 0.0f
-                        quad.vertPos[vertices].z -= if (south && (coverFace == EnumFacing.UP || coverFace == EnumFacing.WEST)) height else 0.0f
+                        x -= if (east && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.UP)) height else 0.0f
+                        y += if (down && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.WEST)) height else 0.0f
+                        z -= if (south && (coverFace == EnumFacing.UP || coverFace == EnumFacing.WEST)) height else 0.0f
                     }
                     2 -> {
-                        quad.vertPos[vertices].x -= if (east && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.UP)) height else 0.0f
-                        quad.vertPos[vertices].y += if (down && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.WEST)) height else 0.0f
-                        quad.vertPos[vertices].z += if (north && (coverFace == EnumFacing.UP || coverFace == EnumFacing.WEST)) height else 0.0f
+                        x -= if (east && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.UP)) height else 0.0f
+                        y += if (down && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.WEST)) height else 0.0f
+                        z += if (north && (coverFace == EnumFacing.UP || coverFace == EnumFacing.WEST)) height else 0.0f
                     }
                     3 -> {
-                        quad.vertPos[vertices].x -= if (east && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.DOWN)) height else 0.0f
-                        quad.vertPos[vertices].y -= if (up && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.WEST)) height else 0.0f
-                        quad.vertPos[vertices].z += if (north && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.WEST)) height else 0.0f
+                        x -= if (east && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.DOWN)) height else 0.0f
+                        y -= if (up && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.WEST)) height else 0.0f
+                        z += if (north && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.WEST)) height else 0.0f
                     }
                     0 -> {
-                        quad.vertPos[vertices].x -= if (east && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.DOWN)) height else 0.0f
-                        quad.vertPos[vertices].y -= if (up && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.WEST)) height else 0.0f
-                        quad.vertPos[vertices].z -= if (south && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.WEST)) height else 0.0f
+                        x -= if (east && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.DOWN)) height else 0.0f
+                        y -= if (up && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.WEST)) height else 0.0f
+                        z -= if (south && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.WEST)) height else 0.0f
                     }
                 }
             }
@@ -141,24 +148,24 @@ object QuadFacadeTransformer : IQuadConsumer {
             if (quad.face == EnumFacing.UP) {
                 when (vertices) {
                     0 -> {//2
-                        quad.vertPos[vertices].x += if (west && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.DOWN)) height else 0.0f
-                        quad.vertPos[vertices].y -= if (up && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.EAST)) height else 0.0f
-                        quad.vertPos[vertices].z += if (north && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.EAST)) height else 0.0f
+                        x += if (west && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.DOWN)) height else 0.0f
+                        y -= if (up && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.EAST)) height else 0.0f
+                        z += if (north && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.EAST)) height else 0.0f
                     }
                     1 -> {//3
-                        quad.vertPos[vertices].x += if (west && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.DOWN)) height else 0.0f
-                        quad.vertPos[vertices].y -= if (up && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.EAST)) height else 0.0f
-                        quad.vertPos[vertices].z -= if (south && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.EAST)) height else 0.0f
+                        x += if (west && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.DOWN)) height else 0.0f
+                        y -= if (up && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.EAST)) height else 0.0f
+                        z -= if (south && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.EAST)) height else 0.0f
                     }
                     2 -> {//0
-                        quad.vertPos[vertices].x -= if (east && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.DOWN)) height else 0.0f
-                        quad.vertPos[vertices].y -= if (up && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.WEST)) height else 0.0f
-                        quad.vertPos[vertices].z -= if (south && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.WEST)) height else 0.0f
+                        x -= if (east && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.DOWN)) height else 0.0f
+                        y -= if (up && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.WEST)) height else 0.0f
+                        z -= if (south && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.WEST)) height else 0.0f
                     }
                     3 -> {//1
-                        quad.vertPos[vertices].x -= if (east && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.DOWN)) height else 0.0f
-                        quad.vertPos[vertices].y -= if (up && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.WEST)) height else 0.0f
-                        quad.vertPos[vertices].z += if (north && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.WEST)) height else 0.0f
+                        x -= if (east && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.DOWN)) height else 0.0f
+                        y -= if (up && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.WEST)) height else 0.0f
+                        z += if (north && (coverFace == EnumFacing.DOWN || coverFace == EnumFacing.WEST)) height else 0.0f
                     }
                 }
             }
@@ -166,27 +173,45 @@ object QuadFacadeTransformer : IQuadConsumer {
             if (quad.face == EnumFacing.DOWN) {
                 when (vertices) {
                     1 -> {
-                        quad.vertPos[vertices].x += if (west && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.UP)) height else 0.0f
-                        quad.vertPos[vertices].y += if (down && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.EAST)) height else 0.0f
-                        quad.vertPos[vertices].z += if (north && (coverFace == EnumFacing.UP || coverFace == EnumFacing.EAST)) height else 0.0f
+                        x += if (west && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.UP)) height else 0.0f
+                        y += if (down && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.EAST)) height else 0.0f
+                        z += if (north && (coverFace == EnumFacing.UP || coverFace == EnumFacing.EAST)) height else 0.0f
                     }
                     2 -> {
-                        quad.vertPos[vertices].x -= if (east && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.UP)) height else 0.0f
-                        quad.vertPos[vertices].y += if (down && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.WEST)) height else 0.0f
-                        quad.vertPos[vertices].z += if (north && (coverFace == EnumFacing.UP || coverFace == EnumFacing.WEST)) height else 0.0f
+                        x -= if (east && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.UP)) height else 0.0f
+                        y += if (down && (coverFace == EnumFacing.SOUTH || coverFace == EnumFacing.WEST)) height else 0.0f
+                        z += if (north && (coverFace == EnumFacing.UP || coverFace == EnumFacing.WEST)) height else 0.0f
                     }
                     3 -> {
-                        quad.vertPos[vertices].x -= if (east && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.UP)) height else 0.0f
-                        quad.vertPos[vertices].y += if (down && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.WEST)) height else 0.0f
-                        quad.vertPos[vertices].z -= if (south && (coverFace == EnumFacing.UP || coverFace == EnumFacing.WEST)) height else 0.0f
+                        x -= if (east && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.UP)) height else 0.0f
+                        y += if (down && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.WEST)) height else 0.0f
+                        z -= if (south && (coverFace == EnumFacing.UP || coverFace == EnumFacing.WEST)) height else 0.0f
                     }
                     0 -> {
-                        quad.vertPos[vertices].x += if (west && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.UP)) height else 0.0f
-                        quad.vertPos[vertices].y += if (down && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.EAST)) height else 0.0f
-                        quad.vertPos[vertices].z -= if (south && (coverFace == EnumFacing.UP || coverFace == EnumFacing.EAST)) height else 0.0f
+                        x += if (west && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.UP)) height else 0.0f
+                        y += if (down && (coverFace == EnumFacing.NORTH || coverFace == EnumFacing.EAST)) height else 0.0f
+                        z -= if (south && (coverFace == EnumFacing.UP || coverFace == EnumFacing.EAST)) height else 0.0f
                     }
                 }
             }
+
+            if (epsComp(quad.vertPos[vertices].x, 0f) || epsComp(quad.vertPos[vertices].x, 1f)) {
+                quad.vertPos[vertices].x += x
+            }
+            if (epsComp(quad.vertPos[vertices].y, 0f) || epsComp(quad.vertPos[vertices].y, 1f)) {
+                quad.vertPos[vertices].y += y
+            }
+            if (epsComp(quad.vertPos[vertices].z, 0f) || epsComp(quad.vertPos[vertices].z, 1f)) {
+                quad.vertPos[vertices].z += z
+            }
+        }
+    }
+
+    fun epsComp(a: Float, b: Float): Boolean {
+        return if (a == b) {
+            true
+        } else {
+            abs(a - b) < 0.00001
         }
     }
 }
