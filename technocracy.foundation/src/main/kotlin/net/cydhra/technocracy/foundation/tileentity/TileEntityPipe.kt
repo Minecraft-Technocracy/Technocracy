@@ -2,6 +2,7 @@ package net.cydhra.technocracy.foundation.tileentity
 
 import net.cydhra.technocracy.foundation.blocks.general.pipe
 import net.cydhra.technocracy.foundation.client.model.pipe.FacadeBakery
+import net.cydhra.technocracy.foundation.conduits.ConduitNetwork
 import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.cydhra.technocracy.foundation.tileentity.components.ComponentFacade
 import net.cydhra.technocracy.foundation.tileentity.components.ComponentPipeTypes
@@ -10,6 +11,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.AxisAlignedBB
 import net.minecraft.util.math.Vec3d
+import net.minecraft.world.WorldServer
 
 
 class TileEntityPipe : AggregatableTileEntity() {
@@ -64,6 +66,10 @@ class TileEntityPipe : AggregatableTileEntity() {
     fun addPipeType(type: PipeType) {
         pipeTypes.types.add(type)
         //todo update network pipe tier
+
+        if (!this.world.isRemote) {
+            ConduitNetwork.addConduitNode(this.world as WorldServer, this.pos, type)
+        }
         markForUpdate()
     }
 
