@@ -113,9 +113,12 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
                     components.add(DefaultProgressBar((outputNearestToTheMiddle - inputNearestToTheMiddle) / 2 - 11 + inputNearestToTheMiddle, 40, Orientation.RIGHT, foundProgressComponent as ProgressComponent, gui))
             }
         })
+        initGui(gui)
         gui.registerTab(MachineSettingsTab(gui, this, player))
         return gui
     }
+
+    open fun initGui(gui:TCGui) {}
 
     override fun update() {
         // update ILogic strategies, but only server side
