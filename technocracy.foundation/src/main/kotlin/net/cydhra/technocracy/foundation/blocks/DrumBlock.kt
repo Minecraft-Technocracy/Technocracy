@@ -5,6 +5,11 @@ import net.cydhra.technocracy.foundation.blocks.color.IBlockColor
 import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockDisplayName
 import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockItemProperty
 import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockPlaceBehavior
+import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockItemCapabilitiy
+import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandler
+import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandlerItem
+import net.cydhra.technocracy.foundation.items.capability.ItemCapabilityWrapper
+import net.cydhra.technocracy.foundation.items.components.ItemFluidComponent
 import net.cydhra.technocracy.foundation.tileentity.TileEntityDrum
 import net.minecraft.block.material.Material
 import net.minecraft.block.properties.PropertyEnum
@@ -12,7 +17,6 @@ import net.minecraft.block.state.BlockStateContainer
 import net.minecraft.block.state.IBlockState
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.Entity
-import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.IItemPropertyGetter
 import net.minecraft.item.ItemStack
@@ -21,12 +25,16 @@ import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.*
 import net.minecraft.util.math.AxisAlignedBB
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.text.TextComponentString
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
+import net.minecraftforge.common.capabilities.ICapabilityProvider
 import net.minecraftforge.fluids.Fluid
 import net.minecraftforge.fluids.FluidStack
-import net.minecraftforge.fml.relauncher.FMLLaunchHandler.side
-import sun.audio.AudioPlayer.player
+import net.minecraftforge.fluids.FluidUtil
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler
+import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper
+import java.util.*
 
 
 class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colorMultiplier = object : IBlockColor {
@@ -36,11 +44,12 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
     }
 
     override fun colorMultiplier(stack: ItemStack, tintIndex: Int): Int {
-        if (stack.hasTagCompound()) {
-            val fluid = getFluid(stack.tagCompound!!)
-            if (fluid != null) {
-                return fluid.color
-            }
+
+        val cap = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)
+
+        if (cap != null) {
+            val fluid = (cap as DynamicFluidHandlerItem).currentFluid
+            return fluid?.fluid?.color ?: -1
         }
 
         return -1
@@ -51,22 +60,34 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
         return stack.fluid
     }
 
-}), IDynamicBlockItemProperty, IDynamicBlockDisplayName, IDynamicBlockPlaceBehavior {
+}), IDynamicBlockItemProperty, IDynamicBlockDisplayName, IDynamicBlockPlaceBehavior, IDynamicBlockItemCapabilitiy {
 
     override fun placeBlockAt(place: Boolean, stack: ItemStack, player: EntityPlayer, world: World, pos: BlockPos, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float, newState: IBlockState): Boolean {
-        if (!stack.hasTagCompound()) return place
+        //if (!stack.hasTagCompound()) return place
         val tile = world.getTileEntity(pos) as? TileEntityDrum ?: return place
 
-        tile.deserializeNBT(stack.tagCompound!!)
+        val stack = stack
+
+        val cap = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)
+
+        if (cap != null) {
+            val fluid = (cap as DynamicFluidHandlerItem).currentFluid
+            if (fluid != null)
+                tile.fluidCapability.fill(fluid, true)
+        }
+
+        //tile.deserializeNBT(stack.tagCompound!!)
         return place
     }
 
     override fun getDropItem(state: IBlockState, world: IBlockAccess, pos: BlockPos, te: TileEntity?): ItemStack {
         val stack = ItemStack(this, 1, getMetaFromState(state))
         if (te != null && te is TileEntityDrum && te.fluidCapability.currentFluid != null) {
-            val comp = NBTTagCompound()
+            stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)!!.fill(te.fluidCapability.currentFluid, true)
+
+            /*val comp = NBTTagCompound()
             te.serializeNBT(comp)
-            stack.tagCompound = comp
+            stack.tagCompound = comp*/
         }
         return stack
     }
@@ -143,6 +164,26 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
 
     override fun getSelectedBoundingBox(state: IBlockState, worldIn: World, pos: BlockPos): AxisAlignedBB {
         return boundingBox.offset(pos)
+    }
+
+    override fun onBlockActivated(worldIn: World, pos: BlockPos, state: IBlockState, playerIn: EntityPlayer, hand: EnumHand, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean {
+
+        val stack = playerIn.getHeldItem(hand)
+
+        if (FluidUtil.getFluidHandler(stack) != null) {
+            FluidUtil.interactWithFluidHandler(playerIn, hand, worldIn, pos, facing)
+        } else {
+            val tile = worldIn.getTileEntity(pos) as? TileEntityDrum ?: return true
+            val fluid = tile.fluidCapability.currentFluid
+            //TODO translate
+            playerIn.sendStatusMessage(TextComponentString("Drum content: " + if (fluid == null) "Empty" else "${fluid.amount}mB"), true)
+        }
+
+        return true
+    }
+
+    override fun initCapabilities(stack: ItemStack, nbt: NBTTagCompound?): ICapabilityProvider? {
+        return ItemCapabilityWrapper(stack, mutableMapOf("fluid" to ItemFluidComponent(DynamicFluidHandlerItem(stack, DrumType.values()[stack.metadata].amount, mutableListOf(), DynamicFluidHandler.TankType.BOTH))))
     }
 
     enum class DrumType(val typeName: String, val amount: Int) :

@@ -13,7 +13,7 @@ abstract class AbstractComponent {
 
     var syncToClient = false
 
-    fun markDirty(needsClientRerender: Boolean = false) {
+    open fun markDirty(needsClientRerender: Boolean = false) {
         if (syncToClient && needsClientRerender) {
             tile.world.notifyBlockUpdate(tile.pos, tile.world.getBlockState(tile.pos), tile.world.getBlockState(tile.pos), 0)
         }
