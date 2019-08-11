@@ -13,7 +13,7 @@ import net.minecraftforge.fluids.capability.IFluidTankProperties
  * @param allowedFluid a list of fluid names that are allowed to store, empty if all fluids are allowed
  * @param tanktype whether input, output or both are allowed
  */
-class DynamicFluidHandler(var capacity: Int = 1000, val allowedFluid: MutableList<String>,
+open class DynamicFluidHandler(var capacity: Int = 1000, val allowedFluid: MutableList<String>,
                           var tanktype: TankType = TankType.BOTH) :
         IFluidHandler, INBTSerializable<NBTTagCompound>, AbstractDynamicHandler() {
 
@@ -38,7 +38,7 @@ class DynamicFluidHandler(var capacity: Int = 1000, val allowedFluid: MutableLis
 
         val out = FluidStack(currentFluid!!.fluid, drain)
 
-        if (currentFluid!!.amount == 0) {
+        if (currentFluid!!.amount <= 0) {
             currentFluid = null
         }
 
@@ -63,7 +63,7 @@ class DynamicFluidHandler(var capacity: Int = 1000, val allowedFluid: MutableLis
 
         val out = FluidStack(currentFluid!!.fluid, drain)
 
-        if (currentFluid!!.amount == 0) {
+        if (currentFluid!!.amount <= 0) {
             currentFluid = null
         }
 
