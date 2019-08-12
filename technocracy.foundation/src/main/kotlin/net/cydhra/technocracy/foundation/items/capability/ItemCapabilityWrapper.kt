@@ -39,7 +39,6 @@ class ItemCapabilityWrapper(val stack: ItemStack, val capabilities: Map<String, 
     }
 
     fun updateItemStack() {
-        stack.setTagInfo()
         /*if (!stack.hasTagCompound())
             stack.tagCompound = NBTTagCompound()
         stack.tagCompound!!.setTag("capabilities", getCombinedNBT())*/
