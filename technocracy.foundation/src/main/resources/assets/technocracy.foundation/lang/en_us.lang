@@ -101,6 +101,12 @@ tile.refinery_input.name=Oil Refinery Ingress Port
 tile.refinery_output.name=Oil Refinery Egress Port
 tile.refinery_heater.name=Oil Refinery Heater
 
+tile.capacitor_controller.name=Capacitor Controller
+tile.capacitor_energy_port.name=Capacitor Energy Port
+tile.capacitor_connector.name=Capacitor Connector
+tile.capacitor_wall.name=Capacitor Wall
+tile.capacitor_electrode.name=Capacitor Electrode
+
 fluid.mineral_oil=Mineral Oil
 fluid.mineral_oil_hot=Heated Mineral Oil
 fluid.sulfur_dioxide=Sulfur Dioxide
