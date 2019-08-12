@@ -19,9 +19,10 @@ class TileEntityCapacitorEnergyPort : TileEntityMultiBlockPart<CapacitorMultiBlo
 
     override fun <T> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
         return if (hasCapability(capability, facing))
-            CapabilityEnergy.ENERGY.cast<T>(this.multiblockController
-                    ?.controllerTileEntity?.energyStorageComponent?.energyStorage)
+            CapabilityEnergy.ENERGY.cast<T>(
+                    multiblockController?.controllerTileEntity?.energyStorageComponent?.energyStorage)
+                    ?: return EnergyStorage(1) as T
         else
-            EnergyStorage(1) as T
+            null
     }
 }

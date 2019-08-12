@@ -27,12 +27,15 @@ import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
 import net.cydhra.technocracy.foundation.tileentity.machines.*
 import net.cydhra.technocracy.foundation.tileentity.management.TileEntityManager
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartBoiler
+import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartCapacitor
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartHeatExchanger
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartRefinery
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerHeater
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerInput
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerOutput
+import net.cydhra.technocracy.foundation.tileentity.multiblock.capacitor.TileEntityCapacitorController
+import net.cydhra.technocracy.foundation.tileentity.multiblock.capacitor.TileEntityCapacitorEnergyPort
 import net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger.TileEntityHeatExchangerController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger.TileEntityHeatExchangerInput
 import net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger.TileEntityHeatExchangerOutput
@@ -161,6 +164,12 @@ open class CommonProxy {
         blockManager.prepareBlocksForRegistration(refineryOutputBlock)
         blockManager.prepareBlocksForRegistration(refineryHeaterBlock)
 
+        blockManager.prepareBlocksForRegistration(capacitorControllerBlock)
+        blockManager.prepareBlocksForRegistration(capacitorEnergyPortBlock)
+        blockManager.prepareBlocksForRegistration(capacitorConnectorBlock)
+        blockManager.prepareBlocksForRegistration(capacitorWallBlock)
+        blockManager.prepareBlocksForRegistration(capacitorElectrodeBlock)
+
         blockManager.prepareBlocksForRegistration(oilSandBlock)
         blockManager.prepareBlocksForRegistration(oilStone)
         blockManager.prepareBlocksForRegistration(oilBlock)
@@ -240,6 +249,10 @@ open class CommonProxy {
         tileEntityManager.prepareTileEntityForRegistration(TileEntityRefineryOutput::class)
         tileEntityManager.prepareTileEntityForRegistration(TileEntityRefineryHeater::class)
         tileEntityManager.prepareTileEntityForRegistration(TileEntityMultiBlockPartRefinery::class)
+
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityCapacitorController::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityCapacitorEnergyPort::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityMultiBlockPartCapacitor::class)
 
         tileEntityManager.prepareTileEntityForRegistration(TileEntityDrum::class)
 

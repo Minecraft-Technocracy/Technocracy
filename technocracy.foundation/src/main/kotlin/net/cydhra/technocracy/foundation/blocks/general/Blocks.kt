@@ -78,7 +78,7 @@ val capacitorControllerBlock = MultiBlockRotatableActiveBlock("capacitor_control
 val capacitorWallBlock = PlainMultiBlockPartBlock("capacitor_wall", ::TileEntityMultiBlockPartCapacitor)
 val capacitorConnectorBlock = PlainMultiBlockPartBlock("capacitor_connector", ::TileEntityMultiBlockPartCapacitor)
 val capacitorElectrodeBlock = PlainMultiBlockPartBlock("capacitor_electrode", ::TileEntityMultiBlockPartCapacitor)
-val capacitorEnergyPortBlock = MultiBlockRotatableActiveBlock("capacior_energy_port", ::TileEntityCapacitorEnergyPort)
+val capacitorEnergyPortBlock = MultiBlockRotatableActiveBlock("capacitor_energy_port", ::TileEntityCapacitorEnergyPort)
 
 val oilSandBlock = OilSandBlock()
 val oilStone = OilStoneBlock()
