@@ -77,7 +77,7 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
     }
 
     override fun createNewTileEntity(worldIn: World, meta: Int): TileEntity? {
-        return TileEntityPipe(meta)
+        return TileEntityPipe()
     }
 
     override fun onBlockDestroyedByExplosion(worldIn: World, pos: BlockPos, explosionIn: Explosion) {
@@ -333,7 +333,7 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
     }
 
     override fun canPlaceBlockOnSide(world: World, pos: BlockPos, side: EnumFacing): Boolean {
-        val tile = world.getTileEntity(pos) as? TileEntityPipe ?: return false
+        val tile = world.getTileEntity(pos) as? TileEntityPipe ?: return true
         val pair = getBlockOnFacing(tile, side) ?: return false
         return pair.first.canPlaceBlockOnSide(world, pos, side)
     }

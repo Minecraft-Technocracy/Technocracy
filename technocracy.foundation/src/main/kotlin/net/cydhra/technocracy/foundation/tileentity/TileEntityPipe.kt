@@ -20,7 +20,7 @@ import net.minecraftforge.client.ForgeClientHandler
 import java.util.*
 
 
-class TileEntityPipe(meta: Int = -1) : AggregatableTileEntity() {
+class TileEntityPipe : AggregatableTileEntity() {
     companion object {
         const val size = 0.05
         const val nodeSize = 0.075
@@ -50,9 +50,6 @@ class TileEntityPipe(meta: Int = -1) : AggregatableTileEntity() {
         registerComponent(networkComponent, "network")
         registerComponent(pipeTypes, "pipeTypes")
         registerComponent(facades, "facades")
-
-        if (meta != -1)
-            addPipeType(PipeType.values()[meta])
     }
 
     fun addFacadeOnSide(stack: ItemStack, side: EnumFacing): Boolean {
