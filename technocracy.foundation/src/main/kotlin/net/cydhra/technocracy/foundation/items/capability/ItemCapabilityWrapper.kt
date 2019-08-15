@@ -5,9 +5,10 @@ import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.common.capabilities.ICapabilitySerializable
+import java.util.concurrent.ThreadLocalRandom
 
 
-class ItemCapabilityWrapper(val stack: ItemStack, val capabilities: Map<String, AbstractItemCapabilityComponent>) : ICapabilitySerializable<NBTTagCompound> {
+class ItemCapabilityWrapper(var stack: ItemStack, val capabilities: Map<String, AbstractItemCapabilityComponent>) : ICapabilitySerializable<NBTTagCompound> {
     init {
         capabilities.forEach {
             it.value.wrapper = this
@@ -39,9 +40,11 @@ class ItemCapabilityWrapper(val stack: ItemStack, val capabilities: Map<String, 
     }
 
     fun updateItemStack() {
-        /*if (!stack.hasTagCompound())
+        if (stack.tagCompound == null)
             stack.tagCompound = NBTTagCompound()
-        stack.tagCompound!!.setTag("capabilities", getCombinedNBT())*/
+        //Used to sync the item to the client
+        //TODO find a better way to do this, as this data gets ignored anyway and is duplicated
+        stack.tagCompound!!.setInteger("TC_UPDATE_TAG", getCombinedNBT().hashCode())
     }
 
     override fun deserializeNBT(nbt: NBTTagCompound?) {

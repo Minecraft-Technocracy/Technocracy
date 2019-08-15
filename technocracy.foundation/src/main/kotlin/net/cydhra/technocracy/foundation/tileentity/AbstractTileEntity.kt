@@ -47,7 +47,6 @@ abstract class AbstractTileEntity : TileEntity(), TCTileEntity {
      */
     fun markForUpdate() {
         if (this.world != null) {
-            this.world.markBlockRangeForRenderUpdate(pos, pos)
             this.world.notifyBlockUpdate(this.pos, this.getBlockState(), this.getBlockState(), 3)
             markDirty()
         }
