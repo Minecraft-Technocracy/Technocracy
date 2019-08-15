@@ -45,8 +45,8 @@ class TileEntityPipe(meta: Int = -1) : AggregatableTileEntity() {
         registerComponent(pipeTypes, "pipeTypes")
         registerComponent(facades, "facades")
 
-        if (meta > -1)
-            pipeTypes.types.add(PipeType.values()[meta])
+        if (meta != -1)
+            addPipeType(PipeType.values()[meta])
     }
 
     fun addFacadeOnSide(stack: ItemStack, side: EnumFacing): Boolean {
