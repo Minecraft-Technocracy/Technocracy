@@ -2,6 +2,9 @@ package net.cydhra.technocracy.foundation.conduits
 
 import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.nbt.NBTTagIntArray
+import net.minecraft.nbt.NBTTagList
+import net.minecraft.nbt.NBTUtil
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ChunkPos
@@ -16,6 +19,17 @@ import net.minecraftforge.common.util.INBTSerializable
  * @param chunkPos the chunk position in the dimension
  */
 internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSerializable<NBTTagCompound> {
+
+    companion object {
+        private const val NBT_KEY_NODE_LIST = "nodes"
+        private const val NBT_KEY_EDGE_LIST = "edges"
+        private const val NBT_KEY_NODE_POS = "pos"
+        private const val NBT_KEY_NODE_TYPE_LIST = "types"
+        private const val NBT_KEY_EDGE_POS = "pos"
+        private const val NBT_KEY_EDGE_TYPE_LIST = "types"
+        private const val NBT_KEY_EDGE_TYPE_LIST_ENTRY = "type"
+        private const val NBT_KEY_EDGE_TYPE_LIST_DIRECTION_LIST = "directions"
+    }
 
     /**
      * A counter that gets increased, every time the conduit network within this chunk is modified. Checking this
@@ -168,13 +182,40 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
     }
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
-        // TODO reading
+
     }
 
     override fun serializeNBT(): NBTTagCompound {
         val compound = NBTTagCompound()
 
-        // TODO writing
+        val nodeList = NBTTagList()
+        for (blockPos in this.nodes.keys) {
+            val nodeTag = NBTTagCompound()
+            nodeTag.setTag(NBT_KEY_NODE_POS, NBTUtil.createPosTag(blockPos))
+            nodeTag.setTag(NBT_KEY_NODE_TYPE_LIST, NBTTagIntArray(this.nodes[blockPos]!!.map(PipeType::ordinal)))
+            nodeList.appendTag(nodeTag)
+        }
+
+        val edgeList = NBTTagList()
+        for (edgePos in this.edges.keys) {
+            val edgeTag = NBTTagCompound()
+            edgeTag.setTag(NBT_KEY_EDGE_POS, NBTUtil.createPosTag(edgePos))
+
+            val typeList = NBTTagList()
+            for (pipeType in this.edges[edgePos]!!.keys) {
+                val typeTag = NBTTagCompound()
+                typeTag.setInteger(NBT_KEY_EDGE_TYPE_LIST_ENTRY, pipeType.ordinal)
+                typeTag.setTag(NBT_KEY_EDGE_TYPE_LIST_DIRECTION_LIST,
+                        NBTTagIntArray(this.edges[edgePos]!![pipeType]!!.map(EnumFacing::ordinal)))
+                typeList.appendTag(typeTag)
+            }
+
+            edgeTag.setTag(NBT_KEY_EDGE_TYPE_LIST, typeList)
+            edgeList.appendTag(edgeTag)
+        }
+
+        compound.setTag(NBT_KEY_NODE_LIST, nodeList)
+        compound.setTag(NBT_KEY_EDGE_LIST, edgeList)
 
         return compound
     }
