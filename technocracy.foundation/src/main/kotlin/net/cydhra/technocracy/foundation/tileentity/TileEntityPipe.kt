@@ -41,7 +41,6 @@ class TileEntityPipe : AggregatableTileEntity() {
     private val facades = ComponentFacade()
 
     init {
-        registerComponent(networkComponent, "network")
         registerComponent(pipeTypes, "pipeTypes")
         registerComponent(facades, "facades")
     }
