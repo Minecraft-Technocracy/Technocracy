@@ -9,10 +9,11 @@ import net.cydhra.technocracy.foundation.tileentity.components.AbstractComponent
 import net.cydhra.technocracy.foundation.tileentity.multiblock.capacitor.TileEntityCapacitorController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.capacitor.TileEntityCapacitorEnergyPort
 import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import java.util.function.Predicate
 
-class CapacitorMultiBlock(world: World) : BaseMultiBlock(
+class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
         frameBlockWhitelist = Predicate { it.block == capacitorWallBlock },
         sideBlockWhitelist = Predicate {
             it.block == capacitorWallBlock || it.block == capacitorControllerBlock
@@ -34,13 +35,10 @@ class CapacitorMultiBlock(world: World) : BaseMultiBlock(
 
     var controllerTileEntity: TileEntityCapacitorController? = null
 
-    private var energyPorts: List<TileEntityCapacitorEnergyPort> = emptyList()
-
     override fun getComponents(): MutableList<Pair<String, AbstractComponent>> {
         val components = mutableListOf<Pair<String, AbstractComponent>>()
-        if(controllerTileEntity != null)
+        if (controllerTileEntity != null)
             components.addAll(controllerTileEntity!!.getComponents())
-        energyPorts.forEach { components.addAll(it.getComponents()) }
         return components
     }
 
@@ -57,7 +55,6 @@ class CapacitorMultiBlock(world: World) : BaseMultiBlock(
 
             finishUp {
                 this@CapacitorMultiBlock.controllerTileEntity = controllers.first()
-                this@CapacitorMultiBlock.energyPorts = energyPorts
 
                 return@finishUp this@CapacitorMultiBlock.recalculatePhysics(validatorCallback)
             }
@@ -65,6 +62,38 @@ class CapacitorMultiBlock(world: World) : BaseMultiBlock(
     }
 
     private fun recalculatePhysics(validatorCallback: IMultiblockValidator): Boolean {
+        val interiorMin = minimumCoord.add(1, 1, 1)
+        val interiorMax = maximumCoord.add(-1, -1, -1)
+
+        //Find all electrodes
+        val electrodePositions = mutableListOf<Pair<Int, Int>>()
+        for (x in interiorMin.x until interiorMax.x) {
+            for (z in interiorMin.z until interiorMax.z) {
+                val block = this.world.getBlockState(BlockPos(x, interiorMin.y + 1, z)).block
+                if (block == capacitorElectrodeBlock) {
+                    if(this.world.getBlockState(BlockPos(x, interiorMin.y, z)).block != sulfuricAcidBlock) {
+                        validatorCallback.setLastError("multiblock.error.invalid_electrode_placement", x, interiorMin.y, z)
+                        return false
+                    }
+                    electrodePositions += Pair(x, z)
+                }
+            }
+        }
+
+        //Check surroundings of electrodes
+        electrodePositions.forEach {
+            for (y in (interiorMin.y + 1)..interiorMax.y) {
+                if (this.world.getBlockState(BlockPos(it.first + 1, y, it.second)).block != sulfuricAcidBlock ||
+                        this.world.getBlockState(BlockPos(it.first, y, it.second + 1)).block != sulfuricAcidBlock ||
+                        this.world.getBlockState(BlockPos(it.first - 1, y, it.second)).block != sulfuricAcidBlock ||
+                        this.world.getBlockState(BlockPos(it.first, y, it.second - 1)).block != sulfuricAcidBlock) {
+                    validatorCallback.setLastError("multiblock.error.invalid_electrode_placement", it.first, y,
+                            it.second)
+                    return false
+                }
+            }
+        }
+
         return true
     }
 
