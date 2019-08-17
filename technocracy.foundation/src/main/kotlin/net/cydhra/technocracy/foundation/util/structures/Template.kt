@@ -13,13 +13,14 @@ import net.minecraft.util.Rotation
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import net.minecraftforge.common.crafting.CraftingHelper
+import net.minecraftforge.common.util.INBTSerializable
 import net.minecraftforge.fml.common.Loader
 import java.io.File
 import java.io.FileOutputStream
 import java.nio.file.Files
 
 
-class Template {
+class Template : INBTSerializable<NBTTagCompound> {
     val blocks = mutableListOf<BlockInfo>()
     var modules = mutableMapOf<Int, MutableList<BlockPos>>()
 
@@ -32,14 +33,18 @@ class Template {
                     modContainer,
                     "assets/$modId/templates/$name.nbt",
                     { true },
-                    { _, path -> read(CompressedStreamTools.readCompressed(Files.newInputStream(path))) },
+                    { _, path ->
+                        deserializeNBT(CompressedStreamTools.readCompressed(Files.newInputStream(path)))
+                        init
+                    },
                     true,
                     true)
         }
         return this
     }
 
-    private fun read(compound: NBTTagCompound): Boolean {
+    override fun deserializeNBT(compound: NBTTagCompound?) {
+        if (compound == null) return
         init = true
         this.blocks.clear()
 
@@ -70,11 +75,10 @@ class Template {
             this.modules[j] = list
 
         }
-
-        return true
     }
 
-    private fun writeToNBT(nbt: NBTTagCompound): NBTTagCompound {
+    override fun serializeNBT(): NBTTagCompound {
+        val nbtTagCompound = NBTTagCompound()
         val nbttaglist = NBTTagList()
 
         for (block in this.blocks) {
@@ -98,9 +102,9 @@ class Template {
             })
         }
 
-        nbt.setTag("blocks", nbttaglist)
-        nbt.setTag("modules", modulesList)
-        return nbt
+        nbtTagCompound.setTag("blocks", nbttaglist)
+        nbtTagCompound.setTag("modules", modulesList)
+        return nbtTagCompound
     }
 
     fun generateTemplate(startPos: BlockPos, endPos: BlockPos, controller: BlockPos, wildcard: MutableList<BlockPos>, modules: MutableMap<Int, MutableList<BlockPos>>, ignoreAir: Boolean, worldIn: World, name: String): Boolean {
@@ -143,7 +147,7 @@ class Template {
 
         val file = File(Minecraft.getMinecraft().mcDataDir.absolutePath + "/mods/${TCFoundation.MODID}/$name.nbt")
         if (!file.parentFile.exists()) file.parentFile.mkdirs()
-        CompressedStreamTools.writeCompressed(writeToNBT(NBTTagCompound()), FileOutputStream(file))
+        CompressedStreamTools.writeCompressed(serializeNBT(), FileOutputStream(file))
 
         return true
     }
