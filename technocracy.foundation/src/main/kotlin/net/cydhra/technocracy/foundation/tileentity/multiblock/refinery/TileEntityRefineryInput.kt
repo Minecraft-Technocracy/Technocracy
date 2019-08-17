@@ -16,9 +16,10 @@ class TileEntityRefineryInput : TileEntityMultiBlockPart<RefineryMultiBlock>(Ref
     }
 
     override fun <T> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
-        return (if (hasCapability(capability, facing))
+        return if (hasCapability(capability, facing))
             CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast<T?>(multiblockController?.controllerTileEntity?.inputComponent?.fluid)
+                    ?: DynamicFluidHandler(1, allowedFluid = mutableListOf()) as T
         else
-            null) ?: DynamicFluidHandler(1, allowedFluid = mutableListOf()) as T
+            null
     }
 }
