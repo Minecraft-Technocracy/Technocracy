@@ -90,6 +90,18 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
         super.onBlockDestroyedByPlayer(worldIn, pos, state)
     }
 
+    override fun removedByPlayer(state: IBlockState, world: World, pos: BlockPos, player: EntityPlayer, willHarvest: Boolean): Boolean {
+        val tileEntity = world.getTileEntity(pos) as TileEntityPipe
+        tileEntity.removeTileEntiy()
+        return super.removedByPlayer(state, world, pos, player, willHarvest)
+    }
+
+    override fun onBlockExploded(world: World, pos: BlockPos, explosion: Explosion) {
+        val tileEntity = world.getTileEntity(pos) as TileEntityPipe
+        tileEntity.removeTileEntiy()
+        super.onBlockExploded(world, pos, explosion)
+    }
+
     /**
      * returns a list of blocks with the same ID, but different meta (eg: wood returns 4 blocks)
      */
