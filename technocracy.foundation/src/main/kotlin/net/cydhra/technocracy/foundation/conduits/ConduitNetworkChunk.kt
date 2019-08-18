@@ -44,6 +44,8 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      */
     private val nodes: MutableMap<BlockPos, MutableSet<PipeType>> = mutableMapOf()
 
+    val debug_nodes: Map<BlockPos, MutableSet<PipeType>> = nodes
+
     /**
      * A mutable mapping of block positions to a mapping of pipe types to a set of directions this type has edges in.
      * All edges are saved twice, so both connected block positions have an entry for the edge. This increases memory
@@ -51,6 +53,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      */
     private val edges: MutableMap<BlockPos, MutableMap<PipeType, MutableSet<EnumFacing>>> = mutableMapOf()
 
+    val debug_edges: Map<BlockPos, MutableMap<PipeType, MutableSet<EnumFacing>>> = edges
     /**
      * Add a node to the conduit network. This method does only add this one node to the network: no additional nodes
      * are discovered in the neighborhood of the block. If the node already exists, an [IllegalStateException] is

@@ -1,13 +1,17 @@
 package net.cydhra.technocracy.foundation.conduits
 
 import net.cydhra.technocracy.foundation.pipes.types.PipeType
+import net.minecraft.client.Minecraft
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.world.WorldServer
+import net.minecraftforge.client.event.RenderWorldLastEvent
 import net.minecraftforge.event.world.ChunkDataEvent
 import net.minecraftforge.event.world.ChunkEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import org.lwjgl.opengl.GL11
+import org.lwjgl.util.glu.Sphere
 
 /**
  * Global facade to the conduit network. All components that interact with the conduit network shall talk to this
@@ -195,5 +199,89 @@ object ConduitNetwork {
         val dimension = dimensions[dimensionId]!!
 
         dimension.unloadChunk(event.chunk)
+    }
+
+    @SubscribeEvent
+    fun renderDebugEvent(event: RenderWorldLastEvent) {
+        val mc = Minecraft.getMinecraft()
+        val doubleX = mc.player.posX
+        val doubleY = mc.player.posY
+        val doubleZ = mc.player.posZ
+
+        GL11.glPushMatrix()
+        GL11.glTranslated(-doubleX, -doubleY, -doubleZ)
+
+
+        GL11.glDisable(GL11.GL_DEPTH_TEST)
+        GL11.glEnable(GL11.GL_BLEND)
+        GL11.glDisable(GL11.GL_TEXTURE_2D)
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
+        GL11.glEnable(GL11.GL_LINE_SMOOTH)
+        GL11.glDisable(GL11.GL_LIGHTING)
+
+        GL11.glDepthMask(false)
+
+        GL11.glColor4d(1.0, 1.0, 1.0, 1.0)
+        GL11.glLineWidth(1f)
+
+        try {
+            dimensions[0]!!.debug_getChunks().forEach { nChunk ->
+                nChunk.debug_nodes.forEach { (pos, types) ->
+                    GL11.glPushMatrix()
+                    GL11.glTranslated(pos.x.toDouble() + 0.5, pos.y.toDouble(), pos.z.toDouble() + 0.5)
+
+                    types.forEach { type ->
+                        GL11.glPushMatrix()
+                        GL11.glTranslated(0.0, 0.2 * type.ordinal, 0.0)
+                        when (type) {
+                            PipeType.ENERGY -> GL11.glColor3d(1.0, 0.0, 0.0)
+                            PipeType.ITEM -> GL11.glColor3d(0.0, 1.0, 0.0)
+                            PipeType.FLUID -> GL11.glColor3d(0.0, 0.0, 1.0)
+                        }
+                        Sphere().draw(0.1f, 16, 16)
+                        GL11.glPopMatrix()
+                    }
+                    GL11.glPopMatrix()
+                }
+
+                nChunk.debug_edges.forEach { (pos, map) ->
+                    GL11.glPushMatrix()
+                    GL11.glTranslated(pos.x.toDouble() + 0.5, pos.y.toDouble(), pos.z.toDouble() + 0.5)
+
+                    map.forEach { (type, facings) ->
+                        GL11.glPushMatrix()
+                        GL11.glTranslated(0.0, 0.2 * type.ordinal, 0.0)
+
+                        when (type) {
+                            PipeType.ENERGY -> GL11.glColor3d(1.0, 0.0, 0.0)
+                            PipeType.ITEM -> GL11.glColor3d(0.0, 1.0, 0.0)
+                            PipeType.FLUID -> GL11.glColor3d(0.0, 0.0, 1.0)
+                        }
+
+                        GL11.glBegin(GL11.GL_LINES)
+                        facings.forEach { face ->
+                            GL11.glVertex3d(0.0, 0.0, 0.0)
+                            GL11.glVertex3d(face.directionVec.x / 2.0,
+                                    face.directionVec.y / 2.0, face.directionVec.z / 2.0)
+
+                        }
+                        GL11.glEnd()
+                        GL11.glPopMatrix()
+                    }
+
+                    GL11.glPopMatrix()
+                }
+            }
+        } catch (e: ConcurrentModificationException) {
+            e.printStackTrace()
+        }
+
+        GL11.glEnable(GL11.GL_TEXTURE_2D)
+        GL11.glDisable(GL11.GL_BLEND)
+        GL11.glEnable(GL11.GL_DEPTH_TEST)
+        GL11.glDisable(GL11.GL_LINE_SMOOTH)
+
+        GL11.glDepthMask(true)
+        GL11.glPopMatrix()
     }
 }

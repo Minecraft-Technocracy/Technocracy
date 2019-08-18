@@ -68,4 +68,8 @@ internal class ConduitNetworkDimension(private val dimensionId: Int) {
 
         ConduitNetworkChunkDataCache.enqueueChunkData(event.chunk.pos, chunkData)
     }
+
+    internal fun debug_getChunks(): Collection<ConduitNetworkChunk> {
+        return this.loadedChunks.values
+    }
 }
