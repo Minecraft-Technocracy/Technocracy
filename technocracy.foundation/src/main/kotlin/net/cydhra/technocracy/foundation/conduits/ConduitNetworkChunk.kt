@@ -136,30 +136,24 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
 
     /**
      * Remove an edge from the conduit network. The edge must exist, otherwise an [IllegalStateException] is thrown.
-     * No further nodes or edges are removed. It is asserted that the positions are within the
-     * chunk modeled by this instance and [world] is the owner of that chunk.
+     * No further nodes or edges are removed. It is asserted that the position is within the
+     * chunk modeled by this instance and [world] is the owner of that chunk. The edge pointing towards the removed
+     * edge is not removed.
      *
      * @param world world server that removes the edge
-     * @param nodeA first end of the new edge
-     * @param nodeB second end of the new edge
+     * @param pos where the edge is located
+     * @param facing the direction of the edge
      * @param type pipe type of the edge
      *
      * @throws [IllegalArgumentException] if the positions given are not adjacent
      * @throws [IllegalStateException] if the edge does not exist
      */
-    internal fun removeEdge(world: WorldServer, nodeA: BlockPos, nodeB: BlockPos, type: PipeType) {
-        val directionFromA = EnumFacing.values().firstOrNull { nodeA.add(it.directionVec) == nodeB }
-                ?: throw IllegalArgumentException("the positions are not adjacent")
-
-        if (this.edges[nodeA]?.get(type)?.contains(directionFromA) == false) {
+    internal fun removeEdge(world: WorldServer, pos: BlockPos, facing: EnumFacing, type: PipeType) {
+        if (this.edges[pos]?.get(type)?.contains(facing) == false) {
             throw IllegalStateException("the edge does not exist")
         }
 
-        assert(this.edges[nodeB]?.get(type)?.contains(directionFromA.opposite) == true)
-
-        this.edges[nodeA]!![type]!!.remove(directionFromA)
-        this.edges[nodeB]!![type]!!.remove(directionFromA.opposite)
-
+        this.edges[pos]!![type]!!.remove(facing)
         this.recalculatePaths()
         this.markDirty()
     }
