@@ -96,58 +96,40 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
         this.recalculatePaths()
         this.markDirty()
     }
-
     /**
-     * Insert an edge into the conduit network. The edge is constructed between the two given nodes and has no
-     * direction. Therefore the order of nodes does not matter. The edge is constructed for the given pipe [type]. Only
-     * one edge is inserted. If the edge already exists, an [IllegalStateException] is thrown. The node positions
-     * given must be adjacent and both contain a node of given [type]. It is asserted that the positions are within the
-     * chunk modeled by this instance and [world] is the owner of that chunk.
+     * Insert an edge into the conduit network. Only one end of the edge is inserted, facing in the given direction.
+     * The caller must ensure that the other end of the pipe is also inserted, possibly in another chunk.
+     * If the edge already exists, an [IllegalStateException] is thrown. The node position must contain a
+     * node of given [type]. It is asserted that the given position is within this chunk.
      *
      * @param world world server that inserts the edge
-     * @param nodeA first end of the new edge
-     * @param nodeB second end of the new edge
+     * @param pos the origin of the edge
+     * @param facing the direction of the edge
      * @param type pipe type of the edge
      *
      * @throws [IllegalArgumentException] if the positions given are not adjacent
      * @throws [IllegalArgumentException] if one of the node positions does not contain a [type] node
      * @throws [IllegalStateException] if the edge already exists
      */
-    internal fun insertEdge(world: WorldServer, nodeA: BlockPos, nodeB: BlockPos, type: PipeType) {
-        val directionFromA = EnumFacing.values().firstOrNull { nodeA.add(it.directionVec) == nodeB }
-                ?: throw IllegalArgumentException("the positions are not adjacent")
+    internal fun insertEdge(world: WorldServer, pos: BlockPos, facing: EnumFacing, type: PipeType) {
 
-        if (this.nodes[nodeA]?.contains(type) == false)
-            throw IllegalArgumentException("position A does not contain a node of type $type")
+        if (this.nodes[pos]?.contains(type) == false)
+            throw IllegalArgumentException("position does not contain a node of type $type")
 
-        if (this.nodes[nodeB]?.contains(type) == false)
-            throw IllegalArgumentException("position B does not contain a node of type $type")
-
-        if (this.edges[nodeA]?.get(type)?.contains(directionFromA) == true) {
+        if (this.edges[pos]?.get(type)?.contains(facing) == true) {
             throw IllegalStateException("the edge already existed")
         }
 
-        assert(this.edges[nodeB]?.get(type)?.contains(directionFromA.opposite) == false)
-
-        if (!this.edges.containsKey(nodeA)) {
-            this.edges[nodeA] = mutableMapOf()
+        if (!this.edges.containsKey(pos)) {
+            this.edges[pos] = mutableMapOf()
         }
 
-        if (!this.edges[nodeA]!!.containsKey(type)) {
-            this.edges[nodeA]!![type] = mutableSetOf()
+        if (!this.edges[pos]!!.containsKey(type)) {
+            this.edges[pos]!![type] = mutableSetOf()
         }
 
-        this.edges[nodeA]!![type]!! += directionFromA
+        this.edges[pos]!![type]!! += facing
 
-        if (!this.edges.containsKey(nodeB)) {
-            this.edges[nodeB] = mutableMapOf()
-        }
-
-        if (!this.edges[nodeB]!!.containsKey(type)) {
-            this.edges[nodeB]!![type] = mutableSetOf()
-        }
-
-        this.edges[nodeB]!![type]!! += directionFromA.opposite
         this.recalculatePaths()
         this.markDirty()
     }
