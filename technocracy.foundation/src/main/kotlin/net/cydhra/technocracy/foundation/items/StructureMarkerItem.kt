@@ -31,10 +31,7 @@ class StructureMarkerItem : BaseItem("structure_marker"), IItemScrollEvent {
             itemStack.tagCompound = NBTTagCompound()
         }
 
-        println(currMode)
-
         currMode += dir
-        println(currMode)
 
         if (currMode < 0)
             currMode = StructureSelectModes.values().size - 1

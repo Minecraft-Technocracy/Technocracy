@@ -2,6 +2,8 @@ package net.cydhra.technocracy.foundation.blocks
 
 import net.cydhra.technocracy.foundation.blocks.api.AbstractTileEntityBlock
 import net.cydhra.technocracy.foundation.items.FacadeItem
+import net.cydhra.technocracy.foundation.items.PipeItem
+import net.cydhra.technocracy.foundation.items.WrenchItem
 import net.cydhra.technocracy.foundation.items.general.pipeItem
 import net.cydhra.technocracy.foundation.pipes.Network
 import net.cydhra.technocracy.foundation.pipes.types.PipeType
@@ -42,9 +44,7 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import team.chisel.ctm.api.IFacade
 import java.util.function.BiFunction
-import java.util.function.Function
 import java.util.function.Supplier
-import java.util.stream.Stream
 import kotlin.math.max
 
 
@@ -137,7 +137,53 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
             }
         }
 
+        val stack = playerIn.getHeldItem(hand)
+
+        //TODO wrench check
+        if (playerIn.isSneaking && stack.item is WrenchItem) {
+            val mode = (stack.item as WrenchItem).getWrenchMode(stack)
+
+            if (mode.allowedPipe != null) {
+                if (tile.hasPipeType(mode.allowedPipe)) {
+                    tile.removePipeType(mode.allowedPipe)
+                    spawnAsEntity(worldIn, pos, ItemStack(pipeItem, 1, mode.allowedPipe.ordinal))
+                }
+                return true
+            }
+
+            if (mode == WrenchItem.WrenchMode.PIPE_ALL) {
+                val attrib = playerIn.getEntityAttribute(EntityPlayer.REACH_DISTANCE).attributeValue
+                val dist = if (playerIn.isCreative) attrib else attrib - 0.5
+
+                val raytrace = playerIn.rayTrace(dist, 1.0f)
+
+                if (raytrace == null || raytrace.typeOfHit == RayTraceResult.Type.MISS)
+                    return false
+
+                val lookingat = getPickBlock(state, raytrace, worldIn, pos, playerIn)
+
+                if (lookingat == null || lookingat.isEmpty)
+                    return false
+
+                if (lookingat.item is FacadeItem) {
+                    val startPos = Vec3d(playerIn.posX, playerIn.posY + playerIn.getEyeHeight(), playerIn.posZ)
+                    val endPos = startPos.addVector(playerIn.lookVec.x * dist, playerIn.lookVec.y * dist, playerIn.lookVec.z * dist)
+                    val triple = rayTraceBestBB(startPos, endPos, tile.getPipeModelParts(), pos)
+                    tile.removeFacadeOnSide(triple!!.first.first)
+                } else if (lookingat.item is PipeItem) {
+                    tile.removePipeType(PipeType.values()[lookingat.metadata])
+                }
+
+                spawnAsEntity(worldIn, pos, lookingat)
+
+                return true
+            }
+        }
+
         if (!playerIn.isSneaking && playerIn.inventory.getCurrentItem().item == Item.getItemFromBlock(this)) return true
+
+
+
 
         if (playerIn.isSneaking && playerIn.inventory.getCurrentItem().isEmpty && hand == EnumHand.MAIN_HAND) {
 
@@ -196,8 +242,7 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
             if (triple.second != null) {
                 return ItemStack(pipeItem, 1, triple.second!!.ordinal)
             } else {
-                val raytrace = collisionRayTrace(state, world, pos, startPos, endPos)
-                return tile.getFacades()[raytrace!!.sideHit] ?: ItemStack.EMPTY
+                return tile.getFacades()[triple.first.first] ?: ItemStack.EMPTY
             }
         }
         return super.getPickBlock(state, target, world, pos, player)
