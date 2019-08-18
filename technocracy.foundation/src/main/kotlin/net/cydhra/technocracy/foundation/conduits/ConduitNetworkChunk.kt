@@ -9,6 +9,7 @@ import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.world.WorldServer
+import net.minecraftforge.common.util.Constants
 import net.minecraftforge.common.util.INBTSerializable
 
 /**
@@ -182,7 +183,30 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
     }
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
+        val nodeList = nbt.getTagList(NBT_KEY_NODE_LIST, Constants.NBT.TAG_COMPOUND)
+        val edgeList = nbt.getTagList(NBT_KEY_EDGE_LIST, Constants.NBT.TAG_COMPOUND)
 
+        nodeList.forEach { nodeTag ->
+            val blockPos = NBTUtil.getPosFromTag((nodeTag as NBTTagCompound).getCompoundTag(NBT_KEY_NODE_POS))
+            val types = nodeTag.getIntArray(NBT_KEY_NODE_TYPE_LIST).map { PipeType.values()[it] }.toMutableSet()
+            this.nodes[blockPos] = types
+        }
+
+        edgeList.forEach { edgeTag ->
+            val blockPos = NBTUtil.getPosFromTag((edgeTag as NBTTagCompound).getCompoundTag(NBT_KEY_EDGE_POS))
+            val typeList = edgeTag.getTagList(NBT_KEY_EDGE_TYPE_LIST, Constants.NBT.TAG_COMPOUND)
+
+            this.edges[blockPos] = mutableMapOf()
+
+            typeList.forEach { typeTag ->
+                val pipeType = PipeType.values()[(typeTag as NBTTagCompound).getInteger(NBT_KEY_EDGE_TYPE_LIST_ENTRY)]
+                val facings = typeTag.getIntArray(NBT_KEY_EDGE_TYPE_LIST_DIRECTION_LIST)
+                        .map { EnumFacing.values()[it] }
+                        .toMutableSet()
+
+                this.edges[blockPos]!![pipeType] = facings
+            }
+        }
     }
 
     override fun serializeNBT(): NBTTagCompound {
