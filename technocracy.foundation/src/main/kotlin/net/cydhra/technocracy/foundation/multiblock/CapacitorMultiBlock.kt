@@ -8,10 +8,13 @@ import net.cydhra.technocracy.foundation.blocks.general.*
 import net.cydhra.technocracy.foundation.tileentity.components.AbstractComponent
 import net.cydhra.technocracy.foundation.tileentity.multiblock.capacitor.TileEntityCapacitorController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.capacitor.TileEntityCapacitorEnergyPort
+import net.minecraft.block.Block
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import java.util.function.Predicate
+import kotlin.math.roundToInt
+import kotlin.math.sqrt
 
 class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
         frameBlockWhitelist = Predicate { it.block == capacitorWallBlock },
@@ -66,40 +69,76 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
         val interiorMax = maximumCoord.add(-1, -1, -1)
 
         //Find all electrodes
-        val electrodePositions = mutableSetOf<Pair<Int, Int>>()
+        val electrodes = mutableSetOf<Electrode>()
         for (x in interiorMin.x..interiorMax.x) {
             for (z in interiorMin.z..interiorMax.z) {
                 for (y in interiorMin.y..interiorMax.y) {
                     val block = this.world.getBlockState(BlockPos(x, y, z)).block
                     if (block == capacitorElectrodeBlock)
-                        electrodePositions += Pair(x, z)
+                        electrodes += Electrode(x, z, 0, block)
                 }
             }
         }
 
+        val electrodeParts = mutableListOf<Triple<Int, Int, Int>>()
         //Check electrodes
-        electrodePositions.forEach {
+        electrodes.forEach {
             for (y in (interiorMin.y)..interiorMax.y) {
-                val block = this.world.getBlockState(BlockPos(it.first, y, it.second)).block
+                val block = this.world.getBlockState(BlockPos(it.x, y, it.z)).block
                 //Checks side blocks, then the bottom most block
-                if ((this.world.getBlockState(BlockPos(it.first + 1, y, it.second)).block != sulfuricAcidBlock ||
+                if ((this.world.getBlockState(BlockPos(it.x + 1, y, it.z)).block != sulfuricAcidBlock ||
                                 this.world.getBlockState(
-                                        BlockPos(it.first, y, it.second + 1)).block != sulfuricAcidBlock ||
+                                        BlockPos(it.x, y, it.z + 1)).block != sulfuricAcidBlock ||
                                 this.world.getBlockState(
-                                        BlockPos(it.first - 1, y, it.second)).block != sulfuricAcidBlock ||
+                                        BlockPos(it.x - 1, y, it.z)).block != sulfuricAcidBlock ||
                                 this.world.getBlockState(
-                                        BlockPos(it.first, y, it.second - 1)).block != sulfuricAcidBlock) ||
+                                        BlockPos(it.x, y, it.z - 1)).block != sulfuricAcidBlock) ||
                         (y == interiorMin.y && block != sulfuricAcidBlock)) {
-                    validatorCallback.setLastError("multiblock.error.invalid_electrode_placement", it.first, y,
-                            it.second)
+                    validatorCallback.setLastError("multiblock.error.invalid_electrode_placement", it.x, y,
+                            it.z)
                     return false
-                } else if (y != interiorMin.y && block != capacitorElectrodeBlock) {
-                    validatorCallback.setLastError("multiblock.error.electrode_not_connected", it.first, y,
-                            it.second)
+                } else if (it.height != 0 && y != interiorMin.y && block != it.block) {
+                    validatorCallback.setLastError("multiblock.error.electrode_not_connected", it.x, y,
+                            it.z)
                     return false
+                } else if(block == it.block) {
+                    electrodeParts += Triple(it.x, y, it.z)
+                    it.height++
                 }
             }
         }
+
+        if (electrodes.size % 2 != 0) {
+            validatorCallback.setLastError("multiblock.error.uneven_number_of_electrodes")
+            return false
+        }
+
+        //Calculates the average shortest distance between electrode parts
+        var totalDistance = 0
+        electrodeParts.forEach {
+            //Definitely longer than the longest possible distance
+            var shortestDistance = maximumXSize * maximumZSize
+            electrodeParts.forEach { other ->
+                if (other != it) {
+                    val distance = (it.first - other.first) * (it.first - other.first) +
+                            (it.second - other.second) * (it.second - other.second) +
+                            (it.third - other.third) * (it.third - other.third)
+                    if (distance < shortestDistance)
+                        shortestDistance = distance
+                }
+            }
+            totalDistance += shortestDistance
+        }
+
+        //capacity = distance * 512000 * number_of_internal_blocks / number_of_electrodes
+        controllerTileEntity!!.energyStorageComponent.energyStorage.capacity = (sqrt(totalDistance.toDouble()) *
+                512000 *
+                ((interiorMax.x - interiorMin.x) * (interiorMax.y - interiorMin.y) * (interiorMax.z - interiorMin.z))
+                / electrodes.size).roundToInt()
+
+        //drain/fill speed = 2000 * number_of_electrodes
+        controllerTileEntity!!.energyStorageComponent.energyStorage.extractionLimit = 2000 * electrodes.size
+        controllerTileEntity!!.energyStorageComponent.energyStorage.receivingLimit = 2000 * electrodes.size
 
         return true
     }
@@ -147,4 +186,9 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
 
     override fun onMachineDisassembled() {
     }
+}
+
+private class Electrode(val x: Int, val z: Int, var height: Int, val block: Block) {
+    override fun equals(other: Any?): Boolean = other is Electrode && other.x == x && other.z == z
+    override fun hashCode(): Int = 31 * x + z
 }
