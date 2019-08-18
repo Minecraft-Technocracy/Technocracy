@@ -72,7 +72,7 @@ class TileEntityPipe : AggregatableTileEntity() {
             EnumFacing.values().forEach { face ->
                 val offset = this.pos.offset(face)
                 if (ConduitNetwork.hasConduitNode(this.world as WorldServer, offset, type)) {
-//                    ConduitNetwork.insertConduitEdge(this.world as WorldServer, this.pos, offset, type)
+                    ConduitNetwork.insertConduitEdge(this.world as WorldServer, this.pos, offset, type)
                 }
             }
         }

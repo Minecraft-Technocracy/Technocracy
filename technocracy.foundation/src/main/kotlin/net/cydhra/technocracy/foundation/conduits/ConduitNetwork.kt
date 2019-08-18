@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.conduits
 
 import net.cydhra.technocracy.foundation.pipes.types.PipeType
+import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.world.WorldServer
@@ -63,8 +64,9 @@ object ConduitNetwork {
     /**
      * Insert an edge into the conduit network. The edge is constructed between the two given nodes and has no
      * direction. Therefore the order of nodes does not matter. The edge is constructed for the given pipe [type]. Only
-     * one edge is inserted. If the edge already exists, an [IllegalStateException] is thrown. The node positions
-     * given must be adjacent and both contain a node of given [type].
+     * one edge is inserted (however it will be inserted in both nodes). If the edge already exists, an
+     * [IllegalStateException] is thrown. The node positions given must be adjacent and both contain a node of given
+     * [type] and must be adjacent.
      *
      * @param world world server that inserts the edge
      * @param nodeA first end of the new edge
@@ -74,14 +76,28 @@ object ConduitNetwork {
      * @throws [IllegalArgumentException] if the positions given are not adjacent
      * @throws [IllegalArgumentException] if one of the node positions does not contain a [type] node
      * @throws [IllegalStateException] if the edge already exists
+     * @throws [IllegalStateException] if the dimension is not loaded
+     * @throws [IllegalStateException] if one of the chunks is not loaded
      */
     fun insertConduitEdge(world: WorldServer, nodeA: BlockPos, nodeB: BlockPos, type: PipeType) {
-        TODO("not implemented")
+        val directionFromA = EnumFacing.values().firstOrNull { nodeA.add(it.directionVec) == nodeB }
+                ?: throw IllegalArgumentException("the positions are not adjacent")
+
+        val dimension = dimensions[world.provider.dimension]
+                ?: throw IllegalStateException("the dimension is not loaded")
+
+        val chunkA = dimension.getChunkAt(ChunkPos(nodeA))
+                ?: throw IllegalStateException("the chunk of nodeA is not loaded")
+        chunkA.insertEdge(world, nodeA, directionFromA, type)
+
+        val chunkB = dimension.getChunkAt(ChunkPos(nodeB))
+                ?: throw IllegalStateException("the chunk of nodeB is not loaded")
+        chunkB.insertEdge(world, nodeA, directionFromA.opposite, type)
     }
 
     /**
      * Remove an edge from the conduit network. The edge must exist, otherwise an [IllegalStateException] is thrown.
-     * No further nodes or edges are removed.
+     * No further nodes or edges are removed (however the edge is removed from both blocks).
      *
      * @param world world server that removes the edge
      * @param nodeA first end of the new edge
@@ -92,7 +108,19 @@ object ConduitNetwork {
      * @throws [IllegalStateException] if the edge does not exist
      */
     fun removeConduitEdge(world: WorldServer, nodeA: BlockPos, nodeB: BlockPos, type: PipeType) {
-        TODO("not implemented")
+        val directionFromA = EnumFacing.values().firstOrNull { nodeA.add(it.directionVec) == nodeB }
+                ?: throw IllegalArgumentException("the positions are not adjacent")
+
+        val dimension = dimensions[world.provider.dimension]
+                ?: throw IllegalStateException("the dimension is not loaded")
+
+        val chunkA = dimension.getChunkAt(ChunkPos(nodeA))
+                ?: throw IllegalStateException("the chunk of nodeA is not loaded")
+        chunkA.removeEdge(world, nodeA, directionFromA, type)
+
+        val chunkB = dimension.getChunkAt(ChunkPos(nodeB))
+                ?: throw IllegalStateException("the chunk of nodeB is not loaded")
+        chunkB.removeEdge(world, nodeA, directionFromA.opposite, type)
     }
 
     fun hasConduitNode(world: WorldServer, pos: BlockPos, type: PipeType): Boolean {
