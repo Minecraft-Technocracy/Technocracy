@@ -7,7 +7,6 @@ import net.cydhra.technocracy.astronautics.capabilities.satellites.ISatelliteOrb
 import net.cydhra.technocracy.astronautics.capabilities.satellites.SatelliteOrbitStorage
 import net.cydhra.technocracy.astronautics.client.astronauticsCreativeTabs
 import net.cydhra.technocracy.astronautics.client.model.concreteSprayer.ConcreteSprayerItemModel
-import net.cydhra.technocracy.astronautics.entity.EntityRocket
 import net.cydhra.technocracy.astronautics.entity.entityRocket
 import net.cydhra.technocracy.astronautics.items.general.concreteCanItem
 import net.cydhra.technocracy.astronautics.items.general.concreteSprayerItem
