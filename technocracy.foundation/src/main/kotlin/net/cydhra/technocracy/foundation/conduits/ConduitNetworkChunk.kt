@@ -8,7 +8,6 @@ import net.minecraft.nbt.NBTUtil
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ChunkPos
-import net.minecraft.world.WorldServer
 import net.minecraftforge.common.util.Constants
 import net.minecraftforge.common.util.INBTSerializable
 
@@ -58,16 +57,15 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      * Add a node to the conduit network. This method does only add this one node to the network: no additional nodes
      * are discovered in the neighborhood of the block. If the node already exists, an [IllegalStateException] is
      * thrown. No edges are inserted into the network. It is asserted that [pos] is within the chunk modeled by this
-     * instance and [world] is the owner of that chunk.
+     * instance.
      *
-     * @param world world server that adds the node
      * @param pos position in world where the node is added
      * @param type pipe type of the new node. Each node does only have one pipe type. Multiple pipe types within the
      * same block must be added individually.
      *
      * @throws IllegalStateException if the node already exists
      */
-    internal fun insertNode(world: WorldServer, pos: BlockPos, type: PipeType) {
+    internal fun insertNode(pos: BlockPos, type: PipeType) {
         if (this.nodes[pos]?.contains(type) == true)
             throw IllegalStateException("the inserted node already exists within the network")
 
@@ -83,15 +81,14 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
     /**
      * Remove a node from the conduit network. All edges from and to the node are removed as well. If the node does
      * not exist, an [IllegalStateException] is thrown. It is asserted that [pos] is within the chunk modeled by this
-     * instance and [world] is the owner of that chunk.
+     * instance.
      *
-     * @param world world server that removes the node
      * @param pos position in world where the node was removed
      * @param type pipe type that was removed.
      *
      * @throws IllegalStateException if the node does not exist
      */
-    internal fun removeNode(world: WorldServer, pos: BlockPos, type: PipeType) {
+    internal fun removeNode(pos: BlockPos, type: PipeType) {
         if (this.nodes[pos]?.contains(type) == false)
             throw IllegalStateException("the removed node does not exist within the network")
 
@@ -105,7 +102,6 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      * If the edge already exists, an [IllegalStateException] is thrown. The node position must contain a
      * node of given [type]. It is asserted that the given position is within this chunk.
      *
-     * @param world world server that inserts the edge
      * @param pos the origin of the edge
      * @param facing the direction of the edge
      * @param type pipe type of the edge
@@ -114,7 +110,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      * @throws [IllegalArgumentException] if one of the node positions does not contain a [type] node
      * @throws [IllegalStateException] if the edge already exists
      */
-    internal fun insertEdge(world: WorldServer, pos: BlockPos, facing: EnumFacing, type: PipeType) {
+    internal fun insertEdge(pos: BlockPos, facing: EnumFacing, type: PipeType) {
 
         if (this.nodes[pos]?.contains(type) == false)
             throw IllegalArgumentException("position does not contain a node of type $type")
@@ -140,10 +136,9 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
     /**
      * Remove an edge from the conduit network. The edge must exist, otherwise an [IllegalStateException] is thrown.
      * No further nodes or edges are removed. It is asserted that the position is within the
-     * chunk modeled by this instance and [world] is the owner of that chunk. The edge pointing towards the removed
-     * edge is not removed.
+     * chunk modeled by this instance. The edge pointing towards the removed edge (originating in the adjacent node) is
+     * not removed.
      *
-     * @param world world server that removes the edge
      * @param pos where the edge is located
      * @param facing the direction of the edge
      * @param type pipe type of the edge
@@ -151,7 +146,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      * @throws [IllegalArgumentException] if the positions given are not adjacent
      * @throws [IllegalStateException] if the edge does not exist
      */
-    internal fun removeEdge(world: WorldServer, pos: BlockPos, facing: EnumFacing, type: PipeType) {
+    internal fun removeEdge(pos: BlockPos, facing: EnumFacing, type: PipeType) {
         if (this.edges[pos]?.get(type)?.contains(facing) == false) {
             throw IllegalStateException("the edge does not exist")
         }
