@@ -174,7 +174,6 @@ effect.oily=Oily
 itemGroup.technocracy=Technocracy
 itemGroup.facades=Facades
 
-multiblock.error.invalid_electrode_placement=Invalid electrode placement at %d, %d, %d. Electrodes need at least one block between other electrodes and the housing.
 multiblock.error.number_of_blocks=%s: Expected %d but found %d.
 multiblock.error.too_few_blocks=%s: Expected at least %d but found %d.
 multiblock.error.too_many_blocks=%s: Expected at most %d but found %d.
@@ -184,3 +183,5 @@ multiblock.error.tube_flow_diverges=A tube diverges its coolant flow.
 multiblock.error.tube_missing_exit=A tube is missing an exit.
 multiblock.error.two_top_outputs=Both output ports are in the top half of the machine.
 multiblock.error.two_bot_outputs=Both output ports are in the bottom half of the machine.
+multiblock.error.invalid_electrode_placement=Invalid electrode placement at %d, %d, %d. Electrodes need at least one block between other electrodes and the housing.
+multiblock.error.electrode_not_connected=Missing electrode block at %d, %d, %d. Electrodes have to be connected from top to bottom.

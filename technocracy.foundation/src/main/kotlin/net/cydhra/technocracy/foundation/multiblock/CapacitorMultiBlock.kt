@@ -66,28 +66,35 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
         val interiorMax = maximumCoord.add(-1, -1, -1)
 
         //Find all electrodes
-        val electrodePositions = mutableListOf<Pair<Int, Int>>()
-        for (x in interiorMin.x until interiorMax.x) {
-            for (z in interiorMin.z until interiorMax.z) {
-                val block = this.world.getBlockState(BlockPos(x, interiorMin.y + 1, z)).block
-                if (block == capacitorElectrodeBlock) {
-                    if(this.world.getBlockState(BlockPos(x, interiorMin.y, z)).block != sulfuricAcidBlock) {
-                        validatorCallback.setLastError("multiblock.error.invalid_electrode_placement", x, interiorMin.y, z)
-                        return false
-                    }
-                    electrodePositions += Pair(x, z)
+        val electrodePositions = mutableSetOf<Pair<Int, Int>>()
+        for (x in interiorMin.x..interiorMax.x) {
+            for (z in interiorMin.z..interiorMax.z) {
+                for (y in interiorMin.y..interiorMax.y) {
+                    val block = this.world.getBlockState(BlockPos(x, y, z)).block
+                    if (block == capacitorElectrodeBlock)
+                        electrodePositions += Pair(x, z)
                 }
             }
         }
 
-        //Check surroundings of electrodes
+        //Check electrodes
         electrodePositions.forEach {
-            for (y in (interiorMin.y + 1)..interiorMax.y) {
-                if (this.world.getBlockState(BlockPos(it.first + 1, y, it.second)).block != sulfuricAcidBlock ||
-                        this.world.getBlockState(BlockPos(it.first, y, it.second + 1)).block != sulfuricAcidBlock ||
-                        this.world.getBlockState(BlockPos(it.first - 1, y, it.second)).block != sulfuricAcidBlock ||
-                        this.world.getBlockState(BlockPos(it.first, y, it.second - 1)).block != sulfuricAcidBlock) {
+            for (y in (interiorMin.y)..interiorMax.y) {
+                val block = this.world.getBlockState(BlockPos(it.first, y, it.second)).block
+                //Checks side blocks, then the bottom most block
+                if ((this.world.getBlockState(BlockPos(it.first + 1, y, it.second)).block != sulfuricAcidBlock ||
+                                this.world.getBlockState(
+                                        BlockPos(it.first, y, it.second + 1)).block != sulfuricAcidBlock ||
+                                this.world.getBlockState(
+                                        BlockPos(it.first - 1, y, it.second)).block != sulfuricAcidBlock ||
+                                this.world.getBlockState(
+                                        BlockPos(it.first, y, it.second - 1)).block != sulfuricAcidBlock) ||
+                        (y == interiorMin.y && block != sulfuricAcidBlock)) {
                     validatorCallback.setLastError("multiblock.error.invalid_electrode_placement", it.first, y,
+                            it.second)
+                    return false
+                } else if (y != interiorMin.y && block != capacitorElectrodeBlock) {
+                    validatorCallback.setLastError("multiblock.error.electrode_not_connected", it.first, y,
                             it.second)
                     return false
                 }
