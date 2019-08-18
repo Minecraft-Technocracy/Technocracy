@@ -182,7 +182,8 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(nanotubesItem)
         itemManager.prepareItemForRegistration(mirrorItem)
         itemManager.prepareItemForRegistration(polishedMirrorItem)
-        itemManager.prepareItemForRegistration(emptyCan)
+        itemManager.prepareItemForRegistration(emptyCanItem)
+        itemManager.prepareItemForRegistration(wrenchItem)
 
         itemManager.prepareItemForRegistration(invarItem)
         itemManager.prepareItemForRegistration(siliconBronzeItem)
@@ -198,8 +199,8 @@ open class CommonProxy {
 
         if (!Minecraft.getMinecraft().isSingleplayer) {
             //Dev tools
-            itemManager.prepareItemForRegistration(structureMarker)
-            MinecraftForge.EVENT_BUS.register(structureMarker)
+            itemManager.prepareItemForRegistration(structureMarkerItem)
+            MinecraftForge.EVENT_BUS.register(structureMarkerItem)
         }
 
         tileEntityManager.prepareTileEntityForRegistration(TileEntityAlloySmeltery::class)
