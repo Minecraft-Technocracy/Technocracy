@@ -233,4 +233,17 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
     private fun recalculatePaths() {
         // TODO recalculate transit model
     }
+
+    /**
+     * Check whether a given block position has a type of pipe node in it. This does assume, that [pos] is actually
+     * within this chunk.
+     *
+     * @param pos block position within this chunk
+     * @param type type of pipe to check
+     *
+     * @return true if there is a node of given type at given position, false if not.
+     */
+    fun hasNode(pos: BlockPos, type: PipeType): Boolean {
+        return nodes[pos]?.contains(type) ?: false
+    }
 }
