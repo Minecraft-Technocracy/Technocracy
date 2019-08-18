@@ -96,7 +96,7 @@ object ConduitNetwork {
 
         val chunkB = dimension.getChunkAt(ChunkPos(nodeB))
                 ?: throw IllegalStateException("the chunk of nodeB is not loaded")
-        chunkB.insertEdge(world, nodeA, directionFromA.opposite, type)
+        chunkB.insertEdge(world, nodeB, directionFromA.opposite, type)
     }
 
     /**
@@ -124,7 +124,7 @@ object ConduitNetwork {
 
         val chunkB = dimension.getChunkAt(ChunkPos(nodeB))
                 ?: throw IllegalStateException("the chunk of nodeB is not loaded")
-        chunkB.removeEdge(world, nodeA, directionFromA.opposite, type)
+        chunkB.removeEdge(world, nodeB, directionFromA.opposite, type)
     }
 
     fun hasConduitNode(world: WorldServer, pos: BlockPos, type: PipeType): Boolean {
