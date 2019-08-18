@@ -105,7 +105,8 @@ tile.capacitor_controller.name=Capacitor Controller
 tile.capacitor_energy_port.name=Capacitor Energy Port
 tile.capacitor_connector.name=Capacitor Connector
 tile.capacitor_wall.name=Capacitor Wall
-tile.capacitor_electrode.name=Capacitor Electrode
+tile.capacitor_electrode.name=Capacitor Lead-Electrode
+tile.capacitor_oxidized_electrode.name=Capacitor Lead-Oxide-Electrode
 
 fluid.mineral_oil=Mineral Oil
 fluid.mineral_oil_hot=Heated Mineral Oil
