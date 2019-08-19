@@ -94,7 +94,8 @@ class TileEntityPipe : AggregatableTileEntity() {
     fun removePipeType(type: PipeType) {
     }
 
-    fun removeTileEntiy() {
+    fun removeTileEntity() {
+
     }
 
     fun getInstalledTypes(): List<PipeType> {

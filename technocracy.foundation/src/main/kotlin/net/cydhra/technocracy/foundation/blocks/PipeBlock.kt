@@ -89,13 +89,13 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
 
     override fun removedByPlayer(state: IBlockState, world: World, pos: BlockPos, player: EntityPlayer, willHarvest: Boolean): Boolean {
         val tileEntity = world.getTileEntity(pos) as TileEntityPipe
-        tileEntity.removeTileEntiy()
+        tileEntity.removeTileEntity()
         return super.removedByPlayer(state, world, pos, player, willHarvest)
     }
 
     override fun onBlockExploded(world: World, pos: BlockPos, explosion: Explosion) {
         val tileEntity = world.getTileEntity(pos) as TileEntityPipe
-        tileEntity.removeTileEntiy()
+        tileEntity.removeTileEntity()
         super.onBlockExploded(world, pos, explosion)
     }
 
