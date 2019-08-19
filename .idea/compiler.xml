@@ -2,14 +2,21 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
-      <module name="Technocracy.foundation.api" target="1.8" />
-      <module name="Technocracy.foundation.main" target="1.8" />
-      <module name="Technocracy.foundation.test" target="1.8" />
-      <module name="Technocracy.main" target="1.8" />
+      <module name="technocracy.api" target="1.8" />
+      <module name="technocracy.astronautics.api" target="1.8" />
+      <module name="technocracy.astronautics.main" target="1.8" />
+      <module name="technocracy.astronautics.test" target="1.8" />
+      <module name="technocracy.foundation.api" target="1.8" />
+      <module name="technocracy.foundation.main" target="1.8" />
+      <module name="technocracy.foundation.test" target="1.8" />
+      <module name="technocracy.main" target="1.8" />
+      <module name="technocracy.megastructures.api" target="1.8" />
+      <module name="technocracy.megastructures.main" target="1.8" />
+      <module name="technocracy.megastructures.test" target="1.8" />
       <module name="technocracy.monolith.api" target="1.8" />
       <module name="technocracy.monolith.main" target="1.8" />
       <module name="technocracy.monolith.test" target="1.8" />
-      <module name="Technocracy.test" target="1.8" />
+      <module name="technocracy.test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
