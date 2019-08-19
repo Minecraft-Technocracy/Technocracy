@@ -1,0 +1,9 @@
+{
+    "ctm":{
+        "ctm_version": 1,
+        "type":"CTM",
+        "textures":[
+            "technocracy.astronautics:block/rocket_hull_ctm"
+        ]
+    }
+}
