@@ -7,6 +7,7 @@ import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.cydhra.technocracy.foundation.tileentity.components.ComponentFacade
 import net.cydhra.technocracy.foundation.tileentity.components.ComponentPipeTypes
 import net.cydhra.technocracy.foundation.tileentity.components.NetworkComponent
+import net.minecraft.init.Blocks
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.AxisAlignedBB
@@ -92,6 +93,12 @@ class TileEntityPipe : AggregatableTileEntity() {
     }
 
     fun removePipeType(type: PipeType) {
+        pipeTypes.types.remove(type)
+
+        if (pipeTypes.types.isEmpty()) {
+            world.setBlockState(this.pos, Blocks.AIR.defaultState)
+        }
+
         if (!this.world.isRemote) {
             ConduitNetwork.removeConduitNode(this.world as WorldServer, this.pos, type)
 
@@ -101,6 +108,8 @@ class TileEntityPipe : AggregatableTileEntity() {
                     ConduitNetwork.removeConduitEdge(this.world as WorldServer, this.pos, offset, type)
                 }
             }
+
+            markForUpdate()
         }
     }
 
