@@ -7,10 +7,12 @@ import net.cydhra.technocracy.astronautics.capabilities.satellites.ISatelliteOrb
 import net.cydhra.technocracy.astronautics.capabilities.satellites.SatelliteOrbitStorage
 import net.cydhra.technocracy.astronautics.client.astronauticsCreativeTabs
 import net.cydhra.technocracy.astronautics.client.model.concreteSprayer.ConcreteSprayerItemModel
+import net.cydhra.technocracy.astronautics.entity.entityRocket
 import net.cydhra.technocracy.astronautics.items.general.concreteCanItem
 import net.cydhra.technocracy.astronautics.items.general.concreteSprayerItem
 import net.cydhra.technocracy.astronautics.tileentity.RocketControllerTileEntity
 import net.cydhra.technocracy.foundation.blocks.general.BlockManager
+import net.cydhra.technocracy.foundation.entity.EntityManager
 import net.cydhra.technocracy.foundation.items.general.ItemManager
 import net.cydhra.technocracy.foundation.liquids.general.FluidManager
 import net.cydhra.technocracy.foundation.tileentity.management.TileEntityManager
@@ -23,6 +25,7 @@ open class CommonProxy {
     protected lateinit var fluidManager: FluidManager
     protected lateinit var itemManager: ItemManager
     protected lateinit var tileEntityManager: TileEntityManager
+    protected lateinit var entityManager: EntityManager
 
     /**
      * Initialize the class properties. This should not be done earlier, as contents of the properties might access
@@ -33,6 +36,7 @@ open class CommonProxy {
         fluidManager = FluidManager(blockManager)
         itemManager = ItemManager(TCAstronautics.MODID, astronauticsCreativeTabs)
         tileEntityManager = TileEntityManager(TCAstronautics.MODID)
+        entityManager = EntityManager(TCAstronautics.MODID)
     }
 
     open fun preInit() {
@@ -40,6 +44,7 @@ open class CommonProxy {
         MinecraftForge.EVENT_BUS.register(fluidManager)
         MinecraftForge.EVENT_BUS.register(itemManager)
         MinecraftForge.EVENT_BUS.register(tileEntityManager)
+        MinecraftForge.EVENT_BUS.register(entityManager)
         MinecraftForge.EVENT_BUS.register(CapabilityEventBusHandler())
 
         blockManager.prepareBlocksForRegistration(scaffoldBlock)
@@ -55,6 +60,8 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(concreteCanItem)
 
         tileEntityManager.prepareTileEntityForRegistration(RocketControllerTileEntity::class)
+
+        entityManager.prepareEntityForRegistration(entityRocket)
     }
 
     open fun init() {

@@ -48,10 +48,22 @@ class TileEntityPipe : AggregatableTileEntity() {
     fun addFacadeOnSide(stack: ItemStack, side: EnumFacing): Boolean {
         if (facades.facades[side] != null)
             return false
+        val stack = stack.copy()
+        stack.count = 1
         facades.facades[side] = stack
         markForUpdate()
         this.world.checkLight(this.pos)
         return true
+    }
+
+    fun removeFacadeOnSide(side: EnumFacing): Boolean {
+        if (facades.facades[side] != null) {
+            facades.facades.remove(side)
+            markForUpdate()
+            this.world.checkLight(this.pos)
+            return true
+        }
+        return false
     }
 
     fun getFacades(): Map<EnumFacing, ItemStack> {
@@ -77,6 +89,12 @@ class TileEntityPipe : AggregatableTileEntity() {
             }
         }
         markForUpdate()
+    }
+
+    fun removePipeType(type: PipeType) {
+    }
+
+    fun removeTileEntiy() {
     }
 
     fun getInstalledTypes(): List<PipeType> {
