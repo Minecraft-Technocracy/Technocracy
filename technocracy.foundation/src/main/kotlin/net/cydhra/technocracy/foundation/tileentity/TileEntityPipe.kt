@@ -92,10 +92,33 @@ class TileEntityPipe : AggregatableTileEntity() {
     }
 
     fun removePipeType(type: PipeType) {
+        if (!this.world.isRemote) {
+            ConduitNetwork.removeConduitNode(this.world as WorldServer, this.pos, type)
+
+            EnumFacing.values().forEach { face ->
+                val offset = this.pos.offset(face)
+                if (ConduitNetwork.hasConduitNode(this.world as WorldServer, offset, type)) {
+                    ConduitNetwork.removeConduitEdge(this.world as WorldServer, this.pos, offset, type)
+                }
+            }
+        }
     }
 
     fun removeTileEntity() {
+        if (!this.world.isRemote) {
+            PipeType.values().forEach { type ->
+                if (ConduitNetwork.hasConduitNode(this.world as WorldServer, this.pos, type)) {
+                    ConduitNetwork.removeConduitNode(this.world as WorldServer, this.pos, type)
 
+                    EnumFacing.values().forEach { face ->
+                        val offset = this.pos.offset(face)
+                        if (ConduitNetwork.hasConduitNode(this.world as WorldServer, offset, type)) {
+                            ConduitNetwork.removeConduitEdge(this.world as WorldServer, this.pos, offset, type)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     fun getInstalledTypes(): List<PipeType> {
