@@ -52,7 +52,17 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      */
     private val edges: MutableMap<BlockPos, MutableMap<PipeType, MutableSet<EnumFacing>>> = mutableMapOf()
 
-    val debug_edges: Map<BlockPos, MutableMap<PipeType, MutableSet<EnumFacing>>> = edges
+    val debug_edges: Map<BlockPos, Map<PipeType, Set<EnumFacing>>> = edges
+
+    /**
+     * A mutable mapping of block positions to a mapping of pipe types to a set of directions where edges interface
+     * with sinks. Since sinks are kept within the same block as the pipe, a sink that is attached to the pipe but
+     * resides in a neighbor chunk is still visible. Whether it is loaded must be checked separately.
+     */
+    private val attachedSinks: MutableMap<BlockPos, MutableMap<PipeType, MutableSet<EnumFacing>>> = mutableMapOf()
+
+    val debug_sinks: Map<BlockPos, Map<PipeType, Set<EnumFacing>>> = attachedSinks
+
     /**
      * Add a node to the conduit network. This method does only add this one node to the network: no additional nodes
      * are discovered in the neighborhood of the block. If the node already exists, an [IllegalStateException] is
@@ -96,6 +106,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
         this.recalculatePaths()
         this.markDirty()
     }
+
     /**
      * Insert an edge into the conduit network. Only one end of the edge is inserted, facing in the given direction.
      * The caller must ensure that the other end of the pipe is also inserted, possibly in another chunk.
@@ -154,6 +165,31 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
         this.edges[pos]!![type]!!.remove(facing)
         this.recalculatePaths()
         this.markDirty()
+    }
+
+    /**
+     * Attaches any form of source or sink to the conduit net. The sink will be automatically removed if the edge is
+     * removed, that it is attached to. If the sink is removed, it won't be removed from the conduit network
+     * automatically. The sink must be interfaceable using the given [type]
+     *
+     * @param pos the position of the edge that is attached to the sink.
+     * @param facing the face that the sink block shares with the pipe block (viewed from the pipe block)
+     * @param type the type of pipe that is interfacing with the sink
+     */
+    internal fun attachTransitSink(pos: BlockPos, facing: EnumFacing, type: PipeType) {
+
+    }
+
+    /**
+     * Removes a sink from the conduit net. The sink must have been previously attached to the very same [pos] and
+     * [facing] using [attachTransitSink].
+     *
+     * @param pos the position of the edge where the sink is attached to
+     * @param facing the face that the sink block shares with the pipe block (viewed from the pipe block)
+     * @param type the type of pipe that is interfacing with the sink
+     */
+    internal fun removeTransitSink(pos: BlockPos, facing: EnumFacing, type: PipeType) {
+
     }
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
