@@ -175,9 +175,23 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      * @param pos the position of the edge that is attached to the sink.
      * @param facing the face that the sink block shares with the pipe block (viewed from the pipe block)
      * @param type the type of pipe that is interfacing with the sink
+     *
+     * @throws IllegalStateException if the sink is already attached
      */
     internal fun attachTransitSink(pos: BlockPos, facing: EnumFacing, type: PipeType) {
+        if (this.attachedSinks[pos]?.get(type)?.contains(facing) == true) {
+            throw IllegalStateException("sink already attached")
+        }
 
+        if (this.attachedSinks[pos] == null) {
+            this.attachedSinks[pos] = mutableMapOf()
+        }
+
+        if (this.attachedSinks[pos]!![type] == null) {
+            this.attachedSinks[pos]!![type] = mutableSetOf()
+        }
+
+        this.attachedSinks[pos]!![type]!!.add(facing)
     }
 
     /**
@@ -189,7 +203,11 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      * @param type the type of pipe that is interfacing with the sink
      */
     internal fun removeTransitSink(pos: BlockPos, facing: EnumFacing, type: PipeType) {
+        if (this.attachedSinks[pos]?.get(type)?.contains(facing) == false) {
+            throw IllegalStateException("there is no such sink to remove")
+        }
 
+        this.attachedSinks[pos]!![type]!!.remove(facing)
     }
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
