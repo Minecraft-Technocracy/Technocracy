@@ -168,9 +168,8 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
     }
 
     /**
-     * Attaches any form of source or sink to the conduit net. The sink will be automatically removed if the edge is
-     * removed, that it is attached to. If the sink is removed, it won't be removed from the conduit network
-     * automatically. The sink must be interfaceable using the given [type]
+     * Attaches any form of source or sink to the conduit net. If the sink is removed, it won't be removed from the
+     * conduit network automatically. The sink must be interfaceable using the given [type]
      *
      * @param pos the position of the edge that is attached to the sink.
      * @param facing the face that the sink block shares with the pipe block (viewed from the pipe block)
@@ -192,6 +191,8 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
         }
 
         this.attachedSinks[pos]!![type]!!.add(facing)
+        this.recalculatePaths()
+        this.markDirty()
     }
 
     /**
@@ -208,6 +209,8 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
         }
 
         this.attachedSinks[pos]!![type]!!.remove(facing)
+        this.recalculatePaths()
+        this.markDirty()
     }
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
