@@ -127,12 +127,37 @@ object ConduitNetwork {
         chunkB.removeEdge(nodeB, directionFromA.opposite, type)
     }
 
+    /**
+     * @param world the world object where to look for the pipe
+     * @param pos the queried block position
+     * @param type the pipe to look for
+     *
+     * @return true if the conduit network has a node of given type at given block position
+     */
     fun hasConduitNode(world: WorldServer, pos: BlockPos, type: PipeType): Boolean {
         val dimension = dimensions[world.provider.dimension]
                 ?: throw IllegalStateException("the dimension is not loaded")
         val chunk = dimension.getChunkAt(ChunkPos(pos)) ?: throw IllegalStateException("the chunk is not loaded")
 
         return chunk.hasNode(pos, type)
+    }
+
+    fun attachTransitSink(world: WorldServer, pos: BlockPos, facing: EnumFacing, type: PipeType) {
+        val dimension = dimensions[world.provider.dimension]
+                ?: throw IllegalStateException("the dimension is not loaded")
+
+        val chunk = dimension.getChunkAt(ChunkPos(pos)) ?: throw IllegalStateException("the chunk is not loaded")
+
+        chunk.attachTransitSink(pos, facing, type)
+    }
+
+    fun removeTransitSink(world: WorldServer, pos: BlockPos, facing: EnumFacing, type: PipeType) {
+        val dimension = dimensions[world.provider.dimension]
+                ?: throw IllegalStateException("the dimension is not loaded")
+
+        val chunk = dimension.getChunkAt(ChunkPos(pos)) ?: throw IllegalStateException("the chunk is not loaded")
+
+        chunk.removeTransitSink(pos, facing, type)
     }
 
     /**
