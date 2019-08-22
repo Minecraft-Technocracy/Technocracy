@@ -87,6 +87,10 @@ class TileEntityPipe : AggregatableTileEntity() {
                 if (ConduitNetwork.hasConduitNode(this.world as WorldServer, offset, type)) {
                     ConduitNetwork.insertConduitEdge(this.world as WorldServer, this.pos, offset, type)
                 }
+
+                if (world.getTileEntity(offset)?.hasCapability(type.capability, face.opposite) == true) {
+                    ConduitNetwork.attachTransitSink(world as WorldServer, pos, face, type)
+                }
             }
         }
         markForUpdate()
