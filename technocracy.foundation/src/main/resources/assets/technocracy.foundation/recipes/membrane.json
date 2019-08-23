@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sps",
+    "ppp",
+    "sps"
+  ],
+  "key": {
+    "s": {
+      "type": "forge:ore_dict",
+      "ore": "sheetSteel"
+    },
+    "p": {
+      "item": "technocracy.foundation.polyfibre"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:membrane",
+    "count": 1
+  }
+}

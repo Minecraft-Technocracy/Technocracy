@@ -6,6 +6,7 @@ import net.cydhra.technocracy.foundation.items.color.ConstantItemColor
 val coalDustItem = ColoredPrefixedItem("dust", "coal", ConstantItemColor(0x2f2f2f))
 
 val machineFrameItem = BaseItem("machine_frame")
+val advancedMachineFrameItem = BaseItem("advanced_machine_frame")
 val sulfurItem = BaseItem("sulfur", oreDictName = "dustSulfur")
 val batteryItem = BaseItem("battery")
 val siliconItem = BaseItem("silicon", oreDictName = "itemSilicon")
@@ -31,6 +32,17 @@ val superconductorItem = AlloyItem("superconductor", ConstantItemColor(0x7AA9DB)
 val metallicPhaseChangeMaterialItem = AlloyItem("mPCM", ConstantItemColor(0xC9BEC9))
 val lightAlloyItem = AlloyItem("lightAlloy", ConstantItemColor(0xE5E4E2))
 val toughAlloyItem = AlloyItem("toughAlloy", ConstantItemColor(0x003030))
+
+val invarSheetItem = ColoredPrefixedItem("sheet", "invar", ConstantItemColor(0xDDC2BE), false)
+val steelSheetItem = ColoredPrefixedItem("sheet", "steel", ConstantItemColor(0x707680), false)
+
+val steelGearItem = ColoredPrefixedItem("gear", "steel", ConstantItemColor(0x707680), false)
+
+val membraneItem = BaseItem("membrane")
+val ironRodItem = BaseItem("iron_rod")
+val coilItem = BaseItem("coil")
+val servoItem = BaseItem("servo")
+val polyfibreItem = BaseItem("polyfibre")
 
 val pipeItem = PipeItem()
 val facadeItem = FacadeItem()

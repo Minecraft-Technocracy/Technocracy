@@ -161,10 +161,12 @@ open class CommonProxy {
         blockManager.prepareBlocksForRegistration(oilStone)
         blockManager.prepareBlocksForRegistration(oilBlock)
         blockManager.prepareBlocksForRegistration(drum)
+        blockManager.prepareBlocksForRegistration(leadGlassPaneBlock)
 
         blockManager.prepareBlocksForRegistration(pipe, PipeModel())
 
         itemManager.prepareItemForRegistration(machineFrameItem)
+        itemManager.prepareItemForRegistration(advancedMachineFrameItem)
         itemManager.prepareItemForRegistration(coalDustItem)
         itemManager.prepareItemForRegistration(sulfurItem)
         itemManager.prepareItemForRegistration(batteryItem)
@@ -185,6 +187,12 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(emptyCanItem)
         itemManager.prepareItemForRegistration(wrenchItem)
 
+        itemManager.prepareItemForRegistration(membraneItem)
+        itemManager.prepareItemForRegistration(ironRodItem)
+        itemManager.prepareItemForRegistration(coilItem)
+        itemManager.prepareItemForRegistration(servoItem)
+        itemManager.prepareItemForRegistration(polyfibreItem)
+
         itemManager.prepareItemForRegistration(invarItem)
         itemManager.prepareItemForRegistration(siliconBronzeItem)
         itemManager.prepareItemForRegistration(superconductorItem)
@@ -193,6 +201,10 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(bronzeItem)
         itemManager.prepareItemForRegistration(lightAlloyItem)
         itemManager.prepareItemForRegistration(toughAlloyItem)
+
+        itemManager.prepareItemForRegistration(invarSheetItem)
+        itemManager.prepareItemForRegistration(steelSheetItem)
+        itemManager.prepareItemForRegistration(steelGearItem)
 
         itemManager.prepareItemForRegistration(pipeItem, PipeItemModel())
         itemManager.prepareItemForRegistration(facadeItem, FacadeItemModel())

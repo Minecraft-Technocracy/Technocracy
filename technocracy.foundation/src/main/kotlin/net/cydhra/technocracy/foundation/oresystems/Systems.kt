@@ -37,7 +37,7 @@ val leadSystem = oreSystem {
     name = "lead"
     color = 0x9696BE
 
-    create(SHEET)
+    create(GEAR, SHEET)
 
     generate {
         veinsPerChunk = 18
@@ -98,6 +98,8 @@ val silverSystem = oreSystem {
 val tinSystem = oreSystem {
     name = "tin"
     color = 0xC6C6C6
+
+    create(SHEET)
 
     generate {
         veinsPerChunk = 18

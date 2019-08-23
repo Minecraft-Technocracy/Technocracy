@@ -76,3 +76,5 @@ val oilBlock = OilBlock()
 
 val pipe = PipeBlock()
 val drum = DrumBlock()
+val leadGlassPaneBlock = PlainBlock("lead_glass_pane", Material.GLASS, opaque = false, renderLayer = BlockRenderLayer.TRANSLUCENT)
+        .apply { setHardness(1.5f).setResistance(1f) }

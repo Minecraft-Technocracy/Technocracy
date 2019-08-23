@@ -1,0 +1,15 @@
+{
+  "input": {
+    "item": "minecraft:string",
+    "count": 1
+  },
+  "fluid": {
+    "fluid": "pitch",
+    "amount": 10
+  },
+  "output": {
+    "item": "technocracy.foundation:polyfibre",
+    "count": 1
+  },
+  "cost": 50
+}
