@@ -32,6 +32,10 @@ val metallicPhaseChangeMaterialItem = AlloyItem("mPCM", ConstantItemColor(0xC9BE
 val lightAlloyItem = AlloyItem("lightAlloy", ConstantItemColor(0xE5E4E2))
 val toughAlloyItem = AlloyItem("toughAlloy", ConstantItemColor(0x003030))
 
+val invarSheetItem = ColoredPrefixedItem("sheet", "invar", ConstantItemColor(0xDDC2BE), false)
+val steelSheetItem = ColoredPrefixedItem("sheet", "steel", ConstantItemColor(0x707680), false)
+
+val steelGearItem = ColoredPrefixedItem("gear", "steel", ConstantItemColor(0x707680), false)
 val ironRodItem = BaseItem("iron_rod")
 val coilItem = BaseItem("coil")
 val servoItem = BaseItem("servo")
