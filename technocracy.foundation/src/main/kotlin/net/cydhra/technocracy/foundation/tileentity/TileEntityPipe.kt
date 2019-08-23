@@ -11,7 +11,9 @@ import net.minecraft.init.Blocks
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.AxisAlignedBB
+import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
+import net.minecraft.world.IBlockAccess
 import net.minecraft.world.WorldServer
 
 
@@ -130,6 +132,24 @@ class TileEntityPipe : AggregatableTileEntity() {
                         if (ConduitNetwork.hasConduitNode(this.world as WorldServer, offset, type)) {
                             ConduitNetwork.removeConduitEdge(this.world as WorldServer, this.pos, offset, type)
                         }
+                    }
+                }
+            }
+        }
+    }
+
+    fun onNeighborChange(world: IBlockAccess, pos: BlockPos, neighbor: BlockPos) {
+        if (!this.world.isRemote) {
+            val face = EnumFacing.values().first { pos.offset(it) == neighbor }
+
+            this.pipeTypes.types.forEach { type ->
+                if (world.getTileEntity(neighbor)?.hasCapability(type.capability, face.opposite) == true) {
+                    if (!ConduitNetwork.hasSink(world as WorldServer, pos, face, type)) {
+                        ConduitNetwork.attachTransitSink(world, pos, face, type)
+                    }
+                } else {
+                    if (ConduitNetwork.hasSink(world as WorldServer, pos, face, type)) {
+                        ConduitNetwork.removeTransitSink(world, pos, face, type)
                     }
                 }
             }

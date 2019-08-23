@@ -412,4 +412,11 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
         val pair = side?.let { getBlockOnFacing(tile, it) } ?: return defaultState
         return pair.first.getStateFromMeta(pair.second.stack.itemDamage)
     }
+
+    override fun onNeighborChange(world: IBlockAccess, pos: BlockPos, neighbor: BlockPos) {
+        val tileEntity = world.getTileEntity(pos) as TileEntityPipe
+        tileEntity.onNeighborChange(world, pos, neighbor)
+
+        super.onNeighborChange(world, pos, neighbor)
+    }
 }

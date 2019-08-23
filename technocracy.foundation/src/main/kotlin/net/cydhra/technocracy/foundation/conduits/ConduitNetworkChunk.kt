@@ -234,6 +234,10 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
         }
     }
 
+    fun hasSink(pos: BlockPos, face: EnumFacing, type: PipeType): Boolean {
+        return this.attachedSinks[pos]?.get(type)?.contains(face) ?: false
+    }
+
     override fun deserializeNBT(nbt: NBTTagCompound) {
         val nodeList = nbt.getTagList(NBT_KEY_NODE_LIST, Constants.NBT.TAG_COMPOUND)
         val edgeList = nbt.getTagList(NBT_KEY_EDGE_LIST, Constants.NBT.TAG_COMPOUND)

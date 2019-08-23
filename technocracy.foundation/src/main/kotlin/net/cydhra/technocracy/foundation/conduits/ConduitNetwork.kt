@@ -185,6 +185,15 @@ object ConduitNetwork {
         chunk.removeAllSinks(pos, type)
     }
 
+    fun hasSink(world: WorldServer, pos: BlockPos, face: EnumFacing, type: PipeType): Boolean {
+        val dimension = dimensions[world.provider.dimension]
+                ?: throw IllegalStateException("the dimension is not loaded")
+
+        val chunk = dimension.getChunkAt(ChunkPos(pos)) ?: throw IllegalStateException("the chunk is not loaded")
+
+        return chunk.hasSink(pos, face, type)
+    }
+
     /**
      * When a chunk is read from NBT, it has been loaded before and might have conduit data written to it. That must
      * be retrieved
