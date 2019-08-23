@@ -1,13 +1,13 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "sps",
-    "pgp",
-    "sps"
+    "sgs",
+    "tmt",
+    "sgs"
   ],
   "key": {
-    "p": {
-      "item": "technocracy.foundation:lead_glass_pane"
+    "m": {
+      "item": "technocracy.foundation:machine_frame"
     },
     "s": {
       "type": "forge:ore_dict",
@@ -16,6 +16,10 @@
     "g": {
       "type": "forge:ore_dict",
       "ore": "gearSteel"
+    },
+    "t": {
+      "type": "forge:ore_dict",
+      "ore": "sheetSteel"
     }
   },
   "result": {

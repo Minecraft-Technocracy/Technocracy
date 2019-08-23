@@ -1,9 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "sis",
+    "sbs",
     "lml",
-    "gfg"
+    "rfr"
   ],
   "key": {
     "f": {
@@ -12,24 +12,21 @@
     "m": {
       "item": "technocracy.foundation:advanced_machine_frame"
     },
-    "i": {
-      "type": "forge:ore_dict",
-      "ore": "ingotInvar"
+    "r": {
+      "item": "technocracy.foundation:iron_rod"
     },
     "s": {
-      "type": "forge:ore_dict",
-      "ore": "dustRedstone"
+      "item": "technocracy.foundation:polyfibre"
     },
     "l": {
       "item": "technocracy.foundation:lead_glass_pane"
     },
-    "g": {
-      "type": "forge:ore_dict",
-      "ore": "gearSteel"
+    "b": {
+      "item": "technocracy.foundation:membrane"
     }
   },
   "result": {
-    "item": "technocracy.foundation:chemical_processing_chamber",
+    "item": "technocracy.foundation:chemical_oxidizer",
     "count": 1
   }
 }

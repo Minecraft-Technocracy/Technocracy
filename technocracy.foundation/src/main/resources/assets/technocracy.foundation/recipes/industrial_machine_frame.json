@@ -1,21 +1,24 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "sps",
-    "ppp",
-    "sps"
+    "sgs",
+    "gmg",
+    "sgs"
   ],
   "key": {
+    "m": {
+      "item": "technocracy.foundation:advanced_machine_frame"
+    },
     "s": {
       "type": "forge:ore_dict",
-      "ore": "sheetSteel"
+      "ore": "itemRubber"
     },
-    "p": {
+    "g": {
       "item": "technocracy.foundation:polyfibre"
     }
   },
   "result": {
-    "item": "technocracy.foundation:membrane",
+    "item": "technocracy.foundation:industrial_machine_frame",
     "count": 1
   }
 }
