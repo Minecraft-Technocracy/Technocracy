@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "gig",
+    "srs",
+    "ccc"
+  ],
+  "key": {
+    "i": {
+      "type": "forge:ore_dict",
+      "ore": "ingotInvar"
+    },
+    "s": {
+      "type": "forge:ore_dict",
+      "ore": "sheetIron"
+    },
+    "c": {
+      "item": "technocracy.foundation:coil"
+    },
+    "r": {
+      "type": "forge:ore_dict",
+      "ore": "dustRedstone"
+    },
+    "g": {
+      "type": "forge:ore_dict",
+      "ore": "gearCopper"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:servo",
+    "count": 1
+  }
+}

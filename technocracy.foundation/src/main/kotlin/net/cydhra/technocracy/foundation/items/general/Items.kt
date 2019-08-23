@@ -34,6 +34,7 @@ val toughAlloyItem = AlloyItem("toughAlloy", ConstantItemColor(0x003030))
 
 val ironRodItem = BaseItem("iron_rod")
 val coilItem = BaseItem("coil")
+val servoItem = BaseItem("servo")
 val polyfibreItem = BaseItem("polyfibre")
 
 val pipeItem = PipeItem()
