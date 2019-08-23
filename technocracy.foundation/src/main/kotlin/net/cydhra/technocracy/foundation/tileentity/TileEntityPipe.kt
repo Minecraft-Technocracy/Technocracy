@@ -105,6 +105,7 @@ class TileEntityPipe : AggregatableTileEntity() {
 
         if (!this.world.isRemote) {
             ConduitNetwork.removeConduitNode(this.world as WorldServer, this.pos, type)
+            ConduitNetwork.removeAllAttachedSinks(this.world as WorldServer, this.pos, type)
 
             EnumFacing.values().forEach { face ->
                 val offset = this.pos.offset(face)
@@ -122,6 +123,7 @@ class TileEntityPipe : AggregatableTileEntity() {
             PipeType.values().forEach { type ->
                 if (ConduitNetwork.hasConduitNode(this.world as WorldServer, this.pos, type)) {
                     ConduitNetwork.removeConduitNode(this.world as WorldServer, this.pos, type)
+                    ConduitNetwork.removeAllAttachedSinks(this.world as WorldServer, this.pos, type)
 
                     EnumFacing.values().forEach { face ->
                         val offset = this.pos.offset(face)

@@ -149,6 +149,7 @@ object ConduitNetwork {
 
         val chunk = dimension.getChunkAt(ChunkPos(pos)) ?: throw IllegalStateException("the chunk is not loaded")
 
+        chunk.insertEdge(pos, facing, type)
         chunk.attachTransitSink(pos, facing, type)
     }
 
@@ -158,7 +159,17 @@ object ConduitNetwork {
 
         val chunk = dimension.getChunkAt(ChunkPos(pos)) ?: throw IllegalStateException("the chunk is not loaded")
 
+        chunk.removeEdge(pos, facing, type)
         chunk.removeTransitSink(pos, facing, type)
+    }
+
+    fun removeAllAttachedSinks(world: WorldServer, pos: BlockPos, type: PipeType) {
+        val dimension = dimensions[world.provider.dimension]
+                ?: throw IllegalStateException("the dimension is not loaded")
+
+        val chunk = dimension.getChunkAt(ChunkPos(pos)) ?: throw IllegalStateException("the chunk is not loaded")
+
+        chunk.removeAllSinks(pos, type)
     }
 
     /**

@@ -148,7 +148,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      * Remove an edge from the conduit network. The edge must exist, otherwise an [IllegalStateException] is thrown.
      * No further nodes or edges are removed. It is asserted that the position is within the
      * chunk modeled by this instance. The edge pointing towards the removed edge (originating in the adjacent node) is
-     * not removed.
+     * not removed. If this edge has a sink attached, it is removed as well.
      *
      * @param pos where the edge is located
      * @param facing the direction of the edge
@@ -163,6 +163,10 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
         }
 
         this.edges[pos]!![type]!!.remove(facing)
+
+        // remove attached sinks if any
+        this.attachedSinks[pos]?.get(type)?.remove(facing)
+
         this.recalculatePaths()
         this.markDirty()
     }
@@ -178,9 +182,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      * @throws IllegalStateException if the sink is already attached
      */
     internal fun attachTransitSink(pos: BlockPos, facing: EnumFacing, type: PipeType) {
-        if (this.attachedSinks[pos]?.get(type)?.contains(facing) == true) {
-            throw IllegalStateException("sink already attached")
-        }
+        check(this.attachedSinks[pos]?.get(type)?.contains(facing) != true) { "sink already attached" }
 
         if (this.attachedSinks[pos] == null) {
             this.attachedSinks[pos] = mutableMapOf()
@@ -211,6 +213,25 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
         this.attachedSinks[pos]!![type]!!.remove(facing)
         this.recalculatePaths()
         this.markDirty()
+    }
+
+    /**
+     * Remove all sinks that link to a node at given position. This is called if the node is removed, so remaining
+     * sinks can be removed as well. This method removes the sinks if present, and does nothing otherwise.
+     */
+    fun removeAllSinks(pos: BlockPos, type: PipeType) {
+        // remove all edges that are linked to this type and thus their attachments
+        this.attachedSinks[pos]?.get(type)?.forEach { face ->
+            this.removeEdge(pos, face, type)
+        }
+
+        // if there is a sink entry present, remove the type entry (it is empty now anyway)
+        this.attachedSinks[pos]?.remove(type)
+
+        // if there is a sink entry present and it is empty now, remove it
+        if (this.attachedSinks[pos]?.isEmpty() == true) {
+            this.attachedSinks.remove(pos)
+        }
     }
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
