@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "cic"
+  ],
+  "key": {
+    "c": {
+      "type": "forge:ore_dict",
+      "ore": "ingotCopper"
+    },
+    "i": {
+      "item": "technocracy.foundation:iron_rod"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:coil",
+    "count": 1
+  }
+}
