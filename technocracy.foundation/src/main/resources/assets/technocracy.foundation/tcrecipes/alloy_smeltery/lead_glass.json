@@ -1,0 +1,17 @@
+{
+  "input": [
+    {
+      "type": "forge:ore_dict",
+      "ore": "paneGlass"
+    },
+    {
+      "type": "forge:ore_dict",
+      "ore": "ingotLead"
+    }
+  ],
+  "output": {
+    "item": "technocracy.foundation:lead_glass_pane",
+    "count": 1
+  },
+  "cost": 80
+}
