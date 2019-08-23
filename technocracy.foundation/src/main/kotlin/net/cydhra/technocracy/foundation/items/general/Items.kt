@@ -44,6 +44,7 @@ val ironRodItem = BaseItem("iron_rod")
 val coilItem = BaseItem("coil")
 val servoItem = BaseItem("servo")
 val polyfibreItem = BaseItem("polyfibre")
+val pumpItem = BaseItem("pump")
 
 val pipeItem = PipeItem()
 val facadeItem = FacadeItem()

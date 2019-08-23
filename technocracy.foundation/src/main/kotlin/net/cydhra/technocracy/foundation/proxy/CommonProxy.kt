@@ -193,6 +193,7 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(coilItem)
         itemManager.prepareItemForRegistration(servoItem)
         itemManager.prepareItemForRegistration(polyfibreItem)
+        itemManager.prepareItemForRegistration(pumpItem)
 
         itemManager.prepareItemForRegistration(invarItem)
         itemManager.prepareItemForRegistration(siliconBronzeItem)
