@@ -16,8 +16,12 @@
       "type": "forge:ore_dict",
       "ore": "ingotInvar"
     },
+    "s": {
+      "type": "forge:ore_dict",
+      "ore": "dustRedstone"
+    },
     "l": {
-      "item": "minecraft:lead_glass_pane"
+      "item": "technocracy.foundation:lead_glass_pane"
     },
     "g": {
       "type": "forge:ore_dict",
