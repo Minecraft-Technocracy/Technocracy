@@ -32,6 +32,7 @@ val metallicPhaseChangeMaterialItem = AlloyItem("mPCM", ConstantItemColor(0xC9BE
 val lightAlloyItem = AlloyItem("lightAlloy", ConstantItemColor(0xE5E4E2))
 val toughAlloyItem = AlloyItem("toughAlloy", ConstantItemColor(0x003030))
 
+val ironRodItem = BaseItem("iron_rod")
 val polyfibreItem = BaseItem("polyfibre")
 
 val pipeItem = PipeItem()

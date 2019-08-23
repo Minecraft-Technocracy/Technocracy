@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "i",
+    "i"
+  ],
+  "key": {
+    "i": {
+      "type": "forge:ore_dict",
+      "ore": "sheetIron"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:iron_rod",
+    "count": 6
+  }
+}
