@@ -167,6 +167,7 @@ open class CommonProxy {
 
         itemManager.prepareItemForRegistration(machineFrameItem)
         itemManager.prepareItemForRegistration(advancedMachineFrameItem)
+        itemManager.prepareItemForRegistration(industrialMachineFrameItem)
         itemManager.prepareItemForRegistration(coalDustItem)
         itemManager.prepareItemForRegistration(sulfurItem)
         itemManager.prepareItemForRegistration(batteryItem)

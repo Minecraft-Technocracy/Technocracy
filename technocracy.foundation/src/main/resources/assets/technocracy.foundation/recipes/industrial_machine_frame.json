@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sgs",
+    "gmg",
+    "sgs"
+  ],
+  "key": {
+    "m": {
+      "item": "technocracy.foundation:advanced_machine_frame"
+    },
+    "s": {
+      "type": "forge:ore_dict",
+      "ore": "itemRubber"
+    },
+    "g": {
+      "item": "technocracy.foundation:polyfibre"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:industrial_machine_frame",
+    "count": 1
+  }
+}

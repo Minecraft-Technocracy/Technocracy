@@ -7,6 +7,7 @@ val coalDustItem = ColoredPrefixedItem("dust", "coal", ConstantItemColor(0x2f2f2
 
 val machineFrameItem = BaseItem("machine_frame")
 val advancedMachineFrameItem = BaseItem("advanced_machine_frame")
+val industrialMachineFrameItem = BaseItem("industrial_machine_frame")
 val sulfurItem = BaseItem("sulfur", oreDictName = "dustSulfur")
 val batteryItem = BaseItem("battery")
 val siliconItem = BaseItem("silicon", oreDictName = "itemSilicon")
