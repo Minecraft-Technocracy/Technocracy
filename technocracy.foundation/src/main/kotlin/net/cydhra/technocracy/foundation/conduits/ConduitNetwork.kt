@@ -153,6 +153,11 @@ object ConduitNetwork {
         chunk.attachTransitSink(pos, facing, type)
     }
 
+    /**
+     * Remove the edge and sink at a given location and facing. This will not check whether there is actually a sink
+     * but just remove the edge. If there was no sink, the adjacent block in direction of [facing] will have a
+     * dangling edge left.
+     */
     fun removeTransitSink(world: WorldServer, pos: BlockPos, facing: EnumFacing, type: PipeType) {
         val dimension = dimensions[world.provider.dimension]
                 ?: throw IllegalStateException("the dimension is not loaded")
@@ -160,9 +165,17 @@ object ConduitNetwork {
         val chunk = dimension.getChunkAt(ChunkPos(pos)) ?: throw IllegalStateException("the chunk is not loaded")
 
         chunk.removeEdge(pos, facing, type)
-        chunk.removeTransitSink(pos, facing, type)
     }
 
+    /**
+     * Remove all sinks that are attached to the given position of a given pipe type. This does also remove the edges
+     * that are linked with the sinks. This does not remove the node.
+     *
+     * @param world the world of the conduit network
+     * @param pos the position where to remove sinks
+     * @param type the type of sinks to remove
+     *
+     */
     fun removeAllAttachedSinks(world: WorldServer, pos: BlockPos, type: PipeType) {
         val dimension = dimensions[world.provider.dimension]
                 ?: throw IllegalStateException("the dimension is not loaded")
