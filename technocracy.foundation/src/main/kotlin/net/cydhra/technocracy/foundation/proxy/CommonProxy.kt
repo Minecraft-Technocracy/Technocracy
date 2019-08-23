@@ -186,6 +186,8 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(emptyCanItem)
         itemManager.prepareItemForRegistration(wrenchItem)
 
+        itemManager.prepareItemForRegistration(polyfibreItem)
+
         itemManager.prepareItemForRegistration(invarItem)
         itemManager.prepareItemForRegistration(siliconBronzeItem)
         itemManager.prepareItemForRegistration(superconductorItem)
