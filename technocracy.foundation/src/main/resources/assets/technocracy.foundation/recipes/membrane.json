@@ -11,7 +11,7 @@
       "ore": "sheetSteel"
     },
     "p": {
-      "item": "technocracy.foundation.polyfibre"
+      "item": "technocracy.foundation:polyfibre"
     }
   },
   "result": {
