@@ -13,9 +13,6 @@
       "type": "forge:ore_dict",
       "ore": "dustRedstone"
     },
-    "l": {
-      "item": "minecraft:glass_bottle"
-    },
     "p": {
       "item": "minecraft:piston"
     },
