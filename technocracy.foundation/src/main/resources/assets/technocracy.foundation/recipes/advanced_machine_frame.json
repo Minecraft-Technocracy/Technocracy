@@ -1,26 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "tpt",
+    "sps",
     "pgp",
-    "tpt"
+    "sps"
   ],
   "key": {
     "p": {
-      "type": "forge:ore_dict",
-      "ore": "paneGlass"
+      "item": "technocracy.foundation:lead_glass_pane"
     },
-    "t": {
+    "s": {
       "type": "forge:ore_dict",
-      "ore": "ingotTin"
+      "ore": "sheetInvar"
     },
     "g": {
       "type": "forge:ore_dict",
-      "ore": "gearLead"
+      "ore": "gearSteel"
     }
   },
   "result": {
-    "item": "technocracy.foundation:machine_frame",
+    "item": "technocracy.foundation:advanced_machine_frame",
     "count": 1
   }
 }

@@ -6,6 +6,7 @@ import net.cydhra.technocracy.foundation.items.color.ConstantItemColor
 val coalDustItem = ColoredPrefixedItem("dust", "coal", ConstantItemColor(0x2f2f2f))
 
 val machineFrameItem = BaseItem("machine_frame")
+val advancedMachineFrameItem = BaseItem("advanced_machine_frame")
 val sulfurItem = BaseItem("sulfur", oreDictName = "dustSulfur")
 val batteryItem = BaseItem("battery")
 val siliconItem = BaseItem("silicon", oreDictName = "itemSilicon")
