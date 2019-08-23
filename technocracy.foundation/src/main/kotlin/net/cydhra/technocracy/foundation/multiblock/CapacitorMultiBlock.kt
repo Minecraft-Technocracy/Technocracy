@@ -29,7 +29,8 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
             it.block == capacitorWallBlock
         },
         interiorBlockWhitelist = Predicate {
-            it.block == sulfuricAcidBlock || it.block == capacitorElectrodeBlock
+            it.block == sulfuricAcidBlock || it.block == capacitorElectrodeBlock || it.block ==
+                    capacitorOxidizedElectrodeBlock
         },
         maximumSizeXZ = 20,
         maximumSizeY = 20,
@@ -67,6 +68,8 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
     private fun recalculatePhysics(validatorCallback: IMultiblockValidator): Boolean {
         val interiorMin = minimumCoord.add(1, 1, 1)
         val interiorMax = maximumCoord.add(-1, -1, -1)
+        val interiorVolume = (interiorMax.x - interiorMin.x) * (interiorMax.y - interiorMin.y) *
+                (interiorMax.z - interiorMin.z)
 
         //Find all electrodes
         val electrodes = mutableSetOf<Electrode>()
@@ -74,13 +77,13 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
             for (z in interiorMin.z..interiorMax.z) {
                 for (y in interiorMin.y..interiorMax.y) {
                     val block = this.world.getBlockState(BlockPos(x, y, z)).block
-                    if (block == capacitorElectrodeBlock)
-                        electrodes += Electrode(x, z, 0, block)
+                    if (block == capacitorElectrodeBlock || block == capacitorOxidizedElectrodeBlock)
+                        electrodes += Electrode(x, z, block)
                 }
             }
         }
 
-        val electrodeParts = mutableListOf<Triple<Int, Int, Int>>()
+        val electrodeBlocks = mutableListOf<Triple<Int, Int, Int>>()
         //Check electrodes
         electrodes.forEach {
             for (y in (interiorMin.y)..interiorMax.y) {
@@ -94,51 +97,64 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
                                 this.world.getBlockState(
                                         BlockPos(it.x, y, it.z - 1)).block != sulfuricAcidBlock) ||
                         (y == interiorMin.y && block != sulfuricAcidBlock)) {
-                    validatorCallback.setLastError("multiblock.error.invalid_electrode_placement", it.x, y,
-                            it.z)
+                    validatorCallback.setLastError("multiblock.error.invalid_electrode_placement", it.x, y, it.z)
                     return false
                 } else if (it.height != 0 && y != interiorMin.y && block != it.block) {
-                    validatorCallback.setLastError("multiblock.error.electrode_not_connected", it.x, y,
-                            it.z)
+                    validatorCallback.setLastError("multiblock.error.electrode_not_connected", it.x, y, it.z)
                     return false
-                } else if(block == it.block) {
-                    electrodeParts += Triple(it.x, y, it.z)
+                } else if (block == it.block) {
+                    electrodeBlocks += Triple(it.x, y, it.z)
                     it.height++
                 }
             }
         }
 
-        if (electrodes.size % 2 != 0) {
+        if (electrodes.size % 2 != 0 || electrodes.filter { electrode -> electrode.block == capacitorElectrodeBlock }.size != electrodes.size / 2) {
             validatorCallback.setLastError("multiblock.error.uneven_number_of_electrodes")
             return false
         }
 
-        //Calculates the average shortest distance between electrode parts
+        //https://github.com/Cydhra/Technocracy/issues/28#issuecomment-522795108
+
+        //Calculates the average shortest distance from each interior block to the next electrode block
         var totalDistance = 0
-        electrodeParts.forEach {
-            //Definitely longer than the longest possible distance
-            var shortestDistance = maximumXSize * maximumZSize
-            electrodeParts.forEach { other ->
-                if (other != it) {
-                    val distance = (it.first - other.first) * (it.first - other.first) +
-                            (it.second - other.second) * (it.second - other.second) +
-                            (it.third - other.third) * (it.third - other.third)
-                    if (distance < shortestDistance)
-                        shortestDistance = distance
+        for (x in interiorMin.x..interiorMax.x) {
+            for (z in interiorMin.z..interiorMax.z) {
+                for (y in interiorMin.y..interiorMax.y) {
+                    val blockState = this.world.getBlockState(BlockPos(x, y, z))
+                    if (blockState.block != sulfuricAcidBlock)
+                        continue
+
+                    //Definitely longer than the longest possible distance
+                    var shortestDistance = maximumXSize * maximumZSize
+                    electrodeBlocks.forEach { other ->
+                        if (!(other.first == x && other.second == y && other.third != z)) {
+                            //Calculate distance (x2 - x1)^2 + (y2 - y1)^2 + (z2 - z1)^2
+                            val distance = (x - other.first) * (x - other.first) +
+                                    (y - other.second) * (y - other.second) +
+                                    (z - other.third) * (z - other.third)
+                            if (distance < shortestDistance)
+                                shortestDistance = distance
+                        }
+                    }
+                    totalDistance += shortestDistance
                 }
             }
-            totalDistance += shortestDistance
         }
 
-        //capacity = distance * 512000 * number_of_internal_blocks / number_of_electrodes
+        //Divide to get average
+        totalDistance /= interiorVolume
+
+        //capacity = averageDistanceSq * 512000 * number_of_internal_blocks / sqrt(2 * number_of_electrodes)
         controllerTileEntity!!.energyStorageComponent.energyStorage.capacity = (sqrt(totalDistance.toDouble()) *
                 512000 *
-                ((interiorMax.x - interiorMin.x) * (interiorMax.y - interiorMin.y) * (interiorMax.z - interiorMin.z))
-                / electrodes.size).roundToInt()
+                interiorVolume
+                / sqrt(2.0 * electrodeBlocks.size)).roundToInt()
 
-        //drain/fill speed = 2000 * number_of_electrodes
-        controllerTileEntity!!.energyStorageComponent.energyStorage.extractionLimit = 2000 * electrodes.size
-        controllerTileEntity!!.energyStorageComponent.energyStorage.receivingLimit = 2000 * electrodes.size
+        //drain/fill speed = 200 * number_of_electrodes^2
+        val transferSpeed = 200 * electrodeBlocks.size * electrodeBlocks.size
+        controllerTileEntity!!.energyStorageComponent.energyStorage.extractionLimit = transferSpeed
+        controllerTileEntity!!.energyStorageComponent.energyStorage.receivingLimit = transferSpeed
 
         return true
     }
@@ -188,7 +204,9 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
     }
 }
 
-private class Electrode(val x: Int, val z: Int, var height: Int, val block: Block) {
+private class Electrode(val x: Int, val z: Int, val block: Block) {
+    var height: Int = 0
+
     override fun equals(other: Any?): Boolean = other is Electrode && other.x == x && other.z == z
     override fun hashCode(): Int = 31 * x + z
 }

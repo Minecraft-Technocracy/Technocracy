@@ -21,7 +21,7 @@ class TileEntityCapacitorEnergyPort : TileEntityMultiBlockPart<CapacitorMultiBlo
         return if (hasCapability(capability, facing))
             CapabilityEnergy.ENERGY.cast<T>(
                     multiblockController?.controllerTileEntity?.energyStorageComponent?.energyStorage)
-                    ?: return EnergyStorage(1) as T
+                    ?: EnergyStorage(1) as T
         else
             null
     }
