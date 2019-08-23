@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "tit",
+    "bmb",
+    "rrr"
+  ],
+  "key": {
+    "m": {
+      "item": "technocracy.foundation:advanced_machine_frame"
+    },
+    "b": {
+      "item": "minecraft:brick"
+    },
+    "t": {
+      "type": "forge:ore_dict",
+      "ore": "sheetSteel"
+    },
+    "i": {
+      "type": "forge:ore_dict",
+      "ore": "ingotInvar"
+    },
+    "r": {
+      "item": "technocracy.foundation:iron_rod"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:kiln",
+    "count": 1
+  }
+}
