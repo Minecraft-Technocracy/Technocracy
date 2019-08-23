@@ -36,6 +36,8 @@ val invarSheetItem = ColoredPrefixedItem("sheet", "invar", ConstantItemColor(0xD
 val steelSheetItem = ColoredPrefixedItem("sheet", "steel", ConstantItemColor(0x707680), false)
 
 val steelGearItem = ColoredPrefixedItem("gear", "steel", ConstantItemColor(0x707680), false)
+
+val membraneItem = BaseItem("membrane")
 val ironRodItem = BaseItem("iron_rod")
 val coilItem = BaseItem("coil")
 val servoItem = BaseItem("servo")
