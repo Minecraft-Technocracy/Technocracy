@@ -1,7 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "sbs",
+    "sis",
     "lml",
     "gfg"
   ],
@@ -12,8 +12,9 @@
     "m": {
       "item": "technocracy.foundation:advanced_machine_frame"
     },
-    "b": {
-      "item": "technocracy.foundation:battery"
+    "i": {
+      "type": "forge:ore_dict",
+      "ore": "ingotInvar"
     },
     "l": {
       "item": "minecraft:lead_glass_pane"
