@@ -50,8 +50,6 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
         gui.registerTab(object : BaseMachineTab(this, gui, ResourceLocation("technocracy.foundation",
                 "textures/item/silicon.png")) {
             override fun init() {
-                addPlayerInventorySlots(player, 8, 84)
-
                 var nextOutput = 125
                 var inputNearestToTheMiddle = 0
                 var outputNearestToTheMiddle = parent.guiWidth // nice names
@@ -111,6 +109,8 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
                 }
                 if(foundProgressComponent != null)
                     components.add(DefaultProgressBar((outputNearestToTheMiddle - inputNearestToTheMiddle) / 2 - 11 + inputNearestToTheMiddle, 40, Orientation.RIGHT, foundProgressComponent as ProgressComponent, gui))
+
+                addPlayerInventorySlots(player, 8, 84)
             }
         })
         initGui(gui)
