@@ -189,6 +189,12 @@ class OreSystemBuilder {
                     // add default ingot recipe
                     GameRegistry.addSmelting(ore, ItemStack(ingot, 1), 0.5f)
 
+                    // add pulverizer recipe
+                    RecipeManager.registerRecipe(RecipeManager.RecipeType.PULVERIZER,
+                            PulverizerRecipe(Ingredient.fromItem(Item.getItemFromBlock(ore)),
+                                    ItemStack(dust, 2),
+                                    60))
+
                     // add dust smelting recipe
                     GameRegistry.addSmelting(dust, ItemStack(ingot, 1), 0.5f)
 
