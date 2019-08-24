@@ -7,9 +7,9 @@ import net.minecraft.inventory.Slot
 import net.minecraft.item.ItemStack
 
 
-open class TCContainer(val inventorySize: Int = 0) : Container() {
+open class TCContainer(val machineInputs: Int = 0, val machineOutputs: Int = 0) : Container() {
 
-    private val playerInventorySize = inventorySize + 26
+    private val playerInventorySize = machineInputs + machineOutputs + 26
     private val playerHotBarStart = playerInventorySize + 1
     private val playerHotBarEnd = playerHotBarStart + 8
 
@@ -21,19 +21,19 @@ open class TCContainer(val inventorySize: Int = 0) : Container() {
             val oldStack = slot.stack
             newStack = oldStack.copy()
 
-            if (index < inventorySize) {
-                if (!this.mergeItemStack(oldStack, inventorySize, playerHotBarEnd + 1, true)) {
+            if (index < machineInputs + machineOutputs) { // take from machine
+                if (!this.mergeItemStack(oldStack, machineInputs + machineOutputs, playerHotBarEnd + 1, true)) {
                     return ItemStack.EMPTY
                 }
 
                 slot.onSlotChange(oldStack, newStack)
-            } else {
-                if (index in inventorySize until playerHotBarStart) {
-                    if (!this.mergeItemStack(oldStack, playerHotBarStart, playerHotBarEnd + 1, false)) {
+            } else { // place into machine (if possible; otherwise place elsewhere in inventory)
+                if (index in machineInputs until playerHotBarStart) {
+                    if (!this.mergeItemStack(oldStack, 0, machineInputs, false) && !this.mergeItemStack(oldStack, playerHotBarStart, playerHotBarEnd + 1, false)) {
                         return ItemStack.EMPTY
                     }
                 } else if (index >= playerHotBarStart && index < playerHotBarEnd + 1) {
-                    if (!this.mergeItemStack(oldStack, inventorySize, playerInventorySize + 1, false)) {
+                    if (!this.mergeItemStack(oldStack, 0, machineInputs, false) && !this.mergeItemStack(oldStack, machineInputs + machineOutputs, playerInventorySize + 1, false)) {
                         return ItemStack.EMPTY
                     }
                 }

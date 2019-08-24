@@ -112,8 +112,6 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
         gui.registerTab(object : BaseMultiblockTab(this, gui, ResourceLocation("technocracy.foundation",
                 "textures/item/silicon.png")) {
             override fun init() {
-                addPlayerInventorySlots(player, 8, 84)
-
                 var nextOutput = 125
                 var inputNearestToTheMiddle = 0
                 var outputNearestToTheMiddle = parent.guiWidth // nice names
@@ -173,6 +171,8 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
                 }
                 if(foundProgressComponent != null)
                     components.add(DefaultProgressBar((outputNearestToTheMiddle - inputNearestToTheMiddle) / 2 - 11 + inputNearestToTheMiddle, 40, Orientation.RIGHT, foundProgressComponent as ProgressComponent, gui))
+
+                addPlayerInventorySlots(player, 8, 84)
             }
         })
         initGui(gui)
