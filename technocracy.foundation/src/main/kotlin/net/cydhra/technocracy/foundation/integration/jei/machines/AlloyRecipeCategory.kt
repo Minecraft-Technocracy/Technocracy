@@ -13,6 +13,7 @@ import net.cydhra.technocracy.foundation.integration.jei.AbstractRecipeWrapper
 import net.cydhra.technocracy.foundation.integration.jei.TCCategoryUid
 import net.minecraft.client.Minecraft
 import net.minecraft.item.ItemStack
+import net.minecraftforge.fluids.FluidStack
 
 class AlloyRecipeCategory(guiHelper: IGuiHelper) : AbstractRecipeCategory<AlloyRecipeCategory.AlloyRecipeWrapper>(
         guiHelper,
@@ -45,6 +46,7 @@ class AlloyRecipeCategory(guiHelper: IGuiHelper) : AbstractRecipeCategory<AlloyR
         progressbarDrawable.draw(minecraft)
     }
 
-    class AlloyRecipeWrapper(inputStacks: List<List<ItemStack>>, outputStacks: List<ItemStack>) : AbstractRecipeWrapper(inputStacks, outputStacks)
+    class AlloyRecipeWrapper(inputStacks: List<List<ItemStack>>, outputStacks: List<ItemStack>, inputFluidStacks: List<FluidStack>, outputFluidStacks: List<FluidStack>)
+        : AbstractRecipeWrapper(inputStacks, outputStacks, inputFluidStacks, outputFluidStacks)
 
 }

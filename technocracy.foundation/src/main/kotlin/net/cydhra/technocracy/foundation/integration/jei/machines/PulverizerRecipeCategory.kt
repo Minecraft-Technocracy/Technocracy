@@ -13,6 +13,7 @@ import net.cydhra.technocracy.foundation.integration.jei.AbstractRecipeWrapper
 import net.cydhra.technocracy.foundation.integration.jei.TCCategoryUid
 import net.minecraft.client.Minecraft
 import net.minecraft.item.ItemStack
+import net.minecraftforge.fluids.FluidStack
 
 class PulverizerRecipeCategory(guiHelper: IGuiHelper) : AbstractRecipeCategory<PulverizerRecipeCategory.PulverizerRecipeWrapper>(
         guiHelper,
@@ -43,6 +44,7 @@ class PulverizerRecipeCategory(guiHelper: IGuiHelper) : AbstractRecipeCategory<P
         progressbarDrawable.draw(minecraft)
     }
 
-    class PulverizerRecipeWrapper(inputStacks: List<List<ItemStack>>, outputStacks: List<ItemStack>) : AbstractRecipeWrapper(inputStacks, outputStacks)
+    class PulverizerRecipeWrapper(inputStacks: List<List<ItemStack>>, outputStacks: List<ItemStack>, inputFluidStacks: List<FluidStack>, outputFluidStacks: List<FluidStack>)
+        : AbstractRecipeWrapper(inputStacks, outputStacks, inputFluidStacks, outputFluidStacks)
 
 }

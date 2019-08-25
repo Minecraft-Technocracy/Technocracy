@@ -13,6 +13,7 @@ import net.cydhra.technocracy.foundation.integration.jei.AbstractRecipeWrapper
 import net.cydhra.technocracy.foundation.integration.jei.TCCategoryUid
 import net.minecraft.client.Minecraft
 import net.minecraft.item.ItemStack
+import net.minecraftforge.fluids.FluidStack
 
 class CentrifugeRecipeCategory(guiHelper: IGuiHelper) : AbstractRecipeCategory<CentrifugeRecipeCategory.CentrifugeRecipeWrapper>(
         guiHelper,
@@ -45,6 +46,7 @@ class CentrifugeRecipeCategory(guiHelper: IGuiHelper) : AbstractRecipeCategory<C
         return "Centrifuge"
     }
 
-    class CentrifugeRecipeWrapper(inputStacks: List<List<ItemStack>>, outputStacks: List<ItemStack>) : AbstractRecipeWrapper(inputStacks, outputStacks)
+    class CentrifugeRecipeWrapper(inputStacks: List<List<ItemStack>>, outputStacks: List<ItemStack>, inputFluidStacks: List<FluidStack>, outputFluidStacks: List<FluidStack>)
+        : AbstractRecipeWrapper(inputStacks, outputStacks, inputFluidStacks, outputFluidStacks)
 
 }

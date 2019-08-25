@@ -20,7 +20,8 @@ class TechnocracyPlugin : IModPlugin {
                 CentrifugeRecipeCategory(guiHelper),
                 CompactorRecipeCategory(guiHelper),
                 ElectricFurnaceRecipeCategory(guiHelper),
-                PulverizerRecipeCategory(guiHelper)
+                PulverizerRecipeCategory(guiHelper),
+                ElectrolysisChamberRecipeCategory(guiHelper)
         )
 
         categories.forEach { category ->

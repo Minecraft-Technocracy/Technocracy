@@ -13,6 +13,7 @@ import net.cydhra.technocracy.foundation.integration.jei.AbstractRecipeWrapper
 import net.cydhra.technocracy.foundation.integration.jei.TCCategoryUid
 import net.minecraft.client.Minecraft
 import net.minecraft.item.ItemStack
+import net.minecraftforge.fluids.FluidStack
 
 class CompactorRecipeCategory(guiHelper: IGuiHelper) : AbstractRecipeCategory<CompactorRecipeCategory.CompactorRecipeWrapper>(
         guiHelper,
@@ -43,6 +44,7 @@ class CompactorRecipeCategory(guiHelper: IGuiHelper) : AbstractRecipeCategory<Co
         progressbarDrawable.draw(minecraft)
     }
 
-    class CompactorRecipeWrapper(inputStacks: List<List<ItemStack>>, outputStacks: List<ItemStack>) : AbstractRecipeWrapper(inputStacks, outputStacks)
+    class CompactorRecipeWrapper(inputStacks: List<List<ItemStack>>, outputStacks: List<ItemStack>, inputFluidStacks: List<FluidStack>, outputFluidStacks: List<FluidStack>)
+        : AbstractRecipeWrapper(inputStacks, outputStacks, inputFluidStacks, outputFluidStacks)
 
 }

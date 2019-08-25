@@ -16,8 +16,8 @@ class TCRecipeMaker() {
                 inputStacks.add(oreDictInputs)
             }
 
-            recipes.add(wrapperClass.getDeclaredConstructor(List::class.java, List::class.java).newInstance(inputStacks, recipe.getOutput()) as AbstractRecipeWrapper) // if something is wrong with the constructor, an exception should be thrown
-
+            recipes.add(wrapperClass.getDeclaredConstructor(List::class.java, List::class.java, List::class.java, List::class.java)
+                    .newInstance(inputStacks, recipe.getOutput(), recipe.getFluidInput(), recipe.getFluidOutput()) as AbstractRecipeWrapper)
         }
         return recipes
     }

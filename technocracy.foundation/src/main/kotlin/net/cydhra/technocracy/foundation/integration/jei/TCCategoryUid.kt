@@ -11,6 +11,7 @@ class TCCategoryUid {
         const val COMPACTOR = "${TCFoundation.MODID}.compactor"
         const val ELECTRIC_FURNACE = "${TCFoundation.MODID}.electric_furnace"
         const val PULVERIZER = "${TCFoundation.MODID}.pulverizer"
+        const val ELECTROLYSIS_CHAMBER = "${TCFoundation.MODID}.electrolysis_chamber"
 
     }
 

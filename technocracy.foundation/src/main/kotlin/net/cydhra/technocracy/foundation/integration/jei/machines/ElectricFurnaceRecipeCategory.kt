@@ -13,6 +13,7 @@ import net.cydhra.technocracy.foundation.integration.jei.AbstractRecipeWrapper
 import net.cydhra.technocracy.foundation.integration.jei.TCCategoryUid
 import net.minecraft.client.Minecraft
 import net.minecraft.item.ItemStack
+import net.minecraftforge.fluids.FluidStack
 
 class ElectricFurnaceRecipeCategory(guiHelper: IGuiHelper) : AbstractRecipeCategory<ElectricFurnaceRecipeCategory.ElectricFurnaceRecipeWrapper>(
         guiHelper,
@@ -43,6 +44,7 @@ class ElectricFurnaceRecipeCategory(guiHelper: IGuiHelper) : AbstractRecipeCateg
         progressbarDrawable.draw(minecraft)
     }
 
-    class ElectricFurnaceRecipeWrapper(inputStacks: List<List<ItemStack>>, outputStacks: List<ItemStack>) : AbstractRecipeWrapper(inputStacks, outputStacks)
+    class ElectricFurnaceRecipeWrapper(inputStacks: List<List<ItemStack>>, outputStacks: List<ItemStack>, inputFluidStacks: List<FluidStack>, outputFluidStacks: List<FluidStack>)
+        : AbstractRecipeWrapper(inputStacks, outputStacks, inputFluidStacks, outputFluidStacks)
 
 }
