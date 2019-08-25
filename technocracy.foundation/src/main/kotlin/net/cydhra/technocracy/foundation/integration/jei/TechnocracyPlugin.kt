@@ -4,7 +4,7 @@ import mezz.jei.api.IModPlugin
 import mezz.jei.api.IModRegistry
 import mezz.jei.api.JEIPlugin
 import mezz.jei.api.recipe.IRecipeCategoryRegistration
-import net.cydhra.technocracy.foundation.integration.jei.machines.AlloyRecipeCategory
+import net.cydhra.technocracy.foundation.integration.jei.machines.*
 import net.minecraft.item.ItemStack
 
 @JEIPlugin
@@ -16,7 +16,11 @@ class TechnocracyPlugin : IModPlugin {
         val guiHelper = registry.jeiHelpers.guiHelper
 
         categories = listOf<AbstractRecipeCategory<*>>(
-                AlloyRecipeCategory(guiHelper)
+                AlloyRecipeCategory(guiHelper),
+                CentrifugeRecipeCategory(guiHelper),
+                CompactorRecipeCategory(guiHelper),
+                ElectricFurnaceRecipeCategory(guiHelper),
+                PulverizerRecipeCategory(guiHelper)
         )
 
         categories.forEach { category ->

@@ -2,7 +2,6 @@ package net.cydhra.technocracy.foundation.integration.jei
 
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.minecraft.item.ItemStack
-import net.minecraftforge.oredict.OreIngredient
 
 class TCRecipeMaker() {
 
@@ -11,7 +10,7 @@ class TCRecipeMaker() {
         RecipeManager.getRecipesByType(type)?.forEach { recipe ->
 
             val inputStacks = mutableListOf<List<ItemStack>>()
-            recipe.getInput().filterIsInstance<OreIngredient>().forEach { ingredient ->
+            recipe.getInput().forEach { ingredient ->
                 val oreDictInputs = mutableListOf<ItemStack>()
                 oreDictInputs.addAll(ingredient.matchingStacks)
                 inputStacks.add(oreDictInputs)
