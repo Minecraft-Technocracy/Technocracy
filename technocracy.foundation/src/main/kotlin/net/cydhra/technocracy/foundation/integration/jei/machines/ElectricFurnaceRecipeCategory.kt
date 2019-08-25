@@ -20,7 +20,7 @@ class ElectricFurnaceRecipeCategory(guiHelper: IGuiHelper) : AbstractRecipeCateg
         electricFurnaceBlock,
         RecipeManager.RecipeType.ELECTRIC_FURNACE,
         ElectricFurnaceRecipeWrapper::class.java,
-        TCCategoryUid.ELECTRIC_FURNACE
+        TCCategoryUid.ELECTRIC_SMELTING
 ) {
 
     private val progressbarDrawable: IDrawable = DefaultProgressBar(21, 38, Orientation.RIGHT, null, null).getDrawable(100)

@@ -21,7 +21,7 @@ class ElectrolysisChamberRecipeCategory(guiHelper: IGuiHelper) : AbstractRecipeC
         electrolysisChamberBlock,
         RecipeManager.RecipeType.ELECTROLYSIS,
         ElectrolysisChamberRecipeWrapper::class.java,
-        TCCategoryUid.ELECTROLYSIS_CHAMBER
+        TCCategoryUid.ELECTROLYSIS
 ) {
 
     private val progressbarDrawable: IDrawable = DefaultProgressBar(23, 38, Orientation.RIGHT, null, null).getDrawable(100)

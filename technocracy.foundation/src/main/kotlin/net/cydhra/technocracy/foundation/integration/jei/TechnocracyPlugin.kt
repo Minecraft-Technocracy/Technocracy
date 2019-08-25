@@ -18,10 +18,18 @@ class TechnocracyPlugin : IModPlugin {
         categories = listOf<AbstractRecipeCategory<*>>(
                 AlloyRecipeCategory(guiHelper),
                 CentrifugeRecipeCategory(guiHelper),
+                ChemicalProcessingChamberRecipeCategory(guiHelper),
+                ChemicalEtchingChamberRecipeCategory(guiHelper), // seems not finished yet
+                ChemicalOxidizerRecipeCategory(guiHelper),
+                ChemicalReactionChamberRecipeCategory(guiHelper),
                 CompactorRecipeCategory(guiHelper),
                 ElectricFurnaceRecipeCategory(guiHelper),
+                ElectrolysisChamberRecipeCategory(guiHelper),
+                PyrolysisKilnRecipeCategory(guiHelper),
+                //PolymerizationChamberRecipeCategory(guiHelper), // seems not finished yet
                 PulverizerRecipeCategory(guiHelper),
-                ElectrolysisChamberRecipeCategory(guiHelper)
+                DissolutionChamberRecipeCategory(guiHelper),
+                CrystallizationChamberRecipeCategory(guiHelper)
         )
 
         categories.forEach { category ->
