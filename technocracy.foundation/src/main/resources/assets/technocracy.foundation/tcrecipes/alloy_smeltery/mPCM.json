@@ -2,7 +2,7 @@
   "input": [
     {
       "type": "forge:ore_dict",
-      "ore": "ingotAluminium"
+      "ore": "ingotAluminum"
     },
     {
       "type": "forge:ore_dict",
