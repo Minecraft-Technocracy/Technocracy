@@ -5,7 +5,6 @@ import mezz.jei.api.gui.IDrawable
 import mezz.jei.api.gui.IRecipeLayout
 import mezz.jei.api.ingredients.IIngredients
 import net.cydhra.technocracy.foundation.blocks.general.electrolysisChamberBlock
-import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.DefaultProgressBar
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.Orientation
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
@@ -25,8 +24,6 @@ class ElectrolysisChamberRecipeCategory(guiHelper: IGuiHelper) : AbstractRecipeC
 ) {
 
     private val progressbarDrawable: IDrawable = DefaultProgressBar(23, 38, Orientation.RIGHT, null, null).getDrawable(100)
-    private val fluidInputOverlay: IDrawable = guiHelper.drawableBuilder(TCGui.guiComponents, 10, 75, 10, 50).build()
-    private val fluidOutputOverlay: IDrawable = guiHelper.drawableBuilder(TCGui.guiComponents, 0, 75, 10, 50).build()
 
     override fun getTitle(): String = "Electrolysis Chamber"
 
