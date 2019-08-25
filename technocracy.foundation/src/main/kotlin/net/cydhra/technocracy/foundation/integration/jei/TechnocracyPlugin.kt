@@ -5,6 +5,7 @@ import mezz.jei.api.IModRegistry
 import mezz.jei.api.JEIPlugin
 import mezz.jei.api.recipe.IRecipeCategoryRegistration
 import net.cydhra.technocracy.foundation.integration.jei.machines.*
+import net.cydhra.technocracy.foundation.integration.jei.multiblocks.RefineryRecipeCategory
 import net.minecraft.item.ItemStack
 
 @JEIPlugin
@@ -29,7 +30,9 @@ class TechnocracyPlugin : IModPlugin {
                 //PolymerizationChamberRecipeCategory(guiHelper), // seems not finished yet
                 PulverizerRecipeCategory(guiHelper),
                 DissolutionChamberRecipeCategory(guiHelper),
-                CrystallizationChamberRecipeCategory(guiHelper)
+                CrystallizationChamberRecipeCategory(guiHelper),
+
+                RefineryRecipeCategory(guiHelper)
         )
 
         categories.forEach { category ->

@@ -21,6 +21,8 @@ class TCCategoryUid {
         const val DISSOLUTION = "${TCFoundation.MODID}.dissolution"
         const val CRYSTALLIZATION = "${TCFoundation.MODID}.crystallization"
 
+        const val REFINERY = "${TCFoundation.MODID}.refinery"
+
     }
 
 }
