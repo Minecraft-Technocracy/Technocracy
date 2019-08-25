@@ -23,7 +23,7 @@ class CentrifugeRecipeCategory(guiHelper: IGuiHelper) : AbstractRecipeCategory<C
         TCCategoryUid.CENTRIFUGE
 ) {
 
-    private val progressbarDrawable: IDrawable = DefaultProgressBar(21, 38, Orientation.RIGHT, null, null).getDrawable(100)
+    private val progressbarDrawable: IDrawable = DefaultProgressBar(21, 38, Orientation.RIGHT, null, null).getDrawable(100, guiHelper)
 
     override fun setRecipe(layout: IRecipeLayout, wrapper: CentrifugeRecipeWrapper, ingredients: IIngredients) {
         val stacks = layout.itemStacks

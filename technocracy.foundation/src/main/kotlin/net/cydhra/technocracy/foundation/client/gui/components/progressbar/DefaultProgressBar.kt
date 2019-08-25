@@ -1,8 +1,8 @@
 package net.cydhra.technocracy.foundation.client.gui.components.progressbar
 
+import mezz.jei.api.IGuiHelper
 import mezz.jei.api.gui.IDrawable
 import net.cydhra.technocracy.foundation.client.gui.TCGui
-import net.cydhra.technocracy.foundation.integration.jei.TickTimer
 import net.cydhra.technocracy.foundation.tileentity.components.ProgressComponent
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
@@ -87,10 +87,10 @@ class DefaultProgressBar(posX: Int, posY: Int, orientation: Orientation, val com
         }
     }
 
-    fun getDrawable(ticksPerCycle: Int): IDrawable {
+    fun getDrawable(ticksPerCycle: Int, guiHelper: IGuiHelper): IDrawable {
         return object : IDrawable {
 
-            private val timer = TickTimer(ticksPerCycle, 100, false)
+            private val timer = guiHelper.createTickTimer(ticksPerCycle, 100, false)
 
             override fun draw(mc: Minecraft, x: Int, y: Int) {
                 this@DefaultProgressBar.progress = timer.value / 100f

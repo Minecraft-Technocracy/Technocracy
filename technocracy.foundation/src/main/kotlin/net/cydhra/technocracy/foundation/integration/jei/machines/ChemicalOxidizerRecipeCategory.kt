@@ -23,7 +23,7 @@ class ChemicalOxidizerRecipeCategory(guiHelper: IGuiHelper) : AbstractRecipeCate
         TCCategoryUid.CHEMICAL_OXIDIZER
 ) {
 
-    private val progressbarDrawable: IDrawable = DefaultProgressBar(31, 38, Orientation.RIGHT, null, null).getDrawable(100)
+    private val progressbarDrawable: IDrawable = DefaultProgressBar(31, 38, Orientation.RIGHT, null, null).getDrawable(100, guiHelper)
 
     override fun getTitle(): String = "Chemical Oxidizer"
 

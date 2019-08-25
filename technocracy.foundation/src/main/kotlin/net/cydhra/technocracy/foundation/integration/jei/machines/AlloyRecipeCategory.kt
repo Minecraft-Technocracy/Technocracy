@@ -23,7 +23,7 @@ class AlloyRecipeCategory(guiHelper: IGuiHelper) : AbstractRecipeCategory<AlloyR
         TCCategoryUid.ALLOY_SMELTING
 ) {
 
-    private val progressbarDrawable: IDrawable = DefaultProgressBar(67, 38, Orientation.RIGHT, null, null).getDrawable(100)
+    private val progressbarDrawable: IDrawable = DefaultProgressBar(67, 38, Orientation.RIGHT, null, null).getDrawable(100, guiHelper)
 
     override fun getTitle(): String = "Alloy Smeltery"
 

@@ -23,7 +23,7 @@ class PyrolysisKilnRecipeCategory(guiHelper: IGuiHelper) : AbstractRecipeCategor
         TCCategoryUid.PYROLYSIS
 ) {
 
-    private val progressbarDrawable: IDrawable = DefaultProgressBar(23, 38, Orientation.RIGHT, null, null).getDrawable(100)
+    private val progressbarDrawable: IDrawable = DefaultProgressBar(23, 38, Orientation.RIGHT, null, null).getDrawable(100, guiHelper)
 
     override fun getTitle(): String = "Pyrolysis Kiln"
 

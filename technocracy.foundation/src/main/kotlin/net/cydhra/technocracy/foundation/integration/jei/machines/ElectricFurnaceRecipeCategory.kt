@@ -23,7 +23,7 @@ class ElectricFurnaceRecipeCategory(guiHelper: IGuiHelper) : AbstractRecipeCateg
         TCCategoryUid.ELECTRIC_SMELTING
 ) {
 
-    private val progressbarDrawable: IDrawable = DefaultProgressBar(21, 38, Orientation.RIGHT, null, null).getDrawable(100)
+    private val progressbarDrawable: IDrawable = DefaultProgressBar(21, 38, Orientation.RIGHT, null, null).getDrawable(100, guiHelper)
 
     override fun setRecipe(layout: IRecipeLayout, wrapper: ElectricFurnaceRecipeWrapper, ingredients: IIngredients) {
         val stacks = layout.itemStacks

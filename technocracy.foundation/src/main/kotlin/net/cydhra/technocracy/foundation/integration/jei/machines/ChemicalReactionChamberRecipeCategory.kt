@@ -23,7 +23,7 @@ class ChemicalReactionChamberRecipeCategory(guiHelper: IGuiHelper) : AbstractRec
         TCCategoryUid.CHEMICAL_REACTION
 ) {
 
-    private val progressbarDrawable: IDrawable = DefaultProgressBar(23, 38, Orientation.RIGHT, null, null).getDrawable(100)
+    private val progressbarDrawable: IDrawable = DefaultProgressBar(23, 38, Orientation.RIGHT, null, null).getDrawable(100, guiHelper)
 
     override fun getTitle(): String = "Chemical Reaction Chamber"
 

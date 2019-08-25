@@ -23,7 +23,7 @@ class CompactorRecipeCategory(guiHelper: IGuiHelper) : AbstractRecipeCategory<Co
         TCCategoryUid.COMPACTOR
 ) {
 
-    private val progressbarDrawable: IDrawable = DefaultProgressBar(21, 38, Orientation.RIGHT, null, null).getDrawable(100)
+    private val progressbarDrawable: IDrawable = DefaultProgressBar(21, 38, Orientation.RIGHT, null, null).getDrawable(100, guiHelper)
 
     override fun setRecipe(layout: IRecipeLayout, wrapper: CompactorRecipeWrapper, ingredients: IIngredients) {
         val stacks = layout.itemStacks

@@ -23,7 +23,7 @@ class CrystallizationChamberRecipeCategory(guiHelper: IGuiHelper) : AbstractReci
         TCCategoryUid.CRYSTALLIZATION
 ) {
 
-    private val progressbarDrawable: IDrawable = DefaultProgressBar(23, 38, Orientation.RIGHT, null, null).getDrawable(100)
+    private val progressbarDrawable: IDrawable = DefaultProgressBar(23, 38, Orientation.RIGHT, null, null).getDrawable(100, guiHelper)
 
     override fun getTitle(): String = "Crystallization Chamber"
 
