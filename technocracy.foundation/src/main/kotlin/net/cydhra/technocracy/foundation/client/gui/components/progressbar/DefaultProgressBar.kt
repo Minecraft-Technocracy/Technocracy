@@ -1,13 +1,15 @@
 package net.cydhra.technocracy.foundation.client.gui.components.progressbar
 
+import mezz.jei.api.gui.IDrawable
 import net.cydhra.technocracy.foundation.client.gui.TCGui
+import net.cydhra.technocracy.foundation.integration.jei.TickTimer
 import net.cydhra.technocracy.foundation.tileentity.components.ProgressComponent
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
 import kotlin.math.roundToInt
 
-class DefaultProgressBar(posX: Int, posY: Int, orientation: Orientation, val component: ProgressComponent, val gui: TCGui) : ProgressBar(posX, posY, orientation) {
+class DefaultProgressBar(posX: Int, posY: Int, orientation: Orientation, val component: ProgressComponent?, val gui: TCGui?) : ProgressBar(posX, posY, orientation) {
     override fun draw(mouseX: Int, mouseY: Int, partialTicks: Float) {
         Minecraft.getMinecraft().textureManager.bindTexture(TCGui.guiComponents)
 
@@ -74,11 +76,34 @@ class DefaultProgressBar(posX: Int, posY: Int, orientation: Orientation, val com
     }
 
     override fun update() {
-        progress = component.progress / 100f
+        if (component != null)
+            progress = component.progress / 100f
     }
 
     override fun drawTooltip(mouseX: Int, mouseY: Int) {
-        val str = "${(progress * 100).roundToInt()}%"
-        gui.renderTooltip(mutableListOf(str), mouseX, mouseY)
+        if (gui != null) {
+            val str = "${(progress * 100).roundToInt()}%"
+            gui.renderTooltip(mutableListOf(str), mouseX, mouseY)
+        }
+    }
+
+    fun getDrawable(ticksPerCycle: Int): IDrawable {
+        return object : IDrawable {
+
+            private val timer = TickTimer(ticksPerCycle, 100, false)
+
+            override fun draw(mc: Minecraft, x: Int, y: Int) {
+                this@DefaultProgressBar.progress = timer.value / 100f
+                this@DefaultProgressBar.draw(-1, -1, 0f)
+            }
+
+            override fun getWidth(): Int {
+                return this@DefaultProgressBar.width
+            }
+
+            override fun getHeight(): Int {
+                return this@DefaultProgressBar.height
+            }
+        }
     }
 }
