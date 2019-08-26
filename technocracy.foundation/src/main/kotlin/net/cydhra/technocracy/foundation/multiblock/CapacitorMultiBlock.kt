@@ -110,6 +110,33 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
             }
         }
 
+        //Check rows and columns for adjacent electrodes of the same type
+        //Finds all electrodes that are in each row and column, sorts them and then checks if any of the same type are
+        // adjacent
+        for (col in interiorMin.x + 1 until interiorMax.x) {
+            var previousBlock: Block? = null
+            electrodes.filter { it.x == col }.sortedBy { it.x }.forEach {
+                if (previousBlock != null && previousBlock == it.block) {
+                    validatorCallback.setLastError("multiblock.error.adjacent_electrode_types", it.x, interiorMax.y,
+                            it.z)
+                    return false
+                }
+                previousBlock = it.block
+            }
+        }
+
+        for (row in interiorMin.z + 1 until interiorMax.z) {
+            var previousBlock: Block? = null
+            electrodes.filter { it.z == row }.sortedBy { it.z }.forEach {
+                if (previousBlock != null && previousBlock == it.block) {
+                    validatorCallback.setLastError("multiblock.error.adjacent_electrode_types", it.x, interiorMax.y,
+                            it.z)
+                    return false
+                }
+                previousBlock = it.block
+            }
+        }
+
         val connections = mutableListOf<Pair<Electrode, Electrode>>()
         //Check connections
         electrodes.forEach {
@@ -155,8 +182,9 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
                     }
 
                     if (isElectrodePos && !(pos.x == it.x && pos.z == it.z)) {
-                        if(block == it.block) {
-                            validatorCallback.setLastError("multiblock.error.connection_of_same_electrode_types", pos.x, pos.y, pos.z)
+                        if (block == it.block) {
+                            validatorCallback.setLastError("multiblock.error.connection_of_same_electrode_types", pos.x,
+                                    pos.y, pos.z)
                             return false
                         }
 

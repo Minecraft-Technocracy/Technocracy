@@ -192,3 +192,4 @@ multiblock.error.invalid_block_above_electrode=The block above an electrode must
 multiblock.error.too_many_connections=The block at %d, %d, %d has too many connections.
 multiblock.error.uncompleted_connection=The connection at %d, %d, %d is a dead end and must be properly connected.
 multiblock.error.connection_of_same_electrode_types=Can't complete connection at %d, %d, %d because the two connected electrodes have the same type.
+multiblock.error.adjacent_electrode_types=Electrode at %d, %d, %d is invalid because electrodes of the same type can't be adjacent in a row or column.
