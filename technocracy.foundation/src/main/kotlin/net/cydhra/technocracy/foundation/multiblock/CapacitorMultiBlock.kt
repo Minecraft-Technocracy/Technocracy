@@ -10,6 +10,7 @@ import net.cydhra.technocracy.foundation.tileentity.multiblock.capacitor.TileEnt
 import net.cydhra.technocracy.foundation.tileentity.multiblock.capacitor.TileEntityCapacitorEnergyPort
 import net.minecraft.block.Block
 import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import java.util.function.Predicate
@@ -109,12 +110,91 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
             }
         }
 
+        val connections = mutableListOf<Pair<Electrode, Electrode>>()
+        //Check connections
+        electrodes.forEach {
+            if (connections.none { connection -> connection.first == it || connection.second == it }) {
+                //The current pos in the connection
+                var pos = BlockPos(it.x, interiorMax.y + 1, it.z)
+                var lastFacing = EnumFacing.UP
+                while (true) {
+                    println("Current pos $pos")
+                    //First electrode is always `it` and the second electrode will be defined by `pos` and `block` if one is found
+
+                    //Whether there is an electrode at the current pos
+                    val isElectrodePos = electrodes.any { e -> e.x == pos.x && e.z == pos.z }
+                    val block = this.world.getBlockState(pos).block
+                    if (isElectrodePos && block != capacitorConnectorBlock && block != capacitorEnergyPortBlock) {
+                        validatorCallback.setLastError("multiblock.error.invalid_block_above_electrode", pos.x, pos.y,
+                                pos.z)
+                        return false
+                    }
+
+                    var newFacing: EnumFacing? = null
+                    var connectedBlocks = 0
+                    //Loop through all three possible directions
+                    for (direction in EnumFacing.HORIZONTALS) {
+                        if (direction == lastFacing) {
+                            //To properly count all connected blocks
+                            connectedBlocks++
+                            println("For loop, $direction == $lastFacing")
+                            continue
+                        }
+
+                        //Check if block in current direction is a valid connector block
+                        val currentBlock: Block = this.world.getBlockState(pos.offset(direction)).block
+                        if (currentBlock == capacitorConnectorBlock || currentBlock == capacitorEnergyPortBlock) {
+                            connectedBlocks++
+                            newFacing = direction
+                            println("For loop: found new block; newFacing = $newFacing")
+                        }
+                    }
+
+
+                    //More than two connections, or if the block below is an electrode only one connection is allowed
+                    if (connectedBlocks > 2 || (connectedBlocks > 1 && isElectrodePos)) {
+                        validatorCallback.setLastError("multiblock.error.too_many_connections", pos.x, pos.y, pos.z)
+                        return false
+                    }
+
+                    if (isElectrodePos && !(pos.x == it.x && pos.z == it.z)) {
+                        if(block == it.block) {
+                            validatorCallback.setLastError("multiblock.error.connection_of_same_electrode_types", pos.x, pos.y, pos.z)
+                            return false
+                        }
+
+                        //Found end, create new connection and return
+                        val connection = Pair(it, Electrode(pos.x, pos.z, block))
+                        connections.add(connection)
+                        println("Created new connection at current pos")
+                        break
+                    }
+
+                    if (newFacing == null) {
+                        validatorCallback.setLastError("multiblock.error.uncompleted_connection", pos.x, pos.y, pos.z)
+                        return false
+                    }
+
+                    lastFacing = newFacing.opposite
+                    pos = pos.offset(newFacing)
+                    println("Seems valid; lastFacing = $lastFacing; pos = $pos")
+
+                }
+                //Find first block in conn
+                //Save opposite of enum facing
+                //On next block check all sides except for the saved enum facing and make sure it's only one side
+                //Find next block and repeat that
+                //If block below is electrode then still check surrounding blocks and check if first electrode has the opposite type. Connection is valid if that's true
+                //Also make sure that the second electrode that is found isn't the first one [and also isn't in a connection] (can bhow a done by checking that a connection block above an electrode only has one connection and not two
+            }
+        }
+
         if (electrodes.size % 2 != 0 || electrodes.filter { electrode -> electrode.block == capacitorElectrodeBlock }.size != electrodes.size / 2) {
             validatorCallback.setLastError("multiblock.error.uneven_number_of_electrodes")
             return false
         }
 
-        //https://github.com/Cydhra/Technocracy/issues/28#issuecomment-522795108
+        //https://github.com/Cydhra/Technocracy/issues/28#issuecomment-522795108 and following
 
         //Calculates the average shortest distance from each interior block to the next electrode block
         var totalDistance = 0
