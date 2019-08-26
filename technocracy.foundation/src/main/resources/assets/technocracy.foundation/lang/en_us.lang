@@ -64,6 +64,9 @@ tile.ore.niobium.name=Niobium Ore
 tile.ore.silver.name=Silver Ore
 tile.ore.tin.name=Tin Ore
 
+tile.lead_block.name=Lead Block
+tile.lead_oxide_block.name=Lead-Oxide Block
+
 tile.alloy_smeltery.name=Alloy Smeltery
 tile.centrifuge.name=Centrifuge
 tile.chemical_processing_chamber.name=Chemical Processing Chamber
@@ -105,8 +108,6 @@ tile.capacitor_controller.name=Capacitor Controller
 tile.capacitor_energy_port.name=Capacitor Energy Port
 tile.capacitor_connector.name=Capacitor Connector
 tile.capacitor_wall.name=Capacitor Wall
-tile.capacitor_electrode.name=Capacitor Lead-Electrode
-tile.capacitor_oxidized_electrode.name=Capacitor Lead-Oxide-Electrode
 
 fluid.mineral_oil=Mineral Oil
 fluid.mineral_oil_hot=Heated Mineral Oil

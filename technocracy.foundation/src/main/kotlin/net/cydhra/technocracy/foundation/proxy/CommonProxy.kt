@@ -168,8 +168,8 @@ open class CommonProxy {
         blockManager.prepareBlocksForRegistration(capacitorEnergyPortBlock)
         blockManager.prepareBlocksForRegistration(capacitorConnectorBlock)
         blockManager.prepareBlocksForRegistration(capacitorWallBlock)
-        blockManager.prepareBlocksForRegistration(capacitorElectrodeBlock)
-        blockManager.prepareBlocksForRegistration(capacitorOxidizedElectrodeBlock)
+        blockManager.prepareBlocksForRegistration(leadBlock)
+        blockManager.prepareBlocksForRegistration(leadOxideBlock)
 
         blockManager.prepareBlocksForRegistration(oilSandBlock)
         blockManager.prepareBlocksForRegistration(oilStone)

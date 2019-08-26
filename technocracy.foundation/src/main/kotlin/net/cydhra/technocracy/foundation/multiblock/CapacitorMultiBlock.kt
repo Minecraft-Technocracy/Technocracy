@@ -30,8 +30,8 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
             it.block == capacitorWallBlock
         },
         interiorBlockWhitelist = Predicate {
-            it.block == sulfuricAcidBlock || it.block == capacitorElectrodeBlock || it.block ==
-                    capacitorOxidizedElectrodeBlock
+            it.block == sulfuricAcidBlock || it.block == leadBlock || it.block ==
+                    leadOxideBlock
         },
         maximumSizeXZ = 20,
         maximumSizeY = 20,
@@ -78,7 +78,7 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
             for (z in interiorMin.z..interiorMax.z) {
                 for (y in interiorMin.y..interiorMax.y) {
                     val block = this.world.getBlockState(BlockPos(x, y, z)).block
-                    if (block == capacitorElectrodeBlock || block == capacitorOxidizedElectrodeBlock)
+                    if (block == leadBlock || block == leadOxideBlock)
                         electrodes += Electrode(x, z, block)
                 }
             }
@@ -205,7 +205,7 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
             }
         }
 
-        if (electrodes.size % 2 != 0 || electrodes.filter { electrode -> electrode.block == capacitorElectrodeBlock }.size != electrodes.size / 2) {
+        if (electrodes.size % 2 != 0 || electrodes.filter { electrode -> electrode.block == leadBlock }.size != electrodes.size / 2) {
             validatorCallback.setLastError("multiblock.error.uneven_number_of_electrodes")
             return false
         }
