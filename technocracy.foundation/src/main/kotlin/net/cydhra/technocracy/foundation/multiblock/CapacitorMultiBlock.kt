@@ -118,7 +118,6 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
                 var pos = BlockPos(it.x, interiorMax.y + 1, it.z)
                 var lastFacing = EnumFacing.UP
                 while (true) {
-                    println("Current pos $pos")
                     //First electrode is always `it` and the second electrode will be defined by `pos` and `block` if one is found
 
                     //Whether there is an electrode at the current pos
@@ -137,7 +136,6 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
                         if (direction == lastFacing) {
                             //To properly count all connected blocks
                             connectedBlocks++
-                            println("For loop, $direction == $lastFacing")
                             continue
                         }
 
@@ -146,7 +144,6 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
                         if (currentBlock == capacitorConnectorBlock || currentBlock == capacitorEnergyPortBlock) {
                             connectedBlocks++
                             newFacing = direction
-                            println("For loop: found new block; newFacing = $newFacing")
                         }
                     }
 
@@ -166,7 +163,6 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
                         //Found end, create new connection and return
                         val connection = Pair(it, Electrode(pos.x, pos.z, block))
                         connections.add(connection)
-                        println("Created new connection at current pos")
                         break
                     }
 
@@ -177,15 +173,7 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
 
                     lastFacing = newFacing.opposite
                     pos = pos.offset(newFacing)
-                    println("Seems valid; lastFacing = $lastFacing; pos = $pos")
-
                 }
-                //Find first block in conn
-                //Save opposite of enum facing
-                //On next block check all sides except for the saved enum facing and make sure it's only one side
-                //Find next block and repeat that
-                //If block below is electrode then still check surrounding blocks and check if first electrode has the opposite type. Connection is valid if that's true
-                //Also make sure that the second electrode that is found isn't the first one [and also isn't in a connection] (can bhow a done by checking that a connection block above an electrode only has one connection and not two
             }
         }
 
