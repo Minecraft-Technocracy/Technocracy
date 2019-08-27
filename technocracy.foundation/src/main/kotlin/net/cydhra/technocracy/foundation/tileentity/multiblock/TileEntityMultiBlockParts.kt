@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.tileentity.multiblock
 
 import net.cydhra.technocracy.foundation.multiblock.BoilerMultiBlock
+import net.cydhra.technocracy.foundation.multiblock.CapacitorMultiBlock
 import net.cydhra.technocracy.foundation.multiblock.HeatExchangerMultiBlock
 import net.cydhra.technocracy.foundation.multiblock.RefineryMultiBlock
 
@@ -17,3 +18,6 @@ class TileEntityMultiBlockPartHeatExchanger
 
 class TileEntityMultiBlockPartRefinery
     : TileEntityMultiBlockPart<RefineryMultiBlock>(RefineryMultiBlock::class, ::RefineryMultiBlock)
+
+class TileEntityMultiBlockPartCapacitor
+    : TileEntityMultiBlockPart<CapacitorMultiBlock>(CapacitorMultiBlock::class, ::CapacitorMultiBlock)
