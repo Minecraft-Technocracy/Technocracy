@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sgs",
+    "tmt",
+    "sgs"
+  ],
+  "key": {
+    "m": {
+      "item": "technocracy.foundation:machine_frame"
+    },
+    "s": {
+      "type": "forge:ore_dict",
+      "ore": "sheetInvar"
+    },
+    "g": {
+      "type": "forge:ore_dict",
+      "ore": "gearSteel"
+    },
+    "t": {
+      "type": "forge:ore_dict",
+      "ore": "sheetSteel"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:advanced_machine_frame",
+    "count": 1
+  }
+}

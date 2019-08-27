@@ -1,0 +1,12 @@
+{
+  "parent": "block/orientable",
+  "textures": {
+    "particle": "technocracy.foundation:block/steel",
+    "up": "technocracy.foundation:block/steel",
+    "down": "technocracy.foundation:block/steel",
+    "north": "technocracy.foundation:block/heat_exchanger_controller",
+    "east": "technocracy.foundation:block/steel",
+    "south": "technocracy.foundation:block/steel",
+    "west": "technocracy.foundation:block/steel"
+  }
+}

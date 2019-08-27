@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sbs",
+    "lml",
+    "rfr"
+  ],
+  "key": {
+    "f": {
+      "item": "minecraft:furnace"
+    },
+    "m": {
+      "item": "technocracy.foundation:advanced_machine_frame"
+    },
+    "r": {
+      "item": "technocracy.foundation:iron_rod"
+    },
+    "s": {
+      "item": "technocracy.foundation:polyfibre"
+    },
+    "l": {
+      "item": "technocracy.foundation:lead_glass_pane"
+    },
+    "b": {
+      "item": "technocracy.foundation:membrane"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:chemical_oxidizer",
+    "count": 1
+  }
+}

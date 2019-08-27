@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "brb",
+    "pmp",
+    "cpc"
+  ],
+  "key": {
+    "m": {
+      "item": "technocracy.foundation:machine_frame"
+    },
+    "r": {
+      "type": "forge:ore_dict",
+      "ore": "dustRedstone"
+    },
+    "p": {
+      "item": "minecraft:piston"
+    },
+    "b": {
+      "type": "forge:ore_dict",
+      "ore": "ingotBronze"
+    },
+    "c": {
+      "type": "forge:ore_dict",
+      "ore": "gearCopper"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:compactor",
+    "count": 1
+  }
+}

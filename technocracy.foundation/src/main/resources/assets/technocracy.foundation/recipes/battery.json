@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "crt",
-    "srs",
+    "iri",
     "sss"
   ],
   "key": {
@@ -17,6 +17,10 @@
     "t": {
       "type": "forge:ore_dict",
       "ore": "ingotTin"
+    },
+    "i": {
+      "type": "forge:ore_dict",
+      "ore": "ingotInvar"
     },
     "s": {
       "type": "forge:ore_dict",

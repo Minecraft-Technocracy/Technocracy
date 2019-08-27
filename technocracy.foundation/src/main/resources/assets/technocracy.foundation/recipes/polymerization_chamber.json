@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ibi",
+    "lml",
+    "rpr"
+  ],
+  "key": {
+    "m": {
+      "item": "technocracy.foundation:advanced_machine_frame"
+    },
+    "l": {
+      "item": "technocracy.foundation:lead_glass_pane"
+    },
+    "i": {
+      "type": "forge:ore_dict",
+      "ore": "ingotToughAlloy"
+    },
+    "b": {
+      "item": "technocracy.foundation:membrane"
+    },
+    "p": {
+      "item": "technocracy.foundation:pump"
+    },
+    "r": {
+      "item": "technocracy.foundation:iron_rod"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:polymerization_chamber",
+    "count": 1
+  }
+}

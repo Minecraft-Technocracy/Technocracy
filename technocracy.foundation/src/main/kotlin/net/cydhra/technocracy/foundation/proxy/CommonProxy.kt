@@ -12,8 +12,12 @@ import net.cydhra.technocracy.foundation.client.technocracyCreativeTabs
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.items.general.*
 import net.cydhra.technocracy.foundation.liquids.general.*
-import net.cydhra.technocracy.foundation.network.*
-import net.cydhra.technocracy.foundation.network.componentsync.*
+import net.cydhra.technocracy.foundation.network.ItemKeyBindPacket
+import net.cydhra.technocracy.foundation.network.ItemScrollPacket
+import net.cydhra.technocracy.foundation.network.PacketHandler
+import net.cydhra.technocracy.foundation.network.componentsync.ClientComponentUpdatePacket
+import net.cydhra.technocracy.foundation.network.componentsync.GuiUpdateListener
+import net.cydhra.technocracy.foundation.network.componentsync.MachineInfoPacket
 import net.cydhra.technocracy.foundation.oresystems.*
 import net.cydhra.technocracy.foundation.pipes.Network
 import net.cydhra.technocracy.foundation.potions.PotionManager
@@ -23,12 +27,15 @@ import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
 import net.cydhra.technocracy.foundation.tileentity.machines.*
 import net.cydhra.technocracy.foundation.tileentity.management.TileEntityManager
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartBoiler
+import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartCapacitor
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartHeatExchanger
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartRefinery
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerHeater
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerInput
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerOutput
+import net.cydhra.technocracy.foundation.tileentity.multiblock.capacitor.TileEntityCapacitorController
+import net.cydhra.technocracy.foundation.tileentity.multiblock.capacitor.TileEntityCapacitorEnergyPort
 import net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger.TileEntityHeatExchangerController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger.TileEntityHeatExchangerInput
 import net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger.TileEntityHeatExchangerOutput
@@ -157,14 +164,26 @@ open class CommonProxy {
         blockManager.prepareBlocksForRegistration(refineryOutputBlock)
         blockManager.prepareBlocksForRegistration(refineryHeaterBlock)
 
+        blockManager.prepareBlocksForRegistration(capacitorControllerBlock)
+        blockManager.prepareBlocksForRegistration(capacitorEnergyPortBlock)
+        blockManager.prepareBlocksForRegistration(capacitorConnectorBlock)
+        blockManager.prepareBlocksForRegistration(capacitorWallBlock)
+        blockManager.prepareBlocksForRegistration(leadBlock)
+        blockManager.prepareBlocksForRegistration(leadOxideBlock)
+
         blockManager.prepareBlocksForRegistration(oilSandBlock)
         blockManager.prepareBlocksForRegistration(oilStone)
         blockManager.prepareBlocksForRegistration(oilBlock)
         blockManager.prepareBlocksForRegistration(drum)
+        blockManager.prepareBlocksForRegistration(leadGlassPaneBlock)
+
+        blockManager.prepareBlocksForRegistration(sulfuricAcidBlock)
 
         blockManager.prepareBlocksForRegistration(pipe, PipeModel())
 
         itemManager.prepareItemForRegistration(machineFrameItem)
+        itemManager.prepareItemForRegistration(advancedMachineFrameItem)
+        itemManager.prepareItemForRegistration(industrialMachineFrameItem)
         itemManager.prepareItemForRegistration(coalDustItem)
         itemManager.prepareItemForRegistration(sulfurItem)
         itemManager.prepareItemForRegistration(batteryItem)
@@ -185,6 +204,13 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(emptyCanItem)
         itemManager.prepareItemForRegistration(wrenchItem)
 
+        itemManager.prepareItemForRegistration(membraneItem)
+        itemManager.prepareItemForRegistration(ironRodItem)
+        itemManager.prepareItemForRegistration(coilItem)
+        itemManager.prepareItemForRegistration(servoItem)
+        itemManager.prepareItemForRegistration(polyfibreItem)
+        itemManager.prepareItemForRegistration(pumpItem)
+
         itemManager.prepareItemForRegistration(invarItem)
         itemManager.prepareItemForRegistration(siliconBronzeItem)
         itemManager.prepareItemForRegistration(superconductorItem)
@@ -193,6 +219,10 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(bronzeItem)
         itemManager.prepareItemForRegistration(lightAlloyItem)
         itemManager.prepareItemForRegistration(toughAlloyItem)
+
+        itemManager.prepareItemForRegistration(invarSheetItem)
+        itemManager.prepareItemForRegistration(steelSheetItem)
+        itemManager.prepareItemForRegistration(steelGearItem)
 
         itemManager.prepareItemForRegistration(pipeItem, PipeItemModel())
         itemManager.prepareItemForRegistration(facadeItem, FacadeItemModel())
@@ -235,6 +265,10 @@ open class CommonProxy {
         tileEntityManager.prepareTileEntityForRegistration(TileEntityRefineryOutput::class)
         tileEntityManager.prepareTileEntityForRegistration(TileEntityRefineryHeater::class)
         tileEntityManager.prepareTileEntityForRegistration(TileEntityMultiBlockPartRefinery::class)
+
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityCapacitorController::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityCapacitorEnergyPort::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityMultiBlockPartCapacitor::class)
 
         tileEntityManager.prepareTileEntityForRegistration(TileEntityDrum::class)
 

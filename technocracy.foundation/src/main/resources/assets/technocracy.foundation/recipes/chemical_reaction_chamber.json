@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ibi",
+    "pmp",
+    "rrr"
+  ],
+  "key": {
+    "m": {
+      "item": "technocracy.foundation:advanced_machine_frame"
+    },
+    "r": {
+      "item": "technocracy.foundation:iron_rod"
+    },
+    "i": {
+      "type": "forge:ore_dict",
+      "ore": "sheetInvar"
+    },
+    "p": {
+      "type": "forge:ore_dict",
+      "ore": "ingotMPCM"
+    },
+    "b": {
+      "item": "technocracy.foundation:membrane"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:chemical_reaction_chamber",
+    "count": 1
+  }
+}
