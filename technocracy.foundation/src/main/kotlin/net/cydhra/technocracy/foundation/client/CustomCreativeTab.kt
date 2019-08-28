@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.client
 
 import net.cydhra.technocracy.foundation.items.general.facadeItem
-import net.cydhra.technocracy.foundation.oresystems.silverSystem
+import net.cydhra.technocracy.foundation.oresystems.leadSystem
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.relauncher.Side
@@ -16,7 +16,7 @@ val technocracyCreativeTabs = object : CreativeTabs("technocracy") {
     }
 
     override fun getTabIconItem(): ItemStack {
-        return ItemStack(silverSystem.crystal) // TODO replace this with something more exemplary for this mod
+        return ItemStack(leadSystem.gear!!) // TODO replace this with something more exemplary for this mod
     }
 
     override fun hasSearchBar(): Boolean {
