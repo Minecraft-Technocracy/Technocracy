@@ -163,7 +163,7 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
                 return true
             }
 
-            if (mode == WrenchItem.WrenchMode.PIPE_ALL) {
+            if (mode == WrenchItem.WrenchMode.DEFAULT) {
                 val attrib = playerIn.getEntityAttribute(EntityPlayer.REACH_DISTANCE).attributeValue
                 val dist = if (playerIn.isCreative) attrib else attrib - 0.5
 

@@ -82,7 +82,7 @@ class WrenchItem : BaseItem("Wrench"), IWrench, IItemScrollEvent {
     }
 
     enum class WrenchMode(private val displayName: String, val allowedPipe: PipeType? = null) {
-        DEFAULT("default"), PIPE_ALL("pipe.all");
+        DEFAULT("default");
 
         fun getUnlocalizedName(): String {
             return "wrenchmode.$displayName.name"
