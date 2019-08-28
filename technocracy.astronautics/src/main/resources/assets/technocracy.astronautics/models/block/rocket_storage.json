@@ -3,7 +3,7 @@
 		"particle": "technocracy.astronautics:block/rocket_storage_side",
 		"top": "technocracy.astronautics:block/rocket_storage_top",
 		"bottom": "technocracy.astronautics:block/rocket_storage_top",
-		"side": "technocracy.astronautics:block/rocket_storage_side",
+		"side": "technocracy.astronautics:block/rocket_storage_side"
 	},
 	"elements": [ 	 
 		{
