@@ -15,7 +15,7 @@ class TileEntityCapacitorEnergyPort : TileEntityMultiBlockPart<CapacitorMultiBlo
     override fun onMachineDeactivated() {}
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean =
-            capability == CapabilityEnergy.ENERGY
+            this.supportsCapability(capability, facing) || super.hasCapability(capability, facing)
 
     override fun <T> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
         return if (hasCapability(capability, facing))
