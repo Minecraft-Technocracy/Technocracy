@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation
 
+import net.cydhra.technocracy.foundation.commands.ClearTemplateCommand
 import net.cydhra.technocracy.foundation.commands.GenerateTemplateCommand
 import net.cydhra.technocracy.foundation.integration.top.TOPIntegration
 import net.cydhra.technocracy.foundation.multiblock.MultiBlockPhysics
@@ -102,6 +103,7 @@ object TCFoundation {
     fun serverStarting(start: FMLServerStartingEvent) {
         if (start.server.isSinglePlayer) {
             start.registerServerCommand(GenerateTemplateCommand())
+            start.registerServerCommand(ClearTemplateCommand())
         }
     }
 }
