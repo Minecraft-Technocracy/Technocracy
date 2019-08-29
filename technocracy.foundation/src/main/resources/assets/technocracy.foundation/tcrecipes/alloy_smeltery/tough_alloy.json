@@ -2,7 +2,7 @@
   "input": [
     {
       "type": "forge:ore_dict",
-      "ore": "blockObsidian"
+      "ore": "obsidian"
     },
     {
       "type": "forge:ore_dict",

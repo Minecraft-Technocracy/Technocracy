@@ -9,12 +9,11 @@ import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.RenderHelper
-import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.Slot
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.fml.client.config.GuiUtils
 
-open class TCGui(val player: EntityPlayer, val guiWidth: Int = 176, val guiHeight: Int = 166, val container:
+open class TCGui(val guiWidth: Int = 176, val guiHeight: Int = 166, val container:
 TCContainer)
     : GuiContainer(container) {
 
@@ -85,9 +84,9 @@ TCContainer)
 
                 this.tabs.withIndex().forEach { (index, tab) ->
                     tab.components.filterIsInstance<Slot>().map { index to it }.forEach { pair ->
-                        if(pair.second is TCSlot) {
+                        if (pair.second is TCSlot) {
                             (pair.second as TCSlot).isEnabled = pair.first == it
-                        } else if(pair.second is TCSlotIO) {
+                        } else if (pair.second is TCSlotIO) {
                             (pair.second as TCSlotIO).isEnabled = pair.first == it
                         }
                     }
@@ -133,12 +132,12 @@ TCContainer)
             GlStateManager.popMatrix()
         }
 
-        tabs.withIndex().forEach {(i, tab)->
+        tabs.withIndex().forEach { (i, tab) ->
             val x = xSize.toDouble() + 3
             val y = (i * 28).toDouble() + 3
             val width = 25
             val height = 25
-            if(mouseX - guiX > x && mouseX - guiX < x + width && mouseY - guiY > y && mouseY - guiY < y + height) {
+            if (mouseX - guiX > x && mouseX - guiX < x + width && mouseY - guiY > y && mouseY - guiY < y + height) {
                 renderTooltip(mutableListOf(tab.name), mouseX - guiX + 10, mouseY - guiY)
             }
         }

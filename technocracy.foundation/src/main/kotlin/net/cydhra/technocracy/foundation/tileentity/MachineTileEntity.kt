@@ -45,8 +45,8 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
         this.registerComponent(progressComponent, "progress")
     }
 
-    override fun getGui(player: EntityPlayer): TCGui {
-        val gui = TCGui(player, container = MachineContainer(this))
+    override fun getGui(player: EntityPlayer?): TCGui {
+        val gui = TCGui(container = MachineContainer(this))
         gui.registerTab(object : BaseMachineTab(this, gui, ResourceLocation("technocracy.foundation",
                 "textures/item/silicon.png")) {
             override fun init() {
@@ -110,11 +110,12 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
                 if(foundProgressComponent != null)
                     components.add(DefaultProgressBar((outputNearestToTheMiddle - inputNearestToTheMiddle) / 2 - 11 + inputNearestToTheMiddle, 40, Orientation.RIGHT, foundProgressComponent as ProgressComponent, gui))
 
-                addPlayerInventorySlots(player, 8, 84)
+                if(player != null)
+                    addPlayerInventorySlots(player, 8, 84)
             }
         })
         initGui(gui)
-        gui.registerTab(MachineSettingsTab(gui, this, player))
+        gui.registerTab(MachineSettingsTab(gui, this))
         return gui
     }
 

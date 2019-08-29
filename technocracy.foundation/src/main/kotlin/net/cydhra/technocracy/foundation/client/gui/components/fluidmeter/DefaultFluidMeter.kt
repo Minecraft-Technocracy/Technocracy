@@ -22,7 +22,7 @@ class DefaultFluidMeter(posX: Int, posY: Int, val component: FluidComponent, val
         GlStateManager.color(1f, 1f, 1f, 1f)
         GlStateManager.enableBlend()
         if (level > 0f) {
-            if(component.fluid.currentFluid != null) {
+            if (component.fluid.currentFluid != null) {
                 val fluid: Fluid = component.fluid.currentFluid!!.fluid
                 val color = Color(fluid.color)
 
@@ -35,18 +35,18 @@ class DefaultFluidMeter(posX: Int, posY: Int, val component: FluidComponent, val
         GlStateManager.color(1f, 1f, 1f, 1f)
         Minecraft.getMinecraft().textureManager.bindTexture(TCGui.guiComponents)
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
-        Gui.drawModalRectWithCustomSizedTexture(posX, posY, if(component.fluid.tanktype == DynamicFluidHandler.TankType.INPUT) 10f else 0f, 75f, width, height, 256f, 256f)
+        Gui.drawModalRectWithCustomSizedTexture(posX, posY, if (component.fluid.tanktype == DynamicFluidHandler.TankType.INPUT) 10f else 0f, 75f, width, height, 256f, 256f)
 
         GlStateManager.disableBlend()
     }
 
     override fun drawTooltip(mouseX: Int, mouseY: Int) {
-        val str = "${(level * component.fluid.capacity).roundToInt()}mb/${component.fluid.capacity}mb"
+        val str = "${if (component.fluid.currentFluid != null) "${component.fluid.currentFluid?.localizedName}\n§7" else ""}${(level * component.fluid.capacity).roundToInt()}mb/${component.fluid.capacity}mb"
         gui.renderTooltip(mutableListOf(str), mouseX, mouseY)
     }
 
     override fun update() {
-        level = if(component.fluid.currentFluid != null) component.fluid.currentFluid!!.amount.toFloat() / component.fluid.capacity.toFloat() else 0f
+        level = if (component.fluid.currentFluid != null) component.fluid.currentFluid!!.amount.toFloat() / component.fluid.capacity.toFloat() else 0f
         flowAnimation++
         if (flowAnimation > 1024)
             flowAnimation = 0
