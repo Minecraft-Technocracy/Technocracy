@@ -20,12 +20,39 @@ import java.io.FileOutputStream
 import java.nio.file.Files
 
 
-class Template : INBTSerializable<NBTTagCompound> {
+class Template() : INBTSerializable<NBTTagCompound> {
     val blocks = mutableListOf<BlockInfo>()
     var modules = mutableMapOf<Int, MutableList<BlockPos>>()
 
     var init = false
     lateinit var controller: BlockPos
+
+    constructor(center: BlockPos, worldIn: World, blockList: List<BlockPos>) : this() {
+        this.controller = center
+
+        label@ for (boxBlocks in blockList) {
+            val relativePos = boxBlocks.subtract(controller)
+
+            val state = worldIn.getBlockState(boxBlocks)
+            val block = state.block
+
+            if (block == Blocks.AIR)
+                continue
+
+            val tileentity = worldIn.getTileEntity(boxBlocks)
+
+            if (tileentity != null) {
+                val tag = tileentity.writeToNBT(NBTTagCompound())
+                tag.removeTag("x")
+                tag.removeTag("y")
+                tag.removeTag("z")
+                blocks.add(BlockInfo(relativePos, block, block.getMetaFromState(state), tag))
+            } else {
+                blocks.add(BlockInfo(relativePos, block, block.getMetaFromState(state), null))
+            }
+        }
+        init = true
+    }
 
     fun loadFromAssets(name: String): Template {
         Loader.instance().indexedModList.forEach { (modId, modContainer) ->
@@ -45,10 +72,9 @@ class Template : INBTSerializable<NBTTagCompound> {
 
     override fun deserializeNBT(compound: NBTTagCompound?) {
         if (compound == null) return
-        init = true
         this.blocks.clear()
 
-        if(compound.hasKey("blocks")) {
+        if (compound.hasKey("blocks")) {
             val blocks = compound.getTagList("blocks", 10)
             for (j in 0 until blocks.tagCount()) {
                 val blockTag = blocks.getCompoundTagAt(j)
@@ -65,18 +91,18 @@ class Template : INBTSerializable<NBTTagCompound> {
             }
         }
 
-        if(compound.hasKey("modules")) {
-            val modules = compound.getTagList("modules", 10)
+        if (compound.hasKey("modules")) {
+            val modules = compound.getTagList("modules", 9)
             for (j in 0 until modules.tagCount()) {
-                val singleModule = modules.getCompoundTagAt(j)
-                val poses = singleModule.getTagList("poses", 10)
+                val posModules = modules.get(j) as NBTTagList
                 val list = mutableListOf<BlockPos>()
-                for (posPos in 0 until modules.tagCount()) {
-                    list.add(NBTUtil.getPosFromTag(poses.getCompoundTagAt(posPos)))
+                for (posPos in 0 until posModules.tagCount()) {
+                    list.add(NBTUtil.getPosFromTag(posModules.getCompoundTagAt(posPos)))
                 }
                 this.modules[j] = list
             }
         }
+        init = true
     }
 
     override fun serializeNBT(): NBTTagCompound {
@@ -105,8 +131,8 @@ class Template : INBTSerializable<NBTTagCompound> {
         }
 
         nbtTagCompound.setTag("blocks", nbttaglist)
-        if(!modulesList.hasNoTags())
-        nbtTagCompound.setTag("modules", modulesList)
+        if (!modulesList.hasNoTags())
+            nbtTagCompound.setTag("modules", modulesList)
         return nbtTagCompound
     }
 
@@ -133,18 +159,20 @@ class Template : INBTSerializable<NBTTagCompound> {
                     continue@label
             }
 
-            if (ignoreAir && block != Blocks.AIR) {
-                val tileentity = worldIn.getTileEntity(boxBlocks)
+            if (ignoreAir) {
+                if (block == Blocks.AIR)
+                    continue
+            }
+            val tileentity = worldIn.getTileEntity(boxBlocks)
 
-                if (tileentity != null && (!wildcard.contains(boxBlocks) && !wildcardAll)) {
-                    val tag = tileentity.writeToNBT(NBTTagCompound())
-                    tag.removeTag("x")
-                    tag.removeTag("y")
-                    tag.removeTag("z")
-                    blocks.add(BlockInfo(relativePos, block, block.getMetaFromState(state), tag))
-                } else {
-                    blocks.add(BlockInfo(relativePos, block, if (!wildcard.contains(boxBlocks) && !wildcardAll) block.getMetaFromState(state) else -1, null))
-                }
+            if (tileentity != null && (!wildcard.contains(boxBlocks) && !wildcardAll)) {
+                val tag = tileentity.writeToNBT(NBTTagCompound())
+                tag.removeTag("x")
+                tag.removeTag("y")
+                tag.removeTag("z")
+                blocks.add(BlockInfo(relativePos, block, block.getMetaFromState(state), tag))
+            } else {
+                blocks.add(BlockInfo(relativePos, block, if (!wildcard.contains(boxBlocks) && !wildcardAll) block.getMetaFromState(state) else -1, null))
             }
         }
 
@@ -166,9 +194,11 @@ class Template : INBTSerializable<NBTTagCompound> {
             if (matches(worldIn, pos, rot, valid)) {
                 val list = mutableListOf<BlockPos>()
                 for (block in blocks) {
-                    if (block.meta == -1) {
-                        list.add(pos.add(block.pos.rotate(rot)))
-                    }
+                    list.add(pos.add(block.pos.rotate(rot)))
+                }
+                for (mods in modules) {
+                    for(block in mods.value)
+                    list.add(pos.add(block.rotate(rot)))
                 }
                 return list
             }
