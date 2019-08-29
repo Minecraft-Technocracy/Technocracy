@@ -48,32 +48,34 @@ class Template : INBTSerializable<NBTTagCompound> {
         init = true
         this.blocks.clear()
 
-        val blocks = compound.getTagList("blocks", 10)
-        val modules = compound.getTagList("modules", 10)
+        if(compound.hasKey("blocks")) {
+            val blocks = compound.getTagList("blocks", 10)
+            for (j in 0 until blocks.tagCount()) {
+                val blockTag = blocks.getCompoundTagAt(j)
+                val blockpos = NBTUtil.getPosFromTag(blockTag.getCompoundTag("pos"))
+                val name = blockTag.getString("block")
+                val meta = blockTag.getInteger("meta")
+                var blockNBT: NBTTagCompound? = null
 
-        for (j in 0 until blocks.tagCount()) {
-            val blockTag = blocks.getCompoundTagAt(j)
-            val blockpos = NBTUtil.getPosFromTag(blockTag.getCompoundTag("pos"))
-            val name = blockTag.getString("block")
-            val meta = blockTag.getInteger("meta")
-            var blockNBT: NBTTagCompound? = null
+                if (blockTag.hasKey("nbt")) {
+                    blockNBT = blockTag.getCompoundTag("nbt")
+                }
 
-            if (blockTag.hasKey("nbt")) {
-                blockNBT = blockTag.getCompoundTag("nbt")
+                this.blocks.add(BlockInfo(blockpos, Block.getBlockFromName(name)!!, meta, blockNBT))
             }
-
-            this.blocks.add(BlockInfo(blockpos, Block.getBlockFromName(name)!!, meta, blockNBT))
         }
 
-        for (j in 0 until modules.tagCount()) {
-            val singleModule = blocks.getCompoundTagAt(j)
-            val poses = singleModule.getTagList("poses", 10)
-            val list = mutableListOf<BlockPos>()
-            for (posPos in 0 until modules.tagCount()) {
-                list.add(NBTUtil.getPosFromTag(poses.getCompoundTagAt(posPos)))
+        if(compound.hasKey("modules")) {
+            val modules = compound.getTagList("modules", 10)
+            for (j in 0 until modules.tagCount()) {
+                val singleModule = modules.getCompoundTagAt(j)
+                val poses = singleModule.getTagList("poses", 10)
+                val list = mutableListOf<BlockPos>()
+                for (posPos in 0 until modules.tagCount()) {
+                    list.add(NBTUtil.getPosFromTag(poses.getCompoundTagAt(posPos)))
+                }
+                this.modules[j] = list
             }
-            this.modules[j] = list
-
         }
     }
 
@@ -103,11 +105,12 @@ class Template : INBTSerializable<NBTTagCompound> {
         }
 
         nbtTagCompound.setTag("blocks", nbttaglist)
+        if(!modulesList.hasNoTags())
         nbtTagCompound.setTag("modules", modulesList)
         return nbtTagCompound
     }
 
-    fun generateTemplate(startPos: BlockPos, endPos: BlockPos, controller: BlockPos, wildcard: MutableList<BlockPos>, modules: MutableMap<Int, MutableList<BlockPos>>, ignoreAir: Boolean, worldIn: World, name: String): Boolean {
+    fun generateTemplate(startPos: BlockPos, endPos: BlockPos, controller: BlockPos, wildcard: MutableList<BlockPos>, modules: MutableMap<Int, MutableList<BlockPos>>, ignoreAir: Boolean, wildcardAll: Boolean, worldIn: World, name: String): Boolean {
         init = true
         this.controller = controller
 
@@ -133,14 +136,14 @@ class Template : INBTSerializable<NBTTagCompound> {
             if (ignoreAir && block != Blocks.AIR) {
                 val tileentity = worldIn.getTileEntity(boxBlocks)
 
-                if (tileentity != null && !wildcard.contains(boxBlocks)) {
+                if (tileentity != null && (!wildcard.contains(boxBlocks) && !wildcardAll)) {
                     val tag = tileentity.writeToNBT(NBTTagCompound())
                     tag.removeTag("x")
                     tag.removeTag("y")
                     tag.removeTag("z")
                     blocks.add(BlockInfo(relativePos, block, block.getMetaFromState(state), tag))
                 } else {
-                    blocks.add(BlockInfo(relativePos, block, if (!wildcard.contains(boxBlocks)) block.getMetaFromState(state) else -1, null))
+                    blocks.add(BlockInfo(relativePos, block, if (!wildcard.contains(boxBlocks) && !wildcardAll) block.getMetaFromState(state) else -1, null))
                 }
             }
         }

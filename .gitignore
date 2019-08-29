@@ -22,6 +22,7 @@ out
 .idea/misc.xml
 .idea/hotswap_agent.xml
 .idea/.name
+.idea/compiler.xml
 .idea/codeStyles/codeStyleConfig.xml
 classes
 
