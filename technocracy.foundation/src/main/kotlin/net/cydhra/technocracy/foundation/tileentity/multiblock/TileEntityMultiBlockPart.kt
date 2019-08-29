@@ -107,8 +107,8 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
         }
     }
 
-    override fun getGui(player: EntityPlayer): TCGui {
-        val gui = TCGui(player, container = MultiblockContainer(this))
+    override fun getGui(player: EntityPlayer?): TCGui {
+        val gui = TCGui(container = MultiblockContainer(this))
         gui.registerTab(object : BaseMultiblockTab(this, gui, ResourceLocation("technocracy.foundation",
                 "textures/item/silicon.png")) {
             override fun init() {
@@ -172,11 +172,12 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
                 if(foundProgressComponent != null)
                     components.add(DefaultProgressBar((outputNearestToTheMiddle - inputNearestToTheMiddle) / 2 - 11 + inputNearestToTheMiddle, 40, Orientation.RIGHT, foundProgressComponent as ProgressComponent, gui))
 
-                addPlayerInventorySlots(player, 8, 84)
+                if(player != null)
+                    addPlayerInventorySlots(player, 8, 84)
             }
         })
         initGui(gui)
-        gui.registerTab(MultiblockSettingsTab(gui, this, player))
+        gui.registerTab(MultiblockSettingsTab(gui, this))
         return gui
     }
 

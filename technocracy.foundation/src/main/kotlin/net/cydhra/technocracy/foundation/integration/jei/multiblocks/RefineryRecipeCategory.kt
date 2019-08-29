@@ -4,13 +4,13 @@ import mezz.jei.api.IGuiHelper
 import mezz.jei.api.gui.IDrawable
 import mezz.jei.api.gui.IRecipeLayout
 import mezz.jei.api.ingredients.IIngredients
+import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.general.refineryControllerBlock
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.DefaultProgressBar
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.Orientation
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.integration.jei.AbstractRecipeCategory
 import net.cydhra.technocracy.foundation.integration.jei.AbstractRecipeWrapper
-import net.cydhra.technocracy.foundation.integration.jei.TCCategoryUid
 import net.minecraft.client.Minecraft
 import net.minecraft.item.ItemStack
 import net.minecraftforge.fluids.FluidStack
@@ -20,7 +20,7 @@ class RefineryRecipeCategory(guiHelper: IGuiHelper) : AbstractRecipeCategory<Ref
         refineryControllerBlock,
         RecipeManager.RecipeType.REFINERY,
         RefineryRecipeWrapper::class.java,
-        TCCategoryUid.REFINERY
+        "${TCFoundation.MODID}.${RecipeManager.RecipeType.REFINERY.toString().toLowerCase()}"
 ) {
 
     private val progressbarDrawable: IDrawable = DefaultProgressBar(23, 38, Orientation.RIGHT, null, null).getDrawable(100, guiHelper)

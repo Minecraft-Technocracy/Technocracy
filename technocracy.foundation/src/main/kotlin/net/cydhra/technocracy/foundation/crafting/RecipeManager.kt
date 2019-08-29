@@ -6,8 +6,13 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParseException
 import net.cydhra.technocracy.foundation.TCFoundation
+import net.cydhra.technocracy.foundation.blocks.general.*
 import net.cydhra.technocracy.foundation.crafting.RecipeManager.RECIPE_ASSETS_FOLDER
 import net.cydhra.technocracy.foundation.crafting.types.*
+import net.cydhra.technocracy.foundation.tileentity.AbstractTileEntity
+import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
+import net.cydhra.technocracy.foundation.tileentity.machines.*
+import net.minecraft.block.Block
 import net.minecraft.util.JsonUtils
 import net.minecraftforge.common.crafting.CraftingHelper
 import net.minecraftforge.common.crafting.JsonContext
@@ -141,21 +146,24 @@ object RecipeManager {
 
     /**
      * An enumeration of all custom recipe types parsed by the RecipeManager
+     * @param machineBlock used for jei integration; might be null if machine which belongs to this recipe type is manually handled (f.e. refinery)
+     * @param tileEntityClass used for jei integration; might be null if machine which belongs to this recipe type is manually handled (f.e. refinery)
      */
-    enum class RecipeType {
-        ALLOY,
-        CENTRIFUGE,
-        CHEMICAL_ETCHING,
-        CHEMICAL_OXIDIZER,
-        CHEMICAL_PROCESSING,
-        CHEMICAL_REACTION,
-        COMPACTOR,
-        CRYSTALLIZATION,
-        DISSOLUTION,
-        ELECTRIC_FURNACE,
-        ELECTROLYSIS,
-        KILN,
-        PULVERIZER,
-        REFINERY
+    enum class RecipeType(val machineBlock: Block?, val tileEntityClass: Class<out MachineTileEntity>?) {
+        ALLOY(alloySmelteryBlock, TileEntityAlloySmeltery::class.java),
+        CENTRIFUGE(centrifugeBlock, TileEntityCentrifuge::class.java),
+        CHEMICAL_ETCHING(chemicalEtchingChamberBlock, TileEntityChemicalEtchingChamber::class.java),
+        CHEMICAL_OXIDIZER(chemicalOxidizerBlock, TileEntityChemicalOxidizer::class.java),
+        CHEMICAL_PROCESSING(chemicalProcessingChamberBlock, TileEntityChemicalProcessingChamber::class.java),
+        CHEMICAL_REACTION(chemicalReactionChamberBlock, TileEntityChemicalReactionChamber::class.java),
+        COMPACTOR(compactorBlock, TileEntityCompactor::class.java),
+        CRYSTALLIZATION(crystallizationChamberBlock, TileEntityCrystallizationChamber::class.java),
+        DISSOLUTION(dissolutionChamberBlock, TileEntityDissolutionChamber::class.java),
+        ELECTRIC_FURNACE(electricFurnaceBlock, TileEntityElectricFurnace::class.java),
+        ELECTROLYSIS(electrolysisChamberBlock, TileEntityElectrolysisChamber::class.java),
+        KILN(kilnBlock, TileEntityKiln::class.java),
+        PULVERIZER(pulverizerBlock, TileEntityPulverizer::class.java),
+
+        REFINERY(null, null)
     }
 }

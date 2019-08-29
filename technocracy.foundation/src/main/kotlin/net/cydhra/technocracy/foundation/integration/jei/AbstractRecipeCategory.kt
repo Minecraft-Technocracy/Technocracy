@@ -25,7 +25,7 @@ abstract class AbstractRecipeCategory<T : IRecipeWrapper>(protected val guiHelpe
     }
 
     override fun getBackground(): IDrawable {
-        return guiHelper.createBlankDrawable(130, 90)
+        return guiHelper.createBlankDrawable(165, 90)
     }
 
 }
