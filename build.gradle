@@ -19,5 +19,4 @@ apply from: 'configuration.gradle'
 
 dependencies {
     compile group: 'net.cydhra.technocracy', name: 'technocracy.foundation', version: project.version
-    compile group: 'net.cydhra.technocracy', name: 'technocracy.megastructures', version: project.version
 }
