@@ -29,6 +29,11 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
         private const val NBT_KEY_EDGE_TYPE_LIST = "types"
         private const val NBT_KEY_EDGE_TYPE_LIST_ENTRY = "type"
         private const val NBT_KEY_EDGE_TYPE_LIST_DIRECTION_LIST = "directions"
+        private const val NBT_KEY_SINK_POS = "pos"
+        private const val NBT_KEY_SINK_TYPE_LIST_ENTRY = "type"
+        private const val NBT_KEY_SINK_TYPE_LIST_DIRECTION_LIST = "directions"
+        private const val NBT_KEY_SINK_TYPE_LIST = "types"
+        private const val NBT_KEY_SINK_LIST = "sinks"
     }
 
     /**
@@ -241,6 +246,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
     override fun deserializeNBT(nbt: NBTTagCompound) {
         val nodeList = nbt.getTagList(NBT_KEY_NODE_LIST, Constants.NBT.TAG_COMPOUND)
         val edgeList = nbt.getTagList(NBT_KEY_EDGE_LIST, Constants.NBT.TAG_COMPOUND)
+        val sinkList = nbt.getTagList(NBT_KEY_SINK_LIST, Constants.NBT.TAG_COMPOUND)
 
         nodeList.forEach { nodeTag ->
             val blockPos = NBTUtil.getPosFromTag((nodeTag as NBTTagCompound).getCompoundTag(NBT_KEY_NODE_POS))
@@ -261,6 +267,22 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
                         .toMutableSet()
 
                 this.edges[blockPos]!![pipeType] = facings
+            }
+        }
+
+        sinkList.forEach { sinkTag ->
+            val blockPos = NBTUtil.getPosFromTag((sinkTag as NBTTagCompound).getCompoundTag(NBT_KEY_SINK_POS))
+            val typeList = sinkTag.getTagList(NBT_KEY_SINK_TYPE_LIST, Constants.NBT.TAG_COMPOUND)
+
+            this.attachedSinks[blockPos] = mutableMapOf()
+
+            typeList.forEach { typeTag ->
+                val pipeType = PipeType.values()[(typeTag as NBTTagCompound).getInteger(NBT_KEY_SINK_TYPE_LIST_ENTRY)]
+                val facings = typeTag.getIntArray(NBT_KEY_SINK_TYPE_LIST_DIRECTION_LIST)
+                        .map { EnumFacing.values()[it] }
+                        .toMutableSet()
+
+                this.attachedSinks[blockPos]!![pipeType] = facings
             }
         }
     }
@@ -294,8 +316,27 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
             edgeList.appendTag(edgeTag)
         }
 
+        val sinkList = NBTTagList()
+        for (sinkPos in this.attachedSinks.keys) {
+            val sinkTag = NBTTagCompound()
+            sinkTag.setTag(NBT_KEY_SINK_POS, NBTUtil.createPosTag(sinkPos))
+
+            val typeList = NBTTagList()
+            for (pipeType in this.attachedSinks[sinkPos]!!.keys) {
+                val typeTag = NBTTagCompound()
+                typeTag.setInteger(NBT_KEY_SINK_TYPE_LIST_ENTRY, pipeType.ordinal)
+                typeTag.setTag(NBT_KEY_SINK_TYPE_LIST_DIRECTION_LIST,
+                        NBTTagIntArray(this.attachedSinks[sinkPos]!![pipeType]!!.map(EnumFacing::ordinal)))
+                typeList.appendTag(typeTag)
+            }
+
+            sinkTag.setTag(NBT_KEY_SINK_TYPE_LIST, typeList)
+            sinkList.appendTag(sinkTag)
+        }
+
         compound.setTag(NBT_KEY_NODE_LIST, nodeList)
         compound.setTag(NBT_KEY_EDGE_LIST, edgeList)
+        compound.setTag(NBT_KEY_SINK_LIST, sinkList)
 
         return compound
     }
