@@ -5,17 +5,11 @@ import io.netty.buffer.ByteBuf
 import io.netty.buffer.ByteBufInputStream
 import io.netty.buffer.ByteBufOutputStream
 import io.netty.handler.codec.EncoderException
-import net.cydhra.technocracy.astronautics.util.WrappedClientWorld
-import net.cydhra.technocracy.foundation.util.WrappedState
+import net.cydhra.technocracy.astronautics.blocks.general.rocketDriveBlock
+import net.cydhra.technocracy.foundation.fx.ParticleSmoke
+import net.cydhra.technocracy.foundation.fx.TCParticleManager
 import net.cydhra.technocracy.foundation.util.structures.Template
-import net.minecraft.client.Minecraft
-import net.minecraft.client.renderer.BlockFluidRenderer
-import net.minecraft.client.renderer.GlStateManager
-import net.minecraft.client.renderer.RenderHelper
-import net.minecraft.client.renderer.Tessellator
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.client.renderer.vertex.VertexBuffer
-import net.minecraft.crash.CrashReport
 import net.minecraft.entity.Entity
 import net.minecraft.entity.MoverType
 import net.minecraft.entity.player.EntityPlayer
@@ -25,14 +19,11 @@ import net.minecraft.nbt.CompressedStreamTools
 import net.minecraft.nbt.NBTSizeTracker
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTUtil
-import net.minecraft.network.PacketBuffer
 import net.minecraft.network.datasync.DataSerializers
 import net.minecraft.network.datasync.EntityDataManager
-import net.minecraft.network.play.server.SPacketWindowItems
-import net.minecraft.util.*
+import net.minecraft.util.EntitySelectors
 import net.minecraft.util.math.AxisAlignedBB
 import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.MathHelper
 import net.minecraft.world.World
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -41,7 +32,9 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import java.io.IOException
 import java.util.*
-import kotlin.math.*
+import java.util.concurrent.ThreadLocalRandom
+import kotlin.math.max
+import kotlin.math.min
 import net.minecraftforge.event.world.GetCollisionBoxesEvent as GetCollisionBoxesEvent1
 
 open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnData {
@@ -153,6 +146,7 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
 
         super.onUpdate()
 
+
         this.prevPosX = this.posX
         this.prevPosY = this.posY
         this.prevPosZ = this.posZ
@@ -173,11 +167,23 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
             }
         }
 
-        val list = this.world.getEntitiesInAABBexcluding(this, this.entityBoundingBox, EntitySelectors.getTeamCollisionPredicate(this))
+        println("update")
+
+        var list = this.world.getEntitiesInAABBexcluding(this, this.entityBoundingBox, EntitySelectors.getTeamCollisionPredicate(this))
         if (list.isNotEmpty()) {
             for (entity in list) {
                 if (entity is EntityPlayer)
                     this.collideWithEntity(entity)
+            }
+        }
+
+        if (world.isRemote) {
+            for (info in template.blocks) {
+                if (info.pos.y == 0) {
+                    if (info.block == rocketDriveBlock) {
+                        TCParticleManager.addParticle(ParticleSmoke(world, posX + info.pos.x + ThreadLocalRandom.current().nextFloat(), posY - ThreadLocalRandom.current().nextFloat(), posZ + info.pos.z + ThreadLocalRandom.current().nextFloat()))
+                    }
+                }
             }
         }
     }
@@ -266,10 +272,11 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
             val list = this.world.getEntitiesWithinAABBExcludingEntity(this, bb.grow(1.0))
             for (entity in list.filter { !boosted.contains(it) }) {
                 if (entity !is EntityRocket) {
+
                     boosted.add(entity)
                     if ((lastTickPosY - posY) != 0.0) {
                         entity.motionY = 0.0
-                        entity.move(MoverType.PLAYER, motionX, motionY, motionZ)
+                        entity.move(MoverType.SELF, motionX, motionY, motionZ)
                         entity.onGround = true
                     }
                 }

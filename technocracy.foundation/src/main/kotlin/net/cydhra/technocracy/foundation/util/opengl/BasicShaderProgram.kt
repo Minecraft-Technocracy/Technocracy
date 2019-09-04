@@ -63,6 +63,9 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
         programID = GL20.glCreateProgram()
         GL20.glAttachShader(programID, vertexShaderID)
         GL20.glAttachShader(programID, fragmentShaderID)
+
+        GL20.glBindAttribLocation(programID, 0, "position")
+
         GL20.glLinkProgram(programID)
         GL20.glValidateProgram(programID)
     }
