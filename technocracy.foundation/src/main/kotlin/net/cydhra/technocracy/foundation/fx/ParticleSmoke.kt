@@ -39,9 +39,6 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
     }
 
     override fun move(x: Double, y: Double, z: Double) {
-
-        if(true)
-            return
         time += 0.0005f * size
 
         if (onGround) {
