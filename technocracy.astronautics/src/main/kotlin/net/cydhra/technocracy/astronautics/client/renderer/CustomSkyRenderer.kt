@@ -152,10 +152,10 @@ object CustomSkyRenderer : IRenderHandler() {
 
     fun renderSky(partialTicks: Float, world: WorldClient, mc: Minecraft) {
 
-        if (mc.player.isSneaking) {
+        /*if (mc.player.isSneaking) {
             mc.player.isSneaking = false
             gen = false
-        }
+        }*/
 
         //todo optifine implementation
 
