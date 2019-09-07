@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.conduits
 
+import net.cydhra.technocracy.foundation.conduits.transit.TransitSink
 import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTTagIntArray
@@ -29,11 +30,11 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
         private const val NBT_KEY_EDGE_TYPE_LIST = "types"
         private const val NBT_KEY_EDGE_TYPE_LIST_ENTRY = "type"
         private const val NBT_KEY_EDGE_TYPE_LIST_DIRECTION_LIST = "directions"
-        private const val NBT_KEY_SINK_POS = "pos"
+        private const val NBT_KEY_ATTACHMENTS_POS = "pos"
         private const val NBT_KEY_SINK_TYPE_LIST_ENTRY = "type"
         private const val NBT_KEY_SINK_TYPE_LIST_DIRECTION_LIST = "directions"
-        private const val NBT_KEY_SINK_TYPE_LIST = "types"
-        private const val NBT_KEY_SINK_LIST = "sinks"
+        private const val NBT_KEY_SINKS_LIST = "types"
+        private const val NBT_KEY_ATACHHMENTS_LIST = "sinks"
     }
 
     /**
@@ -64,9 +65,9 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      * with sinks. Since sinks are kept within the same block as the pipe, a sink that is attached to the pipe but
      * resides in a neighbor chunk is still visible. Whether it is loaded must be checked separately.
      */
-    private val attachedSinks: MutableMap<BlockPos, MutableMap<PipeType, MutableSet<EnumFacing>>> = mutableMapOf()
+    private val attachedSinks: MutableMap<BlockPos, MutableSet<TransitSink>> = mutableMapOf()
 
-    val debug_sinks: Map<BlockPos, Map<PipeType, Set<EnumFacing>>> = attachedSinks
+    val debug_sinks: Map<BlockPos, Set<TransitSink>> = attachedSinks
 
     /**
      * Add a node to the conduit network. This method does only add this one node to the network: no additional nodes
@@ -163,14 +164,12 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      * @throws [IllegalStateException] if the edge does not exist
      */
     internal fun removeEdge(pos: BlockPos, facing: EnumFacing, type: PipeType) {
-        if (this.edges[pos]?.get(type)?.contains(facing) == false) {
-            throw IllegalStateException("the edge does not exist")
-        }
+        check(this.edges[pos]?.get(type)?.contains(facing) != false) { "the edge does not exist" }
 
         this.edges[pos]!![type]!!.remove(facing)
 
         // remove attached sinks if any
-        this.attachedSinks[pos]?.get(type)?.remove(facing)
+        this.removeTransitSink(pos, facing, type)
 
         this.recalculatePaths()
         this.markDirty()
@@ -187,35 +186,27 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      * @throws IllegalStateException if the sink is already attached
      */
     internal fun attachTransitSink(pos: BlockPos, facing: EnumFacing, type: PipeType) {
-        check(this.attachedSinks[pos]?.get(type)?.contains(facing) != true) { "sink already attached" }
+        check(!this.hasSink(pos, facing, type)) { "sink already attached" }
 
         if (this.attachedSinks[pos] == null) {
-            this.attachedSinks[pos] = mutableMapOf()
+            this.attachedSinks[pos] = mutableSetOf()
         }
 
-        if (this.attachedSinks[pos]!![type] == null) {
-            this.attachedSinks[pos]!![type] = mutableSetOf()
-        }
-
-        this.attachedSinks[pos]!![type]!!.add(facing)
+        this.attachedSinks[pos]!!.add(TransitSink(type, facing))
         this.recalculatePaths()
         this.markDirty()
     }
 
     /**
      * Removes a sink from the conduit net. The sink must have been previously attached to the very same [pos] and
-     * [facing] using [attachTransitSink].
+     * [facing] using [attachTransitSink]. If such a sink does not exist, nothing happens.
      *
      * @param pos the position of the edge where the sink is attached to
      * @param facing the face that the sink block shares with the pipe block (viewed from the pipe block)
      * @param type the type of pipe that is interfacing with the sink
      */
     internal fun removeTransitSink(pos: BlockPos, facing: EnumFacing, type: PipeType) {
-        if (this.attachedSinks[pos]?.get(type)?.contains(facing) == false) {
-            throw IllegalStateException("there is no such sink to remove")
-        }
-
-        this.attachedSinks[pos]!![type]!!.remove(facing)
+        this.attachedSinks[pos]?.removeIf { it.type == type && it.facing == facing }
         this.recalculatePaths()
         this.markDirty()
     }
@@ -226,12 +217,12 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      */
     fun removeAllSinks(pos: BlockPos, type: PipeType) {
         // remove all edges that are linked to this type and thus their attachments
-        this.attachedSinks[pos]?.get(type)?.forEach { face ->
-            this.removeEdge(pos, face, type)
+        this.attachedSinks[pos]?.filter { it.type == type }?.forEach { sink ->
+            this.removeEdge(pos, sink.facing, type)
         }
 
         // if there is a sink entry present, remove the type entry (it is empty now anyway)
-        this.attachedSinks[pos]?.remove(type)
+        this.attachedSinks[pos]?.removeIf { it.type == type }
 
         // if there is a sink entry present and it is empty now, remove it
         if (this.attachedSinks[pos]?.isEmpty() == true) {
@@ -247,7 +238,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      * @param type sink pipe type
      */
     fun hasSink(pos: BlockPos, face: EnumFacing, type: PipeType): Boolean {
-        return this.attachedSinks[pos]?.get(type)?.contains(face) ?: false
+        return this.attachedSinks[pos]?.any { it.facing == face && it.type == type } ?: false
     }
 
     /**
@@ -267,7 +258,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
     override fun deserializeNBT(nbt: NBTTagCompound) {
         val nodeList = nbt.getTagList(NBT_KEY_NODE_LIST, Constants.NBT.TAG_COMPOUND)
         val edgeList = nbt.getTagList(NBT_KEY_EDGE_LIST, Constants.NBT.TAG_COMPOUND)
-        val sinkList = nbt.getTagList(NBT_KEY_SINK_LIST, Constants.NBT.TAG_COMPOUND)
+        val attachmentList = nbt.getTagList(NBT_KEY_ATACHHMENTS_LIST, Constants.NBT.TAG_COMPOUND)
 
         nodeList.forEach { nodeTag ->
             val blockPos = NBTUtil.getPosFromTag((nodeTag as NBTTagCompound).getCompoundTag(NBT_KEY_NODE_POS))
@@ -291,19 +282,14 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
             }
         }
 
-        sinkList.forEach { sinkTag ->
-            val blockPos = NBTUtil.getPosFromTag((sinkTag as NBTTagCompound).getCompoundTag(NBT_KEY_SINK_POS))
-            val typeList = sinkTag.getTagList(NBT_KEY_SINK_TYPE_LIST, Constants.NBT.TAG_COMPOUND)
+        attachmentList.forEach { attachmentTag ->
+            val blockPos = NBTUtil.getPosFromTag((attachmentTag as NBTTagCompound).getCompoundTag(NBT_KEY_ATTACHMENTS_POS))
+            val sinkList = attachmentTag.getTagList(NBT_KEY_SINKS_LIST, Constants.NBT.TAG_COMPOUND)
 
-            this.attachedSinks[blockPos] = mutableMapOf()
+            this.attachedSinks[blockPos] = mutableSetOf()
 
-            typeList.forEach { typeTag ->
-                val pipeType = PipeType.values()[(typeTag as NBTTagCompound).getInteger(NBT_KEY_SINK_TYPE_LIST_ENTRY)]
-                val facings = typeTag.getIntArray(NBT_KEY_SINK_TYPE_LIST_DIRECTION_LIST)
-                        .map { EnumFacing.values()[it] }
-                        .toMutableSet()
-
-                this.attachedSinks[blockPos]!![pipeType] = facings
+            sinkList.forEach { sinkTag ->
+                this.attachedSinks[blockPos]!!.add(TransitSink().apply { deserializeNBT(sinkTag as NBTTagCompound) })
             }
         }
     }
@@ -337,27 +323,24 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
             edgeList.appendTag(edgeTag)
         }
 
-        val sinkList = NBTTagList()
+        val attachmentList = NBTTagList()
         for (sinkPos in this.attachedSinks.keys) {
-            val sinkTag = NBTTagCompound()
-            sinkTag.setTag(NBT_KEY_SINK_POS, NBTUtil.createPosTag(sinkPos))
+            val attachmentTag = NBTTagCompound()
+            attachmentTag.setTag(NBT_KEY_ATTACHMENTS_POS, NBTUtil.createPosTag(sinkPos))
 
-            val typeList = NBTTagList()
-            for (pipeType in this.attachedSinks[sinkPos]!!.keys) {
-                val typeTag = NBTTagCompound()
-                typeTag.setInteger(NBT_KEY_SINK_TYPE_LIST_ENTRY, pipeType.ordinal)
-                typeTag.setTag(NBT_KEY_SINK_TYPE_LIST_DIRECTION_LIST,
-                        NBTTagIntArray(this.attachedSinks[sinkPos]!![pipeType]!!.map(EnumFacing::ordinal)))
-                typeList.appendTag(typeTag)
+            val sinksList = NBTTagList()
+            for (sink in this.attachedSinks[sinkPos]!!) {
+                val typeTag = sink.serializeNBT()
+                sinksList.appendTag(typeTag)
             }
 
-            sinkTag.setTag(NBT_KEY_SINK_TYPE_LIST, typeList)
-            sinkList.appendTag(sinkTag)
+            attachmentTag.setTag(NBT_KEY_SINKS_LIST, sinksList)
+            attachmentList.appendTag(attachmentTag)
         }
 
         compound.setTag(NBT_KEY_NODE_LIST, nodeList)
         compound.setTag(NBT_KEY_EDGE_LIST, edgeList)
-        compound.setTag(NBT_KEY_SINK_LIST, sinkList)
+        compound.setTag(NBT_KEY_ATACHHMENTS_LIST, attachmentList)
 
         return compound
     }

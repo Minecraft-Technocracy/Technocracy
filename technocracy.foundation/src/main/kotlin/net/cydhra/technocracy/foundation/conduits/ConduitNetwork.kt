@@ -331,30 +331,28 @@ object ConduitNetwork {
                     GL11.glPopMatrix()
                 }
 
-                nChunk.debug_sinks.forEach { (pos, map) ->
+                nChunk.debug_sinks.forEach { (pos, set) ->
                     GL11.glPushMatrix()
                     GL11.glTranslated(pos.x.toDouble() + 0.5, pos.y.toDouble() + 0.5, pos.z.toDouble() + 0.5)
 
-                    map.forEach { (type, faces) ->
+                    set.forEach { (type, face) ->
                         when (type) {
                             PipeType.ENERGY -> GL11.glColor3d(1.0, 0.0, 0.0)
                             PipeType.ITEM -> GL11.glColor3d(0.0, 1.0, 0.0)
                             PipeType.FLUID -> GL11.glColor3d(0.0, 0.0, 1.0)
                         }
 
-                        faces.forEach { face ->
-                            GL11.glPushMatrix()
-                            when (face) {
-                                EnumFacing.DOWN -> GL11.glRotated(90.0, -1.0, 0.0, 0.0)
-                                EnumFacing.UP -> GL11.glRotated(90.0, 1.0, 0.0, 0.0)
-                                EnumFacing.NORTH -> GL11.glRotated(0.0, 0.0, 1.0, 0.0)
-                                EnumFacing.SOUTH -> GL11.glRotated(180.0, 0.0, -1.0, 0.0)
-                                EnumFacing.WEST -> GL11.glRotated(90.0, 0.0, 1.0, 0.0)
-                                EnumFacing.EAST -> GL11.glRotated(90.0, 0.0, -1.0, 0.0)
-                            }
-                            Disk().draw(0.01f, 0.3f, 16, 4)
-                            GL11.glPopMatrix()
+                        GL11.glPushMatrix()
+                        when (face) {
+                            EnumFacing.DOWN -> GL11.glRotated(90.0, -1.0, 0.0, 0.0)
+                            EnumFacing.UP -> GL11.glRotated(90.0, 1.0, 0.0, 0.0)
+                            EnumFacing.NORTH -> GL11.glRotated(0.0, 0.0, 1.0, 0.0)
+                            EnumFacing.SOUTH -> GL11.glRotated(180.0, 0.0, -1.0, 0.0)
+                            EnumFacing.WEST -> GL11.glRotated(90.0, 0.0, 1.0, 0.0)
+                            EnumFacing.EAST -> GL11.glRotated(90.0, 0.0, -1.0, 0.0)
                         }
+                        Disk().draw(0.01f, 0.3f, 16, 4)
+                        GL11.glPopMatrix()
                     }
 
                     GL11.glPopMatrix()
