@@ -5,6 +5,7 @@ import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.general.BlockManager
 import net.cydhra.technocracy.foundation.client.events.KeyEventHandler
 import net.cydhra.technocracy.foundation.client.textures.TextureAtlasManager
+import net.cydhra.technocracy.foundation.fx.TCParticleManager
 import net.cydhra.technocracy.foundation.items.general.ItemManager
 import net.cydhra.technocracy.foundation.tileentity.management.TileEntityManager
 import net.minecraft.util.ResourceLocation
@@ -44,5 +45,11 @@ class ClientProxy : CommonProxy() {
         itemManager.registerItemColors()
         blockManager.registerBlockColors()
         tileEntityManager.onClientInitialize()
+    }
+
+    override fun postInit() {
+        super.postInit()
+
+        MinecraftForge.EVENT_BUS.register(TCParticleManager)
     }
 }

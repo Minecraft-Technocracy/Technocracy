@@ -1,6 +1,6 @@
-package net.cydhra.technocracy.megastructures.world
+package net.cydhra.technocracy.astronautics.world
 
-import net.cydhra.technocracy.megastructures.dyson.DysonSphereController
+import net.cydhra.technocracy.astronautics.dyson.DysonSphereController
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 
 
-class WrappedWorldProvider(val provider : WorldProvider) : WorldProvider() {
+class WrappedWorldProvider(val provider: WorldProvider) : WorldProvider() {
 
     /**
      * Gets the Sun Brightness for rendering sky.
@@ -157,7 +157,7 @@ class WrappedWorldProvider(val provider : WorldProvider) : WorldProvider() {
      */
     @SideOnly(Side.CLIENT)
     override fun doesXZShowFog(x: Int, z: Int): Boolean {
-        return provider.doesXZShowFog(x,z)
+        return provider.doesXZShowFog(x, z)
     }
 
     override fun getBiomeProvider(): BiomeProvider {
@@ -468,6 +468,6 @@ class WrappedWorldProvider(val provider : WorldProvider) : WorldProvider() {
      * in WorldProviderSurface to prevent spawn chunks from being unloaded.
      */
     override fun canDropChunk(x: Int, z: Int): Boolean {
-        return provider.canDropChunk(x,z)
+        return provider.canDropChunk(x, z)
     }
 }

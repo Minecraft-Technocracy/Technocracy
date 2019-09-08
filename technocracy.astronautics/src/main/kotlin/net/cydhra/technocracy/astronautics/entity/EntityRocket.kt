@@ -5,15 +5,11 @@ import io.netty.buffer.ByteBuf
 import io.netty.buffer.ByteBufInputStream
 import io.netty.buffer.ByteBufOutputStream
 import io.netty.handler.codec.EncoderException
-import net.cydhra.technocracy.astronautics.util.WrappedClientWorld
-import net.cydhra.technocracy.foundation.util.WrappedState
+import net.cydhra.technocracy.astronautics.blocks.general.rocketDriveBlock
+import net.cydhra.technocracy.foundation.fx.ParticleSmoke
+import net.cydhra.technocracy.foundation.fx.TCParticleManager
 import net.cydhra.technocracy.foundation.util.structures.Template
-import net.minecraft.client.Minecraft
-import net.minecraft.client.renderer.BlockFluidRenderer
-import net.minecraft.client.renderer.Tessellator
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.client.renderer.vertex.VertexBuffer
-import net.minecraft.crash.CrashReport
 import net.minecraft.entity.Entity
 import net.minecraft.entity.MoverType
 import net.minecraft.entity.player.EntityPlayer
@@ -22,12 +18,12 @@ import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompressedStreamTools
 import net.minecraft.nbt.NBTSizeTracker
 import net.minecraft.nbt.NBTTagCompound
-import net.minecraft.network.PacketBuffer
-import net.minecraft.network.play.server.SPacketWindowItems
-import net.minecraft.util.*
+import net.minecraft.nbt.NBTUtil
+import net.minecraft.network.datasync.DataSerializers
+import net.minecraft.network.datasync.EntityDataManager
+import net.minecraft.util.EntitySelectors
 import net.minecraft.util.math.AxisAlignedBB
 import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.MathHelper
 import net.minecraft.world.World
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -36,10 +32,46 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import java.io.IOException
 import java.util.*
-import kotlin.math.*
+import java.util.concurrent.ThreadLocalRandom
+import kotlin.math.max
+import kotlin.math.min
 import net.minecraftforge.event.world.GetCollisionBoxesEvent as GetCollisionBoxesEvent1
 
 open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnData {
+
+    constructor(world: World, template: Template, controllerBlock: BlockPos) : this(world) {
+        this.template = template
+        this.controllerBlock = controllerBlock
+    }
+
+    @SideOnly(Side.CLIENT)
+    var vbo: VertexBuffer? = null
+
+
+    lateinit var controllerBlock: BlockPos
+    private val LIFTOFF = EntityDataManager.createKey(EntityRocket::class.java, DataSerializers.BOOLEAN)
+
+    var liftOff: Boolean
+        get() = true//dataManager.get(LIFTOFF)
+        set(value) {
+            if (!liftOff) {
+                this.motionY = 0.005
+            }
+            dataManager.set(LIFTOFF, value)
+        }
+
+
+    var template: Template = Template()
+    lateinit var entityBox: AxisAlignedBB
+    var lastBB: List<AxisAlignedBB> = mutableListOf()
+
+    override fun entityInit() {
+    }
+
+    init {
+        dataManager.register(LIFTOFF, false)
+        MinecraftForge.EVENT_BUS.register(this)
+    }
 
     override fun readSpawnData(additionalData: ByteBuf?) {
         if (additionalData == null) return
@@ -52,86 +84,10 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
     }
 
     @SideOnly(Side.CLIENT)
-    var vbo: VertexBuffer? = null
-
-    @SideOnly(Side.CLIENT)
-    var startPosX = 0.0
-    @SideOnly(Side.CLIENT)
-    var startPosY = 0.0
-    @SideOnly(Side.CLIENT)
-    var startPosZ = 0.0
-
-    @SideOnly(Side.CLIENT)
     override fun onRemovedFromWorld() {
         if (vbo != null)
             vbo!!.deleteGlBuffers()
         super.onRemovedFromWorld()
-    }
-
-    fun generateVBO() {
-        if (vbo != null) return
-
-        vbo = VertexBuffer(DefaultVertexFormats.BLOCK)
-
-        val tess = Tessellator.getInstance()
-        val worldrenderer = tess.buffer
-
-        worldrenderer.begin(7, DefaultVertexFormats.BLOCK)
-
-        val mc = Minecraft.getMinecraft()
-
-        startPosX = posX
-        startPosY = posY
-        startPosZ = posZ
-
-
-        var minX = 0
-        var minY = 0
-        var minZ = 0
-        var maxX = 0
-        var maxY = 0
-        var maxZ = 0
-        for (info in template.blocks) {
-            minX = min(info.pos.x, minX)
-            maxX = max(info.pos.x, maxX)
-            minY = min(info.pos.y, minY)
-            maxY = max(info.pos.y, maxY)
-            minZ = min(info.pos.z, minZ)
-            maxZ = max(info.pos.z, maxZ)
-        }
-
-        val wrappedWorld = WrappedClientWorld(mc.world, template.blocks)
-
-        for (info in template.blocks) {
-
-            var state = info.block.getStateFromMeta(info.meta)
-
-            try {
-                val enumblockrendertype = state.renderType
-
-                if (enumblockrendertype == EnumBlockRenderType.INVISIBLE) {
-                    continue
-                } else {
-                    when (enumblockrendertype) {
-                        EnumBlockRenderType.MODEL -> {
-                            val model = mc.blockRendererDispatcher.getModelForState(state)
-                            state = state.block.getExtendedState(state, wrappedWorld, info.pos)
-
-                            mc.blockRendererDispatcher.blockModelRenderer.renderModelSmooth(wrappedWorld, model, WrappedState(state, minX, minY, minZ, maxX, maxY, maxZ), info.pos, worldrenderer, true, MathHelper.getPositionRandom(info.pos))
-                        }
-                        else -> {
-                        }
-                    }
-                }
-            } catch (throwable: Throwable) {
-                val crashreport = CrashReport.makeCrashReport(throwable, "Tesselating block in world")
-                throw ReportedException(crashreport)
-            }
-        }
-
-        worldrenderer.finishDrawing()
-        worldrenderer.reset()
-        vbo!!.bufferData(worldrenderer.byteBuffer)
     }
 
     @Throws(IOException::class)
@@ -172,32 +128,24 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
         return Collections.emptyList()
     }
 
-    constructor(world: World, template: Template) : this(world) {
-        this.template = template
-    }
-
-    var template: Template = Template()
-
-    init {
-        MinecraftForge.EVENT_BUS.register(this)
-    }
-
-    lateinit var entityBox: AxisAlignedBB
-
-    var lastBB: List<AxisAlignedBB> = mutableListOf()
-
     override fun onUpdate() {
         setNoGravity(true)
         noClip = false
 
         this.motionX = 0.0
-        if (ticksExisted % 4 == 0)
-            this.motionY *= 1.08
+
+        if (liftOff) {
+            if (ticksExisted % 4 == 0)
+                this.motionY *= 1.08
+        } else {
+            this.motionY = 0.0
+        }
 
         if (posY > 300)
             world.removeEntity(this)
 
         super.onUpdate()
+
 
         this.prevPosX = this.posX
         this.prevPosY = this.posY
@@ -219,11 +167,23 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
             }
         }
 
-        val list = this.world.getEntitiesInAABBexcluding(this, this.entityBoundingBox, EntitySelectors.getTeamCollisionPredicate(this))
+        println("update")
+
+        var list = this.world.getEntitiesInAABBexcluding(this, this.entityBoundingBox, EntitySelectors.getTeamCollisionPredicate(this))
         if (list.isNotEmpty()) {
             for (entity in list) {
                 if (entity is EntityPlayer)
                     this.collideWithEntity(entity)
+            }
+        }
+
+        if (world.isRemote) {
+            for (info in template.blocks) {
+                if (info.pos.y == 0) {
+                    if (info.block == rocketDriveBlock) {
+                        TCParticleManager.addParticle(ParticleSmoke(world, posX + info.pos.x + ThreadLocalRandom.current().nextFloat(), posY - ThreadLocalRandom.current().nextFloat(), posZ + info.pos.z + ThreadLocalRandom.current().nextFloat()))
+                    }
+                }
             }
         }
     }
@@ -298,6 +258,8 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
 
     override fun writeEntityToNBT(compound: NBTTagCompound) {
         compound.setTag("blocks", template.serializeNBT())
+        compound.setTag("controller", NBTUtil.createPosTag(controllerBlock))
+        compound.setTag("liftOff", template.serializeNBT())
     }
 
     override fun readEntityFromNBT(compound: NBTTagCompound) {
@@ -310,17 +272,15 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
             val list = this.world.getEntitiesWithinAABBExcludingEntity(this, bb.grow(1.0))
             for (entity in list.filter { !boosted.contains(it) }) {
                 if (entity !is EntityRocket) {
+
                     boosted.add(entity)
                     if ((lastTickPosY - posY) != 0.0) {
                         entity.motionY = 0.0
-                        entity.move(MoverType.PLAYER, motionX, motionY, motionZ)
+                        entity.move(MoverType.SELF, motionX, motionY, motionZ)
                         entity.onGround = true
                     }
                 }
             }
         }
-    }
-
-    override fun entityInit() {
     }
 }

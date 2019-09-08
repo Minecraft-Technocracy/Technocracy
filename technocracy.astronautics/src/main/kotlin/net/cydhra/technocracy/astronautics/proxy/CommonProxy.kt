@@ -7,6 +7,7 @@ import net.cydhra.technocracy.astronautics.capabilities.satellites.ISatelliteOrb
 import net.cydhra.technocracy.astronautics.capabilities.satellites.SatelliteOrbitStorage
 import net.cydhra.technocracy.astronautics.client.astronauticsCreativeTabs
 import net.cydhra.technocracy.astronautics.client.model.concreteSprayer.ConcreteSprayerItemModel
+import net.cydhra.technocracy.astronautics.dyson.DysonSphereController
 import net.cydhra.technocracy.astronautics.entity.entityRocket
 import net.cydhra.technocracy.astronautics.items.general.concreteCanItem
 import net.cydhra.technocracy.astronautics.items.general.concreteSprayerItem
@@ -72,5 +73,6 @@ open class CommonProxy {
     }
 
     open fun postInit() {
+        DysonSphereController.initialize()
     }
 }

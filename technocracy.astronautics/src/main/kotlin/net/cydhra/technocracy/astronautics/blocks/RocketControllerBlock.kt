@@ -33,7 +33,7 @@ class RocketControllerBlock : AbstractTileEntityBlock("rocket_controller", mater
     val storage_module = Template()
 
     override fun onBlockActivated(worldIn: World, pos: BlockPos, state: IBlockState, playerIn: EntityPlayer, hand: EnumHand, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean {
-        if(worldIn.isRemote || hand == EnumHand.MAIN_HAND)
+        if (worldIn.isRemote || hand == EnumHand.MAIN_HAND)
             return super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ)
 
         if (!launchpad.init) {
@@ -114,7 +114,7 @@ class RocketControllerBlock : AbstractTileEntityBlock("rocket_controller", mater
                 if (tip && tank * 2 >= storage) {
 
                     val template = Template(pos, worldIn, blocks)
-                    val ent = EntityRocket(worldIn, template)
+                    val ent = EntityRocket(worldIn, template, pos)
                     ent.motionY = 0.005
                     ent.setPosition(pos.x + 0.5, pos.y.toDouble(), pos.z + 0.5)
                     worldIn.spawnEntity(ent)

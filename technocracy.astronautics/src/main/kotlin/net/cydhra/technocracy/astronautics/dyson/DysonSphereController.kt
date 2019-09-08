@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.megastructures.dyson
+package net.cydhra.technocracy.astronautics.dyson
 
 import net.minecraft.entity.EnumCreatureType
 import net.minecraft.entity.monster.EntityPolarBear

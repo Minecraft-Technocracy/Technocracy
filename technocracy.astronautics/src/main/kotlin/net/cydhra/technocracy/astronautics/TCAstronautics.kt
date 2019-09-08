@@ -1,18 +1,24 @@
 package net.cydhra.technocracy.astronautics
 
+import net.cydhra.technocracy.astronautics.client.renderer.CustomSkyRenderer
 import net.cydhra.technocracy.astronautics.proxy.CommonProxy
+import net.cydhra.technocracy.astronautics.world.WrappedWorldProvider
 import net.minecraftforge.common.MinecraftForge
+import net.minecraftforge.event.world.WorldEvent
 import net.minecraftforge.fml.common.FMLLog
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.SidedProxy
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import net.minecraftforge.fml.common.gameevent.TickEvent
 import org.apache.logging.log4j.Logger
 
 
 @Mod(modid = TCAstronautics.MODID, name = TCAstronautics.NAME, version = TCAstronautics.VERSION,
         modLanguageAdapter = TCAstronautics.LANGUAGE_ADAPTER, dependencies = TCAstronautics.DEPENDENCIES)
+@Mod.EventBusSubscriber(modid = TCAstronautics.MODID)
 object TCAstronautics {
 
     /**
@@ -71,5 +77,18 @@ object TCAstronautics {
     @Mod.EventHandler
     fun postInit(@Suppress("UNUSED_PARAMETER") event: FMLPostInitializationEvent) {
         proxy.postInit()
+    }
+
+    @SubscribeEvent
+    fun loadWorld(event: WorldEvent.Load) {
+        event.world.provider.skyRenderer = CustomSkyRenderer
+        event.world.provider = WrappedWorldProvider(event.world.provider)
+    }
+
+    @SubscribeEvent
+    fun render(event: TickEvent.WorldTickEvent) {
+        if (event.phase == TickEvent.Phase.END) {
+            event.world.skylightSubtracted = 10
+        }
     }
 }

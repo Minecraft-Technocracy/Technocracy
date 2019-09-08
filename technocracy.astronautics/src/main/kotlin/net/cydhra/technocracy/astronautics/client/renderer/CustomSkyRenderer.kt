@@ -1,12 +1,15 @@
-package net.cydhra.technocracy.megastructures.client.renderer
+package net.cydhra.technocracy.astronautics.client.renderer
 
 import net.cydhra.technocracy.foundation.TCFoundation
-import net.cydhra.technocracy.megastructures.dyson.DysonSphereController
+import net.cydhra.technocracy.astronautics.client.util.FixedTexture
+import net.cydhra.technocracy.astronautics.dyson.DysonSphereController
 import net.minecraft.client.Minecraft
 import net.minecraft.client.multiplayer.WorldClient
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.RenderHelper
 import net.minecraft.client.renderer.Tessellator
+import net.minecraft.client.renderer.texture.TextureAtlasSprite
+import net.minecraft.client.renderer.texture.TextureUtil
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.MathHelper
@@ -15,12 +18,120 @@ import net.minecraftforge.client.MinecraftForgeClient
 import net.minecraftforge.client.event.EntityViewRenderEvent
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
-import org.lwjgl.opengl.GL11
+import java.awt.Color
+import java.awt.image.BufferedImage
+import java.io.IOException
+import java.awt.AlphaComposite
+import java.awt.AlphaComposite.getInstance
+import java.awt.Image
+import java.awt.RenderingHints
+import kotlin.random.Random
+
 
 @Mod.EventBusSubscriber(modid = TCFoundation.MODID)
 object CustomSkyRenderer : IRenderHandler() {
 
+    fun gen(world: WorldClient) {
+        if (gen)
+            return
+
+        val rnd = Random(world.seed)
+        val col = mutableListOf<Int>()
+
+        val slices = 20
+        col.add(0)
+        for (i in 1..slices) {
+            col.add(360 / slices * i)
+        }
+        col.shuffle(rnd)
+
+        val imgSize = 128
+
+        gen = true
+        val originalSunImg = getImageFromResource(ResourceLocation("textures/environment/sun.png"))
+        val tmp = originalSunImg.getScaledInstance(imgSize, imgSize, Image.SCALE_SMOOTH)
+        val rescaledSunImg = BufferedImage(imgSize, imgSize, BufferedImage.TYPE_INT_ARGB)
+        val g2d = rescaledSunImg.createGraphics()
+        g2d.drawImage(tmp, 0, 0, null)
+        g2d.dispose()
+
+        var size = 0L
+
+        for (i in 0..slices) {
+            val sun = BufferedImage(rescaledSunImg.width, rescaledSunImg.height, BufferedImage.TYPE_INT_ARGB)
+            var grapth = sun.createGraphics()
+            grapth.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            grapth.drawImage(rescaledSunImg, 0, 0, null)
+            grapth.color = Color(0, 0, 0)
+
+            for (i2 in 0..i) {
+                grapth.fillArc(0, 0, rescaledSunImg.width, rescaledSunImg.height, col[i2], 360 / slices)
+            }
+
+            bindTextureToResourceLocation(ResourceLocation("sun_$i"), sun)
+
+            size += sun.data.dataBuffer.size * 4
+
+            val sunSize = Math.sqrt(Math.pow(8.0, 2.0) * 2.0).toInt() * imgSize / 32
+
+            //Black square with transparent circle
+            val circle = BufferedImage(rescaledSunImg.width, rescaledSunImg.height, BufferedImage.TYPE_INT_ARGB)
+            val grapthCircle = circle.createGraphics()
+            grapthCircle.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+
+            grapthCircle.composite = getInstance(AlphaComposite.XOR)
+            grapthCircle.color = Color(0, 0, 0)
+            grapthCircle.fillOval(rescaledSunImg.width / 2 - sunSize / 2, rescaledSunImg.width / 2 - sunSize / 2, sunSize, sunSize)
+            grapthCircle.fillRect(0, 0, rescaledSunImg.width, rescaledSunImg.width)
+
+
+            val dyson = BufferedImage(rescaledSunImg.width, rescaledSunImg.height, BufferedImage.TYPE_INT_ARGB)
+            grapth = dyson.createGraphics()
+            grapth.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+
+            //clear img
+            grapth.composite = getInstance(AlphaComposite.CLEAR)
+            grapth.fillRect(0, 0, rescaledSunImg.width, rescaledSunImg.height);
+
+            //project arc
+            grapth.composite = getInstance(AlphaComposite.SRC_OVER)
+            grapth.color = Color(0, 0, 0)
+
+            for (i2 in 0..i) {
+                grapth.fillArc(-rescaledSunImg.width / 2, -rescaledSunImg.height / 2, rescaledSunImg.width * 2, rescaledSunImg.height * 2, col[i2], 360 / slices)
+            }
+
+            //draw hollow circle over it
+            grapth.composite = getInstance(AlphaComposite.DST_OVER)
+            grapth.drawImage(circle, 0, 0, null)
+
+            //invert
+            grapth.composite = getInstance(AlphaComposite.XOR)
+            grapth.fillOval(rescaledSunImg.width / 2 - sunSize / 2, rescaledSunImg.width / 2 - sunSize / 2, sunSize, sunSize)
+            grapth.fillRect(0, 0, rescaledSunImg.width, rescaledSunImg.height)
+
+            size += dyson.data.dataBuffer.size * 4
+
+            bindTextureToResourceLocation(ResourceLocation("dyson_$i"), dyson)
+        }
+        //TODO generate one atlas
+    }
+
+    var gen = false
+
+    fun bindTextureToResourceLocation(resource: ResourceLocation, image: BufferedImage) {
+        Minecraft.getMinecraft().textureManager.loadTexture(resource, FixedTexture(image))
+    }
+
+    @Throws(IOException::class)
+    fun getImageFromResource(resource: ResourceLocation): BufferedImage {
+        val iresource = Minecraft.getMinecraft().resourceManager.getResource(resource)
+        return TextureUtil.readBufferedImage(iresource.inputStream)
+    }
+
     override fun render(partialTicks: Float, world: WorldClient, mc: Minecraft) {
+        gen(world)
+
         renderSky(partialTicks, world, mc)
     }
 
@@ -40,6 +151,11 @@ object CustomSkyRenderer : IRenderHandler() {
     private val FORCEFIELD_TEXTURES = ResourceLocation("textures/misc/forcefield.png")
 
     fun renderSky(partialTicks: Float, world: WorldClient, mc: Minecraft) {
+
+        /*if (mc.player.isSneaking) {
+            mc.player.isSneaking = false
+            gen = false
+        }*/
 
         //todo optifine implementation
 
@@ -137,7 +253,12 @@ object CustomSkyRenderer : IRenderHandler() {
             var f17 = 30.0f
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
 
-            mc.renderEngine.bindTexture(SUN_TEXTURES)
+            if (a < 1.0) {
+                mc.renderEngine.bindTexture(ResourceLocation("sun_0"))
+            } else {
+                mc.renderEngine.bindTexture(SUN_TEXTURES)
+            }
+
             /*bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX)
             bufferbuilder.pos((-f17).toDouble(), 100.0, (-f17).toDouble()).tex(0.0, 0.0).endVertex()
             bufferbuilder.pos(f17.toDouble(), 100.0, (-f17).toDouble()).tex(1.0, 0.0).endVertex()
@@ -156,6 +277,18 @@ object CustomSkyRenderer : IRenderHandler() {
             bufferbuilder.pos(f17.toDouble(), 100.0, f17.toDouble()).tex(1.0, 1.0).color(r, g, b, a).endVertex()
             bufferbuilder.pos((-f17).toDouble(), 100.0, f17.toDouble()).tex(0.0, 1.0).color(r, g, b, a).endVertex()
             tessellator.draw()
+            if (a < 1.0) {
+                GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE)
+                mc.renderEngine.bindTexture(ResourceLocation("dyson_0"))
+                bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR)
+                bufferbuilder.pos((-f17).toDouble(), 100.0, (-f17).toDouble()).tex(0.0, 0.0).color(r, g, b, 1f).endVertex()
+                bufferbuilder.pos(f17.toDouble(), 100.0, (-f17).toDouble()).tex(1.0, 0.0).color(r, g, b, 1f).endVertex()
+                bufferbuilder.pos(f17.toDouble(), 100.0, f17.toDouble()).tex(1.0, 1.0).color(r, g, b, 1f).endVertex()
+                bufferbuilder.pos((-f17).toDouble(), 100.0, f17.toDouble()).tex(0.0, 1.0).color(r, g, b, 1f).endVertex()
+                tessellator.draw()
+                GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
+            }
+
 
             f17 = 20.0f
             mc.renderEngine.bindTexture(MOON_PHASES_TEXTURES)
