@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.integration.jei.gui
 
 import mezz.jei.api.gui.IDrawable
-import net.cydhra.technocracy.foundation.client.gui.tabs.TCTab
+import net.cydhra.technocracy.foundation.client.gui.TCTab
 import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
 import net.minecraft.client.Minecraft
 
