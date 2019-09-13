@@ -1,23 +1,20 @@
 package net.cydhra.technocracy.foundation.tileentity
 
-import net.cydhra.technocracy.foundation.TCFoundation
-import net.cydhra.technocracy.foundation.blocks.PipeBlock
 import net.cydhra.technocracy.foundation.blocks.general.pipe
 import net.cydhra.technocracy.foundation.client.model.pipe.FacadeBakery
-import net.cydhra.technocracy.foundation.pipes.Network
-import net.cydhra.technocracy.foundation.pipes.WrappedBlockPos
+import net.cydhra.technocracy.foundation.conduits.ConduitNetwork
 import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.cydhra.technocracy.foundation.tileentity.components.ComponentFacade
 import net.cydhra.technocracy.foundation.tileentity.components.ComponentPipeTypes
 import net.cydhra.technocracy.foundation.tileentity.components.NetworkComponent
+import net.minecraft.init.Blocks
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.AxisAlignedBB
+import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
-import net.minecraft.world.biome.Biome
-import net.minecraft.world.biome.BiomeDesert
-import net.minecraftforge.client.ForgeClientHandler
-import java.util.*
+import net.minecraft.world.IBlockAccess
+import net.minecraft.world.WorldServer
 
 
 class TileEntityPipe : AggregatableTileEntity() {
@@ -47,7 +44,6 @@ class TileEntityPipe : AggregatableTileEntity() {
     private val facades = ComponentFacade()
 
     init {
-        registerComponent(networkComponent, "network")
         registerComponent(pipeTypes, "pipeTypes")
         registerComponent(facades, "facades")
     }
@@ -84,101 +80,88 @@ class TileEntityPipe : AggregatableTileEntity() {
     fun addPipeType(type: PipeType) {
         pipeTypes.types.add(type)
         //todo update network pipe tier
+
+        if (!this.world.isRemote) {
+            ConduitNetwork.addConduitNode(this.world as WorldServer, this.pos, type)
+
+            EnumFacing.values().forEach { face ->
+                val offset = this.pos.offset(face)
+                if (ConduitNetwork.hasConduitNode(this.world as WorldServer, offset, type)) {
+                    ConduitNetwork.insertConduitEdge(this.world as WorldServer, this.pos, offset, type)
+                }
+
+                if (world.getTileEntity(offset)?.hasCapability(type.capability, face.opposite) == true) {
+                    ConduitNetwork.attachTransitSink(world as WorldServer, pos, face, type)
+                }
+            }
+        }
         markForUpdate()
     }
 
     fun removePipeType(type: PipeType) {
+        pipeTypes.types.remove(type)
+
+        if (pipeTypes.types.isEmpty()) {
+            world.setBlockState(this.pos, Blocks.AIR.defaultState)
+        }
+
+        if (!this.world.isRemote) {
+            ConduitNetwork.removeConduitNode(this.world as WorldServer, this.pos, type)
+            ConduitNetwork.removeAllAttachedSinks(this.world as WorldServer, this.pos, type)
+
+            EnumFacing.values().forEach { face ->
+                val offset = this.pos.offset(face)
+                if (ConduitNetwork.hasConduitNode(this.world as WorldServer, offset, type)) {
+                    ConduitNetwork.removeConduitEdge(this.world as WorldServer, this.pos, offset, type)
+                }
+            }
+
+            markForUpdate()
+        }
     }
 
-    fun removeTileEntiy() {
+    fun removeTileEntity() {
+        if (!this.world.isRemote) {
+            PipeType.values().forEach { type ->
+                if (ConduitNetwork.hasConduitNode(this.world as WorldServer, this.pos, type)) {
+                    ConduitNetwork.removeConduitNode(this.world as WorldServer, this.pos, type)
+                    ConduitNetwork.removeAllAttachedSinks(this.world as WorldServer, this.pos, type)
+
+                    EnumFacing.values().forEach { face ->
+                        val offset = this.pos.offset(face)
+                        if (ConduitNetwork.hasConduitNode(this.world as WorldServer, offset, type)) {
+                            ConduitNetwork.removeConduitEdge(this.world as WorldServer, this.pos, offset, type)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun onNeighborChange(world: IBlockAccess, pos: BlockPos, neighbor: BlockPos) {
+        if (!this.world.isRemote) {
+            val face = EnumFacing.values().first { pos.offset(it) == neighbor }
+
+            this.pipeTypes.types.forEach { type ->
+                if (world.getTileEntity(neighbor)?.hasCapability(type.capability, face.opposite) == true) {
+                    if (!ConduitNetwork.hasSink(world as WorldServer, pos, face, type)) {
+                        ConduitNetwork.attachTransitSink(world, pos, face, type)
+                    }
+                } else {
+                    if (ConduitNetwork.hasSink(world as WorldServer, pos, face, type)) {
+                        ConduitNetwork.removeTransitSink(world, pos, face, type)
+                    }
+                }
+            }
+        }
     }
 
     fun getInstalledTypes(): List<PipeType> {
         return listOf(*pipeTypes.types.toTypedArray())
     }
 
-    fun getNetworkId(): UUID {
-        return networkComponent.uuid!!
-    }
-
-    fun setNetworkId(uuid: UUID): TileEntityPipe {
-        networkComponent.uuid = uuid
-        markForUpdate()
-        return this
-    }
-
-    fun rotateIO() {
-        Network.rotateIO(pos, networkComponent.uuid!!, world)
-    }
-
-    fun calculateIOPorts() {
-        Network.removeIOFromNode(pos, networkComponent.uuid!!, world)
-
-        for (facing in EnumFacing.values()) {
-            val current = pos.offset(facing)
-            val tile = world.getTileEntity(current)
-            if (tile != null && tile !is TileEntityPipe) {
-                val pipe = pipeTypes.types.first()
-                if (tile.hasCapability(pipe.capability!!, facing.opposite)) {
-                    Network.addIOToNode(pos, facing, networkComponent.uuid!!, world, pipe)
-                }
-            }
-        }
-    }
-
     override fun onLoad() {
-        //forge calls onLoad 2x (Client/Server)
-        if (networkComponent.uuid != null || world.isRemote) return
 
-        var connected = 0
-        for (facing in EnumFacing.values()) {
-            val current = pos.offset(facing)
-            if (world.getBlockState(current).block is PipeBlock) {
-                val pipe = world.getTileEntity(current) as TileEntityPipe
-                if (pipe.networkComponent.uuid == null) {
-                    TCFoundation.logger.error("No networkId found")
-                }
-                val uuid = pipe.networkComponent.uuid!!
-                if (connected != 0) {
-                    //already has connected to a subnet
-                    if (uuid != networkComponent.uuid) {
-                        //is in different network
-                        //combine the two networks
-                        Network.combineNetwork(WrappedBlockPos(pos),
-                                WrappedBlockPos(current),
-                                uuid,
-                                networkComponent.uuid!!,
-                                world,
-                                pipeTypes.types.first())
-                    } else {
-                        //is same network add an edge
-                        Network.addEdge(WrappedBlockPos(pos),
-                                WrappedBlockPos(current),
-                                uuid,
-                                world,
-                                pipeTypes.types.first())
-                    }
-                } else {
-                    setNetworkId(uuid)
-                    Network.addEdge(WrappedBlockPos(pos),
-                            WrappedBlockPos(current),
-                            uuid,
-                            world,
-                            pipeTypes.types.first())
-                }
-
-                connected++
-            }
-        }
-
-        if (connected == 0) {
-            //no network found, create new one
-            setNetworkId(UUID.randomUUID())
-            //TODO current pipe tier
-            Network.addNode(WrappedBlockPos(pos), networkComponent.uuid!!, world)
-        }
-
-        calculateIOPorts()
     }
 
     /**

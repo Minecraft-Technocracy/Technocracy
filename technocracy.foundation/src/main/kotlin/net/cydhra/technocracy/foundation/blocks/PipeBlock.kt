@@ -5,7 +5,6 @@ import net.cydhra.technocracy.foundation.items.FacadeItem
 import net.cydhra.technocracy.foundation.items.PipeItem
 import net.cydhra.technocracy.foundation.items.WrenchItem
 import net.cydhra.technocracy.foundation.items.general.pipeItem
-import net.cydhra.technocracy.foundation.pipes.Network
 import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
 import net.cydhra.technocracy.foundation.util.facade.FacadeStack
@@ -81,24 +80,22 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
     }
 
     override fun onBlockDestroyedByExplosion(worldIn: World, pos: BlockPos, explosionIn: Explosion) {
-        Network.removeNodeInEveryNetwork(pos, worldIn)
         super.onBlockDestroyedByExplosion(worldIn, pos, explosionIn)
     }
 
     override fun onBlockDestroyedByPlayer(worldIn: World, pos: BlockPos, state: IBlockState) {
-        Network.removeNodeInEveryNetwork(pos, worldIn)
         super.onBlockDestroyedByPlayer(worldIn, pos, state)
     }
 
     override fun removedByPlayer(state: IBlockState, world: World, pos: BlockPos, player: EntityPlayer, willHarvest: Boolean): Boolean {
         val tileEntity = world.getTileEntity(pos) as TileEntityPipe
-        tileEntity.removeTileEntiy()
+        tileEntity.removeTileEntity()
         return super.removedByPlayer(state, world, pos, player, willHarvest)
     }
 
     override fun onBlockExploded(world: World, pos: BlockPos, explosion: Explosion) {
         val tileEntity = world.getTileEntity(pos) as TileEntityPipe
-        tileEntity.removeTileEntiy()
+        tileEntity.removeTileEntity()
         super.onBlockExploded(world, pos, explosion)
     }
 
@@ -109,16 +106,6 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
         for (type in PipeType.values()) {
             items.add(ItemStack(this, 1, type.ordinal))
         }
-    }
-
-    override fun onNeighborChange(world: IBlockAccess, pos: BlockPos, neighbor: BlockPos) {
-        val wld = world as World
-        val tileEntity = wld.getTileEntity(pos) as TileEntityPipe
-
-        if (!wld.isRemote) {
-            tileEntity.calculateIOPorts()
-        }
-
     }
 
     @SideOnly(Side.CLIENT)
@@ -201,7 +188,6 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
 
             //todo raytrace
             //todo chck wrench
-            if (!worldIn.isRemote) (worldIn.getTileEntity(pos) as TileEntityPipe).rotateIO()
             return false
         }
 
@@ -425,5 +411,12 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
         val tile = world.getTileEntity(pos) as? TileEntityPipe ?: return defaultState
         val pair = side?.let { getBlockOnFacing(tile, it) } ?: return defaultState
         return pair.first.getStateFromMeta(pair.second.stack.itemDamage)
+    }
+
+    override fun onNeighborChange(world: IBlockAccess, pos: BlockPos, neighbor: BlockPos) {
+        val tileEntity = world.getTileEntity(pos) as TileEntityPipe
+        tileEntity.onNeighborChange(world, pos, neighbor)
+
+        super.onNeighborChange(world, pos, neighbor)
     }
 }
