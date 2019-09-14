@@ -17,10 +17,11 @@ import java.util.HashMap
 import org.lwjgl.BufferUtils
 import java.io.StringWriter
 import java.util.function.BiConsumer
+import java.util.function.Consumer
 import java.util.function.Predicate
 
 
-class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: ResourceLocation, val resourceReloader: BiConsumer<IResourceManager, Predicate<IResourceType>>? = null) : ISelectiveResourceReloadListener {
+class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: ResourceLocation, val attributeBinder: Consumer<Int>? = null, val resourceReloader: BiConsumer<IResourceManager, Predicate<IResourceType>>? = null) : ISelectiveResourceReloadListener {
     companion object {
         private val matrixBuffer = BufferUtils.createFloatBuffer(16)
     }
@@ -64,7 +65,8 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
         GL20.glAttachShader(programID, vertexShaderID)
         GL20.glAttachShader(programID, fragmentShaderID)
 
-        GL20.glBindAttribLocation(programID, 0, "position")
+        if (attributeBinder != null)
+            attributeBinder.accept(programID)
 
         GL20.glLinkProgram(programID)
         GL20.glValidateProgram(programID)
@@ -123,6 +125,7 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
     }
 
     private fun loadShader(Shader: String, type: Int): Int {
+
         var shader = 0
         try {
             shader = ARBShaderObjects.glCreateShaderObjectARB(type)

@@ -46,9 +46,7 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
             val rand = (ThreadLocalRandom.current().nextInt(360) - 180)
             motionX -= sin(Math.toRadians(rand.toDouble())) * motionY * 0.35
             motionZ += cos(Math.toRadians(rand.toDouble())) * motionY * 0.35
-            motionY = ThreadLocalRandom.current().nextFloat().toDouble()
-
-            motionY = 0.0
+            motionY = ThreadLocalRandom.current().nextFloat().toDouble()  / 2
 
             super.move(motionX, motionY, motionZ)
             return
@@ -90,7 +88,7 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
             if (vao == -1) {
                 vao = generateVAO()
 
-                smokeShader = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shader/smoke.vsh"), ResourceLocation("technocracy.astronautics", "shader/smoke.fsh"))
+                smokeShader = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shader/smoke.vsh"), ResourceLocation("technocracy.astronautics", "shader/smoke.fsh"), attributeBinder = Consumer { GL20.glBindAttribLocation(it, 0, "position") })
 
                 smokeShader.start()
                 smokeShader.uploadUniform("sampler0", 0)
