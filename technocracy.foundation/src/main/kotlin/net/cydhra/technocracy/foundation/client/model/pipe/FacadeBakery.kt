@@ -109,10 +109,10 @@ object FacadeBakery {
         QuadCloneConsumer.clonePos = true
 
         //TODO cleanup
-        if (!origQuads.isEmpty()) {
+        if (origQuads.isNotEmpty()) {
 
             //Custom model
-            origQuads.forEachIndexed { index, bakedQuad ->
+            origQuads.forEachIndexed { _, bakedQuad ->
                 val quad = SimpleQuad(DefaultVertexFormats.BLOCK)
                 QuadTinter.tint = Minecraft.getMinecraft().blockColors.colorMultiplier(customState, access, pos, bakedQuad.tintIndex)
                 quads.add(pipeline.pipe(quad, bakedQuad).bake())
@@ -121,11 +121,11 @@ object FacadeBakery {
 
         for (side in EnumFacing.values()) {
             origQuads = coverModel.getQuads(customState, side, 0)
-            if (!origQuads.isEmpty()) {
+            if (origQuads.isNotEmpty()) {
                 try {
                     if (origQuads.size != 4) {
                         //Normal block
-                        origQuads.forEachIndexed { index, bakedQuad ->
+                        origQuads.forEachIndexed { _, bakedQuad ->
                             val quad = SimpleQuad(DefaultVertexFormats.BLOCK)
                             QuadTinter.tint = Minecraft.getMinecraft().blockColors.colorMultiplier(customState, access, pos, bakedQuad.tintIndex)
                             quads.add(pipeline.pipe(quad, bakedQuad).bake())
