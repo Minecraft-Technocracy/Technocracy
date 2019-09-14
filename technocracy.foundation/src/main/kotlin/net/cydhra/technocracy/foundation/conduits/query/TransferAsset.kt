@@ -18,10 +18,19 @@ abstract class TransferAsset(val type: PipeType, val content: Int) {
      * Actually perform a transfer safely. This is a strategy pattern to transfer goods between two compatible sinks.
      */
     abstract fun performTransfer(providerSink: TransitSink, target: TransitSink)
+
+    /**
+     * Test whether [target] will accept any non-zero quantity of this asset.
+     */
+    abstract fun acceptsAsset(target: TransitSink): Boolean
 }
 
 class ItemTransferAsset(content: Int) : TransferAsset(PipeType.ITEM, content) {
     override fun performTransfer(providerSink: TransitSink, target: TransitSink) {
+        TODO("not implemented")
+    }
+
+    override fun acceptsAsset(target: TransitSink): Boolean {
         TODO("not implemented")
     }
 }
@@ -30,10 +39,18 @@ class FluidTransferAsset(content: Int) : TransferAsset(PipeType.FLUID, content) 
     override fun performTransfer(providerSink: TransitSink, target: TransitSink) {
         TODO("not implemented")
     }
+
+    override fun acceptsAsset(target: TransitSink): Boolean {
+        TODO("not implemented")
+    }
 }
 
 class EnergyTransferAsset(content: Int) : TransferAsset(PipeType.ENERGY, content) {
     override fun performTransfer(providerSink: TransitSink, target: TransitSink) {
+        TODO("not implemented")
+    }
+
+    override fun acceptsAsset(target: TransitSink): Boolean {
         TODO("not implemented")
     }
 }

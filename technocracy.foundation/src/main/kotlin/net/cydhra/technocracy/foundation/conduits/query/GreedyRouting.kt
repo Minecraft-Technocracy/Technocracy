@@ -13,7 +13,7 @@ object GreedyRouting : RoutingStrategy<GreedyQuery> {
     override fun canTransfer(query: GreedyQuery, transferAsset: TransferAsset): Boolean {
         if (query.routes.containsKey(transferAsset)) {
             // verify that the target still accepts more of the asset, and if so, return true
-            if (query.routes[transferAsset]!!.target.acceptsAsset(transferAsset)) {
+            if (transferAsset.acceptsAsset(query.routes[transferAsset]!!.target)) {
                 return true
             } else {
                 query.routes.remove(transferAsset)
