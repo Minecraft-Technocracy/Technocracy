@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.conduits.query
 
 import net.cydhra.technocracy.foundation.conduits.transit.TransitSink
+import net.minecraft.world.WorldServer
 
 /**
  * The simplest routing strategy. It will always transfer items to the closest available sink.
@@ -10,10 +11,10 @@ object GreedyRouting : RoutingStrategy<GreedyQuery> {
         return GreedyQuery(providerSink)
     }
 
-    override fun canTransfer(query: GreedyQuery, transferAsset: TransferAsset): Boolean {
+    override fun canTransfer(world: WorldServer, query: GreedyQuery, transferAsset: TransferAsset): Boolean {
         if (query.routes.containsKey(transferAsset)) {
             // verify that the target still accepts more of the asset, and if so, return true
-            if (transferAsset.acceptsAsset(query.routes[transferAsset]!!.target)) {
+            if (transferAsset.acceptsAsset(world, query.routes[transferAsset]!!.target)) {
                 return true
             } else {
                 query.routes.remove(transferAsset)
@@ -26,11 +27,11 @@ object GreedyRouting : RoutingStrategy<GreedyQuery> {
         TODO()
     }
 
-    override fun transferAsset(query: GreedyQuery, transferAsset: TransferAsset) {
+    override fun transferAsset(world: WorldServer, query: GreedyQuery, transferAsset: TransferAsset) {
         val route = query.routes[transferAsset]
                 ?: throw IllegalStateException("No route for asset was found, but `transferAsset` was called")
 
-        transferAsset.performTransfer(query.providerSink, route.target)
+        transferAsset.performTransfer(world, query.providerSink, route.target)
     }
 }
 

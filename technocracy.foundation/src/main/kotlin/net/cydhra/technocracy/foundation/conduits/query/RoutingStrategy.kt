@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.conduits.query
 
 import net.cydhra.technocracy.foundation.conduits.transit.TransitSink
+import net.minecraft.world.WorldServer
 
 /**
  * An interface for a strategy for routing through a network. The implementor is ought to be stateless, or, if a an
@@ -32,7 +33,7 @@ interface RoutingStrategy<T : NetworkQuery> {
      *
      * @return true, if a transfer is possible
      */
-    fun canTransfer(query: T, transferAsset: TransferAsset): Boolean
+    fun canTransfer(world: WorldServer, query: T, transferAsset: TransferAsset): Boolean
 
     /**
      * Attempt to transfer as much of the given asset as possible to a target chosen from [query] state at the
@@ -43,5 +44,5 @@ interface RoutingStrategy<T : NetworkQuery> {
      * @param query network query cached state
      * @param transferAsset asset to transfer
      */
-    fun transferAsset(query: T, transferAsset: TransferAsset)
+    fun transferAsset(world: WorldServer, query: T, transferAsset: TransferAsset)
 }
