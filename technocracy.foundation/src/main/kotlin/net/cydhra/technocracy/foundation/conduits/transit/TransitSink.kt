@@ -3,9 +3,10 @@ package net.cydhra.technocracy.foundation.conduits.transit
 import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
+import net.minecraft.util.math.BlockPos
 import net.minecraftforge.common.util.INBTSerializable
 
-class TransitSink() : INBTSerializable<NBTTagCompound> {
+class TransitSink(val pos: BlockPos) : INBTSerializable<NBTTagCompound> {
 
     companion object {
         private const val NBT_KEY_TYPE = "type"
@@ -18,7 +19,7 @@ class TransitSink() : INBTSerializable<NBTTagCompound> {
     lateinit var facing: EnumFacing
         private set
 
-    constructor(type: PipeType, facing: EnumFacing) : this() {
+    constructor(type: PipeType, facing: EnumFacing, pos: BlockPos) : this(pos) {
         this.type = type
         this.facing = facing
     }
