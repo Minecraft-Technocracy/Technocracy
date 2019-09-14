@@ -5,6 +5,7 @@ import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.world.WorldServer
+import net.minecraftforge.fluids.Fluid
 import net.minecraftforge.items.CapabilityItemHandler
 
 /**
@@ -16,7 +17,7 @@ import net.minecraftforge.items.CapabilityItemHandler
  * @param type pipe type that transfers this asset
  * @param content unique (within [type]) id for the content.
  */
-abstract class TransferAsset(val type: PipeType, val content: Int) {
+abstract class TransferAsset(val type: PipeType) {
 
     /**
      * Actually perform a transfer safely. This is a strategy pattern to transfer goods between two compatible sinks.
@@ -29,24 +30,52 @@ abstract class TransferAsset(val type: PipeType, val content: Int) {
     abstract fun acceptsAsset(world: WorldServer, target: TransitSink): Boolean
 }
 
-class ItemTransferAsset(content: Int) : TransferAsset(PipeType.ITEM, content) {
+class ItemTransferAsset(val content: Item) : TransferAsset(PipeType.ITEM) {
     override fun performTransfer(world: WorldServer, providerSink: TransitSink, target: TransitSink, maximumQuantity: Int) {
-        val itemHandler = world.getTileEntity(target.pos.offset(target.facing))!!
+        val providerItemHandler = world.getTileEntity(providerSink.pos.offset(providerSink.facing))!!
+                .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, providerSink.facing.opposite)!!
+        val targetItemHandler = world.getTileEntity(target.pos.offset(target.facing))!!
                 .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, target.facing.opposite)!!
 
+        val providerSlot = (0..providerItemHandler.slots)
+                .first { providerItemHandler.getStackInSlot(it).item == this.content }
+        var transferredDummyStack = providerItemHandler.extractItem(
+                providerSlot,
+                maximumQuantity,
+                true)
+        var slotIndex = 0
 
+        while (!transferredDummyStack.isEmpty) {
+            transferredDummyStack = targetItemHandler.insertItem(slotIndex, transferredDummyStack, true)
+            slotIndex++
+            if (slotIndex >= targetItemHandler.slots)
+                break
+        }
+
+        val quantityTransferred = maximumQuantity - transferredDummyStack.count
+        check(quantityTransferred > 0) { "target does not accept anything but transfer was performed." }
+
+        var transferredStack = providerItemHandler.extractItem(providerSlot, quantityTransferred, false)
+        slotIndex = 0
+
+        while (!transferredStack.isEmpty) {
+            transferredStack = targetItemHandler.insertItem(slotIndex, transferredStack, false)
+            slotIndex++
+            if (slotIndex >= targetItemHandler.slots)
+                throw AssertionError("insertion was impossible although it was simulated")
+        }
     }
 
     override fun acceptsAsset(world: WorldServer, target: TransitSink): Boolean {
         val itemHandler = world.getTileEntity(target.pos.offset(target.facing))!!
                 .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, target.facing.opposite)!!
 
-        val dummyStack = ItemStack(Item.getItemById(this.content))
+        val dummyStack = ItemStack(this.content)
         return (0..itemHandler.slots).firstOrNull { itemHandler.insertItem(it, dummyStack, true).isEmpty } != null
     }
 }
 
-class FluidTransferAsset(content: Int) : TransferAsset(PipeType.FLUID, content) {
+class FluidTransferAsset(val content: Fluid) : TransferAsset(PipeType.FLUID) {
     override fun performTransfer(world: WorldServer, providerSink: TransitSink, target: TransitSink, maximumQuantity: Int) {
         TODO("not implemented")
     }
@@ -56,7 +85,7 @@ class FluidTransferAsset(content: Int) : TransferAsset(PipeType.FLUID, content) 
     }
 }
 
-class EnergyTransferAsset(content: Int) : TransferAsset(PipeType.ENERGY, content) {
+class EnergyTransferAsset(val content: Int) : TransferAsset(PipeType.ENERGY) {
     override fun performTransfer(world: WorldServer, providerSink: TransitSink, target: TransitSink, maximumQuantity: Int) {
         TODO("not implemented")
     }
