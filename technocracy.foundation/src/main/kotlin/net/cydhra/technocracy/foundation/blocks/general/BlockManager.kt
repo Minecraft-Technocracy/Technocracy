@@ -62,7 +62,12 @@ class BlockManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
     @Suppress("unused")
     @SubscribeEvent
     fun onRegister(event: RegistryEvent.Register<Block>) {
-        event.registry.registerAll(*blocksToRegister.map { it as Block }.map { it.apply { if (it.creativeTabToDisplayOn == null) it.setCreativeTab(defaultCreativeTab) } }.toTypedArray())
+        event.registry.registerAll(*blocksToRegister.map { it as Block }.map {
+            it.apply {
+                @Suppress("SENSELESS_COMPARISON") // this is an actually nullable platform type
+                if (it.creativeTabToDisplayOn == null) it.setCreativeTab(defaultCreativeTab)
+            }
+        }.toTypedArray())
     }
 
     /**
