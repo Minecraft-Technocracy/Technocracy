@@ -192,7 +192,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
             this.attachedSinks[pos] = mutableSetOf()
         }
 
-        this.attachedSinks[pos]!!.add(TransitSink(type, facing))
+        this.attachedSinks[pos]!!.add(TransitSink(this.chunkPos, type, facing))
         this.recalculatePaths()
         this.markDirty()
     }
@@ -289,7 +289,8 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
             this.attachedSinks[blockPos] = mutableSetOf()
 
             sinkList.forEach { sinkTag ->
-                this.attachedSinks[blockPos]!!.add(TransitSink().apply { deserializeNBT(sinkTag as NBTTagCompound) })
+                this.attachedSinks[blockPos]!!
+                        .add(TransitSink(this.chunkPos).apply { deserializeNBT(sinkTag as NBTTagCompound) })
             }
         }
     }

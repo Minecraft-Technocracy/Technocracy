@@ -3,9 +3,17 @@ package net.cydhra.technocracy.foundation.conduits.transit
 import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
+import net.minecraft.util.math.ChunkPos
 import net.minecraftforge.common.util.INBTSerializable
 
-class TransitSink() : INBTSerializable<NBTTagCompound> {
+/**
+ * A data model for tile entities interacting with the conduit network. The sink is located at the pipe that connects
+ * to the respective tile entity. It is used during routing
+ *
+ * @param chunkPos the chunk position of the chunk where this sink is located. This entity does not hold a reference
+ * to the chunk to prevent memory leaks (on long-term-cached routes)
+ */
+class TransitSink(val chunkPos: ChunkPos) : INBTSerializable<NBTTagCompound> {
 
     companion object {
         private const val NBT_KEY_TYPE = "type"
@@ -18,7 +26,7 @@ class TransitSink() : INBTSerializable<NBTTagCompound> {
     lateinit var facing: EnumFacing
         private set
 
-    constructor(type: PipeType, facing: EnumFacing) : this() {
+    constructor(chunkPos: ChunkPos, type: PipeType, facing: EnumFacing) : this(chunkPos) {
         this.type = type
         this.facing = facing
     }
