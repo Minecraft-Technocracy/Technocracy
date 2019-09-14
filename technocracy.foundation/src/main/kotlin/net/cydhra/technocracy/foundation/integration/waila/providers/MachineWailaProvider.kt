@@ -59,12 +59,16 @@ class MachineWailaProvider : IWailaDataProvider {
                         }
                         ComponentType.REDSTONE_MODE -> {
                         }
+                        ComponentType.PROGRESS -> {
+                        }
                         ComponentType.INVENTORY -> {
                             val items = componentTag.getTagList("Items", Constants.NBT.TAG_COMPOUND)
                             items.forEach {
                                 val compound = it as NBTTagCompound
                                 tooltip.add(SpecialChars.getRenderString("${TCFoundation.MODID}.item", compound.getString("id"), compound.getInteger("Count").toString()))
                             }
+                        }
+                        ComponentType.FACADE, ComponentType.NETWORK -> {
                         }
                     }
                 }
