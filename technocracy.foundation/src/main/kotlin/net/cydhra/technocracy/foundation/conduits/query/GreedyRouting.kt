@@ -45,6 +45,7 @@ class GreedyQuery(providerSink: TransitSink) : NetworkQuery(providerSink) {
     /**
      * All cached routes by their asset type. Since everything is greedily routed, only one route per type is required
      */
+    // TODO No-Route must be modelled as well, so it can be cached as a valid result
     val routes = HashMap<TransferAsset, Route>()
 
     /**
