@@ -21,7 +21,7 @@ abstract class TransferAsset(val type: PipeType, val content: Int) {
     /**
      * Actually perform a transfer safely. This is a strategy pattern to transfer goods between two compatible sinks.
      */
-    abstract fun performTransfer(world: WorldServer, providerSink: TransitSink, target: TransitSink)
+    abstract fun performTransfer(world: WorldServer, providerSink: TransitSink, target: TransitSink, maximumQuantity: Int)
 
     /**
      * Test whether [target] will accept any non-zero quantity of this asset.
@@ -30,8 +30,11 @@ abstract class TransferAsset(val type: PipeType, val content: Int) {
 }
 
 class ItemTransferAsset(content: Int) : TransferAsset(PipeType.ITEM, content) {
-    override fun performTransfer(world: WorldServer, providerSink: TransitSink, target: TransitSink) {
-        TODO("not implemented")
+    override fun performTransfer(world: WorldServer, providerSink: TransitSink, target: TransitSink, maximumQuantity: Int) {
+        val itemHandler = world.getTileEntity(target.pos.offset(target.facing))!!
+                .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, target.facing.opposite)!!
+
+
     }
 
     override fun acceptsAsset(world: WorldServer, target: TransitSink): Boolean {
@@ -44,7 +47,7 @@ class ItemTransferAsset(content: Int) : TransferAsset(PipeType.ITEM, content) {
 }
 
 class FluidTransferAsset(content: Int) : TransferAsset(PipeType.FLUID, content) {
-    override fun performTransfer(world: WorldServer, providerSink: TransitSink, target: TransitSink) {
+    override fun performTransfer(world: WorldServer, providerSink: TransitSink, target: TransitSink, maximumQuantity: Int) {
         TODO("not implemented")
     }
 
@@ -54,7 +57,7 @@ class FluidTransferAsset(content: Int) : TransferAsset(PipeType.FLUID, content) 
 }
 
 class EnergyTransferAsset(content: Int) : TransferAsset(PipeType.ENERGY, content) {
-    override fun performTransfer(world: WorldServer, providerSink: TransitSink, target: TransitSink) {
+    override fun performTransfer(world: WorldServer, providerSink: TransitSink, target: TransitSink, maximumQuantity: Int) {
         TODO("not implemented")
     }
 

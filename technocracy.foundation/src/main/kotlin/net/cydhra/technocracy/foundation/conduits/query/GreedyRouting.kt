@@ -31,7 +31,7 @@ object GreedyRouting : RoutingStrategy<GreedyQuery> {
         val route = query.routes[transferAsset]
                 ?: throw IllegalStateException("No route for asset was found, but `transferAsset` was called")
 
-        transferAsset.performTransfer(world, query.providerSink, route.target)
+        transferAsset.performTransfer(world, query.providerSink, route.target, route.maxQuantity)
     }
 }
 
