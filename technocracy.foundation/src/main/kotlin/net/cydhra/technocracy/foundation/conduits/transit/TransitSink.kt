@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.conduits.transit
 
+import net.cydhra.technocracy.foundation.conduits.query.TransferAsset
 import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
@@ -45,6 +46,17 @@ class TransitSink(val chunkPos: ChunkPos) : INBTSerializable<NBTTagCompound> {
             setInteger(NBT_KEY_TYPE, this@TransitSink.type.ordinal)
             setInteger(NBT_KEY_FACING, this@TransitSink.facing.ordinal)
         }
+    }
+
+    /**
+     * Whether this sink will accept any non-zero quantity of the given asset.
+     */
+    fun acceptsAsset(transferAsset: TransferAsset): Boolean {
+        if (transferAsset.type != this.type) {
+            return false
+        }
+
+        TODO()
     }
 
 }
