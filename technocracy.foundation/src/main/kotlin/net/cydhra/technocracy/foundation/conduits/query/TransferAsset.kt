@@ -10,12 +10,10 @@ import net.minecraftforge.items.CapabilityItemHandler
 
 /**
  * Any form of good that can be transferred using the conduit network. The asset is described using the pipe type
- * that transfers it as a content classification and a unique id to describe the actual item. This class also handles
- * the actual transfer, as type-safety can be guaranteed this way and contents can be moved directly without cloning
- * anything, which could potentially destroy meta data.
+ * that transfers it and any form of content type. This class also handles the actual transfer, as type-safety can be
+ * guaranteed this way and no indirections must be taken to transfer different content types.
  *
  * @param type pipe type that transfers this asset
- * @param content unique (within [type]) id for the content.
  */
 abstract class TransferAsset(val type: PipeType) {
 
