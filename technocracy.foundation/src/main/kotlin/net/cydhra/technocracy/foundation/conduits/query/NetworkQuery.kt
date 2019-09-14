@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.conduits.query
 
+import net.cydhra.technocracy.foundation.conduits.transit.TransitSink
 import net.minecraft.util.math.ChunkPos
 
 /**
@@ -12,7 +13,7 @@ import net.minecraft.util.math.ChunkPos
  *  next to an already watched chunk is suddenly available and offers sinks that might be preferable within the
  *  current strategy.
  */
-open class NetworkQuery {
+open class NetworkQuery(val providerSink: TransitSink) {
 
     /**
      * A list of chunks affected by this query. If any of them updates, this query must be invalid.

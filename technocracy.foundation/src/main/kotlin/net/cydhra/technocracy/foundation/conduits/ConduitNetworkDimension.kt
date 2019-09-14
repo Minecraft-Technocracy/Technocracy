@@ -1,7 +1,5 @@
 package net.cydhra.technocracy.foundation.conduits
 
-import net.cydhra.technocracy.foundation.conduits.query.NetworkQuery
-import net.cydhra.technocracy.foundation.conduits.query.QueryBuilder
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.world.chunk.Chunk
 import net.minecraftforge.event.world.ChunkDataEvent
@@ -71,14 +69,6 @@ internal class ConduitNetworkDimension(private val dimensionId: Int) {
         ConduitNetworkChunkDataCache.enqueueChunkData(event.chunk.pos, chunkData)
     }
 
-    /**
-     * Query a path or routing strategy from the network. The network will work out the optimal path to fulfill the
-     * requirements and return a [NetworkQuery] instance that contains all information to reuse the query as often as
-     * possible. The returned query will contain any information necessary to verify the results are still valid.
-     */
-    fun queryNetwork(queryBuilder: QueryBuilder): NetworkQuery {
-        TODO()
-    }
 
     internal fun debug_getChunks(): Collection<ConduitNetworkChunk> {
         return this.loadedChunks.values
