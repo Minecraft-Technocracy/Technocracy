@@ -1,11 +1,14 @@
 package net.cydhra.technocracy.foundation.conduits.query
 
+import net.cydhra.technocracy.foundation.capabilities.energy.EnergyCapabilityProvider
 import net.cydhra.technocracy.foundation.conduits.transit.TransitSink
 import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.world.WorldServer
 import net.minecraftforge.fluids.Fluid
+import net.minecraftforge.fluids.FluidStack
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler
 import net.minecraftforge.items.CapabilityItemHandler
 
 /**
@@ -79,7 +82,9 @@ class FluidTransferAsset(val content: Fluid) : TransferAsset(PipeType.FLUID) {
     }
 
     override fun acceptsAsset(world: WorldServer, target: TransitSink): Boolean {
-        TODO("not implemented")
+        val fluidHandler = world.getTileEntity(target.pos.offset(target.facing))!!
+                .getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, target.facing.opposite)!!
+        return fluidHandler.fill(FluidStack(this.content, 1), true) == 1
     }
 }
 
@@ -89,6 +94,8 @@ class EnergyTransferAsset(val content: Int) : TransferAsset(PipeType.ENERGY) {
     }
 
     override fun acceptsAsset(world: WorldServer, target: TransitSink): Boolean {
-        TODO("not implemented")
+        val energyHandler = world.getTileEntity(target.pos.offset(target.facing))!!
+                .getCapability(EnergyCapabilityProvider.CAPABILITY_ENERGY!!, target.facing.opposite)!!
+        return energyHandler.canReceive() && energyHandler.receiveEnergy(1, true) == 1
     }
 }
