@@ -2,19 +2,17 @@ package net.cydhra.technocracy.foundation.fx
 
 import net.cydhra.technocracy.foundation.util.opengl.BasicShaderProgram
 import net.minecraft.client.Minecraft
-import net.minecraft.client.renderer.*
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats
-import net.minecraft.client.renderer.vertex.VertexBuffer
-import net.minecraft.entity.item.EntityMinecart
-import net.minecraft.item.ItemStack
+import net.minecraft.client.renderer.ActiveRenderInfo
+import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.client.renderer.OpenGlHelper
 import net.minecraft.util.ResourceLocation
-import net.minecraft.util.math.MathHelper
 import net.minecraft.world.World
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.*
 import org.lwjgl.util.vector.Matrix4f
 import org.lwjgl.util.vector.Vector3f
 import java.util.concurrent.ThreadLocalRandom
+import java.util.function.Consumer
 import kotlin.math.cos
 import kotlin.math.sin
 
