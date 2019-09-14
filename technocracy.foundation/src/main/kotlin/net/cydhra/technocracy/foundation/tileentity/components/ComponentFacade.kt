@@ -23,10 +23,9 @@ class ComponentFacade : AbstractComponent() {
     }
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
-        val base = nbt as NBTTagCompound
         for (facing in EnumFacing.values()) {
-            if (base.hasKey(facing.name)) {
-                val stackNBT = base.getCompoundTag(facing.name)
+            if (nbt.hasKey(facing.name)) {
+                val stackNBT = nbt.getCompoundTag(facing.name)
                 val stack = ItemStack(facadeItem, 1)
                 stack.tagCompound = stackNBT
                 facades[facing] = stack

@@ -67,7 +67,7 @@ object TCParticleManager {
     }
 
     @SubscribeEvent
-    fun loadWorld(event: WorldEvent.Load) {
+    fun loadWorld(@Suppress("UNUSED_PARAMETER") event: WorldEvent.Load) {
         //clear particles as its per world only
         particles.clear()
     }
