@@ -11,14 +11,43 @@ object GreedyRouting : RoutingStrategy<GreedyQuery> {
     }
 
     override fun canTransfer(query: GreedyQuery, transferAsset: TransferAsset): Boolean {
-        TODO("not implemented")
+        if (query.routes.containsKey(transferAsset)) {
+            // verify that the target still accepts more of the asset, and if so, return true
+            if (query.routes[transferAsset]!!.target.acceptsAsset(transferAsset)) {
+                return true
+            } else {
+                query.routes.remove(transferAsset)
+            }
+        }
+
+        // routing for asset
+
+        // if route was found, return true, otherwise false
+        TODO()
     }
 
     override fun transferAsset(query: GreedyQuery, transferAsset: TransferAsset) {
-        TODO("not implemented")
+        val route = query.routes[transferAsset]
+                ?: throw IllegalStateException("No route for asset was found, but `transferAsset` was called")
+
+        transferAsset.performTransfer(query.providerSink, route.target)
     }
 }
 
+/**
+ * Routing state used by [GreedyRouting]. Do not tamper with the contents of instances of this class.
+ */
 class GreedyQuery(providerSink: TransitSink) : NetworkQuery(providerSink) {
-    val routes = HashMap<TransferAsset, TransitSink>()
+    // theoretically it would be useful to hide the contents of this class from the world outside of the routing
+    // strategy, but kotlin does not offer a mechanism for that, so whatever
+
+    /**
+     * All cached routes by their asset type. Since everything is greedily routed, only one route per type is required
+     */
+    val routes = HashMap<TransferAsset, Route>()
+
+    /**
+     *
+     */
+    data class Route(val target: TransitSink, val maxQuantity: Int)
 }
