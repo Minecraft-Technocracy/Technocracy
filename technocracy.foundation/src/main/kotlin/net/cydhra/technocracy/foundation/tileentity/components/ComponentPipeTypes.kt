@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.tileentity.components
 
-import net.cydhra.technocracy.foundation.pipes.types.PipeType
+import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.minecraft.nbt.NBTTagCompound
 import java.util.*
 

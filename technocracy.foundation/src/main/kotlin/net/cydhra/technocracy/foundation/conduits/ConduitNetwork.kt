@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.conduits
 
-import net.cydhra.technocracy.foundation.pipes.types.PipeType
+import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.minecraft.client.Minecraft
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos

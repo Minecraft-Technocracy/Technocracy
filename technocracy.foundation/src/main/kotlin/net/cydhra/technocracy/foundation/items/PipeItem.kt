@@ -2,19 +2,21 @@ package net.cydhra.technocracy.foundation.items
 
 import net.cydhra.technocracy.foundation.blocks.PipeBlock
 import net.cydhra.technocracy.foundation.blocks.general.pipe
+import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.cydhra.technocracy.foundation.items.general.BaseItem
-import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
 import net.minecraft.advancements.CriteriaTriggers
 import net.minecraft.block.state.IBlockState
 import net.minecraft.creativetab.CreativeTabs
-import net.minecraft.entity.Entity
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.item.ItemBlock
 import net.minecraft.item.ItemStack
-import net.minecraft.util.*
-import net.minecraft.util.SoundCategory.*
+import net.minecraft.util.EnumActionResult
+import net.minecraft.util.EnumFacing
+import net.minecraft.util.EnumHand
+import net.minecraft.util.NonNullList
+import net.minecraft.util.SoundCategory.BLOCKS
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 

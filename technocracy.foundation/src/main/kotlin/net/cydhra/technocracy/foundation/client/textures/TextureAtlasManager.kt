@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.client.textures
 
-import net.cydhra.technocracy.foundation.pipes.types.PipeType
+import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.client.renderer.texture.TextureMap
 import net.minecraft.util.ResourceLocation

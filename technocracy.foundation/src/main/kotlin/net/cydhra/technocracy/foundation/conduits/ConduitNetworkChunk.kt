@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.conduits
 
 import net.cydhra.technocracy.foundation.conduits.transit.TransitSink
-import net.cydhra.technocracy.foundation.pipes.types.PipeType
+import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTTagIntArray
 import net.minecraft.nbt.NBTTagList

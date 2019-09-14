@@ -1,9 +1,9 @@
 package net.cydhra.technocracy.foundation.items
 
 import net.cydhra.technocracy.foundation.api.IWrench
+import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.cydhra.technocracy.foundation.items.general.BaseItem
 import net.cydhra.technocracy.foundation.items.general.IItemScrollEvent
-import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
@@ -11,10 +11,10 @@ import net.minecraft.util.EnumActionResult
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumHand
 import net.minecraft.util.math.BlockPos
-import net.minecraft.world.IBlockAccess
-import net.minecraft.world.World
 import net.minecraft.util.math.Vec3d
 import net.minecraft.util.text.translation.I18n
+import net.minecraft.world.IBlockAccess
+import net.minecraft.world.World
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.util.EnumHelper
 import net.minecraftforge.event.entity.player.PlayerInteractEvent

@@ -1,11 +1,11 @@
 package net.cydhra.technocracy.foundation.blocks
 
 import net.cydhra.technocracy.foundation.blocks.api.AbstractTileEntityBlock
+import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.cydhra.technocracy.foundation.items.FacadeItem
 import net.cydhra.technocracy.foundation.items.PipeItem
 import net.cydhra.technocracy.foundation.items.WrenchItem
 import net.cydhra.technocracy.foundation.items.general.pipeItem
-import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
 import net.cydhra.technocracy.foundation.util.facade.FacadeStack
 import net.cydhra.technocracy.foundation.util.facade.extras.workbench.InterfaceFacadeCraftingTable

@@ -3,7 +3,7 @@ package net.cydhra.technocracy.foundation.tileentity
 import net.cydhra.technocracy.foundation.blocks.general.pipe
 import net.cydhra.technocracy.foundation.client.model.pipe.FacadeBakery
 import net.cydhra.technocracy.foundation.conduits.ConduitNetwork
-import net.cydhra.technocracy.foundation.pipes.types.PipeType
+import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.cydhra.technocracy.foundation.tileentity.components.ComponentFacade
 import net.cydhra.technocracy.foundation.tileentity.components.ComponentPipeTypes
 import net.cydhra.technocracy.foundation.tileentity.components.NetworkComponent

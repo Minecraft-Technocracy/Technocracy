@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.foundation.pipes.types
+package net.cydhra.technocracy.foundation.conduits.types
 
 import net.cydhra.technocracy.foundation.capabilities.energy.EnergyCapabilityProvider
 import net.minecraft.util.IStringSerializable
