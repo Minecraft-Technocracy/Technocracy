@@ -37,7 +37,10 @@ class EntityManager(val modName: String) {
 
     fun registerRenderer() {
         preparedEntities.filter { it.entityRender != null }.forEach {
-            RenderingRegistry.registerEntityRenderingHandler(it.entity.java) { manager -> it.entityRender!!.apply(manager) as Render<in Entity>? }
+            RenderingRegistry.registerEntityRenderingHandler(it.entity.java) { manager ->
+                @Suppress("UNCHECKED_CAST") // circumvent type erasure
+                it.entityRender!!.apply(manager) as Render<in Entity>?
+            }
         }
     }
 }

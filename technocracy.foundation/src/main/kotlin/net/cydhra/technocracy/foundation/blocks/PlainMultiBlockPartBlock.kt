@@ -47,6 +47,9 @@ class PlainMultiBlockPartBlock<T>(
         return this.renderLayer
     }
 
+    // for some (probably stupid) reason, forge uses deprecation to notify people about functions not to call, not
+    // because they are going to be removed, but for different reasons. This is fine though
+    @Suppress("DEPRECATION")
     @SideOnly(Side.CLIENT)
     override fun shouldSideBeRendered(blockState: IBlockState, blockAccess: IBlockAccess, pos: BlockPos, side: EnumFacing): Boolean {
         if (glassSides) {
