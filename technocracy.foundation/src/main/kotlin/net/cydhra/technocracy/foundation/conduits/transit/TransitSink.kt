@@ -6,7 +6,7 @@ import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
 import net.minecraftforge.common.util.INBTSerializable
 
-class TransitSink(val pos: BlockPos) : INBTSerializable<NBTTagCompound> {
+class TransitSink(val pos: BlockPos) : TransitEdge(), INBTSerializable<NBTTagCompound> {
 
     companion object {
         private const val NBT_KEY_TYPE = "type"
