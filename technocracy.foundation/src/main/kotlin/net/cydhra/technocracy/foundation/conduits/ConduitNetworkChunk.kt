@@ -23,6 +23,7 @@ import net.minecraftforge.common.util.INBTSerializable
 internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSerializable<NBTTagCompound> {
 
     companion object {
+        private const val NBT_KEY_TRANSIT_COUNTER_STATE = "transit_counter"
         private const val NBT_KEY_NODE_LIST = "nodes"
         private const val NBT_KEY_EDGE_LIST = "edges"
         private const val NBT_KEY_NODE_POS = "pos"
@@ -32,10 +33,8 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
         private const val NBT_KEY_EDGE_TYPE_LIST_ENTRY = "type"
         private const val NBT_KEY_EDGE_TYPE_LIST_DIRECTION_LIST = "directions"
         private const val NBT_KEY_ATTACHMENTS_POS = "pos"
-        private const val NBT_KEY_SINK_TYPE_LIST_ENTRY = "type"
-        private const val NBT_KEY_SINK_TYPE_LIST_DIRECTION_LIST = "directions"
         private const val NBT_KEY_SINKS_LIST = "types"
-        private const val NBT_KEY_ATACHHMENTS_LIST = "sinks"
+        private const val NBT_KEY_ATTACHMENTS_LIST = "sinks"
     }
 
     /**
@@ -75,6 +74,9 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
 
     val debug_sinks: Map<BlockPos, Set<TransitSink>> = attachedSinks
 
+    /**
+     * Transit edges that connect a conduit node to a different chunk
+     */
     private val chunkTransitEdges: MutableMap<BlockPos, MutableSet<TransitChunkEdge>> = mutableMapOf()
 
     /**
@@ -257,9 +259,11 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
     }
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
+        this.transitEdgeCounter = nbt.getInteger(NBT_KEY_TRANSIT_COUNTER_STATE)
+
         val nodeList = nbt.getTagList(NBT_KEY_NODE_LIST, Constants.NBT.TAG_COMPOUND)
         val edgeList = nbt.getTagList(NBT_KEY_EDGE_LIST, Constants.NBT.TAG_COMPOUND)
-        val attachmentList = nbt.getTagList(NBT_KEY_ATACHHMENTS_LIST, Constants.NBT.TAG_COMPOUND)
+        val attachmentList = nbt.getTagList(NBT_KEY_ATTACHMENTS_LIST, Constants.NBT.TAG_COMPOUND)
 
         nodeList.forEach { nodeTag ->
             val blockPos = NBTUtil.getPosFromTag((nodeTag as NBTTagCompound).getCompoundTag(NBT_KEY_NODE_POS))
@@ -297,6 +301,8 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
 
     override fun serializeNBT(): NBTTagCompound {
         val compound = NBTTagCompound()
+
+        compound.setInteger(NBT_KEY_TRANSIT_COUNTER_STATE, 1)
 
         val nodeList = NBTTagList()
         for (blockPos in this.nodes.keys) {
@@ -341,7 +347,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
 
         compound.setTag(NBT_KEY_NODE_LIST, nodeList)
         compound.setTag(NBT_KEY_EDGE_LIST, edgeList)
-        compound.setTag(NBT_KEY_ATACHHMENTS_LIST, attachmentList)
+        compound.setTag(NBT_KEY_ATTACHMENTS_LIST, attachmentList)
 
         return compound
     }
