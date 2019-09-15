@@ -82,8 +82,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      * @throws IllegalStateException if the node already exists
      */
     internal fun insertNode(pos: BlockPos, type: PipeType) {
-        if (this.nodes[pos]?.contains(type) == true)
-            throw IllegalStateException("the inserted node already exists within the network")
+        check(this.nodes[pos]?.contains(type) != true) { "the inserted node already exists within the network" }
 
         if (!this.nodes.contains(pos)) {
             this.nodes[pos] = mutableSetOf()
@@ -105,8 +104,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      * @throws IllegalStateException if the node does not exist
      */
     internal fun removeNode(pos: BlockPos, type: PipeType) {
-        if (this.nodes[pos]?.contains(type) == false)
-            throw IllegalStateException("the removed node does not exist within the network")
+        check(this.nodes[pos]?.contains(type) != false) { "the removed node does not exist within the network" }
 
         this.nodes[pos]!!.remove(type)
         this.recalculatePaths()
@@ -123,18 +121,13 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      * @param facing the direction of the edge
      * @param type pipe type of the edge
      *
-     * @throws [IllegalArgumentException] if the positions given are not adjacent
-     * @throws [IllegalArgumentException] if one of the node positions does not contain a [type] node
+     * @throws [IllegalStateException] if the positions given are not adjacent
+     * @throws [IllegalStateException] if one of the node positions does not contain a [type] node
      * @throws [IllegalStateException] if the edge already exists
      */
     internal fun insertEdge(pos: BlockPos, facing: EnumFacing, type: PipeType) {
-
-        if (this.nodes[pos]?.contains(type) == false)
-            throw IllegalArgumentException("position does not contain a node of type $type")
-
-        if (this.edges[pos]?.get(type)?.contains(facing) == true) {
-            throw IllegalStateException("the edge already existed")
-        }
+        check(this.nodes[pos]?.contains(type) != false) { "position does not contain a node of type $type" }
+        check(this.edges[pos]?.get(type)?.contains(facing) != true) { "the edge already existed" }
 
         if (!this.edges.containsKey(pos)) {
             this.edges[pos] = mutableMapOf()
@@ -160,7 +153,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      * @param facing the direction of the edge
      * @param type pipe type of the edge
      *
-     * @throws [IllegalArgumentException] if the positions given are not adjacent
+     * @throws [IllegalStateException] if the positions given are not adjacent
      * @throws [IllegalStateException] if the edge does not exist
      */
     internal fun removeEdge(pos: BlockPos, facing: EnumFacing, type: PipeType) {
