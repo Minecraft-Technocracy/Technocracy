@@ -11,7 +11,8 @@ import net.minecraftforge.common.util.INBTSerializable
  * storage interface.
  */
 class TransitSink(val pos: BlockPos) : TransitEdge() {
-    constructor(type: PipeType, facing: EnumFacing, pos: BlockPos) : this(pos) {
+    constructor(id: Int, type: PipeType, facing: EnumFacing, pos: BlockPos) : this(pos) {
+        this.id = id
         this.type = type
         this.facing = facing
     }

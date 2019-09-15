@@ -9,7 +9,8 @@ import net.minecraft.util.math.BlockPos
  */
 class TransitChunkEdge() : TransitEdge() {
 
-    constructor(type: PipeType, facing: EnumFacing, pos: BlockPos) : this() {
+    constructor(id: Int, type: PipeType, facing: EnumFacing, pos: BlockPos) : this() {
+        this.id = id
         this.type = type
         this.facing = facing
     }

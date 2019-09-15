@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.conduits
 
+import net.cydhra.technocracy.foundation.conduits.transit.TransitChunkEdge
 import net.cydhra.technocracy.foundation.conduits.transit.TransitSink
 import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.minecraft.nbt.NBTTagCompound
@@ -45,6 +46,11 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
         private set
 
     /**
+     * A counter to keep track of transit edge ids.
+     */
+    private var transitEdgeCounter: Int = 0
+
+    /**
      * A mutable mapping of block positions to their respective node types
      */
     private val nodes: MutableMap<BlockPos, MutableSet<PipeType>> = mutableMapOf()
@@ -68,6 +74,8 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
     private val attachedSinks: MutableMap<BlockPos, MutableSet<TransitSink>> = mutableMapOf()
 
     val debug_sinks: Map<BlockPos, Set<TransitSink>> = attachedSinks
+
+    private val chunkTransitEdges: MutableMap<BlockPos, MutableSet<TransitChunkEdge>> = mutableMapOf()
 
     /**
      * Add a node to the conduit network. This method does only add this one node to the network: no additional nodes
@@ -185,7 +193,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
             this.attachedSinks[pos] = mutableSetOf()
         }
 
-        this.attachedSinks[pos]!!.add(TransitSink(type, facing, pos))
+        this.attachedSinks[pos]!!.add(TransitSink(transitEdgeCounter++, type, facing, pos))
         this.recalculatePaths()
         this.markDirty()
     }

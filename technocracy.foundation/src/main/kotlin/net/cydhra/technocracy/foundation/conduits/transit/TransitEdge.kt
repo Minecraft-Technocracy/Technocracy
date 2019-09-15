@@ -14,14 +14,20 @@ import net.minecraftforge.common.util.INBTSerializable
  * Note, that there are no transit nodes, as the only relevant part that is modelled by the transit network are
  * connections between chunks and connections between the network and its sinks.
  *
+ * @param id a chunk-unique id of this edge. Used for connections between edges
+ *
  * @see [TransitSink]
  */
 abstract class TransitEdge : INBTSerializable<NBTTagCompound> {
 
     companion object {
+        private const val NBT_KEY_ID = "id"
         private const val NBT_KEY_TYPE = "type"
         private const val NBT_KEY_FACING = "facing"
     }
+
+    var id: Int = -1
+        protected set
 
     lateinit var type: PipeType
         protected set
@@ -34,12 +40,14 @@ abstract class TransitEdge : INBTSerializable<NBTTagCompound> {
     operator fun component2(): EnumFacing = facing
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
+        this.id = nbt.getInteger(NBT_KEY_ID)
         this.type = PipeType.values()[nbt.getInteger(NBT_KEY_TYPE)]
         this.facing = EnumFacing.values()[nbt.getInteger(NBT_KEY_FACING)]
     }
 
     override fun serializeNBT(): NBTTagCompound {
         return NBTTagCompound().apply {
+            setInteger(NBT_KEY_ID, this@TransitEdge.id)
             setInteger(NBT_KEY_TYPE, this@TransitEdge.type.ordinal)
             setInteger(NBT_KEY_FACING, this@TransitEdge.facing.ordinal)
         }
