@@ -104,7 +104,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
     }
 
     /**
-     * Remove a node from the conduit network. All edges from and to the node are removed as well. If the node does
+     * Remove a node from the conduit network. No edges from and to the node are removed. If the node does
      * not exist, an [IllegalStateException] is thrown. It is asserted that [pos] is within the chunk modeled by this
      * instance.
      *
