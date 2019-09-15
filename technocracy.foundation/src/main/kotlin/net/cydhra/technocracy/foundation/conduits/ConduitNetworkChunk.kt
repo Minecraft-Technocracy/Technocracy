@@ -79,6 +79,8 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      */
     private val chunkTransitEdges: MutableMap<BlockPos, MutableSet<TransitChunkEdge>> = mutableMapOf()
 
+    val debug_transits: Map<BlockPos, Set<TransitChunkEdge>> = chunkTransitEdges
+
     /**
      * Add a node to the conduit network. This method does only add this one node to the network: no additional nodes
      * are discovered in the neighborhood of the block. If the node already exists, an [IllegalStateException] is
@@ -149,6 +151,15 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
 
         this.edges[pos]!![type]!! += facing
 
+        val pointsTowardsPos = pos.offset(facing)
+        if (this.chunkPos.xStart > pointsTowardsPos.x || this.chunkPos.xEnd < pointsTowardsPos.x
+                || this.chunkPos.zStart > pointsTowardsPos.z || this.chunkPos.zEnd < pointsTowardsPos.z) {
+            if (!chunkTransitEdges.containsKey(pos)) {
+                chunkTransitEdges[pos] = mutableSetOf()
+            }
+            chunkTransitEdges[pos]!! += TransitChunkEdge(transitEdgeCounter++, type, facing, pos)
+        }
+
         this.recalculatePaths()
         this.markDirty()
     }
@@ -173,6 +184,11 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
 
         // remove attached sinks if any
         this.removeTransitSink(pos, facing, type)
+
+        // remove transit edges if any
+        if (!chunkTransitEdges[pos].isNullOrEmpty()) {
+            chunkTransitEdges[pos]!!.removeIf { it.type == type && it.facing == facing }
+        }
 
         this.recalculatePaths()
         this.markDirty()
