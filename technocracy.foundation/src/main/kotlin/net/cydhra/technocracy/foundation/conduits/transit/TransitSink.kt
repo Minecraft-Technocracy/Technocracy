@@ -6,37 +6,13 @@ import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
 import net.minecraftforge.common.util.INBTSerializable
 
-class TransitSink(val pos: BlockPos) : TransitEdge(), INBTSerializable<NBTTagCompound> {
-
-    companion object {
-        private const val NBT_KEY_TYPE = "type"
-        private const val NBT_KEY_FACING = "facing"
-    }
-
-    lateinit var type: PipeType
-        private set
-
-    lateinit var facing: EnumFacing
-        private set
-
+/**
+ * A specialized kind of transit edge, that represents a connection between the conduit network and a machine or
+ * storage interface.
+ */
+class TransitSink(val pos: BlockPos) : TransitEdge() {
     constructor(type: PipeType, facing: EnumFacing, pos: BlockPos) : this(pos) {
         this.type = type
         this.facing = facing
-    }
-
-    operator fun component1(): PipeType = type
-
-    operator fun component2(): EnumFacing = facing
-
-    override fun deserializeNBT(nbt: NBTTagCompound) {
-        this.type = PipeType.values()[nbt.getInteger(NBT_KEY_TYPE)]
-        this.facing = EnumFacing.values()[nbt.getInteger(NBT_KEY_FACING)]
-    }
-
-    override fun serializeNBT(): NBTTagCompound {
-        return NBTTagCompound().apply {
-            setInteger(NBT_KEY_TYPE, this@TransitSink.type.ordinal)
-            setInteger(NBT_KEY_FACING, this@TransitSink.facing.ordinal)
-        }
     }
 }
