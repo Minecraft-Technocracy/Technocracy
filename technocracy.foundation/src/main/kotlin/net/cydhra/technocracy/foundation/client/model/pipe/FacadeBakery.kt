@@ -26,6 +26,7 @@ import net.minecraft.util.math.MathHelper
 import net.minecraft.world.IBlockAccess
 
 object FacadeBakery {
+    @Suppress("DEPRECATION")//no other method available to get state from meta
     fun getFacadeQuads(coverFace: EnumFacing, facadeStack: ItemStack, pos: BlockPos, faces: BooleanArray, currentLayer: BlockRenderLayer): MutableList<BakedQuad> {
         val quads = mutableListOf<BakedQuad>()
 
