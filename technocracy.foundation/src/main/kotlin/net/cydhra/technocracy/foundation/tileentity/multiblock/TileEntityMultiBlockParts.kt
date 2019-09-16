@@ -1,9 +1,6 @@
 package net.cydhra.technocracy.foundation.tileentity.multiblock
 
-import net.cydhra.technocracy.foundation.multiblock.BoilerMultiBlock
-import net.cydhra.technocracy.foundation.multiblock.CapacitorMultiBlock
-import net.cydhra.technocracy.foundation.multiblock.HeatExchangerMultiBlock
-import net.cydhra.technocracy.foundation.multiblock.RefineryMultiBlock
+import net.cydhra.technocracy.foundation.multiblock.*
 
 /*
  * This file contains all subclasses of TileEntityMultiBlockPart, as they do not define behavior anyway and the only

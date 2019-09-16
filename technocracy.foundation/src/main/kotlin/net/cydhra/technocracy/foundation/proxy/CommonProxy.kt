@@ -43,6 +43,8 @@ import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEnti
 import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryHeater
 import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryInput
 import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryOutput
+import net.cydhra.technocracy.foundation.tileentity.multiblock.tank.TileEntityTankMultiBlockPart
+import net.cydhra.technocracy.foundation.tileentity.multiblock.tank.TileEntityTankPort
 import net.cydhra.technocracy.foundation.world.gen.OilLakeGen
 import net.cydhra.technocracy.foundation.world.gen.OilSandGen
 import net.minecraft.client.Minecraft
@@ -171,6 +173,10 @@ open class CommonProxy {
         blockManager.prepareBlocksForRegistration(leadBlock)
         blockManager.prepareBlocksForRegistration(leadOxideBlock)
 
+        blockManager.prepareBlocksForRegistration(tankWallBlock)
+        blockManager.prepareBlocksForRegistration(tankIOBlock)
+        blockManager.prepareBlocksForRegistration(tankGlassBlock)
+
         blockManager.prepareBlocksForRegistration(oilSandBlock)
         blockManager.prepareBlocksForRegistration(oilStone)
         blockManager.prepareBlocksForRegistration(oilBlock)
@@ -269,6 +275,9 @@ open class CommonProxy {
         tileEntityManager.prepareTileEntityForRegistration(TileEntityCapacitorController::class)
         tileEntityManager.prepareTileEntityForRegistration(TileEntityCapacitorEnergyPort::class)
         tileEntityManager.prepareTileEntityForRegistration(TileEntityMultiBlockPartCapacitor::class)
+
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityTankMultiBlockPart::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityTankPort::class)
 
         tileEntityManager.prepareTileEntityForRegistration(TileEntityDrum::class)
 

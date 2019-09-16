@@ -109,6 +109,10 @@ tile.capacitor_energy_port.name=Capacitor Energy Port
 tile.capacitor_connector.name=Capacitor Connector
 tile.capacitor_wall.name=Capacitor Wall
 
+tile.tank_wall.name=Tank Wall
+tile.tank_glass.name=Tank Glass
+tile.tank_io.name=Tank IO Port
+
 fluid.mineral_oil=Mineral Oil
 fluid.mineral_oil_hot=Heated Mineral Oil
 fluid.sulfur_dioxide=Sulfur Dioxide

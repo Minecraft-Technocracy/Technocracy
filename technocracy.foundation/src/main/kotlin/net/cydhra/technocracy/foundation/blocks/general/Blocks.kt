@@ -4,10 +4,7 @@ import net.cydhra.technocracy.foundation.blocks.*
 import net.cydhra.technocracy.foundation.blocks.liquid.OilBlock
 import net.cydhra.technocracy.foundation.blocks.liquid.SulfuricAcidBlock
 import net.cydhra.technocracy.foundation.tileentity.machines.*
-import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartBoiler
-import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartCapacitor
-import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartHeatExchanger
-import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartRefinery
+import net.cydhra.technocracy.foundation.tileentity.multiblock.*
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerHeater
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerInput
@@ -21,6 +18,8 @@ import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEnti
 import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryHeater
 import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryInput
 import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryOutput
+import net.cydhra.technocracy.foundation.tileentity.multiblock.tank.TileEntityTankMultiBlockPart
+import net.cydhra.technocracy.foundation.tileentity.multiblock.tank.TileEntityTankPort
 import net.minecraft.block.material.Material
 import net.minecraft.util.BlockRenderLayer
 
@@ -78,6 +77,10 @@ val capacitorControllerBlock = MultiBlockRotatableActiveBlock("capacitor_control
 val capacitorWallBlock = PlainMultiBlockPartBlock("capacitor_wall", ::TileEntityMultiBlockPartCapacitor)
 val capacitorConnectorBlock = PlainMultiBlockPartBlock("capacitor_connector", ::TileEntityMultiBlockPartCapacitor)
 val capacitorEnergyPortBlock = MultiBlockRotatableActiveBlock("capacitor_energy_port", ::TileEntityCapacitorEnergyPort)
+
+val tankWallBlock = PlainMultiBlockPartBlock("tank_wall", ::TileEntityTankMultiBlockPart)
+val tankGlassBlock = PlainMultiBlockPartBlock("tank_glass", ::TileEntityTankMultiBlockPart)
+val tankIOBlock = PlainMultiBlockPartBlock("tank_io", ::TileEntityTankPort)
 
 val leadBlock = PlainBlock("lead_block", Material.IRON)
 val leadOxideBlock = PlainBlock("lead_oxide_block", Material.IRON)
