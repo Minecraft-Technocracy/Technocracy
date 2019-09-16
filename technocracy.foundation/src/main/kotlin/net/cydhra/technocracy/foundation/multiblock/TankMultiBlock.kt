@@ -15,18 +15,17 @@ import java.util.function.Predicate
 
 
 class TankMultiBlock(world: World) : BaseMultiBlock(
-        frameBlockWhitelist = Predicate { it.block == tankWallBlock },
+        frameBlockWhitelist = Predicate {
+            it.block == tankWallBlock || it.block == tankIOBlock
+        },
         sideBlockWhitelist = Predicate {
-            it.block == tankWallBlock || it.block == tankGlassBlock || it.block ==
-                    tankIOBlock
+            it.block == tankWallBlock || it.block == tankGlassBlock || it.block == tankIOBlock
         },
         topBlockWhitelist = Predicate {
-            it.block == tankWallBlock || it.block == tankGlassBlock || it.block ==
-                    tankIOBlock
+            it.block == tankWallBlock || it.block == tankGlassBlock || it.block == tankIOBlock
         },
         bottomBlockWhitelist = Predicate {
-            it.block == tankWallBlock || it.block == tankGlassBlock || it.block ==
-                    tankIOBlock
+            it.block == tankWallBlock || it.block == tankGlassBlock || it.block == tankIOBlock
         },
         interiorBlockWhitelist = Predicate { it.block == Blocks.AIR },
         maximumSizeXZ = 40,
@@ -55,7 +54,10 @@ class TankMultiBlock(world: World) : BaseMultiBlock(
     }
 
     override fun isMachineWhole(validatorCallback: IMultiblockValidator): Boolean {
-        if (!super.isMachineWhole(validatorCallback)) return false
+        if (!super.isMachineWhole(validatorCallback)) {
+            println(validatorCallback.lastError.chatMessage)
+            return false
+        }
 
         val sizeX = maximumCoord.x - minimumCoord.x + 1
         val sizeY = maximumCoord.y - minimumCoord.y
