@@ -47,6 +47,8 @@ class AggregatableDelegate : TCAggregatable {
 
         this.components += name to component
 
+        component.onRegister()
+
         if (component is AbstractCapabilityComponent) {
             capabilityComponents += component
         }

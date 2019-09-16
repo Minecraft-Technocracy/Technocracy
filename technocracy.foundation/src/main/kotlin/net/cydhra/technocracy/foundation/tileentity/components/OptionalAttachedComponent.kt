@@ -21,4 +21,8 @@ class OptionalAttachedComponent<T : AbstractComponent>(val innerComponent: T) : 
             innerComponent.deserializeNBT(nbt.getCompoundTag("inner"))
         }
     }
+
+    override fun onRegister() {
+        innerComponent.tile = this.tile
+    }
 }

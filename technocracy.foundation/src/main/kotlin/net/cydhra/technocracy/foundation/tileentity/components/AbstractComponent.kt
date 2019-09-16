@@ -32,6 +32,12 @@ abstract class AbstractComponent {
      */
     abstract fun deserializeNBT(nbt: NBTTagCompound)
 
+    /**
+     * called while the component is getting registered
+     */
+    open fun onRegister() {
+    }
+
 }
 
 enum class ComponentType(val supportsWaila: Boolean = false) {
