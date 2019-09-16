@@ -44,5 +44,6 @@ enum class ComponentType(val supportsWaila: Boolean = false) {
     UPGRADES(true),
     NETWORK,
     REDSTONE_MODE(true),
-    PROGRESS(true)
+    PROGRESS(true),
+    OPTIONAL(true)
 }
