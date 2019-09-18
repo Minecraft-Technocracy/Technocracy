@@ -11,8 +11,11 @@ class TileEntityTankPort : TileEntityTankMultiBlockPart() {
 
     override fun onMachineDeactivated() {}
 
-    override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean =
+    override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
+        return if (multiblockController != null && multiblockController!!.isAssembled)
             capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
+        else false
+    }
 
     override fun <T> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
         if (hasCapability(capability, facing)) {

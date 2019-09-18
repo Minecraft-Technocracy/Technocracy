@@ -4,7 +4,6 @@ import net.cydhra.technocracy.foundation.capabilities.energy.DynamicEnergyStorag
 import net.cydhra.technocracy.foundation.multiblock.RefineryMultiBlock
 import net.cydhra.technocracy.foundation.tileentity.components.EnergyStorageComponent
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPart
-import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
 
@@ -18,7 +17,9 @@ class TileEntityRefineryHeater : TileEntityMultiBlockPart<RefineryMultiBlock>(Re
     }
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
-        return this.supportsCapability(capability, facing) || super.hasCapability(capability, facing)
+        return if (multiblockController != null && multiblockController!!.isAssembled) {
+            this.supportsCapability(capability, facing) || super.hasCapability(capability, facing)
+        } else false
     }
 
     override fun <T : Any?> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {

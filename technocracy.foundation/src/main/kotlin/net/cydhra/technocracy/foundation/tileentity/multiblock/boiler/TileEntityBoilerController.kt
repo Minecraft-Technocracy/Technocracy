@@ -7,7 +7,6 @@ import net.cydhra.technocracy.foundation.tileentity.components.FluidComponent
 import net.cydhra.technocracy.foundation.tileentity.components.ProgressComponent
 import net.cydhra.technocracy.foundation.tileentity.multiblock.ITileEntityMultiblockController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPart
-import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.fluids.FluidRegistry
@@ -94,7 +93,9 @@ class TileEntityBoilerController
     }
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
-        return this.supportsCapability(capability, facing) || super.hasCapability(capability, facing)
+        return if (multiblockController != null && multiblockController!!.isAssembled) {
+            this.supportsCapability(capability, facing) || super.hasCapability(capability, facing)
+        } else false
     }
 
     override fun <T : Any?> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {

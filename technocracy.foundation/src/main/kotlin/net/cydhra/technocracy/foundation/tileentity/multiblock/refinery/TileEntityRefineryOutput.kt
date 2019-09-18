@@ -12,7 +12,9 @@ class TileEntityRefineryOutput : TileEntityMultiBlockPart<RefineryMultiBlock>(Re
         ::RefineryMultiBlock) {
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
-        return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
+        return if (multiblockController != null && multiblockController!!.isAssembled)
+            capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
+        else false
     }
 
     override fun <T> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {

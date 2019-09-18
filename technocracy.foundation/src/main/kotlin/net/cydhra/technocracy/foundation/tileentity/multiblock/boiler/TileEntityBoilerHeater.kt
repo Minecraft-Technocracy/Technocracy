@@ -52,7 +52,9 @@ class TileEntityBoilerHeater : TileEntityMultiBlockPart<BoilerMultiBlock>(Boiler
     }
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
-        return this.supportsCapability(capability, facing) || super.hasCapability(capability, facing)
+        return if (multiblockController != null && multiblockController!!.isAssembled) {
+            this.supportsCapability(capability, facing) || super.hasCapability(capability, facing)
+        } else false
     }
 
     override fun <T : Any?> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {

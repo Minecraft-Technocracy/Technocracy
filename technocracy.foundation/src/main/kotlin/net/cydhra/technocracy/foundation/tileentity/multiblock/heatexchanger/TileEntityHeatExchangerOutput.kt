@@ -7,7 +7,6 @@ import net.cydhra.technocracy.foundation.tileentity.api.TCAggregatable
 import net.cydhra.technocracy.foundation.tileentity.components.FluidComponent
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPart
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumHand
 import net.minecraft.util.math.BlockPos
@@ -34,7 +33,9 @@ class TileEntityHeatExchangerOutput : TileEntityMultiBlockPart<HeatExchangerMult
     override fun onMachineDeactivated() {}
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
-        return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
+        return if (multiblockController != null && multiblockController!!.isAssembled) {
+            capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
+        } else false
     }
 
     override fun <T> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
