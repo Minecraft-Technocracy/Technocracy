@@ -413,10 +413,10 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
         return pair.first.getStateFromMeta(pair.second.stack.itemDamage)
     }
 
-    override fun onNeighborChange(world: IBlockAccess, pos: BlockPos, neighbor: BlockPos) {
-        val tileEntity = world.getTileEntity(pos) as TileEntityPipe
-        tileEntity.onNeighborChange(world, pos, neighbor)
+    override fun neighborChanged(state: IBlockState, worldIn: World, pos: BlockPos, blockIn: Block, fromPos: BlockPos) {
+        val tileEntity = worldIn.getTileEntity(pos) as TileEntityPipe
+        tileEntity.onNeighborChange(worldIn, pos, fromPos)
 
-        super.onNeighborChange(world, pos, neighbor)
+        super.neighborChanged(state, worldIn, pos, blockIn, fromPos)
     }
 }
