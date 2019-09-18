@@ -1,15 +1,12 @@
 package net.cydhra.technocracy.foundation.tileentity.multiblock.tank
 
 import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandler
-import net.cydhra.technocracy.foundation.multiblock.TankMultiBlock
-import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPart
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
-import net.minecraftforge.energy.EnergyStorage
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler
 
 
-class TileEntityTankPort : TileEntityMultiBlockPart<TankMultiBlock>(TankMultiBlock::class, ::TankMultiBlock) {
+class TileEntityTankPort : TileEntityTankMultiBlockPart() {
     override fun onMachineActivated() {}
 
     override fun onMachineDeactivated() {}
@@ -27,6 +24,6 @@ class TileEntityTankPort : TileEntityMultiBlockPart<TankMultiBlock>(TankMultiBlo
                 }
             }
         }
-        return null
+        return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast<T>(DynamicFluidHandler())
     }
 }

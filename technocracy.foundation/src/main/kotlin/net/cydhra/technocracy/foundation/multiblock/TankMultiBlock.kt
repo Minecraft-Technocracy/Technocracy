@@ -11,6 +11,8 @@ import net.cydhra.technocracy.foundation.tileentity.multiblock.tank.TileEntityTa
 import net.minecraft.init.Blocks
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.world.World
+import net.minecraftforge.fluids.Fluid
+import net.minecraftforge.fluids.FluidStack
 import java.util.function.Predicate
 
 
@@ -60,7 +62,7 @@ class TankMultiBlock(world: World) : BaseMultiBlock(
         }
 
         val sizeX = maximumCoord.x - minimumCoord.x + 1
-        val sizeY = maximumCoord.y - minimumCoord.y
+        val sizeY = maximumCoord.y - minimumCoord.y + 1
         val sizeZ = maximumCoord.z - minimumCoord.z + 1
 
 
@@ -84,13 +86,51 @@ class TankMultiBlock(world: World) : BaseMultiBlock(
 
         return assemble(validatorCallback) {
             val inputPorts = mutableListOf<TileEntityTankPort>()
+            val wallBlocks = mutableListOf<TileEntityTankMultiBlockPart>()
 
             collect(inputPorts)
+            collect(wallBlocks)
 
             finishUp {
+                var currentFluid: FluidStack? = null
+
+                for (part in wallBlocks) {
+                    if (part.fluidComp.isAttached) {
+                        if (part.fluidComp.innerComponent.fluid.currentFluid != null) {
+                            if (currentFluid == null) {
+                                currentFluid = part.fluidComp.innerComponent.fluid.currentFluid
+                            } else {
+                                if (currentFluid.isFluidEqual(part.fluidComp.innerComponent.fluid.currentFluid)) {
+                                    currentFluid.amount += part.fluidComp.innerComponent.fluid.currentFluid!!.amount
+                                } else {
+                                    validatorCallback.setLastError("multiblock.error.invalidFluidType", currentFluid.fluid, part.fluidComp.innerComponent.fluid.currentFluid!!.fluid)
+                                    return@finishUp false
+                                }
+                            }
+                        }
+                    }
+                }
+
+                for (part in wallBlocks) {
+                    if (part.fluidComp.isAttached) {
+                        part.fluidComp.markDirty(true)
+                        part.fluidComp.isAttached = false
+                    }
+                }
+
                 val type = this@TankMultiBlock.connectedParts.find { it.worldPosition.x == posX && it.worldPosition.z == posZ && it.worldPosition.y == minimumCoord.y }
                 this@TankMultiBlock.controllerTileEntity = type as TileEntityTankMultiBlockPart
                 this@TankMultiBlock.controllerTileEntity!!.fluidComp.isAttached = true
+                //todo config
+                this@TankMultiBlock.controllerTileEntity!!.fluidComp.innerComponent.fluid.capacity = sizeX * sizeZ * sizeY * 25000
+
+                if(currentFluid != null) {
+                    //fill fluid back into tank
+                    this@TankMultiBlock.controllerTileEntity!!.fluidComp.innerComponent.fluid.fill(currentFluid, true)
+                }
+
+                this@TankMultiBlock.controllerTileEntity!!.fluidComp.markDirty(true)
+
                 //todo calc and set max capacity
                 this@TankMultiBlock.ports = inputPorts
 

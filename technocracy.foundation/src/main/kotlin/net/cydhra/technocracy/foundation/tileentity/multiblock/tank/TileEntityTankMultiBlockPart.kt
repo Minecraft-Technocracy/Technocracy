@@ -9,13 +9,13 @@ import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBl
 import net.minecraft.util.EnumFacing
 
 
-class TileEntityTankMultiBlockPart : TileEntityMultiBlockPart<TankMultiBlock>(TankMultiBlock::class,
+open class TileEntityTankMultiBlockPart : TileEntityMultiBlockPart<TankMultiBlock>(TankMultiBlock::class,
         ::TankMultiBlock), ITileEntityMultiblockController {
 
 
     val fluidComp = OptionalAttachedComponent(FluidComponent(DynamicFluidHandler(), EnumFacing.values().toMutableSet()))
 
     init {
-        registerComponent(fluidComp, "fluidComponent")
+        this.registerComponent(fluidComp, "fluidComponent")
     }
 }
