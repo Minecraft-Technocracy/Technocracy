@@ -42,15 +42,6 @@ class TileEntityHeatExchangerOutput : TileEntityMultiBlockPart<HeatExchangerMult
                 ?: DynamicFluidHandler(1, allowedFluid = mutableListOf()) as T
     }
 
-    override fun writeToNBT(data: NBTTagCompound): NBTTagCompound {
-        return this.serializeNBT(super.writeToNBT(data))
-    }
-
-    override fun readFromNBT(data: NBTTagCompound) {
-        super.readFromNBT(data)
-        this.deserializeNBT(data)
-    }
-
     override fun onActivate(world: World, pos: BlockPos, player: EntityPlayer, hand: EnumHand, facing: EnumFacing) {
 
     }

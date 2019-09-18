@@ -24,15 +24,6 @@ class TileEntityCapacitorController : TileEntityMultiBlockPart<CapacitorMultiBlo
         this.registerComponent(energyStorageComponent, "storage")
     }
 
-    override fun writeToNBT(data: NBTTagCompound): NBTTagCompound {
-        return this.serializeNBT(super.writeToNBT(data))
-    }
-
-    override fun readFromNBT(data: NBTTagCompound) {
-        super.readFromNBT(data)
-        this.deserializeNBT(data)
-    }
-
     override fun initGui(gui: TCGui) {
         gui.tabs.clear() // remove main menu
         gui.registerTab(object : BaseMultiblockTab(this, gui, ResourceLocation("technocracy.foundation", "textures/item/silicon.png")) {

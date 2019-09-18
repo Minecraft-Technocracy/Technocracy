@@ -27,6 +27,7 @@ import net.cydhra.technocracy.foundation.tileentity.components.InventoryComponen
 import net.cydhra.technocracy.foundation.tileentity.components.ProgressComponent
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.entity.player.EntityPlayerMP
+import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumHand
 import net.minecraft.util.ResourceLocation
@@ -47,6 +48,15 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
 
     init {
         this.tile = this
+    }
+
+    override fun writeToNBT(data: NBTTagCompound): NBTTagCompound {
+        return this.serializeNBT(super.writeToNBT(data))
+    }
+
+    override fun readFromNBT(data: NBTTagCompound) {
+        super.readFromNBT(data)
+        this.deserializeNBT(data)
     }
 
     override fun createNewMultiblock(): T {

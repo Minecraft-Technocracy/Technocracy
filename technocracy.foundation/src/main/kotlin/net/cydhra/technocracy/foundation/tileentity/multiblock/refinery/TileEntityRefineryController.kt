@@ -41,15 +41,6 @@ class TileEntityRefineryController : TileEntityMultiBlockPart<RefineryMultiBlock
         this.registerComponent(progressComponent, "progress")
     }
 
-    override fun writeToNBT(data: NBTTagCompound): NBTTagCompound {
-        return this.serializeNBT(super.writeToNBT(data))
-    }
-
-    override fun readFromNBT(data: NBTTagCompound) {
-        super.readFromNBT(data)
-        this.deserializeNBT(data)
-    }
-
     override fun initGui(gui: TCGui) {
         gui.registerTab(object: TCTab("Example", gui) {
             override fun init() {
