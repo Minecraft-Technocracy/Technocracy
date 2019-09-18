@@ -159,10 +159,6 @@ class TankMultiBlock(world: World) : BaseMultiBlock(
 
     }
 
-    override fun onMachineAssembled() {
-
-    }
-
     override fun syncDataFrom(p0: NBTTagCompound?, p1: ModTileEntity.SyncReason?) {
 
     }
@@ -171,19 +167,11 @@ class TankMultiBlock(world: World) : BaseMultiBlock(
 
     }
 
-    override fun onMachineRestored() {
-
-    }
-
     override fun syncDataTo(p0: NBTTagCompound?, p1: ModTileEntity.SyncReason?) {
 
     }
 
     override fun onMachinePaused() {
-
-    }
-
-    override fun onMachineDisassembled() {
 
     }
 

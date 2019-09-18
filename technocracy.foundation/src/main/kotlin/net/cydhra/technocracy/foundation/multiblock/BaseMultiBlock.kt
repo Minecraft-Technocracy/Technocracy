@@ -58,6 +58,18 @@ abstract class BaseMultiBlock(
         return this.maximumSizeXZ
     }
 
+    override fun onMachineAssembled() {
+        forceStructureUpdate(WORLD)
+    }
+
+    override fun onMachineRestored() {
+        forceStructureUpdate(WORLD)
+    }
+
+    override fun onMachineDisassembled() {
+        forceStructureUpdate(WORLD)
+    }
+
     abstract fun getComponents(): MutableList<Pair<String, AbstractComponent>>
 
     /**
@@ -144,5 +156,28 @@ abstract class BaseMultiBlock(
          */
         data class AssemblyRule<T : IMultiblockPart>(val list: MutableList<T>, val matches: (Any) -> Boolean,
                                                      val range: IntRange?, val unlocalizedBlock: String)
+    }
+
+    override fun forceStructureUpdate(world: World) {
+        val minCoord = this.minimumCoord
+        val maxCoord = this.maximumCoord
+        val minX = minCoord.x
+        val minY = minCoord.y
+        val minZ = minCoord.z
+        val maxX = maxCoord.x
+        val maxY = maxCoord.y
+        val maxZ = maxCoord.z
+
+        for (x in minX..maxX) {
+            for (y in minY..maxY) {
+                for (z in minZ..maxZ) {
+                    val pos = BlockPos(x, y, z)
+                    val state = world.getBlockState(pos)
+                    //send actual block update not just render update
+                    world.markAndNotifyBlock(pos, world.getChunkFromBlockCoords(pos), state, state, 3)
+                }
+            }
+        }
+
     }
 }
