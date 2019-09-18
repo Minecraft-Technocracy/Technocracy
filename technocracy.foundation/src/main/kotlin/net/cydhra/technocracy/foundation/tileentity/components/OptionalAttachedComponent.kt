@@ -18,6 +18,7 @@ class OptionalAttachedComponent<T : AbstractComponent>(val innerComponent: T) : 
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
         if (nbt.hasKey("isAttached") && nbt.getBoolean("isAttached")) {
+            isAttached = true
             innerComponent.deserializeNBT(nbt.getCompoundTag("inner"))
         }
     }
