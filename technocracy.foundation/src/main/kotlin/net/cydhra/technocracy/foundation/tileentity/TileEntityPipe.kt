@@ -6,7 +6,6 @@ import net.cydhra.technocracy.foundation.conduits.ConduitNetwork
 import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.cydhra.technocracy.foundation.tileentity.components.FacadeComponent
 import net.cydhra.technocracy.foundation.tileentity.components.PipeTypesComponent
-import net.cydhra.technocracy.foundation.tileentity.components.NetworkComponent
 import net.minecraft.init.Blocks
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
@@ -39,7 +38,6 @@ class TileEntityPipe : AggregatableTileEntity() {
                         Vec3d((0.5 + size), (0.5 - size), (0.5 + size))))
     }
 
-    private val networkComponent = NetworkComponent()
     private val pipeTypes = PipeTypesComponent()
     private val facades = FacadeComponent()
 
