@@ -15,6 +15,7 @@ system.silver=Silver
 system.tin=Tin
 system.iron=Iron
 system.gold=Gold
+system.zirconium=Zirconium
 
 item.machine_frame.name=Machine Frame
 item.sulfur.name=Sulfur
@@ -151,6 +152,7 @@ fluid.slag.silver=Silver Slag
 fluid.slag.tin=Tin Slag
 fluid.slag.iron=Iron Slag
 fluid.slag.gold=Gold Slag
+fluid.slag.zirconium=Zirconium Slag
 
 fluid.slurry.aluminum=Aluminum Slurry
 fluid.slurry.copper=Copper Slurry
@@ -162,6 +164,7 @@ fluid.slurry.silver=Silver Slurry
 fluid.slurry.tin=Tin Slurry
 fluid.slurry.iron=Iron Slurry
 fluid.slurry.gold=Gold Slurry
+fluid.slurry.zirconium=Zirconium Slurry
 
 fluid.enriched_slurry.aluminum=Enriched Aluminum Slurry
 fluid.enriched_slurry.copper=Enriched Copper Slurry
@@ -173,6 +176,7 @@ fluid.enriched_slurry.silver=Enriched Silver Slurry
 fluid.enriched_slurry.tin=Enriched Tin Slurry
 fluid.enriched_slurry.iron=Enriched Iron Slurry
 fluid.enriched_slurry.gold=Enriched Gold Slurry
+fluid.enriched_slurry.zirconium=Enriched Zirconium Slurry
 
 effect.oily=Oily
 
