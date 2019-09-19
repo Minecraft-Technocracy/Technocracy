@@ -19,7 +19,7 @@
     },
     "t": {
       "type": "forge:ore_dict",
-      "ore": "ingotToughAlloy"
+      "ore": "ingotZircalloy"
     },
     "b": {
       "item": "technocracy.foundation:membrane"
