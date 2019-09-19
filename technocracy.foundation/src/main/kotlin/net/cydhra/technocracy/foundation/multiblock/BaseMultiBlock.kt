@@ -1,11 +1,14 @@
 package net.cydhra.technocracy.foundation.multiblock
 
 import it.zerono.mods.zerocore.api.multiblock.IMultiblockPart
+import it.zerono.mods.zerocore.api.multiblock.MultiblockControllerBase
 import it.zerono.mods.zerocore.api.multiblock.rectangular.RectangularMultiblockControllerBase
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import it.zerono.mods.zerocore.api.multiblock.validation.ValidationError
+import it.zerono.mods.zerocore.lib.block.ModTileEntity
 import net.cydhra.technocracy.foundation.tileentity.components.AbstractComponent
 import net.minecraft.block.state.IBlockState
+import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.text.TextComponentTranslation
 import net.minecraft.world.World
@@ -68,6 +71,31 @@ abstract class BaseMultiBlock(
 
     override fun onMachineDisassembled() {
         forceStructureUpdate(WORLD)
+    }
+
+    override fun onBlockAdded(p0: IMultiblockPart?) {
+        TODO("not implemented")
+    }
+
+    override fun onBlockRemoved(p0: IMultiblockPart?) {
+    }
+
+    override fun onAssimilate(p0: MultiblockControllerBase?) {
+    }
+
+    override fun onAttachedPartWithMultiblockData(p0: IMultiblockPart?, p1: NBTTagCompound?) {
+    }
+
+    override fun syncDataFrom(p0: NBTTagCompound?, p1: ModTileEntity.SyncReason?) {
+    }
+
+    override fun onAssimilated(p0: MultiblockControllerBase?) {
+    }
+
+    override fun syncDataTo(p0: NBTTagCompound?, p1: ModTileEntity.SyncReason?) {
+    }
+
+    override fun onMachinePaused() {
     }
 
     abstract fun getComponents(): MutableList<Pair<String, AbstractComponent>>

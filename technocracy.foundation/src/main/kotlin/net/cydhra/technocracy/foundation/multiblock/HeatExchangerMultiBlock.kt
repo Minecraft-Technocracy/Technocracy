@@ -159,50 +159,6 @@ class HeatExchangerMultiBlock(world: World) :
         return 1
     }
 
-    override fun onBlockAdded(p0: IMultiblockPart?) {
-
-    }
-
-    override fun onBlockRemoved(p0: IMultiblockPart?) {
-
-    }
-
-    override fun onAssimilate(p0: MultiblockControllerBase?) {
-
-    }
-
-    override fun onAttachedPartWithMultiblockData(p0: IMultiblockPart?, p1: NBTTagCompound?) {
-
-    }
-
-    override fun onMachineAssembled() {
-
-    }
-
-    override fun syncDataFrom(p0: NBTTagCompound?, p1: ModTileEntity.SyncReason?) {
-
-    }
-
-    override fun onAssimilated(p0: MultiblockControllerBase?) {
-
-    }
-
-    override fun onMachineRestored() {
-
-    }
-
-    override fun syncDataTo(p0: NBTTagCompound?, p1: ModTileEntity.SyncReason?) {
-
-    }
-
-    override fun onMachinePaused() {
-
-    }
-
-    override fun onMachineDisassembled() {
-
-    }
-
     /**
      * A helper structure to organize and manage single tubes inside the heat exchanger with their own fluid storages
      * and flows

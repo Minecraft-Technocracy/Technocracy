@@ -143,38 +143,6 @@ class TankMultiBlock(world: World) : BaseMultiBlock(
         return 1
     }
 
-    override fun onBlockAdded(p0: IMultiblockPart?) {
-
-    }
-
-    override fun onBlockRemoved(p0: IMultiblockPart?) {
-
-    }
-
-    override fun onAssimilate(p0: MultiblockControllerBase?) {
-
-    }
-
-    override fun onAttachedPartWithMultiblockData(p0: IMultiblockPart?, p1: NBTTagCompound?) {
-
-    }
-
-    override fun syncDataFrom(p0: NBTTagCompound?, p1: ModTileEntity.SyncReason?) {
-
-    }
-
-    override fun onAssimilated(p0: MultiblockControllerBase?) {
-
-    }
-
-    override fun syncDataTo(p0: NBTTagCompound?, p1: ModTileEntity.SyncReason?) {
-
-    }
-
-    override fun onMachinePaused() {
-
-    }
-
     override fun getComponents(): MutableList<Pair<String, AbstractComponent>> {
         val components = mutableListOf<Pair<String, AbstractComponent>>()
         this.ports.forEach { components.addAll(it.getComponents()) }
