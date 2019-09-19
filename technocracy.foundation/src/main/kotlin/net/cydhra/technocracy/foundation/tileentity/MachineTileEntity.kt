@@ -38,11 +38,20 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
 
     protected val progressComponent = ProgressComponent()
 
+    protected val canProcessComponent = CanProcessComponent()
+
+    protected val processingSpeedComponent = ProcessSpeedComponent()
+
+    protected val energyCostComponent = EnergyCostComponent()
+
     init {
         this.registerComponent(redstoneModeComponent, "redstone_mode")
         this.registerComponent(energyStorageComponent, "energy")
         this.registerComponent(machineUpgradesComponent, "upgrades")
         this.registerComponent(progressComponent, "progress")
+        this.registerComponent(canProcessComponent, "processing")
+        this.registerComponent(processingSpeedComponent, "processing_speed")
+        this.registerComponent(energyCostComponent, "processing_cost")
     }
 
     override fun getGui(player: EntityPlayer?): TCGui {
