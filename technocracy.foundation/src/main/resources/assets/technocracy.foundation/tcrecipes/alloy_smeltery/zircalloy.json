@@ -2,19 +2,19 @@
   "input": [
     {
       "type": "forge:ore_dict",
-      "ore": "obsidian"
+      "ore": "ingotTin"
     },
     {
       "type": "forge:ore_dict",
-      "ore": "ingotLead"
+      "ore": "ingotIron"
     },
     {
       "type": "forge:ore_dict",
-      "ore": "ingotNickel"
+      "ore": "ingotZirconium"
     }
   ],
   "output": {
-    "item": "technocracy.foundation:ingot.toughAlloy",
+    "item": "technocracy.foundation:ingot.zircalloy",
     "count": 1
   },
   "cost": 120
