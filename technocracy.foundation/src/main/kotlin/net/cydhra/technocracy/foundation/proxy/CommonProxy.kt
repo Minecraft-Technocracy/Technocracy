@@ -115,7 +115,6 @@ open class CommonProxy {
         fluidManager.registerFluid(keroseneFluid)
         fluidManager.registerFluid(rocketFuelFluid)
         fluidManager.registerFluid(propyleneOxideFluid)
-        fluidManager.registerFluid(propyleneGlycolFluid)
         fluidManager.registerFluid(chlorineFluid)
         fluidManager.registerFluid(styreneFluid)
         fluidManager.registerFluid(cryogenicGelFluid)

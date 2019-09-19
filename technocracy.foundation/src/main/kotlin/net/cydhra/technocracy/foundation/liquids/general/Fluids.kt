@@ -19,7 +19,6 @@ val phenolFluid = BaseFluid("phenol", Color(117, 123, 225), opaqueTexture = fals
 val keroseneFluid = BaseFluid("kerosene", Color(221, 225, 168), opaqueTexture = false)
 val rocketFuelFluid = BaseFluid("rocket_fuel", Color(225, 118, 97), opaqueTexture = false)
 val propyleneOxideFluid = BaseFluid("propylene_oxide", Color(225, 185, 210), opaqueTexture = false)
-val propyleneGlycolFluid = BaseFluid("propylene_glycol", Color(255, 215, 240), opaqueTexture = false)
 val chlorineFluid = BaseFluid("chlorine", Color(120, 200, 120), opaqueTexture = false)
 val styreneFluid = BaseFluid("styrene", Color(255, 255, 255), opaqueTexture = false)
 val cryogenicGelFluid = BaseFluid("cryogenic_gel", Color(110, 110, 200), opaqueTexture = true)

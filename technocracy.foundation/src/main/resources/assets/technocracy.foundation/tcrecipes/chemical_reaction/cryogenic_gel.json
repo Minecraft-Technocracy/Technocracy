@@ -1,17 +1,17 @@
 {
   "input": [
     {
-      "fluid": "propene",
+      "fluid": "propylene_oxide",
       "amount": 1
     },
     {
-      "fluid": "oxygen",
+      "fluid": "water",
       "amount": 2
     }
   ],
   "output": {
-    "fluid": "propylene_oxide",
+    "fluid": "cryogenic_gel",
     "amount": 1
   },
-  "cost": 64
+  "cost": 300
 }
