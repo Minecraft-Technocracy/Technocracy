@@ -33,6 +33,8 @@ import net.minecraft.util.EnumHand
 import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
+import net.minecraftforge.common.capabilities.Capability
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler
 import kotlin.reflect.KClass
 
 /**
@@ -193,4 +195,14 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
 
     open fun initGui(gui: TCGui) {}
 
+    override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
+        return multiblockController?.isAssembled ?: false && this.supportsCapability(capability, facing)
+    }
+
+    override fun <T : Any?> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
+        return if (multiblockController?.isAssembled == true)
+            this.castCapability(capability, facing)
+        else
+            null
+    }
 }
