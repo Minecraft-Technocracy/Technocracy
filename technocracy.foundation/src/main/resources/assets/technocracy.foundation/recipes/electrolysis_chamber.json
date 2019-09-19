@@ -14,7 +14,7 @@
     },
     "i": {
       "type": "forge:ore_dict",
-      "ore": "ingotLightAlloy"
+      "ore": "ingotZircalloy"
     },
     "s": {
       "type": "forge:ore_dict",
