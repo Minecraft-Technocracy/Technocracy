@@ -3,9 +3,9 @@ package net.cydhra.technocracy.foundation.tileentity.components
 import net.minecraft.nbt.NBTTagCompound
 
 /**
- * A component that stores a value indicating the energy consumption multiplier of a machine.
+ * A component that stores a value indicating the energy/fuel/input consumption multiplier of a machine.
  */
-class EnergyCostComponent : AbstractComponent() {
+class ConsumptionMultiplierComponent : AbstractComponent() {
     companion object {
         private const val NBT_KEY_ENERGY = "energy"
     }
@@ -19,7 +19,7 @@ class EnergyCostComponent : AbstractComponent() {
 
     override fun serializeNBT(): NBTTagCompound {
         return NBTTagCompound().apply {
-            setDouble(NBT_KEY_ENERGY, this@EnergyCostComponent.energyMultiplier)
+            setDouble(NBT_KEY_ENERGY, this@ConsumptionMultiplierComponent.energyMultiplier)
         }
     }
 

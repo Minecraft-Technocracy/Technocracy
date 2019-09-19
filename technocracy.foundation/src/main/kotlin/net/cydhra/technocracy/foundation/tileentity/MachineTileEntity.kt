@@ -42,7 +42,7 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
 
     protected val processingSpeedComponent = ProcessSpeedComponent()
 
-    protected val energyCostComponent = EnergyCostComponent()
+    protected val energyCostComponent = ConsumptionMultiplierComponent()
 
     init {
         this.registerComponent(redstoneModeComponent, "redstone_mode")
