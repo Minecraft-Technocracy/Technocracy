@@ -18,6 +18,11 @@ class CanProcessComponent : AbstractComponent() {
      */
     var canProcess: Boolean = true
 
+    /**
+     * Whether the processing logic is actually processing at the moment. This does not need to be saved to NBT
+     */
+    var isProcessing: Boolean = false
+
     override fun serializeNBT(): NBTTagCompound {
         return NBTTagCompound().apply {
             setBoolean(NBT_KEY_CAN_PROCESS, this@CanProcessComponent.canProcess)
