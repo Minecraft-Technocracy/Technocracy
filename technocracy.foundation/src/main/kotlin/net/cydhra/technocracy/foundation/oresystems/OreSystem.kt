@@ -35,7 +35,7 @@ import java.awt.Color
 
 fun oreSystem(block: OreSystemBuilder.() -> Unit) = OreSystemBuilder().apply(block).build()
 
-class OreSystem(val materialName: String, val ore: Block, val ingot: Item, val dust: Item, val crystal: ColoredPrefixedItem,
+class OreSystem(val materialName: String, val oreType: String, val ore: Block, val ingot: Item, val dust: Item, val crystal: ColoredPrefixedItem,
                 val grit: ColoredPrefixedItem, val gear: ColoredPrefixedItem?, val sheet: ColoredPrefixedItem?, val slag: BaseFluid,
                 val slurry: BaseFluid, val enrichedSlurry: BaseFluid,
                 val oreGeneratorSettings: OreSystemBuilder.OreGeneratorSettings,
@@ -85,6 +85,8 @@ class OreSystem(val materialName: String, val ore: Block, val ingot: Item, val d
 class OreSystemBuilder {
     lateinit var name: String
     var color: Int = 0
+
+    var oreType: String = "ore"
 
     private var generateOre = true
     private var generateIngot = true
@@ -140,7 +142,7 @@ class OreSystemBuilder {
         val itemColor = ConstantItemColor(this.color)
 
         if (generateOre) {
-            this.ore = OreBlock(this.name, this.color)
+            this.ore = OreBlock(this.name, this.oreType, this.color)
         } else {
             // dummy settings. if no ore is generated, those will not be used
             this.oreGeneratorSettings = OreGeneratorSettings()
@@ -157,6 +159,7 @@ class OreSystemBuilder {
         else null
 
         return OreSystem(materialName = this.name,
+                oreType = this.oreType,
                 ore = this.ore,
                 ingot = this.ingot,
                 dust = this.dust,

@@ -83,6 +83,7 @@ open class CommonProxy {
                 niobiumSystem,
                 silverSystem,
                 tinSystem,
+                zirconiumSystem,
                 ironSystem,
                 goldSystem)
 
