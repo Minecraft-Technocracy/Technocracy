@@ -74,7 +74,6 @@ abstract class BaseMultiBlock(
     }
 
     override fun onBlockAdded(p0: IMultiblockPart?) {
-        TODO("not implemented")
     }
 
     override fun onBlockRemoved(p0: IMultiblockPart?) {
