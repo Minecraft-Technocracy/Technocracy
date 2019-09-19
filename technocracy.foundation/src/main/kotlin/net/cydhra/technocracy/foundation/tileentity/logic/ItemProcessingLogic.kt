@@ -84,7 +84,7 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
                                 .all { (outputStack, outputSlot) ->
                                     this.outputInventory?.insertItem(outputSlot, outputStack, simulate = true) == ItemStack.EMPTY
                                 }
-                        && recipeFluidOutput.zip(0 until this.outputFluidSlots.size)
+                        && recipeFluidOutput.zip(this.outputFluidSlots.indices)
                                 .all { (fluidStack, fluidSlot) ->
                                     this.outputFluidSlots[fluidSlot].fill(fluidStack, false) == fluidStack.amount
                                 }) {
@@ -102,7 +102,7 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
                     // consume input fluids
                     val recipeFluidRequirements = this.currentRecipe!!.getFluidInput()
                     recipeFluidRequirements.forEach { ingredient ->
-                        for (slot in (0 until this.inputFluidSlots.size)) {
+                        for (slot in this.inputFluidSlots.indices) {
                             if (ingredient.isFluidEqual(this.inputFluidSlots[slot].currentFluid)) {
                                 inputFluidSlots[slot].drain(ingredient, true)
                             }
@@ -115,8 +115,7 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
                     }
 
                     // insert output fluids
-                    // TODO there is a bug in here probably, since centrifuge recipe output is doubled
-                    recipeFluidOutput.zip(0 until this.outputFluidSlots.size).forEach { (fluidStack, outputSlot) ->
+                    recipeFluidOutput.zip(this.outputFluidSlots.indices).forEach { (fluidStack, outputSlot) ->
                         this.outputFluidSlots[outputSlot].fill(fluidStack, true)
                     }
 
