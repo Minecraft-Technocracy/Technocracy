@@ -51,16 +51,6 @@ class MachineWailaProvider : IWailaDataProvider {
                                         componentTag.getString("FluidName")))
                             }
                         }
-                        ComponentType.PIPE_TYPES -> {
-                        }
-                        ComponentType.HEAT -> {
-                        }
-                        ComponentType.UPGRADES -> {
-                        }
-                        ComponentType.REDSTONE_MODE -> {
-                        }
-                        ComponentType.PROGRESS -> {
-                        }
                         ComponentType.INVENTORY -> {
                             val items = componentTag.getTagList("Items", Constants.NBT.TAG_COMPOUND)
                             items.forEach {
@@ -68,7 +58,7 @@ class MachineWailaProvider : IWailaDataProvider {
                                 tooltip.add(SpecialChars.getRenderString("${TCFoundation.MODID}.item", compound.getString("id"), compound.getInteger("Count").toString()))
                             }
                         }
-                        ComponentType.FACADE, ComponentType.NETWORK -> {
+                        else -> {
                         }
                     }
                 }

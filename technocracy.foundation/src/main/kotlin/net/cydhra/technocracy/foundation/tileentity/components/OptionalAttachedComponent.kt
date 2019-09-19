@@ -13,7 +13,7 @@ import net.minecraftforge.common.capabilities.Capability
 class OptionalAttachedComponent<T : AbstractComponent>(val innerComponent: T) : AbstractCapabilityComponent() {
 
     var isAttached = false
-    override val type: ComponentType = ComponentType.OPTIONAL
+    override val type: ComponentType = ComponentType.OTHER
 
     override fun serializeNBT(): NBTTagCompound {
         val comp = NBTTagCompound()

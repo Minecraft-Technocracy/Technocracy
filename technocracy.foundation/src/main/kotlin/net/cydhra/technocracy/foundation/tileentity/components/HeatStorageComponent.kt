@@ -11,7 +11,7 @@ import net.minecraft.nbt.NBTTagCompound
 class HeatStorageComponent(initialHeat: Int, var heatCapacity: Int = 1000) :
         AbstractComponent() {
 
-    override val type: ComponentType = ComponentType.HEAT
+    override val type: ComponentType = ComponentType.OTHER
 
     companion object {
         const val NBT_KEY_HEAT = "heat"

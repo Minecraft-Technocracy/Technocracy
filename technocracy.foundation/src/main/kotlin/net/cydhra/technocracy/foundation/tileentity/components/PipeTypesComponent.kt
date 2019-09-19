@@ -7,7 +7,7 @@ import java.util.*
 
 class PipeTypesComponent : AbstractComponent() {
 
-    override val type: ComponentType = ComponentType.PIPE_TYPES
+    override val type: ComponentType = ComponentType.OTHER
 
     var types = mutableSetOf<PipeType>()
 

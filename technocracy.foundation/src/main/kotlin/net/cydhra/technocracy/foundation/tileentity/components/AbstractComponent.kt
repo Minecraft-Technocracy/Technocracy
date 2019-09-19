@@ -44,12 +44,5 @@ enum class ComponentType(val supportsWaila: Boolean = false) {
     ENERGY(true),
     FLUID(true),
     INVENTORY(true),
-    FACADE,
-    PIPE_TYPES(true),
-    HEAT(true),
-    UPGRADES(true),
-    NETWORK,
-    REDSTONE_MODE(true),
-    PROGRESS(true),
-    OPTIONAL(true)
+    OTHER
 }

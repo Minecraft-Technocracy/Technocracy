@@ -10,7 +10,7 @@ import net.minecraft.nbt.NBTTagCompound
  */
 class RedstoneModeComponent : AbstractComponent() {
 
-    override val type: ComponentType = ComponentType.REDSTONE_MODE
+    override val type: ComponentType = ComponentType.OTHER
 
     /**
      * The current set mode on the machine.

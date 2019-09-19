@@ -2,21 +2,15 @@ package net.cydhra.technocracy.foundation.tileentity.components
 
 import net.minecraft.nbt.NBTTagCompound
 
-class ProgressComponent: AbstractComponent() {
-
+class CanProcessComponent : AbstractComponent() {
     override val type: ComponentType = ComponentType.OTHER
 
-    /**
-     * progress from 0 to 100
-     */
-    var progress: Int = 0
-
     override fun serializeNBT(): NBTTagCompound {
-        return NBTTagCompound().apply { setInteger("progress", progress) }
+        TODO("not implemented")
     }
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
-        progress = nbt.getInteger("progress")
+        TODO("not implemented")
     }
 
 }

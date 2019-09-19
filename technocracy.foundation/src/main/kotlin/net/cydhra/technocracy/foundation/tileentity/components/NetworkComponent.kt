@@ -6,7 +6,7 @@ import java.util.*
 
 class NetworkComponent : AbstractComponent() {
 
-    override val type: ComponentType = ComponentType.NETWORK
+    override val type: ComponentType = ComponentType.OTHER
 
     var uuid: UUID? = null
 
