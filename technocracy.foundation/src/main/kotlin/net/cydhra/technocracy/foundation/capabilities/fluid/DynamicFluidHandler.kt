@@ -7,6 +7,7 @@ import net.minecraftforge.fluids.FluidRegistry
 import net.minecraftforge.fluids.FluidStack
 import net.minecraftforge.fluids.capability.IFluidHandler
 import net.minecraftforge.fluids.capability.IFluidTankProperties
+import kotlin.math.min
 
 /**
  * @param capacity fluid storage capacity
@@ -14,7 +15,7 @@ import net.minecraftforge.fluids.capability.IFluidTankProperties
  * @param tanktype whether input, output or both are allowed
  */
 open class DynamicFluidHandler(var capacity: Int = 1000, val allowedFluid: MutableList<String> = mutableListOf(),
-                          var tanktype: TankType = TankType.BOTH) :
+                               var tanktype: TankType = TankType.BOTH) :
         IFluidHandler, INBTSerializable<NBTTagCompound>, AbstractDynamicHandler() {
 
     var currentFluid: FluidStack? = null
@@ -72,6 +73,16 @@ open class DynamicFluidHandler(var capacity: Int = 1000, val allowedFluid: Mutab
         }
 
         return out
+    }
+
+    fun setFluid(resource: FluidStack) {
+        currentFluid = FluidStack(resource.fluid, 0)
+
+        val fill = min(resource.amount, capacity)
+
+        currentFluid!!.amount = fill
+
+        markDirty(true)
     }
 
     override fun fill(resource: FluidStack, doFill: Boolean): Int {

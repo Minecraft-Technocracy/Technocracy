@@ -126,7 +126,7 @@ class TankMultiBlock(world: World) : BaseMultiBlock(
 
                 if(currentFluid != null) {
                     //fill fluid back into tank
-                    this@TankMultiBlock.controllerTileEntity!!.fluidComp.innerComponent.fluid.fill(currentFluid, true)
+                    this@TankMultiBlock.controllerTileEntity!!.fluidComp.innerComponent.fluid.setFluid(currentFluid)
                 }
 
                 this@TankMultiBlock.controllerTileEntity!!.fluidComp.markDirty(true)

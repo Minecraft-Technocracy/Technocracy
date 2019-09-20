@@ -8,6 +8,7 @@ import net.cydhra.technocracy.foundation.client.model.customModel.connector.Mach
 import net.cydhra.technocracy.foundation.client.model.facade.FacadeItemModel
 import net.cydhra.technocracy.foundation.client.model.pipe.PipeItemModel
 import net.cydhra.technocracy.foundation.client.model.pipe.PipeModel
+import net.cydhra.technocracy.foundation.client.model.tank.MutliBlockTankFluidModel
 import net.cydhra.technocracy.foundation.client.technocracyCreativeTabs
 import net.cydhra.technocracy.foundation.conduits.ConduitNetwork
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
@@ -173,9 +174,9 @@ open class CommonProxy {
         blockManager.prepareBlocksForRegistration(leadBlock)
         blockManager.prepareBlocksForRegistration(leadOxideBlock)
 
-        blockManager.prepareBlocksForRegistration(tankWallBlock)
-        blockManager.prepareBlocksForRegistration(tankIOBlock)
-        blockManager.prepareBlocksForRegistration(tankGlassBlock)
+        blockManager.prepareBlocksForRegistration(tankWallBlock, MutliBlockTankFluidModel())
+        blockManager.prepareBlocksForRegistration(tankIOBlock, MutliBlockTankFluidModel())
+        blockManager.prepareBlocksForRegistration(tankGlassBlock, MutliBlockTankFluidModel())
 
         blockManager.prepareBlocksForRegistration(oilSandBlock)
         blockManager.prepareBlocksForRegistration(oilStone)
