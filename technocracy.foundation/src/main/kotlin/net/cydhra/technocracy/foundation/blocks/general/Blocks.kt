@@ -78,9 +78,9 @@ val capacitorWallBlock = PlainMultiBlockPartBlock("capacitor_wall", ::TileEntity
 val capacitorConnectorBlock = PlainMultiBlockPartBlock("capacitor_connector", ::TileEntityMultiBlockPartCapacitor)
 val capacitorEnergyPortBlock = MultiBlockRotatableActiveBlock("capacitor_energy_port", ::TileEntityCapacitorEnergyPort)
 
-val tankWallBlock = PlainMultiBlockPartBlock("tank_wall", ::TileEntityTankMultiBlockPart)
-val tankGlassBlock = PlainMultiBlockPartBlock("tank_glass", ::TileEntityTankMultiBlockPart, isFullCube = false, opaque = false, glassSides = true, renderLayer = BlockRenderLayer.CUTOUT)
-val tankIOBlock = PlainMultiBlockPartBlock("tank_io", ::TileEntityTankPort)
+val tankWallBlock = TankMultiBlockBlock("tank_wall", ::TileEntityTankMultiBlockPart)
+val tankGlassBlock = TankMultiBlockBlock("tank_glass", ::TileEntityTankMultiBlockPart, isFullCube = false, opaque = false, glassSides = true, renderLayer = BlockRenderLayer.CUTOUT)
+val tankIOBlock = TankMultiBlockBlock("tank_io", ::TileEntityTankPort)
 
 val leadBlock = PlainBlock("lead_block", Material.IRON)
 val leadOxideBlock = PlainBlock("lead_oxide_block", Material.IRON)

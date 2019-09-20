@@ -24,7 +24,7 @@ import net.minecraftforge.fml.relauncher.SideOnly
  * @param opaque whether this block is opaque
  * @param renderLayer render layer of blocks of this type
  */
-class PlainMultiBlockPartBlock<T>(
+open class PlainMultiBlockPartBlock<T>(
         unlocalizedName: String,
         tileEntityConstructor: () -> T,
         private val opaque: Boolean = true,
