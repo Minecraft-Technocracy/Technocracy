@@ -52,7 +52,6 @@ class TankMultiBlock(world: World) : BaseMultiBlock(
     }
 
     override fun updateClient() {
-
     }
 
     override fun isMachineWhole(validatorCallback: IMultiblockValidator): Boolean {

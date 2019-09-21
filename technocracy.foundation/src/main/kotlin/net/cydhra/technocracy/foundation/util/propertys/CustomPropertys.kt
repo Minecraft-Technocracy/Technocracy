@@ -8,4 +8,4 @@ import javax.vecmath.Vector3f
 val POSITION = UnlistedProperty("position", BlockPos::class.java)
 val FLUIDSTACK = UnlistedProperty("fluid_stack", FluidStack::class.java)
 val DIMENSIONS = UnlistedProperty("dimensions", Vector3f::class.java)
-val TANKSIZE = UnlistedProperty("tanksize", Int::class.java)
+val TANKSIZE = UnlistedProperty("tanksize", Integer::class.java)

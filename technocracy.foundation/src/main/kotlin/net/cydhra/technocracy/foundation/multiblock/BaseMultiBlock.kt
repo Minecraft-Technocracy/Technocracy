@@ -6,6 +6,7 @@ import it.zerono.mods.zerocore.api.multiblock.rectangular.RectangularMultiblockC
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import it.zerono.mods.zerocore.api.multiblock.validation.ValidationError
 import it.zerono.mods.zerocore.lib.block.ModTileEntity
+import net.cydhra.technocracy.foundation.blocks.PlainMultiBlockPartBlock
 import net.cydhra.technocracy.foundation.tileentity.components.AbstractComponent
 import net.minecraft.block.state.IBlockState
 import net.minecraft.nbt.NBTTagCompound
@@ -186,6 +187,7 @@ abstract class BaseMultiBlock(
     }
 
     override fun forceStructureUpdate(world: World) {
+        //TODO optimize, not all blocks need an update, only the ones with outgoing capabilitys (maybe add variable in tiles)
         val minCoord = this.minimumCoord
         val maxCoord = this.maximumCoord
         val minX = minCoord.x
@@ -200,8 +202,10 @@ abstract class BaseMultiBlock(
                 for (z in minZ..maxZ) {
                     val pos = BlockPos(x, y, z)
                     val state = world.getBlockState(pos)
-                    //send actual block update not just render update
-                    world.markAndNotifyBlock(pos, world.getChunkFromBlockCoords(pos), state, state, 3)
+                    if(state.block is PlainMultiBlockPartBlock<*>) {
+                        //send actual block update not just render update
+                        world.markAndNotifyBlock(pos, world.getChunkFromBlockCoords(pos), state, state, 3)
+                    }
                 }
             }
         }

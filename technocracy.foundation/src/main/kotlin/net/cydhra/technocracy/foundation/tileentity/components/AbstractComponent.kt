@@ -15,7 +15,8 @@ abstract class AbstractComponent {
 
     open fun markDirty(needsClientRerender: Boolean = false) {
         if (syncToClient && needsClientRerender) {
-            tile.world.notifyBlockUpdate(tile.pos, tile.world.getBlockState(tile.pos), tile.world.getBlockState(tile.pos), 0)
+            val state = tile.world.getBlockState(tile.pos)
+            tile.world.notifyBlockUpdate(tile.pos, state, state, 0)
         }
         tile.markDirty()
     }

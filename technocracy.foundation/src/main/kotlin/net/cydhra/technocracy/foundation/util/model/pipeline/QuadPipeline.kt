@@ -8,7 +8,7 @@ class QuadPipeline {
     val consumers = mutableSetOf<IQuadConsumer>()
 
     fun addConsumer(vararg consumer: IQuadConsumer): QuadPipeline {
-        for(cons in consumer)
+        for (cons in consumer)
             cons.reset()
         consumers.addAll(consumer)
         return this
@@ -27,9 +27,10 @@ class QuadPipeline {
         return quad
     }
 
-    fun pipe(quad: SimpleQuad) {
+    fun pipe(quad: SimpleQuad): SimpleQuad {
         for (cons in consumers) {
             cons.consume(quad)
         }
+        return quad
     }
 }

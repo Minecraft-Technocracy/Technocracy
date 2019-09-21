@@ -29,7 +29,7 @@ class TankMultiBlockBlock<T>(unlocalizedName: String,
         if (world != null && pos != null) {
             val tile = world.getTileEntity(pos) as? TileEntityTankMultiBlockPart
                     ?: return (state as IExtendedBlockState).withProperty(FLUIDSTACK, null).withProperty(DIMENSIONS, null).withProperty(TANKSIZE, null)
-            if (tile.fluidComp.isAttached) {
+            if (tile.fluidComp.isAttached && tile.multiblockController != null && tile.multiblockController!!.isAssembled && tile.fluidComp.innerComponent.fluid.currentFluid != null) {
                 val minimumCoord = tile.multiblockController!!.minimumCoord!!
                 val maximumCoord = tile.multiblockController!!.maximumCoord!!
                 val sizeX = maximumCoord.x - minimumCoord.x + 1f
@@ -37,9 +37,7 @@ class TankMultiBlockBlock<T>(unlocalizedName: String,
                 val sizeZ = maximumCoord.z - minimumCoord.z + 1f
                 return (state as IExtendedBlockState).withProperty(FLUIDSTACK, tile.fluidComp.innerComponent.fluid.currentFluid)
                         .withProperty(DIMENSIONS, Vector3f(sizeX, sizeY, sizeZ))
-                        .withProperty(TANKSIZE, tile.fluidComp.innerComponent.fluid.capacity)
-            } else {
-                tile.fluidComp.isAttached
+                        .withProperty(TANKSIZE, tile.fluidComp.innerComponent.fluid.capacity as Integer)
             }
         }
 
@@ -48,5 +46,9 @@ class TankMultiBlockBlock<T>(unlocalizedName: String,
 
     override fun createBlockState(): BlockStateContainer {
         return BlockStateContainer.Builder(this).add(FLUIDSTACK).add(DIMENSIONS).add(TANKSIZE).build()
+    }
+
+    override fun canRenderInLayer(state: IBlockState, layer: BlockRenderLayer): Boolean {
+        return true
     }
 }

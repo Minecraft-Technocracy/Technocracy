@@ -21,6 +21,9 @@ open class TileEntityTankMultiBlockPart : TileEntityMultiBlockPart<TankMultiBloc
     }
 
     init {
+        fluidComp.innerComponent.fluid.fluidChangeThreshold = 1f
+
+        fluidComp.innerComponent.syncToClient = true
         this.registerComponent(fluidComp, "fluidComponent")
     }
 }

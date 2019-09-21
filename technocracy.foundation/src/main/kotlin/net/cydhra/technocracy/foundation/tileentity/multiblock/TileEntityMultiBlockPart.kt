@@ -28,6 +28,8 @@ import net.cydhra.technocracy.foundation.tileentity.components.ProgressComponent
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.network.NetworkManager
+import net.minecraft.network.play.server.SPacketUpdateTileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumHand
 import net.minecraft.util.ResourceLocation
@@ -52,13 +54,18 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
         this.tile = this
     }
 
-    override fun writeToNBT(data: NBTTagCompound): NBTTagCompound {
-        return this.serializeNBT(super.writeToNBT(data))
+    override fun syncDataTo(data: NBTTagCompound?, syncReason: SyncReason?) {
+        super.syncDataTo(this.serializeNBT(data!!), syncReason)
     }
 
-    override fun readFromNBT(data: NBTTagCompound) {
-        super.readFromNBT(data)
-        this.deserializeNBT(data)
+    override fun syncDataFrom(data: NBTTagCompound?, syncReason: SyncReason?) {
+        super.syncDataFrom(data, syncReason)
+        this.deserializeNBT(data!!)
+        markRenderUpdate()
+    }
+
+    fun markRenderUpdate() {
+        world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 0)
     }
 
     override fun createNewMultiblock(): T {
