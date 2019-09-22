@@ -33,12 +33,15 @@ class MutliBlockTankFluidModelBakery(val baseModel: IBakedModel) : IBakedModel b
 
         val quads = mutableListOf<BakedQuad>()
 
-        if (currentLayer != BlockRenderLayer.TRANSLUCENT)
-            return quads
-
         val extended = state as? IExtendedBlockState ?: return quads
 
         val stack = extended.getValue(FLUIDSTACK) ?: return quads
+
+        val renderLayer = stack.fluid.block?.blockLayer ?: BlockRenderLayer.TRANSLUCENT
+
+        if (currentLayer != renderLayer)
+            return quads
+
         val dimension = extended.getValue(DIMENSIONS) ?: return quads
         //use Integer as it causes class cast exception
         val maxSize = extended.getValue(TANKSIZE) ?: return quads
@@ -68,43 +71,44 @@ class MutliBlockTankFluidModelBakery(val baseModel: IBakedModel) : IBakedModel b
         val b = (stack.fluid.color and 0xFF) / 255f
         val g = (stack.fluid.color shr 8 and 0xFF) / 255f
         val r = (stack.fluid.color shr 16 and 0xFF) / 255f
+        val a = 0.8f
 
         north.addPos(maxX, maxY, minZ).addPos(maxX, minY, minZ).addPos(minX, minY, minZ).addPos(minX, maxY, minZ)
         north.addUV(minU, minV).addUV(minU, maxV).addUV(maxU, maxV).addUV(maxU, minV)
-        north.addColor(r,g,b,1f).addColor(r,g,b,1f).addColor(r,g,b,1f).addColor(r,g,b,1f)
+        north.addColor(r, g, b, a).addColor(r, g, b, a).addColor(r, g, b, a).addColor(r, g, b, a)
         quads.add(pipeline.pipe(north).bake())
 
         val south = SimpleQuad(DefaultVertexFormats.POSITION_TEX_COLOR).setTexture(texture).setFace(EnumFacing.SOUTH)
         south.addPos(minX, maxY, maxZ).addPos(minX, minY, maxZ).addPos(maxX, minY, maxZ).addPos(maxX, maxY, maxZ)
         //south.addUV(minU, minV).addUV(minU, maxV).addUV(maxU, maxV).addUV(maxU, minV)
         south.addUV(maxU, minV).addUV(maxU, maxV).addUV(minU, maxV).addUV(minU, minV)
-        south.addColor(r,g,b,1f).addColor(r,g,b,1f).addColor(r,g,b,1f).addColor(r,g,b,1f)
+        south.addColor(r, g, b, a).addColor(r, g, b, a).addColor(r, g, b, a).addColor(r, g, b, a)
         quads.add(pipeline.pipe(south).bake())
 
         val west = SimpleQuad(DefaultVertexFormats.POSITION_TEX_COLOR).setTexture(texture).setFace(EnumFacing.WEST)
         west.addPos(minX, maxY, minZ).addPos(minX, minY, minZ).addPos(minX, minY, maxZ).addPos(minX, maxY, maxZ)
         //west.addUV(maxU, minV).addUV(minU, minV).addUV(minU, maxV).addUV(maxU, maxV)
         west.addUV(maxU, minV).addUV(maxU, maxV).addUV(minU, maxV).addUV(minU, minV)
-        west.addColor(r,g,b,1f).addColor(r,g,b,1f).addColor(r,g,b,1f).addColor(r,g,b,1f)
+        west.addColor(r, g, b, a).addColor(r, g, b, a).addColor(r, g, b, a).addColor(r, g, b, a)
         quads.add(pipeline.pipe(west).bake())
 
         val east = SimpleQuad(DefaultVertexFormats.POSITION_TEX_COLOR).setTexture(texture).setFace(EnumFacing.EAST)
         east.addPos(maxX, maxY, maxZ).addPos(maxX, minY, maxZ).addPos(maxX, minY, minZ).addPos(maxX, maxY, minZ)
         //east.addUV(maxU, minV).addUV(minU, minV).addUV(minU, maxV).addUV(maxU, maxV).rotate(1)
         east.addUV(minU, minV).addUV(minU, maxV).addUV(maxU, maxV).addUV(maxU, minV)
-        east.addColor(r,g,b,1f).addColor(r,g,b,1f).addColor(r,g,b,1f).addColor(r,g,b,1f)
+        east.addColor(r, g, b, a).addColor(r, g, b, a).addColor(r, g, b, a).addColor(r, g, b, a)
         quads.add(pipeline.pipe(east).bake())
 
         val up = SimpleQuad(DefaultVertexFormats.POSITION_TEX_COLOR).setTexture(texture).setFace(EnumFacing.UP)
         up.addPos(maxX, maxY, maxZ).addPos(maxX, maxY, minZ).addPos(minX, maxY, minZ).addPos(minX, maxY, maxZ)
         up.addUV(minU, maxV).addUV(minU, minV).addUV(maxU, minV).addUV(maxU, maxV)
-        up.addColor(r,g,b,1f).addColor(r,g,b,1f).addColor(r,g,b,1f).addColor(r,g,b,1f)
+        up.addColor(r, g, b, a).addColor(r, g, b, a).addColor(r, g, b, a).addColor(r, g, b, a)
         quads.add(pipeline.pipe(up).bake())
 
         val bottom = SimpleQuad(DefaultVertexFormats.POSITION_TEX_COLOR).setTexture(texture).setFace(EnumFacing.DOWN)
         bottom.addPos(minX, minY, maxZ).addPos(minX, minY, minZ).addPos(maxX, minY, minZ).addPos(maxX, minY, maxZ)
         bottom.addUV(minU, maxV).addUV(minU, minV).addUV(maxU, minV).addUV(maxU, maxV)
-        bottom.addColor(r,g,b,1f).addColor(r,g,b,1f).addColor(r,g,b,1f).addColor(r,g,b,1f)
+        bottom.addColor(r, g, b, a).addColor(r, g, b, a).addColor(r, g, b, a).addColor(r, g, b, a)
         quads.add(pipeline.pipe(bottom).bake())
 
 
