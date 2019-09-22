@@ -25,6 +25,7 @@ import net.cydhra.technocracy.foundation.tileentity.components.EnergyStorageComp
 import net.cydhra.technocracy.foundation.tileentity.components.FluidComponent
 import net.cydhra.technocracy.foundation.tileentity.components.InventoryComponent
 import net.cydhra.technocracy.foundation.tileentity.components.ProgressComponent
+import net.minecraft.client.Minecraft
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.nbt.NBTTagCompound
@@ -65,7 +66,9 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
     }
 
     fun markRenderUpdate() {
-        world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 0)
+        //only update if the world is fully laoded
+        if (Minecraft.getMinecraft().player != null)
+            world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 0)
     }
 
     override fun createNewMultiblock(): T {
@@ -120,7 +123,7 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
             if (!world.isRemote) {
                 if (this is ITileEntityMultiblockController && validateStructure()) {
                     player.openGui(TCFoundation, TCGuiHandler.multiblockGui, world, pos.x, pos.y, pos.z)
-                    guiInfoPacketSubscribers[player as EntityPlayerMP] =  Pair(pos, world.provider.dimension)
+                    guiInfoPacketSubscribers[player as EntityPlayerMP] = Pair(pos, world.provider.dimension)
                 }
             }
         }
@@ -188,10 +191,10 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
                         }
                     }
                 }
-                if(foundProgressComponent != null)
+                if (foundProgressComponent != null)
                     components.add(DefaultProgressBar((outputNearestToTheMiddle - inputNearestToTheMiddle) / 2 - 11 + inputNearestToTheMiddle, 40, Orientation.RIGHT, foundProgressComponent as ProgressComponent, gui))
 
-                if(player != null)
+                if (player != null)
                     addPlayerInventorySlots(player, 8, 84)
             }
         })
