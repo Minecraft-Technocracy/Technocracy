@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.data.general
 
+import net.cydhra.technocracy.foundation.data.OwnershipManager
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.world.storage.WorldSavedData
 import net.minecraftforge.common.DimensionManager
@@ -9,7 +10,7 @@ class DataManager : WorldSavedData("TC_Data") {
 
     companion object {
         var manager: DataManager? = null
-        val modules = mutableListOf<AbstractSaveDataElement>()
+        val modules = mutableListOf<AbstractSaveDataElement>(OwnershipManager)
 
         fun init() {
             val worldServer = DimensionManager.getWorld(0)
