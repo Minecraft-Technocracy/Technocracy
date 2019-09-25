@@ -66,7 +66,7 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
     }
 
     fun markRenderUpdate() {
-        //only update if the world is fully laoded
+        //only update if the world is fully loaded
         if (Minecraft.getMinecraft().player != null)
             world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 0)
     }
