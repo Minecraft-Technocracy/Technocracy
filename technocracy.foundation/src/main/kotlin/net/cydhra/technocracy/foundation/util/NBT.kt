@@ -7,7 +7,7 @@ import java.util.*
 /**
  * DSL builder for an [NBTTagCompound]. It takes a block of code that can be used to easily add key-value-pairs to
  * the compound.
- * # Usage:
+ * # Example:
  * ```
  * compound {
  *     "key1" to 1
@@ -24,7 +24,7 @@ fun compound(block: CompoundBuilder.() -> Unit): NBTTagCompound {
 
 /**
  * DSL function to build an [NBTTagList] from an array of values. The type of the array must be homogeneous.
- * # Usage
+ * # Example
  * ```
  * tagList(1, 2, 3)
  * ```
@@ -33,6 +33,51 @@ fun compound(block: CompoundBuilder.() -> Unit): NBTTagCompound {
  */
 fun <T : Any> tagList(vararg values: T): NBTTagList {
     return values.map(::valueToTag).fold(NBTTagList()) { list, e -> list.apply { list.appendTag(e) } }
+}
+
+/**
+ * DSL function to build an [NBTTagList] using a block of code. The type of tags must be homogeneous.
+ * # Example
+ * ```
+ * constructTagList<Int> {
+ *     for (i in 1..12) {
+ *         appendToNBT(i*2)
+ *     }
+ * }
+ * ```
+ */
+fun <T : Any> constructTagList(block: TagListBuilder<T>.() -> Unit): NBTTagList {
+    return TagListBuilder<T>(NBTTagList()).apply(block).tagList
+}
+
+/**
+ * DSL function to build an [NBTTagList] by automatically creating [NBTBase] tags from a collection of type [T]. If
+ * the type is unsupported, an [IllegalArgumentException] will be thrown for the first element in the given [Collection]
+ * # Example
+ * ```
+ * listOf(1, 2, 3).toNBTTagList()
+ * ```
+ */
+fun <T : Any> Collection<T>.toNBTTagList(): NBTTagList {
+    return this.map(::valueToTag).fold(NBTTagList()) { list, e -> list.apply { appendTag(e) } }
+}
+
+/**
+ * DSL function to build an [NBTTagList] by automatically creating [N] tags from a collection of type [T] using a
+ * [mappingFunction]. If [T] is unsupported, an [IllegalArgumentException] will be thrown for the first element
+ * in the given [Collection].
+ * # Example
+ * ```
+ * listOf(Pair("player1", 3), Pair("player2", 4)).toNBTTagList { (name, score) ->
+ *     compound {
+ *         "name" to name
+ *         "score" to score
+ *     }
+ * }
+ * ```
+ */
+fun <T : Any, N : NBTBase> Collection<T>.toNBTTagList(mappingFunction: (T) -> N): NBTTagList {
+    return this.map(mappingFunction).fold(NBTTagList()) { list, e -> list.apply { appendTag(e) } }
 }
 
 /**
@@ -46,6 +91,17 @@ class CompoundBuilder(val compound: NBTTagCompound) {
      */
     infix fun String.to(value: Any) {
         compound.setTag(this, valueToTag(value))
+    }
+}
+
+class TagListBuilder<T : Any>(val tagList: NBTTagList) {
+
+    /**
+     * Append a value of type [T] to the current tag list. If [T] is unsupported by NBT, an
+     * [IllegalArgumentException] will be thrown
+     */
+    fun appendToNBT(value: T) {
+        tagList.appendTag(valueToTag(value))
     }
 }
 
