@@ -2,6 +2,7 @@ package net.cydhra.technocracy.foundation.util
 
 import net.minecraft.nbt.*
 import net.minecraft.util.math.BlockPos
+import java.lang.AssertionError
 import java.util.*
 
 /**
@@ -106,6 +107,16 @@ class TagListBuilder<T : Any>(val tagList: NBTTagList) {
 }
 
 /**
+ * DSL function to conveniently deserialize [NBTTagCompound] content at [key] into a variable of type [T].
+ * Warning. This function is highly unsafe. If [T] does not match the respective type in the compound, any exception
+ * might get thrown: from [IllegalArgumentException] to [NoSuchMethodException] everything could happen. Do
+ * not use this method if you do not perfectly know which tag type you are trying to deserialize.
+ */
+inline operator fun <reified T : Any> NBTTagCompound.get(key: String): T {
+    return tagToValue(this.getTag(key))
+}
+
+/**
  * Construct an [NBTBase] tag from any value. If an unsupported type is given, an [IllegalArgumentException] will be
  * thrown
  */
@@ -125,4 +136,42 @@ fun valueToTag(value: Any): NBTBase = when (value) {
     is Enum<*> -> NBTTagInt(value.ordinal)
     is NBTBase -> value
     else -> throw IllegalArgumentException("type unsupported")
+}
+
+/**
+ * Helper function to deserialize an [NBTBase] tag into type [T].
+ * Warning. This function is highly unsafe. If [T] does not match the respective type in [tag], any exception might
+ * get thrown: from [IllegalArgumentException] to [NoSuchMethodException] everything could happen. Do not use
+ * this method if you do not perfectly know which tag type you are trying to deserialize.
+ */
+inline fun <reified T> tagToValue(tag: NBTBase): T = when (tag) {
+    is NBTTagByte -> {
+        when {
+            T::class === Byte::class -> tag.byte as T
+            T::class === Boolean::class -> (tag.byte == 1.toByte()) as T
+            else -> throw IllegalArgumentException("tag type does not match generic type T")
+        }
+    }
+    is NBTTagShort -> tag.short as T
+    is NBTTagInt -> {
+        if (T::class === Integer::class) {
+            tag.int as T
+        } else { // if T is an enum
+            T::class.java.getMethod("values").invoke(null).apply { javaClass.getMethod("get").invoke(this, tag.int) } as T
+        }
+    }
+    is NBTTagLong -> tag.long as T
+    is NBTTagFloat -> tag.float as T
+    is NBTTagDouble -> tag.double as T
+    is NBTTagString -> tag.string as T
+    is NBTTagByteArray -> tag.byteArray as T
+    is NBTTagIntArray -> tag.intArray as T
+    is NBTTagCompound -> {
+        when {
+            T::class === BlockPos::class -> NBTUtil.getPosFromTag(tag) as T
+            T::class === UUID::class -> NBTUtil.getUUIDFromTag(tag) as T
+            else -> throw IllegalArgumentException("cannot automatically deserialize a compound tag into type ${T::class}")
+        }
+    }
+    else -> throw AssertionError("tag type unsupported")
 }
