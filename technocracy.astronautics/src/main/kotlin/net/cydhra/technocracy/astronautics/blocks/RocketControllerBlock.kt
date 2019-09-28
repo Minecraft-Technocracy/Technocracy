@@ -3,8 +3,10 @@ package net.cydhra.technocracy.astronautics.blocks
 import net.cydhra.technocracy.astronautics.blocks.general.rocketHullBlock
 import net.cydhra.technocracy.astronautics.blocks.general.rocketStorageBlock
 import net.cydhra.technocracy.astronautics.entity.EntityRocket
-import net.cydhra.technocracy.astronautics.tileentity.RocketControllerTileEntity
+import net.cydhra.technocracy.astronautics.tileentity.TileEntityRocketController
 import net.cydhra.technocracy.foundation.blocks.api.AbstractRotatableTileEntityBlock
+import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockPlaceBehavior
+import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandlerItem
 import net.cydhra.technocracy.foundation.data.OwnershipManager
 import net.cydhra.technocracy.foundation.util.structures.Template
 import net.minecraft.block.material.Material
@@ -18,11 +20,21 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.text.TextComponentString
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler
 
 
-class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controller", material = Material.ROCK) {
+class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controller", material = Material.ROCK), IDynamicBlockPlaceBehavior {
+
+    override fun placeBlockAt(place: Boolean, stack: ItemStack, player: EntityPlayer, world: World, pos: BlockPos, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float, newState: IBlockState): Boolean {
+        val tile = world.getTileEntity(pos) as? TileEntityRocketController ?: return place
+
+        tile.ownerShip.currentOwner = OwnershipManager.getUserGroup(player.uniqueID)
+
+        return place
+    }
+
     override fun createNewTileEntity(worldIn: World, meta: Int): TileEntity? {
-        return RocketControllerTileEntity()
+        return TileEntityRocketController()
     }
 
     val launchpad = Template()

@@ -11,7 +11,7 @@ import net.cydhra.technocracy.astronautics.dyson.DysonSphereController
 import net.cydhra.technocracy.astronautics.entity.entityRocket
 import net.cydhra.technocracy.astronautics.items.general.concreteCanItem
 import net.cydhra.technocracy.astronautics.items.general.concreteSprayerItem
-import net.cydhra.technocracy.astronautics.tileentity.RocketControllerTileEntity
+import net.cydhra.technocracy.astronautics.tileentity.TileEntityRocketController
 import net.cydhra.technocracy.foundation.blocks.general.BlockManager
 import net.cydhra.technocracy.foundation.entity.EntityManager
 import net.cydhra.technocracy.foundation.items.general.ItemManager
@@ -62,7 +62,7 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(concreteSprayerItem, ConcreteSprayerItemModel())
         itemManager.prepareItemForRegistration(concreteCanItem)
 
-        tileEntityManager.prepareTileEntityForRegistration(RocketControllerTileEntity::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityRocketController::class)
 
         entityManager.prepareEntityForRegistration(entityRocket)
     }
