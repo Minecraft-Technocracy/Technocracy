@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.blocks
 
 import it.zerono.mods.zerocore.api.multiblock.IMultiblockPart
+import net.cydhra.technocracy.foundation.blocks.api.PlainMultiBlockPartBlock
 import net.cydhra.technocracy.foundation.tileentity.api.TCMultiBlockActiveTileEntity
 import net.cydhra.technocracy.foundation.tileentity.multiblock.tank.TileEntityTankMultiBlockPart
 import net.cydhra.technocracy.foundation.util.propertys.DIMENSIONS

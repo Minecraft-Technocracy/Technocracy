@@ -1,20 +1,24 @@
-package net.cydhra.technocracy.foundation.blocks
+package net.cydhra.technocracy.foundation.blocks.api
 
 import net.cydhra.technocracy.foundation.TCFoundation
+import net.cydhra.technocracy.foundation.blocks.api.AbstractRotatableTileEntityBlock
 import net.cydhra.technocracy.foundation.client.gui.handler.TCGuiHandler
 import net.cydhra.technocracy.foundation.network.componentsync.guiInfoPacketSubscribers
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.entity.player.EntityPlayerMP
+import net.minecraft.item.ItemStack
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumHand
 import net.minecraft.util.math.BlockPos
+import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 
 class MachineBlock(name: String, private val tileEntityConstructor: () -> TileEntity)
-    : BaseRotateableTileEntityBlock(name, material = Material.ROCK) {
+    : AbstractRotatableTileEntityBlock(name, material = Material.ROCK) {
+
     init {
         this.setHardness(2f)
         this.setResistance(4f)
@@ -40,5 +44,9 @@ class MachineBlock(name: String, private val tileEntityConstructor: () -> TileEn
         }
 
         return super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ)
+    }
+
+    override fun getDropItem(state: IBlockState, world: IBlockAccess, pos: BlockPos, te: TileEntity?): ItemStack {
+        return ItemStack(this)
     }
 }

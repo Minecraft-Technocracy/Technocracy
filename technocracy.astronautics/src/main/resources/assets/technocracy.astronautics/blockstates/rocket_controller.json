@@ -1,0 +1,9 @@
+{
+  "variants": {
+    "normal": [
+      {
+        "model": "technocracy.astronautics:rocket_controller"
+      }
+    ]
+  }
+}

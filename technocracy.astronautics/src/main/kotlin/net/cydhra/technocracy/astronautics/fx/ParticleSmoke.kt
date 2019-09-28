@@ -1,5 +1,7 @@
-package net.cydhra.technocracy.foundation.fx
+package net.cydhra.technocracy.astronautics.fx
 
+import net.cydhra.technocracy.foundation.fx.AbstractParticle
+import net.cydhra.technocracy.foundation.fx.IParticleType
 import net.cydhra.technocracy.foundation.util.opengl.BasicShaderProgram
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.ActiveRenderInfo
@@ -7,8 +9,11 @@ import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.OpenGlHelper
 import net.minecraft.util.ResourceLocation
 import net.minecraft.world.World
+import org.lwjgl.opengl.GL30
+import org.lwjgl.opengl.GL15
+import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL20
 import org.lwjgl.BufferUtils
-import org.lwjgl.opengl.*
 import org.lwjgl.util.vector.Matrix4f
 import org.lwjgl.util.vector.Vector3f
 import java.util.concurrent.ThreadLocalRandom

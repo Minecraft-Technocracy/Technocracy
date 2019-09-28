@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.blocks.api
 
-import net.cydhra.technocracy.foundation.blocks.api.AbstractRotateableBlock.Companion.facingProperty
+import net.cydhra.technocracy.foundation.blocks.api.AbstractRotatableBlock.Companion.facingProperty
 import net.cydhra.technocracy.foundation.blocks.color.IBlockColor
 import net.cydhra.technocracy.foundation.util.propertys.POSITION
 import net.minecraft.block.BlockHorizontal
@@ -27,10 +27,10 @@ import net.minecraftforge.common.property.IExtendedBlockState
  * @param registryName the name of the block used in registries. By default the unlocalized name is used.
  * @param colorMultiplier special color multiplier for block texture. Null by default.
  */
-abstract class AbstractRotateableBlock(unlocalizedName: String,
-                                       material: Material,
-                                       registryName: String = unlocalizedName,
-                                       colorMultiplier: IBlockColor? = null)
+abstract class AbstractRotatableBlock(unlocalizedName: String,
+                                      material: Material,
+                                      registryName: String = unlocalizedName,
+                                      colorMultiplier: IBlockColor? = null)
     : AbstractBaseBlock(unlocalizedName, material, registryName, colorMultiplier) {
 
     companion object {

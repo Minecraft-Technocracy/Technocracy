@@ -4,11 +4,11 @@ import net.cydhra.technocracy.astronautics.blocks.general.rocketHullBlock
 import net.cydhra.technocracy.astronautics.blocks.general.rocketStorageBlock
 import net.cydhra.technocracy.astronautics.entity.EntityRocket
 import net.cydhra.technocracy.astronautics.tileentity.RocketControllerTileEntity
-import net.cydhra.technocracy.foundation.blocks.api.AbstractTileEntityBlock
+import net.cydhra.technocracy.foundation.blocks.api.AbstractRotatableTileEntityBlock
+import net.cydhra.technocracy.foundation.data.OwnershipManager
 import net.cydhra.technocracy.foundation.util.structures.Template
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
-import net.minecraft.entity.item.EntityTNTPrimed
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.tileentity.TileEntity
@@ -20,7 +20,7 @@ import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 
 
-class RocketControllerBlock : AbstractTileEntityBlock("rocket_controller", material = Material.ROCK) {
+class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controller", material = Material.ROCK) {
     override fun createNewTileEntity(worldIn: World, meta: Int): TileEntity? {
         return RocketControllerTileEntity()
     }
@@ -35,6 +35,12 @@ class RocketControllerBlock : AbstractTileEntityBlock("rocket_controller", mater
     override fun onBlockActivated(worldIn: World, pos: BlockPos, state: IBlockState, playerIn: EntityPlayer, hand: EnumHand, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean {
         if (worldIn.isRemote || hand == EnumHand.MAIN_HAND)
             return super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ)
+
+        val ownership = OwnershipManager.getUserGroup(playerIn.uniqueID)
+
+        if(ownership.getRights(playerIn.uniqueID) == OwnershipManager.Ownership.OwnershipRights.OWNER) {
+            println("IS OWNER")
+        }
 
         if (!launchpad.init) {
             launchpad.loadFromAssets("launchpad")

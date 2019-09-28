@@ -6,7 +6,7 @@ import io.netty.buffer.ByteBufInputStream
 import io.netty.buffer.ByteBufOutputStream
 import io.netty.handler.codec.EncoderException
 import net.cydhra.technocracy.astronautics.blocks.general.rocketDriveBlock
-import net.cydhra.technocracy.foundation.fx.ParticleSmoke
+import net.cydhra.technocracy.astronautics.fx.ParticleSmoke
 import net.cydhra.technocracy.foundation.fx.TCParticleManager
 import net.cydhra.technocracy.foundation.util.structures.Template
 import net.minecraft.client.renderer.vertex.VertexBuffer

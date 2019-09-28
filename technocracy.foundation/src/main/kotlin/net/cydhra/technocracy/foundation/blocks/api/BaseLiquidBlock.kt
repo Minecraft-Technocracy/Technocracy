@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.foundation.blocks
+package net.cydhra.technocracy.foundation.blocks.api
 
 import com.google.common.primitives.Ints
 import net.cydhra.technocracy.foundation.TCFoundation

@@ -6,7 +6,7 @@ import net.minecraft.world.storage.WorldSavedData
 import net.minecraftforge.common.DimensionManager
 
 
-class DataManager : WorldSavedData("TC_Data") {
+class DataManager : WorldSavedData("tc_data") {
 
     companion object {
         var manager: DataManager? = null
@@ -14,7 +14,7 @@ class DataManager : WorldSavedData("TC_Data") {
 
         fun init() {
             val worldServer = DimensionManager.getWorld(0)
-            manager = worldServer.loadData(DataManager::class.java, "TCSaveData") as DataManager
+            manager = worldServer.loadData(DataManager::class.java, "tc_data") as? DataManager
             if (manager == null) {
                 for (module in modules) {
                     module.reset()
@@ -22,7 +22,7 @@ class DataManager : WorldSavedData("TC_Data") {
 
                 with(DataManager()) {
                     manager = this
-                    worldServer.setData("TCSaveData", this)
+                    worldServer.setData("tc_data", this)
                     markDirty()
                 }
             }
