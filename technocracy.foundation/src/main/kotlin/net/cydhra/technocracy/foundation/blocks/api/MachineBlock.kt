@@ -4,7 +4,9 @@ import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.api.AbstractRotatableTileEntityBlock
 import net.cydhra.technocracy.foundation.client.gui.handler.TCGuiHandler
 import net.cydhra.technocracy.foundation.network.componentsync.guiInfoPacketSubscribers
+import net.cydhra.technocracy.foundation.util.propertys.POSITION
 import net.minecraft.block.material.Material
+import net.minecraft.block.state.BlockStateContainer
 import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.entity.player.EntityPlayerMP
@@ -15,9 +17,18 @@ import net.minecraft.util.EnumHand
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
+import net.minecraftforge.common.property.IExtendedBlockState
 
 class MachineBlock(name: String, private val tileEntityConstructor: () -> TileEntity)
     : AbstractRotatableTileEntityBlock(name, material = Material.ROCK) {
+
+    override fun addExtendedPropertyToState(state: IExtendedBlockState, world: IBlockAccess?, pos: BlockPos?): IExtendedBlockState {
+        return state.withProperty(POSITION, pos)
+    }
+
+    override fun addPropertyToBuilder(builder: BlockStateContainer.Builder): BlockStateContainer.Builder {
+        return builder.add(POSITION)
+    }
 
     init {
         this.setHardness(2f)
@@ -37,7 +48,7 @@ class MachineBlock(name: String, private val tileEntityConstructor: () -> TileEn
         if (!playerIn.isSneaking) {
             if (!worldIn.isRemote) {
                 playerIn.openGui(TCFoundation, TCGuiHandler.machineGui, worldIn, pos.x, pos.y, pos.z)
-                guiInfoPacketSubscribers[playerIn as EntityPlayerMP] =  Pair(pos, worldIn.provider.dimension)
+                guiInfoPacketSubscribers[playerIn as EntityPlayerMP] = Pair(pos, worldIn.provider.dimension)
             }
 
             return true

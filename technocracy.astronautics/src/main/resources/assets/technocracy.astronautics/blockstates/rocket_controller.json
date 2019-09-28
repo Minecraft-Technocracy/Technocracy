@@ -1,9 +1,19 @@
 {
   "variants": {
-    "normal": [
-      {
-        "model": "technocracy.astronautics:rocket_controller"
-      }
-    ]
+    "facing=north": {
+      "model": "technocracy.astronautics:rocket_controller"
+    },
+    "facing=east": {
+      "model": "technocracy.astronautics:rocket_controller",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "technocracy.astronautics:rocket_controller",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "technocracy.astronautics:rocket_controller",
+      "y": 270
+    }
   }
 }

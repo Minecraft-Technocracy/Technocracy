@@ -6,7 +6,7 @@ import net.minecraft.world.storage.WorldSavedData
 import net.minecraftforge.common.DimensionManager
 
 
-class DataManager : WorldSavedData("tc_data") {
+class DataManager(name: String = "tc_data") : WorldSavedData(name) {
 
     companion object {
         var manager: DataManager? = null

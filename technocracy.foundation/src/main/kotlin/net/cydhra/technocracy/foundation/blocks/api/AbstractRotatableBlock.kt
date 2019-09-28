@@ -2,6 +2,7 @@ package net.cydhra.technocracy.foundation.blocks.api
 
 import net.cydhra.technocracy.foundation.blocks.api.AbstractRotatableBlock.Companion.facingProperty
 import net.cydhra.technocracy.foundation.blocks.color.IBlockColor
+import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockStateContainer
 import net.cydhra.technocracy.foundation.util.propertys.POSITION
 import net.minecraft.block.BlockHorizontal
 import net.minecraft.block.material.Material
@@ -31,7 +32,7 @@ abstract class AbstractRotatableBlock(unlocalizedName: String,
                                       material: Material,
                                       registryName: String = unlocalizedName,
                                       colorMultiplier: IBlockColor? = null)
-    : AbstractBaseBlock(unlocalizedName, material, registryName, colorMultiplier) {
+    : AbstractBaseBlock(unlocalizedName, material, registryName, colorMultiplier), IDynamicBlockStateContainer {
 
     companion object {
         /**
@@ -44,18 +45,28 @@ abstract class AbstractRotatableBlock(unlocalizedName: String,
         defaultState = this.blockState.baseState.withProperty(facingProperty, EnumFacing.NORTH)
     }
 
+    override fun addExtendedPropertyToState(state: IExtendedBlockState, world: IBlockAccess?, pos: BlockPos?): IExtendedBlockState {
+        return state
+    }
+
+    override fun addPropertyToState(state: IBlockState, world: IBlockAccess?, pos: BlockPos?): IBlockState {
+        return state
+    }
+
+    override fun addPropertyToBuilder(builder: BlockStateContainer.Builder): BlockStateContainer.Builder {
+        return builder
+    }
+
     override fun withRotation(state: IBlockState, rot: Rotation): IBlockState {
-        return state.withProperty(facingProperty, rot.rotate(EnumFacing.NORTH))
+        return state.withProperty(AbstractRotatableTileEntityBlock.facingProperty, rot.rotate(EnumFacing.NORTH))
     }
 
     override fun createBlockState(): BlockStateContainer {
-        //Todo separate
-        return BlockStateContainer.Builder(this).add(facingProperty).add(POSITION).build()
+        return addPropertyToBuilder(BlockStateContainer.Builder(this).add(AbstractRotatableTileEntityBlock.facingProperty)).build()
     }
 
     override fun getExtendedState(state: IBlockState, world: IBlockAccess?, pos: BlockPos?): IExtendedBlockState {
-        //Todo separate
-        return (state as IExtendedBlockState).withProperty(POSITION, pos)
+        return addExtendedPropertyToState(state as IExtendedBlockState, world, pos)
     }
 
     @Suppress("OverridingDeprecatedMember")
@@ -71,8 +82,8 @@ abstract class AbstractRotatableBlock(unlocalizedName: String,
     }
 
     override fun getStateForPlacement(worldIn: World, pos: BlockPos, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float, meta: Int, placer: EntityLivingBase): IBlockState {
-        return defaultState.withProperty(facingProperty, placer.adjustedHorizontalFacing
-                .opposite)
+        return addPropertyToState(defaultState.withProperty(AbstractRotatableTileEntityBlock.facingProperty, placer.adjustedHorizontalFacing
+                .opposite), worldIn, pos)
     }
 
 }
