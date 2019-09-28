@@ -6,6 +6,7 @@ import net.cydhra.technocracy.foundation.tileentity.api.TCMultiBlockActiveTileEn
 import net.cydhra.technocracy.foundation.tileentity.multiblock.tank.TileEntityTankMultiBlockPart
 import net.cydhra.technocracy.foundation.util.propertys.DIMENSIONS
 import net.cydhra.technocracy.foundation.util.propertys.FLUIDSTACK
+import net.cydhra.technocracy.foundation.util.propertys.POSITION
 import net.cydhra.technocracy.foundation.util.propertys.TANKSIZE
 import net.minecraft.block.state.BlockStateContainer
 import net.minecraft.block.state.IBlockState
@@ -29,7 +30,7 @@ class TankMultiBlockBlock<T>(unlocalizedName: String,
     override fun getExtendedState(state: IBlockState, world: IBlockAccess?, pos: BlockPos?): IExtendedBlockState {
         if (world != null && pos != null) {
             val tile = world.getTileEntity(pos) as? TileEntityTankMultiBlockPart
-                    ?: return (state as IExtendedBlockState).withProperty(FLUIDSTACK, null).withProperty(DIMENSIONS, null).withProperty(TANKSIZE, null)
+                    ?: return (state as IExtendedBlockState).withProperty(FLUIDSTACK, null).withProperty(DIMENSIONS, null).withProperty(TANKSIZE, null).withProperty(POSITION, null)
             if (tile.fluidComp.isAttached && tile.multiblockController != null && tile.multiblockController!!.isAssembled && tile.fluidComp.innerComponent.fluid.currentFluid != null) {
                 val minimumCoord = tile.multiblockController!!.minimumCoord!!
                 val maximumCoord = tile.multiblockController!!.maximumCoord!!
@@ -39,14 +40,15 @@ class TankMultiBlockBlock<T>(unlocalizedName: String,
                 return (state as IExtendedBlockState).withProperty(FLUIDSTACK, tile.fluidComp.innerComponent.fluid.currentFluid)
                         .withProperty(DIMENSIONS, Vector3f(sizeX, sizeY, sizeZ))
                         .withProperty(TANKSIZE, tile.fluidComp.innerComponent.fluid.capacity as Integer)
+                        .withProperty(POSITION, pos)
             }
         }
 
-        return (state as IExtendedBlockState).withProperty(FLUIDSTACK, null).withProperty(DIMENSIONS, null).withProperty(TANKSIZE, null)
+        return (state as IExtendedBlockState).withProperty(FLUIDSTACK, null).withProperty(DIMENSIONS, null).withProperty(TANKSIZE, null).withProperty(POSITION, null)
     }
 
     override fun createBlockState(): BlockStateContainer {
-        return BlockStateContainer.Builder(this).add(FLUIDSTACK).add(DIMENSIONS).add(TANKSIZE).build()
+        return BlockStateContainer.Builder(this).add(FLUIDSTACK).add(DIMENSIONS).add(TANKSIZE).add(POSITION).build()
     }
 
     override fun canRenderInLayer(state: IBlockState, layer: BlockRenderLayer): Boolean {

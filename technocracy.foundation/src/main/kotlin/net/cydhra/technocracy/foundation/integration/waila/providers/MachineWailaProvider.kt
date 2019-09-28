@@ -69,7 +69,7 @@ class MachineWailaProvider : IWailaDataProvider {
     override fun getNBTData(player: EntityPlayerMP, te: TileEntity, tag: NBTTagCompound, world: World,
                             pos: BlockPos): NBTTagCompound {
         if (te is TileEntityMultiBlockPart<*>) {
-            if(te.multiblockController == null) return tag
+            if(te.multiblockController == null || !te.multiblockController!!.isAssembled) return tag
             val compound = NBTTagCompound()
             val components = NBTTagList()
             (te.multiblockController as BaseMultiBlock).getComponents()

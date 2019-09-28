@@ -27,6 +27,6 @@ class TileEntityTankPort : TileEntityTankMultiBlockPart() {
                 }
             }
         }
-        return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast<T>(DynamicFluidHandler())
+        return null
     }
 }

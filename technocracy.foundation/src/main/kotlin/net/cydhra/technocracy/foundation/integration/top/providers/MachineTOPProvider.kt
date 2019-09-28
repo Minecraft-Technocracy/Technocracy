@@ -27,7 +27,7 @@ class MachineTOPProvider : IProbeInfoProvider {
         if (te !is ICapabilityProvider) return
         val components: Set<Pair<String, AbstractComponent>>
         components = if (te is TileEntityMultiBlockPart<*>) {
-            if (te.multiblockController != null) (te.multiblockController as BaseMultiBlock).getComponents().toSet() else setOf()
+            if (te.multiblockController != null && te.multiblockController!!.isAssembled) (te.multiblockController as BaseMultiBlock).getComponents().toSet() else setOf()
         } else {
             te.getComponents().toSet()
         }

@@ -5,6 +5,7 @@ import net.cydhra.technocracy.foundation.util.model.pipeline.QuadPipeline
 import net.cydhra.technocracy.foundation.util.model.pipeline.consumer.QuadOffsetter
 import net.cydhra.technocracy.foundation.util.propertys.DIMENSIONS
 import net.cydhra.technocracy.foundation.util.propertys.FLUIDSTACK
+import net.cydhra.technocracy.foundation.util.propertys.POSITION
 import net.cydhra.technocracy.foundation.util.propertys.TANKSIZE
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.Minecraft
@@ -16,6 +17,7 @@ import net.minecraft.util.EnumFacing
 import net.minecraftforge.client.MinecraftForgeClient
 import net.minecraftforge.common.property.IExtendedBlockState
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
+import net.minecraft.util.math.BlockPos
 import net.minecraftforge.fluids.FluidStack
 
 
@@ -33,6 +35,8 @@ class MutliBlockTankFluidModelBakery(val baseModel: IBakedModel) : IBakedModel b
         val extended = state as? IExtendedBlockState ?: return quads
 
         val stack = extended.getValue(FLUIDSTACK) ?: return quads
+
+        val pos = extended.getValue(POSITION) ?: return quads
 
         val renderLayer = stack.fluid.block?.blockLayer ?: BlockRenderLayer.TRANSLUCENT
 
@@ -53,7 +57,7 @@ class MutliBlockTankFluidModelBakery(val baseModel: IBakedModel) : IBakedModel b
         val maxY = height + 1f
         val maxZ = dimension.z / 2
 
-        val gen = generateFluidCube(stack, minX, minY, minZ, maxX, maxY, maxZ, 0.51f)
+        val gen = generateFluidCube(stack, minX, minY, minZ, maxX, maxY, maxZ, 0.51f, pos)
 
         val pipeLine = QuadPipeline().addConsumer(QuadOffsetter)
         QuadOffsetter.offsetX = -dimension.x / 2
@@ -68,12 +72,12 @@ class MutliBlockTankFluidModelBakery(val baseModel: IBakedModel) : IBakedModel b
         return quads
     }
 
-    fun generateFluidCube(fluid: FluidStack, minX: Float, minY: Float, minZ: Float, maxX: Float, maxY: Float, maxZ: Float, offsetToBlockEdge: Float): MutableList<SimpleQuad> {
+    fun generateFluidCube(fluid: FluidStack, minX: Float, minY: Float, minZ: Float, maxX: Float, maxY: Float, maxZ: Float, offsetToBlockEdge: Float, pos: BlockPos): MutableList<SimpleQuad> {
 
         val mc = Minecraft.getMinecraft()
 
         val color = fluid.fluid.getColor(fluid)
-        val brightness = 0//Minecraft.getMinecraft().world.getCombinedLight(pos, fluid.getFluid().getLuminosity())
+        val brightness = mc.world.getCombinedLight(pos, fluid.getFluid().getLuminosity())
 
         var still = mc.textureMapBlocks.getTextureExtry(fluid.fluid.getStill(fluid).toString())
         var flowing = mc.textureMapBlocks.getTextureExtry(fluid.fluid.getFlowing(fluid).toString())
