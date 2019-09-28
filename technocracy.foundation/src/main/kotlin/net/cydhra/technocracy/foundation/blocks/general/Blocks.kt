@@ -1,10 +1,7 @@
 package net.cydhra.technocracy.foundation.blocks.general
 
 import net.cydhra.technocracy.foundation.blocks.*
-import net.cydhra.technocracy.foundation.blocks.api.MachineBlock
-import net.cydhra.technocracy.foundation.blocks.api.MultiBlockActiveBlock
-import net.cydhra.technocracy.foundation.blocks.api.MultiBlockRotatableActiveBlock
-import net.cydhra.technocracy.foundation.blocks.api.PlainMultiBlockPartBlock
+import net.cydhra.technocracy.foundation.blocks.api.*
 import net.cydhra.technocracy.foundation.blocks.liquid.OilBlock
 import net.cydhra.technocracy.foundation.blocks.liquid.SulfuricAcidBlock
 import net.cydhra.technocracy.foundation.tileentity.machines.*

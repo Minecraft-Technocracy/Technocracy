@@ -1,6 +1,5 @@
 package net.cydhra.technocracy.foundation.blocks.api
 
-import net.cydhra.technocracy.foundation.blocks.PlainBlock
 import net.cydhra.technocracy.foundation.blocks.color.DyeBlockColor
 import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockDisplayName
 import net.minecraft.block.material.MapColor

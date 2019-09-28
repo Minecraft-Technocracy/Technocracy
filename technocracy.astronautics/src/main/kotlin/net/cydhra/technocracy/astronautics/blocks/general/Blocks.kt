@@ -2,7 +2,7 @@ package net.cydhra.technocracy.astronautics.blocks.general
 
 import net.cydhra.technocracy.astronautics.blocks.*
 import net.cydhra.technocracy.foundation.blocks.api.ColoredPlainBlock
-import net.cydhra.technocracy.foundation.blocks.PlainBlock
+import net.cydhra.technocracy.foundation.blocks.api.PlainBlock
 import net.minecraft.block.material.Material
 import net.minecraft.util.BlockRenderLayer
 

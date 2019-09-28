@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.foundation.blocks
+package net.cydhra.technocracy.foundation.blocks.api
 
 import net.cydhra.technocracy.foundation.blocks.api.AbstractBaseBlock
 import net.cydhra.technocracy.foundation.blocks.color.IBlockColor
