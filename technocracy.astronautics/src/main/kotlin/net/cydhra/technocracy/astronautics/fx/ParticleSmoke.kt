@@ -113,10 +113,10 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
 
             GlStateManager.disableTexture2D()
             GlStateManager.enableBlend()
-            GlStateManager.enableBlend()
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA)
+            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
             GlStateManager.disableLighting()
-            GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
+            GlStateManager.alphaFunc(GL11.GL_GREATER, 0.003921569f)
+            GlStateManager.depthMask(false)
         }
 
         override fun postRenderType() {
@@ -125,6 +125,8 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
 
             GlStateManager.enableTexture2D()
             GlStateManager.disableBlend()
+            GlStateManager.depthMask(true)
+            GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1f)
             smokeShader.stop()
 
             GL11.glPopMatrix()
