@@ -6,6 +6,7 @@ class ClientProxy : CommonProxy() {
         super.init()
         itemManager.registerItemColors()
         blockManager.registerBlockColors()
+        tileEntityManager.onClientInitialize()
     }
 
     override fun preInit() {
