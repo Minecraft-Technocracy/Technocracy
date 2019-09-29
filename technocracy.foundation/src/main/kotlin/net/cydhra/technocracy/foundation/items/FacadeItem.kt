@@ -80,8 +80,9 @@ class FacadeItem : BaseItem("facade") {
                     }
 
                     val blockSubItems = NonNullList.create<ItemStack>()
-                    block.getSubBlocks(block.creativeTabToDisplayOn, blockSubItems)
-                    for (subBlock in blockSubItems) {
+                    for (tab in CreativeTabs.CREATIVE_TAB_ARRAY)
+                        block.getSubBlocks(tab, blockSubItems)
+                    for (subBlock in blockSubItems.distinctBy { it.serializeNBT() }) {
                         val facade = this.createFacadeForItem(subBlock)
                         if (!facade.isEmpty) {
                             facades.add(facade)
