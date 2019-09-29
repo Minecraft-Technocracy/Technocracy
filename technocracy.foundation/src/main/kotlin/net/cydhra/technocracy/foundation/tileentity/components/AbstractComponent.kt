@@ -12,13 +12,16 @@ abstract class AbstractComponent {
     lateinit var tile: TileEntity
 
     var syncToClient = false
+    var allowAutoSave = true
 
     open fun markDirty(needsClientRerender: Boolean = false) {
-        if (syncToClient && needsClientRerender) {
-            val state = tile.world.getBlockState(tile.pos)
-            tile.world.notifyBlockUpdate(tile.pos, state, state, 0)
+        if (allowAutoSave) {
+            if (syncToClient && needsClientRerender) {
+                val state = tile.world.getBlockState(tile.pos)
+                tile.world.notifyBlockUpdate(tile.pos, state, state, 0)
+            }
+            tile.markDirty()
         }
-        tile.markDirty()
     }
 
     abstract val type: ComponentType
