@@ -14,7 +14,7 @@ import net.minecraft.util.NonNullList
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockAccess
 
-class ColoredPlainBlock(unlocalizedName: String,
+open class ColoredPlainBlock(unlocalizedName: String,
                         material: Material,
                         opaque: Boolean = true,
                         renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID)
