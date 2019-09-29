@@ -28,7 +28,7 @@ class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controlle
     override fun placeBlockAt(place: Boolean, stack: ItemStack, player: EntityPlayer, world: World, pos: BlockPos, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float, newState: IBlockState): Boolean {
         val tile = world.getTileEntity(pos) as? TileEntityRocketController ?: return place
 
-        tile.ownerShip.currentOwner = OwnershipManager.getUserGroup(player.uniqueID)
+        tile.ownerShip.setOwnerShip(OwnershipManager.getUserGroup(player.uniqueID))
 
         return place
     }

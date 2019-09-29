@@ -8,11 +8,12 @@ import net.minecraft.nbt.NBTTagCompound
 class OwnerShipComponent : AbstractComponent() {
 
     var currentOwner: OwnershipManager.Ownership? = null
-        set(value) {
-            field = value
-            markDirty(false)
-        }
+        private set
 
+    fun setOwnerShip(ownerShip: OwnershipManager.Ownership) {
+        currentOwner = ownerShip
+        markDirty(false)
+    }
 
     override fun serializeNBT(): NBTTagCompound {
         return compound {
