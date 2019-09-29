@@ -206,7 +206,7 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
     open fun initGui(gui: TCGui) {}
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
-        return multiblockController?.isAssembled ?: false && this.supportsCapability(capability, facing)
+        return multiblockController?.isAssembled ?: false && this.supportsCapability(capability, facing) && facing != null
     }
 
     override fun <T : Any?> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {

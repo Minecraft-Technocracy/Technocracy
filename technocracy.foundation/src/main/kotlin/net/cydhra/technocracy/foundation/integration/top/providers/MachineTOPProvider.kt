@@ -1,9 +1,6 @@
 package net.cydhra.technocracy.foundation.integration.top.providers
 
-import mcjty.theoneprobe.api.IProbeHitData
-import mcjty.theoneprobe.api.IProbeInfo
-import mcjty.theoneprobe.api.IProbeInfoProvider
-import mcjty.theoneprobe.api.ProbeMode
+import mcjty.theoneprobe.api.*
 import mcjty.theoneprobe.apiimpl.styles.ProgressStyle
 import net.cydhra.technocracy.foundation.multiblock.BaseMultiBlock
 import net.cydhra.technocracy.foundation.tileentity.api.TCAggregatable
@@ -19,8 +16,8 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler
 
 class MachineTOPProvider : IProbeInfoProvider {
 
-    private val energyStyle: ProgressStyle = ProgressStyle().suffix(" RF").filledColor(0xffdd0000.toInt()).borderColor(0xff555555.toInt()).alternateFilledColor(0xff430000.toInt())
-    private val fluidStyle: ProgressStyle = ProgressStyle().suffix(" mB").filledColor(0xff0000dd.toInt()).borderColor(0xff555555.toInt()).alternateFilledColor(0xff000043.toInt())
+    private val energyStyle: ProgressStyle = ProgressStyle().suffix("RF").filledColor(0xffdd0000.toInt()).borderColor(0xff555555.toInt()).alternateFilledColor(0xff430000.toInt()).numberFormat(NumberFormat.COMPACT)
+    private val fluidStyle: ProgressStyle = ProgressStyle().suffix("mB").filledColor(0xff0000dd.toInt()).borderColor(0xff555555.toInt()).alternateFilledColor(0xff000043.toInt()).numberFormat(NumberFormat.COMPACT)
 
     override fun addProbeInfo(mode: ProbeMode, probeInfo: IProbeInfo, player: EntityPlayer, world: World, blockState: IBlockState, data: IProbeHitData) {
         val te = world.getTileEntity(data.pos) as? TCAggregatable ?: return

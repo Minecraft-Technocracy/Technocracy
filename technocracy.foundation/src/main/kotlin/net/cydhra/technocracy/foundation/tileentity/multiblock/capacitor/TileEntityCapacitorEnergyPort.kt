@@ -15,7 +15,7 @@ class TileEntityCapacitorEnergyPort : TileEntityMultiBlockPart<CapacitorMultiBlo
     override fun onMachineDeactivated() {}
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
-        return if (multiblockController != null && multiblockController!!.isAssembled) {
+        return if (multiblockController != null && multiblockController!!.isAssembled && facing != null) {
             capability == CapabilityEnergy.ENERGY
         } else false
     }

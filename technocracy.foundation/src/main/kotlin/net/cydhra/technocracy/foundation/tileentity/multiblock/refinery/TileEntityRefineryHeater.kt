@@ -17,7 +17,7 @@ class TileEntityRefineryHeater : TileEntityMultiBlockPart<RefineryMultiBlock>(Re
     }
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
-        return if (multiblockController != null && multiblockController!!.isAssembled) {
+        return if (multiblockController != null && multiblockController!!.isAssembled && facing != null) {
             this.supportsCapability(capability, facing) || super.hasCapability(capability, facing)
         } else false
     }
