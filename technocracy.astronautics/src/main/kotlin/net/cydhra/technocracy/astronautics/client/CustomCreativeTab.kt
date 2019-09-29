@@ -2,6 +2,7 @@ package net.cydhra.technocracy.astronautics.client
 
 import net.cydhra.technocracy.astronautics.blocks.general.rocketHullBlock
 import net.cydhra.technocracy.astronautics.blocks.general.scaffoldBlock
+import net.cydhra.technocracy.astronautics.blocks.general.wetReinforcedConcreteBlock
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.ItemBlock
 import net.minecraft.item.ItemStack
@@ -32,7 +33,7 @@ val astronauticsColorTabs = object : CreativeTabs("astronautics.color") {
     }
 
     override fun getTabIconItem(): ItemStack {
-        return ItemStack(ItemBlock.getItemFromBlock(rocketHullBlock))
+        return ItemStack(ItemBlock.getItemFromBlock(wetReinforcedConcreteBlock))
     }
 
     override fun hasSearchBar(): Boolean {

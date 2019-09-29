@@ -64,7 +64,7 @@ class FacadeItem : BaseItem("facade") {
     }
 
     override fun getSubItems(creativeTab: CreativeTabs, itemStacks: NonNullList<ItemStack>) {
-        if (creativeTab == this.creativeTab) {
+        if (isInCreativeTab(creativeTab)) {
             this.calculateSubTypes()
             itemStacks.addAll(this.facades)
         }
@@ -74,7 +74,7 @@ class FacadeItem : BaseItem("facade") {
         if (facades.isEmpty()) {
             for (block in Block.REGISTRY) {
                 try {
-                    val item = Item.getItemFromBlock(block)
+                    val item = getItemFromBlock(block)
                     if (item == Items.AIR) {
                         continue
                     }

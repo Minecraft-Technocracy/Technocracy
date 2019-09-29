@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.blocks.api
 
 import net.cydhra.technocracy.foundation.blocks.color.DyeBlockColor
+import net.cydhra.technocracy.foundation.blocks.util.IBlockMultipleCreativeTabs
 import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockDisplayName
 import net.minecraft.block.material.MapColor
 import net.minecraft.block.material.Material
@@ -15,10 +16,11 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockAccess
 
 open class ColoredPlainBlock(unlocalizedName: String,
-                        material: Material,
-                        opaque: Boolean = true,
-                        renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID)
-    : PlainBlock(unlocalizedName, material, opaque, renderLayer, DyeBlockColor), IDynamicBlockDisplayName {
+                             material: Material,
+                             opaque: Boolean = true,
+                             renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID,
+                             val colorTab: CreativeTabs? = null)
+    : PlainBlock(unlocalizedName, material, opaque, renderLayer, DyeBlockColor), IDynamicBlockDisplayName, IBlockMultipleCreativeTabs {
 
     init {
         this.defaultState = this.blockState.baseState.withProperty(DyeBlockColor.COLOR, EnumDyeColor.WHITE)
@@ -27,16 +29,23 @@ open class ColoredPlainBlock(unlocalizedName: String,
     /**
      * returns a list of blocks with the same ID, but different meta (eg: wood returns 4 blocks)
      */
-    override fun getSubBlocks(itemIn: CreativeTabs, items: NonNullList<ItemStack>) {
-        for (color in EnumDyeColor.values()) {
-            items.add(ItemStack(this, 1, color.metadata))
+    override fun getSubBlocks(tabIn: CreativeTabs, items: NonNullList<ItemStack>) {
+        if (colorTab == null || tabIn == colorTab || tabIn == CreativeTabs.SEARCH) {
+            for (color in EnumDyeColor.values()) {
+                items.add(ItemStack(this, 1, color.metadata))
+            }
+        } else if (tabIn != colorTab) {
+            items.add(ItemStack(this))
         }
+    }
+
+    override fun isValidCreativeTab(tab: CreativeTabs): Boolean {
+        return tab == colorTab
     }
 
     override fun damageDropped(state: IBlockState): Int {
         return (state.getValue<EnumDyeColor>(DyeBlockColor.COLOR) as EnumDyeColor).metadata
     }
-
 
     /**
      * Get the MapColor for this Block and the given BlockState

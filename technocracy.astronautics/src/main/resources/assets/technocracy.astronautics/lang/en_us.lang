@@ -1,5 +1,5 @@
 itemGroup.astronautics.main=TC Astronautics
-itemGroup.astronautics.colors=Colored Blocks
+itemGroup.astronautics.color=Colored Blocks
 
 tile.scaffold.name=Scaffold
 tile.wet_reinforced_concrete.name=Wet Reinforced Concrete
@@ -36,3 +36,4 @@ item.concrete_can.name=Concrete Can
 
 rocket.controller.invalid.ownership=You are not allowed to use this controller
 rocket.controller.invalid.launchpad=No valid launchpad found
+rocket.controller.invalid.rocket=No valid rocket found

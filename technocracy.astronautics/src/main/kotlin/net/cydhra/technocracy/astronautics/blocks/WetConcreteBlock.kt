@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.astronautics.blocks
 
+import net.cydhra.technocracy.astronautics.client.astronauticsColorTabs
 import net.cydhra.technocracy.foundation.blocks.api.ColoredPlainBlock
 import net.cydhra.technocracy.foundation.blocks.color.DyeBlockColor
 import net.minecraft.block.BlockColored
@@ -14,7 +15,7 @@ import net.minecraft.world.World
 import java.util.*
 
 
-class WetConcreteBlock : ColoredPlainBlock("wet_concrete", Material.ROCK) {
+class WetConcreteBlock : ColoredPlainBlock("wet_concrete", Material.ROCK, colorTab = astronauticsColorTabs) {
     init {
         setHardness(2F)
         setResistance(10.0f)

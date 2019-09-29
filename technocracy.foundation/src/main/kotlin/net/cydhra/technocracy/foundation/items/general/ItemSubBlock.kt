@@ -1,11 +1,9 @@
 package net.cydhra.technocracy.foundation.items.general
 
-import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockDisplayName
-import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockItemProperty
-import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockPlaceBehavior
-import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockItemCapabilitiy
+import net.cydhra.technocracy.foundation.blocks.util.*
 import net.minecraft.block.Block
 import net.minecraft.block.state.IBlockState
+import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemBlock
 import net.minecraft.item.ItemStack
@@ -37,8 +35,12 @@ class ItemSubBlock(block: Block) : ItemBlock(block) {
 
     override fun getHasSubtypes(): Boolean {
         val list = NonNullList.create<ItemStack>()
-        getSubItems(this.creativeTab!!, list)
+        getSubItems(CreativeTabs.SEARCH, list)
         return list.size != 1
+    }
+
+    override fun isInCreativeTab(targetTab: CreativeTabs): Boolean {
+        return super.isInCreativeTab(targetTab) || (block is IBlockMultipleCreativeTabs && block.isValidCreativeTab(targetTab))
     }
 
     override fun getMetadata(damage: Int): Int {

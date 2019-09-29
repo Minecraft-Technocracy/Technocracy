@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.astronautics.blocks
 
 import net.cydhra.technocracy.astronautics.blocks.general.reinforcedConcreteBlock
+import net.cydhra.technocracy.astronautics.client.astronauticsColorTabs
 import net.cydhra.technocracy.foundation.blocks.api.ColoredPlainBlock
 import net.cydhra.technocracy.foundation.blocks.color.DyeBlockColor
 import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockDisplayName
@@ -14,7 +15,7 @@ import net.minecraft.world.World
 import java.util.*
 
 
-class WetReinforcedConcreteBlock : ColoredPlainBlock("wet_reinforced_concrete", Material.IRON), IDynamicBlockDisplayName {
+class WetReinforcedConcreteBlock : ColoredPlainBlock("wet_reinforced_concrete", Material.IRON, colorTab = astronauticsColorTabs), IDynamicBlockDisplayName {
     init {
         setHardness(2F)
         setResistance(10.0f)

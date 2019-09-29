@@ -90,8 +90,6 @@ class ConcreteSprayerItem : BaseItem("concrete_sprayer", itemColor = ConcreteSpr
     }
 
     override fun getSubItems(tab: CreativeTabs, items: NonNullList<ItemStack>) {
-        super.getSubItems(tab, items)
-
         if (isInCreativeTab(tab))
             for (color in EnumDyeColor.values()) {
                 val stack = ItemStack(this, 1, 0)

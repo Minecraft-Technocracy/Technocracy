@@ -97,6 +97,7 @@ class BlockManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
                 .forEach { item ->
                     val list = NonNullList.create<ItemStack>()
                     item.getSubItems(item.creativeTab!!, list)
+                    item.getSubItems(CreativeTabs.SEARCH, list)
                     for (subs in list) {
                         ModelLoader.setCustomModelResourceLocation(subs.item, subs.metadata,
                                 ModelResourceLocation(((subs.item as ItemBlock).block as IBaseBlock).modelLocation, "inventory"))
