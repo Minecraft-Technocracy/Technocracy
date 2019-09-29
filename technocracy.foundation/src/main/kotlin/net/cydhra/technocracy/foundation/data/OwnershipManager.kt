@@ -128,11 +128,11 @@ object OwnershipManager : AbstractSaveDataElement("ownership") {
         val users = mutableMapOf<UUID, OwnershipRights>()
 
         fun getRights(user: UUID): OwnershipRights {
-            return users[user]!!
+            return users[user] ?: OwnershipRights.NONE
         }
 
         enum class OwnershipRights {
-            OWNER, MANAGE, ACCESS
+            OWNER, MANAGE, ACCESS, NONE
         }
     }
 
