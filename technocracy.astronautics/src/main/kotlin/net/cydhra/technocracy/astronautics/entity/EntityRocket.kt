@@ -12,7 +12,9 @@ import net.cydhra.technocracy.foundation.data.OwnershipManager
 import net.cydhra.technocracy.foundation.fx.TCParticleManager
 import net.cydhra.technocracy.foundation.tileentity.components.FluidComponent
 import net.cydhra.technocracy.foundation.tileentity.components.OwnerShipComponent
+import net.cydhra.technocracy.foundation.util.readCompoundTag
 import net.cydhra.technocracy.foundation.util.structures.Template
+import net.cydhra.technocracy.foundation.util.writeCompoundTag
 import net.minecraft.client.renderer.vertex.VertexBuffer
 import net.minecraft.entity.Entity
 import net.minecraft.entity.MoverType
@@ -59,9 +61,10 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
 
     lateinit var controllerBlock: BlockPos
     private val LIFTOFF = EntityDataManager.createKey(EntityRocket::class.java, DataSerializers.BOOLEAN)
-    
+
     val owner = OwnerShipComponent()
     val tank = FluidComponent(DynamicFluidHandler(0, mutableListOf()), EnumFacing.values().toMutableSet())
+
 
     var liftOff: Boolean
         get() = dataManager.get(LIFTOFF)
@@ -72,6 +75,22 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
             dataManager.set(LIFTOFF, value)
         }
 
+
+    override fun writeEntityToNBT(compound: NBTTagCompound) {
+        with(compound) {
+            setTag("blocks", template.serializeNBT())
+            setTag("controller", NBTUtil.createPosTag(controllerBlock))
+            setTag("owner", owner.serializeNBT())
+        }
+    }
+
+    override fun readEntityFromNBT(compound: NBTTagCompound) {
+        with(compound) {
+            template.deserializeNBT(getCompoundTag("blocks"))
+            controllerBlock = NBTUtil.getPosFromTag(getCompoundTag("controller"))
+            owner.deserializeNBT(getCompoundTag("owner"))
+        }
+    }
 
     var template: Template = Template()
     lateinit var entityBox: AxisAlignedBB
@@ -100,44 +119,6 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
         if (vbo != null)
             vbo!!.deleteGlBuffers()
         super.onRemovedFromWorld()
-    }
-
-    @Throws(IOException::class)
-    fun readCompoundTag(buf: ByteBuf): NBTTagCompound? {
-        val i = buf.readerIndex()
-        val b0 = buf.readByte()
-
-        return if (b0.toInt() == 0) {
-            null
-        } else {
-            buf.readerIndex(i)
-
-            try {
-                CompressedStreamTools.read(ByteBufInputStream(buf), NBTSizeTracker(2097152L))
-            } catch (ioexception: IOException) {
-                throw EncoderException(ioexception)
-            }
-
-        }
-    }
-
-    fun writeCompoundTag(nbt: NBTTagCompound?, buf: ByteBuf) {
-        if (nbt == null) {
-            buf.writeByte(0)
-        } else {
-            try {
-                CompressedStreamTools.write(nbt, ByteBufOutputStream(buf))
-            } catch (ioexception: IOException) {
-                throw EncoderException(ioexception)
-            }
-        }
-    }
-
-    override fun setItemStackToSlot(slotIn: EntityEquipmentSlot, stack: ItemStack) {
-    }
-
-    override fun getArmorInventoryList(): MutableIterable<ItemStack> {
-        return Collections.emptyList()
     }
 
     override fun onUpdate() {
@@ -179,7 +160,7 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
             }
         }
 
-        var list = this.world.getEntitiesInAABBexcluding(this, this.entityBoundingBox, EntitySelectors.getTeamCollisionPredicate(this))
+        val list = this.world.getEntitiesInAABBexcluding(this, this.entityBoundingBox, EntitySelectors.getTeamCollisionPredicate(this))
         if (list.isNotEmpty()) {
             for (entity in list) {
                 if (entity is EntityPlayer)
@@ -209,17 +190,9 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
     }
 
     override fun move(type: MoverType, x: Double, y: Double, z: Double) {
-        if (y != 0.0) {
-            posY += y
-        }
-
-        if (x != 0.0) {
-            posX += x
-        }
-
-        if (z != 0.0) {
-            posZ += z
-        }
+        posY += y
+        posX += x
+        posZ += z
     }
 
     fun getBlockBounds(bb: AxisAlignedBB, entity: Entity): List<AxisAlignedBB> {
@@ -264,22 +237,6 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
         }
 
         return entityBox.offset(posX, posY, posZ)
-    }
-
-    override fun writeEntityToNBT(compound: NBTTagCompound) {
-        with(compound) {
-            setTag("blocks", template.serializeNBT())
-            setTag("controller", NBTUtil.createPosTag(controllerBlock))
-            setTag("owner", owner.serializeNBT())
-        }
-    }
-
-    override fun readEntityFromNBT(compound: NBTTagCompound) {
-        with(compound) {
-            template.deserializeNBT(getCompoundTag("blocks"))
-            controllerBlock = NBTUtil.getPosFromTag(getCompoundTag("controller"))
-            owner.deserializeNBT(getCompoundTag("owner"))
-        }
     }
 
     protected fun collideWithEntity(entityIn: Entity) {
