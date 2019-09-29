@@ -18,6 +18,7 @@ import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumHand
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.text.TextComponentString
+import net.minecraft.util.text.TextComponentTranslation
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler
@@ -45,13 +46,19 @@ class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controlle
     val storage_module = Template()
 
     override fun onBlockActivated(worldIn: World, pos: BlockPos, state: IBlockState, playerIn: EntityPlayer, hand: EnumHand, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean {
-        if (worldIn.isRemote || hand == EnumHand.MAIN_HAND)
-            return super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ)
+        if (worldIn.isRemote || hand != EnumHand.MAIN_HAND)
+            return true//super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ)
 
-        val ownership = OwnershipManager.getUserGroup(playerIn.uniqueID)
 
-        if(ownership.getRights(playerIn.uniqueID) == OwnershipManager.Ownership.OwnershipRights.OWNER) {
-            println("IS OWNER")
+        val tile = worldIn.getTileEntity(pos) as TileEntityRocketController
+
+        if (tile.ownerShip.currentOwner == null) {
+            tile.ownerShip.setOwnerShip(OwnershipManager.getUserGroup(playerIn.uniqueID))
+        }
+
+        if (tile.ownerShip.currentOwner!!.getRights(playerIn.uniqueID) == OwnershipManager.Ownership.OwnershipRights.NONE) {
+            playerIn.sendMessage(TextComponentTranslation("rocket.controller.invalid.ownership"))
+            return true
         }
 
         if (!launchpad.init) {
@@ -66,8 +73,6 @@ class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controlle
         val matches = launchpad.matches(worldIn, pos, true)
 
         if (matches != null) {
-
-
             val base = rocket_base.matches(worldIn, pos, true)
             if (base != null) {
 
@@ -132,19 +137,22 @@ class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controlle
                 if (tip && tank * 2 >= storage) {
 
                     val template = Template(pos, worldIn, blocks)
-                    val ent = EntityRocket(worldIn, template, pos)
-                    ent.motionY = 0.005
+                    val ent = EntityRocket(worldIn, template, pos, tile.ownerShip.currentOwner!!)
+                    //ent.motionY = 0.005
                     ent.setPosition(pos.x + 0.5, pos.y.toDouble(), pos.z + 0.5)
                     worldIn.spawnEntity(ent)
 
                     playerIn.sendMessage(TextComponentString("rocket build: $storage storage modules with $singleStorage elements and $tank tank modules"))
+
+                    return true
                 }
             }
-
+            playerIn.sendMessage(TextComponentTranslation("rocket.controller.invalid.rocket"))
+        } else {
+            playerIn.sendMessage(TextComponentTranslation("rocket.controller.invalid.launchpad"))
         }
 
-
-        return false
+        return true
     }
 
     override fun getDropItem(state: IBlockState, world: IBlockAccess, pos: BlockPos, te: TileEntity?): ItemStack {

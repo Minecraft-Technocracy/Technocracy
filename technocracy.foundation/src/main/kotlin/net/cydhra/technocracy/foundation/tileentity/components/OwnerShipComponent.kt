@@ -16,13 +16,17 @@ class OwnerShipComponent : AbstractComponent() {
     }
 
     override fun serializeNBT(): NBTTagCompound {
-        return compound {
-            "ownerGroup" to currentOwner!!.ownerShipUUID
+        if (currentOwner != null) {
+            return compound {
+                "ownerGroup" to currentOwner!!.ownerShipUUID
+            }
         }
+        return NBTTagCompound()
     }
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
-        currentOwner = OwnershipManager.getGroup(nbt.getUniqueId("ownerGroup")!!)
+        if (nbt.hasUniqueId("ownerGroup"))
+            currentOwner = OwnershipManager.getGroup(nbt.getUniqueId("ownerGroup")!!)
     }
 
     override val type: ComponentType = ComponentType.OTHER

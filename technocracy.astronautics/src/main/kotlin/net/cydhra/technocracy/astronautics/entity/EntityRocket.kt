@@ -7,7 +7,11 @@ import io.netty.buffer.ByteBufOutputStream
 import io.netty.handler.codec.EncoderException
 import net.cydhra.technocracy.astronautics.blocks.general.rocketDriveBlock
 import net.cydhra.technocracy.astronautics.fx.ParticleSmoke
+import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandler
+import net.cydhra.technocracy.foundation.data.OwnershipManager
 import net.cydhra.technocracy.foundation.fx.TCParticleManager
+import net.cydhra.technocracy.foundation.tileentity.components.FluidComponent
+import net.cydhra.technocracy.foundation.tileentity.components.OwnerShipComponent
 import net.cydhra.technocracy.foundation.util.structures.Template
 import net.minecraft.client.renderer.vertex.VertexBuffer
 import net.minecraft.entity.Entity
@@ -22,6 +26,7 @@ import net.minecraft.nbt.NBTUtil
 import net.minecraft.network.datasync.DataSerializers
 import net.minecraft.network.datasync.EntityDataManager
 import net.minecraft.util.EntitySelectors
+import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.AxisAlignedBB
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
@@ -39,20 +44,27 @@ import net.minecraftforge.event.world.GetCollisionBoxesEvent as GetCollisionBoxe
 
 open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnData {
 
-    constructor(world: World, template: Template, controllerBlock: BlockPos) : this(world) {
+    constructor(world: World, template: Template, controllerBlock: BlockPos, owner: OwnershipManager.Ownership) : this(world) {
         this.template = template
         this.controllerBlock = controllerBlock
+
+        with(this.owner) {
+            allowAutoSave = false
+            setOwnerShip(owner)
+        }
     }
 
     @SideOnly(Side.CLIENT)
     var vbo: VertexBuffer? = null
 
-
     lateinit var controllerBlock: BlockPos
     private val LIFTOFF = EntityDataManager.createKey(EntityRocket::class.java, DataSerializers.BOOLEAN)
+    
+    val owner = OwnerShipComponent()
+    val tank = FluidComponent(DynamicFluidHandler(0, mutableListOf()), EnumFacing.values().toMutableSet())
 
     var liftOff: Boolean
-        get() = true//dataManager.get(LIFTOFF)
+        get() = dataManager.get(LIFTOFF)
         set(value) {
             if (!liftOff) {
                 this.motionY = 0.005
@@ -167,8 +179,6 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
             }
         }
 
-        println("update")
-
         var list = this.world.getEntitiesInAABBexcluding(this, this.entityBoundingBox, EntitySelectors.getTeamCollisionPredicate(this))
         if (list.isNotEmpty()) {
             for (entity in list) {
@@ -177,7 +187,7 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
             }
         }
 
-        if (world.isRemote) {
+        if (world.isRemote && liftOff) {
             for (info in template.blocks) {
                 if (info.pos.y == 0) {
                     if (info.block == rocketDriveBlock) {
@@ -257,13 +267,19 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
     }
 
     override fun writeEntityToNBT(compound: NBTTagCompound) {
-        compound.setTag("blocks", template.serializeNBT())
-        compound.setTag("controller", NBTUtil.createPosTag(controllerBlock))
-        compound.setTag("liftOff", template.serializeNBT())
+        with(compound) {
+            setTag("blocks", template.serializeNBT())
+            setTag("controller", NBTUtil.createPosTag(controllerBlock))
+            setTag("owner", owner.serializeNBT())
+        }
     }
 
     override fun readEntityFromNBT(compound: NBTTagCompound) {
-        template.deserializeNBT(compound.getCompoundTag("blocks"))
+        with(compound) {
+            template.deserializeNBT(getCompoundTag("blocks"))
+            controllerBlock = NBTUtil.getPosFromTag(getCompoundTag("controller"))
+            owner.deserializeNBT(getCompoundTag("owner"))
+        }
     }
 
     protected fun collideWithEntity(entityIn: Entity) {
