@@ -2,13 +2,10 @@ package net.cydhra.technocracy.astronautics.entity
 
 
 import io.netty.buffer.ByteBuf
-import io.netty.buffer.ByteBufInputStream
-import io.netty.buffer.ByteBufOutputStream
-import io.netty.handler.codec.EncoderException
 import net.cydhra.technocracy.astronautics.blocks.general.rocketDriveBlock
 import net.cydhra.technocracy.astronautics.fx.ParticleSmoke
 import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandler
-import net.cydhra.technocracy.foundation.data.OwnershipManager
+import net.cydhra.technocracy.foundation.data.GroupManager
 import net.cydhra.technocracy.foundation.fx.TCParticleManager
 import net.cydhra.technocracy.foundation.tileentity.components.FluidComponent
 import net.cydhra.technocracy.foundation.tileentity.components.OwnerShipComponent
@@ -19,10 +16,6 @@ import net.minecraft.client.renderer.vertex.VertexBuffer
 import net.minecraft.entity.Entity
 import net.minecraft.entity.MoverType
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.inventory.EntityEquipmentSlot
-import net.minecraft.item.ItemStack
-import net.minecraft.nbt.CompressedStreamTools
-import net.minecraft.nbt.NBTSizeTracker
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTUtil
 import net.minecraft.network.datasync.DataSerializers
@@ -37,8 +30,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
-import java.io.IOException
-import java.util.*
 import java.util.concurrent.ThreadLocalRandom
 import kotlin.math.max
 import kotlin.math.min
@@ -46,7 +37,7 @@ import net.minecraftforge.event.world.GetCollisionBoxesEvent as GetCollisionBoxe
 
 open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnData {
 
-    constructor(world: World, template: Template, controllerBlock: BlockPos, owner: OwnershipManager.Ownership) : this(world) {
+    constructor(world: World, template: Template, controllerBlock: BlockPos, owner: GroupManager.PlayerGroup) : this(world) {
         this.template = template
         this.controllerBlock = controllerBlock
 

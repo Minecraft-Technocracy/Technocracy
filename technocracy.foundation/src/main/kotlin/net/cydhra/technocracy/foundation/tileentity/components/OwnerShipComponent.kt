@@ -1,16 +1,16 @@
 package net.cydhra.technocracy.foundation.tileentity.components
 
-import net.cydhra.technocracy.foundation.data.OwnershipManager
+import net.cydhra.technocracy.foundation.data.GroupManager
 import net.cydhra.technocracy.foundation.util.compound
 import net.minecraft.nbt.NBTTagCompound
 
 
 class OwnerShipComponent : AbstractComponent() {
 
-    var currentOwner: OwnershipManager.Ownership? = null
+    var currentOwner: GroupManager.PlayerGroup? = null
         private set
 
-    fun setOwnerShip(ownerShip: OwnershipManager.Ownership) {
+    fun setOwnerShip(ownerShip: GroupManager.PlayerGroup) {
         currentOwner = ownerShip
         markDirty(false)
     }
@@ -26,7 +26,7 @@ class OwnerShipComponent : AbstractComponent() {
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
         if (nbt.hasUniqueId("ownerGroup"))
-            currentOwner = OwnershipManager.getGroup(nbt.getUniqueId("ownerGroup")!!)
+            currentOwner = GroupManager.getGroup(nbt.getUniqueId("ownerGroup")!!)
     }
 
     override val type: ComponentType = ComponentType.OTHER

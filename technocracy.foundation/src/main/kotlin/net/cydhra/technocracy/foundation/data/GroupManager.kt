@@ -7,8 +7,8 @@ import net.minecraft.nbt.NBTTagList
 import net.minecraftforge.common.util.Constants
 import java.util.*
 
-object OwnershipManager : AbstractSaveDataElement("ownership") {
-    val groups = mutableListOf<Ownership>()
+object GroupManager : AbstractSaveDataElement("ownership") {
+    val groups = mutableListOf<PlayerGroup>()
     val playerPriories = mutableMapOf<UUID, MutableList<UUID>>()
 
     @Suppress("NAME_SHADOWING")
@@ -20,11 +20,11 @@ object OwnershipManager : AbstractSaveDataElement("ownership") {
         val priorities = nbt.getTagList("userPriority", Constants.NBT.TAG_COMPOUND)
 
         for (key in groups.keySet) {
-            val ownership = Ownership(UUID.fromString(key))
+            val ownership = PlayerGroup(UUID.fromString(key))
             val list = nbt.getTagList(key, Constants.NBT.TAG_COMPOUND)
             for (i in 0 until list.tagCount()) {
                 val comp = list.getCompoundTagAt(i)
-                ownership.users[comp.getUniqueId("uuid")!!] = Ownership.OwnershipRights.valueOf(comp.getString("rights"))
+                ownership.users[comp.getUniqueId("uuid")!!] = PlayerGroup.GroupRights.valueOf(comp.getString("rights"))
             }
             this.groups.add(ownership)
         }
@@ -82,11 +82,15 @@ object OwnershipManager : AbstractSaveDataElement("ownership") {
         return list
     }
 
-    fun getUserGroup(user: UUID): Ownership {
+    /**
+     * @param user the uuid of the player
+     * @return the group the player has prioritized, if none is available it generates one
+     */
+    fun getGroupFromUser(user: UUID): PlayerGroup {
         return getGroup(playerPriories.getOrPut(user) { mutableListOf() }.getOrElse(0) {
             val id = UUID.randomUUID()
-            val group = Ownership(id)
-            group.users[user] = OwnershipManager.Ownership.OwnershipRights.OWNER
+            val group = PlayerGroup(id)
+            group.users[user] = GroupManager.PlayerGroup.GroupRights.OWNER
             groups.add(group)
             playerPriories[user]!!.add(id)
             DataManager.manager!!.markDirty()
@@ -94,16 +98,32 @@ object OwnershipManager : AbstractSaveDataElement("ownership") {
         })!!
     }
 
-    fun getGroup(groupID: UUID): Ownership? {
+    /**
+     * @param groupID the uuid of the group
+     * @return the group with the uuid, null if none was found
+     */
+    fun getGroup(groupID: UUID): PlayerGroup? {
         return groups.find { it.ownerShipUUID == groupID }
     }
 
-    fun updateUserAccess(groupID: UUID, user: UUID, userToAdd: UUID, newRight: Ownership.OwnershipRights): Boolean {
+    /**
+     * Updates the rights a user has or adds the user, if the executor has enough rights
+     *
+     * @param groupID the uuid of the group
+     * @param executor the player changing the rights
+     * @param updateUser the user that gets updated
+     * @param newRight the new rights the user gets
+     *
+     * @return true if the update was successful
+     */
+    fun updateUserAccess(groupID: UUID, executor: UUID, updateUser: UUID, newRight: PlayerGroup.GroupRights): Boolean {
         val group = groups.find { it.ownerShipUUID == groupID }
         if (group != null) {
-            val userRank = group.users[user]
-            if (userRank != null && userRank != OwnershipManager.Ownership.OwnershipRights.ACCESS) {
-                group.users[userToAdd] = newRight
+            val executorRank = group.getRights(executor)
+            val currentRank = group.getRights(updateUser)
+            //only allow edit if executor has rights and is above the other user
+            if (executorRank.power > 0 && executorRank.power > currentRank.power) {
+                group.users[updateUser] = newRight
                 DataManager.manager!!.markDirty()
                 return true
             }
@@ -111,28 +131,15 @@ object OwnershipManager : AbstractSaveDataElement("ownership") {
         return false
     }
 
-    fun addUserToGroup(groupID: UUID, user: UUID, userToAdd: UUID): Boolean {
-        val group = groups.find { it.ownerShipUUID == groupID }
-        if (group != null) {
-            val userRank = group.users[user]
-            if (userRank != null && userRank != OwnershipManager.Ownership.OwnershipRights.ACCESS) {
-                group.users[userToAdd] = OwnershipManager.Ownership.OwnershipRights.ACCESS
-                DataManager.manager!!.markDirty()
-                return true
-            }
-        }
-        return false
-    }
+    class PlayerGroup(val ownerShipUUID: UUID) {
+        val users = mutableMapOf<UUID, GroupRights>()
 
-    class Ownership(val ownerShipUUID: UUID) {
-        val users = mutableMapOf<UUID, OwnershipRights>()
-
-        fun getRights(user: UUID): OwnershipRights {
-            return users[user] ?: OwnershipRights.NONE
+        fun getRights(user: UUID): GroupRights {
+            return users[user] ?: GroupRights.NONE
         }
 
-        enum class OwnershipRights {
-            OWNER, MANAGE, ACCESS, NONE
+        enum class GroupRights(val power: Int) {
+            OWNER(10), MANAGE(5), USER(0), NONE(-1)
         }
     }
 
@@ -140,5 +147,4 @@ object OwnershipManager : AbstractSaveDataElement("ownership") {
         groups.clear()
         playerPriories.clear()
     }
-
 }

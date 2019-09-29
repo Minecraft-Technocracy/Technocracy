@@ -6,8 +6,7 @@ import net.cydhra.technocracy.astronautics.entity.EntityRocket
 import net.cydhra.technocracy.astronautics.tileentity.TileEntityRocketController
 import net.cydhra.technocracy.foundation.blocks.api.AbstractRotatableTileEntityBlock
 import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockPlaceBehavior
-import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandlerItem
-import net.cydhra.technocracy.foundation.data.OwnershipManager
+import net.cydhra.technocracy.foundation.data.GroupManager
 import net.cydhra.technocracy.foundation.util.structures.Template
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
@@ -21,7 +20,6 @@ import net.minecraft.util.text.TextComponentString
 import net.minecraft.util.text.TextComponentTranslation
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler
 
 
 class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controller", material = Material.ROCK), IDynamicBlockPlaceBehavior {
@@ -29,7 +27,7 @@ class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controlle
     override fun placeBlockAt(place: Boolean, stack: ItemStack, player: EntityPlayer, world: World, pos: BlockPos, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float, newState: IBlockState): Boolean {
         val tile = world.getTileEntity(pos) as? TileEntityRocketController ?: return place
 
-        tile.ownerShip.setOwnerShip(OwnershipManager.getUserGroup(player.uniqueID))
+        tile.ownerShip.setOwnerShip(GroupManager.getGroupFromUser(player.uniqueID))
 
         return place
     }
@@ -53,10 +51,10 @@ class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controlle
         val tile = worldIn.getTileEntity(pos) as TileEntityRocketController
 
         if (tile.ownerShip.currentOwner == null) {
-            tile.ownerShip.setOwnerShip(OwnershipManager.getUserGroup(playerIn.uniqueID))
+            tile.ownerShip.setOwnerShip(GroupManager.getGroupFromUser(playerIn.uniqueID))
         }
 
-        if (tile.ownerShip.currentOwner!!.getRights(playerIn.uniqueID) == OwnershipManager.Ownership.OwnershipRights.NONE) {
+        if (tile.ownerShip.currentOwner!!.getRights(playerIn.uniqueID) == GroupManager.PlayerGroup.GroupRights.NONE) {
             playerIn.sendMessage(TextComponentTranslation("rocket.controller.invalid.ownership"))
             return true
         }
