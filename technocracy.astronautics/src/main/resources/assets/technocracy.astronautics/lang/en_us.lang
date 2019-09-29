@@ -1,6 +1,17 @@
+itemGroup.astronautics.main=TC Astronautics
+itemGroup.astronautics.colors=Colored Blocks
+
 tile.scaffold.name=Scaffold
 tile.wet_reinforced_concrete.name=Wet Reinforced Concrete
+tile.reinforced_concrete.name=Reinforced Concrete
 tile.wet_concrete.name=Wet Concrete
+
+tile.rocket_storage.name=Rocket Storage
+tile.rocket_tank.name=Rocket Tank
+tile.rocket_controller.name=Rocket Controller
+tile.rocket_tip.name=Rocket Tip
+tile.rocket_drive.name=Rocket Drive
+tile.rocket_hull.name=Rocket Hull
 
 color.white.name=White
 color.orange.name=Orange
@@ -16,7 +27,12 @@ color.purple.name=Purple
 color.blue.name=Blue
 color.brown.name=Brown
 color.green.name=Green
+color.red.name=Red
 color.black.name=Black
 
 item.concrete_sprayer_empty.name=Empty Concrete Sprayer
-item.concrete_sprayer.name=Empty Concrete Sprayer
+item.concrete_sprayer.name=Concrete Sprayer
+item.concrete_can.name=Concrete Can
+
+rocket.controller.invalid.ownership=You are not allowed to use this controller
+rocket.controller.invalid.launchpad=No valid launchpad found

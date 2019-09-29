@@ -180,8 +180,8 @@ fluid.enriched_slurry.zirconium=Enriched Zirconium Slurry
 
 effect.oily=Oily
 
-itemGroup.technocracy=Technocracy
-itemGroup.facades=Facades
+itemGroup.technocracy.main=Technocracy
+itemGroup.technocracy.facades=Facades
 
 multiblock.error.number_of_blocks=%s: Expected %d but found %d.
 multiblock.error.too_few_blocks=%s: Expected at least %d but found %d.

@@ -10,7 +10,7 @@ import net.minecraftforge.fml.relauncher.SideOnly
 /**
  * Creative tab for all items of this mod. Since this are potentially many, a search bar is displayed
  */
-val technocracyCreativeTabs = object : CreativeTabs("technocracy") {
+val technocracyCreativeTabs = object : CreativeTabs("technocracy.main") {
     init {
         this.backgroundImageName = "items.png"
     }
@@ -24,7 +24,7 @@ val technocracyCreativeTabs = object : CreativeTabs("technocracy") {
     }
 }
 
-val technocracyFacadeCreativeTab = object : CreativeTabs("facades") {
+val technocracyFacadeCreativeTab = object : CreativeTabs("technocracy.facades") {
     lateinit var stack: ItemStack
     var last: Long = -1
 
