@@ -268,7 +268,7 @@ object ConduitNetwork {
         val doubleZ = mc.player.posZ
 
         GL11.glPushMatrix()
-        GL11.glTranslated(-doubleX, -doubleY, -doubleZ)
+        GL11.glTranslated(-mc.renderManager.viewerPosX, -mc.renderManager.viewerPosY, -mc.renderManager.viewerPosZ)
 
 
         GL11.glDisable(GL11.GL_DEPTH_TEST)
