@@ -17,4 +17,11 @@ interface TEInventoryProvider {
      * @return true, if the stack can be inserted into the slot
      */
     fun isItemValid(inventory: DynamicInventoryHandler, slot: Int, stack: ItemStack): Boolean
+
+    /**
+     * @param inventory the handler that got its slot updated
+     * @param slot inventory slot
+     * @param stack the new ItemStack in the slot
+     */
+    fun onSlotUpdate(inventory: DynamicInventoryHandler, slot: Int, stack: ItemStack)
 }

@@ -12,6 +12,7 @@ import net.minecraftforge.common.util.INBTSerializable
 import net.minecraftforge.items.IItemHandler
 import net.minecraftforge.items.IItemHandlerModifiable
 import net.minecraftforge.items.ItemHandlerHelper
+import kotlin.math.min
 
 
 class DynamicInventoryHandler(size: Int = 0, private val machine: TEInventoryProvider) : IItemHandler,
@@ -88,21 +89,21 @@ class DynamicInventoryHandler(size: Int = 0, private val machine: TEInventoryPro
         if (existing.isEmpty)
             return ItemStack.EMPTY
 
-        val toExtract = Math.min(amount, existing.maxStackSize)
+        val toExtract = min(amount, existing.maxStackSize)
 
-        if (existing.count <= toExtract) {
+        return if (existing.count <= toExtract) {
             if (!simulate) {
                 this.stacks[slot] = ItemStack.EMPTY
                 onContentsChanged(slot)
             }
-            return existing
+            existing
         } else {
             if (!simulate) {
                 this.stacks[slot] = ItemHandlerHelper.copyStackWithSize(existing, existing.count - toExtract)
                 onContentsChanged(slot)
             }
 
-            return ItemHandlerHelper.copyStackWithSize(existing, toExtract)
+            ItemHandlerHelper.copyStackWithSize(existing, toExtract)
         }
     }
 
@@ -110,8 +111,8 @@ class DynamicInventoryHandler(size: Int = 0, private val machine: TEInventoryPro
         return 64
     }
 
-    protected fun getStackLimit(slot: Int, stack: ItemStack): Int {
-        return Math.min(getSlotLimit(slot), stack.maxStackSize)
+    fun getStackLimit(slot: Int, stack: ItemStack): Int {
+        return min(getSlotLimit(slot), stack.maxStackSize)
     }
 
     override fun isItemValid(slot: Int, stack: ItemStack): Boolean {
@@ -146,19 +147,15 @@ class DynamicInventoryHandler(size: Int = 0, private val machine: TEInventoryPro
                 stacks[slot] = ItemStack(itemTags)
             }
         }
-        onLoad()
     }
 
-    protected fun validateSlotIndex(slot: Int) {
+    fun validateSlotIndex(slot: Int) {
         if (slot < 0 || slot >= stacks.size)
             throw RuntimeException("Slot " + slot + " not in valid range - [0," + stacks.size + ")")
     }
 
-    protected fun onLoad() {
-
-    }
-
-    protected fun onContentsChanged(slot: Int) {
-
+    fun onContentsChanged(slot: Int) {
+        markDirty(true)
+        machine.onSlotUpdate(this, slot, stacks[slot])
     }
 }
