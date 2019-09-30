@@ -187,6 +187,7 @@ open class CommonProxy {
         blockManager.prepareBlocksForRegistration(sulfuricAcidBlock)
 
         blockManager.prepareBlocksForRegistration(pipe, PipeModel())
+        blockManager.prepareBlocksForRegistration(chrysotileBlock)
 
         itemManager.prepareItemForRegistration(machineFrameItem)
         itemManager.prepareItemForRegistration(advancedMachineFrameItem)
