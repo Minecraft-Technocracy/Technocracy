@@ -1,0 +1,15 @@
+{
+  "input": {
+    "type": "forge:ore_dict",
+    "ore": "dustSalt"
+  },
+  "fluid": {
+    "fluid": "sulfuric_acid",
+    "amount": 100
+  },
+  "output": {
+    "fluid": "hydrochloric_acid",
+    "amount": 100
+  },
+  "cost": 40
+}
