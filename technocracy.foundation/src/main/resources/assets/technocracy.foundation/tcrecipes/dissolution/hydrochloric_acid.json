@@ -5,11 +5,11 @@
   },
   "fluid": {
     "fluid": "sulfuric_acid",
-    "amount": 100
+    "amount": 200
   },
   "output": {
     "fluid": "hydrochloric_acid",
-    "amount": 100
+    "amount": 200
   },
   "cost": 40
 }

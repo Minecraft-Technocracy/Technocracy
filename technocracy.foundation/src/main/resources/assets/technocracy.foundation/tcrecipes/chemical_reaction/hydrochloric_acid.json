@@ -1,0 +1,17 @@
+{
+  "input": [
+    {
+      "fluid": "sulfuric_acid",
+      "amount": 1
+    },
+    {
+      "fluid": "brine",
+      "amount": 1
+    }
+  ],
+  "output": {
+    "fluid": "hydrochloric_acid",
+    "amount": 1
+  },
+  "cost": 32
+}
