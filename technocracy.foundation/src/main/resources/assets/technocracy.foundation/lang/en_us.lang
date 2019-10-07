@@ -67,6 +67,7 @@ tile.ore.tin.name=Tin Ore
 tile.lead_block.name=Lead Block
 tile.lead_oxide_block.name=Lead-Oxide Block
 tile.chrysotile.name=Chrysotile
+tile.salt_block.name=Rock Salt
 
 tile.alloy_smeltery.name=Alloy Smeltery
 tile.centrifuge.name=Centrifuge

@@ -191,6 +191,7 @@ open class CommonProxy {
 
         blockManager.prepareBlocksForRegistration(pipe, PipeModel())
         blockManager.prepareBlocksForRegistration(chrysotileBlock)
+        blockManager.prepareBlocksForRegistration(saltBlock)
 
         itemManager.prepareItemForRegistration(machineFrameItem)
         itemManager.prepareItemForRegistration(advancedMachineFrameItem)
