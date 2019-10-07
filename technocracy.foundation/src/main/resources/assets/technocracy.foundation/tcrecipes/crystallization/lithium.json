@@ -1,0 +1,11 @@
+{
+  "fluid": {
+    "fluid": "aqueous_lithium",
+    "amount": 1000
+  },
+  "output": {
+    "item": "technocracy.foundation:ingot.lithium",
+    "count": 1
+  },
+  "cost": 200
+}

@@ -31,3 +31,6 @@ val hydrogenFluid = BaseFluid("hydrogen", Color(215, 255, 247), opaqueTexture = 
 val silicaFluid = BaseFluid("silica", Color(241, 230, 255), opaqueTexture = false)
 val steamFluid = BaseFluid("steam", Color(160, 160, 160), opaqueTexture = false, isGas = true, temperature = 380)
 val drossFluid = BaseFluid("dross", Color(100, 100, 100), opaqueTexture = true)
+val brine = BaseFluid("brine", Color(230, 230, 200), opaqueTexture = false)
+val lithiumChloride = BaseFluid("lithium_chloride", Color(210, 200, 170), opaqueTexture = false)
+val aqueousLithium = BaseFluid("aqueous_lithium", Color(140, 255, 150), opaqueTexture = false)

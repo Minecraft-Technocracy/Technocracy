@@ -1,0 +1,17 @@
+{
+  "input": {
+    "fluid": "lithium_chloride",
+    "amount": 2
+  },
+  "output": [
+    {
+      "fluid": "chlorine",
+      "amount": 1
+    },
+    {
+      "fluid": "aqueous_lithium",
+      "amount": 1
+    }
+  ],
+  "cost": 128
+}
