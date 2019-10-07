@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sss",
+    "sgs",
+    "sss"
+  ],
+  "key": {
+    "s": {
+      "type": "forge:ore_dict",
+      "ore": "sheetSteel"
+    },
+    "g": {
+      "type": "forge:ore_dict",
+      "ore": "blockGlass"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:tank_glass",
+    "count": 4
+  }
+}

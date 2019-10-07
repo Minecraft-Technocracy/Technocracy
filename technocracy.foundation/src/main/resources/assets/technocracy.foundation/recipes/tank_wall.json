@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sss",
+    "s s",
+    "sss"
+  ],
+  "key": {
+    "s": {
+      "type": "forge:ore_dict",
+      "ore": "sheetSteel"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:tank_wall",
+    "count": 4
+  }
+}
