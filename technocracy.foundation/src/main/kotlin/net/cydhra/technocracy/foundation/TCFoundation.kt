@@ -2,6 +2,7 @@ package net.cydhra.technocracy.foundation
 
 import net.cydhra.technocracy.foundation.commands.ClearTemplateCommand
 import net.cydhra.technocracy.foundation.commands.GenerateTemplateCommand
+import net.cydhra.technocracy.foundation.commands.PasteTemplateCommand
 import net.cydhra.technocracy.foundation.data.general.DataManager
 import net.cydhra.technocracy.foundation.integration.top.TOPIntegration
 import net.cydhra.technocracy.foundation.multiblock.MultiBlockPhysics
@@ -102,6 +103,7 @@ object TCFoundation {
         if (start.server.isSinglePlayer) {
             start.registerServerCommand(GenerateTemplateCommand())
             start.registerServerCommand(ClearTemplateCommand())
+            start.registerServerCommand(PasteTemplateCommand())
         }
     }
 

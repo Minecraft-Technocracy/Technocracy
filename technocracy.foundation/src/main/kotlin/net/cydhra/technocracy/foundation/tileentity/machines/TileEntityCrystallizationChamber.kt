@@ -55,4 +55,7 @@ class TileEntityCrystallizationChamber : MachineTileEntity(), TEInventoryProvide
     override fun isItemValid(inventory: DynamicInventoryHandler, slot: Int, stack: ItemStack): Boolean {
         return inventory == outputInventoryComponent.inventory && this.recipes.any { it.getOutput()[0].item == stack.item }
     }
+
+    override fun onSlotUpdate(inventory: DynamicInventoryHandler, slot: Int, stack: ItemStack) {
+    }
 }

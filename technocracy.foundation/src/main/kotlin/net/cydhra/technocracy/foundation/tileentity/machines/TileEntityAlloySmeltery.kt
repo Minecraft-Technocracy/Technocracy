@@ -60,6 +60,9 @@ class TileEntityAlloySmeltery : MachineTileEntity(), TEInventoryProvider {
         }
     }
 
+    override fun onSlotUpdate(inventory: DynamicInventoryHandler, slot: Int, stack: ItemStack) {
+    }
+
     override fun initGui(gui: TCGui) {
         gui.registerTab(object: TCTab("Example", gui) {
             override fun init() {

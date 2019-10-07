@@ -26,6 +26,7 @@ import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.*
 import net.minecraft.util.math.AxisAlignedBB
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.MathHelper
 import net.minecraft.util.text.TextComponentString
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
@@ -181,7 +182,7 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
     }
 
     override fun initCapabilities(stack: ItemStack, nbt: NBTTagCompound?): ICapabilityProvider? {
-        return ItemCapabilityWrapper(stack, mutableMapOf("fluid" to ItemFluidComponent(DynamicFluidHandlerItem(stack, DrumType.values()[stack.metadata].amount, mutableListOf(), DynamicFluidHandler.TankType.BOTH))))
+        return ItemCapabilityWrapper(stack, mutableMapOf("fluid" to ItemFluidComponent(DynamicFluidHandlerItem(stack, DrumType.values()[MathHelper.clamp(stack.metadata, 0, DrumType.values().size - 1)].amount, mutableListOf(), DynamicFluidHandler.TankType.BOTH))))
     }
 
     enum class DrumType(val typeName: String, val amount: Int) :
