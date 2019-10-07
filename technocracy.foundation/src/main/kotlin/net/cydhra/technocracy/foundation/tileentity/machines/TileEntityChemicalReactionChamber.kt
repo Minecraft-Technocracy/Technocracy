@@ -25,7 +25,7 @@ class TileEntityChemicalReactionChamber : MachineTileEntity() {
         this.registerComponent(outputInventoryComponent, "output_inventory")
 
         this.addLogicStrategy(ItemProcessingLogic(
-                recipeType = RecipeManager.RecipeType.KILN,
+                recipeType = RecipeManager.RecipeType.CHEMICAL_REACTION,
                 inputFluidSlots = arrayOf(this.inputInventoryComponent.fluid, this.inputInventoryComponent2.fluid),
                 outputFluidSlots = arrayOf(this.outputInventoryComponent.fluid),
                 energyStorage = this.energyStorageComponent.energyStorage,
