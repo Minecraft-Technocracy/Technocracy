@@ -37,7 +37,8 @@ class GuiUpdateListener {
                     if (te is MachineTileEntity) {
                         tag = getTagForMachine(te.getComponents())
                     } else if (te is TileEntityMultiBlockPart<*>) {
-                        tag = getTagForMachine((te.multiblockController as BaseMultiBlock).getComponents())
+                        if(te.multiblockController != null)
+                            tag = getTagForMachine((te.multiblockController as BaseMultiBlock).getComponents())
                     }
 
                     if (tag != null) {
