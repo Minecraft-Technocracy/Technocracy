@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.blocks.general
 
+import net.cydhra.technocracy.foundation.blocks.api.AbstractBaseBlock
 import net.cydhra.technocracy.foundation.blocks.api.BaseLiquidBlock
 import net.cydhra.technocracy.foundation.blocks.api.IBaseBlock
 import net.cydhra.technocracy.foundation.client.model.AbstractCustomModel
@@ -21,6 +22,7 @@ import net.minecraftforge.client.model.ModelLoader
 import net.minecraftforge.client.model.ModelLoaderRegistry
 import net.minecraftforge.event.RegistryEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import net.minecraftforge.oredict.OreDictionary
 
 
 /**
@@ -104,6 +106,13 @@ class BlockManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
                     }
                 }
         registerCustomBlockModels()
+
+        blocksToRegister
+                .filterIsInstance<AbstractBaseBlock>()
+                .filter { it.oreDictionaryName != null }
+                .forEach {
+                    OreDictionary.registerOre(it.oreDictionaryName, it)
+                }
     }
 
     /**

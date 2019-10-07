@@ -82,8 +82,8 @@ val tankWallBlock = TankMultiBlockBlock("tank_wall", ::TileEntityTankMultiBlockP
 val tankGlassBlock = TankMultiBlockBlock("tank_glass", ::TileEntityTankMultiBlockPart, isFullCube = false, opaque = false, glassSides = true, renderLayer = BlockRenderLayer.CUTOUT)
 val tankIOBlock = TankMultiBlockBlock("tank_io", ::TileEntityTankPort)
 
-val leadBlock = PlainBlock("lead_block", Material.IRON)
-val leadOxideBlock = PlainBlock("lead_oxide_block", Material.IRON)
+val leadBlock = PlainBlock("lead_block", Material.IRON, oreDictionaryName = "blockLead")
+val leadOxideBlock = PlainBlock("lead_oxide_block", Material.IRON, oreDictionaryName = "blockLeadOxide")
 
 val oilSandBlock = OilSandBlock()
 val oilStone = OilStoneBlock()

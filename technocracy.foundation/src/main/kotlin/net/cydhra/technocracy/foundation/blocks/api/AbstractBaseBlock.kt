@@ -18,7 +18,8 @@ import net.minecraft.block.material.Material
 abstract class AbstractBaseBlock(unlocalizedName: String,
                                  material: Material,
                                  registryName: String = unlocalizedName,
-                                 override val colorMultiplier: IBlockColor? = null) : Block(material), IBaseBlock {
+                                 override val colorMultiplier: IBlockColor? = null,
+                                 val oreDictionaryName: String? = null) : Block(material), IBaseBlock {
 
     override val modelLocation: String
         get() = this.registryName.toString()

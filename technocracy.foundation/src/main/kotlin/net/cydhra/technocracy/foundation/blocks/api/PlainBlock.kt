@@ -16,8 +16,9 @@ open class PlainBlock(unlocalizedName: String,
                       material: Material,
                       private val opaque: Boolean = true,
                       private val renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID,
-                      colorMultiplier: IBlockColor? = null)
-    : AbstractBaseBlock(unlocalizedName, material, colorMultiplier = colorMultiplier) {
+                      colorMultiplier: IBlockColor? = null,
+                      oreDictionaryName: String? = null)
+    : AbstractBaseBlock(unlocalizedName, material, colorMultiplier = colorMultiplier, oreDictionaryName = oreDictionaryName) {
 
     override fun isOpaqueCube(state: IBlockState): Boolean {
         return this.opaque
