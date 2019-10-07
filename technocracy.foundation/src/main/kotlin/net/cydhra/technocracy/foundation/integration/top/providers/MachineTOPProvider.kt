@@ -17,7 +17,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler
 class MachineTOPProvider : IProbeInfoProvider {
 
     private val energyStyle: ProgressStyle = ProgressStyle().suffix("RF").filledColor(0xffdd0000.toInt()).borderColor(0xff555555.toInt()).alternateFilledColor(0xff430000.toInt()).numberFormat(NumberFormat.COMPACT)
-    private val fluidStyle: ProgressStyle = ProgressStyle().suffix("mB").filledColor(0xff0000dd.toInt()).borderColor(0xff555555.toInt()).alternateFilledColor(0xff000043.toInt()).numberFormat(NumberFormat.COMPACT)
+    private val fluidStyle: ProgressStyle = ProgressStyle().suffix(" mB").filledColor(0xff0000dd.toInt()).borderColor(0xff555555.toInt()).alternateFilledColor(0xff000043.toInt()).numberFormat(NumberFormat.COMMAS)
 
     override fun addProbeInfo(mode: ProbeMode, probeInfo: IProbeInfo, player: EntityPlayer, world: World, blockState: IBlockState, data: IProbeHitData) {
         val te = world.getTileEntity(data.pos) as? TCAggregatable ?: return

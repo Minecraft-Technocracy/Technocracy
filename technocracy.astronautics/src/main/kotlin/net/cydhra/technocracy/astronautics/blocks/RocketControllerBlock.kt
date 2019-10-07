@@ -41,7 +41,8 @@ class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controlle
     val rocket_tip_a = Template()
     val rocket_tip_b = Template()
     val tank_module = Template()
-    val storage_module = Template()
+    val dyson_cargo = Template()
+    val satellite_cargo = Template()
 
     override fun onBlockActivated(worldIn: World, pos: BlockPos, state: IBlockState, playerIn: EntityPlayer, hand: EnumHand, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean {
         if (worldIn.isRemote || hand != EnumHand.MAIN_HAND)
@@ -65,7 +66,8 @@ class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controlle
             rocket_tip_a.loadFromAssets("rocket/rocket_tip_a")
             rocket_tip_b.loadFromAssets("rocket/rocket_tip_b")
             tank_module.loadFromAssets("rocket/tank_module")
-            storage_module.loadFromAssets("rocket/storage_module")
+            dyson_cargo.loadFromAssets("rocket/storage_module")
+            satellite_cargo.loadFromAssets("rocket/satellite_module")
         }
 
         val matches = launchpad.matches(worldIn, pos, true)
@@ -82,8 +84,9 @@ class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controlle
                 var tip = false
                 var index = 0
 
-                var storage = 0
-                var singleStorage = 0
+                var totalStorageElements = 0
+                var dysonCargo = 0
+                var satelliteCargo = 0
 
                 var tank = 0
 
@@ -93,7 +96,7 @@ class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controlle
                     val match_tank = tank_module.matches(worldIn, offPos, true)
                     if (match_tank != null) {
                         blocks.addAll(match_tank)
-                        if (storage != 0) {
+                        if (totalStorageElements != 0) {
                             break
                         }
 
@@ -102,15 +105,26 @@ class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controlle
                         continue
                     }
 
-                    val match_storage = storage_module.matches(worldIn, offPos, true, valid = { _, block, _ ->
+                    val match_storage = dyson_cargo.matches(worldIn, offPos, true, valid = { _, block, _ ->
                         if (block == rocketStorageBlock) {
-                            singleStorage++
+                            dysonCargo++
                         }
                         block == rocketHullBlock || block == rocketStorageBlock
                     })
+
                     if (match_storage != null) {
                         blocks.addAll(match_storage)
-                        storage++
+                        totalStorageElements++
+                        offPos = offPos.add(0, 3, 0)
+                        continue
+                    }
+
+                    val match_satelite = satellite_cargo.matches(worldIn, offPos, true)
+
+                    if (match_satelite != null) {
+                        blocks.addAll(match_satelite)
+                        totalStorageElements++
+                        satelliteCargo++
                         offPos = offPos.add(0, 3, 0)
                         continue
                     }
@@ -132,7 +146,12 @@ class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controlle
                     }
                 }
 
-                if (tip && tank * 2 >= storage) {
+                if (satelliteCargo != 0 && dysonCargo != 0) {
+                    playerIn.sendMessage(TextComponentTranslation("rocket.controller.invalid.cantMix"))
+                    return true
+                }
+
+                if (tip && tank * 2 >= totalStorageElements) {
 
                     val template = Template(pos, worldIn, blocks)
                     val ent = EntityRocket(worldIn, template, pos, tile.ownerShip.currentOwner!!)
@@ -140,7 +159,7 @@ class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controlle
                     ent.setPosition(pos.x + 0.5, pos.y.toDouble(), pos.z + 0.5)
                     worldIn.spawnEntity(ent)
 
-                    playerIn.sendMessage(TextComponentString("rocket build: $storage storage modules with $singleStorage elements and $tank tank modules"))
+                    playerIn.sendMessage(TextComponentString("rocket build: $totalStorageElements storage modules with $dysonCargo elements and $tank tank modules"))
 
                     return true
                 }

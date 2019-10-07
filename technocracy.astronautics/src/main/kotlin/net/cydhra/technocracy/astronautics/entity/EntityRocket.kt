@@ -54,8 +54,8 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
     private val LIFTOFF = EntityDataManager.createKey(EntityRocket::class.java, DataSerializers.BOOLEAN)
 
     val owner = OwnerShipComponent()
-    val tank = FluidComponent(DynamicFluidHandler(0, mutableListOf()), EnumFacing.values().toMutableSet())
-
+    //TODO config
+    val tank = FluidComponent(DynamicFluidHandler(0, mutableListOf("rocket_fuel")), EnumFacing.values().toMutableSet())
 
     var liftOff: Boolean
         get() = dataManager.get(LIFTOFF)
@@ -72,6 +72,7 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
             setTag("blocks", template.serializeNBT())
             setTag("controller", NBTUtil.createPosTag(controllerBlock))
             setTag("owner", owner.serializeNBT())
+            setTag("tank", tank.serializeNBT())
         }
     }
 
@@ -80,6 +81,7 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
             template.deserializeNBT(getCompoundTag("blocks"))
             controllerBlock = NBTUtil.getPosFromTag(getCompoundTag("controller"))
             owner.deserializeNBT(getCompoundTag("owner"))
+            tank.deserializeNBT(getCompoundTag("tank"))
         }
     }
 
