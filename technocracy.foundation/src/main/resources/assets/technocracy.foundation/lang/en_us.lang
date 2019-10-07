@@ -142,6 +142,9 @@ fluid.hydrogen=Hydrogen
 fluid.silica=Silica
 fluid.steam=Steam
 fluid.dross=Dross
+fluid.brine=Brine
+fluid.lithium_chloride=Lithium Chloride
+fluid.aqueous_lithium=Aqueous Lithium
 
 fluid.slag.aluminum=Aluminum Slag
 fluid.slag.copper=Copper Slag
