@@ -82,7 +82,7 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
                 // check if the output fits into the output slots
                 if (recipeOutput.zip(0 until (this.outputInventory?.slots ?: 0))
                                 .all { (outputStack, outputSlot) ->
-                                    this.outputInventory?.insertItem(outputSlot, outputStack, simulate = true) == ItemStack.EMPTY
+                                    this.outputInventory?.insertItem(outputSlot, outputStack, simulate = true, forced = true) == ItemStack.EMPTY
                                 }
                         && recipeFluidOutput.zip(this.outputFluidSlots.indices)
                                 .all { (fluidStack, fluidSlot) ->
@@ -93,7 +93,7 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
                     recipeInputRequirements.forEach { ingredient ->
                         for (slot in (0 until (this.inputInventory?.slots ?: 0))) {
                             if (ingredient.test(inputInventory?.getStackInSlot(slot))) {
-                                inputInventory?.extractItem(slot, 1, false)
+                                inputInventory?.extractItem(slot, 1, simulate = false, forced = true)
                                 break
                             }
                         }
@@ -111,7 +111,7 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
 
                     // insert output items
                     recipeOutput.zip(0 until (this.outputInventory?.slots ?: 0)).forEach { (outputStack, outputSlot) ->
-                        this.outputInventory!!.insertItem(outputSlot, outputStack.copy(), false)
+                        this.outputInventory!!.insertItem(outputSlot, outputStack.copy(), simulate = false, forced = true)
                     }
 
                     // insert output fluids
