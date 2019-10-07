@@ -1,7 +1,6 @@
 package net.cydhra.technocracy.foundation.capabilities.inventory
 
 import net.cydhra.technocracy.foundation.capabilities.AbstractDynamicHandler
-import net.cydhra.technocracy.foundation.tileentity.components.AbstractCapabilityComponent
 import net.cydhra.technocracy.foundation.tileentity.management.TEInventoryProvider
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
@@ -15,14 +14,20 @@ import net.minecraftforge.items.ItemHandlerHelper
 import kotlin.math.min
 
 
-class DynamicInventoryHandler(size: Int = 0, private val machine: TEInventoryProvider) : IItemHandler,
+class DynamicInventoryHandler(size: Int = 0, private val machine: TEInventoryProvider, val slotTypes: MutableMap<Int, InventoryType> = mutableMapOf()) : IItemHandler,
         IItemHandlerModifiable,
         INBTSerializable<NBTTagCompound>, AbstractDynamicHandler() {
 
     var stacks: NonNullList<ItemStack>
 
     init {
+
         stacks = NonNullList.withSize(size, ItemStack.EMPTY)
+
+        for (slot in 0 until size) {
+            if (!slotTypes.containsKey(slot))
+                slotTypes[slot] = InventoryType.BOTH
+        }
     }
 
     fun setSize(size: Int) {
@@ -45,10 +50,20 @@ class DynamicInventoryHandler(size: Int = 0, private val machine: TEInventoryPro
     }
 
     override fun insertItem(slot: Int, stack: ItemStack, simulate: Boolean): ItemStack {
+        return insertItem(slot, stack, simulate, false)
+    }
+
+    fun insertItem(slot: Int, stack: ItemStack, simulate: Boolean, forced: Boolean): ItemStack {
         if (stack.isEmpty)
             return ItemStack.EMPTY
 
         validateSlotIndex(slot)
+
+        if (!forced && !isItemValid(slot, stack))
+            return stack
+
+        if (!forced && slotTypes[slot] == InventoryType.OUTPUT)
+            return stack
 
         val existing = this.stacks[slot]
 
@@ -79,10 +94,17 @@ class DynamicInventoryHandler(size: Int = 0, private val machine: TEInventoryPro
     }
 
     override fun extractItem(slot: Int, amount: Int, simulate: Boolean): ItemStack {
+        return extractItem(slot, amount, simulate, false)
+    }
+
+    fun extractItem(slot: Int, amount: Int, simulate: Boolean, forced: Boolean): ItemStack {
         if (amount == 0)
             return ItemStack.EMPTY
 
         validateSlotIndex(slot)
+
+        if (!forced && slotTypes[slot] == InventoryType.INPUT)
+            return ItemStack.EMPTY
 
         val existing = this.stacks[slot]
 
@@ -157,5 +179,9 @@ class DynamicInventoryHandler(size: Int = 0, private val machine: TEInventoryPro
     fun onContentsChanged(slot: Int) {
         markDirty(true)
         machine.onSlotUpdate(this, slot, stacks[slot])
+    }
+
+    enum class InventoryType {
+        INPUT, OUTPUT, BOTH
     }
 }

@@ -48,6 +48,7 @@ import net.cydhra.technocracy.foundation.tileentity.multiblock.tank.TileEntityTa
 import net.cydhra.technocracy.foundation.tileentity.multiblock.tank.TileEntityTankPort
 import net.cydhra.technocracy.foundation.world.gen.OilLakeGen
 import net.cydhra.technocracy.foundation.world.gen.OilSandGen
+import net.cydhra.technocracy.foundation.world.gen.WorldGenDeco
 import net.minecraft.client.Minecraft
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.MinecraftForge
@@ -292,6 +293,7 @@ open class CommonProxy {
 
         GameRegistry.registerWorldGenerator(OilLakeGen(), 0)
         GameRegistry.registerWorldGenerator(OilSandGen(), 0)
+        GameRegistry.registerWorldGenerator(WorldGenDeco(), 0)
 
         NetworkRegistry.INSTANCE.registerGuiHandler(TCFoundation, TCGuiHandler())
 

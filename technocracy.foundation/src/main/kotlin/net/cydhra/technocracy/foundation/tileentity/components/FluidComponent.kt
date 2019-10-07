@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.tileentity.components
 
 import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandler
+import net.cydhra.technocracy.foundation.tileentity.management.TEInventoryProvider
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
@@ -12,6 +13,8 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler
  */
 class FluidComponent(val fluid: DynamicFluidHandler, val facing: MutableSet<EnumFacing>) :
         AbstractCapabilityComponent() {
+
+    constructor(fluid: DynamicFluidHandler, facing: EnumFacing) : this(fluid, mutableSetOf(facing))
 
     init {
         fluid.componentParent = this

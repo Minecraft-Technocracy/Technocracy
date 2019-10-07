@@ -23,7 +23,7 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
 
     val ownerShip = OwnerShipComponent()
     val fluidBuffer = FluidComponent(DynamicFluidHandler(16000, mutableListOf("rocket_fuel")), EnumFacing.values().toMutableSet())
-    val inventoryBuffer = InventoryComponent(3, this)
+    val inventoryBuffer = InventoryComponent(3, this, EnumFacing.values().toMutableSet())
 
     var currentRocket: EntityRocket? = null
 
