@@ -29,7 +29,6 @@ class TileEntityBoilerInput : TileEntityMultiBlockPart<BoilerMultiBlock>(BoilerM
         return if (hasCapability(capability, facing))
             CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast<T>(this.multiblockController
                     ?.controllerTileEntity?.fluidHandler)
-                    ?: DynamicFluidHandler(1, allowedFluid = mutableListOf()) as T
         else
             null
     }
