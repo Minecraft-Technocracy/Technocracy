@@ -21,10 +21,8 @@ val siliconChlorideItem = BaseItem("silicon_chloride", oreDictName = "dustSilico
 val saltItem = BaseItem("salt", oreDictName = "dustSalt")
 val sodiumAcrylateItem = BaseItem("sodium_acrylate", oreDictName = "dustSodiumAcrylate")
 val rubberItem = BaseItem("rubber", oreDictName = "itemRubber")
-val calciumAcetateItem = BaseItem("calcium_acetate", oreDictName = "dustCalciumAcetate")
 val mirrorItem = BaseItem("mirror")
 val polishedMirrorItem = ItemPolishedMirror()
-
 val invarItem = AlloyItem("invar", ConstantItemColor(0xDDC2BE))
 val steelItem = AlloyItem("steel", ConstantItemColor(0x707680))
 val bronzeItem = AlloyItem("bronze", ConstantItemColor(0xFFAA35))
