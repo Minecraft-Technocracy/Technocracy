@@ -49,8 +49,6 @@ import net.cydhra.technocracy.foundation.tileentity.multiblock.tank.TileEntityTa
 import net.cydhra.technocracy.foundation.world.gen.OilLakeGen
 import net.cydhra.technocracy.foundation.world.gen.OilSandGen
 import net.minecraft.client.Minecraft
-import net.minecraft.init.Items
-import net.minecraft.item.Item
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.animation.ITimeValue
@@ -58,7 +56,6 @@ import net.minecraftforge.common.model.animation.IAnimationStateMachine
 import net.minecraftforge.fml.common.network.NetworkRegistry
 import net.minecraftforge.fml.common.registry.GameRegistry
 import net.minecraftforge.fml.relauncher.Side
-import net.minecraftforge.oredict.OreDictionary
 
 
 /**
@@ -216,7 +213,6 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(polishedMirrorItem)
         itemManager.prepareItemForRegistration(emptyCanItem)
         itemManager.prepareItemForRegistration(wrenchItem)
-        itemManager.prepareItemForRegistration(plasticGhastTearItem)
 
         itemManager.prepareItemForRegistration(membraneItem)
         itemManager.prepareItemForRegistration(ironRodItem)
