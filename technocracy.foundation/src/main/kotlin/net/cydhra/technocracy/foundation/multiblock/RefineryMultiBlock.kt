@@ -1,9 +1,6 @@
 package net.cydhra.technocracy.foundation.multiblock
 
-import it.zerono.mods.zerocore.api.multiblock.IMultiblockPart
-import it.zerono.mods.zerocore.api.multiblock.MultiblockControllerBase
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
-import it.zerono.mods.zerocore.lib.block.ModTileEntity
 import net.cydhra.technocracy.foundation.blocks.general.*
 import net.cydhra.technocracy.foundation.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
@@ -13,7 +10,6 @@ import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEnti
 import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryInput
 import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryOutput
 import net.minecraft.init.Blocks
-import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.world.World
 import net.minecraftforge.fluids.FluidStack
 import net.minecraftforge.fluids.capability.IFluidHandler
@@ -48,7 +44,7 @@ class RefineryMultiBlock(world: World) : BaseMultiBlock(
     private var outputPorts: List<TileEntityRefineryOutput> = emptyList()
     var heater: TileEntityRefineryHeater? = null
 
-    private var effictiveHeight = 0
+    private var effectiveHeight = 0
 
     private var topOutput: TileEntityRefineryOutput? = null
     private var bottomOutput: TileEntityRefineryOutput? = null
@@ -81,20 +77,20 @@ class RefineryMultiBlock(world: World) : BaseMultiBlock(
     private fun recalculatePhysics(validatorCallback: IMultiblockValidator): Boolean {
         val interiorMin = minimumCoord.add(1, 1, 1)
         val interiorMax = maximumCoord.add(-1, -1, -1)
-        effictiveHeight = interiorMax.y - interiorMin.y
+        effectiveHeight = interiorMax.y - interiorMin.y
 
         this.topOutput = null
         this.bottomOutput = null
         val firstPort = this.outputPorts[0]
 
-        if (firstPort.pos.y - interiorMin.y > effictiveHeight / 2.0) {
+        if (firstPort.pos.y - interiorMin.y > effectiveHeight / 2.0) {
             topOutput = firstPort
         } else {
             bottomOutput = firstPort
         }
 
         val secondPort = this.outputPorts[1]
-        if (secondPort.pos.y - interiorMin.y > effictiveHeight / 2.0) {
+        if (secondPort.pos.y - interiorMin.y > effectiveHeight / 2.0) {
             if (topOutput != null) {
                 validatorCallback.setLastError("multiblock.error.two_top_outputs")
                 return false
@@ -119,7 +115,7 @@ class RefineryMultiBlock(world: World) : BaseMultiBlock(
         if (inputFluid != null) {
             val recipe = this.recipes.single { it.conforms(stacks = emptyList(), fluids = listOf(inputFluid)) }
 
-            val oilProduced = this.effictiveHeight
+            val oilProduced = this.effectiveHeight
             val energyConsumption = oilProduced * recipe.processingCost
 
             if (this.controllerTileEntity!!.inputComponent.fluid.currentFluid?.amount ?: 0 >= oilProduced &&
@@ -128,7 +124,7 @@ class RefineryMultiBlock(world: World) : BaseMultiBlock(
                             .topTank.capacity &&
                     this.controllerTileEntity!!.bottomTank.currentFluid?.amount ?: 0 < this.controllerTileEntity!!
                             .bottomTank.capacity) {
-                this.controllerTileEntity!!.inputComponent.fluid.drain(this.effictiveHeight, true)
+                this.controllerTileEntity!!.inputComponent.fluid.drain(this.effectiveHeight, true)
                 this.heater!!.energyStorageComponent.energyStorage.consumeEnergy(energyConsumption)
 
                 this.controllerTileEntity!!.topTank
