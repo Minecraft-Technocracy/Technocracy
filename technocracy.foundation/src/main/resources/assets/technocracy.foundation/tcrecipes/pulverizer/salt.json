@@ -1,0 +1,11 @@
+{
+  "input": {
+    "type": "forge:ore_dict",
+    "ore": "blockSalt"
+  },
+  "output": {
+    "item": "technocracy.foundation:salt",
+    "count": 4
+  },
+  "cost": 60
+}

@@ -97,4 +97,5 @@ val leadGlassPaneBlock = PlainBlock("lead_glass_pane", Material.GLASS, opaque = 
         .apply { setHardness(1.5f).setResistance(1f) }
 
 val chrysotileBlock = PlainBlock("chrysotile", Material.ROCK).apply { setHardness(1.5f).setResistance(2.3f) }
-val saltBlock = PlainBlock("salt_block", Material.ROCK).apply { setHardness(1.0f).setResistance(2.5f) }
+val saltBlock = PlainBlock("salt_block", Material.ROCK, oreDictionaryName = "blockSalt")
+        .apply { setHardness(1.0f).setResistance(2.5f) }
