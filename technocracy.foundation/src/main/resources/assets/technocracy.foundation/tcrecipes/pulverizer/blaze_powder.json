@@ -1,0 +1,10 @@
+{
+  "input": {
+    "item": "minecraft:blaze_rod"
+  },
+  "output": {
+    "item": "minecraft:blaze_powder",
+    "count": 3
+  },
+  "cost": 20
+}

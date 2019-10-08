@@ -1,0 +1,12 @@
+{
+  "input": {
+    "type": "forge:ore_dict",
+    "ore": "oreLapis"
+  },
+  "output": {
+    "item": "minecraft:dye",
+    "data": 4,
+    "count": 12
+  },
+  "cost": 120
+}

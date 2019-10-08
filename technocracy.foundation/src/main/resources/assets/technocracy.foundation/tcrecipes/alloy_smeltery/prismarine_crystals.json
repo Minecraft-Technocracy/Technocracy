@@ -1,0 +1,21 @@
+{
+  "input": [
+    {
+      "type": "forge:ore_dict",
+      "ore": "ingotAluminum"
+    },
+    {
+      "type": "forge:ore_dict",
+      "ore": "itemSilicon"
+    },
+    {
+      "type": "forge:ore_dict",
+      "ore": "gemPrismarine"
+    }
+  ],
+  "output": {
+    "item": "minecraft:prismarine_crystals",
+    "count": 1
+  },
+  "cost": 80
+}

@@ -1,0 +1,11 @@
+{
+  "input": {
+    "item": "minecraft:bone_block"
+  },
+  "output": {
+    "item": "minecraft:dye",
+    "data": 15,
+    "count": 9
+  },
+  "cost": 20
+}

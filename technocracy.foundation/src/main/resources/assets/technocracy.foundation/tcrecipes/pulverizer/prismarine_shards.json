@@ -1,0 +1,11 @@
+{
+  "input": {
+    "item": "minecraft:prismarine",
+    "data": 0
+  },
+  "output": {
+    "item": "minecraft:prismarine_shard",
+    "count": 4
+  },
+  "cost": 40
+}

@@ -1,0 +1,11 @@
+{
+  "input": {
+    "type": "forge:ore_dict",
+    "ore": "cobblestone"
+  },
+  "output": {
+    "item": "minecraft:gravel",
+    "count": 1
+  },
+  "cost": 80
+}
