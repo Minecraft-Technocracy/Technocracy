@@ -213,6 +213,7 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(polishedMirrorItem)
         itemManager.prepareItemForRegistration(emptyCanItem)
         itemManager.prepareItemForRegistration(wrenchItem)
+        itemManager.prepareItemForRegistration(circuitBoardItem)
 
         itemManager.prepareItemForRegistration(membraneItem)
         itemManager.prepareItemForRegistration(ironRodItem)

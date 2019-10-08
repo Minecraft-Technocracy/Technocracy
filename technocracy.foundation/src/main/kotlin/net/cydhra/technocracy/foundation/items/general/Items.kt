@@ -22,6 +22,7 @@ val sodiumAcrylateItem = BaseItem("sodium_acrylate", oreDictName = "dustSodiumAc
 val rubberItem = BaseItem("rubber", oreDictName = "itemRubber")
 val mirrorItem = BaseItem("mirror")
 val polishedMirrorItem = ItemPolishedMirror()
+val circuitBoardItem = BaseItem("circuit_board")
 
 val invarItem = AlloyItem("invar", ConstantItemColor(0xDDC2BE))
 val steelItem = AlloyItem("steel", ConstantItemColor(0x707680))
