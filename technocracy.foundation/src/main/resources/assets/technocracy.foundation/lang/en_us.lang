@@ -37,6 +37,7 @@ item.dust.coal.name=Coal Dust
 item.empty_can.name=Empty Can
 item.cicuit_board.name=Circuit Board
 item.glue_ball.name=Glue Ball
+item.iron_rod.name=Iron Rod
 
 item.ingot.invar.name=Invar Ingot
 item.ingot.steel.name=Steel Ingot
