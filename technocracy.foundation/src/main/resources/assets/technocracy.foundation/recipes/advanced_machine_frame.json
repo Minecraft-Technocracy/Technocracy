@@ -3,7 +3,7 @@
   "pattern": [
     "sgs",
     "tmt",
-    "sgs"
+    "aga"
   ],
   "key": {
     "m": {
@@ -20,6 +20,10 @@
     "t": {
       "type": "forge:ore_dict",
       "ore": "sheetSteel"
+    },
+    "a": {
+      "type": "forge:ore_dict",
+      "ore": "itemAsbestos"
     }
   },
   "result": {
