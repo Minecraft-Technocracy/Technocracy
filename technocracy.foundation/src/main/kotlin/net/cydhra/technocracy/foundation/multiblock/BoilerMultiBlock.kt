@@ -1,16 +1,12 @@
 package net.cydhra.technocracy.foundation.multiblock
 
-import it.zerono.mods.zerocore.api.multiblock.IMultiblockPart
-import it.zerono.mods.zerocore.api.multiblock.MultiblockControllerBase
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
-import it.zerono.mods.zerocore.lib.block.ModTileEntity
 import net.cydhra.technocracy.foundation.blocks.general.*
 import net.cydhra.technocracy.foundation.tileentity.components.AbstractComponent
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerHeater
 import net.minecraft.block.BlockAir
 import net.minecraft.init.Blocks
-import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import java.util.*
@@ -100,7 +96,7 @@ class BoilerMultiBlock(world: World) : BaseMultiBlock(
         val averageWidth = ((interiorMax.x - interiorMin.x + interiorMax.z - interiorMin.z) / 2.0).roundToInt() + 1
 
         if (height < averageWidth) {
-            validatorCallback.setLastError("multiblock.error.wider_than_high", averageWidth, height)
+            validatorCallback.setLastError("multiblock.boiler.error.wider_than_high", averageWidth, height)
             return false
         }
 

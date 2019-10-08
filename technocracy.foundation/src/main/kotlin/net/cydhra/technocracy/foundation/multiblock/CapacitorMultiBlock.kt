@@ -1,15 +1,11 @@
 package net.cydhra.technocracy.foundation.multiblock
 
-import it.zerono.mods.zerocore.api.multiblock.IMultiblockPart
-import it.zerono.mods.zerocore.api.multiblock.MultiblockControllerBase
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
-import it.zerono.mods.zerocore.lib.block.ModTileEntity
 import net.cydhra.technocracy.foundation.blocks.general.*
 import net.cydhra.technocracy.foundation.tileentity.components.AbstractComponent
 import net.cydhra.technocracy.foundation.tileentity.multiblock.capacitor.TileEntityCapacitorController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.capacitor.TileEntityCapacitorEnergyPort
 import net.minecraft.block.Block
-import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
@@ -86,6 +82,11 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
             }
         }
 
+        if(electrodes.isEmpty()) {
+            validatorCallback.setLastError("multiblock.capacitor.error.no_electrodes_found")
+            return false
+        }
+
         val electrodeBlocks = mutableListOf<Triple<Int, Int, Int>>()
         //Check electrodes
         electrodes.forEach {
@@ -100,10 +101,10 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
                                 this.world.getBlockState(
                                         BlockPos(it.x, y, it.z - 1)).block != sulfuricAcidBlock) ||
                         (y == interiorMin.y && block != sulfuricAcidBlock)) {
-                    validatorCallback.setLastError("multiblock.error.invalid_electrode_placement", it.x, y, it.z)
+                    validatorCallback.setLastError("multiblock.capacitor.error.invalid_electrode_placement", it.x, y, it.z)
                     return false
                 } else if (it.height != 0 && y != interiorMin.y && block != it.block) {
-                    validatorCallback.setLastError("multiblock.error.electrode_not_connected", it.x, y, it.z)
+                    validatorCallback.setLastError("multiblock.capacitor.error.electrode_not_connected", it.x, y, it.z)
                     return false
                 } else if (block == it.block) {
                     electrodeBlocks += Triple(it.x, y, it.z)
@@ -119,7 +120,7 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
             var previousBlock: Block? = null
             electrodes.filter { it.x == col }.sortedBy { it.x }.forEach {
                 if (previousBlock != null && previousBlock == it.block) {
-                    validatorCallback.setLastError("multiblock.error.adjacent_electrode_types", it.x, interiorMax.y,
+                    validatorCallback.setLastError("multiblock.capacitor.error.adjacent_electrode_types", it.x, interiorMax.y,
                             it.z)
                     return false
                 }
@@ -131,7 +132,7 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
             var previousBlock: Block? = null
             electrodes.filter { it.z == row }.sortedBy { it.z }.forEach {
                 if (previousBlock != null && previousBlock == it.block) {
-                    validatorCallback.setLastError("multiblock.error.adjacent_electrode_types", it.x, interiorMax.y,
+                    validatorCallback.setLastError("multiblock.capacitor.error.adjacent_electrode_types", it.x, interiorMax.y,
                             it.z)
                     return false
                 }
@@ -153,7 +154,7 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
                     val isElectrodePos = electrodes.any { e -> e.x == pos.x && e.z == pos.z }
                     val block = this.world.getBlockState(pos).block
                     if (isElectrodePos && block != capacitorConnectorBlock && block != capacitorEnergyPortBlock) {
-                        validatorCallback.setLastError("multiblock.error.invalid_block_above_electrode", pos.x, pos.y,
+                        validatorCallback.setLastError("multiblock.capacitor.error.invalid_block_above_electrode", pos.x, pos.y,
                                 pos.z)
                         return false
                     }
@@ -179,13 +180,13 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
 
                     //More than two connections, or if the block below is an electrode only one connection is allowed
                     if (connectedBlocks > 2 || (connectedBlocks > 1 && isElectrodePos)) {
-                        validatorCallback.setLastError("multiblock.error.too_many_connections", pos.x, pos.y, pos.z)
+                        validatorCallback.setLastError("multiblock.capacitor.error.too_many_connections", pos.x, pos.y, pos.z)
                         return false
                     }
 
                     if (isElectrodePos && !(pos.x == it.x && pos.z == it.z)) {
                         if (block == it.block) {
-                            validatorCallback.setLastError("multiblock.error.connection_of_same_electrode_types", pos.x,
+                            validatorCallback.setLastError("multiblock.capacitor.error.connection_of_same_electrode_types", pos.x,
                                     pos.y, pos.z)
                             return false
                         }
@@ -197,7 +198,7 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
                     }
 
                     if (newFacing == null) {
-                        validatorCallback.setLastError("multiblock.error.uncompleted_connection", pos.x, pos.y, pos.z)
+                        validatorCallback.setLastError("multiblock.capacitor.error.uncompleted_connection", pos.x, pos.y, pos.z)
                         return false
                     }
 
@@ -208,7 +209,7 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
         }
 
         if (electrodes.size % 2 != 0 || electrodes.filter { electrode -> electrode.block == leadBlock }.size != electrodes.size / 2) {
-            validatorCallback.setLastError("multiblock.error.uneven_number_of_electrodes")
+            validatorCallback.setLastError("multiblock.capacitor.error.uneven_number_of_electrodes")
             return false
         }
 

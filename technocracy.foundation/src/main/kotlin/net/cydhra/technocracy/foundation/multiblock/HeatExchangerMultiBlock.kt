@@ -1,16 +1,12 @@
 package net.cydhra.technocracy.foundation.multiblock
 
-import it.zerono.mods.zerocore.api.multiblock.IMultiblockPart
-import it.zerono.mods.zerocore.api.multiblock.MultiblockControllerBase
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
-import it.zerono.mods.zerocore.lib.block.ModTileEntity
 import net.cydhra.technocracy.foundation.blocks.general.*
 import net.cydhra.technocracy.foundation.tileentity.components.AbstractComponent
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartHeatExchanger
 import net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger.TileEntityHeatExchangerController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger.TileEntityHeatExchangerInput
 import net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger.TileEntityHeatExchangerOutput
-import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
@@ -108,7 +104,7 @@ class HeatExchangerMultiBlock(world: World) :
 
             assert(neighbor.size <= 1)
             if (neighbor.isEmpty()) {
-                validatorCallback.setLastError("multiblock.error.unused_input_port")
+                validatorCallback.setLastError("multiblock.heat_exchanger.error.unused_input_port")
                 return false
             }
 
@@ -128,11 +124,11 @@ class HeatExchangerMultiBlock(world: World) :
 
                 when {
                     nextTube.size > 1 -> {
-                        validatorCallback.setLastError("multiblock.error.tube_flow_diverges")
+                        validatorCallback.setLastError("multiblock.heat_exchanger.error.tube_flow_diverges")
                         return false
                     }
                     nextTube.isEmpty() -> {
-                        validatorCallback.setLastError("multiblock.error.tube_missing_exit")
+                        validatorCallback.setLastError("multiblock.heat_exchanger.error.tube_missing_exit")
                         return false
                     }
                     nextTube.first() is TileEntityHeatExchangerOutput -> {
