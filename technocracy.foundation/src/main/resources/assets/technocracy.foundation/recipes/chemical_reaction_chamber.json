@@ -10,7 +10,8 @@
       "item": "technocracy.foundation:advanced_machine_frame"
     },
     "r": {
-      "item": "technocracy.foundation:iron_rod"
+      "type": "forge:ore_dict",
+      "ore": "itemAsbestos"
     },
     "i": {
       "type": "forge:ore_dict",

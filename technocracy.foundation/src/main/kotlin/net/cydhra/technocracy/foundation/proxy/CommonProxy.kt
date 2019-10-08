@@ -193,6 +193,7 @@ open class CommonProxy {
 
         blockManager.prepareBlocksForRegistration(pipe, PipeModel())
         blockManager.prepareBlocksForRegistration(chrysotileBlock)
+        blockManager.prepareBlocksForRegistration(asbestosBlock)
         blockManager.prepareBlocksForRegistration(saltBlock)
 
         itemManager.prepareItemForRegistration(machineFrameItem)
@@ -217,6 +218,7 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(wrenchItem)
         itemManager.prepareItemForRegistration(circuitBoardItem)
         itemManager.prepareItemForRegistration(glueBallItem)
+        itemManager.prepareItemForRegistration(asbestosItem)
 
         itemManager.prepareItemForRegistration(membraneItem)
         itemManager.prepareItemForRegistration(ironRodItem)

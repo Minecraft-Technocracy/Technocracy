@@ -38,6 +38,7 @@ item.empty_can.name=Empty Can
 item.cicuit_board.name=Circuit Board
 item.glue_ball.name=Glue Ball
 item.iron_rod.name=Iron Rod
+item.asbestos.name=Asbestos
 
 item.ingot.invar.name=Invar Ingot
 item.ingot.steel.name=Steel Ingot
@@ -69,6 +70,7 @@ tile.ore.tin.name=Tin Ore
 tile.lead_block.name=Lead Block
 tile.lead_oxide_block.name=Lead Oxide Block
 tile.chrysotile.name=Chrysotile
+tile.asbestos_block.name=Block of Asbestos
 tile.salt_block.name=Rock Salt
 
 tile.alloy_smeltery.name=Alloy Smeltery
