@@ -162,6 +162,7 @@ object RecipeManager {
         ELECTRIC_FURNACE(electricFurnaceBlock, TileEntityElectricFurnace::class.java),
         ELECTROLYSIS(electrolysisChamberBlock, TileEntityElectrolysisChamber::class.java),
         KILN(kilnBlock, TileEntityKiln::class.java),
+        POLYMERIZATION(polymerizationChamberBlock, TileEntityPolymerizationChamber::class.java),
         PULVERIZER(pulverizerBlock, TileEntityPulverizer::class.java),
 
         REFINERY(null, null)
