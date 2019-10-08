@@ -19,7 +19,7 @@
     },
     "p": {
       "type": "forge:ore_dict",
-      "ore": "ingotMPCM"
+      "ore": "ingotZircalloy"
     },
     "b": {
       "item": "technocracy.foundation:membrane"

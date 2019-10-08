@@ -24,7 +24,8 @@
       "ore": "sheetIron"
     },
     "d": {
-      "item": "technocracy.foundation:iron_rod"
+      "type": "forge:ore_dict",
+      "ore": "ingotInvar"
     }
   },
   "result": {

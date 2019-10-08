@@ -11,7 +11,7 @@
       "ore": "ingotLead"
     },
     "i": {
-      "item": "minecraft:flint"
+      "item": "technocracy.foundation:servo"
     },
     "g": {
       "type": "forge:ore_dict",

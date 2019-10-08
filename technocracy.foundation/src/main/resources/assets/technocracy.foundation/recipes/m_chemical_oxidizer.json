@@ -1,9 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "sbs",
+    "rbr",
     "lml",
-    "rfr"
+    "pfp"
   ],
   "key": {
     "f": {
@@ -15,14 +15,14 @@
     "r": {
       "item": "technocracy.foundation:iron_rod"
     },
-    "s": {
-      "item": "technocracy.foundation:polyfibre"
-    },
     "l": {
       "item": "technocracy.foundation:lead_glass_pane"
     },
     "b": {
       "item": "technocracy.foundation:membrane"
+    },
+    "p": {
+      "item": "technocracy.foundation:pump"
     }
   },
   "result": {
