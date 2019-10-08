@@ -133,6 +133,7 @@ open class CommonProxy {
         fluidManager.registerFluid(lithiumChloride)
         fluidManager.registerFluid(aqueousLithium)
         fluidManager.registerFluid(aqueousSodiumAcrylate)
+        fluidManager.registerFluid(glue)
 
         blockManager.prepareBlocksForRegistration(alloySmelteryBlock, MachineConnectorModel())
         blockManager.prepareBlocksForRegistration(centrifugeBlock, MachineConnectorModel())
@@ -215,6 +216,7 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(emptyCanItem)
         itemManager.prepareItemForRegistration(wrenchItem)
         itemManager.prepareItemForRegistration(circuitBoardItem)
+        itemManager.prepareItemForRegistration(glueBallItem)
 
         itemManager.prepareItemForRegistration(membraneItem)
         itemManager.prepareItemForRegistration(ironRodItem)

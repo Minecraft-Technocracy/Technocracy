@@ -1,0 +1,17 @@
+{
+  "input": [
+    {
+      "fluid": "aqueous_sodium_acrylate",
+      "amount": 200
+    },
+    {
+      "fluid": "benzene",
+      "amount": 300
+    }
+  ],
+  "output": {
+    "fluid": "glue",
+    "amount": 500
+  },
+  "cost": 80
+}
