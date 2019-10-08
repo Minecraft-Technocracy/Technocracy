@@ -2,16 +2,16 @@
   "input": [
     {
       "fluid": "sulfur_trioxide",
-      "amount": 1
+      "amount": 100
     },
     {
       "fluid": "water",
-      "amount": 1
+      "amount": 100
     }
   ],
   "output": {
     "fluid": "sulfuric_acid",
-    "amount": 1
+    "amount": 100
   },
-  "cost": 64
+  "cost": 80
 }

@@ -2,16 +2,16 @@
   "input": [
     {
       "fluid": "propene",
-      "amount": 1
+      "amount": 100
     },
     {
       "fluid": "water",
-      "amount": 2
+      "amount": 200
     }
   ],
   "output": {
     "fluid": "acrylic_acid",
-    "amount": 1
+    "amount": 200
   },
-  "cost": 64
+  "cost": 60
 }

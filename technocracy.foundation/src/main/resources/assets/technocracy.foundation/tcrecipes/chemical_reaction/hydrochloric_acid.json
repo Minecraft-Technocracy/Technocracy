@@ -2,16 +2,16 @@
   "input": [
     {
       "fluid": "sulfuric_acid",
-      "amount": 1
+      "amount": 100
     },
     {
       "fluid": "brine",
-      "amount": 1
+      "amount": 100
     }
   ],
   "output": {
     "fluid": "hydrochloric_acid",
-    "amount": 1
+    "amount": 50
   },
-  "cost": 32
+  "cost": 30
 }

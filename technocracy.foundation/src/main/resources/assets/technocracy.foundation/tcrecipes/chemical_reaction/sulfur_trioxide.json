@@ -2,16 +2,16 @@
   "input": [
     {
       "fluid": "sulfur_dioxide",
-      "amount": 1
+      "amount": 100
     },
     {
       "fluid": "oxygen",
-      "amount": 1
+      "amount": 50
     }
   ],
   "output": {
     "fluid": "sulfur_trioxide",
-    "amount": 1
+    "amount": 150
   },
-  "cost": 32
+  "cost": 30
 }
