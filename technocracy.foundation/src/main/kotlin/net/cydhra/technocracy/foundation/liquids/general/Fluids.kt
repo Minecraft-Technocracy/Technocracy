@@ -15,7 +15,6 @@ val sulfuricAcidFluid = BaseFluid("sulfuric_acid", Color(255, 230, 104), opaqueT
 val propeneFluid = BaseFluid("propene", Color(255, 212, 91), opaqueTexture = false)
 val acrylicAcidFluid = BaseFluid("acrylic_acid", Color(255, 116, 148), opaqueTexture = false)
 val benzeneFluid = BaseFluid("benzene", Color(93, 93, 186), opaqueTexture = false)
-val phenolFluid = BaseFluid("phenol", Color(117, 123, 225), opaqueTexture = false)
 val keroseneFluid = BaseFluid("kerosene", Color(221, 225, 168), opaqueTexture = false)
 val rocketFuelFluid = BaseFluid("rocket_fuel", Color(225, 118, 97), opaqueTexture = false)
 val propyleneOxideFluid = BaseFluid("propylene_oxide", Color(225, 185, 210), opaqueTexture = false)
