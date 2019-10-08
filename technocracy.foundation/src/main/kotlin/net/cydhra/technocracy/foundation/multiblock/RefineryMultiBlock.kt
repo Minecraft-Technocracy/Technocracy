@@ -92,14 +92,14 @@ class RefineryMultiBlock(world: World) : BaseMultiBlock(
         val secondPort = this.outputPorts[1]
         if (secondPort.pos.y - interiorMin.y > effectiveHeight / 2.0) {
             if (topOutput != null) {
-                validatorCallback.setLastError("multiblock.error.two_top_outputs")
+                validatorCallback.setLastError("multiblock.refinery.error.two_top_outputs")
                 return false
             } else {
                 topOutput = secondPort
             }
         } else {
             if (bottomOutput != null) {
-                validatorCallback.setLastError("multiblock.error.two_bot_outputs")
+                validatorCallback.setLastError("multiblock.refinery.error.two_bot_outputs")
                 return false
             } else {
                 bottomOutput = secondPort

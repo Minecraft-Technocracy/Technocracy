@@ -23,6 +23,7 @@ out
 .idea/hotswap_agent.xml
 .idea/.name
 .idea/compiler.xml
+.idea/jarRepositories.xml
 .idea/codeStyles/codeStyleConfig.xml
 classes
 
