@@ -13,6 +13,11 @@ class LogicClientDelegate : ILogicClient {
     }
 
     override fun tick() {
-        this.logicStrategies.forEach(ILogic::update)
+        val canProcess = this.logicStrategies.all(ILogic::preProcessing)
+
+        if (canProcess) {
+            this.logicStrategies.forEach(ILogic::processing)
+        }
+        this.logicStrategies.forEach { it.postProcessing(canProcess) }
     }
 }

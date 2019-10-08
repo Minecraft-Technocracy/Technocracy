@@ -38,8 +38,6 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
 
     protected val progressComponent = ProgressComponent()
 
-    protected val canProcessComponent = CanProcessComponent()
-
     protected val processingSpeedComponent = ProcessSpeedComponent()
 
     protected val energyCostComponent = ConsumptionMultiplierComponent()
@@ -49,7 +47,6 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
         this.registerComponent(energyStorageComponent, "energy")
         this.registerComponent(machineUpgradesComponent, "upgrades")
         this.registerComponent(progressComponent, "progress")
-        this.registerComponent(canProcessComponent, "processing")
         this.registerComponent(processingSpeedComponent, "processing_speed")
         this.registerComponent(energyCostComponent, "processing_cost")
     }
