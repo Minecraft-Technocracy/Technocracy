@@ -21,7 +21,7 @@
     },
     "g": {
       "type": "forge:ore_dict",
-      "ore": "gearIron"
+      "ore": "gearCopper"
     },
     "i": {
       "type": "forge:ore_dict",
