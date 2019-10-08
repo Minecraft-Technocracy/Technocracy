@@ -29,7 +29,7 @@ item.polystyrene.name=Polystyrene
 item.polypropylene.name=Polypropylene
 item.silicon_chloride.name=Chlorosilane
 item.salt.name=Salt
-item.sodium_acrylate.name=Sodium Acrylate
+item.sodium_acrylate.name=Superabsorbent
 item.rubber.name=Rubber
 item.mirror.name=Mirror
 item.polished_mirror.name=Polished Mirror
@@ -144,6 +144,7 @@ fluid.dross=Dross
 fluid.brine=Brine
 fluid.lithium_chloride=Lithium Chloride
 fluid.aqueous_lithium=Aqueous Lithium
+fluid.aqueous_sodium_acrylate=Hydrogel
 
 fluid.slag.aluminum=Aluminum Slag
 fluid.slag.copper=Copper Slag

@@ -1,0 +1,11 @@
+{
+  "fluid": {
+    "fluid": "aqueous_sodium_acrylate",
+    "amount": 250
+  },
+  "output": {
+    "item": "technocracy.foundation:sodium_acrylate",
+    "count": 1
+  },
+  "cost": 100
+}

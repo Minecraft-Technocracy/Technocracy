@@ -4,12 +4,12 @@
     "ore": "dustSodiumAcrylate"
   },
   "fluid": {
-    "fluid": "styrene",
-    "amount": 100
+    "fluid": "water",
+    "amount": 250
   },
   "output": {
-    "item": "technocracy.foundation:rubber",
-    "count": 1
+    "fluid": "aqueous_sodium_acrylate",
+    "amount": 250
   },
-  "cost": 80
+  "cost": 60
 }
