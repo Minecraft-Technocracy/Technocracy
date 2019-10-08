@@ -1,0 +1,17 @@
+{
+  "input": {
+    "fluid": "tar",
+    "amount": 1
+  },
+  "outputs": [
+    {
+      "fluid": "sulfur_dioxide",
+      "amount": 1
+    },
+    {
+      "fluid": "pitch",
+      "amount": 1
+    }
+  ],
+  "cost": 32
+}
