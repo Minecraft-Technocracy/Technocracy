@@ -19,7 +19,7 @@ import net.minecraft.world.World
 
 
 /**
- * An implementation of [IBaseBlock] that creates a tile entity with it. It inherits [AbstractRotateableBlock] so it
+ * An implementation of [IBaseBlock] that creates a tile entity with it. It inherits [AbstractRotatableBlock] so it
  * automatically has a block state with facing information. The class does not define behaviour on its own yet,
  * subclasses are required to implement tile entity interaction.
  *

@@ -1,13 +1,10 @@
 package net.cydhra.technocracy.foundation.liquids.general
 
-import net.cydhra.technocracy.foundation.TCFoundation
-import net.cydhra.technocracy.foundation.blocks.BaseLiquidBlock
+import net.cydhra.technocracy.foundation.blocks.api.BaseLiquidBlock
 import net.cydhra.technocracy.foundation.blocks.general.BlockManager
 import net.minecraft.block.material.Material
 import net.minecraftforge.fluids.Fluid
 import net.minecraftforge.fluids.FluidRegistry
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
-import net.minecraftforge.fml.common.Mod
 
 class FluidManager(private val blockManager: BlockManager) {
 

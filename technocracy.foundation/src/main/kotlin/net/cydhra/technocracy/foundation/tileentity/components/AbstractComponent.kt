@@ -12,12 +12,16 @@ abstract class AbstractComponent {
     lateinit var tile: TileEntity
 
     var syncToClient = false
+    var allowAutoSave = true
 
     open fun markDirty(needsClientRerender: Boolean = false) {
-        if (syncToClient && needsClientRerender) {
-            tile.world.notifyBlockUpdate(tile.pos, tile.world.getBlockState(tile.pos), tile.world.getBlockState(tile.pos), 0)
+        if (allowAutoSave) {
+            if (syncToClient && needsClientRerender) {
+                val state = tile.world.getBlockState(tile.pos)
+                tile.world.notifyBlockUpdate(tile.pos, state, state, 0)
+            }
+            tile.markDirty()
         }
-        tile.markDirty()
     }
 
     abstract val type: ComponentType
@@ -32,17 +36,18 @@ abstract class AbstractComponent {
      */
     abstract fun deserializeNBT(nbt: NBTTagCompound)
 
+    /**
+     * called while the component is getting registered
+     */
+    open fun onRegister() {
+    }
+
 }
 
 enum class ComponentType(val supportsWaila: Boolean = false) {
     ENERGY(true),
     FLUID(true),
     INVENTORY(true),
-    FACADE,
-    PIPE_TYPES(true),
-    HEAT(true),
-    UPGRADES(true),
-    NETWORK,
-    REDSTONE_MODE(true),
-    PROGRESS(true)
+    OPTIONAL(true),
+    OTHER
 }

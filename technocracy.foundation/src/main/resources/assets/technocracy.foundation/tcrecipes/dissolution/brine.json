@@ -1,0 +1,15 @@
+{
+  "input": {
+    "type": "forge:ore_dict",
+    "ore": "dustSalt"
+  },
+  "fluid": {
+    "fluid": "water",
+    "amount": 200
+  },
+  "output": {
+    "fluid": "brine",
+    "amount": 200
+  },
+  "cost": 5
+}

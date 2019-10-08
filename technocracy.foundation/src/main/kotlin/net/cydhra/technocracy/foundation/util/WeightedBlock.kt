@@ -13,7 +13,7 @@ class WeightedBlock(val block: Block, var metadata: Int = 0, var data: NBTTagCom
 
     fun isBlockContained(block: Block, metadata: Int, list: Collection<WeightedBlock>): Boolean {
         for (rb in list) {
-            if (block.equals(rb.block) && (metadata == -1 || rb.metadata == -1 || rb.metadata == metadata)) {
+            if (block == rb.block && (metadata == -1 || rb.metadata == -1 || rb.metadata == metadata)) {
                 return true
             }
         }
@@ -22,7 +22,7 @@ class WeightedBlock(val block: Block, var metadata: Int = 0, var data: NBTTagCom
 
     fun isBlockContained(block: Block, metadata: Int, list: Array<WeightedBlock>): Boolean {
         for (rb in list) {
-            if (block.equals(rb.block) && (metadata == -1 || rb.metadata == -1 || rb.metadata == metadata)) {
+            if (block == rb.block && (metadata == -1 || rb.metadata == -1 || rb.metadata == metadata)) {
                 return true
             }
         }

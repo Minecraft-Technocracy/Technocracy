@@ -13,18 +13,46 @@ import net.minecraft.util.Rotation
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import net.minecraftforge.common.crafting.CraftingHelper
+import net.minecraftforge.common.util.INBTSerializable
 import net.minecraftforge.fml.common.Loader
 import java.io.File
 import java.io.FileOutputStream
 import java.nio.file.Files
 
 
-class Template {
+class Template() : INBTSerializable<NBTTagCompound> {
     val blocks = mutableListOf<BlockInfo>()
     var modules = mutableMapOf<Int, MutableList<BlockPos>>()
 
     var init = false
     lateinit var controller: BlockPos
+
+    constructor(center: BlockPos, worldIn: World, blockList: List<BlockPos>) : this() {
+        this.controller = center
+
+        label@ for (boxBlocks in blockList) {
+            val relativePos = boxBlocks.subtract(controller)
+
+            val state = worldIn.getBlockState(boxBlocks)
+            val block = state.block
+
+            if (block == Blocks.AIR)
+                continue
+
+            val tileentity = worldIn.getTileEntity(boxBlocks)
+
+            if (tileentity != null) {
+                val tag = tileentity.writeToNBT(NBTTagCompound())
+                tag.removeTag("x")
+                tag.removeTag("y")
+                tag.removeTag("z")
+                blocks.add(BlockInfo(relativePos, block, block.getMetaFromState(state), tag))
+            } else {
+                blocks.add(BlockInfo(relativePos, block, block.getMetaFromState(state), null))
+            }
+        }
+        init = true
+    }
 
     fun loadFromAssets(name: String): Template {
         Loader.instance().indexedModList.forEach { (modId, modContainer) ->
@@ -32,49 +60,53 @@ class Template {
                     modContainer,
                     "assets/$modId/templates/$name.nbt",
                     { true },
-                    { _, path -> read(CompressedStreamTools.readCompressed(Files.newInputStream(path))) },
+                    { _, path ->
+                        deserializeNBT(CompressedStreamTools.readCompressed(Files.newInputStream(path)))
+                        init
+                    },
                     true,
                     true)
         }
         return this
     }
 
-    private fun read(compound: NBTTagCompound): Boolean {
-        init = true
+    override fun deserializeNBT(compound: NBTTagCompound?) {
+        if (compound == null) return
         this.blocks.clear()
 
-        val blocks = compound.getTagList("blocks", 10)
-        val modules = compound.getTagList("modules", 10)
+        if (compound.hasKey("blocks")) {
+            val blocks = compound.getTagList("blocks", 10)
+            for (j in 0 until blocks.tagCount()) {
+                val blockTag = blocks.getCompoundTagAt(j)
+                val blockpos = NBTUtil.getPosFromTag(blockTag.getCompoundTag("pos"))
+                val name = blockTag.getString("block")
+                val meta = blockTag.getInteger("meta")
+                var blockNBT: NBTTagCompound? = null
 
-        for (j in 0 until blocks.tagCount()) {
-            val blockTag = blocks.getCompoundTagAt(j)
-            val blockpos = NBTUtil.getPosFromTag(blockTag.getCompoundTag("pos"))
-            val name = blockTag.getString("block")
-            val meta = blockTag.getInteger("meta")
-            var blockNBT: NBTTagCompound? = null
+                if (blockTag.hasKey("nbt")) {
+                    blockNBT = blockTag.getCompoundTag("nbt")
+                }
 
-            if (blockTag.hasKey("nbt")) {
-                blockNBT = blockTag.getCompoundTag("nbt")
+                this.blocks.add(BlockInfo(blockpos, Block.getBlockFromName(name)!!, meta, blockNBT))
             }
-
-            this.blocks.add(BlockInfo(blockpos, Block.getBlockFromName(name)!!, meta, blockNBT))
         }
 
-        for (j in 0 until modules.tagCount()) {
-            val singleModule = blocks.getCompoundTagAt(j)
-            val poses = singleModule.getTagList("poses", 10)
-            val list = mutableListOf<BlockPos>()
-            for (posPos in 0 until modules.tagCount()) {
-                list.add(NBTUtil.getPosFromTag(poses.getCompoundTagAt(posPos)))
+        if (compound.hasKey("modules")) {
+            val modules = compound.getTagList("modules", 9)
+            for (j in 0 until modules.tagCount()) {
+                val posModules = modules.get(j) as NBTTagList
+                val list = mutableListOf<BlockPos>()
+                for (posPos in 0 until posModules.tagCount()) {
+                    list.add(NBTUtil.getPosFromTag(posModules.getCompoundTagAt(posPos)))
+                }
+                this.modules[j] = list
             }
-            this.modules[j] = list
-
         }
-
-        return true
+        init = true
     }
 
-    private fun writeToNBT(nbt: NBTTagCompound): NBTTagCompound {
+    override fun serializeNBT(): NBTTagCompound {
+        val nbtTagCompound = NBTTagCompound()
         val nbttaglist = NBTTagList()
 
         for (block in this.blocks) {
@@ -98,12 +130,13 @@ class Template {
             })
         }
 
-        nbt.setTag("blocks", nbttaglist)
-        nbt.setTag("modules", modulesList)
-        return nbt
+        nbtTagCompound.setTag("blocks", nbttaglist)
+        if (!modulesList.hasNoTags())
+            nbtTagCompound.setTag("modules", modulesList)
+        return nbtTagCompound
     }
 
-    fun generateTemplate(startPos: BlockPos, endPos: BlockPos, controller: BlockPos, wildcard: MutableList<BlockPos>, modules: MutableMap<Int, MutableList<BlockPos>>, ignoreAir: Boolean, worldIn: World, name: String): Boolean {
+    fun generateTemplate(startPos: BlockPos, endPos: BlockPos, controller: BlockPos, wildcard: MutableList<BlockPos>, modules: MutableMap<Int, MutableList<BlockPos>>, ignoreAir: Boolean, wildcardAll: Boolean, worldIn: World, name: String): Boolean {
         init = true
         this.controller = controller
 
@@ -126,24 +159,26 @@ class Template {
                     continue@label
             }
 
-            if (ignoreAir && block != Blocks.AIR) {
-                val tileentity = worldIn.getTileEntity(boxBlocks)
+            if (ignoreAir) {
+                if (block == Blocks.AIR)
+                    continue
+            }
+            val tileentity = worldIn.getTileEntity(boxBlocks)
 
-                if (tileentity != null && !wildcard.contains(boxBlocks)) {
-                    val tag = tileentity.writeToNBT(NBTTagCompound())
-                    tag.removeTag("x")
-                    tag.removeTag("y")
-                    tag.removeTag("z")
-                    blocks.add(BlockInfo(relativePos, block, block.getMetaFromState(state), tag))
-                } else {
-                    blocks.add(BlockInfo(relativePos, block, if (!wildcard.contains(boxBlocks)) block.getMetaFromState(state) else -1, null))
-                }
+            if (tileentity != null && (!wildcard.contains(boxBlocks) && !wildcardAll)) {
+                val tag = tileentity.writeToNBT(NBTTagCompound())
+                tag.removeTag("x")
+                tag.removeTag("y")
+                tag.removeTag("z")
+                blocks.add(BlockInfo(relativePos, block, block.getMetaFromState(state), tag))
+            } else {
+                blocks.add(BlockInfo(relativePos, block, if (!wildcard.contains(boxBlocks) && !wildcardAll) block.getMetaFromState(state) else -1, null))
             }
         }
 
         val file = File(Minecraft.getMinecraft().mcDataDir.absolutePath + "/mods/${TCFoundation.MODID}/$name.nbt")
         if (!file.parentFile.exists()) file.parentFile.mkdirs()
-        CompressedStreamTools.writeCompressed(writeToNBT(NBTTagCompound()), FileOutputStream(file))
+        CompressedStreamTools.writeCompressed(serializeNBT(), FileOutputStream(file))
 
         return true
     }
@@ -159,9 +194,11 @@ class Template {
             if (matches(worldIn, pos, rot, valid)) {
                 val list = mutableListOf<BlockPos>()
                 for (block in blocks) {
-                    if (block.meta == -1) {
-                        list.add(pos.add(block.pos.rotate(rot)))
-                    }
+                    list.add(pos.add(block.pos.rotate(rot)))
+                }
+                for (mods in modules) {
+                    for(block in mods.value)
+                    list.add(pos.add(block.rotate(rot)))
                 }
                 return list
             }

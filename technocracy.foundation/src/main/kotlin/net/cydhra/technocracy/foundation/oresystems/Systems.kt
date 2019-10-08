@@ -1,9 +1,13 @@
 package net.cydhra.technocracy.foundation.oresystems
 
+import com.google.common.base.Predicate
 import net.cydhra.technocracy.foundation.oresystems.OreSystemBuilder.IntermediateProductType.GEAR
 import net.cydhra.technocracy.foundation.oresystems.OreSystemBuilder.IntermediateProductType.SHEET
+import net.minecraft.block.state.IBlockState
+import net.minecraft.block.state.pattern.BlockMatcher
 import net.minecraft.init.Blocks
 import net.minecraft.init.Items
+import net.minecraft.world.DimensionType
 
 val aluminumSystem = oreSystem {
     name = "aluminum"
@@ -37,7 +41,7 @@ val leadSystem = oreSystem {
     name = "lead"
     color = 0x9696BE
 
-    create(SHEET)
+    create(GEAR, SHEET)
 
     generate {
         veinsPerChunk = 18
@@ -99,11 +103,30 @@ val tinSystem = oreSystem {
     name = "tin"
     color = 0xC6C6C6
 
+    create(SHEET)
+
     generate {
         veinsPerChunk = 18
         amountPerVein = 8
         minHeight = 25
         maxHeight = 60
+    }
+}
+
+val zirconiumSystem = oreSystem {
+    name = "zirconium"
+    oreType = "nether_ore"
+    color = 0xFFFFA8
+
+    create(GEAR)
+
+    generate {
+        veinsPerChunk = 8
+        amountPerVein = 8
+        minHeight = 1
+        maxHeight = 128
+        oreDimensions = arrayOf(DimensionType.NETHER.id)
+        replacementPredicate = BlockMatcher.forBlock(Blocks.NETHERRACK)
     }
 }
 

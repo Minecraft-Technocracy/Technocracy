@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ibi",
+    "lml",
+    "sbs"
+  ],
+  "key": {
+    "m": {
+      "item": "technocracy.foundation:advanced_machine_frame"
+    },
+    "l": {
+      "item": "technocracy.foundation:lead_glass_pane"
+    },
+    "i": {
+      "type": "forge:ore_dict",
+      "ore": "ingotZircalloy"
+    },
+    "s": {
+      "type": "forge:ore_dict",
+      "ore": "ingotSiliconBronze"
+    },
+    "b": {
+      "item": "technocracy.foundation:membrane"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:electrolysis_chamber",
+    "count": 1
+  }
+}

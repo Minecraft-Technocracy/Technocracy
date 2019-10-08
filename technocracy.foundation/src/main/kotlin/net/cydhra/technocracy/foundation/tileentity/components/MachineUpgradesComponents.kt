@@ -11,7 +11,7 @@ class MachineUpgradesComponents : AbstractComponent() {
         private const val NBT_KEY_UPGRADES = "upgrades"
     }
 
-    override val type: ComponentType = ComponentType.UPGRADES
+    override val type: ComponentType = ComponentType.OTHER
 
     /**
      * Allowed Upgrades and maximum amount

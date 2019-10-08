@@ -12,13 +12,15 @@ class TileEntityRefineryInput : TileEntityMultiBlockPart<RefineryMultiBlock>(Ref
         ::RefineryMultiBlock) {
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
-        return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
+        return if (multiblockController != null && multiblockController!!.isAssembled && facing != null)
+            capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
+        else false
     }
 
     override fun <T> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
-        return (if (hasCapability(capability, facing))
-            CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast<T?>(multiblockController?.controllerTileEntity?.inputComponent?.fluid)
+        return if (hasCapability(capability, facing))
+            CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(multiblockController?.controllerTileEntity?.inputComponent?.fluid)
         else
-            null) ?: DynamicFluidHandler(1, allowedFluid = mutableListOf()) as T
+            null
     }
 }

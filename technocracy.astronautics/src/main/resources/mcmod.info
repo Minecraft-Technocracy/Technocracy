@@ -1,0 +1,16 @@
+[
+{
+  "modid": "${modid}",
+  "name": "Technocracy Astronautics",
+  "description": "Technocracy Astronautics expansion",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Cydhra, Poke, Flaflo"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

@@ -52,4 +52,7 @@ class TileEntityCompactor : MachineTileEntity(), TEInventoryProvider {
                 (inventory == outputInventoryComponent.inventory && this.recipes
                         .any { it.getOutput()[0].item == stack.item })
     }
+
+    override fun onSlotUpdate(inventory: DynamicInventoryHandler, slot: Int, stack: ItemStack) {
+    }
 }

@@ -1,0 +1,11 @@
+{
+  "input": {
+    "type": "forge:ore_dict",
+    "ore": "oreEmerald"
+  },
+  "output": {
+    "item": "minecraft:emerald",
+    "count": 2
+  },
+  "cost": 120
+}

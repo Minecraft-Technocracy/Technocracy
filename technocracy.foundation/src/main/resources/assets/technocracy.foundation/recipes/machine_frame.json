@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "sps",
+    "tpt",
     "pgp",
-    "sps"
+    "tpt"
   ],
   "key": {
     "p": {
       "type": "forge:ore_dict",
       "ore": "paneGlass"
     },
-    "s": {
+    "t": {
       "type": "forge:ore_dict",
-      "ore": "sheetTin"
+      "ore": "ingotTin"
     },
     "g": {
       "type": "forge:ore_dict",

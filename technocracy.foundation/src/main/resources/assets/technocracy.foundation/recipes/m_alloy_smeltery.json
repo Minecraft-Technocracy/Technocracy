@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "brb",
+    "fmf",
+    "dfd"
+  ],
+  "key": {
+    "f": {
+      "item": "minecraft:furnace"
+    },
+    "m": {
+      "item": "technocracy.foundation:machine_frame"
+    },
+    "b": {
+      "item": "minecraft:brick"
+    },
+    "r": {
+      "type": "forge:ore_dict",
+      "ore": "dustRedstone"
+    },
+    "d": {
+      "item": "technocracy.foundation:iron_rod"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:alloy_smeltery",
+    "count": 1
+  }
+}

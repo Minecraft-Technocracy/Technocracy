@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ibi",
+    "pmp",
+    "rrr"
+  ],
+  "key": {
+    "m": {
+      "item": "technocracy.foundation:advanced_machine_frame"
+    },
+    "r": {
+      "type": "forge:ore_dict",
+      "ore": "itemAsbestos"
+    },
+    "i": {
+      "type": "forge:ore_dict",
+      "ore": "sheetInvar"
+    },
+    "p": {
+      "type": "forge:ore_dict",
+      "ore": "ingotZircalloy"
+    },
+    "b": {
+      "item": "technocracy.foundation:membrane"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:chemical_reaction_chamber",
+    "count": 1
+  }
+}

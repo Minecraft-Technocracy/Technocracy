@@ -1,0 +1,12 @@
+{
+  "parent": "block/orientable",
+  "textures": {
+    "particle": "technocracy.astronautics:block/rocket_controller_top",
+    "up": "technocracy.astronautics:block/rocket_controller_top",
+    "down": "technocracy.astronautics:block/rocket_controller_top",
+    "north": "technocracy.astronautics:block/rocket_controller_front",
+    "east": "technocracy.astronautics:block/rocket_controller_side",
+    "south": "technocracy.astronautics:block/rocket_controller_back",
+    "west": "technocracy.astronautics:block/rocket_controller_side"
+  }
+}

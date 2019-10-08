@@ -1,0 +1,10 @@
+{
+  "input": {
+    "item": "minecraft:sea_lantern"
+  },
+  "output": {
+    "item": "minecraft:prismarine_crystals",
+    "count": 5
+  },
+  "cost": 60
+}

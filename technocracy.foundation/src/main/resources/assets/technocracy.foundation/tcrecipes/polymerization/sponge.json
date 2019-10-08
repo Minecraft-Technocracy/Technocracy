@@ -1,0 +1,12 @@
+{
+  "fluid": {
+    "fluid": "aqueous_sodium_acrylate",
+    "amount": 500
+  },
+  "output": {
+    "item": "minecraft:sponge",
+    "data": 0,
+    "count": 1
+  },
+  "cost": 200
+}

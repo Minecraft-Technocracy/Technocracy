@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "lil",
+    "gfg",
+    "lsl"
+  ],
+  "key": {
+    "l": {
+      "type": "forge:ore_dict",
+      "ore": "ingotLead"
+    },
+    "i": {
+      "item": "technocracy.foundation:servo"
+    },
+    "g": {
+      "type": "forge:ore_dict",
+      "ore": "gearCopper"
+    },
+    "f": {
+      "item": "technocracy.foundation:machine_frame"
+    },
+    "s": {
+      "type": "forge:ore_dict",
+      "ore": "sheetTin"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:pulverizer",
+    "count": 1
+  }
+}

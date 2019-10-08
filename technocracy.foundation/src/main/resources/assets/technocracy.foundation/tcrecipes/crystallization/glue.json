@@ -1,0 +1,11 @@
+{
+  "fluid": {
+    "fluid": "glue",
+    "amount": 1000
+  },
+  "output": {
+    "item": "technocracy.foundation:glue_ball",
+    "count": 1
+  },
+  "cost": 200
+}

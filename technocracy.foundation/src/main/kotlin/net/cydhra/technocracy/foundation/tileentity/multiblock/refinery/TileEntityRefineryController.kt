@@ -3,7 +3,7 @@ package net.cydhra.technocracy.foundation.tileentity.multiblock.refinery
 import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandler
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.components.label.DefaultLabel
-import net.cydhra.technocracy.foundation.client.gui.tabs.TCTab
+import net.cydhra.technocracy.foundation.client.gui.TCTab
 import net.cydhra.technocracy.foundation.liquids.general.heavyOilFluid
 import net.cydhra.technocracy.foundation.liquids.general.lightOilFluid
 import net.cydhra.technocracy.foundation.liquids.general.mineralOilFluid
@@ -41,17 +41,8 @@ class TileEntityRefineryController : TileEntityMultiBlockPart<RefineryMultiBlock
         this.registerComponent(progressComponent, "progress")
     }
 
-    override fun writeToNBT(data: NBTTagCompound): NBTTagCompound {
-        return this.serializeNBT(super.writeToNBT(data))
-    }
-
-    override fun readFromNBT(data: NBTTagCompound) {
-        super.readFromNBT(data)
-        this.deserializeNBT(data)
-    }
-
     override fun initGui(gui: TCGui) {
-        gui.registerTab(object:TCTab("Example", gui) {
+        gui.registerTab(object: TCTab("Example", gui) {
             override fun init() {
                 addComponent(DefaultLabel(10, 20, "Hello World"))
             }

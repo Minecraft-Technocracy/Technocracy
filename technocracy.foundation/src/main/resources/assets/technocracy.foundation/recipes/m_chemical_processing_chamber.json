@@ -1,0 +1,35 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sis",
+    "lml",
+    "gfg"
+  ],
+  "key": {
+    "f": {
+      "item": "technocracy.foundation:membrane"
+    },
+    "m": {
+      "item": "technocracy.foundation:advanced_machine_frame"
+    },
+    "i": {
+      "type": "forge:ore_dict",
+      "ore": "ingotInvar"
+    },
+    "s": {
+      "type": "forge:ore_dict",
+      "ore": "dustRedstone"
+    },
+    "l": {
+      "item": "technocracy.foundation:lead_glass_pane"
+    },
+    "g": {
+      "type": "forge:ore_dict",
+      "ore": "itemAsbestos"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:chemical_processing_chamber",
+    "count": 1
+  }
+}

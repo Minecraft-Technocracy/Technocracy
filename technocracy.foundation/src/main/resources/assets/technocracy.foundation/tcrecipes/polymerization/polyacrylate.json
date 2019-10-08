@@ -1,0 +1,11 @@
+{
+  "fluid": {
+    "fluid": "acrylic_acid",
+    "amount": 500
+  },
+  "output": {
+    "item": "technocracy.foundation:polyacrylate",
+    "count": 1
+  },
+  "cost": 200
+}

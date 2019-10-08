@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.blocks.general
 
-import net.cydhra.technocracy.foundation.blocks.BaseLiquidBlock
+import net.cydhra.technocracy.foundation.blocks.api.AbstractBaseBlock
+import net.cydhra.technocracy.foundation.blocks.api.BaseLiquidBlock
 import net.cydhra.technocracy.foundation.blocks.api.IBaseBlock
 import net.cydhra.technocracy.foundation.client.model.AbstractCustomModel
 import net.cydhra.technocracy.foundation.client.model.CustomModelProvider
@@ -21,6 +22,7 @@ import net.minecraftforge.client.model.ModelLoader
 import net.minecraftforge.client.model.ModelLoaderRegistry
 import net.minecraftforge.event.RegistryEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import net.minecraftforge.oredict.OreDictionary
 
 
 /**
@@ -62,7 +64,12 @@ class BlockManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
     @Suppress("unused")
     @SubscribeEvent
     fun onRegister(event: RegistryEvent.Register<Block>) {
-        event.registry.registerAll(*blocksToRegister.map { it as Block }.map { it.apply { if (it.creativeTabToDisplayOn == null) it.setCreativeTab(defaultCreativeTab) } }.toTypedArray())
+        event.registry.registerAll(*blocksToRegister.map { it as Block }.map {
+            it.apply {
+                @Suppress("SENSELESS_COMPARISON") // this is an actually nullable platform type
+                if (it.creativeTabToDisplayOn == null) it.setCreativeTab(defaultCreativeTab)
+            }
+        }.toTypedArray())
     }
 
     /**
@@ -92,12 +99,20 @@ class BlockManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
                 .forEach { item ->
                     val list = NonNullList.create<ItemStack>()
                     item.getSubItems(item.creativeTab!!, list)
+                    item.getSubItems(CreativeTabs.SEARCH, list)
                     for (subs in list) {
                         ModelLoader.setCustomModelResourceLocation(subs.item, subs.metadata,
                                 ModelResourceLocation(((subs.item as ItemBlock).block as IBaseBlock).modelLocation, "inventory"))
                     }
                 }
         registerCustomBlockModels()
+
+        blocksToRegister
+                .filterIsInstance<AbstractBaseBlock>()
+                .filter { it.oreDictionaryName != null }
+                .forEach {
+                    OreDictionary.registerOre(it.oreDictionaryName, it)
+                }
     }
 
     /**

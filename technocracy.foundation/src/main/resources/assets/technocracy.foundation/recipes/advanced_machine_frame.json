@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sgs",
+    "tmt",
+    "aga"
+  ],
+  "key": {
+    "m": {
+      "item": "technocracy.foundation:machine_frame"
+    },
+    "s": {
+      "type": "forge:ore_dict",
+      "ore": "sheetInvar"
+    },
+    "g": {
+      "type": "forge:ore_dict",
+      "ore": "gearZirconium"
+    },
+    "t": {
+      "type": "forge:ore_dict",
+      "ore": "sheetSteel"
+    },
+    "a": {
+      "type": "forge:ore_dict",
+      "ore": "itemAsbestos"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:advanced_machine_frame",
+    "count": 1
+  }
+}

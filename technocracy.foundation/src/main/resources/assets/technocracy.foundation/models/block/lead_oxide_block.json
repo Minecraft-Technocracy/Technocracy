@@ -1,6 +1,6 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "technocracy.foundation:block/steel"
+    "all": "technocracy.foundation:block/lead_oxide_block"
   }
 }

@@ -1,0 +1,11 @@
+{
+  "input": {
+    "type": "forge:ore_dict",
+    "ore": "oreRedstone"
+  },
+  "output": {
+    "item": "minecraft:redstone",
+    "count": 12
+  },
+  "cost": 120
+}

@@ -7,8 +7,8 @@ import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.Defaul
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.DefaultProgressBar
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.Orientation
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
-import net.cydhra.technocracy.foundation.client.gui.machine.MachineContainer
 import net.cydhra.technocracy.foundation.client.gui.machine.BaseMachineTab
+import net.cydhra.technocracy.foundation.client.gui.machine.MachineContainer
 import net.cydhra.technocracy.foundation.client.gui.machine.MachineSettingsTab
 import net.cydhra.technocracy.foundation.tileentity.api.TCMachineTileEntity
 import net.cydhra.technocracy.foundation.tileentity.components.*
@@ -38,38 +38,49 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
 
     protected val progressComponent = ProgressComponent()
 
+    protected val processingSpeedComponent = ProcessSpeedComponent()
+
+    protected val energyCostComponent = ConsumptionMultiplierComponent()
+
     init {
         this.registerComponent(redstoneModeComponent, "redstone_mode")
         this.registerComponent(energyStorageComponent, "energy")
         this.registerComponent(machineUpgradesComponent, "upgrades")
         this.registerComponent(progressComponent, "progress")
+        this.registerComponent(processingSpeedComponent, "processing_speed")
+        this.registerComponent(energyCostComponent, "processing_cost")
     }
 
-    override fun getGui(player: EntityPlayer): TCGui {
-        val gui = TCGui(player, container = MachineContainer(this))
+    override fun getGui(player: EntityPlayer?): TCGui {
+        val gui = TCGui(container = MachineContainer(this))
         gui.registerTab(object : BaseMachineTab(this, gui, ResourceLocation("technocracy.foundation",
                 "textures/item/silicon.png")) {
             override fun init() {
-                addPlayerInventorySlots(player, 8, 84)
-
                 var nextOutput = 125
+                var nextInput = 10
                 var inputNearestToTheMiddle = 0
-                var outputNearestToTheMiddle = parent.guiWidth // nice names
+                var outputNearestToTheMiddle = parent.guiWidth
                 var foundProgressComponent: ProgressComponent? = null
-                this@MachineTileEntity.getComponents().forEach {
-                    when {
-                        it.second is EnergyStorageComponent -> {
-                            components.add(DefaultEnergyMeter(10, 20, it.second as EnergyStorageComponent, gui))
-                            if (inputNearestToTheMiddle < 20)
+                val sortedComponents = listOf(*this@MachineTileEntity.getComponents().toTypedArray())
+                        .sortedBy { (_, component) -> component !is FluidComponent}
+                        .sortedBy { (_, component) -> component !is EnergyStorageComponent }
+                sortedComponents.forEach { (name, component) ->
+                    when (component) {
+                        is EnergyStorageComponent -> {
+                            components.add(DefaultEnergyMeter(nextInput, 20, component, gui))
+                            if (inputNearestToTheMiddle < 20) {
                                 inputNearestToTheMiddle = 20
+                                nextInput = 25
+                            }
                         }
-                        it.second is FluidComponent -> {
-                            val component: FluidComponent = it.second as FluidComponent
+                        is FluidComponent -> {
                             when {
                                 component.fluid.tanktype == DynamicFluidHandler.TankType.INPUT -> {
-                                    components.add(DefaultFluidMeter(25, 20, component, gui))
-                                    if (inputNearestToTheMiddle < 35)
-                                        inputNearestToTheMiddle = 35
+                                    components.add(DefaultFluidMeter(nextInput, 20, component, gui))
+                                    if (inputNearestToTheMiddle < nextInput - 5) {
+                                        inputNearestToTheMiddle = nextInput - 5 // 5 is the space between components
+                                    }
+                                    nextInput += 15 // fluid meter width (10) + space (5)
                                 }
                                 component.fluid.tanktype == DynamicFluidHandler.TankType.OUTPUT -> {
                                     components.add(DefaultFluidMeter(nextOutput, 20, component, gui))
@@ -82,19 +93,20 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
                                 }
                             }
                         }
-                        it.second is InventoryComponent -> {
-                            val component: InventoryComponent = it.second as InventoryComponent
+                        is InventoryComponent -> {
                             when {
-                                it.first.contains("input") -> {
+                                name.contains("input") -> {
                                     for (i in 0 until component.inventory.slots) {
-                                        components.add(TCSlotIO(component.inventory, i, 40 + i * 20, 40, gui))
-                                        val newX = 40 + (i + 1) * 20
-                                        if (inputNearestToTheMiddle < newX)
-                                            inputNearestToTheMiddle = newX
+                                        if(nextInput == 25)
+                                            nextInput = 30
+                                        components.add(TCSlotIO(component.inventory, i, nextInput, 40, gui))
+                                        if (inputNearestToTheMiddle < nextInput)
+                                            inputNearestToTheMiddle = nextInput
+                                        nextInput += 20
                                     }
 
                                 }
-                                it.first.contains("output") -> {
+                                name.contains("output") -> {
                                     for (i in component.inventory.slots - 1 downTo 0) {
                                         components.add(TCSlotIO(component.inventory, i, 125 + i * 20, 40, gui))
                                         val newX = 125 + i * 20
@@ -104,25 +116,28 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
                                 }
                             }
                         }
-                        it.second is ProgressComponent -> {
-                            foundProgressComponent = it.second as ProgressComponent
+                        is ProgressComponent -> {
+                            foundProgressComponent = component
                         }
                     }
                 }
-                if(foundProgressComponent != null)
-                    components.add(DefaultProgressBar((outputNearestToTheMiddle - inputNearestToTheMiddle) / 2 - 11 + inputNearestToTheMiddle, 40, Orientation.RIGHT, foundProgressComponent as ProgressComponent, gui))
+                if (foundProgressComponent != null)
+                    components.add(DefaultProgressBar((outputNearestToTheMiddle - inputNearestToTheMiddle) / 2 + inputNearestToTheMiddle, 40, Orientation.RIGHT, foundProgressComponent as ProgressComponent, gui))
+
+                if (player != null)
+                    addPlayerInventorySlots(player, 8, 84)
             }
         })
         initGui(gui)
-        gui.registerTab(MachineSettingsTab(gui, this, player))
+        gui.registerTab(MachineSettingsTab(gui, this))
         return gui
     }
 
-    open fun initGui(gui:TCGui) {}
+    open fun initGui(gui: TCGui) {}
 
     override fun update() {
         // update ILogic strategies, but only server side
-        if(!world.isRemote)
+        if (!world.isRemote)
             this.tick()
     }
 }

@@ -1,0 +1,11 @@
+{
+  "fluid": {
+    "fluid": "brine",
+    "amount": 200
+  },
+  "output": {
+    "item": "technocracy.foundation:salt",
+    "count": 1
+  },
+  "cost": 200
+}

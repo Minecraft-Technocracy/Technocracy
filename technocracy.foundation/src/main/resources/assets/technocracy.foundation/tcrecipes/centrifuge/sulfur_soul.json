@@ -1,0 +1,15 @@
+{
+  "input": {
+    "item": "minecraft:soul_sand"
+  },
+  "output_primary": {
+    "item": "technocracy.foundation:sulfur",
+    "count": 1
+  },
+  "output_secondary": {
+    "item": "minecraft:sand",
+    "data": 1,
+    "count": 1
+  },
+  "cost": 80
+}

@@ -7,20 +7,27 @@ import net.minecraftforge.fluids.FluidRegistry
 import net.minecraftforge.fluids.FluidStack
 import net.minecraftforge.fluids.capability.IFluidHandler
 import net.minecraftforge.fluids.capability.IFluidTankProperties
+import kotlin.math.abs
+import kotlin.math.min
 
 /**
  * @param capacity fluid storage capacity
  * @param allowedFluid a list of fluid names that are allowed to store, empty if all fluids are allowed
  * @param tanktype whether input, output or both are allowed
  */
-open class DynamicFluidHandler(var capacity: Int = 1000, val allowedFluid: MutableList<String>,
-                          var tanktype: TankType = TankType.BOTH) :
+open class DynamicFluidHandler(var capacity: Int = 1000, val allowedFluid: MutableList<String> = mutableListOf(),
+                               var tanktype: TankType = TankType.BOTH) :
         IFluidHandler, INBTSerializable<NBTTagCompound>, AbstractDynamicHandler() {
 
     var currentFluid: FluidStack? = null
         private set
 
     val simpleTankProperty = arrayOf<IFluidTankProperties>(SimpleTankProperty(this))
+
+    //Threshold in percent that is needed for the te to send an update to the client
+    var fluidChangeThreshold = -1f
+    //The last amount of fluid that was synced with the client
+    private var lastUpdatedFluidValue = -1
 
     override fun drain(resource: FluidStack, doDrain: Boolean): FluidStack? {
 
@@ -30,7 +37,7 @@ open class DynamicFluidHandler(var capacity: Int = 1000, val allowedFluid: Mutab
             return null
         }
 
-        val drain = Math.min(resource.amount, currentFluid!!.amount)
+        val drain = min(resource.amount, currentFluid!!.amount)
 
         if (doDrain) {
             currentFluid!!.amount -= drain
@@ -55,7 +62,7 @@ open class DynamicFluidHandler(var capacity: Int = 1000, val allowedFluid: Mutab
         if (currentFluid == null)
             return null
 
-        val drain = Math.min(maxDrain, currentFluid!!.amount)
+        val drain = min(maxDrain, currentFluid!!.amount)
 
         if (doDrain) {
             currentFluid!!.amount -= drain
@@ -72,6 +79,16 @@ open class DynamicFluidHandler(var capacity: Int = 1000, val allowedFluid: Mutab
         }
 
         return out
+    }
+
+    fun setFluid(resource: FluidStack) {
+        currentFluid = FluidStack(resource.fluid, 0)
+
+        val fill = min(resource.amount, capacity)
+
+        currentFluid!!.amount = fill
+
+        markDirty(true)
     }
 
     override fun fill(resource: FluidStack, doFill: Boolean): Int {
@@ -91,7 +108,7 @@ open class DynamicFluidHandler(var capacity: Int = 1000, val allowedFluid: Mutab
                 currentFluid = FluidStack(resource.fluid, 0)
             }
 
-            val fill = Math.min(resource.amount, capacity - currentFluid!!.amount)
+            val fill = min(resource.amount, capacity - currentFluid!!.amount)
 
             currentFluid!!.amount += fill
 
@@ -100,11 +117,30 @@ open class DynamicFluidHandler(var capacity: Int = 1000, val allowedFluid: Mutab
             return fill
         } else {
             if (currentFluid == null) {
-                return Math.min(resource.amount, capacity)
+                return min(resource.amount, capacity)
             }
 
-            return Math.min(resource.amount, capacity - currentFluid!!.amount)
+            return min(resource.amount, capacity - currentFluid!!.amount)
         }
+    }
+
+    override fun markDirty(needsClientRerender: Boolean) {
+        if (fluidChangeThreshold != -1f) {
+            if (currentFluid == null) {
+                lastUpdatedFluidValue = 0
+            } else {
+                val change = abs(currentFluid!!.amount - lastUpdatedFluidValue)
+                val percentage = abs(change / capacity.toFloat())
+
+                if (percentage >= fluidChangeThreshold / 100f) {
+                    lastUpdatedFluidValue = currentFluid!!.amount
+                    super.markDirty(true)
+                    return
+                }
+            }
+        }
+
+        super.markDirty(needsClientRerender)
     }
 
     override fun getTankProperties(): Array<IFluidTankProperties> {

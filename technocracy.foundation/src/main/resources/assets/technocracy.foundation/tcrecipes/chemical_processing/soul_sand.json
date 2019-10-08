@@ -1,0 +1,16 @@
+{
+  "input": {
+    "item": "minecraft:sand",
+    "data": 32767,
+    "count": 1
+  },
+  "fluid": {
+    "fluid": "sulfur_dioxide",
+    "amount": 200
+  },
+  "output": {
+    "item": "minecraft:soul_sand",
+    "count": 1
+  },
+  "cost": 50
+}

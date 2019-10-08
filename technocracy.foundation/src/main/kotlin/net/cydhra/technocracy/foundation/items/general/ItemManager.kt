@@ -87,6 +87,8 @@ class ItemManager(val modName: String,val defaultCreativeTab: CreativeTabs) {
     private fun registerItemRender(item: BaseItem) {
         val list = NonNullList.create<ItemStack>()
         item.getSubItems(item.creativeTab!!, list)
+        //need to get all item variants
+        item.getSubItems(CreativeTabs.SEARCH, list)
         for (subs in list) {
             registerItemRender(item, subs.metadata)
         }

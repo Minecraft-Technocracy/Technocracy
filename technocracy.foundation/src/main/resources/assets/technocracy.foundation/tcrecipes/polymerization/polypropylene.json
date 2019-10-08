@@ -1,0 +1,11 @@
+{
+  "fluid": {
+    "fluid": "propene",
+    "amount": 500
+  },
+  "output": {
+    "item": "technocracy.foundation:polypropylene",
+    "count": 1
+  },
+  "cost": 200
+}

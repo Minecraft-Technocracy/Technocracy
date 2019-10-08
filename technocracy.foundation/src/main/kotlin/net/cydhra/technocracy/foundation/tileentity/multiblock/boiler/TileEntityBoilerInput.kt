@@ -20,15 +20,17 @@ class TileEntityBoilerInput : TileEntityMultiBlockPart<BoilerMultiBlock>(BoilerM
     override fun onMachineDeactivated() {}
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
-        return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
+        return if (multiblockController != null && multiblockController!!.isAssembled && facing != null) {
+            capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
+        } else false
     }
 
     override fun <T> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
-        return (if (hasCapability(capability, facing))
+        return if (hasCapability(capability, facing))
             CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast<T>(this.multiblockController
                     ?.controllerTileEntity?.fluidHandler)
         else
-            null) ?: DynamicFluidHandler(1, allowedFluid = mutableListOf()) as T
+            null
     }
 
     override fun onActivate(world: World, pos: BlockPos, player: EntityPlayer, hand: EnumHand, facing: EnumFacing) {

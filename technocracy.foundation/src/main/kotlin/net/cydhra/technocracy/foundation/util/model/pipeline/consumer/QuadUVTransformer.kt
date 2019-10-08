@@ -54,94 +54,92 @@ object QuadUVTransformer : IQuadConsumer {
             else -> 0f
         }
 
-        if (quad.face != null) {
-            if (quadNum == -1) {
-                //modify the uv and rotation, not needed if the the quad is split up, as its handeled by ctm
-                @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
-                when (quad.face) {
-                    EnumFacing.SOUTH -> {
-                        for (i in 0 until quad.vertPos.size) {
-                            val changeY = (minY + quad.vertPos[i].y) / maxY
-                            val changeX = (minX + quad.vertPos[i].x) / maxX
+        if (quadNum == -1) {
+            //modify the uv and rotation, not needed if the the quad is split up, as its handeled by ctm
+            @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
+            when (quad.face) {
+                EnumFacing.SOUTH -> {
+                    for (i in 0 until quad.vertPos.size) {
+                        val changeY = (minY + quad.vertPos[i].y) / maxY
+                        val changeX = (minX + quad.vertPos[i].x) / maxX
 
-                            quad.vertUv[i].y = maxUVY - distY * changeY + modY
-                            quad.vertUv[i].x = minUVX + distX * changeX + modX
-                        }
-                    }
-                    EnumFacing.NORTH -> {
-                        for (i in 0 until quad.vertPos.size) {
-                            val changeY = (minY + quad.vertPos[i].y) / maxY
-                            val changeX = (minX + quad.vertPos[i].x) / maxX
-
-                            quad.vertUv[i].y = maxUVY - distY * changeY + modY
-                            quad.vertUv[i].x = maxUVX - distX * changeX + modX
-                        }
-                    }
-                    EnumFacing.WEST -> {
-                        for (i in 0 until quad.vertPos.size) {
-                            val changeY = (minY + quad.vertPos[i].y) / maxY
-                            val changeX = (minX + quad.vertPos[i].z) / maxX
-
-                            quad.vertUv[i].y = maxUVY - distY * changeY + modY
-                            quad.vertUv[i].x = minUVX + distX * changeX + modX
-                        }
-                    }
-                    EnumFacing.EAST -> {
-                        for (i in 0 until quad.vertPos.size) {
-                            val changeY = (minY + quad.vertPos[i].y) / maxY
-                            val changeX = (minX + quad.vertPos[i].z) / maxX
-
-                            quad.vertUv[i].y = maxUVY - distY * changeY + modY
-                            quad.vertUv[i].x = maxUVX - distX * changeX + modX
-                        }
-                    }
-                    EnumFacing.DOWN -> {
-                        for (i in 0 until quad.vertPos.size) {
-                            val changeY = (minY + quad.vertPos[i].z) / maxY
-                            val changeX = (minX + quad.vertPos[i].x) / maxX
-
-                            quad.vertUv[i].y = maxUVY - distY * changeY + modY
-                            quad.vertUv[i].x = maxUVX - distX * changeX + modX
-                        }
-                    }
-                    EnumFacing.UP -> {
-                        for (i in 0 until quad.vertPos.size) {
-                            val changeY = (minY + quad.vertPos[i].z) / maxY
-                            val changeX = (minX + quad.vertPos[i].x) / maxX
-
-                            quad.vertUv[i].y = minUVY + distY * changeY + modY
-                            quad.vertUv[i].x = minUVX + distX * changeX + modX
-                        }
+                        quad.vertUv[i].y = maxUVY - distY * changeY + modY
+                        quad.vertUv[i].x = minUVX + distX * changeX + modX
                     }
                 }
-            } else {
-                when (quad.face!!.axis) {
-                    EnumFacing.Axis.Z -> {
-                        for (i in 0 until quad.vertPos.size) {
-                            val changeY = (minY + quad.vertPos[i].y) / maxY
-                            val changeX = (minX + quad.vertPos[i].x) / maxX
+                EnumFacing.NORTH -> {
+                    for (i in 0 until quad.vertPos.size) {
+                        val changeY = (minY + quad.vertPos[i].y) / maxY
+                        val changeX = (minX + quad.vertPos[i].x) / maxX
 
-                            quad.vertUv[i].y = maxUVY - distY * changeY + modY
-                            quad.vertUv[i].x = maxUVX - distX * changeX + modX
-                        }
+                        quad.vertUv[i].y = maxUVY - distY * changeY + modY
+                        quad.vertUv[i].x = maxUVX - distX * changeX + modX
                     }
-                    EnumFacing.Axis.X -> {
-                        for (i in 0 until quad.vertPos.size) {
-                            val changeY = (minY + quad.vertPos[i].y) / maxY
-                            val changeX = (minX + quad.vertPos[i].z) / maxX
+                }
+                EnumFacing.WEST -> {
+                    for (i in 0 until quad.vertPos.size) {
+                        val changeY = (minY + quad.vertPos[i].y) / maxY
+                        val changeX = (minX + quad.vertPos[i].z) / maxX
 
-                            quad.vertUv[i].y = maxUVY - distY * changeY + modY
-                            quad.vertUv[i].x = maxUVX - distX * changeX + modX
-                        }
+                        quad.vertUv[i].y = maxUVY - distY * changeY + modY
+                        quad.vertUv[i].x = minUVX + distX * changeX + modX
                     }
-                    EnumFacing.Axis.Y -> {
-                        for (i in 0 until quad.vertPos.size) {
-                            val changeY = (minY + quad.vertPos[i].z) / maxY
-                            val changeX = (minX + quad.vertPos[i].x) / maxX
+                }
+                EnumFacing.EAST -> {
+                    for (i in 0 until quad.vertPos.size) {
+                        val changeY = (minY + quad.vertPos[i].y) / maxY
+                        val changeX = (minX + quad.vertPos[i].z) / maxX
 
-                            quad.vertUv[i].y = maxUVY - distY * changeY + modY
-                            quad.vertUv[i].x = maxUVX - distX * changeX + modX
-                        }
+                        quad.vertUv[i].y = maxUVY - distY * changeY + modY
+                        quad.vertUv[i].x = maxUVX - distX * changeX + modX
+                    }
+                }
+                EnumFacing.DOWN -> {
+                    for (i in 0 until quad.vertPos.size) {
+                        val changeY = (minY + quad.vertPos[i].z) / maxY
+                        val changeX = (minX + quad.vertPos[i].x) / maxX
+
+                        quad.vertUv[i].y = maxUVY - distY * changeY + modY
+                        quad.vertUv[i].x = maxUVX - distX * changeX + modX
+                    }
+                }
+                EnumFacing.UP -> {
+                    for (i in 0 until quad.vertPos.size) {
+                        val changeY = (minY + quad.vertPos[i].z) / maxY
+                        val changeX = (minX + quad.vertPos[i].x) / maxX
+
+                        quad.vertUv[i].y = minUVY + distY * changeY + modY
+                        quad.vertUv[i].x = minUVX + distX * changeX + modX
+                    }
+                }
+            }
+        } else {
+            when (quad.face.axis) {
+                EnumFacing.Axis.Z -> {
+                    for (i in 0 until quad.vertPos.size) {
+                        val changeY = (minY + quad.vertPos[i].y) / maxY
+                        val changeX = (minX + quad.vertPos[i].x) / maxX
+
+                        quad.vertUv[i].y = maxUVY - distY * changeY + modY
+                        quad.vertUv[i].x = maxUVX - distX * changeX + modX
+                    }
+                }
+                EnumFacing.Axis.X -> {
+                    for (i in 0 until quad.vertPos.size) {
+                        val changeY = (minY + quad.vertPos[i].y) / maxY
+                        val changeX = (minX + quad.vertPos[i].z) / maxX
+
+                        quad.vertUv[i].y = maxUVY - distY * changeY + modY
+                        quad.vertUv[i].x = maxUVX - distX * changeX + modX
+                    }
+                }
+                EnumFacing.Axis.Y -> {
+                    for (i in 0 until quad.vertPos.size) {
+                        val changeY = (minY + quad.vertPos[i].z) / maxY
+                        val changeX = (minX + quad.vertPos[i].x) / maxX
+
+                        quad.vertUv[i].y = maxUVY - distY * changeY + modY
+                        quad.vertUv[i].x = maxUVX - distX * changeX + modX
                     }
                 }
             }

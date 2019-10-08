@@ -184,12 +184,10 @@ class SimpleQuad() {
     }
 
     fun bake(): BakedQuad {
-        if (face == null || sprite == null) {
-            throw IllegalStateException("no face or sprite set")
-        }
+        checkNotNull(sprite) { "no face or sprite set" }
 
         val builder = UnpackedBakedQuad.Builder(format)
-        builder.setQuadOrientation(face!!)
+        builder.setQuadOrientation(face)
         builder.setQuadTint(tintIndex)
         builder.setApplyDiffuseLighting(applyDiffuseLighting)
         builder.setTexture(sprite!!)

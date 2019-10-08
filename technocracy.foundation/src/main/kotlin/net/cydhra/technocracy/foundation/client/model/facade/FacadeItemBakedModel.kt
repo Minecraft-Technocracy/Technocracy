@@ -39,8 +39,10 @@ class FacadeItemBakedModel(val baseBakedModel: IBakedModel, val facadeBlock: Ite
         return this.baseBakedModel.particleTexture
     }
 
+    // this method is deprecated but forge does not declare a reason for it, so we have no idea what to do about it
+    @Suppress("DEPRECATION")
     override fun getItemCameraTransforms(): ItemCameraTransforms {
-        return this.baseBakedModel.getItemCameraTransforms()
+        return this.baseBakedModel.itemCameraTransforms
     }
 
     override fun isAmbientOcclusion(): Boolean {

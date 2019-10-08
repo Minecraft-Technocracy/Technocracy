@@ -9,7 +9,7 @@ import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler
 
 
-class ItemFluidComponent(val fluid: DynamicFluidHandlerItem) : AbstractItemCapabilityComponent(fluid.stack) {
+class ItemFluidComponent(val fluid: DynamicFluidHandlerItem) : AbstractItemCapabilityComponent() {
     override val type: ComponentType = ComponentType.FLUID
 
     init {

@@ -15,11 +15,9 @@ val sulfuricAcidFluid = BaseFluid("sulfuric_acid", Color(255, 230, 104), opaqueT
 val propeneFluid = BaseFluid("propene", Color(255, 212, 91), opaqueTexture = false)
 val acrylicAcidFluid = BaseFluid("acrylic_acid", Color(255, 116, 148), opaqueTexture = false)
 val benzeneFluid = BaseFluid("benzene", Color(93, 93, 186), opaqueTexture = false)
-val phenolFluid = BaseFluid("phenol", Color(117, 123, 225), opaqueTexture = false)
 val keroseneFluid = BaseFluid("kerosene", Color(221, 225, 168), opaqueTexture = false)
 val rocketFuelFluid = BaseFluid("rocket_fuel", Color(225, 118, 97), opaqueTexture = false)
 val propyleneOxideFluid = BaseFluid("propylene_oxide", Color(225, 185, 210), opaqueTexture = false)
-val propyleneGlycolFluid = BaseFluid("propylene_glycol", Color(255, 215, 240), opaqueTexture = false)
 val chlorineFluid = BaseFluid("chlorine", Color(120, 200, 120), opaqueTexture = false)
 val styreneFluid = BaseFluid("styrene", Color(255, 255, 255), opaqueTexture = false)
 val cryogenicGelFluid = BaseFluid("cryogenic_gel", Color(110, 110, 200), opaqueTexture = true)
@@ -32,3 +30,11 @@ val hydrogenFluid = BaseFluid("hydrogen", Color(215, 255, 247), opaqueTexture = 
 val silicaFluid = BaseFluid("silica", Color(241, 230, 255), opaqueTexture = false)
 val steamFluid = BaseFluid("steam", Color(160, 160, 160), opaqueTexture = false, isGas = true, temperature = 380)
 val drossFluid = BaseFluid("dross", Color(100, 100, 100), opaqueTexture = true)
+val brine = BaseFluid("brine", Color(230, 230, 200), opaqueTexture = false)
+val lithiumChloride = BaseFluid("lithium_chloride", Color(210, 200, 170), opaqueTexture = false)
+val aqueousLithium = BaseFluid("aqueous_lithium", Color(140, 255, 150), opaqueTexture = false)
+val aqueousSodiumAcrylate = BaseFluid("aqueous_sodium_acrylate", Color(255, 255, 255), opaqueTexture = false)
+val glue = BaseFluid("glue", Color(160, 110, 45), opaqueTexture = true).apply {
+    viscosity = 2000
+    density = 1200
+}

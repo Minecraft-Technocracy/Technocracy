@@ -1,13 +1,11 @@
 package net.cydhra.technocracy.foundation.blocks.general
 
 import net.cydhra.technocracy.foundation.blocks.*
+import net.cydhra.technocracy.foundation.blocks.api.*
 import net.cydhra.technocracy.foundation.blocks.liquid.OilBlock
 import net.cydhra.technocracy.foundation.blocks.liquid.SulfuricAcidBlock
 import net.cydhra.technocracy.foundation.tileentity.machines.*
-import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartBoiler
-import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartCapacitor
-import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartHeatExchanger
-import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPartRefinery
+import net.cydhra.technocracy.foundation.tileentity.multiblock.*
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerHeater
 import net.cydhra.technocracy.foundation.tileentity.multiblock.boiler.TileEntityBoilerInput
@@ -21,6 +19,8 @@ import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEnti
 import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryHeater
 import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryInput
 import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryOutput
+import net.cydhra.technocracy.foundation.tileentity.multiblock.tank.TileEntityTankMultiBlockPart
+import net.cydhra.technocracy.foundation.tileentity.multiblock.tank.TileEntityTankPort
 import net.minecraft.block.material.Material
 import net.minecraft.util.BlockRenderLayer
 
@@ -73,14 +73,17 @@ val refineryOutputBlock = MultiBlockRotatableActiveBlock("refinery_output", ::Ti
 val refineryHeaterBlock = MultiBlockActiveBlock("refinery_heater", ::TileEntityRefineryHeater,
         renderLayer = BlockRenderLayer.CUTOUT)
 
-val capacitorControllerBlock = MultiBlockRotatableActiveBlock("capacitor_controller",
-        ::TileEntityCapacitorController)
+val capacitorControllerBlock = MultiBlockRotatableActiveBlock("capacitor_controller", ::TileEntityCapacitorController)
 val capacitorWallBlock = PlainMultiBlockPartBlock("capacitor_wall", ::TileEntityMultiBlockPartCapacitor)
 val capacitorConnectorBlock = PlainMultiBlockPartBlock("capacitor_connector", ::TileEntityMultiBlockPartCapacitor)
 val capacitorEnergyPortBlock = MultiBlockRotatableActiveBlock("capacitor_energy_port", ::TileEntityCapacitorEnergyPort)
 
-val leadBlock = PlainBlock("lead_block", Material.IRON)
-val leadOxideBlock = PlainBlock("lead_oxide_block", Material.IRON)
+val tankWallBlock = TankMultiBlockBlock("tank_wall", ::TileEntityTankMultiBlockPart)
+val tankGlassBlock = TankMultiBlockBlock("tank_glass", ::TileEntityTankMultiBlockPart, isFullCube = false, opaque = false, glassSides = true, renderLayer = BlockRenderLayer.CUTOUT)
+val tankIOBlock = TankMultiBlockBlock("tank_io", ::TileEntityTankPort)
+
+val leadBlock = PlainBlock("lead_block", Material.IRON, oreDictionaryName = "blockLead")
+val leadOxideBlock = PlainBlock("lead_oxide_block", Material.IRON, oreDictionaryName = "blockLeadOxide")
 
 val oilSandBlock = OilSandBlock()
 val oilStone = OilStoneBlock()
@@ -90,3 +93,11 @@ val sulfuricAcidBlock = SulfuricAcidBlock()
 
 val pipe = PipeBlock()
 val drum = DrumBlock()
+val leadGlassPaneBlock = PlainBlock("lead_glass_pane", Material.GLASS, opaque = false, renderLayer = BlockRenderLayer.TRANSLUCENT)
+        .apply { setHardness(1.5f).setResistance(1f) }
+
+val chrysotileBlock = PlainBlock("chrysotile", Material.ROCK).apply { setHardness(1.5f).setResistance(2.3f) }
+val asbestosBlock = PlainBlock("asbestos_block", Material.ROCK, oreDictionaryName = "blockAsbestos")
+        .apply { setHardness(1.4f).setResistance(5f) }
+val saltBlock = PlainBlock("salt_block", Material.ROCK, oreDictionaryName = "blockSalt")
+        .apply { setHardness(1.0f).setResistance(2.5f) }

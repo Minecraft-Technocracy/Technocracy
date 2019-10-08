@@ -4,7 +4,7 @@ import net.minecraft.nbt.NBTTagCompound
 
 class ProgressComponent: AbstractComponent() {
 
-    override val type: ComponentType = ComponentType.PROGRESS
+    override val type: ComponentType = ComponentType.OTHER
 
     /**
      * progress from 0 to 100

@@ -6,6 +6,3 @@ if (file("technocracy.foundation").exists()) {
 if (file("technocracy.astronautics").exists()) {
     includeBuild "technocracy.astronautics"
 }
-if (file("technocracy.megastructures").exists()) {
-    includeBuild "technocracy.megastructures"
-}

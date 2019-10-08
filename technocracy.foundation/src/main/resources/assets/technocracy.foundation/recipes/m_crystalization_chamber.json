@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "zmz",
+    "pfp",
+    "rsr"
+  ],
+  "key": {
+    "r": {
+      "type": "forge:ore_dict",
+      "ore": "itemRubber"
+    },
+    "s": {
+      "type": "forge:ore_dict",
+      "ore": "sheetSteel"
+    },
+    "p": {
+      "type": "forge:ore_dict",
+      "ore": "sheetPlastic"
+    },
+    "f": {
+      "item": "technocracy.foundation:industrial_machine_frame"
+    },
+    "z": {
+      "type": "forge:ore_dict",
+      "ore": "ingotZircalloy"
+    },
+    "m": {
+      "item": "technocracy.foundation:membrane"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:crystallization_chamber",
+    "count": 1
+  }
+}

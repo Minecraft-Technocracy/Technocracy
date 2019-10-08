@@ -2,16 +2,16 @@
   "input": [
     {
       "fluid": "kerosene",
-      "amount": 1
+      "amount": 100
     },
     {
       "fluid": "oxygen",
-      "amount": 3
+      "amount": 300
     }
   ],
   "output": {
     "fluid": "rocket_fuel",
-    "amount": 2
+    "amount": 200
   },
   "cost": 150
 }

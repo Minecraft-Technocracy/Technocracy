@@ -1,7 +1,6 @@
 package net.cydhra.technocracy.foundation.capabilities.inventory
 
 import net.cydhra.technocracy.foundation.capabilities.AbstractDynamicHandler
-import net.cydhra.technocracy.foundation.tileentity.components.AbstractCapabilityComponent
 import net.cydhra.technocracy.foundation.tileentity.management.TEInventoryProvider
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
@@ -12,16 +11,23 @@ import net.minecraftforge.common.util.INBTSerializable
 import net.minecraftforge.items.IItemHandler
 import net.minecraftforge.items.IItemHandlerModifiable
 import net.minecraftforge.items.ItemHandlerHelper
+import kotlin.math.min
 
 
-class DynamicInventoryHandler(size: Int = 0, private val machine: TEInventoryProvider) : IItemHandler,
+class DynamicInventoryHandler(size: Int = 0, private val machine: TEInventoryProvider, val slotTypes: MutableMap<Int, InventoryType> = mutableMapOf()) : IItemHandler,
         IItemHandlerModifiable,
         INBTSerializable<NBTTagCompound>, AbstractDynamicHandler() {
 
     var stacks: NonNullList<ItemStack>
 
     init {
+
         stacks = NonNullList.withSize(size, ItemStack.EMPTY)
+
+        for (slot in 0 until size) {
+            if (!slotTypes.containsKey(slot))
+                slotTypes[slot] = InventoryType.BOTH
+        }
     }
 
     fun setSize(size: Int) {
@@ -44,10 +50,20 @@ class DynamicInventoryHandler(size: Int = 0, private val machine: TEInventoryPro
     }
 
     override fun insertItem(slot: Int, stack: ItemStack, simulate: Boolean): ItemStack {
+        return insertItem(slot, stack, simulate, false)
+    }
+
+    fun insertItem(slot: Int, stack: ItemStack, simulate: Boolean, forced: Boolean): ItemStack {
         if (stack.isEmpty)
             return ItemStack.EMPTY
 
         validateSlotIndex(slot)
+
+        if (!forced && !isItemValid(slot, stack))
+            return stack
+
+        if (!forced && slotTypes[slot] == InventoryType.OUTPUT)
+            return stack
 
         val existing = this.stacks[slot]
 
@@ -78,31 +94,38 @@ class DynamicInventoryHandler(size: Int = 0, private val machine: TEInventoryPro
     }
 
     override fun extractItem(slot: Int, amount: Int, simulate: Boolean): ItemStack {
+        return extractItem(slot, amount, simulate, false)
+    }
+
+    fun extractItem(slot: Int, amount: Int, simulate: Boolean, forced: Boolean): ItemStack {
         if (amount == 0)
             return ItemStack.EMPTY
 
         validateSlotIndex(slot)
+
+        if (!forced && slotTypes[slot] == InventoryType.INPUT)
+            return ItemStack.EMPTY
 
         val existing = this.stacks[slot]
 
         if (existing.isEmpty)
             return ItemStack.EMPTY
 
-        val toExtract = Math.min(amount, existing.maxStackSize)
+        val toExtract = min(amount, existing.maxStackSize)
 
-        if (existing.count <= toExtract) {
+        return if (existing.count <= toExtract) {
             if (!simulate) {
                 this.stacks[slot] = ItemStack.EMPTY
                 onContentsChanged(slot)
             }
-            return existing
+            existing
         } else {
             if (!simulate) {
                 this.stacks[slot] = ItemHandlerHelper.copyStackWithSize(existing, existing.count - toExtract)
                 onContentsChanged(slot)
             }
 
-            return ItemHandlerHelper.copyStackWithSize(existing, toExtract)
+            ItemHandlerHelper.copyStackWithSize(existing, toExtract)
         }
     }
 
@@ -110,8 +133,8 @@ class DynamicInventoryHandler(size: Int = 0, private val machine: TEInventoryPro
         return 64
     }
 
-    protected fun getStackLimit(slot: Int, stack: ItemStack): Int {
-        return Math.min(getSlotLimit(slot), stack.maxStackSize)
+    fun getStackLimit(slot: Int, stack: ItemStack): Int {
+        return min(getSlotLimit(slot), stack.maxStackSize)
     }
 
     override fun isItemValid(slot: Int, stack: ItemStack): Boolean {
@@ -146,19 +169,19 @@ class DynamicInventoryHandler(size: Int = 0, private val machine: TEInventoryPro
                 stacks[slot] = ItemStack(itemTags)
             }
         }
-        onLoad()
     }
 
-    protected fun validateSlotIndex(slot: Int) {
+    fun validateSlotIndex(slot: Int) {
         if (slot < 0 || slot >= stacks.size)
             throw RuntimeException("Slot " + slot + " not in valid range - [0," + stacks.size + ")")
     }
 
-    protected fun onLoad() {
-
+    fun onContentsChanged(slot: Int) {
+        markDirty(true)
+        machine.onSlotUpdate(this, slot, stacks[slot])
     }
 
-    protected fun onContentsChanged(slot: Int) {
-
+    enum class InventoryType {
+        INPUT, OUTPUT, BOTH
     }
 }

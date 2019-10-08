@@ -1,0 +1,35 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sms",
+    "pfp",
+    "iai"
+  ],
+  "key": {
+    "p": {
+      "type": "forge:ore_dict",
+      "ore": "sheetPlastic"
+    },
+    "i": {
+      "item": "technocracy.foundation:servo"
+    },
+    "a": {
+      "type": "forge:ore_dict",
+      "ore": "itemAsbestos"
+    },
+    "f": {
+      "item": "technocracy.foundation:industrial_machine_frame"
+    },
+    "s": {
+      "type": "forge:ore_dict",
+      "ore": "sheetInvar"
+    },
+    "m": {
+      "item": "technocracy.foundation:membrane"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:dissolution_chamber",
+    "count": 1
+  }
+}

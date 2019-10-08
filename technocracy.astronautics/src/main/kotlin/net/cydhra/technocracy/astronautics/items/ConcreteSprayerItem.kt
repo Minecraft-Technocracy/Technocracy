@@ -7,7 +7,7 @@ import net.cydhra.technocracy.astronautics.items.color.ConcreteSprayerColor
 import net.cydhra.technocracy.astronautics.items.general.concreteCanItem
 import net.cydhra.technocracy.foundation.blocks.color.DyeBlockColor
 import net.cydhra.technocracy.foundation.items.general.BaseItem
-import net.cydhra.technocracy.foundation.items.general.emptyCan
+import net.cydhra.technocracy.foundation.items.general.emptyCanItem
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayer
@@ -50,7 +50,7 @@ class ConcreteSprayerItem : BaseItem("concrete_sprayer", itemColor = ConcreteSpr
                 if (amount > 0) {
                     can.tagCompound = stack.tagCompound
                 } else {
-                    can = ItemStack(emptyCan)
+                    can = ItemStack(emptyCanItem)
                 }
 
                 stack.tagCompound = null
@@ -90,8 +90,6 @@ class ConcreteSprayerItem : BaseItem("concrete_sprayer", itemColor = ConcreteSpr
     }
 
     override fun getSubItems(tab: CreativeTabs, items: NonNullList<ItemStack>) {
-        super.getSubItems(tab, items)
-
         if (isInCreativeTab(tab))
             for (color in EnumDyeColor.values()) {
                 val stack = ItemStack(this, 1, 0)
@@ -130,7 +128,7 @@ class ConcreteSprayerItem : BaseItem("concrete_sprayer", itemColor = ConcreteSpr
 
         if (maxBlocks <= 0) {
             stack.tagCompound = null
-            val can = ItemStack(emptyCan)
+            val can = ItemStack(emptyCanItem)
             player.inventory.addItemStackToInventory(can)
             return EnumActionResult.FAIL
         }

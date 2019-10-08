@@ -11,6 +11,7 @@ import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandlerI
 import net.cydhra.technocracy.foundation.items.capability.ItemCapabilityWrapper
 import net.cydhra.technocracy.foundation.items.components.ItemFluidComponent
 import net.cydhra.technocracy.foundation.tileentity.TileEntityDrum
+import net.minecraft.block.Block
 import net.minecraft.block.material.Material
 import net.minecraft.block.properties.PropertyEnum
 import net.minecraft.block.state.BlockStateContainer
@@ -25,6 +26,7 @@ import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.*
 import net.minecraft.util.math.AxisAlignedBB
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.MathHelper
 import net.minecraft.util.text.TextComponentString
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
@@ -33,8 +35,6 @@ import net.minecraftforge.fluids.Fluid
 import net.minecraftforge.fluids.FluidStack
 import net.minecraftforge.fluids.FluidUtil
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler
-import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper
-import java.util.*
 
 
 class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colorMultiplier = object : IBlockColor {
@@ -62,11 +62,13 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
 
 }), IDynamicBlockItemProperty, IDynamicBlockDisplayName, IDynamicBlockPlaceBehavior, IDynamicBlockItemCapabilitiy {
 
+    companion object {
+        var DRUM_TYPE: PropertyEnum<DrumType> = PropertyEnum.create("drumtype", DrumType::class.java)
+    }
+
     override fun placeBlockAt(place: Boolean, stack: ItemStack, player: EntityPlayer, world: World, pos: BlockPos, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float, newState: IBlockState): Boolean {
         //if (!stack.hasTagCompound()) return place
         val tile = world.getTileEntity(pos) as? TileEntityDrum ?: return place
-
-        val stack = stack
 
         val cap = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)
 
@@ -98,7 +100,7 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
 
     override fun getOverrides(): Map<ResourceLocation, IItemPropertyGetter> {
         val map = mutableMapOf<ResourceLocation, IItemPropertyGetter>()
-        map[ResourceLocation("type")] = IItemPropertyGetter { stack, worldIn, entityIn ->
+        map[ResourceLocation("type")] = IItemPropertyGetter { stack, _, _ ->
             (1f / 16f) * stack.metadata.toFloat()
         }
         return map
@@ -108,24 +110,20 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
         return TileEntityDrum()
     }
 
-    companion object {
-        var DRUMTYPE: PropertyEnum<DrumType> = PropertyEnum.create("drumtype", DrumType::class.java)
-    }
-
     init {
         setHardness(1f)
     }
 
     override fun createBlockState(): BlockStateContainer {
-        return BlockStateContainer.Builder(this).add(DRUMTYPE).build()
+        return BlockStateContainer.Builder(this).add(DRUM_TYPE).build()
     }
 
     override fun getMetaFromState(state: IBlockState): Int {
-        return state.getValue(DRUMTYPE).ordinal
+        return state.getValue(DRUM_TYPE).ordinal
     }
 
     override fun getStateFromMeta(meta: Int): IBlockState {
-        return this.defaultState.withProperty(DRUMTYPE, DrumType.values()[meta])
+        return this.defaultState.withProperty(DRUM_TYPE, DrumType.values()[meta])
     }
 
     override fun getSubBlocks(itemIn: CreativeTabs, items: NonNullList<ItemStack>) {
@@ -155,6 +153,7 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
     }
 
     override fun addCollisionBoxToList(state: IBlockState, worldIn: World, pos: BlockPos, entityBox: AxisAlignedBB, collidingBoxes: MutableList<AxisAlignedBB>, entityIn: Entity?, isActualState: Boolean) {
+        @Suppress("DEPRECATION") // very funny, forge. But not helpful
         addCollisionBoxToList(pos, entityBox, collidingBoxes, boundingBox)
     }
 
@@ -183,7 +182,7 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
     }
 
     override fun initCapabilities(stack: ItemStack, nbt: NBTTagCompound?): ICapabilityProvider? {
-        return ItemCapabilityWrapper(stack, mutableMapOf("fluid" to ItemFluidComponent(DynamicFluidHandlerItem(stack, DrumType.values()[stack.metadata].amount, mutableListOf(), DynamicFluidHandler.TankType.BOTH))))
+        return ItemCapabilityWrapper(stack, mutableMapOf("fluid" to ItemFluidComponent(DynamicFluidHandlerItem(stack, DrumType.values()[MathHelper.clamp(stack.metadata, 0, DrumType.values().size - 1)].amount, mutableListOf(), DynamicFluidHandler.TankType.BOTH))))
     }
 
     enum class DrumType(val typeName: String, val amount: Int) :

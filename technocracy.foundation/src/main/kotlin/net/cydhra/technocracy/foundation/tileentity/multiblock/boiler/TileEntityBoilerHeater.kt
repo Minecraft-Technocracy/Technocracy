@@ -51,21 +51,15 @@ class TileEntityBoilerHeater : TileEntityMultiBlockPart<BoilerMultiBlock>(Boiler
                 .currentEnergy}/${energyStorageComponent.energyStorage.capacity}"))
     }
 
-    override fun writeToNBT(data: NBTTagCompound): NBTTagCompound {
-        return this.serializeNBT(super.writeToNBT(data))
-    }
-
-    override fun readFromNBT(data: NBTTagCompound) {
-        super.readFromNBT(data)
-        this.deserializeNBT(data)
-    }
-
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
-        return this.supportsCapability(capability, facing) || super.hasCapability(capability, facing)
+        return if (multiblockController != null && multiblockController!!.isAssembled && facing != null) {
+            this.supportsCapability(capability, facing) || super.hasCapability(capability, facing)
+        } else false
     }
 
     override fun <T : Any?> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
-        return (this.castCapability(capability, facing) ?: super.getCapability(capability, facing))
+        return if (this.hasCapability(capability, facing)) super.getCapability(capability, facing)
                 ?: DynamicEnergyStorage(0, 1, extractionLimit = 0) as T
+        else null
     }
 }

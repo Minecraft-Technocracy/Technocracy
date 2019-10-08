@@ -1,0 +1,25 @@
+{
+  "variants": {
+    "color=white": { "model": "technocracy.astronautics:rocket_storage" },
+    "color=orange": { "model": "technocracy.astronautics:rocket_storage" },
+    "color=magenta": { "model": "technocracy.astronautics:rocket_storage" },
+    "color=light_blue": { "model": "technocracy.astronautics:rocket_storage" },
+    "color=yellow": { "model": "technocracy.astronautics:rocket_storage" },
+    "color=lime": { "model": "technocracy.astronautics:rocket_storage" },
+    "color=pink": { "model": "technocracy.astronautics:rocket_storage" },
+    "color=gray": { "model": "technocracy.astronautics:rocket_storage" },
+    "color=silver": { "model": "technocracy.astronautics:rocket_storage" },
+    "color=cyan": { "model": "technocracy.astronautics:rocket_storage" },
+    "color=purple": { "model": "technocracy.astronautics:rocket_storage" },
+    "color=blue": { "model": "technocracy.astronautics:rocket_storage" },
+    "color=brown": { "model": "technocracy.astronautics:rocket_storage" },
+    "color=green": { "model": "technocracy.astronautics:rocket_storage" },
+    "color=red": { "model": "technocracy.astronautics:rocket_storage" },
+    "color=black": { "model": "technocracy.astronautics:rocket_storage" },
+    "normal": [
+      {
+        "model": "technocracy.astronautics:rocket_storage"
+      }
+    ]
+  }
+}

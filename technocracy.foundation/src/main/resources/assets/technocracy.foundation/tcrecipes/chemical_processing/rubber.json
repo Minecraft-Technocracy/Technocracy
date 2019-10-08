@@ -1,7 +1,7 @@
 {
   "input": {
     "type": "forge:ore_dict",
-    "ore": "itemSodiumAcrylate"
+    "ore": "dustSodiumAcrylate"
   },
   "fluid": {
     "fluid": "styrene",

@@ -1,0 +1,35 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "brb",
+    "imi",
+    "dfd"
+  ],
+  "key": {
+    "f": {
+      "item": "minecraft:furnace"
+    },
+    "m": {
+      "item": "technocracy.foundation:machine_frame"
+    },
+    "b": {
+      "item": "minecraft:brick"
+    },
+    "r": {
+      "type": "forge:ore_dict",
+      "ore": "dustRedstone"
+    },
+    "i": {
+      "type": "forge:ore_dict",
+      "ore": "sheetIron"
+    },
+    "d": {
+      "type": "forge:ore_dict",
+      "ore": "ingotInvar"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:electric_furnace",
+    "count": 1
+  }
+}

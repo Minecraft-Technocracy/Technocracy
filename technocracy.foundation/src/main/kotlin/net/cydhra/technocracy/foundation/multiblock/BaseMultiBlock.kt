@@ -1,11 +1,15 @@
 package net.cydhra.technocracy.foundation.multiblock
 
 import it.zerono.mods.zerocore.api.multiblock.IMultiblockPart
+import it.zerono.mods.zerocore.api.multiblock.MultiblockControllerBase
 import it.zerono.mods.zerocore.api.multiblock.rectangular.RectangularMultiblockControllerBase
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import it.zerono.mods.zerocore.api.multiblock.validation.ValidationError
+import it.zerono.mods.zerocore.lib.block.ModTileEntity
+import net.cydhra.technocracy.foundation.blocks.api.PlainMultiBlockPartBlock
 import net.cydhra.technocracy.foundation.tileentity.components.AbstractComponent
 import net.minecraft.block.state.IBlockState
+import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.text.TextComponentTranslation
 import net.minecraft.world.World
@@ -56,6 +60,42 @@ abstract class BaseMultiBlock(
 
     override fun getMaximumZSize(): Int {
         return this.maximumSizeXZ
+    }
+
+    override fun onMachineAssembled() {
+        forceStructureUpdate(WORLD)
+    }
+
+    override fun onMachineRestored() {
+        forceStructureUpdate(WORLD)
+    }
+
+    override fun onMachineDisassembled() {
+        forceStructureUpdate(WORLD)
+    }
+
+    override fun onBlockAdded(p0: IMultiblockPart?) {
+    }
+
+    override fun onBlockRemoved(p0: IMultiblockPart?) {
+    }
+
+    override fun onAssimilate(p0: MultiblockControllerBase?) {
+    }
+
+    override fun onAttachedPartWithMultiblockData(p0: IMultiblockPart?, p1: NBTTagCompound?) {
+    }
+
+    override fun syncDataFrom(p0: NBTTagCompound?, p1: ModTileEntity.SyncReason?) {
+    }
+
+    override fun onAssimilated(p0: MultiblockControllerBase?) {
+    }
+
+    override fun syncDataTo(p0: NBTTagCompound?, p1: ModTileEntity.SyncReason?) {
+    }
+
+    override fun onMachinePaused() {
     }
 
     abstract fun getComponents(): MutableList<Pair<String, AbstractComponent>>
@@ -144,5 +184,31 @@ abstract class BaseMultiBlock(
          */
         data class AssemblyRule<T : IMultiblockPart>(val list: MutableList<T>, val matches: (Any) -> Boolean,
                                                      val range: IntRange?, val unlocalizedBlock: String)
+    }
+
+    override fun forceStructureUpdate(world: World) {
+        //TODO optimize, not all blocks need an update, only the ones with outgoing capabilitys (maybe add variable in tiles)
+        val minCoord = this.minimumCoord
+        val maxCoord = this.maximumCoord
+        val minX = minCoord.x
+        val minY = minCoord.y
+        val minZ = minCoord.z
+        val maxX = maxCoord.x
+        val maxY = maxCoord.y
+        val maxZ = maxCoord.z
+
+        for (x in minX..maxX) {
+            for (y in minY..maxY) {
+                for (z in minZ..maxZ) {
+                    val pos = BlockPos(x, y, z)
+                    val state = world.getBlockState(pos)
+                    if(state.block is PlainMultiBlockPartBlock<*>) {
+                        //send actual block update not just render update
+                        world.markAndNotifyBlock(pos, world.getChunkFromBlockCoords(pos), state, state, 3)
+                    }
+                }
+            }
+        }
+
     }
 }

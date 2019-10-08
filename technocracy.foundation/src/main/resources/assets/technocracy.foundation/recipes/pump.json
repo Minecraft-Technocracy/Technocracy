@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " b ",
+    "zpz",
+    "tst"
+  ],
+  "key": {
+    "b": {
+      "item": "technocracy.foundation:battery"
+    },
+    "p": {
+      "item": "minecraft:piston"
+    },
+    "s": {
+      "item": "technocracy.foundation:servo"
+    },
+    "t": {
+      "type": "forge:ore_dict",
+      "ore": "sheetSteel"
+    },
+    "z": {
+      "type": "forge:ore_dict",
+      "ore": "ingotZircalloy"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:pump",
+    "count": 1
+  }
+}

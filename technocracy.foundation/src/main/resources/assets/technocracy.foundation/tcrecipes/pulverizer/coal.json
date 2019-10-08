@@ -1,0 +1,12 @@
+{
+  "input": {
+    "type": "forge:ore_dict",
+    "ore": "oreCoal"
+  },
+  "output": {
+    "item": "minecraft:coal",
+    "data": 0,
+    "count": 2
+  },
+  "cost": 40
+}

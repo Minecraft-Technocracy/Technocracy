@@ -1,6 +1,9 @@
 package net.cydhra.technocracy.foundation
 
+import net.cydhra.technocracy.foundation.commands.ClearTemplateCommand
 import net.cydhra.technocracy.foundation.commands.GenerateTemplateCommand
+import net.cydhra.technocracy.foundation.commands.PasteTemplateCommand
+import net.cydhra.technocracy.foundation.data.general.DataManager
 import net.cydhra.technocracy.foundation.integration.top.TOPIntegration
 import net.cydhra.technocracy.foundation.multiblock.MultiBlockPhysics
 import net.cydhra.technocracy.foundation.proxy.CommonProxy
@@ -12,10 +15,7 @@ import net.minecraftforge.fml.common.Loader
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.Mod.EventHandler
 import net.minecraftforge.fml.common.SidedProxy
-import net.minecraftforge.fml.common.event.FMLInitializationEvent
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent
+import net.minecraftforge.fml.common.event.*
 import org.apache.logging.log4j.Logger
 
 @Mod(modid = TCFoundation.MODID, name = TCFoundation.NAME, version = TCFoundation.VERSION,
@@ -102,6 +102,13 @@ object TCFoundation {
     fun serverStarting(start: FMLServerStartingEvent) {
         if (start.server.isSinglePlayer) {
             start.registerServerCommand(GenerateTemplateCommand())
+            start.registerServerCommand(ClearTemplateCommand())
+            start.registerServerCommand(PasteTemplateCommand())
         }
+    }
+
+    @Mod.EventHandler
+    fun serverStarted(event: FMLServerStartedEvent) {
+        DataManager.init()
     }
 }

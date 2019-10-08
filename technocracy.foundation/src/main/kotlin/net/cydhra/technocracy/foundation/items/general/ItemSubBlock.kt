@@ -1,11 +1,9 @@
 package net.cydhra.technocracy.foundation.items.general
 
-import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockDisplayName
-import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockItemProperty
-import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockPlaceBehavior
-import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockItemCapabilitiy
+import net.cydhra.technocracy.foundation.blocks.util.*
 import net.minecraft.block.Block
 import net.minecraft.block.state.IBlockState
+import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemBlock
 import net.minecraft.item.ItemStack
@@ -13,8 +11,10 @@ import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.NonNullList
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.text.translation.I18n
 import net.minecraft.world.World
 import net.minecraftforge.common.capabilities.ICapabilityProvider
+import java.lang.StringBuilder
 
 
 class ItemSubBlock(block: Block) : ItemBlock(block) {
@@ -27,7 +27,7 @@ class ItemSubBlock(block: Block) : ItemBlock(block) {
     }
 
     override fun initCapabilities(stack: ItemStack, nbt: NBTTagCompound?): ICapabilityProvider? {
-        if(block is IDynamicBlockItemCapabilitiy) {
+        if (block is IDynamicBlockItemCapabilitiy) {
             return block.initCapabilities(stack, nbt)
         }
         return super.initCapabilities(stack, nbt)
@@ -35,8 +35,12 @@ class ItemSubBlock(block: Block) : ItemBlock(block) {
 
     override fun getHasSubtypes(): Boolean {
         val list = NonNullList.create<ItemStack>()
-        getSubItems(this.creativeTab!!, list)
+        getSubItems(CreativeTabs.SEARCH, list)
         return list.size != 1
+    }
+
+    override fun isInCreativeTab(targetTab: CreativeTabs): Boolean {
+        return super.isInCreativeTab(targetTab) || (block is IBlockMultipleCreativeTabs && block.isValidCreativeTab(targetTab))
     }
 
     override fun getMetadata(damage: Int): Int {
@@ -51,11 +55,19 @@ class ItemSubBlock(block: Block) : ItemBlock(block) {
         return super.getUnlocalizedName(stack)
     }
 
+    override fun getItemStackDisplayName(stack: ItemStack): String {
+        val builder = StringBuilder()
+        for (str in (getUnlocalizedName(stack) + ".name").split(" ")) {
+            builder.append(I18n.translateToLocal(str)).append(" ")
+        }
+        return builder.trim().toString()
+    }
+
     override fun placeBlockAt(stack: ItemStack, player: EntityPlayer, world: World, pos: BlockPos, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float, newState: IBlockState): Boolean {
         val place = super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState)
 
         if (block is IDynamicBlockPlaceBehavior) {
-            return block.placeBlockAt(place,stack, player, world, pos, side, hitX, hitY, hitZ, newState)
+            return block.placeBlockAt(place, stack, player, world, pos, side, hitX, hitY, hitZ, newState)
         }
 
         return place

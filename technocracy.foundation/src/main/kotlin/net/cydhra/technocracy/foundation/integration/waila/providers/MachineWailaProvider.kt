@@ -51,20 +51,14 @@ class MachineWailaProvider : IWailaDataProvider {
                                         componentTag.getString("FluidName")))
                             }
                         }
-                        ComponentType.PIPE_TYPES -> {
-                        }
-                        ComponentType.HEAT -> {
-                        }
-                        ComponentType.UPGRADES -> {
-                        }
-                        ComponentType.REDSTONE_MODE -> {
-                        }
                         ComponentType.INVENTORY -> {
                             val items = componentTag.getTagList("Items", Constants.NBT.TAG_COMPOUND)
                             items.forEach {
                                 val compound = it as NBTTagCompound
                                 tooltip.add(SpecialChars.getRenderString("${TCFoundation.MODID}.item", compound.getString("id"), compound.getInteger("Count").toString()))
                             }
+                        }
+                        else -> {
                         }
                     }
                 }
@@ -75,7 +69,7 @@ class MachineWailaProvider : IWailaDataProvider {
     override fun getNBTData(player: EntityPlayerMP, te: TileEntity, tag: NBTTagCompound, world: World,
                             pos: BlockPos): NBTTagCompound {
         if (te is TileEntityMultiBlockPart<*>) {
-            if(te.multiblockController == null) return tag
+            if(te.multiblockController == null || !te.multiblockController!!.isAssembled) return tag
             val compound = NBTTagCompound()
             val components = NBTTagList()
             (te.multiblockController as BaseMultiBlock).getComponents()

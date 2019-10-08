@@ -1,10 +1,11 @@
 package net.cydhra.technocracy.foundation.blocks
 
 import net.cydhra.technocracy.foundation.blocks.api.AbstractTileEntityBlock
+import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.cydhra.technocracy.foundation.items.FacadeItem
+import net.cydhra.technocracy.foundation.items.PipeItem
+import net.cydhra.technocracy.foundation.items.WrenchItem
 import net.cydhra.technocracy.foundation.items.general.pipeItem
-import net.cydhra.technocracy.foundation.pipes.Network
-import net.cydhra.technocracy.foundation.pipes.types.PipeType
 import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
 import net.cydhra.technocracy.foundation.util.facade.FacadeStack
 import net.cydhra.technocracy.foundation.util.facade.extras.workbench.InterfaceFacadeCraftingTable
@@ -42,9 +43,7 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import team.chisel.ctm.api.IFacade
 import java.util.function.BiFunction
-import java.util.function.Function
 import java.util.function.Supplier
-import java.util.stream.Stream
 import kotlin.math.max
 
 
@@ -77,17 +76,27 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
     }
 
     override fun createNewTileEntity(worldIn: World, meta: Int): TileEntity? {
-        return TileEntityPipe(meta)
+        return TileEntityPipe()
     }
 
     override fun onBlockDestroyedByExplosion(worldIn: World, pos: BlockPos, explosionIn: Explosion) {
-        Network.removeNodeInEveryNetwork(pos, worldIn)
         super.onBlockDestroyedByExplosion(worldIn, pos, explosionIn)
     }
 
     override fun onBlockDestroyedByPlayer(worldIn: World, pos: BlockPos, state: IBlockState) {
-        Network.removeNodeInEveryNetwork(pos, worldIn)
         super.onBlockDestroyedByPlayer(worldIn, pos, state)
+    }
+
+    override fun removedByPlayer(state: IBlockState, world: World, pos: BlockPos, player: EntityPlayer, willHarvest: Boolean): Boolean {
+        val tileEntity = world.getTileEntity(pos) as TileEntityPipe
+        tileEntity.removeTileEntity()
+        return super.removedByPlayer(state, world, pos, player, willHarvest)
+    }
+
+    override fun onBlockExploded(world: World, pos: BlockPos, explosion: Explosion) {
+        val tileEntity = world.getTileEntity(pos) as TileEntityPipe
+        tileEntity.removeTileEntity()
+        super.onBlockExploded(world, pos, explosion)
     }
 
     /**
@@ -97,16 +106,6 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
         for (type in PipeType.values()) {
             items.add(ItemStack(this, 1, type.ordinal))
         }
-    }
-
-    override fun onNeighborChange(world: IBlockAccess, pos: BlockPos, neighbor: BlockPos) {
-        val wld = world as World
-        val tileEntity = wld.getTileEntity(pos) as TileEntityPipe
-
-        if (!wld.isRemote) {
-            tileEntity.calculateIOPorts()
-        }
-
     }
 
     @SideOnly(Side.CLIENT)
@@ -137,13 +136,58 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
             }
         }
 
+        val stack = playerIn.getHeldItem(hand)
+
+        //TODO wrench check
+        if (playerIn.isSneaking && stack.item is WrenchItem) {
+            val mode = (stack.item as WrenchItem).getWrenchMode(stack)
+
+            if (mode.allowedPipe != null) {
+                if (tile.hasPipeType(mode.allowedPipe)) {
+                    tile.removePipeType(mode.allowedPipe)
+                    spawnAsEntity(worldIn, pos, ItemStack(pipeItem, 1, mode.allowedPipe.ordinal))
+                }
+                return true
+            }
+
+            if (mode == WrenchItem.WrenchMode.DEFAULT) {
+                val attrib = playerIn.getEntityAttribute(EntityPlayer.REACH_DISTANCE).attributeValue
+                val dist = if (playerIn.isCreative) attrib else attrib - 0.5
+
+                val raytrace = playerIn.rayTrace(dist, 1.0f)
+
+                if (raytrace == null || raytrace.typeOfHit == RayTraceResult.Type.MISS)
+                    return false
+
+                val lookingat = getPickBlock(state, raytrace, worldIn, pos, playerIn)
+
+                if (lookingat == null || lookingat.isEmpty)
+                    return false
+
+                if (lookingat.item is FacadeItem) {
+                    val startPos = Vec3d(playerIn.posX, playerIn.posY + playerIn.getEyeHeight(), playerIn.posZ)
+                    val endPos = startPos.addVector(playerIn.lookVec.x * dist, playerIn.lookVec.y * dist, playerIn.lookVec.z * dist)
+                    val triple = rayTraceBestBB(startPos, endPos, tile.getPipeModelParts(), pos)
+                    tile.removeFacadeOnSide(triple!!.first.first)
+                } else if (lookingat.item is PipeItem) {
+                    tile.removePipeType(PipeType.values()[lookingat.metadata])
+                }
+
+                spawnAsEntity(worldIn, pos, lookingat)
+
+                return true
+            }
+        }
+
         if (!playerIn.isSneaking && playerIn.inventory.getCurrentItem().item == Item.getItemFromBlock(this)) return true
+
+
+
 
         if (playerIn.isSneaking && playerIn.inventory.getCurrentItem().isEmpty && hand == EnumHand.MAIN_HAND) {
 
             //todo raytrace
             //todo chck wrench
-            if (!worldIn.isRemote) (worldIn.getTileEntity(pos) as TileEntityPipe).rotateIO()
             return false
         }
 
@@ -196,8 +240,7 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
             if (triple.second != null) {
                 return ItemStack(pipeItem, 1, triple.second!!.ordinal)
             } else {
-                val raytrace = collisionRayTrace(state, world, pos, startPos, endPos)
-                return tile.getFacades()[raytrace!!.sideHit] ?: ItemStack.EMPTY
+                return tile.getFacades()[triple.first.first] ?: ItemStack.EMPTY
             }
         }
         return super.getPickBlock(state, target, world, pos, player)
@@ -333,7 +376,7 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
     }
 
     override fun canPlaceBlockOnSide(world: World, pos: BlockPos, side: EnumFacing): Boolean {
-        val tile = world.getTileEntity(pos) as? TileEntityPipe ?: return false
+        val tile = world.getTileEntity(pos) as? TileEntityPipe ?: return true
         val pair = getBlockOnFacing(tile, side) ?: return false
         return pair.first.canPlaceBlockOnSide(world, pos, side)
     }
@@ -368,5 +411,12 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
         val tile = world.getTileEntity(pos) as? TileEntityPipe ?: return defaultState
         val pair = side?.let { getBlockOnFacing(tile, it) } ?: return defaultState
         return pair.first.getStateFromMeta(pair.second.stack.itemDamage)
+    }
+
+    override fun neighborChanged(state: IBlockState, worldIn: World, pos: BlockPos, blockIn: Block, fromPos: BlockPos) {
+        val tileEntity = worldIn.getTileEntity(pos) as TileEntityPipe
+        tileEntity.onNeighborChange(worldIn, pos, fromPos)
+
+        super.neighborChanged(state, worldIn, pos, blockIn, fromPos)
     }
 }

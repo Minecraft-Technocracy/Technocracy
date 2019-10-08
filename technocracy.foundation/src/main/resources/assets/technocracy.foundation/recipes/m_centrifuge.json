@@ -1,0 +1,35 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "grg",
+    "iml",
+    "gsg"
+  ],
+  "key": {
+    "m": {
+      "item": "technocracy.foundation:advanced_machine_frame"
+    },
+    "r": {
+      "type": "forge:ore_dict",
+      "ore": "dustRedstone"
+    },
+    "s": {
+      "item": "technocracy.foundation:servo"
+    },
+    "l": {
+      "item": "minecraft:glass_bottle"
+    },
+    "g": {
+      "type": "forge:ore_dict",
+      "ore": "gearCopper"
+    },
+    "i": {
+      "type": "forge:ore_dict",
+      "ore": "ingotIron"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:centrifuge",
+    "count": 1
+  }
+}

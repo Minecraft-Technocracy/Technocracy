@@ -37,6 +37,8 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
         maximumSizeY = 20,
         world = world
 ) {
+    override fun updateClient() {
+    }
 
     var controllerTileEntity: TileEntityCapacitorController? = null
 
@@ -261,42 +263,6 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
 
     override fun getMinimumNumberOfBlocksForAssembledMachine(): Int {
         return 110
-    }
-
-    override fun onBlockAdded(p0: IMultiblockPart?) {
-    }
-
-    override fun updateClient() {
-    }
-
-    override fun onBlockRemoved(p0: IMultiblockPart?) {
-    }
-
-    override fun onAssimilate(p0: MultiblockControllerBase?) {
-    }
-
-    override fun onAttachedPartWithMultiblockData(p0: IMultiblockPart?, p1: NBTTagCompound?) {
-    }
-
-    override fun onMachineAssembled() {
-    }
-
-    override fun syncDataFrom(p0: NBTTagCompound?, p1: ModTileEntity.SyncReason?) {
-    }
-
-    override fun onAssimilated(p0: MultiblockControllerBase?) {
-    }
-
-    override fun onMachineRestored() {
-    }
-
-    override fun syncDataTo(p0: NBTTagCompound?, p1: ModTileEntity.SyncReason?) {
-    }
-
-    override fun onMachinePaused() {
-    }
-
-    override fun onMachineDisassembled() {
     }
 }
 

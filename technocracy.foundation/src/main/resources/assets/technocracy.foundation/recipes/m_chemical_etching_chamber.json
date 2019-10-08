@@ -1,0 +1,39 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "bpb",
+    "ama",
+    "trt"
+  ],
+  "key": {
+    "a": {
+      "type": "forge:ore_dict",
+      "ore": "itemAsbestos"
+    },
+    "m": {
+      "item": "technocracy.foundation:industrial_machine_frame"
+    },
+    "r": {
+      "type": "forge:ore_dict",
+      "ore": "itemRubber"
+    },
+    "l": {
+      "type": "forge:ore_dict",
+      "ore": "ingotLightAlloy"
+    },
+    "t": {
+      "type": "forge:ore_dict",
+      "ore": "ingotZircalloy"
+    },
+    "b": {
+      "item": "technocracy.foundation:membrane"
+    },
+    "p": {
+      "item": "technocracy.foundation:coil"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:chemical_etching_chamber",
+    "count": 1
+  }
+}

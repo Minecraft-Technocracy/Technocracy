@@ -1,0 +1,21 @@
+{
+  "input": [
+    {
+      "type": "forge:ore_dict",
+      "ore": "ingotTin"
+    },
+    {
+      "type": "forge:ore_dict",
+      "ore": "ingotIron"
+    },
+    {
+      "type": "forge:ore_dict",
+      "ore": "ingotZirconium"
+    }
+  ],
+  "output": {
+    "item": "technocracy.foundation:ingot.zircalloy",
+    "count": 1
+  },
+  "cost": 120
+}

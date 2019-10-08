@@ -1,0 +1,15 @@
+{
+  "input": {
+    "type": "forge:ore_dict",
+    "ore": "blockLead"
+  },
+  "fluid": {
+    "fluid": "oxygen",
+    "amount": 1000
+  },
+  "output": {
+    "item": "technocracy.foundation:lead_oxide_block",
+    "count": 1
+  },
+  "cost": 60
+}

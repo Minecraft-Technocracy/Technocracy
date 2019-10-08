@@ -48,4 +48,7 @@ class TileEntityChemicalProcessingChamber : MachineTileEntity(), TEInventoryProv
             recipe.getInput().any { it.test(stack) }
         }
     }
+
+    override fun onSlotUpdate(inventory: DynamicInventoryHandler, slot: Int, stack: ItemStack) {
+    }
 }

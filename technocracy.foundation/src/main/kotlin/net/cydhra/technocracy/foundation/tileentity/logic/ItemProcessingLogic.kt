@@ -42,7 +42,11 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
      */
     private var processingProgress: Int = 0
 
-    override fun update() {
+    override fun preProcessing(): Boolean {
+        return true
+    }
+
+    override fun processing() {
         // collect input item stacks
         val inputItems = if (inputInventory != null) {
             (0 until inputInventory.slots).map(inputInventory::getStackInSlot).filter { !it.isEmpty }
@@ -82,9 +86,9 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
                 // check if the output fits into the output slots
                 if (recipeOutput.zip(0 until (this.outputInventory?.slots ?: 0))
                                 .all { (outputStack, outputSlot) ->
-                                    this.outputInventory?.insertItem(outputSlot, outputStack, simulate = true) == ItemStack.EMPTY
+                                    this.outputInventory?.insertItem(outputSlot, outputStack, simulate = true, forced = true) == ItemStack.EMPTY
                                 }
-                        && recipeFluidOutput.zip(0 until this.outputFluidSlots.size)
+                        && recipeFluidOutput.zip(this.outputFluidSlots.indices)
                                 .all { (fluidStack, fluidSlot) ->
                                     this.outputFluidSlots[fluidSlot].fill(fluidStack, false) == fluidStack.amount
                                 }) {
@@ -93,7 +97,7 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
                     recipeInputRequirements.forEach { ingredient ->
                         for (slot in (0 until (this.inputInventory?.slots ?: 0))) {
                             if (ingredient.test(inputInventory?.getStackInSlot(slot))) {
-                                inputInventory?.extractItem(slot, 1, false)
+                                inputInventory?.extractItem(slot, 1, simulate = false, forced = true)
                                 break
                             }
                         }
@@ -102,7 +106,7 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
                     // consume input fluids
                     val recipeFluidRequirements = this.currentRecipe!!.getFluidInput()
                     recipeFluidRequirements.forEach { ingredient ->
-                        for (slot in (0 until this.inputFluidSlots.size)) {
+                        for (slot in this.inputFluidSlots.indices) {
                             if (ingredient.isFluidEqual(this.inputFluidSlots[slot].currentFluid)) {
                                 inputFluidSlots[slot].drain(ingredient, true)
                             }
@@ -111,12 +115,11 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
 
                     // insert output items
                     recipeOutput.zip(0 until (this.outputInventory?.slots ?: 0)).forEach { (outputStack, outputSlot) ->
-                        this.outputInventory!!.insertItem(outputSlot, outputStack.copy(), false)
+                        this.outputInventory!!.insertItem(outputSlot, outputStack.copy(), simulate = false, forced = true)
                     }
 
                     // insert output fluids
-                    // TODO there is a bug in here probably, since centrifuge recipe output is doubled
-                    recipeFluidOutput.zip(0 until this.outputFluidSlots.size).forEach { (fluidStack, outputSlot) ->
+                    recipeFluidOutput.zip(this.outputFluidSlots.indices).forEach { (fluidStack, outputSlot) ->
                         this.outputFluidSlots[outputSlot].fill(fluidStack, true)
                     }
 
@@ -127,6 +130,10 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
         }
 
         progress.progress = if(activeRecipe != null) ((processingProgress.toFloat() / activeRecipe.processingCost.toFloat()) * 100f).toInt() else 0
+    }
+
+    override fun postProcessing(wasProcessing: Boolean) {
+
     }
 
     /**

@@ -8,7 +8,9 @@ import net.cydhra.technocracy.foundation.client.model.customModel.connector.Mach
 import net.cydhra.technocracy.foundation.client.model.facade.FacadeItemModel
 import net.cydhra.technocracy.foundation.client.model.pipe.PipeItemModel
 import net.cydhra.technocracy.foundation.client.model.pipe.PipeModel
+import net.cydhra.technocracy.foundation.client.model.tank.MutliBlockTankFluidModel
 import net.cydhra.technocracy.foundation.client.technocracyCreativeTabs
+import net.cydhra.technocracy.foundation.conduits.ConduitNetwork
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.items.general.*
 import net.cydhra.technocracy.foundation.liquids.general.*
@@ -19,7 +21,6 @@ import net.cydhra.technocracy.foundation.network.componentsync.ClientComponentUp
 import net.cydhra.technocracy.foundation.network.componentsync.GuiUpdateListener
 import net.cydhra.technocracy.foundation.network.componentsync.MachineInfoPacket
 import net.cydhra.technocracy.foundation.oresystems.*
-import net.cydhra.technocracy.foundation.pipes.Network
 import net.cydhra.technocracy.foundation.potions.PotionManager
 import net.cydhra.technocracy.foundation.potions.oilyEffect
 import net.cydhra.technocracy.foundation.tileentity.TileEntityDrum
@@ -43,8 +44,11 @@ import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEnti
 import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryHeater
 import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryInput
 import net.cydhra.technocracy.foundation.tileentity.multiblock.refinery.TileEntityRefineryOutput
+import net.cydhra.technocracy.foundation.tileentity.multiblock.tank.TileEntityTankMultiBlockPart
+import net.cydhra.technocracy.foundation.tileentity.multiblock.tank.TileEntityTankPort
 import net.cydhra.technocracy.foundation.world.gen.OilLakeGen
 import net.cydhra.technocracy.foundation.world.gen.OilSandGen
+import net.cydhra.technocracy.foundation.world.gen.WorldGenDeco
 import net.minecraft.client.Minecraft
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.MinecraftForge
@@ -81,6 +85,7 @@ open class CommonProxy {
                 niobiumSystem,
                 silverSystem,
                 tinSystem,
+                zirconiumSystem,
                 ironSystem,
                 goldSystem)
 
@@ -92,12 +97,12 @@ open class CommonProxy {
 
     open fun preInit() {
         MinecraftForge.EVENT_BUS.register(tileEntityManager)
-        MinecraftForge.EVENT_BUS.register(Network)
         MinecraftForge.EVENT_BUS.register(blockManager)
         MinecraftForge.EVENT_BUS.register(fluidManager)
         MinecraftForge.EVENT_BUS.register(itemManager)
         MinecraftForge.EVENT_BUS.register(GuiUpdateListener())
         MinecraftForge.EVENT_BUS.register(PotionManager)
+        MinecraftForge.EVENT_BUS.register(ConduitNetwork)
 
         materialSystems.forEach { it.preInit(it, blockManager, itemManager, fluidManager) }
 
@@ -109,11 +114,9 @@ open class CommonProxy {
         fluidManager.registerFluid(propeneFluid)
         fluidManager.registerFluid(acrylicAcidFluid)
         fluidManager.registerFluid(benzeneFluid)
-        fluidManager.registerFluid(phenolFluid)
         fluidManager.registerFluid(keroseneFluid)
         fluidManager.registerFluid(rocketFuelFluid)
         fluidManager.registerFluid(propyleneOxideFluid)
-        fluidManager.registerFluid(propyleneGlycolFluid)
         fluidManager.registerFluid(chlorineFluid)
         fluidManager.registerFluid(styreneFluid)
         fluidManager.registerFluid(cryogenicGelFluid)
@@ -126,6 +129,11 @@ open class CommonProxy {
         fluidManager.registerFluid(silicaFluid)
         fluidManager.registerFluid(steamFluid)
         fluidManager.registerFluid(drossFluid)
+        fluidManager.registerFluid(brine)
+        fluidManager.registerFluid(lithiumChloride)
+        fluidManager.registerFluid(aqueousLithium)
+        fluidManager.registerFluid(aqueousSodiumAcrylate)
+        fluidManager.registerFluid(glue)
 
         blockManager.prepareBlocksForRegistration(alloySmelteryBlock, MachineConnectorModel())
         blockManager.prepareBlocksForRegistration(centrifugeBlock, MachineConnectorModel())
@@ -171,16 +179,26 @@ open class CommonProxy {
         blockManager.prepareBlocksForRegistration(leadBlock)
         blockManager.prepareBlocksForRegistration(leadOxideBlock)
 
+        blockManager.prepareBlocksForRegistration(tankWallBlock, MutliBlockTankFluidModel())
+        blockManager.prepareBlocksForRegistration(tankIOBlock, MutliBlockTankFluidModel())
+        blockManager.prepareBlocksForRegistration(tankGlassBlock, MutliBlockTankFluidModel())
+
         blockManager.prepareBlocksForRegistration(oilSandBlock)
         blockManager.prepareBlocksForRegistration(oilStone)
         blockManager.prepareBlocksForRegistration(oilBlock)
         blockManager.prepareBlocksForRegistration(drum)
+        blockManager.prepareBlocksForRegistration(leadGlassPaneBlock)
 
         blockManager.prepareBlocksForRegistration(sulfuricAcidBlock)
 
         blockManager.prepareBlocksForRegistration(pipe, PipeModel())
+        blockManager.prepareBlocksForRegistration(chrysotileBlock)
+        blockManager.prepareBlocksForRegistration(asbestosBlock)
+        blockManager.prepareBlocksForRegistration(saltBlock)
 
         itemManager.prepareItemForRegistration(machineFrameItem)
+        itemManager.prepareItemForRegistration(advancedMachineFrameItem)
+        itemManager.prepareItemForRegistration(industrialMachineFrameItem)
         itemManager.prepareItemForRegistration(coalDustItem)
         itemManager.prepareItemForRegistration(sulfurItem)
         itemManager.prepareItemForRegistration(batteryItem)
@@ -190,15 +208,24 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(saltItem)
         itemManager.prepareItemForRegistration(sodiumAcrylateItem)
         itemManager.prepareItemForRegistration(rubberItem)
-        itemManager.prepareItemForRegistration(calciumAcetateItem)
-        itemManager.prepareItemForRegistration(phenoplastItem)
         itemManager.prepareItemForRegistration(polyacrylateItem)
         itemManager.prepareItemForRegistration(polypropyleneItem)
         itemManager.prepareItemForRegistration(polystyreneItem)
         itemManager.prepareItemForRegistration(nanotubesItem)
         itemManager.prepareItemForRegistration(mirrorItem)
         itemManager.prepareItemForRegistration(polishedMirrorItem)
-        itemManager.prepareItemForRegistration(emptyCan)
+        itemManager.prepareItemForRegistration(emptyCanItem)
+        itemManager.prepareItemForRegistration(wrenchItem)
+        itemManager.prepareItemForRegistration(circuitBoardItem)
+        itemManager.prepareItemForRegistration(glueBallItem)
+        itemManager.prepareItemForRegistration(asbestosItem)
+
+        itemManager.prepareItemForRegistration(membraneItem)
+        itemManager.prepareItemForRegistration(ironRodItem)
+        itemManager.prepareItemForRegistration(coilItem)
+        itemManager.prepareItemForRegistration(servoItem)
+        itemManager.prepareItemForRegistration(polyfibreItem)
+        itemManager.prepareItemForRegistration(pumpItem)
 
         itemManager.prepareItemForRegistration(invarItem)
         itemManager.prepareItemForRegistration(siliconBronzeItem)
@@ -209,13 +236,17 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(lightAlloyItem)
         itemManager.prepareItemForRegistration(toughAlloyItem)
 
+        itemManager.prepareItemForRegistration(invarSheetItem)
+        itemManager.prepareItemForRegistration(steelSheetItem)
+        itemManager.prepareItemForRegistration(steelGearItem)
+
         itemManager.prepareItemForRegistration(pipeItem, PipeItemModel())
         itemManager.prepareItemForRegistration(facadeItem, FacadeItemModel())
 
         if (!Minecraft.getMinecraft().isSingleplayer) {
             //Dev tools
-            itemManager.prepareItemForRegistration(structureMarker)
-            MinecraftForge.EVENT_BUS.register(structureMarker)
+            itemManager.prepareItemForRegistration(structureMarkerItem)
+            MinecraftForge.EVENT_BUS.register(structureMarkerItem)
         }
 
         tileEntityManager.prepareTileEntityForRegistration(TileEntityAlloySmeltery::class)
@@ -255,6 +286,9 @@ open class CommonProxy {
         tileEntityManager.prepareTileEntityForRegistration(TileEntityCapacitorEnergyPort::class)
         tileEntityManager.prepareTileEntityForRegistration(TileEntityMultiBlockPartCapacitor::class)
 
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityTankMultiBlockPart::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityTankPort::class)
+
         tileEntityManager.prepareTileEntityForRegistration(TileEntityDrum::class)
 
         //ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPipe::class.java, PipeRenderer())
@@ -263,6 +297,7 @@ open class CommonProxy {
 
         GameRegistry.registerWorldGenerator(OilLakeGen(), 0)
         GameRegistry.registerWorldGenerator(OilSandGen(), 0)
+        GameRegistry.registerWorldGenerator(WorldGenDeco(), 0)
 
         NetworkRegistry.INSTANCE.registerGuiHandler(TCFoundation, TCGuiHandler())
 

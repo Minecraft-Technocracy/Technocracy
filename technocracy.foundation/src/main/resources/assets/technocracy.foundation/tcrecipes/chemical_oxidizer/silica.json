@@ -1,0 +1,11 @@
+{
+  "input": {
+    "type": "forge:ore_dict",
+    "ore": "dustSiliconChloride"
+  },
+  "output": {
+    "fluid": "silica",
+    "amount": 200
+  },
+  "cost": 40
+}
