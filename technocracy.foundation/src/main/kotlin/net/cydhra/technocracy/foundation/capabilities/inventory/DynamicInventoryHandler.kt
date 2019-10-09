@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.capabilities.inventory
 
-import net.cydhra.technocracy.foundation.capabilities.AbstractDynamicHandler
+import net.cydhra.technocracy.foundation.capabilities.AbstractMutableCapabilityHandler
 import net.cydhra.technocracy.foundation.tileentity.management.TEInventoryProvider
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
@@ -16,7 +16,7 @@ import kotlin.math.min
 
 class DynamicInventoryHandler(size: Int = 0, private val machine: TEInventoryProvider, val slotTypes: MutableMap<Int, InventoryType> = mutableMapOf()) : IItemHandler,
         IItemHandlerModifiable,
-        INBTSerializable<NBTTagCompound>, AbstractDynamicHandler() {
+        INBTSerializable<NBTTagCompound>, AbstractMutableCapabilityHandler() {
 
     var stacks: NonNullList<ItemStack>
 
