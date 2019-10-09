@@ -79,10 +79,27 @@ object RecipeManager {
      *
      * @param type request recipe type
      *
-     * @return an immutable collection of registered recipes of the specified type
+     * @return an immutable collection of registered recipes of the specified type or null if no such recipes exist
+     * or the type is not a machine recipe
+     *
+     * @see [getSpecialRecipesByType]
      */
     fun getMachineRecipesByType(type: RecipeType): Collection<IMachineRecipe>? {
         return loadedMachineRecipes[type]
+    }
+
+    /**
+     * Query all non-machine recipes of a specific type
+     *
+     * @param type recipe type
+     *
+     * @return an immutable collection of registered recipes of that type or null, of no such recipes exist or the
+     * type is a machine recipe
+     *
+     * @see [getMachineRecipesByType]
+     */
+    fun getSpecialRecipesByType(type: RecipeType): Collection<ISpecialRecipe>? {
+        return loadedSpecialRecipes[type]
     }
 
     /**
