@@ -257,20 +257,6 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
         return this.attachedSinks[pos]?.any { it.facing == face && it.type == type } ?: false
     }
 
-    /**
-     * Get a list of sinks of a specified type that are reachable using the given position to enter the chunk.
-     *
-     * @param entry block position of the node that is used to enter the chunk
-     * @param face the block face that faces towards the chunk this request comes from. It is therefore the opposite
-     * face of the direction the network is accessed from
-     * @param type type of sinks to find
-     *
-     * @return TODO data structure
-     */
-    fun getSinksFrom(entry: BlockPos, face: EnumFacing, type: PipeType) {
-
-    }
-
     override fun deserializeNBT(nbt: NBTTagCompound) {
         this.transitEdgeCounter = nbt.getInteger(NBT_KEY_TRANSIT_COUNTER_STATE)
 
