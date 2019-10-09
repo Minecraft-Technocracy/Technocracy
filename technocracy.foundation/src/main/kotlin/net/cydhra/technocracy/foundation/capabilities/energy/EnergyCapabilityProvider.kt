@@ -7,7 +7,7 @@ import net.minecraftforge.common.capabilities.CapabilityInject
 import net.minecraftforge.common.capabilities.ICapabilitySerializable
 import net.minecraftforge.energy.IEnergyStorage
 
-class EnergyCapabilityProvider(private val instance: DynamicEnergyStorage) : ICapabilitySerializable<NBTBase> {
+class EnergyCapabilityProvider(private val instance: DynamicEnergyCapability) : ICapabilitySerializable<NBTBase> {
     companion object {
         @JvmStatic
         @CapabilityInject(IEnergyStorage::class)

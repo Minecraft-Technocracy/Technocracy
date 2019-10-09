@@ -1,11 +1,11 @@
 package net.cydhra.technocracy.foundation.tileentity.management
 
-import net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryHandler
+import net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryCapability
 import net.minecraft.item.ItemStack
 
 /**
  * A tile entity that provides inventory should implement this in order to be compatible to
- * [net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryHandler]
+ * [net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryCapability]
  */
 interface TEInventoryProvider {
 
@@ -16,12 +16,12 @@ interface TEInventoryProvider {
      *
      * @return true, if the stack can be inserted into the slot
      */
-    fun isItemValid(inventory: DynamicInventoryHandler, slot: Int, stack: ItemStack): Boolean
+    fun isItemValid(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack): Boolean
 
     /**
      * @param inventory the handler that got its slot updated
      * @param slot inventory slot
      * @param stack the new ItemStack in the slot
      */
-    fun onSlotUpdate(inventory: DynamicInventoryHandler, slot: Int, stack: ItemStack)
+    fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack)
 }

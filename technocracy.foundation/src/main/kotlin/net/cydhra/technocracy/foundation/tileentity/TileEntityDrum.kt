@@ -1,14 +1,13 @@
 package net.cydhra.technocracy.foundation.tileentity
 
 import net.cydhra.technocracy.foundation.blocks.DrumBlock
-import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandler
+import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.tileentity.components.FluidComponent
-import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 
 
 class TileEntityDrum() : AggregatableTileEntity() {
-    val fluidCapability = DynamicFluidHandler(0, mutableListOf())
+    val fluidCapability = DynamicFluidCapability(0, mutableListOf())
 
     private val fluidComponent = FluidComponent(fluidCapability, EnumFacing.values().toMutableSet())
 

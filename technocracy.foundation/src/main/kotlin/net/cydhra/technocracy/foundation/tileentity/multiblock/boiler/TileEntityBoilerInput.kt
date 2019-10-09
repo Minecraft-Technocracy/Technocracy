@@ -1,6 +1,5 @@
 package net.cydhra.technocracy.foundation.tileentity.multiblock.boiler
 
-import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandler
 import net.cydhra.technocracy.foundation.multiblock.BoilerMultiBlock
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPart
 import net.minecraft.entity.player.EntityPlayer

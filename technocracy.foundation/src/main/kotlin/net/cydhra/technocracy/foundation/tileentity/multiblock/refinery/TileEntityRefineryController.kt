@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.tileentity.multiblock.refinery
 
-import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandler
+import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.components.label.DefaultLabel
 import net.cydhra.technocracy.foundation.client.gui.TCTab
@@ -12,21 +12,20 @@ import net.cydhra.technocracy.foundation.tileentity.components.FluidComponent
 import net.cydhra.technocracy.foundation.tileentity.components.ProgressComponent
 import net.cydhra.technocracy.foundation.tileentity.multiblock.ITileEntityMultiblockController
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPart
-import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 
 class TileEntityRefineryController : TileEntityMultiBlockPart<RefineryMultiBlock>(RefineryMultiBlock::class,
         ::RefineryMultiBlock), ITileEntityMultiblockController {
 
-    val topTank = DynamicFluidHandler(4000, allowedFluid = mutableListOf(),
-            tanktype = DynamicFluidHandler.TankType.OUTPUT)
-    val bottomTank = DynamicFluidHandler(4000, allowedFluid = mutableListOf(),
-            tanktype = DynamicFluidHandler.TankType.OUTPUT)
+    val topTank = DynamicFluidCapability(4000, allowedFluid = mutableListOf(),
+            tanktype = DynamicFluidCapability.TankType.OUTPUT)
+    val bottomTank = DynamicFluidCapability(4000, allowedFluid = mutableListOf(),
+            tanktype = DynamicFluidCapability.TankType.OUTPUT)
 
-    private val internalFluidHandler = DynamicFluidHandler(4000,
+    private val internalFluidHandler = DynamicFluidCapability(4000,
             allowedFluid = mutableListOf(mineralOilFluid.hotFluid.name, heavyOilFluid.hotFluid.name,
                     lightOilFluid.hotFluid.name),
-            tanktype = DynamicFluidHandler.TankType.INPUT)
+            tanktype = DynamicFluidCapability.TankType.INPUT)
 
     val inputComponent = FluidComponent(internalFluidHandler, mutableSetOf(EnumFacing.NORTH, EnumFacing.EAST,
             EnumFacing.SOUTH, EnumFacing.WEST))

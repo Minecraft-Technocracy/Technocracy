@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.tileentity.multiblock.boiler
 
-import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandler
+import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.multiblock.BoilerMultiBlock
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPart
 import net.minecraft.entity.player.EntityPlayer
@@ -28,7 +28,7 @@ class TileEntityBoilerOutput : TileEntityMultiBlockPart<BoilerMultiBlock>(Boiler
     override fun <T> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
         return if (hasCapability(capability, facing))
             CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast<T>(this.multiblockController
-                    ?.controllerTileEntity?.steamHandler) ?: DynamicFluidHandler(1, allowedFluid = mutableListOf()) as T
+                    ?.controllerTileEntity?.steamHandler) ?: DynamicFluidCapability(1, allowedFluid = mutableListOf()) as T
         else
             null
     }

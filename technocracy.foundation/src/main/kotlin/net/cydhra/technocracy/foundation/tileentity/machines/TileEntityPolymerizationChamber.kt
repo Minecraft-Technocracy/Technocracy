@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.tileentity.machines
 
-import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandler
-import net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryHandler
+import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidCapability
+import net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
 import net.cydhra.technocracy.foundation.tileentity.components.ConsumptionMultiplierComponent
@@ -18,10 +18,10 @@ import net.minecraft.util.EnumFacing
  */
 class TileEntityPolymerizationChamber : MachineTileEntity(), TEInventoryProvider {
     private val inputFluidComponent = FluidComponent(4000,
-            tanktype = DynamicFluidHandler.TankType.INPUT, facing = mutableSetOf(EnumFacing.WEST))
+            tanktype = DynamicFluidCapability.TankType.INPUT, facing = mutableSetOf(EnumFacing.WEST))
 
     private val additiveFluidComponent = FluidComponent(4000,
-            tanktype = DynamicFluidHandler.TankType.INPUT, facing = mutableSetOf(EnumFacing.UP))
+            tanktype = DynamicFluidCapability.TankType.INPUT, facing = mutableSetOf(EnumFacing.UP))
 
     private val additiveMultiplierComponent = ConsumptionMultiplierComponent()
 
@@ -44,10 +44,10 @@ class TileEntityPolymerizationChamber : MachineTileEntity(), TEInventoryProvider
         ))
     }
 
-    override fun onSlotUpdate(inventory: DynamicInventoryHandler, slot: Int, stack: ItemStack) {
+    override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack) {
     }
 
-    override fun isItemValid(inventory: DynamicInventoryHandler, slot: Int, stack: ItemStack): Boolean {
+    override fun isItemValid(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack): Boolean {
         return false
     }
 }

@@ -4,7 +4,7 @@ import net.minecraftforge.fluids.FluidStack
 import net.minecraftforge.fluids.capability.IFluidTankProperties
 
 
-class SimpleTankProperty(val fluidHandler: DynamicFluidHandler) : IFluidTankProperties {
+class SimpleTankProperty(val fluidHandler: DynamicFluidCapability) : IFluidTankProperties {
     override fun canDrainFluidType(fluidStack: FluidStack?): Boolean {
         return fluidHandler.allowedFluid.isEmpty() || fluidHandler.allowedFluid.contains(fluidStack!!.fluid.name)
     }
@@ -22,10 +22,10 @@ class SimpleTankProperty(val fluidHandler: DynamicFluidHandler) : IFluidTankProp
     }
 
     override fun canFill(): Boolean {
-        return fluidHandler.tanktype != DynamicFluidHandler.TankType.OUTPUT
+        return fluidHandler.tanktype != DynamicFluidCapability.TankType.OUTPUT
     }
 
     override fun canDrain(): Boolean {
-        return fluidHandler.tanktype != DynamicFluidHandler.TankType.INPUT
+        return fluidHandler.tanktype != DynamicFluidCapability.TankType.INPUT
     }
 }

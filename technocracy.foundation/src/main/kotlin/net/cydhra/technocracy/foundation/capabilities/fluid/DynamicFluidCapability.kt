@@ -15,8 +15,8 @@ import kotlin.math.min
  * @param allowedFluid a list of fluid names that are allowed to store, empty if all fluids are allowed
  * @param tanktype whether input, output or both are allowed
  */
-open class DynamicFluidHandler(var capacity: Int = 1000, val allowedFluid: MutableList<String> = mutableListOf(),
-                               var tanktype: TankType = TankType.BOTH) :
+open class DynamicFluidCapability(var capacity: Int = 1000, val allowedFluid: MutableList<String> = mutableListOf(),
+                                  var tanktype: TankType = TankType.BOTH) :
         IFluidHandler, INBTSerializable<NBTTagCompound>, AbstractMutableCapabilityHandler() {
 
     var currentFluid: FluidStack? = null

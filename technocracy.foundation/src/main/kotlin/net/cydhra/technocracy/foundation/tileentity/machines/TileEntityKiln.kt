@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.tileentity.machines
 
-import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandler
+import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
 import net.cydhra.technocracy.foundation.tileentity.components.FluidComponent
@@ -13,10 +13,10 @@ import net.minecraft.util.EnumFacing
 class TileEntityKiln : MachineTileEntity() {
 
     private val inputInventoryComponent = FluidComponent(4000,
-            tanktype = DynamicFluidHandler.TankType.INPUT, facing = mutableSetOf(EnumFacing.WEST))
+            tanktype = DynamicFluidCapability.TankType.INPUT, facing = mutableSetOf(EnumFacing.WEST))
 
     private val outputInventoryComponent = FluidComponent(4000,
-            tanktype = DynamicFluidHandler.TankType.OUTPUT, facing = mutableSetOf(EnumFacing.EAST))
+            tanktype = DynamicFluidCapability.TankType.OUTPUT, facing = mutableSetOf(EnumFacing.EAST))
 
     init {
         this.registerComponent(inputInventoryComponent, "input_inventory")

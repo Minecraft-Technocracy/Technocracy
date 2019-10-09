@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.tileentity.components
 
-import net.cydhra.technocracy.foundation.capabilities.energy.DynamicEnergyStorage
+import net.cydhra.technocracy.foundation.capabilities.energy.DynamicEnergyCapability
 import net.cydhra.technocracy.foundation.capabilities.energy.DynamicEnergyStorageStrategy
 import net.cydhra.technocracy.foundation.capabilities.energy.EnergyCapabilityProvider
 import net.minecraft.nbt.NBTTagCompound
@@ -19,7 +19,7 @@ class EnergyStorageComponent(val facing: MutableSet<EnumFacing>) : AbstractCapab
     /**
      * The energy storage capability instance containing energy storage state
      */
-    val energyStorage: DynamicEnergyStorage = DynamicEnergyStorage(
+    val energyStorage: DynamicEnergyCapability = DynamicEnergyCapability(
             capacity = 8000,
             currentEnergy = 0,
             extractionLimit = 0,

@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.tileentity.machines
 
-import net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryHandler
+import net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.components.label.DefaultLabel
 import net.cydhra.technocracy.foundation.client.gui.TCTab
@@ -51,7 +51,7 @@ class TileEntityAlloySmeltery : MachineTileEntity(), TEInventoryProvider {
                 progress = this.progressComponent))
     }
 
-    override fun isItemValid(inventory: DynamicInventoryHandler, slot: Int, stack: ItemStack): Boolean {
+    override fun isItemValid(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack): Boolean {
         return inventory == inputInventoryComponent.inventory && this.recipes.any { recipe ->
             recipe.getInput().any { it.test(stack) }
         }
@@ -60,7 +60,7 @@ class TileEntityAlloySmeltery : MachineTileEntity(), TEInventoryProvider {
         }
     }
 
-    override fun onSlotUpdate(inventory: DynamicInventoryHandler, slot: Int, stack: ItemStack) {
+    override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack) {
     }
 
     override fun initGui(gui: TCGui) {

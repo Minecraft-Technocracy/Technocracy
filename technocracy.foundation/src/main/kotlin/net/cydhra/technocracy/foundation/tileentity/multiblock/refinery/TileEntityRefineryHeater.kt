@@ -1,6 +1,5 @@
 package net.cydhra.technocracy.foundation.tileentity.multiblock.refinery
 
-import net.cydhra.technocracy.foundation.capabilities.energy.DynamicEnergyStorage
 import net.cydhra.technocracy.foundation.multiblock.RefineryMultiBlock
 import net.cydhra.technocracy.foundation.tileentity.components.EnergyStorageComponent
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPart

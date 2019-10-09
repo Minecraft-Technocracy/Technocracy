@@ -5,7 +5,7 @@ import net.minecraft.item.ItemStack
 import net.minecraftforge.fluids.capability.IFluidHandlerItem
 
 
-class DynamicFluidHandlerItem(val stack: ItemStack, capacity: Int, allowedFluid: MutableList<String>, tanktype: TankType) : DynamicFluidHandler(capacity, allowedFluid, tanktype), IFluidHandlerItem {
+class DynamicItemFluidStorage(val stack: ItemStack, capacity: Int, allowedFluid: MutableList<String>, tanktype: TankType) : DynamicFluidCapability(capacity, allowedFluid, tanktype), IFluidHandlerItem {
     override fun getContainer(): ItemStack {
         return (componentParent as AbstractItemCapabilityComponent).wrapper.stack
     }

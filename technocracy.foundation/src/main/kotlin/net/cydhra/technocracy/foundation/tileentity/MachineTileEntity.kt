@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.tileentity
 
-import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandler
+import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.components.energymeter.DefaultEnergyMeter
 import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.DefaultFluidMeter
@@ -75,20 +75,20 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
                         }
                         is FluidComponent -> {
                             when {
-                                component.fluid.tanktype == DynamicFluidHandler.TankType.INPUT -> {
+                                component.fluid.tanktype == DynamicFluidCapability.TankType.INPUT -> {
                                     components.add(DefaultFluidMeter(nextInput, 20, component, gui))
                                     if (inputNearestToTheMiddle < nextInput - 5) {
                                         inputNearestToTheMiddle = nextInput - 5 // 5 is the space between components
                                     }
                                     nextInput += 15 // fluid meter width (10) + space (5)
                                 }
-                                component.fluid.tanktype == DynamicFluidHandler.TankType.OUTPUT -> {
+                                component.fluid.tanktype == DynamicFluidCapability.TankType.OUTPUT -> {
                                     components.add(DefaultFluidMeter(nextOutput, 20, component, gui))
                                     if (outputNearestToTheMiddle > nextOutput)
                                         outputNearestToTheMiddle = nextOutput
                                     nextOutput += 15
                                 }
-                                component.fluid.tanktype == DynamicFluidHandler.TankType.BOTH -> {
+                                component.fluid.tanktype == DynamicFluidCapability.TankType.BOTH -> {
                                     TODO("not implemented")
                                 }
                             }

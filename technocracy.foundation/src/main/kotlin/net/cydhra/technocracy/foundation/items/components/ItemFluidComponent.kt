@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.items.components
 
-import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandlerItem
+import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicItemFluidStorage
 import net.cydhra.technocracy.foundation.items.capability.AbstractItemCapabilityComponent
 import net.cydhra.technocracy.foundation.tileentity.components.ComponentType
 import net.minecraft.nbt.NBTTagCompound
@@ -9,7 +9,7 @@ import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler
 
 
-class ItemFluidComponent(val fluid: DynamicFluidHandlerItem) : AbstractItemCapabilityComponent() {
+class ItemFluidComponent(val fluid: DynamicItemFluidStorage) : AbstractItemCapabilityComponent() {
     override val type: ComponentType = ComponentType.FLUID
 
     init {

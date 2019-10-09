@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.tileentity.multiblock.heatexchanger
 
-import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandler
+import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.multiblock.HeatExchangerMultiBlock
 import net.cydhra.technocracy.foundation.tileentity.AggregatableDelegate
 import net.cydhra.technocracy.foundation.tileentity.api.TCAggregatable
@@ -18,8 +18,8 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler
 class TileEntityHeatExchangerOutput : TileEntityMultiBlockPart<HeatExchangerMultiBlock>(HeatExchangerMultiBlock::class,
         ::HeatExchangerMultiBlock), TCAggregatable by AggregatableDelegate() {
 
-    private val internalFluidHandler = DynamicFluidHandler(4000, allowedFluid = mutableListOf(),
-            tanktype = DynamicFluidHandler.TankType.OUTPUT)
+    private val internalFluidHandler = DynamicFluidCapability(4000, allowedFluid = mutableListOf(),
+            tanktype = DynamicFluidCapability.TankType.OUTPUT)
 
     private val fluidComponent = FluidComponent(internalFluidHandler, mutableSetOf(EnumFacing.NORTH, EnumFacing.EAST,
             EnumFacing.SOUTH, EnumFacing.WEST))
@@ -40,7 +40,7 @@ class TileEntityHeatExchangerOutput : TileEntityMultiBlockPart<HeatExchangerMult
 
     override fun <T> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
         return (this.castCapability(capability, facing) ?: super.getCapability(capability, facing))
-                ?: DynamicFluidHandler(1, allowedFluid = mutableListOf()) as T
+                ?: DynamicFluidCapability(1, allowedFluid = mutableListOf()) as T
     }
 
     override fun onActivate(world: World, pos: BlockPos, player: EntityPlayer, hand: EnumHand, facing: EnumFacing) {

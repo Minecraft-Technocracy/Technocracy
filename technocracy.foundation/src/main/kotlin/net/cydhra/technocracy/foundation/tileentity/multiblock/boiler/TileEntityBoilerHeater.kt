@@ -1,11 +1,10 @@
 package net.cydhra.technocracy.foundation.tileentity.multiblock.boiler
 
-import net.cydhra.technocracy.foundation.capabilities.energy.DynamicEnergyStorage
+import net.cydhra.technocracy.foundation.capabilities.energy.DynamicEnergyCapability
 import net.cydhra.technocracy.foundation.multiblock.BoilerMultiBlock
 import net.cydhra.technocracy.foundation.tileentity.components.EnergyStorageComponent
 import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPart
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumHand
 import net.minecraft.util.math.BlockPos
@@ -59,7 +58,7 @@ class TileEntityBoilerHeater : TileEntityMultiBlockPart<BoilerMultiBlock>(Boiler
 
     override fun <T : Any?> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
         return if (this.hasCapability(capability, facing)) super.getCapability(capability, facing)
-                ?: DynamicEnergyStorage(0, 1, extractionLimit = 0) as T
+                ?: DynamicEnergyCapability(0, 1, extractionLimit = 0) as T
         else null
     }
 }

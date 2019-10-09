@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.tileentity.machines
 
-import net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryHandler
+import net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
@@ -47,11 +47,11 @@ class TileEntityElectricFurnace : MachineTileEntity(), TEInventoryProvider {
                 progress = this.progressComponent))
     }
 
-    override fun isItemValid(inventory: DynamicInventoryHandler, slot: Int, stack: ItemStack): Boolean {
+    override fun isItemValid(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack): Boolean {
         return inventory == inputInventoryComponent.inventory && this.recipes.any { it.getInput()[0].test(stack) }
     }
 
-    override fun onSlotUpdate(inventory: DynamicInventoryHandler, slot: Int, stack: ItemStack) {
+    override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack) {
     }
 
 }

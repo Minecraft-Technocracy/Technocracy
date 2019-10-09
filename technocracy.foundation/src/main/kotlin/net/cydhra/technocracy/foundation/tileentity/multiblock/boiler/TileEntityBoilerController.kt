@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.tileentity.multiblock.boiler
 
-import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandler
+import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.liquids.general.steamFluid
 import net.cydhra.technocracy.foundation.multiblock.BoilerMultiBlock
 import net.cydhra.technocracy.foundation.tileentity.components.FluidComponent
@@ -21,14 +21,14 @@ class TileEntityBoilerController
     /**
      * The fluid storage for internal usage
      */
-    private val internalFluidHandler = DynamicFluidHandler(0, mutableListOf(FluidRegistry.WATER.name),
-            DynamicFluidHandler.TankType.INPUT)
+    private val internalFluidHandler = DynamicFluidCapability(0, mutableListOf(FluidRegistry.WATER.name),
+            DynamicFluidCapability.TankType.INPUT)
 
     /**
      * The steam storage for internal usage
      */
-    private val internalSteamHandler = DynamicFluidHandler(0, mutableListOf(steamFluid.name),
-            DynamicFluidHandler.TankType.OUTPUT)
+    private val internalSteamHandler = DynamicFluidCapability(0, mutableListOf(steamFluid.name),
+            DynamicFluidCapability.TankType.OUTPUT)
 
     private val waterComponent = FluidComponent(internalFluidHandler, mutableSetOf())
     private val steamComponent = FluidComponent(internalSteamHandler, mutableSetOf())
@@ -37,7 +37,7 @@ class TileEntityBoilerController
     /**
      * The fluid storage of this boiler structure. If the structure isn't fully assembled, it is null
      */
-    val fluidHandler: DynamicFluidHandler?
+    val fluidHandler: DynamicFluidCapability?
         get() {
             if (this.multiblockController?.isAssembled == false)
                 return null
@@ -47,7 +47,7 @@ class TileEntityBoilerController
     /**
      * The output fluid storage for generated steam. If this structure isn't fully assembled, it is null
      */
-    val steamHandler: DynamicFluidHandler?
+    val steamHandler: DynamicFluidCapability?
         get() {
             if (this.multiblockController?.isAssembled == false)
                 return null

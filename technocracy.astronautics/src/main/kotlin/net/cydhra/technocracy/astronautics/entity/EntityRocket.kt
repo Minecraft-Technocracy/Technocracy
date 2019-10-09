@@ -4,7 +4,7 @@ package net.cydhra.technocracy.astronautics.entity
 import io.netty.buffer.ByteBuf
 import net.cydhra.technocracy.astronautics.blocks.general.rocketDriveBlock
 import net.cydhra.technocracy.astronautics.fx.ParticleSmoke
-import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandler
+import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.data.GroupManager
 import net.cydhra.technocracy.foundation.fx.TCParticleManager
 import net.cydhra.technocracy.foundation.tileentity.components.FluidComponent
@@ -55,7 +55,7 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
 
     val owner = OwnerShipComponent()
     //TODO config
-    val tank = FluidComponent(DynamicFluidHandler(0, mutableListOf("rocket_fuel")), EnumFacing.values().toMutableSet())
+    val tank = FluidComponent(DynamicFluidCapability(0, mutableListOf("rocket_fuel")), EnumFacing.values().toMutableSet())
 
     var liftOff: Boolean
         get() = dataManager.get(LIFTOFF)

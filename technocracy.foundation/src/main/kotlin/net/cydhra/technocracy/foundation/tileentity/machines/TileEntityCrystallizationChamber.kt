@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.tileentity.machines
 
-import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandler
-import net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryHandler
+import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidCapability
+import net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
@@ -22,7 +22,7 @@ class TileEntityCrystallizationChamber : MachineTileEntity(), TEInventoryProvide
      */
     private val inputFluidComponent = FluidComponent(capacity = 4000,
             allowedFluid = *arrayOf(),
-            tanktype = DynamicFluidHandler.TankType.INPUT,
+            tanktype = DynamicFluidCapability.TankType.INPUT,
             facing = mutableSetOf(EnumFacing.WEST))
 
     /**
@@ -52,10 +52,10 @@ class TileEntityCrystallizationChamber : MachineTileEntity(), TEInventoryProvide
                 progress = this.progressComponent))
     }
 
-    override fun isItemValid(inventory: DynamicInventoryHandler, slot: Int, stack: ItemStack): Boolean {
+    override fun isItemValid(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack): Boolean {
         return inventory == outputInventoryComponent.inventory && this.recipes.any { it.getOutput()[0].item == stack.item }
     }
 
-    override fun onSlotUpdate(inventory: DynamicInventoryHandler, slot: Int, stack: ItemStack) {
+    override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack) {
     }
 }

@@ -3,7 +3,7 @@ package net.cydhra.technocracy.foundation.integration.jei.machines
 import mezz.jei.api.IGuiHelper
 import mezz.jei.api.gui.IRecipeLayout
 import mezz.jei.api.ingredients.IIngredients
-import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandler
+import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
 import net.cydhra.technocracy.foundation.client.gui.components.energymeter.DefaultEnergyMeter
 import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.DefaultFluidMeter
@@ -35,7 +35,7 @@ class MachineRecipeCategory(guiHelper: IGuiHelper, val tileEntity: MachineTileEn
     init {
         tabDrawable.tab?.components?.forEach { guiComponent ->
             if (guiComponent is DefaultFluidMeter) {
-                stolenComponents[guiComponent] = guiComponent.component.fluid.tanktype == DynamicFluidHandler.TankType.INPUT
+                stolenComponents[guiComponent] = guiComponent.component.fluid.tanktype == DynamicFluidCapability.TankType.INPUT
             } else if (guiComponent is Slot) {
                 if (guiComponent is TCSlotIO) {
                     tileEntity.getComponents().filter { it.second is InventoryComponent }

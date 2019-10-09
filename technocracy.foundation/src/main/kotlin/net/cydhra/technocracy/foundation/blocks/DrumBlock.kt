@@ -6,12 +6,11 @@ import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockDisplayName
 import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockItemProperty
 import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockPlaceBehavior
 import net.cydhra.technocracy.foundation.blocks.util.IDynamicBlockItemCapabilitiy
-import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandler
-import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandlerItem
+import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidCapability
+import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicItemFluidStorage
 import net.cydhra.technocracy.foundation.items.capability.ItemCapabilityWrapper
 import net.cydhra.technocracy.foundation.items.components.ItemFluidComponent
 import net.cydhra.technocracy.foundation.tileentity.TileEntityDrum
-import net.minecraft.block.Block
 import net.minecraft.block.material.Material
 import net.minecraft.block.properties.PropertyEnum
 import net.minecraft.block.state.BlockStateContainer
@@ -48,7 +47,7 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
         val cap = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)
 
         if (cap != null) {
-            val fluid = (cap as DynamicFluidHandlerItem).currentFluid
+            val fluid = (cap as DynamicItemFluidStorage).currentFluid
             return fluid?.fluid?.color ?: -1
         }
 
@@ -73,7 +72,7 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
         val cap = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)
 
         if (cap != null) {
-            val fluid = (cap as DynamicFluidHandlerItem).currentFluid
+            val fluid = (cap as DynamicItemFluidStorage).currentFluid
             if (fluid != null)
                 tile.fluidCapability.fill(fluid, true)
         }
@@ -182,7 +181,7 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
     }
 
     override fun initCapabilities(stack: ItemStack, nbt: NBTTagCompound?): ICapabilityProvider? {
-        return ItemCapabilityWrapper(stack, mutableMapOf("fluid" to ItemFluidComponent(DynamicFluidHandlerItem(stack, DrumType.values()[MathHelper.clamp(stack.metadata, 0, DrumType.values().size - 1)].amount, mutableListOf(), DynamicFluidHandler.TankType.BOTH))))
+        return ItemCapabilityWrapper(stack, mutableMapOf("fluid" to ItemFluidComponent(DynamicItemFluidStorage(stack, DrumType.values()[MathHelper.clamp(stack.metadata, 0, DrumType.values().size - 1)].amount, mutableListOf(), DynamicFluidCapability.TankType.BOTH))))
     }
 
     enum class DrumType(val typeName: String, val amount: Int) :

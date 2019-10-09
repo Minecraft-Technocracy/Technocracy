@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.tileentity.machines
 
-import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandler
-import net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryHandler
+import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidCapability
+import net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
@@ -19,7 +19,7 @@ class TileEntityChemicalProcessingChamber : MachineTileEntity(), TEInventoryProv
 
     private val inputInventoryComponent = InventoryComponent(1, this, EnumFacing.WEST)
     private val inputFluidComponent = FluidComponent(4000,
-            tanktype = DynamicFluidHandler.TankType.INPUT, facing = mutableSetOf(EnumFacing.UP))
+            tanktype = DynamicFluidCapability.TankType.INPUT, facing = mutableSetOf(EnumFacing.UP))
     private val outputInventoryComponent = InventoryComponent(1, this, EnumFacing.EAST)
 
     private val recipes: Collection<IMachineRecipe> by lazy {
@@ -43,12 +43,12 @@ class TileEntityChemicalProcessingChamber : MachineTileEntity(), TEInventoryProv
         ))
     }
 
-    override fun isItemValid(inventory: DynamicInventoryHandler, slot: Int, stack: ItemStack): Boolean {
+    override fun isItemValid(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack): Boolean {
         return inventory == inputInventoryComponent.inventory && this.recipes.any { recipe ->
             recipe.getInput().any { it.test(stack) }
         }
     }
 
-    override fun onSlotUpdate(inventory: DynamicInventoryHandler, slot: Int, stack: ItemStack) {
+    override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack) {
     }
 }

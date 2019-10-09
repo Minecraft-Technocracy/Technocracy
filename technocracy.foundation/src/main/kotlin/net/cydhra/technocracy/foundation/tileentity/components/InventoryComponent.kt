@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.tileentity.components
 
-import net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryHandler
+import net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.tileentity.management.TEInventoryProvider
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
@@ -20,7 +20,7 @@ class InventoryComponent(size: Int, provider: TEInventoryProvider, val facing: M
     /**
      * Inventory capability of the machine
      */
-    val inventory: DynamicInventoryHandler = DynamicInventoryHandler(size, provider)
+    val inventory: DynamicInventoryCapability = DynamicInventoryCapability(size, provider)
 
     override val type: ComponentType = ComponentType.INVENTORY
 

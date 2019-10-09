@@ -5,7 +5,7 @@ import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.energy.IEnergyStorage
 
 /**
- * Store an instance of [DynamicEnergyStorage] into NBT. Unlike the forge version, this also stores capacity and
+ * Store an instance of [DynamicEnergyCapability] into NBT. Unlike the forge version, this also stores capacity and
  * transfer limits, as they might be changed for clients of the energy capability.
  */
 object DynamicEnergyStorageStrategy {
@@ -31,7 +31,7 @@ object DynamicEnergyStorageStrategy {
     const val KEY_MAX_EXTRACT = "limit_extract"
 
     fun readNBT(instance: IEnergyStorage, nbt: NBTBase) {
-        with(instance as DynamicEnergyStorage) {
+        with(instance as DynamicEnergyCapability) {
             capacity = (nbt as NBTTagCompound).getInteger(KEY_CAPACITY)
             extractionLimit = nbt.getInteger(KEY_MAX_EXTRACT)
             receivingLimit = nbt.getInteger(KEY_MAX_RECEIVE)
@@ -42,7 +42,7 @@ object DynamicEnergyStorageStrategy {
     fun writeNBT(instance: IEnergyStorage): NBTBase {
         return NBTTagCompound().apply {
             setInteger(KEY_CAPACITY, instance.maxEnergyStored)
-            setInteger(KEY_MAX_EXTRACT, (instance as DynamicEnergyStorage).extractionLimit)
+            setInteger(KEY_MAX_EXTRACT, (instance as DynamicEnergyCapability).extractionLimit)
             setInteger(KEY_MAX_RECEIVE, instance.receivingLimit)
             setInteger(KEY_CURRENT_AMOUNT, instance.energyStored)
         }

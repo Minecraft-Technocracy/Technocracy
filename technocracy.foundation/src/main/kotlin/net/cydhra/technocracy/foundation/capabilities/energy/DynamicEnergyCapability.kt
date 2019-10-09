@@ -15,8 +15,8 @@ import kotlin.math.min
  *
  * @see DynamicEnergyStorageStrategy
  */
-class DynamicEnergyStorage(currentEnergy: Int = 0, capacity: Int,
-                           var extractionLimit: Int, var receivingLimit: Int = -1) : IEnergyStorage, AbstractMutableCapabilityHandler() {
+class DynamicEnergyCapability(currentEnergy: Int = 0, capacity: Int,
+                              var extractionLimit: Int, var receivingLimit: Int = -1) : IEnergyStorage, AbstractMutableCapabilityHandler() {
 
     /**
      * Current amount of energy in the storage

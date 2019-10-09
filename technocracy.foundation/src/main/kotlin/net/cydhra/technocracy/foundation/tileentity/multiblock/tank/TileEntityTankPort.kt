@@ -1,6 +1,5 @@
 package net.cydhra.technocracy.foundation.tileentity.multiblock.tank
 
-import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandler
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler

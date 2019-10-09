@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.client.gui.components.fluidmeter
 
-import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandler
+import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.tileentity.components.FluidComponent
 import net.minecraft.client.Minecraft
@@ -35,7 +35,7 @@ class DefaultFluidMeter(posX: Int, posY: Int, val component: FluidComponent, val
         GlStateManager.color(1f, 1f, 1f, 1f)
         Minecraft.getMinecraft().textureManager.bindTexture(TCGui.guiComponents)
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
-        Gui.drawModalRectWithCustomSizedTexture(posX, posY, if (component.fluid.tanktype == DynamicFluidHandler.TankType.INPUT) 10f else 0f, 75f, width, height, 256f, 256f)
+        Gui.drawModalRectWithCustomSizedTexture(posX, posY, if (component.fluid.tanktype == DynamicFluidCapability.TankType.INPUT) 10f else 0f, 75f, width, height, 256f, 256f)
 
         GlStateManager.disableBlend()
     }

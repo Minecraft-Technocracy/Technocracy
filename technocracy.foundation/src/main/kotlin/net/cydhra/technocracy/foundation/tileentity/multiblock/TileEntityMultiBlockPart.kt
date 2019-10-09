@@ -3,7 +3,7 @@ package net.cydhra.technocracy.foundation.tileentity.multiblock
 import it.zerono.mods.zerocore.api.multiblock.MultiblockControllerBase
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import net.cydhra.technocracy.foundation.TCFoundation
-import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidHandler
+import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.components.energymeter.DefaultEnergyMeter
 import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.DefaultFluidMeter
@@ -29,15 +29,12 @@ import net.minecraft.client.Minecraft
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.nbt.NBTTagCompound
-import net.minecraft.network.NetworkManager
-import net.minecraft.network.play.server.SPacketUpdateTileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumHand
 import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import net.minecraftforge.common.capabilities.Capability
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler
 import kotlin.reflect.KClass
 
 /**
@@ -153,20 +150,20 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
                         }
                         is FluidComponent -> {
                             when {
-                                component.fluid.tanktype == DynamicFluidHandler.TankType.INPUT -> {
+                                component.fluid.tanktype == DynamicFluidCapability.TankType.INPUT -> {
                                     components.add(DefaultFluidMeter(nextInput, 20, component, gui))
                                     if (inputNearestToTheMiddle < nextInput - 5) {
                                         inputNearestToTheMiddle = nextInput - 5 // 5 is the space between components
                                     }
                                     nextInput += 15 // fluid meter width (10) + space (5)
                                 }
-                                component.fluid.tanktype == DynamicFluidHandler.TankType.OUTPUT -> {
+                                component.fluid.tanktype == DynamicFluidCapability.TankType.OUTPUT -> {
                                     components.add(DefaultFluidMeter(nextOutput, 20, component, gui))
                                     if (outputNearestToTheMiddle > nextOutput)
                                         outputNearestToTheMiddle = nextOutput
                                     nextOutput += 15
                                 }
-                                component.fluid.tanktype == DynamicFluidHandler.TankType.BOTH -> {
+                                component.fluid.tanktype == DynamicFluidCapability.TankType.BOTH -> {
                                     TODO("not implemented")
                                 }
                             }
