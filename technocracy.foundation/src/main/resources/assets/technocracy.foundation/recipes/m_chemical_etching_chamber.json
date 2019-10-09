@@ -17,10 +17,6 @@
       "type": "forge:ore_dict",
       "ore": "itemRubber"
     },
-    "l": {
-      "type": "forge:ore_dict",
-      "ore": "ingotLightAlloy"
-    },
     "t": {
       "type": "forge:ore_dict",
       "ore": "ingotZircalloy"
