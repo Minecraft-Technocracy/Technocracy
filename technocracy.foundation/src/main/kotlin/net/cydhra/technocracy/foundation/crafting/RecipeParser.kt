@@ -1,7 +1,6 @@
-package net.cydhra.technocracy.foundation.crafting.types
+package net.cydhra.technocracy.foundation.crafting
 
 import com.google.gson.JsonObject
-import net.cydhra.technocracy.foundation.crafting.IMachineRecipe
 import net.minecraftforge.common.crafting.JsonContext
 
 /**
