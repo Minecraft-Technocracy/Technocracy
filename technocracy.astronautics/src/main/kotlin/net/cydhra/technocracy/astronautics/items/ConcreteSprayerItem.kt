@@ -5,9 +5,9 @@ import net.cydhra.technocracy.astronautics.blocks.general.wetConcreteBlock
 import net.cydhra.technocracy.astronautics.blocks.general.wetReinforcedConcreteBlock
 import net.cydhra.technocracy.astronautics.items.color.ConcreteSprayerColor
 import net.cydhra.technocracy.astronautics.items.general.concreteCanItem
-import net.cydhra.technocracy.foundation.blocks.color.DyeBlockColor
-import net.cydhra.technocracy.foundation.items.general.BaseItem
-import net.cydhra.technocracy.foundation.items.general.emptyCanItem
+import net.cydhra.technocracy.foundation.model.blocks.color.DyeBlockColor
+import net.cydhra.technocracy.foundation.model.items.api.BaseItem
+import net.cydhra.technocracy.foundation.content.items.emptyCanItem
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayer

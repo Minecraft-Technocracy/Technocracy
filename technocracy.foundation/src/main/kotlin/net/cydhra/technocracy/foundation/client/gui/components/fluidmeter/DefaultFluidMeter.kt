@@ -1,8 +1,8 @@
 package net.cydhra.technocracy.foundation.client.gui.components.fluidmeter
 
-import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidCapability
+import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.client.gui.TCGui
-import net.cydhra.technocracy.foundation.tileentity.components.FluidComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.FluidComponent
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager

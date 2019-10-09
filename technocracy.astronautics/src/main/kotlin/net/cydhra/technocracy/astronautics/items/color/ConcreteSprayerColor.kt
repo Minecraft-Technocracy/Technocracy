@@ -1,12 +1,11 @@
 package net.cydhra.technocracy.astronautics.items.color
 
-import net.cydhra.technocracy.foundation.blocks.color.IBlockColor
+import net.cydhra.technocracy.foundation.model.blocks.color.IBlockColor
 import net.minecraft.block.state.IBlockState
 import net.minecraft.item.EnumDyeColor
 import net.minecraft.item.ItemStack
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockAccess
-import java.awt.Color
 
 
 object ConcreteSprayerColor : IBlockColor {

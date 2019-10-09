@@ -1,11 +1,11 @@
 package net.cydhra.technocracy.foundation
 
-import net.cydhra.technocracy.foundation.commands.ClearTemplateCommand
-import net.cydhra.technocracy.foundation.commands.GenerateTemplateCommand
-import net.cydhra.technocracy.foundation.commands.PasteTemplateCommand
-import net.cydhra.technocracy.foundation.data.general.DataManager
+import net.cydhra.technocracy.foundation.content.commands.ClearTemplateCommand
+import net.cydhra.technocracy.foundation.content.commands.GenerateTemplateCommand
+import net.cydhra.technocracy.foundation.content.commands.PasteTemplateCommand
+import net.cydhra.technocracy.foundation.data.world.api.DataManager
 import net.cydhra.technocracy.foundation.integration.top.TOPIntegration
-import net.cydhra.technocracy.foundation.multiblock.MultiBlockPhysics
+import net.cydhra.technocracy.foundation.content.multiblock.MultiBlockPhysics
 import net.cydhra.technocracy.foundation.proxy.CommonProxy
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.config.Configuration

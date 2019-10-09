@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.conduits.types
 
-import net.cydhra.technocracy.foundation.capabilities.energy.EnergyCapabilityProvider
+import net.cydhra.technocracy.foundation.content.capabilities.energy.EnergyCapabilityProvider
 import net.minecraft.util.IStringSerializable
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler

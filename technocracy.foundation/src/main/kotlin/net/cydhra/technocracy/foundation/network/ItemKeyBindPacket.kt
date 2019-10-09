@@ -1,8 +1,7 @@
 package net.cydhra.technocracy.foundation.network
 
 import io.netty.buffer.ByteBuf
-import net.cydhra.technocracy.foundation.items.general.IItemKeyBindEvent
-import net.cydhra.technocracy.foundation.items.general.IItemScrollEvent
+import net.cydhra.technocracy.foundation.model.items.util.IItemKeyBindEvent
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext

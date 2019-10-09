@@ -1,10 +1,10 @@
 package net.cydhra.technocracy.foundation.network.componentsync
 
-import net.cydhra.technocracy.foundation.multiblock.BaseMultiBlock
+import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
 import net.cydhra.technocracy.foundation.network.PacketHandler
-import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
-import net.cydhra.technocracy.foundation.tileentity.components.AbstractComponent
-import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPart
+import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
+import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractComponent
+import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.math.BlockPos

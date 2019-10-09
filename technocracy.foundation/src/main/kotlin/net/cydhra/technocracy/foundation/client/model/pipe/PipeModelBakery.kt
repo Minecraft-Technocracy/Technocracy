@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.client.model.pipe
 
 import net.cydhra.technocracy.foundation.client.textures.TextureAtlasManager
-import net.cydhra.technocracy.foundation.tileentity.TileEntityPipe
+import net.cydhra.technocracy.foundation.content.tileentities.pipe.TileEntityPipe
 import net.cydhra.technocracy.foundation.util.model.SimpleQuad
 import net.cydhra.technocracy.foundation.util.propertys.POSITION
 import net.minecraft.block.state.IBlockState

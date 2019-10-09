@@ -2,8 +2,8 @@ package net.cydhra.technocracy.astronautics.blocks.general
 
 import net.cydhra.technocracy.astronautics.blocks.*
 import net.cydhra.technocracy.astronautics.client.astronauticsColorTabs
-import net.cydhra.technocracy.foundation.blocks.api.ColoredPlainBlock
-import net.cydhra.technocracy.foundation.blocks.api.PlainBlock
+import net.cydhra.technocracy.foundation.model.blocks.impl.ColoredPlainBlock
+import net.cydhra.technocracy.foundation.model.blocks.impl.PlainBlock
 import net.minecraft.block.material.Material
 
 val scaffoldBlock = ScaffoldBlock()

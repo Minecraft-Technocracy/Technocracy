@@ -2,11 +2,11 @@ package net.cydhra.technocracy.foundation.client.gui.components.redstonemode
 
 import it.zerono.mods.zerocore.api.multiblock.MultiblockTileEntityBase
 import net.cydhra.technocracy.foundation.client.gui.TCGui
-import net.cydhra.technocracy.foundation.multiblock.BaseMultiBlock
 import net.cydhra.technocracy.foundation.network.PacketHandler
 import net.cydhra.technocracy.foundation.network.componentsync.ClientComponentUpdatePacket
-import net.cydhra.technocracy.foundation.tileentity.api.TCAggregatable
-import net.cydhra.technocracy.foundation.tileentity.components.RedstoneModeComponent
+import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatable
+import net.cydhra.technocracy.foundation.content.tileentities.components.RedstoneModeComponent
+import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager

@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.conduits.query
 
-import net.cydhra.technocracy.foundation.capabilities.energy.EnergyCapabilityProvider
+import net.cydhra.technocracy.foundation.content.capabilities.energy.EnergyCapabilityProvider
 import net.cydhra.technocracy.foundation.conduits.transit.TransitSink
 import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.minecraft.item.Item

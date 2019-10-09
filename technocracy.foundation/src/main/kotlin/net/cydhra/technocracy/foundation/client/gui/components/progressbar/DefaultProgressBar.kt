@@ -3,7 +3,7 @@ package net.cydhra.technocracy.foundation.client.gui.components.progressbar
 import mezz.jei.api.IGuiHelper
 import mezz.jei.api.gui.IDrawable
 import net.cydhra.technocracy.foundation.client.gui.TCGui
-import net.cydhra.technocracy.foundation.tileentity.components.ProgressComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.ProgressComponent
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager

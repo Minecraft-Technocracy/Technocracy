@@ -2,8 +2,8 @@ package net.cydhra.technocracy.foundation.network.componentsync
 
 import io.netty.buffer.ByteBuf
 import it.zerono.mods.zerocore.api.multiblock.MultiblockTileEntityBase
-import net.cydhra.technocracy.foundation.multiblock.BaseMultiBlock
-import net.cydhra.technocracy.foundation.tileentity.api.TCAggregatable
+import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
+import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatable
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.math.BlockPos
 import net.minecraftforge.fml.common.network.ByteBufUtils

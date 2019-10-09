@@ -4,11 +4,11 @@ package net.cydhra.technocracy.astronautics.entity
 import io.netty.buffer.ByteBuf
 import net.cydhra.technocracy.astronautics.blocks.general.rocketDriveBlock
 import net.cydhra.technocracy.astronautics.fx.ParticleSmoke
-import net.cydhra.technocracy.foundation.capabilities.fluid.DynamicFluidCapability
-import net.cydhra.technocracy.foundation.data.GroupManager
-import net.cydhra.technocracy.foundation.fx.TCParticleManager
-import net.cydhra.technocracy.foundation.tileentity.components.FluidComponent
-import net.cydhra.technocracy.foundation.tileentity.components.OwnerShipComponent
+import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
+import net.cydhra.technocracy.foundation.data.world.groups.GroupManager
+import net.cydhra.technocracy.foundation.model.fx.manager.TCParticleManager
+import net.cydhra.technocracy.foundation.content.tileentities.components.FluidComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.OwnerShipComponent
 import net.cydhra.technocracy.foundation.util.readCompoundTag
 import net.cydhra.technocracy.foundation.util.structures.Template
 import net.cydhra.technocracy.foundation.util.writeCompoundTag

@@ -2,7 +2,7 @@ package net.cydhra.technocracy.foundation.client.model.pipe
 
 import net.cydhra.technocracy.foundation.client.textures.TextureAtlasManager
 import net.cydhra.technocracy.foundation.conduits.types.PipeType
-import net.cydhra.technocracy.foundation.items.PipeItem
+import net.cydhra.technocracy.foundation.content.items.PipeItem
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.renderer.block.model.*
 import net.minecraft.client.renderer.texture.TextureAtlasSprite

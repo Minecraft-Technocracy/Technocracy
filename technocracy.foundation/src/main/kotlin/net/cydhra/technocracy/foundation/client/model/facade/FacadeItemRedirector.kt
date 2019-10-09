@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.client.model.facade
 
-import net.cydhra.technocracy.foundation.items.FacadeItem
+import net.cydhra.technocracy.foundation.content.items.FacadeItem
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.client.renderer.block.model.IBakedModel

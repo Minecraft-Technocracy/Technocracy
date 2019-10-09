@@ -1,9 +1,9 @@
 package net.cydhra.technocracy.foundation.client.model.customModel.connector
 
 import net.cydhra.technocracy.foundation.client.textures.TextureAtlasManager
-import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
-import net.cydhra.technocracy.foundation.tileentity.components.EnergyStorageComponent
-import net.cydhra.technocracy.foundation.tileentity.components.InventoryComponent
+import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
+import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryComponent
 import net.cydhra.technocracy.foundation.util.propertys.POSITION
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.Minecraft
@@ -38,7 +38,8 @@ class MachineConnectorBakedModel(val baseBakedModel: IBakedModel, val connector:
         val pos = state.getValue(POSITION)
 
         //use direct call to world, as this is client side and thus can only be in the currently loaded world
-        val tile = Minecraft.getMinecraft().world.getTileEntity(pos) as? MachineTileEntity ?: return quads
+        val tile = Minecraft.getMinecraft().world.getTileEntity(pos) as? MachineTileEntity
+                ?: return quads
 
         //get all components of the TileEntity
         val comp = tile.getComponents()

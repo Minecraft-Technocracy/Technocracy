@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.client.gui.components.energymeter
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
-import net.cydhra.technocracy.foundation.tileentity.components.EnergyStorageComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageComponent
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.Tessellator

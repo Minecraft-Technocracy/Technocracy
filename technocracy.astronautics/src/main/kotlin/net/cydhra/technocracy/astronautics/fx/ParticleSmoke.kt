@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.astronautics.fx
 
-import net.cydhra.technocracy.foundation.fx.AbstractParticle
-import net.cydhra.technocracy.foundation.fx.IParticleType
+import net.cydhra.technocracy.foundation.model.fx.api.AbstractParticle
+import net.cydhra.technocracy.foundation.model.fx.api.IParticleType
 import net.cydhra.technocracy.foundation.util.opengl.BasicShaderProgram
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.ActiveRenderInfo

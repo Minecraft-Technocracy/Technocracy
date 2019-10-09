@@ -3,8 +3,8 @@ package net.cydhra.technocracy.foundation.client.gui.machine
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.components.redstonemode.DefaultRedstoneModeControl
 import net.cydhra.technocracy.foundation.client.gui.TCTab
-import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
-import net.cydhra.technocracy.foundation.tileentity.components.RedstoneModeComponent
+import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
+import net.cydhra.technocracy.foundation.content.tileentities.components.RedstoneModeComponent
 import net.minecraft.client.Minecraft
 import net.minecraft.util.ResourceLocation
 

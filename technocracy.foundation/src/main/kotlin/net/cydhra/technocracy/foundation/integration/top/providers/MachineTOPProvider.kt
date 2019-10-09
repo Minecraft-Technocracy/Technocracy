@@ -2,10 +2,14 @@ package net.cydhra.technocracy.foundation.integration.top.providers
 
 import mcjty.theoneprobe.api.*
 import mcjty.theoneprobe.apiimpl.styles.ProgressStyle
-import net.cydhra.technocracy.foundation.multiblock.BaseMultiBlock
-import net.cydhra.technocracy.foundation.tileentity.api.TCAggregatable
-import net.cydhra.technocracy.foundation.tileentity.components.*
-import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPart
+import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.FluidComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.OptionalAttachedComponent
+import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
+import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatable
+import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractComponent
+import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
 import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
@@ -20,7 +24,8 @@ class MachineTOPProvider : IProbeInfoProvider {
     private val fluidStyle: ProgressStyle = ProgressStyle().suffix(" mB").filledColor(0xff0000dd.toInt()).borderColor(0xff555555.toInt()).alternateFilledColor(0xff000043.toInt()).numberFormat(NumberFormat.COMMAS)
 
     override fun addProbeInfo(mode: ProbeMode, probeInfo: IProbeInfo, player: EntityPlayer, world: World, blockState: IBlockState, data: IProbeHitData) {
-        val te = world.getTileEntity(data.pos) as? TCAggregatable ?: return
+        val te = world.getTileEntity(data.pos) as? TCAggregatable
+                ?: return
         if (te !is ICapabilityProvider) return
         val components: Set<Pair<String, AbstractComponent>>
         components = if (te is TileEntityMultiBlockPart<*>) {

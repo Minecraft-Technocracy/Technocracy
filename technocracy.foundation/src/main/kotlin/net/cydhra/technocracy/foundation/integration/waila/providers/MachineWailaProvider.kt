@@ -5,11 +5,11 @@ import mcp.mobius.waila.api.IWailaDataAccessor
 import mcp.mobius.waila.api.IWailaDataProvider
 import mcp.mobius.waila.api.SpecialChars
 import net.cydhra.technocracy.foundation.TCFoundation
-import net.cydhra.technocracy.foundation.capabilities.energy.DynamicEnergyStorageStrategy
-import net.cydhra.technocracy.foundation.multiblock.BaseMultiBlock
-import net.cydhra.technocracy.foundation.tileentity.api.TCAggregatable
-import net.cydhra.technocracy.foundation.tileentity.components.ComponentType
-import net.cydhra.technocracy.foundation.tileentity.multiblock.TileEntityMultiBlockPart
+import net.cydhra.technocracy.foundation.content.capabilities.energy.DynamicEnergyStorageStrategy
+import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
+import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatable
+import net.cydhra.technocracy.foundation.model.tileentities.api.components.ComponentType
+import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound

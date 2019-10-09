@@ -5,7 +5,7 @@ import mezz.jei.api.IModRegistry
 import mezz.jei.api.JEIPlugin
 import mezz.jei.api.recipe.IRecipeCategoryRegistration
 import net.cydhra.technocracy.foundation.TCFoundation
-import net.cydhra.technocracy.foundation.crafting.RecipeManager
+import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.integration.jei.machines.MachineRecipeCategory
 import net.cydhra.technocracy.foundation.integration.jei.multiblocks.RefineryRecipeCategory
 import net.minecraft.item.ItemStack

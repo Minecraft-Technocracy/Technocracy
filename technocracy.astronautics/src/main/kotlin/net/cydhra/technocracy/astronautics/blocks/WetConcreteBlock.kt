@@ -1,8 +1,8 @@
 package net.cydhra.technocracy.astronautics.blocks
 
 import net.cydhra.technocracy.astronautics.client.astronauticsColorTabs
-import net.cydhra.technocracy.foundation.blocks.api.ColoredPlainBlock
-import net.cydhra.technocracy.foundation.blocks.color.DyeBlockColor
+import net.cydhra.technocracy.foundation.model.blocks.impl.ColoredPlainBlock
+import net.cydhra.technocracy.foundation.model.blocks.color.DyeBlockColor
 import net.minecraft.block.BlockColored
 import net.minecraft.block.SoundType
 import net.minecraft.block.material.Material

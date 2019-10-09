@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.astronautics.blocks
 
-import net.cydhra.technocracy.foundation.blocks.api.AbstractBaseBlock
+import net.cydhra.technocracy.foundation.model.blocks.api.AbstractBaseBlock
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.Entity

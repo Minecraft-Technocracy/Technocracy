@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.client.model.pipe
 
 import net.cydhra.technocracy.foundation.TCFoundation
-import net.cydhra.technocracy.foundation.items.FacadeItem
+import net.cydhra.technocracy.foundation.content.items.FacadeItem
 import net.cydhra.technocracy.foundation.util.facade.FakeBlockAccess
 import net.cydhra.technocracy.foundation.util.model.SimpleQuad
 import net.cydhra.technocracy.foundation.util.model.pipeline.QuadPipeline

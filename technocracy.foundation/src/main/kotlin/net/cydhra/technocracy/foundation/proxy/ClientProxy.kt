@@ -2,20 +2,15 @@ package net.cydhra.technocracy.foundation.proxy
 
 import com.google.common.collect.ImmutableMap
 import net.cydhra.technocracy.foundation.TCFoundation
-import net.cydhra.technocracy.foundation.blocks.general.BlockManager
 import net.cydhra.technocracy.foundation.client.events.KeyEventHandler
 import net.cydhra.technocracy.foundation.client.textures.TextureAtlasManager
-import net.cydhra.technocracy.foundation.fx.TCParticleManager
-import net.cydhra.technocracy.foundation.items.general.ItemManager
-import net.cydhra.technocracy.foundation.tileentity.management.TileEntityManager
+import net.cydhra.technocracy.foundation.model.fx.manager.TCParticleManager
 import net.minecraft.util.ResourceLocation
-import net.minecraftforge.client.event.RenderWorldLastEvent
 import net.minecraftforge.client.model.ModelLoaderRegistry
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.animation.ITimeValue
 import net.minecraftforge.common.model.animation.IAnimationStateMachine
 import net.minecraftforge.fml.common.Mod
-import net.minecraftforge.fml.common.gameevent.TickEvent
 
 
 /**

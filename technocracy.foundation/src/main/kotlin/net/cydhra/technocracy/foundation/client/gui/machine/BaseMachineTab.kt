@@ -2,7 +2,7 @@ package net.cydhra.technocracy.foundation.client.gui.machine
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.TCTab
-import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
+import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
 import net.minecraft.util.ResourceLocation
 
 // nullable platform type: its null if the te is not placed in the world (required for jei)
