@@ -3,18 +3,19 @@ package net.cydhra.technocracy.foundation.crafting.types
 import net.cydhra.technocracy.foundation.crafting.IMachineRecipe
 import net.minecraft.item.ItemStack
 import net.minecraft.item.crafting.Ingredient
+import net.minecraftforge.fluids.Fluid
 import net.minecraftforge.fluids.FluidStack
 
 /**
- * A recipe data model for recipes that convert one single [Ingredient] into one single output [ItemStack]
+ * A recipe data model for recipes that convert one single [Ingredient] into one single output [FluidStack]
  *
  * @param inputItem single input [Ingredient]
- * @param outputItem output [ItemStack]
+ * @param outputFluid output [FluidStack]
  * @param processingCost amount of processing the machine has to solve for this recipe
  */
-class ItemToItemRecipe(
+class ITFRecipe(
         val inputItem: Ingredient,
-        val outputItem: ItemStack,
+        val outputFluid: FluidStack,
         override val processingCost: Int) : IMachineRecipe {
 
     override fun conforms(stacks: List<ItemStack>, fluids: List<FluidStack>): Boolean {
@@ -25,7 +26,7 @@ class ItemToItemRecipe(
         return listOf(inputItem)
     }
 
-    override fun getOutput(): List<ItemStack> {
-        return listOf(outputItem)
+    override fun getFluidOutput(): List<FluidStack> {
+        return listOf(this.outputFluid)
     }
 }

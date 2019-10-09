@@ -7,15 +7,15 @@ import net.minecraftforge.fluids.Fluid
 import net.minecraftforge.fluids.FluidStack
 
 /**
- * A recipe data model for recipes that convert one single [FluidStack] into one single output [FluidStack]
+ * A recipe data model for recipes that convert one single [FluidStack] into one single output [ItemStack]
  *
  * @param inputFluid input [FluidStack]
- * @param outputFluid output [FluidStack]
+ * @param outputStack output [ItemStack]
  * @param processingCost amount of processing the machine has to solve for this recipe
  */
-class FluidToFluidRecipe(
+class FTIRecipe(
         val inputFluid: FluidStack,
-        val outputFluid: FluidStack,
+        val outputStack: ItemStack,
         override val processingCost: Int) : IMachineRecipe {
 
     override fun conforms(stacks: List<ItemStack>, fluids: List<FluidStack>): Boolean {
@@ -26,7 +26,7 @@ class FluidToFluidRecipe(
         return listOf(this.inputFluid)
     }
 
-    override fun getFluidOutput(): List<FluidStack> {
-        return listOf(this.outputFluid)
+    override fun getOutput(): List<ItemStack> {
+        return listOf(outputStack)
     }
 }
