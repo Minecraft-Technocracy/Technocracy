@@ -101,7 +101,7 @@ object RecipeManager {
      * @return true if the file has either been loaded successfully or was not loaded on purpose. False in case of an
      * error
      */
-    private fun loadRecipe(path: Path, parser: RecipeParser<*>, type: RecipeType): Boolean {
+    private fun loadRecipe(path: Path, parser: RecipeParser<out IMachineRecipe>, type: RecipeType): Boolean {
         if (FilenameUtils.getExtension(path.toString()) != "json")
             return true
 
@@ -132,7 +132,7 @@ object RecipeManager {
      * @param parser parser for recipes at the given endpoint
      * @param type type of recipe that is loaded
      */
-    private fun parseMachineRecipes(endpoint: String, parser: RecipeParser<*>, type: RecipeType) {
+    private fun parseMachineRecipes(endpoint: String, parser: RecipeParser<out IMachineRecipe>, type: RecipeType) {
         Loader.instance().indexedModList.forEach { (modId, modContainer) ->
             CraftingHelper.findFiles(
                     modContainer,

@@ -4,9 +4,9 @@ import com.google.gson.JsonObject
 import net.minecraftforge.common.crafting.JsonContext
 
 /**
- * Interface describing a parser for custum recipe types of machines of this mod
+ * Interface describing a parser for custom recipe types of machines of this mod
  */
-interface RecipeParser<T : IMachineRecipe> {
+interface RecipeParser<T : ISpecialRecipe> {
 
     /**
      * Parse a recipe of type [T] from given json object

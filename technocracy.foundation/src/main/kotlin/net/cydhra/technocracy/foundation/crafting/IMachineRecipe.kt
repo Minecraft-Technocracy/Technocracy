@@ -4,7 +4,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.item.crafting.Ingredient
 import net.minecraftforge.fluids.FluidStack
 
-interface IMachineRecipe {
+interface IMachineRecipe : ISpecialRecipe {
 
     /**
      * The tick cost a machine must pay to process the recipe
