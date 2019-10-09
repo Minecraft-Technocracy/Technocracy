@@ -81,18 +81,22 @@ class TileEntityPipe : AggregatableTileEntity() {
         //todo update network pipe tier
 
         if (!this.world.isRemote) {
-            ConduitNetwork.addConduitNode(this.world as WorldServer, this.pos, type)
+            val transaction = ConduitNetwork.beginTransaction()
+
+            ConduitNetwork.addConduitNode(transaction, this.world as WorldServer, this.pos, type)
 
             EnumFacing.values().forEach { face ->
                 val offset = this.pos.offset(face)
                 if (ConduitNetwork.hasConduitNode(this.world as WorldServer, offset, type)) {
-                    ConduitNetwork.insertConduitEdge(this.world as WorldServer, this.pos, offset, type)
+                    ConduitNetwork.insertConduitEdge(transaction, this.world as WorldServer, this.pos, offset, type)
                 }
 
                 if (world.getTileEntity(offset)?.hasCapability(type.capability, face.opposite) == true) {
-                    ConduitNetwork.attachTransitSink(world as WorldServer, pos, face, type)
+                    ConduitNetwork.attachTransitSink(transaction, world as WorldServer, pos, face, type)
                 }
             }
+
+            transaction.commit()
         }
         markForUpdate()
     }
@@ -105,16 +109,18 @@ class TileEntityPipe : AggregatableTileEntity() {
         }
 
         if (!this.world.isRemote) {
-            ConduitNetwork.removeConduitNode(this.world as WorldServer, this.pos, type)
-            ConduitNetwork.removeAllAttachedSinks(this.world as WorldServer, this.pos, type)
+            val transaction = ConduitNetwork.beginTransaction()
+            ConduitNetwork.removeConduitNode(transaction, this.world as WorldServer, this.pos, type)
+            ConduitNetwork.removeAllAttachedSinks(transaction, this.world as WorldServer, this.pos, type)
 
             EnumFacing.values().forEach { face ->
                 val offset = this.pos.offset(face)
                 if (ConduitNetwork.hasConduitNode(this.world as WorldServer, offset, type)) {
-                    ConduitNetwork.removeConduitEdge(this.world as WorldServer, this.pos, offset, type)
+                    ConduitNetwork.removeConduitEdge(transaction, this.world as WorldServer, this.pos, offset, type)
                 }
             }
 
+            transaction.commit()
             markForUpdate()
         }
     }
@@ -123,15 +129,19 @@ class TileEntityPipe : AggregatableTileEntity() {
         if (!this.world.isRemote) {
             PipeType.values().forEach { type ->
                 if (ConduitNetwork.hasConduitNode(this.world as WorldServer, this.pos, type)) {
-                    ConduitNetwork.removeConduitNode(this.world as WorldServer, this.pos, type)
-                    ConduitNetwork.removeAllAttachedSinks(this.world as WorldServer, this.pos, type)
+                    val transaction = ConduitNetwork.beginTransaction()
+
+                    ConduitNetwork.removeConduitNode(transaction, this.world as WorldServer, this.pos, type)
+                    ConduitNetwork.removeAllAttachedSinks(transaction, this.world as WorldServer, this.pos, type)
 
                     EnumFacing.values().forEach { face ->
                         val offset = this.pos.offset(face)
                         if (ConduitNetwork.hasConduitNode(this.world as WorldServer, offset, type)) {
-                            ConduitNetwork.removeConduitEdge(this.world as WorldServer, this.pos, offset, type)
+                            ConduitNetwork.removeConduitEdge(transaction, this.world as WorldServer,
+                                    this.pos, offset, type)
                         }
                     }
+                    transaction.commit()
                 }
             }
         }
@@ -142,15 +152,17 @@ class TileEntityPipe : AggregatableTileEntity() {
             val face = EnumFacing.values().first { pos.offset(it) == neighbor }
 
             this.pipeTypes.types.forEach { type ->
+                val transaction = ConduitNetwork.beginTransaction()
                 if (world.getTileEntity(neighbor)?.hasCapability(type.capability, face.opposite) == true) {
                     if (!ConduitNetwork.hasSink(world as WorldServer, pos, face, type)) {
-                        ConduitNetwork.attachTransitSink(world, pos, face, type)
+                        ConduitNetwork.attachTransitSink(transaction, world, pos, face, type)
                     }
                 } else {
                     if (ConduitNetwork.hasSink(world as WorldServer, pos, face, type)) {
-                        ConduitNetwork.removeTransitSink(world, pos, face, type)
+                        ConduitNetwork.removeTransitSink(transaction, world, pos, face, type)
                     }
                 }
+                transaction.commit()
             }
         }
     }

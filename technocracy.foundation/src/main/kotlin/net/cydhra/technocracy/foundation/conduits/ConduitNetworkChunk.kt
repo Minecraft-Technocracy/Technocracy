@@ -104,7 +104,6 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
         }
 
         this.nodes[pos]!!.add(type)
-        this.recalculatePaths()
         this.markDirty()
     }
 
@@ -122,7 +121,6 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
         check(this.nodes[pos]?.contains(type) != false) { "the removed node does not exist within the network" }
 
         this.nodes[pos]!!.remove(type)
-        this.recalculatePaths()
         this.markDirty()
     }
 
@@ -163,7 +161,6 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
             chunkTransitEdges[pos]!! += TransitChunkEdge(transitEdgeCounter++, type, facing, pos)
         }
 
-        this.recalculatePaths()
         this.markDirty()
     }
 
@@ -193,7 +190,6 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
             chunkTransitEdges[pos]!!.removeIf { it.type == type && it.facing == facing }
         }
 
-        this.recalculatePaths()
         this.markDirty()
     }
 
@@ -215,7 +211,6 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
         }
 
         this.attachedSinks[pos]!!.add(TransitSink(transitEdgeCounter++, type, facing, pos))
-        this.recalculatePaths()
         this.markDirty()
     }
 
@@ -229,7 +224,6 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      */
     internal fun removeTransitSink(pos: BlockPos, facing: EnumFacing, type: PipeType) {
         this.attachedSinks[pos]?.removeIf { it.type == type && it.facing == facing }
-        this.recalculatePaths()
         this.markDirty()
     }
 
@@ -408,7 +402,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
     /**
      * Recalculate the internal transit network
      */
-    private fun recalculatePaths() {
+    internal fun recalculatePaths() {
         // TODO recalculate transit model
 
     }

@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.conduits
 
+import net.cydhra.technocracy.foundation.conduits.ConduitNetwork.removeAllAttachedSinks
 import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.minecraft.client.Minecraft
 import net.minecraft.util.EnumFacing
@@ -13,6 +14,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import org.lwjgl.opengl.GL11
 import org.lwjgl.util.glu.Disk
 import org.lwjgl.util.glu.Sphere
+import sun.nio.ch.Net
 
 /**
  * Global facade to the conduit network. All components that interact with the conduit network shall talk to this
@@ -39,12 +41,14 @@ object ConduitNetwork {
      * @throws IllegalStateException if the node already exists
      * @throws IllegalStateException if the respective chunk is not loaded
      */
-    fun addConduitNode(world: WorldServer, pos: BlockPos, type: PipeType) {
+    fun addConduitNode(transactionContext: NetworkTransactionContext,
+                       world: WorldServer, pos: BlockPos, type: PipeType) {
         val dimension = dimensions[world.provider.dimension]
                 ?: throw IllegalStateException("the dimension is not loaded")
         val chunk = dimension.getChunkAt(ChunkPos(pos)) ?: throw IllegalStateException("the chunk is not loaded")
 
         chunk.insertNode(pos, type)
+        transactionContext.markChunkModified(chunk)
     }
 
     /**
@@ -58,12 +62,14 @@ object ConduitNetwork {
      * @throws IllegalStateException if the node does not exist
      * @throws IllegalStateException if the respective chunk is not loaded
      */
-    fun removeConduitNode(world: WorldServer, pos: BlockPos, type: PipeType) {
+    fun removeConduitNode(transactionContext: NetworkTransactionContext,
+                          world: WorldServer, pos: BlockPos, type: PipeType) {
         val dimension = dimensions[world.provider.dimension]
                 ?: throw IllegalStateException("the dimension is not loaded")
         val chunk = dimension.getChunkAt(ChunkPos(pos)) ?: throw IllegalStateException("the chunk is not loaded")
 
         chunk.removeNode(pos, type)
+        transactionContext.markChunkModified(chunk)
     }
 
     /**
@@ -84,7 +90,8 @@ object ConduitNetwork {
      * @throws [IllegalStateException] if the dimension is not loaded
      * @throws [IllegalStateException] if one of the chunks is not loaded
      */
-    fun insertConduitEdge(world: WorldServer, nodeA: BlockPos, nodeB: BlockPos, type: PipeType) {
+    fun insertConduitEdge(transactionContext: NetworkTransactionContext,
+                          world: WorldServer, nodeA: BlockPos, nodeB: BlockPos, type: PipeType) {
         val directionFromA = EnumFacing.values().firstOrNull { nodeA.add(it.directionVec) == nodeB }
                 ?: throw IllegalArgumentException("the positions are not adjacent")
 
@@ -98,6 +105,8 @@ object ConduitNetwork {
         val chunkB = dimension.getChunkAt(ChunkPos(nodeB))
                 ?: throw IllegalStateException("the chunk of nodeB is not loaded")
         chunkB.insertEdge(nodeB, directionFromA.opposite, type)
+        transactionContext.markChunkModified(chunkA)
+        transactionContext.markChunkModified(chunkB)
     }
 
     /**
@@ -112,7 +121,8 @@ object ConduitNetwork {
      * @throws [IllegalArgumentException] if the positions given are not adjacent
      * @throws [IllegalStateException] if the edge does not exist
      */
-    fun removeConduitEdge(world: WorldServer, nodeA: BlockPos, nodeB: BlockPos, type: PipeType) {
+    fun removeConduitEdge(transactionContext: NetworkTransactionContext,
+                          world: WorldServer, nodeA: BlockPos, nodeB: BlockPos, type: PipeType) {
         val directionFromA = EnumFacing.values().firstOrNull { nodeA.add(it.directionVec) == nodeB }
                 ?: throw IllegalArgumentException("the positions are not adjacent")
 
@@ -126,6 +136,58 @@ object ConduitNetwork {
         val chunkB = dimension.getChunkAt(ChunkPos(nodeB))
                 ?: throw IllegalStateException("the chunk of nodeB is not loaded")
         chunkB.removeEdge(nodeB, directionFromA.opposite, type)
+        transactionContext.markChunkModified(chunkA)
+        transactionContext.markChunkModified(chunkB)
+    }
+
+    fun attachTransitSink(transactionContext: NetworkTransactionContext,
+                          world: WorldServer, pos: BlockPos, facing: EnumFacing,
+                          type: PipeType) {
+        val dimension = dimensions[world.provider.dimension]
+                ?: throw IllegalStateException("the dimension is not loaded")
+
+        val chunk = dimension.getChunkAt(ChunkPos(pos)) ?: throw IllegalStateException("the chunk is not loaded")
+
+        chunk.insertEdge(pos, facing, type)
+        chunk.attachTransitSink(pos, facing, type)
+        transactionContext.markChunkModified(chunk)
+    }
+
+    /**
+     * Remove the edge and sink at a given location and facing. This will not check whether there is actually a sink
+     * but just remove the edge. If there was no sink, the adjacent block in direction of [facing] will have a
+     * dangling edge left.
+     */
+    fun removeTransitSink(transactionContext: NetworkTransactionContext,
+                          world: WorldServer, pos: BlockPos, facing: EnumFacing,
+                          type: PipeType) {
+        val dimension = dimensions[world.provider.dimension]
+                ?: throw IllegalStateException("the dimension is not loaded")
+
+        val chunk = dimension.getChunkAt(ChunkPos(pos)) ?: throw IllegalStateException("the chunk is not loaded")
+
+        chunk.removeEdge(pos, facing, type)
+        transactionContext.markChunkModified(chunk)
+    }
+
+    /**
+     * Remove all sinks that are attached to the given position of a given pipe type. This does also remove the edges
+     * that are linked with the sinks. This does not remove the node.
+     *
+     * @param world the world of the conduit network
+     * @param pos the position where to remove sinks
+     * @param type the type of sinks to remove
+     *
+     */
+    fun removeAllAttachedSinks(transactionContext: NetworkTransactionContext,
+                               world: WorldServer, pos: BlockPos, type: PipeType) {
+        val dimension = dimensions[world.provider.dimension]
+                ?: throw IllegalStateException("the dimension is not loaded")
+
+        val chunk = dimension.getChunkAt(ChunkPos(pos)) ?: throw IllegalStateException("the chunk is not loaded")
+
+        chunk.removeAllSinks(pos, type)
+        transactionContext.markChunkModified(chunk)
     }
 
     /**
@@ -143,48 +205,6 @@ object ConduitNetwork {
         return chunk.hasNode(pos, type)
     }
 
-    fun attachTransitSink(world: WorldServer, pos: BlockPos, facing: EnumFacing, type: PipeType) {
-        val dimension = dimensions[world.provider.dimension]
-                ?: throw IllegalStateException("the dimension is not loaded")
-
-        val chunk = dimension.getChunkAt(ChunkPos(pos)) ?: throw IllegalStateException("the chunk is not loaded")
-
-        chunk.insertEdge(pos, facing, type)
-        chunk.attachTransitSink(pos, facing, type)
-    }
-
-    /**
-     * Remove the edge and sink at a given location and facing. This will not check whether there is actually a sink
-     * but just remove the edge. If there was no sink, the adjacent block in direction of [facing] will have a
-     * dangling edge left.
-     */
-    fun removeTransitSink(world: WorldServer, pos: BlockPos, facing: EnumFacing, type: PipeType) {
-        val dimension = dimensions[world.provider.dimension]
-                ?: throw IllegalStateException("the dimension is not loaded")
-
-        val chunk = dimension.getChunkAt(ChunkPos(pos)) ?: throw IllegalStateException("the chunk is not loaded")
-
-        chunk.removeEdge(pos, facing, type)
-    }
-
-    /**
-     * Remove all sinks that are attached to the given position of a given pipe type. This does also remove the edges
-     * that are linked with the sinks. This does not remove the node.
-     *
-     * @param world the world of the conduit network
-     * @param pos the position where to remove sinks
-     * @param type the type of sinks to remove
-     *
-     */
-    fun removeAllAttachedSinks(world: WorldServer, pos: BlockPos, type: PipeType) {
-        val dimension = dimensions[world.provider.dimension]
-                ?: throw IllegalStateException("the dimension is not loaded")
-
-        val chunk = dimension.getChunkAt(ChunkPos(pos)) ?: throw IllegalStateException("the chunk is not loaded")
-
-        chunk.removeAllSinks(pos, type)
-    }
-
     fun hasSink(world: WorldServer, pos: BlockPos, face: EnumFacing, type: PipeType): Boolean {
         val dimension = dimensions[world.provider.dimension]
                 ?: throw IllegalStateException("the dimension is not loaded")
@@ -192,6 +212,28 @@ object ConduitNetwork {
         val chunk = dimension.getChunkAt(ChunkPos(pos)) ?: throw IllegalStateException("the chunk is not loaded")
 
         return chunk.hasSink(pos, face, type)
+    }
+
+    fun beginTransaction(): NetworkTransactionContext {
+        return NetworkTransactionContext()
+    }
+
+    /**
+     * Context of a network modification. Stores all modified chunks. After a full transaction, call [commit] to
+     * recalculate network paths.
+     */
+    class NetworkTransactionContext internal constructor() {
+        private val modifiedChunks: MutableList<ConduitNetworkChunk> = mutableListOf()
+
+        internal fun markChunkModified(chunk: ConduitNetworkChunk) {
+            if (!modifiedChunks.contains(chunk)) {
+                modifiedChunks += chunk
+            }
+        }
+
+        fun commit() {
+            modifiedChunks.forEach(ConduitNetworkChunk::recalculatePaths)
+        }
     }
 
     /**
