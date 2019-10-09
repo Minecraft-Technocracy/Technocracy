@@ -17,13 +17,16 @@ import net.minecraft.world.IBlockAccess
 import net.minecraftforge.common.property.IExtendedBlockState
 import javax.vecmath.Vector3f
 
-
-class TankMultiBlockBlock<T>(unlocalizedName: String,
-                             tileEntityConstructor: () -> T,
-                             opaque: Boolean = true,
-                             isFullCube: Boolean = true,
-                             glassSides: Boolean = false,
-                             renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID)
+/**
+ * Part of the tank multiblock structure. Unlike other multiblock structure blocks, this one has special behaviour to
+ * allow storing parts of the multiblock state within one of its blocks
+ */
+class TankStructureBlock<T>(unlocalizedName: String,
+                            tileEntityConstructor: () -> T,
+                            opaque: Boolean = true,
+                            isFullCube: Boolean = true,
+                            glassSides: Boolean = false,
+                            renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID)
     : PlainMultiBlockPartBlock<T>(unlocalizedName, tileEntityConstructor, opaque, isFullCube, glassSides, renderLayer)
         where T : TileEntity, T : TCMultiBlockActiveTileEntity, T : IMultiblockPart {
 
