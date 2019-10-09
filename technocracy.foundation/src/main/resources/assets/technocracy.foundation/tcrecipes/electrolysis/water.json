@@ -3,7 +3,7 @@
     "fluid": "water",
     "amount": 1
   },
-  "output": [
+  "outputs": [
     {
       "fluid": "oxygen",
       "amount": 1

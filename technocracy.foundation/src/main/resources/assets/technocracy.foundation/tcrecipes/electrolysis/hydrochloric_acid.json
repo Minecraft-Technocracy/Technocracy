@@ -3,7 +3,7 @@
     "fluid": "hydrochloric_acid",
     "amount": 1
   },
-  "output": [
+  "outputs": [
     {
       "fluid": "chlorine",
       "amount": 1

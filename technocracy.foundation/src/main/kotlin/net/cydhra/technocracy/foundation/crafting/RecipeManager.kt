@@ -53,17 +53,17 @@ object RecipeManager {
         parseMachineRecipes("centrifuge", CentrifugeRecipeParser, RecipeManager.RecipeType.CENTRIFUGE)
         parseMachineRecipes("chemical_etching", MITIRecipeParser, RecipeManager.RecipeType.CHEMICAL_ETCHING)
         parseMachineRecipes("chemical_oxidizer", ITFRecipeParser, RecipeManager.RecipeType.CHEMICAL_OXIDIZER)
-        parseMachineRecipes("chemical_processing", ChemicalProcessingParser, RecipeManager.RecipeType.CHEMICAL_PROCESSING)
+        parseMachineRecipes("chemical_processing", IFTIRecipeParser, RecipeManager.RecipeType.CHEMICAL_PROCESSING)
         parseMachineRecipes("chemical_reaction", MFTFRecipeParser, RecipeManager.RecipeType.CHEMICAL_REACTION)
         parseMachineRecipes("compactor", ITIRecipeParser, RecipeManager.RecipeType.COMPACTOR)
         parseMachineRecipes("crystallization", FTIRecipeParser, RecipeManager.RecipeType.CRYSTALLIZATION)
-        parseMachineRecipes("dissolution", DissolutionRecipeParser, RecipeManager.RecipeType.DISSOLUTION)
+        parseMachineRecipes("dissolution", IFTFRecipeParser, RecipeManager.RecipeType.DISSOLUTION)
         parseMachineRecipes("electric_furnace", ITIRecipeParser, RecipeManager.RecipeType.ELECTRIC_FURNACE)
-        parseMachineRecipes("electrolysis", ElectrolysisRecipeParser, RecipeManager.RecipeType.ELECTROLYSIS)
+        parseMachineRecipes("electrolysis", FTMFRecipeParser, RecipeManager.RecipeType.ELECTROLYSIS)
         parseMachineRecipes("kiln", FTFRecipeParser, RecipeManager.RecipeType.KILN)
         parseMachineRecipes("polymerization", FTIRecipeParser, RecipeType.POLYMERIZATION)
         parseMachineRecipes("pulverizer", ITIRecipeParser, RecipeManager.RecipeType.PULVERIZER)
-        parseMachineRecipes("refinery", RefineryRecipeParser, RecipeManager.RecipeType.REFINERY)
+        parseMachineRecipes("refinery", FTMFRecipeParser, RecipeManager.RecipeType.REFINERY)
     }
 
     /**

@@ -203,14 +203,14 @@ class OreSystemBuilder {
 
                     // add slag recipe
                     RecipeManager.registerRecipe(RecipeManager.RecipeType.DISSOLUTION,
-                            DissolutionRecipe(Ingredient.fromItem(Item.getItemFromBlock(ore)),
+                            IFTFRecipe(Ingredient.fromItem(Item.getItemFromBlock(ore)),
                                     FluidStack(hydrochloricAcidFluid, 250),
                                     FluidStack(slag, 1000),
                                     80))
 
                     // add slurry recipe
                     RecipeManager.registerRecipe(RecipeManager.RecipeType.ELECTROLYSIS,
-                            ElectrolysisRecipe(FluidStack(slag, 1000),
+                            FTMFRecipe(FluidStack(slag, 1000),
                                     listOf(FluidStack(slurry, 500), FluidStack(drossFluid, 500)),
                                     200))
 

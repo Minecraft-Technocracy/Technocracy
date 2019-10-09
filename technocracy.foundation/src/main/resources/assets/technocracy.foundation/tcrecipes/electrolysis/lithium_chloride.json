@@ -3,7 +3,7 @@
     "fluid": "lithium_chloride",
     "amount": 2
   },
-  "output": [
+  "outputs": [
     {
       "fluid": "chlorine",
       "amount": 1
