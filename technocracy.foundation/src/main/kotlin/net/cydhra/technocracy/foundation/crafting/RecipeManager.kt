@@ -8,6 +8,7 @@ import com.google.gson.JsonParseException
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.general.*
 import net.cydhra.technocracy.foundation.crafting.RecipeManager.RECIPE_ASSETS_FOLDER
+import net.cydhra.technocracy.foundation.crafting.special.HeatRecipeParser
 import net.cydhra.technocracy.foundation.crafting.types.*
 import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
 import net.cydhra.technocracy.foundation.tileentity.machines.*
@@ -41,29 +42,36 @@ object RecipeManager {
     private val jsonContext = JsonContext(TCFoundation.MODID)
 
     /**
-     * All recipes loaded by type
+     * All machine recipes loaded by type
      */
-    private val loadedRecipes: Multimap<RecipeType, IMachineRecipe> = HashMultimap.create()
+    private val loadedMachineRecipes: Multimap<RecipeType, IMachineRecipe> = HashMultimap.create()
+
+    /**
+     * Loaded non-machine recipes by type
+     */
+    private val loadedSpecialRecipes: Multimap<RecipeType, ISpecialRecipe> = HashMultimap.create()
 
     /**
      * Called upon post initialization by common proxy. Attempts to load recipes of all different machine types.
      */
     fun initialize() {
-        parseMachineRecipes("alloy_smeltery", MITIRecipeParser, RecipeType.ALLOY)
-        parseMachineRecipes("centrifuge", ITMIRecipeParser, RecipeType.CENTRIFUGE)
-        parseMachineRecipes("chemical_etching", MITIRecipeParser, RecipeType.CHEMICAL_ETCHING)
-        parseMachineRecipes("chemical_oxidizer", ITFRecipeParser, RecipeType.CHEMICAL_OXIDIZER)
-        parseMachineRecipes("chemical_processing", IFTIRecipeParser, RecipeType.CHEMICAL_PROCESSING)
-        parseMachineRecipes("chemical_reaction", MFTFRecipeParser, RecipeType.CHEMICAL_REACTION)
-        parseMachineRecipes("compactor", ITIRecipeParser, RecipeType.COMPACTOR)
-        parseMachineRecipes("crystallization", FTIRecipeParser, RecipeType.CRYSTALLIZATION)
-        parseMachineRecipes("dissolution", IFTFRecipeParser, RecipeType.DISSOLUTION)
-        parseMachineRecipes("electric_furnace", ITIRecipeParser, RecipeType.ELECTRIC_FURNACE)
-        parseMachineRecipes("electrolysis", FTMFRecipeParser, RecipeType.ELECTROLYSIS)
-        parseMachineRecipes("kiln", FTFRecipeParser, RecipeType.KILN)
-        parseMachineRecipes("polymerization", FTIRecipeParser, RecipeType.POLYMERIZATION)
-        parseMachineRecipes("pulverizer", ITIRecipeParser, RecipeType.PULVERIZER)
-        parseMachineRecipes("refinery", FTMFRecipeParser, RecipeType.REFINERY)
+        parseMachineRecipes("alloy_smeltery", MITIRecipeParser, loadedMachineRecipes, RecipeType.ALLOY)
+        parseMachineRecipes("centrifuge", ITMIRecipeParser, loadedMachineRecipes, RecipeType.CENTRIFUGE)
+        parseMachineRecipes("chemical_etching", MITIRecipeParser, loadedMachineRecipes, RecipeType.CHEMICAL_ETCHING)
+        parseMachineRecipes("chemical_oxidizer", ITFRecipeParser, loadedMachineRecipes, RecipeType.CHEMICAL_OXIDIZER)
+        parseMachineRecipes("chemical_processing", IFTIRecipeParser, loadedMachineRecipes, RecipeType.CHEMICAL_PROCESSING)
+        parseMachineRecipes("chemical_reaction", MFTFRecipeParser, loadedMachineRecipes, RecipeType.CHEMICAL_REACTION)
+        parseMachineRecipes("compactor", ITIRecipeParser, loadedMachineRecipes, RecipeType.COMPACTOR)
+        parseMachineRecipes("crystallization", FTIRecipeParser, loadedMachineRecipes, RecipeType.CRYSTALLIZATION)
+        parseMachineRecipes("dissolution", IFTFRecipeParser, loadedMachineRecipes, RecipeType.DISSOLUTION)
+        parseMachineRecipes("electric_furnace", ITIRecipeParser, loadedMachineRecipes, RecipeType.ELECTRIC_FURNACE)
+        parseMachineRecipes("electrolysis", FTMFRecipeParser, loadedMachineRecipes, RecipeType.ELECTROLYSIS)
+        parseMachineRecipes("kiln", FTFRecipeParser, loadedMachineRecipes, RecipeType.KILN)
+        parseMachineRecipes("polymerization", FTIRecipeParser, loadedMachineRecipes, RecipeType.POLYMERIZATION)
+        parseMachineRecipes("pulverizer", ITIRecipeParser, loadedMachineRecipes, RecipeType.PULVERIZER)
+        parseMachineRecipes("refinery", FTMFRecipeParser, loadedMachineRecipes, RecipeType.REFINERY)
+
+        parseMachineRecipes("heat", HeatRecipeParser, loadedSpecialRecipes, RecipeType.HEAT)
     }
 
     /**
@@ -74,7 +82,7 @@ object RecipeManager {
      * @return an immutable collection of registered recipes of the specified type
      */
     fun getMachineRecipesByType(type: RecipeType): Collection<IMachineRecipe>? {
-        return loadedRecipes[type]
+        return loadedMachineRecipes[type]
     }
 
     /**
@@ -86,7 +94,7 @@ object RecipeManager {
      * @param recipe recipe model
      */
     fun registerRecipe(type: RecipeType, recipe: IMachineRecipe) {
-        loadedRecipes.put(type, recipe)
+        loadedMachineRecipes.put(type, recipe)
     }
 
 
@@ -101,7 +109,10 @@ object RecipeManager {
      * @return true if the file has either been loaded successfully or was not loaded on purpose. False in case of an
      * error
      */
-    private fun loadRecipe(path: Path, parser: RecipeParser<out IMachineRecipe>, type: RecipeType): Boolean {
+    private fun <T : ISpecialRecipe> loadRecipe(path: Path,
+                                                parser: RecipeParser<out T>,
+                                                target: Multimap<RecipeType, T>,
+                                                type: RecipeType): Boolean {
         if (FilenameUtils.getExtension(path.toString()) != "json")
             return true
 
@@ -116,7 +127,7 @@ object RecipeManager {
 
         try {
             val recipe = parser.process(jsonObject, jsonContext)
-            loadedRecipes.put(type, recipe)
+            target.put(type, recipe)
         } catch (e: IllegalStateException) {
             TCFoundation.logger.error("Recipe parse exception", e)
             return false
@@ -132,13 +143,16 @@ object RecipeManager {
      * @param parser parser for recipes at the given endpoint
      * @param type type of recipe that is loaded
      */
-    private fun parseMachineRecipes(endpoint: String, parser: RecipeParser<out IMachineRecipe>, type: RecipeType) {
+    private fun <T : ISpecialRecipe> parseMachineRecipes(endpoint: String,
+                                                         parser: RecipeParser<out T>,
+                                                         target: Multimap<RecipeType, T>,
+                                                         type: RecipeType) {
         Loader.instance().indexedModList.forEach { (modId, modContainer) ->
             CraftingHelper.findFiles(
                     modContainer,
                     "assets/$modId/$RECIPE_ASSETS_FOLDER/$endpoint",
                     { true },
-                    { _, path -> this.loadRecipe(path, parser, type) },
+                    { _, path -> this.loadRecipe(path, parser, target, type) },
                     true,
                     true)
         }
@@ -164,7 +178,8 @@ object RecipeManager {
         KILN(kilnBlock, TileEntityKiln::class.java),
         POLYMERIZATION(polymerizationChamberBlock, TileEntityPolymerizationChamber::class.java),
         PULVERIZER(pulverizerBlock, TileEntityPulverizer::class.java),
+        REFINERY(null, null),
 
-        REFINERY(null, null)
+        HEAT(null, null)
     }
 }
