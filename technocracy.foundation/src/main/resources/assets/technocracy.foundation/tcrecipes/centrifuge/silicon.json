@@ -3,8 +3,10 @@
     "item": "minecraft:sand",
     "data": 32767
   },
-  "output_primary": {
-    "item": "technocracy.foundation:silicon"
-  },
+  "outputs": [
+    {
+      "item": "technocracy.foundation:silicon"
+    }
+  ],
   "cost": 80
 }

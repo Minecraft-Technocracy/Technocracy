@@ -2,9 +2,11 @@
   "input": {
     "item": "minecraft:coal_block"
   },
-  "output_primary": {
-    "item": "technocracy.foundation:sulfur",
-    "count": 5
-  },
+  "outputs": [
+    {
+      "item": "technocracy.foundation:sulfur",
+      "count": 5
+    }
+  ],
   "cost": 80
 }

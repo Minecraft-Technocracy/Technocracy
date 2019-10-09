@@ -228,7 +228,7 @@ class OreSystemBuilder {
 
                     // add dust recipe
                     RecipeManager.registerRecipe(RecipeManager.RecipeType.CENTRIFUGE,
-                            CentrifugeRecipe(Ingredient.fromItem(grit), ItemStack(dust, 1), null, 100))
+                            ITMIRecipe(Ingredient.fromItem(grit), listOf(ItemStack(dust, 1)), 100))
 
                     // add gear recipe
                     if (gear != null) GameRegistry.addShapedRecipe(ResourceLocation(TCFoundation.MODID,
