@@ -49,12 +49,12 @@ object RecipeManager {
      * Called upon post initialization by common proxy. Attempts to load recipes of all different machine types.
      */
     fun initialize() {
-        parseMachineRecipes("alloy_smeltery", AlloySmelteryRecipeParser, RecipeManager.RecipeType.ALLOY)
+        parseMachineRecipes("alloy_smeltery", MITIRecipeParser, RecipeManager.RecipeType.ALLOY)
         parseMachineRecipes("centrifuge", CentrifugeRecipeParser, RecipeManager.RecipeType.CENTRIFUGE)
-        parseMachineRecipes("chemical_etching", ChemicalEtchingParser, RecipeManager.RecipeType.CHEMICAL_ETCHING)
+        parseMachineRecipes("chemical_etching", MITIRecipeParser, RecipeManager.RecipeType.CHEMICAL_ETCHING)
         parseMachineRecipes("chemical_oxidizer", ITFRecipeParser, RecipeManager.RecipeType.CHEMICAL_OXIDIZER)
         parseMachineRecipes("chemical_processing", ChemicalProcessingParser, RecipeManager.RecipeType.CHEMICAL_PROCESSING)
-        parseMachineRecipes("chemical_reaction", ChemicalReactionRecipeParser, RecipeManager.RecipeType.CHEMICAL_REACTION)
+        parseMachineRecipes("chemical_reaction", MFTFRecipeParser, RecipeManager.RecipeType.CHEMICAL_REACTION)
         parseMachineRecipes("compactor", ITIRecipeParser, RecipeManager.RecipeType.COMPACTOR)
         parseMachineRecipes("crystallization", FTIRecipeParser, RecipeManager.RecipeType.CRYSTALLIZATION)
         parseMachineRecipes("dissolution", DissolutionRecipeParser, RecipeManager.RecipeType.DISSOLUTION)
