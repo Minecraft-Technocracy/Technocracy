@@ -35,7 +35,7 @@ class TileEntityCrystallizationChamber : MachineTileEntity(), TEInventoryProvide
      * been registered yet.
      */
     private val recipes: Collection<IMachineRecipe> by lazy {
-        (RecipeManager.getRecipesByType(RecipeManager.RecipeType.CRYSTALLIZATION) ?: emptyList())
+        (RecipeManager.getMachineRecipesByType(RecipeManager.RecipeType.CRYSTALLIZATION) ?: emptyList())
     }
 
     init {

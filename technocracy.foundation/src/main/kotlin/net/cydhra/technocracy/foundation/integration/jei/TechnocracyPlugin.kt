@@ -43,7 +43,7 @@ class TechnocracyPlugin : IModPlugin {
 
     private fun loadRecipes(type: RecipeManager.RecipeType, wrapperClass: Class<out AbstractRecipeWrapper>): List<AbstractRecipeWrapper> {
         val recipes = mutableListOf<AbstractRecipeWrapper>()
-        RecipeManager.getRecipesByType(type)?.forEach { recipe ->
+        RecipeManager.getMachineRecipesByType(type)?.forEach { recipe ->
 
             val inputStacks = mutableListOf<List<ItemStack>>()
             recipe.getInput().forEach { ingredient ->

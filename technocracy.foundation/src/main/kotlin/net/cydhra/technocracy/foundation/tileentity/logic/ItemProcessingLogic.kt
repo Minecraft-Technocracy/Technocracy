@@ -29,7 +29,7 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
      * [update] tick, as they might not have been registered yet.
      */
     private val recipes: Collection<IMachineRecipe> by lazy {
-        (RecipeManager.getRecipesByType(this.recipeType) ?: emptyList())
+        (RecipeManager.getMachineRecipesByType(this.recipeType) ?: emptyList())
     }
 
     /**

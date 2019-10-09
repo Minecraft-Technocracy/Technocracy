@@ -31,7 +31,7 @@ class TileEntityPulverizer : MachineTileEntity(), TEInventoryProvider {
      * been registered yet.
      */
     private val recipes: Collection<IMachineRecipe> by lazy {
-        (RecipeManager.getRecipesByType(RecipeManager.RecipeType.PULVERIZER) ?: emptyList())
+        (RecipeManager.getMachineRecipesByType(RecipeManager.RecipeType.PULVERIZER) ?: emptyList())
     }
 
     init {

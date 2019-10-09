@@ -24,7 +24,7 @@ class TileEntityDissolutionChamber : MachineTileEntity(), TEInventoryProvider {
             tanktype = DynamicFluidCapability.TankType.OUTPUT, facing = mutableSetOf(EnumFacing.EAST))
 
     private val recipes: Collection<IMachineRecipe> by lazy {
-        (RecipeManager.getRecipesByType(RecipeManager.RecipeType.DISSOLUTION) ?: emptyList())
+        (RecipeManager.getMachineRecipesByType(RecipeManager.RecipeType.DISSOLUTION) ?: emptyList())
     }
 
     init {

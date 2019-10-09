@@ -34,7 +34,7 @@ class TileEntityAlloySmeltery : MachineTileEntity(), TEInventoryProvider {
      * been registered yet.
      */
     private val recipes: Collection<IMachineRecipe> by lazy {
-        (RecipeManager.getRecipesByType(RecipeManager.RecipeType.ALLOY) ?: emptyList())
+        (RecipeManager.getMachineRecipesByType(RecipeManager.RecipeType.ALLOY) ?: emptyList())
     }
 
     init {

@@ -30,7 +30,7 @@ class TileEntityElectricFurnace : MachineTileEntity(), TEInventoryProvider {
      * been registered yet.
      */
     private val recipes: Collection<IMachineRecipe> by lazy {
-        (RecipeManager.getRecipesByType(RecipeManager.RecipeType.ELECTRIC_FURNACE) ?: emptyList())
+        (RecipeManager.getMachineRecipesByType(RecipeManager.RecipeType.ELECTRIC_FURNACE) ?: emptyList())
     }
 
     init {

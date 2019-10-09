@@ -67,13 +67,13 @@ object RecipeManager {
     }
 
     /**
-     * Query all recipes of a specific type
+     * Query all machine recipes of a specific type
      *
      * @param type request recipe type
      *
      * @return an immutable collection of registered recipes of the specified type
      */
-    fun getRecipesByType(type: RecipeType): Collection<IMachineRecipe>? {
+    fun getMachineRecipesByType(type: RecipeType): Collection<IMachineRecipe>? {
         return loadedRecipes[type]
     }
 

@@ -31,7 +31,7 @@ class TileEntityCentrifuge : MachineTileEntity(), TEInventoryProvider {
      * been registered yet.
      */
     private val recipes: Collection<IMachineRecipe> by lazy {
-        (RecipeManager.getRecipesByType(RecipeManager.RecipeType.CENTRIFUGE) ?: emptyList())
+        (RecipeManager.getMachineRecipesByType(RecipeManager.RecipeType.CENTRIFUGE) ?: emptyList())
     }
 
     init {

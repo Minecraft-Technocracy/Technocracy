@@ -23,7 +23,7 @@ class TileEntityChemicalProcessingChamber : MachineTileEntity(), TEInventoryProv
     private val outputInventoryComponent = InventoryComponent(1, this, EnumFacing.EAST)
 
     private val recipes: Collection<IMachineRecipe> by lazy {
-        (RecipeManager.getRecipesByType(RecipeManager.RecipeType.CHEMICAL_PROCESSING) ?: emptyList())
+        (RecipeManager.getMachineRecipesByType(RecipeManager.RecipeType.CHEMICAL_PROCESSING) ?: emptyList())
     }
 
     init {

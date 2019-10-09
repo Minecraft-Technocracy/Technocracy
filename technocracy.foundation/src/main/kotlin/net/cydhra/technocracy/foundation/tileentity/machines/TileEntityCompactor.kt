@@ -30,7 +30,7 @@ class TileEntityCompactor : MachineTileEntity(), TEInventoryProvider {
      * been registered yet.
      */
     private val recipes: Collection<IMachineRecipe> by lazy {
-        (RecipeManager.getRecipesByType(RecipeManager.RecipeType.COMPACTOR) ?: emptyList())
+        (RecipeManager.getMachineRecipesByType(RecipeManager.RecipeType.COMPACTOR) ?: emptyList())
     }
 
     init {

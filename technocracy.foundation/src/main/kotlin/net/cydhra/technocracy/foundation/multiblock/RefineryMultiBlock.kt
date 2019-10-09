@@ -36,7 +36,7 @@ class RefineryMultiBlock(world: World) : BaseMultiBlock(
     }
 
     private val recipes: Collection<IMachineRecipe> by lazy {
-        (RecipeManager.getRecipesByType(RecipeManager.RecipeType.REFINERY) ?: emptyList())
+        (RecipeManager.getMachineRecipesByType(RecipeManager.RecipeType.REFINERY) ?: emptyList())
     }
 
     var controllerTileEntity: TileEntityRefineryController? = null

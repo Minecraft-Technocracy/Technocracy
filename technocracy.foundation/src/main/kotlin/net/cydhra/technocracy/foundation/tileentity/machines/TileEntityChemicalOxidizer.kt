@@ -24,7 +24,7 @@ class TileEntityChemicalOxidizer : MachineTileEntity(), TEInventoryProvider {
             tanktype = DynamicFluidCapability.TankType.OUTPUT, facing = mutableSetOf(EnumFacing.EAST))
 
     private val recipes: Collection<IMachineRecipe> by lazy {
-        (RecipeManager.getRecipesByType(RecipeManager.RecipeType.CHEMICAL_OXIDIZER) ?: emptyList())
+        (RecipeManager.getMachineRecipesByType(RecipeManager.RecipeType.CHEMICAL_OXIDIZER) ?: emptyList())
     }
 
     init {
