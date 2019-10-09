@@ -5,8 +5,8 @@
       "ore": "ingotIron"
     },
     {
-      "type": "forge:ore_dict",
-      "ore": "itemCoal"
+      "item": "minecraft:coal",
+      "data": 0
     }
   ],
   "output": {
