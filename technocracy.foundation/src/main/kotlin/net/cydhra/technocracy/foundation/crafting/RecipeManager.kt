@@ -70,6 +70,7 @@ object RecipeManager {
         parseMachineRecipes("polymerization", FTIRecipeParser, loadedMachineRecipes, RecipeType.POLYMERIZATION)
         parseMachineRecipes("pulverizer", ITIRecipeParser, loadedMachineRecipes, RecipeType.PULVERIZER)
         parseMachineRecipes("refinery", FTMFRecipeParser, loadedMachineRecipes, RecipeType.REFINERY)
+        parseMachineRecipes("saline", FTFRecipeParser, loadedMachineRecipes, RecipeType.SALINE)
 
         parseMachineRecipes("heat", HeatRecipeParser, loadedSpecialRecipes, RecipeType.HEAT)
     }
@@ -196,6 +197,7 @@ object RecipeManager {
         POLYMERIZATION(polymerizationChamberBlock, TileEntityPolymerizationChamber::class.java),
         PULVERIZER(pulverizerBlock, TileEntityPulverizer::class.java),
         REFINERY(null, null),
+        SALINE(null, null),
 
         HEAT(null, null)
     }
