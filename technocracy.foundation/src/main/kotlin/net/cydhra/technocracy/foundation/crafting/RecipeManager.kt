@@ -9,7 +9,6 @@ import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.blocks.general.*
 import net.cydhra.technocracy.foundation.crafting.RecipeManager.RECIPE_ASSETS_FOLDER
 import net.cydhra.technocracy.foundation.crafting.types.*
-import net.cydhra.technocracy.foundation.tileentity.AbstractTileEntity
 import net.cydhra.technocracy.foundation.tileentity.MachineTileEntity
 import net.cydhra.technocracy.foundation.tileentity.machines.*
 import net.minecraft.block.Block
@@ -53,17 +52,17 @@ object RecipeManager {
         parseMachineRecipes("alloy_smeltery", AlloySmelteryRecipeParser, RecipeManager.RecipeType.ALLOY)
         parseMachineRecipes("centrifuge", CentrifugeRecipeParser, RecipeManager.RecipeType.CENTRIFUGE)
         parseMachineRecipes("chemical_etching", ChemicalEtchingParser, RecipeManager.RecipeType.CHEMICAL_ETCHING)
-        parseMachineRecipes("chemical_oxidizer", ChemicalOxidizerRecipeParser, RecipeManager.RecipeType.CHEMICAL_OXIDIZER)
+        parseMachineRecipes("chemical_oxidizer", ITFRecipeParser, RecipeManager.RecipeType.CHEMICAL_OXIDIZER)
         parseMachineRecipes("chemical_processing", ChemicalProcessingParser, RecipeManager.RecipeType.CHEMICAL_PROCESSING)
         parseMachineRecipes("chemical_reaction", ChemicalReactionRecipeParser, RecipeManager.RecipeType.CHEMICAL_REACTION)
-        parseMachineRecipes("compactor", CompactorRecipeParser, RecipeManager.RecipeType.COMPACTOR)
-        parseMachineRecipes("crystallization", CrystallizationRecipeParser, RecipeManager.RecipeType.CRYSTALLIZATION)
+        parseMachineRecipes("compactor", ITIRecipeParser, RecipeManager.RecipeType.COMPACTOR)
+        parseMachineRecipes("crystallization", FTIRecipeParser, RecipeManager.RecipeType.CRYSTALLIZATION)
         parseMachineRecipes("dissolution", DissolutionRecipeParser, RecipeManager.RecipeType.DISSOLUTION)
-        parseMachineRecipes("electric_furnace", ElectricFurnaceRecipeParser, RecipeManager.RecipeType.ELECTRIC_FURNACE)
+        parseMachineRecipes("electric_furnace", ITIRecipeParser, RecipeManager.RecipeType.ELECTRIC_FURNACE)
         parseMachineRecipes("electrolysis", ElectrolysisRecipeParser, RecipeManager.RecipeType.ELECTROLYSIS)
-        parseMachineRecipes("kiln", KilnRecipeParser, RecipeManager.RecipeType.KILN)
-        parseMachineRecipes("polymerization", PolymerizationRecipeParser, RecipeType.POLYMERIZATION)
-        parseMachineRecipes("pulverizer", PulverizerRecipeParser, RecipeManager.RecipeType.PULVERIZER)
+        parseMachineRecipes("kiln", FTFRecipeParser, RecipeManager.RecipeType.KILN)
+        parseMachineRecipes("polymerization", FTIRecipeParser, RecipeType.POLYMERIZATION)
+        parseMachineRecipes("pulverizer", ITIRecipeParser, RecipeManager.RecipeType.PULVERIZER)
         parseMachineRecipes("refinery", RefineryRecipeParser, RecipeManager.RecipeType.REFINERY)
     }
 

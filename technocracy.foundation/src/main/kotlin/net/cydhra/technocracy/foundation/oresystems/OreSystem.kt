@@ -194,7 +194,7 @@ class OreSystemBuilder {
 
                     // add pulverizer recipe
                     RecipeManager.registerRecipe(RecipeManager.RecipeType.PULVERIZER,
-                            PulverizerRecipe(Ingredient.fromItem(Item.getItemFromBlock(ore)),
+                            ItemToItemRecipe(Ingredient.fromItem(Item.getItemFromBlock(ore)),
                                     ItemStack(dust, 2),
                                     60))
 
@@ -216,15 +216,15 @@ class OreSystemBuilder {
 
                     // add slurry enriching recipe
                     RecipeManager.registerRecipe(RecipeManager.RecipeType.KILN,
-                            KilnRecipe(FluidStack(slurry, 500), FluidStack(enrichedSlurry, 500), 200))
+                            FluidToFluidRecipe(FluidStack(slurry, 500), FluidStack(enrichedSlurry, 500), 200))
 
                     // add crystal recipe
                     RecipeManager.registerRecipe(RecipeManager.RecipeType.CRYSTALLIZATION,
-                            CrystallizationRecipe(FluidStack(enrichedSlurry, 250), ItemStack(crystal), 200))
+                            FluidToItemRecipe(FluidStack(enrichedSlurry, 250), ItemStack(crystal), 200))
 
                     // add grit recipe
                     RecipeManager.registerRecipe(RecipeManager.RecipeType.PULVERIZER,
-                            PulverizerRecipe(Ingredient.fromItem(crystal), ItemStack(grit, 2), 100))
+                            ItemToItemRecipe(Ingredient.fromItem(crystal), ItemStack(grit, 2), 100))
 
                     // add dust recipe
                     RecipeManager.registerRecipe(RecipeManager.RecipeType.CENTRIFUGE,
@@ -243,7 +243,7 @@ class OreSystemBuilder {
 
                     // add sheet recipe
                     if (sheet != null) RecipeManager.registerRecipe(RecipeManager.RecipeType.COMPACTOR,
-                            CompactorRecipe(Ingredient.fromItem(ingot), ItemStack(sheet), 40))
+                            ItemToItemRecipe(Ingredient.fromItem(ingot), ItemStack(sheet), 40))
 
                     if (generateOre) {
                         if (oreEnabled) {
