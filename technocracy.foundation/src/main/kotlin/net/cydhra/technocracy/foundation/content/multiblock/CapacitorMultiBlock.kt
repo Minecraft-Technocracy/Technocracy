@@ -6,6 +6,7 @@ import net.cydhra.technocracy.foundation.content.blocks.*
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.capacitor.TileEntityCapacitorController
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.capacitor.TileEntityCapacitorEnergyPort
 import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
+import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractComponent
 import net.minecraft.block.Block
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
@@ -14,7 +15,7 @@ import java.util.function.Predicate
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
-class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
+class CapacitorMultiBlock(world: World) : BaseMultiBlock(
         frameBlockWhitelist = Predicate { it.block == capacitorWallBlock },
         sideBlockWhitelist = Predicate {
             it.block == capacitorWallBlock || it.block == capacitorControllerBlock
@@ -76,7 +77,7 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
         for (x in interiorMin.x..interiorMax.x) {
             for (z in interiorMin.z..interiorMax.z) {
                 for (y in interiorMin.y..interiorMax.y) {
-                    val block = this.world.getBlockState(BlockPos(x, y, z)).block
+                    val block = this.WORLD.getBlockState(BlockPos(x, y, z)).block
                     if (block == leadBlock || block == leadOxideBlock)
                         electrodes += Electrode(x, z, block)
                 }
@@ -92,14 +93,14 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
         //Check electrodes
         electrodes.forEach {
             for (y in (interiorMin.y)..interiorMax.y) {
-                val block = this.world.getBlockState(BlockPos(it.x, y, it.z)).block
+                val block = this.WORLD.getBlockState(BlockPos(it.x, y, it.z)).block
                 //Checks side blocks, then the bottom most block
-                if ((this.world.getBlockState(BlockPos(it.x + 1, y, it.z)).block != sulfuricAcidBlock ||
-                                this.world.getBlockState(
+                if ((this.WORLD.getBlockState(BlockPos(it.x + 1, y, it.z)).block != sulfuricAcidBlock ||
+                                this.WORLD.getBlockState(
                                         BlockPos(it.x, y, it.z + 1)).block != sulfuricAcidBlock ||
-                                this.world.getBlockState(
+                                this.WORLD.getBlockState(
                                         BlockPos(it.x - 1, y, it.z)).block != sulfuricAcidBlock ||
-                                this.world.getBlockState(
+                                this.WORLD.getBlockState(
                                         BlockPos(it.x, y, it.z - 1)).block != sulfuricAcidBlock) ||
                         (y == interiorMin.y && block != sulfuricAcidBlock)) {
                     validatorCallback.setLastError("multiblock.capacitor.error.invalid_electrode_placement", it.x, y, it.z)
@@ -153,7 +154,7 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
 
                     //Whether there is an electrode at the current pos
                     val isElectrodePos = electrodes.any { e -> e.x == pos.x && e.z == pos.z }
-                    val block = this.world.getBlockState(pos).block
+                    val block = this.WORLD.getBlockState(pos).block
                     if (isElectrodePos && block != capacitorConnectorBlock && block != capacitorEnergyPortBlock) {
                         validatorCallback.setLastError("multiblock.capacitor.error.invalid_block_above_electrode", pos.x, pos.y,
                                 pos.z)
@@ -171,7 +172,7 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
                         }
 
                         //Check if block in current direction is a valid connector block
-                        val currentBlock: Block = this.world.getBlockState(pos.offset(direction)).block
+                        val currentBlock: Block = this.WORLD.getBlockState(pos.offset(direction)).block
                         if (currentBlock == capacitorConnectorBlock || currentBlock == capacitorEnergyPortBlock) {
                             connectedBlocks++
                             newFacing = direction
@@ -221,7 +222,7 @@ class CapacitorMultiBlock(val world: World) : BaseMultiBlock(
         for (x in interiorMin.x..interiorMax.x) {
             for (z in interiorMin.z..interiorMax.z) {
                 for (y in interiorMin.y..interiorMax.y) {
-                    val blockState = this.world.getBlockState(BlockPos(x, y, z))
+                    val blockState = this.WORLD.getBlockState(BlockPos(x, y, z))
                     if (blockState.block != sulfuricAcidBlock)
                         continue
 
