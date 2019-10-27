@@ -1,10 +1,7 @@
 package net.cydhra.technocracy.foundation.content.blocks
 
 import net.cydhra.technocracy.foundation.content.tileentities.machines.*
-import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartBoiler
-import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartCapacitor
-import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartHeatExchanger
-import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartRefinery
+import net.cydhra.technocracy.foundation.content.tileentities.multiblock.*
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.boiler.TileEntityBoilerController
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.boiler.TileEntityBoilerHeater
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.boiler.TileEntityBoilerInput
@@ -77,11 +74,13 @@ val refineryHeaterBlock = MultiBlockActiveBlock("refinery_heater", ::TileEntityR
 val capacitorControllerBlock = MultiBlockRotatableActiveBlock("capacitor_controller", ::TileEntityCapacitorController)
 val capacitorWallBlock = PlainMultiBlockPartBlock("capacitor_wall", ::TileEntityMultiBlockPartCapacitor)
 val capacitorConnectorBlock = PlainMultiBlockPartBlock("capacitor_connector", ::TileEntityMultiBlockPartCapacitor)
-val capacitorEnergyPortBlock = MultiBlockRotatableActiveBlock("capacitor_energy_port", ::TileEntityCapacitorEnergyPort)
+val capacitorEnergyPortBlock = MultiBlockActiveBlock("capacitor_energy_port", ::TileEntityCapacitorEnergyPort)
 
 val tankWallBlock = TankStructureBlock("tank_wall", ::TileEntityTankMultiBlockPart)
 val tankGlassBlock = TankStructureBlock("tank_glass", ::TileEntityTankMultiBlockPart, isFullCube = false, opaque = false, glassSides = true, renderLayer = BlockRenderLayer.CUTOUT)
 val tankIOBlock = TankStructureBlock("tank_io", ::TileEntityTankPort)
+
+val salineWallBlock = PlainMultiBlockPartBlock("saline_wall", ::TileEntityMultiBlockPartSaline)
 
 val leadBlock = PlainBlock("lead_block", Material.IRON, oreDictionaryName = "blockLead")
 val leadOxideBlock = PlainBlock("lead_oxide_block", Material.IRON, oreDictionaryName = "blockLeadOxide")

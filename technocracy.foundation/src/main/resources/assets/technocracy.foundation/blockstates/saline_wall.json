@@ -2,7 +2,7 @@
   "variants": {
     "normal": [
       {
-        "model": "technocracy.foundation:capacitor_wall"
+        "model": "technocracy.foundation:saline_wall"
       }
     ]
   }

@@ -193,6 +193,8 @@ open class CommonProxy {
         blockManager.prepareBlocksForRegistration(tankIOBlock)
         blockManager.prepareBlocksForRegistration(tankGlassBlock)
 
+        blockManager.prepareBlocksForRegistration(salineWallBlock)
+
         blockManager.prepareBlocksForRegistration(oilSandBlock)
         blockManager.prepareBlocksForRegistration(oilStone)
         blockManager.prepareBlocksForRegistration(oilBlock)
@@ -319,8 +321,9 @@ open class CommonProxy {
         tileEntityManager.prepareTileEntityForRegistration(TileEntityTankMultiBlockPart::class)
         tileEntityManager.prepareTileEntityForRegistration(TileEntityTankPort::class)
 
-        tileEntityManager.prepareTileEntityForRegistration(TileEntityDrum::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityMultiBlockPartSaline::class)
 
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityDrum::class)
         //ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPipe::class.java, PipeRenderer())
 
         PotionManager.preparePotionForRegistration(oilyEffect)
