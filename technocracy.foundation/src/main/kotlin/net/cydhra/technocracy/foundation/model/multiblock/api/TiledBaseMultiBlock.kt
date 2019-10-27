@@ -9,7 +9,14 @@ import java.util.function.Predicate
 
 /**
  * Base class for tiled multiblocks of this mod.
- * Note: [tileSizeX] and [tileSizeZ] are not bound to an axis.
+ *
+ * @param tileFrameBlockWhitelist A whitelist for the frame of each tile. The outer most frame around the whole
+ * structure is covered by [frameBlockWhitelist]
+ * @param tileSideBlockWhitelist A whitelist for the frame of each tile. The outer most frame around the whole
+ * structure is covered by [sideBlockWhitelist]
+ * @param tileSizeX The width or length of each tile. Not bound to an axis
+ * @param tileSizeZ The width or length of each tile. Not bound to an axis
+ * @param sizeY The height of each tile
  */
 abstract class TiledBaseMultiBlock(
         frameBlockWhitelist: Predicate<IBlockState>?,
@@ -26,7 +33,9 @@ abstract class TiledBaseMultiBlock(
     : BaseMultiBlock(frameBlockWhitelist, sideBlockWhitelist, topBlockWhitelist, bottomBlockWhitelist,
         interiorBlockWhitelist, 0, 0, world) {
 
-    //Contains min and max coordinate of each tile
+    /**
+     * Contains min and max coordinate of each tile
+     */
     protected val tiles = mutableSetOf<Pair<BlockPos, BlockPos>>()
 
     override fun isMachineWhole(validatorCallback: IMultiblockValidator): Boolean {
@@ -128,6 +137,17 @@ abstract class TiledBaseMultiBlock(
         return true
     }
 
+    /**
+     * This method tries to determine the actual delta for tileSize, as if no tiles would share blocks.
+     * 
+     * E.g. delta: 22, tileSize: 8 -> actualDelta: 24; this is because with a delta of 24 and a tileSize of 8, there are
+     * three tiles. Tile 1 and 2 and tile 2 and 3 have common blocks, that's why the original delta is two less than 24.
+     *
+     * @param delta The original delta value
+     * @param tileSize the known tileSize
+     * @return the actual delta corresponding to the tile size or *null* if [delta] and [tileSize] do not correspond to
+     * each other
+     */
     private fun getActualDelta(delta: Int, tileSize: Int): Int? {
         var tempDelta = delta
         while (!(tempDelta % tileSize == 0 && tempDelta - ((tempDelta / tileSize) - 1) == delta)) {
