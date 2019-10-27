@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.conduits
 
 import net.cydhra.technocracy.foundation.conduits.transit.TransitChunkEdge
+import net.cydhra.technocracy.foundation.conduits.transit.TransitEdge
 import net.cydhra.technocracy.foundation.conduits.transit.TransitSink
 import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.minecraft.nbt.NBTTagCompound
@@ -12,6 +13,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ChunkPos
 import net.minecraftforge.common.util.Constants
 import net.minecraftforge.common.util.INBTSerializable
+import java.util.*
 
 /**
  * A model for a chunk of the conduit network. Can be removed from the conduit network dimension without breaking
@@ -153,8 +155,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
         this.edges[pos]!![type]!! += facing
 
         val pointsTowardsPos = pos.offset(facing)
-        if (this.chunkPos.xStart > pointsTowardsPos.x || this.chunkPos.xEnd < pointsTowardsPos.x
-                || this.chunkPos.zStart > pointsTowardsPos.z || this.chunkPos.zEnd < pointsTowardsPos.z) {
+        if (this.chunkPos.xStart > pointsTowardsPos.x || this.chunkPos.xEnd < pointsTowardsPos.x || this.chunkPos.zStart > pointsTowardsPos.z || this.chunkPos.zEnd < pointsTowardsPos.z) {
             if (!chunkTransitEdges.containsKey(pos)) {
                 chunkTransitEdges[pos] = mutableSetOf()
             }
@@ -279,8 +280,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
 
             typeList.forEach { typeTag ->
                 val pipeType = PipeType.values()[(typeTag as NBTTagCompound).getInteger(NBT_KEY_EDGE_TYPE_LIST_ENTRY)]
-                val facings = typeTag.getIntArray(NBT_KEY_EDGE_TYPE_LIST_DIRECTION_LIST)
-                        .map { EnumFacing.values()[it] }
+                val facings = typeTag.getIntArray(NBT_KEY_EDGE_TYPE_LIST_DIRECTION_LIST).map { EnumFacing.values()[it] }
                         .toMutableSet()
 
                 this.edges[blockPos]!![pipeType] = facings
@@ -288,7 +288,8 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
         }
 
         attachmentList.forEach { attachmentTag ->
-            val blockPos = NBTUtil.getPosFromTag((attachmentTag as NBTTagCompound).getCompoundTag(NBT_KEY_ATTACHMENTS_POS))
+            val blockPos =
+                    NBTUtil.getPosFromTag((attachmentTag as NBTTagCompound).getCompoundTag(NBT_KEY_ATTACHMENTS_POS))
             val sinkList = attachmentTag.getTagList(NBT_KEY_SINKS_LIST, Constants.NBT.TAG_COMPOUND)
 
             this.attachedSinks[blockPos] = mutableSetOf()
@@ -299,14 +300,14 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
         }
 
         transitEdgesList.forEach { transitEdgeTag ->
-            val blockPos = NBTUtil.getPosFromTag((transitEdgeTag as NBTTagCompound).getCompoundTag(NBT_KEY_TRANSIT_EDGE_POS))
+            val blockPos =
+                    NBTUtil.getPosFromTag((transitEdgeTag as NBTTagCompound).getCompoundTag(NBT_KEY_TRANSIT_EDGE_POS))
             val typeList = transitEdgeTag.getTagList(NBT_KEY_TRANSIT_EDGES_TYPE_LIST, Constants.NBT.TAG_COMPOUND)
 
             this.chunkTransitEdges[blockPos] = mutableSetOf()
 
             typeList.forEach { transitEdgeEntry ->
-                this.chunkTransitEdges[blockPos]!!.add(TransitChunkEdge()
-                        .apply { deserializeNBT(transitEdgeEntry as NBTTagCompound) })
+                this.chunkTransitEdges[blockPos]!!.add(TransitChunkEdge().apply { deserializeNBT(transitEdgeEntry as NBTTagCompound) })
             }
         }
     }
@@ -389,8 +390,17 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      * Recalculate the internal transit network
      */
     internal fun recalculatePaths() {
-        // TODO recalculate transit model
+        val transitNodesQueue =
+                ArrayDeque(this.attachedSinks.values.flatten().union(this.chunkTransitEdges.values.flatten()))
 
+        val graphComponents = mutableListOf<List<TransitEdge>>()
+
+        // find all graph components
+        while (transitNodesQueue.isNotEmpty()) {
+            val currentGraphComponent = mutableListOf<TransitEdge>()
+
+            var currentEdge = transitNodesQueue.pop()
+        }
     }
 
     /**
