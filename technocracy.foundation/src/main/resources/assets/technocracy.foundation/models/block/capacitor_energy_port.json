@@ -1,5 +1,5 @@
 {
-  "parent": "block/orientable",
+  "parent": "block/cube",
   "textures": {
     "particle": "technocracy.foundation:block/steel",
     "wall": "technocracy.foundation:block/steel",
@@ -25,7 +25,7 @@
         },
         "up": {
           "tintindex": 0,
-          "texture": "#port",
+          "texture": "#wall",
           "cullface": "up"
         },
         "north": {
@@ -47,6 +47,25 @@
           "tintindex": 0,
           "texture": "#wall",
           "cullface": "east"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "up": {
+          "tintindex": 0,
+          "texture": "#port",
+          "cullface": "up"
         }
       }
     }

@@ -74,7 +74,8 @@ val refineryHeaterBlock = MultiBlockActiveBlock("refinery_heater", ::TileEntityR
 val capacitorControllerBlock = MultiBlockRotatableActiveBlock("capacitor_controller", ::TileEntityCapacitorController)
 val capacitorWallBlock = PlainMultiBlockPartBlock("capacitor_wall", ::TileEntityMultiBlockPartCapacitor)
 val capacitorConnectorBlock = PlainMultiBlockPartBlock("capacitor_connector", ::TileEntityMultiBlockPartCapacitor)
-val capacitorEnergyPortBlock = MultiBlockActiveBlock("capacitor_energy_port", ::TileEntityCapacitorEnergyPort)
+val capacitorEnergyPortBlock = MultiBlockActiveBlock("capacitor_energy_port", ::TileEntityCapacitorEnergyPort,
+        renderLayer = BlockRenderLayer.CUTOUT)
 
 val tankWallBlock = TankStructureBlock("tank_wall", ::TileEntityTankMultiBlockPart)
 val tankGlassBlock = TankStructureBlock("tank_glass", ::TileEntityTankMultiBlockPart, isFullCube = false, opaque = false, glassSides = true, renderLayer = BlockRenderLayer.CUTOUT)
