@@ -1,0 +1,67 @@
+{
+  "parent": "block/orientable",
+  "textures": {
+    "particle": "technocracy.foundation:block/saline_wall",
+    "front": "technocracy.foundation:block/saline_heating_agent_front",
+    "wall": "technocracy.foundation:block/saline_wall",
+    "port": "technocracy.foundation:block/port_ingress"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "down": {
+          "tintindex": 0,
+          "texture": "#wall",
+          "cullface": "down"
+        },
+        "up": {
+          "tintindex": 0,
+          "texture": "#wall",
+          "cullface": "up"
+        },
+        "north": {
+          "tintindex": 0,
+          "texture": "#wall",
+          "cullface": "north"
+        },
+        "south": {
+          "tintindex": 0,
+          "texture": "#wall",
+          "cullface": "south"
+        },
+        "west": {
+          "tintindex": 0,
+          "texture": "#wall",
+          "cullface": "west"
+        },
+        "east": {
+          "tintindex": 0,
+          "texture": "#wall",
+          "cullface": "east"
+        }
+      }
+    }, {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "north": {
+          "tintindex": 0,
+          "texture": "#front",
+          "cullface": "north"
+        }
+      }
+    }, {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "north": {
+          "tintindex": 0,
+          "texture": "#port",
+          "cullface": "north"
+        }
+      }
+    }
+  ]
+}

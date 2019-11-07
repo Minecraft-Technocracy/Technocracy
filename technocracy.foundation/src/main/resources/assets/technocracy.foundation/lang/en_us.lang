@@ -168,6 +168,14 @@ tile.drum.bedrock.name=Bedrockium Drum
 tile.drum.invar.name=Invar Drum
 tile.drum.carbon.name=Carbon Drum
 
+tile.saline_wall.name=Saline Wall
+tile.saline_heated_wall.name=Heated Saline Wall
+tile.saline_controller.name=Saline Controller
+tile.saline_fluid_input.name=Saline Fluid Input
+tile.saline_fluid_output.name=Saline Fluid Output
+tile.saline_heating_agent_input.name=Saline Heating Agent Input
+tile.saline_heating_agent_output.name=Saline Heating Agent Output
+
 fluid.mineral_oil=Mineral Oil
 fluid.mineral_oil_hot=Heated Mineral Oil
 fluid.sulfur_dioxide=Sulfur Dioxide

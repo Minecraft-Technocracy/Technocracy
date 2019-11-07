@@ -109,8 +109,8 @@ abstract class TiledBaseMultiBlock(
 
         //If tileSizeX and tileSizeZ have a common multiple in deltaX or deltaZ then the tile detection has to be
         //  repeated with flipped axis, only if no tile previously was valid. This has to be done, because if that
-        //  condition is true there's no way to determine the x- and zAxisSize for a delta value.
-        for(i in 0..2) {
+        //  condition is true there's no way to determine the AxisSize for a delta value.
+        for (i in 0..2) {
             tiles.clear()
             //maxX and Z are decremented by one because otherwise the loop would hit the edge and add another tile where
             //  where there isn't one
@@ -124,7 +124,8 @@ abstract class TiledBaseMultiBlock(
                 }
             }
 
-            if(tiles.isEmpty()) {
+            if (tiles.isEmpty()) {
+                //Switch axis and try again
                 val tmp = xAxisSize
                 xAxisSize = zAxisSize
                 zAxisSize = tmp
@@ -139,7 +140,7 @@ abstract class TiledBaseMultiBlock(
 
     /**
      * This method tries to determine the actual delta for tileSize, as if no tiles would share blocks.
-     * 
+     *
      * E.g. delta: 22, tileSize: 8 -> actualDelta: 24; this is because with a delta of 24 and a tileSize of 8, there are
      * three tiles. Tile 1 and 2 and tile 2 and 3 have common blocks, that's why the original delta is two less than 24.
      *

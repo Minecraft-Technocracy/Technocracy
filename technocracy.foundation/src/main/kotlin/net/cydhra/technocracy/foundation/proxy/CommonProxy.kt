@@ -28,6 +28,7 @@ import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refiner
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refinery.TileEntityRefineryHeater
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refinery.TileEntityRefineryInput
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refinery.TileEntityRefineryOutput
+import net.cydhra.technocracy.foundation.content.tileentities.multiblock.saline.*
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.tank.TileEntityTankMultiBlockPart
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.tank.TileEntityTankPort
 import net.cydhra.technocracy.foundation.content.tileentities.pipe.TileEntityPipe
@@ -194,6 +195,12 @@ open class CommonProxy {
         blockManager.prepareBlocksForRegistration(tankGlassBlock)
 
         blockManager.prepareBlocksForRegistration(salineWallBlock)
+        blockManager.prepareBlocksForRegistration(salineHeatedWallBlock)
+        blockManager.prepareBlocksForRegistration(salineControllerBlock)
+        blockManager.prepareBlocksForRegistration(salineFluidInput)
+        blockManager.prepareBlocksForRegistration(salineFluidOutput)
+        blockManager.prepareBlocksForRegistration(salineHeatingAgentInput)
+        blockManager.prepareBlocksForRegistration(salineHeatingAgentOutput)
 
         blockManager.prepareBlocksForRegistration(oilSandBlock)
         blockManager.prepareBlocksForRegistration(oilStone)
@@ -322,6 +329,11 @@ open class CommonProxy {
         tileEntityManager.prepareTileEntityForRegistration(TileEntityTankPort::class)
 
         tileEntityManager.prepareTileEntityForRegistration(TileEntityMultiBlockPartSaline::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntitySalineController::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntitySalineFluidInput::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntitySalineFluidOutput::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntitySalineHeatingAgentInput::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntitySalineHeatingAgentOutput::class)
 
         tileEntityManager.prepareTileEntityForRegistration(TileEntityDrum::class)
         //ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPipe::class.java, PipeRenderer())

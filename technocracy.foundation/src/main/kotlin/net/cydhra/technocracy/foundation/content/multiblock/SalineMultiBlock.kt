@@ -3,27 +3,29 @@ package net.cydhra.technocracy.foundation.content.multiblock
 import net.cydhra.technocracy.foundation.content.blocks.*
 import net.cydhra.technocracy.foundation.model.multiblock.api.TiledBaseMultiBlock
 import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractComponent
+import net.minecraft.init.Blocks
 import net.minecraft.world.World
 import java.util.function.Predicate
 
 class SalineMultiBlock(world: World) : TiledBaseMultiBlock(
-        frameBlockWhitelist = Predicate { it.block == salineWallBlock },
-        sideBlockWhitelist = Predicate {
-            it.block == capacitorWallBlock || it.block == capacitorControllerBlock
+        frameBlockWhitelist = Predicate {
+            it.block == salineWallBlock || it.block == salineFluidInput || it.block == salineControllerBlock ||
+                    it.block == salineHeatingAgentInput || it.block == salineHeatingAgentOutput
         },
+        sideBlockWhitelist = null,
         topBlockWhitelist = Predicate {
-            it.block == capacitorConnectorBlock || it.block == capacitorWallBlock || it.block ==
-                    capacitorEnergyPortBlock
+            it.block == Blocks.AIR
         },
         bottomBlockWhitelist = Predicate {
-            it.block == capacitorWallBlock
+            it.block == salineWallBlock || it.block == salineHeatedWallBlock || it.block == salineFluidOutput
         },
-        interiorBlockWhitelist = Predicate {
-            it.block == sulfuricAcidBlock || it.block == leadBlock || it.block ==
-                    leadOxideBlock
+        interiorBlockWhitelist = null,
+        tileFrameBlockWhitelist = Predicate {
+            it.block == salineWallBlock || it.block == salineFluidInput
         },
-        tileFrameBlockWhitelist = Predicate { it.block == leadBlock },
-        tileSideBlockWhitelist = Predicate { it.block == leadBlock },
+        tileSideBlockWhitelist = Predicate {
+            it.block == salineWallBlock || it.block == salineFluidInput || it.block == salineFluidOutput
+        },
         tileSizeX = 5,
         tileSizeZ = 5,
         sizeY = 2,

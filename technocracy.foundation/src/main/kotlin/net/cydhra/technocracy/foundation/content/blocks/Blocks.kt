@@ -15,6 +15,7 @@ import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refiner
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refinery.TileEntityRefineryHeater
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refinery.TileEntityRefineryInput
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refinery.TileEntityRefineryOutput
+import net.cydhra.technocracy.foundation.content.tileentities.multiblock.saline.*
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.tank.TileEntityTankMultiBlockPart
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.tank.TileEntityTankPort
 import net.cydhra.technocracy.foundation.model.blocks.impl.*
@@ -81,7 +82,17 @@ val tankWallBlock = TankStructureBlock("tank_wall", ::TileEntityTankMultiBlockPa
 val tankGlassBlock = TankStructureBlock("tank_glass", ::TileEntityTankMultiBlockPart, isFullCube = false, opaque = false, glassSides = true, renderLayer = BlockRenderLayer.CUTOUT)
 val tankIOBlock = TankStructureBlock("tank_io", ::TileEntityTankPort)
 
+val salineControllerBlock = MultiBlockRotatableActiveBlock("saline_controller", ::TileEntitySalineController)
 val salineWallBlock = PlainMultiBlockPartBlock("saline_wall", ::TileEntityMultiBlockPartSaline)
+val salineHeatedWallBlock = PlainMultiBlockPartBlock("saline_heated_wall", ::TileEntityMultiBlockPartSaline)
+val salineFluidInput = MultiBlockRotatableActiveBlock("saline_fluid_input", ::TileEntitySalineFluidInput,
+        renderLayer = BlockRenderLayer.CUTOUT)
+val salineFluidOutput = MultiBlockActiveBlock("saline_fluid_output", ::TileEntitySalineFluidOutput,
+        renderLayer = BlockRenderLayer.CUTOUT)
+val salineHeatingAgentInput = MultiBlockRotatableActiveBlock("saline_heating_agent_input", ::TileEntitySalineHeatingAgentOutput,
+        renderLayer = BlockRenderLayer.CUTOUT)
+val salineHeatingAgentOutput = MultiBlockRotatableActiveBlock("saline_heating_agent_output", ::TileEntitySalineHeatingAgentInput,
+        renderLayer = BlockRenderLayer.CUTOUT)
 
 val leadBlock = PlainBlock("lead_block", Material.IRON, oreDictionaryName = "blockLead")
 val leadOxideBlock = PlainBlock("lead_oxide_block", Material.IRON, oreDictionaryName = "blockLeadOxide")
