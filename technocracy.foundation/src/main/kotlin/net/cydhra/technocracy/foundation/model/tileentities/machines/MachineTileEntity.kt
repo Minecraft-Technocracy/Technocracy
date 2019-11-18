@@ -11,6 +11,7 @@ import net.cydhra.technocracy.foundation.client.gui.machine.BaseMachineTab
 import net.cydhra.technocracy.foundation.client.gui.machine.MachineContainer
 import net.cydhra.technocracy.foundation.client.gui.machine.MachineSettingsTab
 import net.cydhra.technocracy.foundation.content.tileentities.components.*
+import net.cydhra.technocracy.foundation.content.tileentities.logic.RedstoneLogic
 import net.cydhra.technocracy.foundation.model.tileentities.api.TCMachineTileEntity
 import net.cydhra.technocracy.foundation.model.tileentities.api.logic.ILogicClient
 import net.cydhra.technocracy.foundation.model.tileentities.api.logic.LogicClientDelegate
@@ -50,6 +51,12 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
         this.registerComponent(progressComponent, "progress")
         this.registerComponent(processingSpeedComponent, "processing_speed")
         this.registerComponent(energyCostComponent, "processing_cost")
+    }
+
+    override fun onLoad() {
+        super.onLoad()
+
+        this.addLogicStrategy(RedstoneLogic(this.world, this.pos, this.redstoneModeComponent))
     }
 
     override fun getGui(player: EntityPlayer?): TCGui {
