@@ -74,9 +74,10 @@ class DynamicEnergyCapability(currentEnergy: Int = 0, capacity: Int,
      *
      * @param amount the amount of energy to consume
      */
-    fun consumeEnergy(amount: Int): Boolean {
+    fun consumeEnergy(amount: Int, simulate: Boolean = false): Boolean {
         if (this.currentEnergy >= amount) {
-            this.currentEnergy -= amount
+            if (!simulate)
+                this.currentEnergy -= amount
             return true
         }
 

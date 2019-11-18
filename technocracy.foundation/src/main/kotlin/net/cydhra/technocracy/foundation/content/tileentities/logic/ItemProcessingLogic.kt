@@ -44,10 +44,6 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
     private var processingProgress: Int = 0
 
     override fun preProcessing(): Boolean {
-        return true
-    }
-
-    override fun processing() {
         // collect input item stacks
         val inputItems = if (inputInventory != null) {
             (0 until inputInventory.slots).map(inputInventory::getStackInSlot).filter { !it.isEmpty }
@@ -68,6 +64,10 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
             this.currentRecipe = activeRecipe
         }
 
+        return this.currentRecipe != null && energyStorage.consumeEnergy(this.getTickEnergyCost(), simulate = true)
+    }
+
+    override fun processing() {
         // process recipe
         if (this.currentRecipe != null) {
             // if more progress is required then try to add it
@@ -130,7 +130,8 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
             }
         }
 
-        progress.progress = if(activeRecipe != null) ((processingProgress.toFloat() / activeRecipe.processingCost.toFloat()) * 100f).toInt() else 0
+        progress.progress = if (currentRecipe != null)
+            ((processingProgress.toFloat() / currentRecipe!!.processingCost.toFloat()) * 100f).toInt() else 0
     }
 
     override fun postProcessing(wasProcessing: Boolean) {
