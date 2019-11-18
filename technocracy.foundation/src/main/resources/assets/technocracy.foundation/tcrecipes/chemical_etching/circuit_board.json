@@ -1,0 +1,21 @@
+{
+  "input": [
+    {
+      "type": "forge:ore_dict",
+      "ore": "itemRubber"
+    },
+    {
+      "type": "forge:ore_dict",
+      "ore": "dustRedstone"
+    },
+    {
+      "type": "forge:ore_dict",
+      "ore": "itemSilicon"
+    }
+  ],
+  "output": {
+    "item": "technocracy.foundation:circuit_board",
+    "count": 1
+  },
+  "cost": 40
+}
