@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.astronautics.util
+package net.cydhra.technocracy.foundation.util.structures
 
 import net.cydhra.technocracy.foundation.util.structures.BlockInfo
 import net.minecraft.block.state.IBlockState
@@ -13,8 +13,7 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 
 
-class WrappedClientWorld(val client: WorldClient, val blocks: List<BlockInfo>, val currentPosForLight: BlockPos) : World(client.saveHandler, client.worldInfo, client.provider, client.profiler, client.isRemote) {
-
+class TemplateClientWorld(val client: WorldClient, val blocks: List<BlockInfo>, val currentPosForLight: BlockPos) : World(client.saveHandler, client.worldInfo, client.provider, client.profiler, client.isRemote) {
     override fun createChunkProvider(): IChunkProvider {
         return client.chunkProvider
     }
