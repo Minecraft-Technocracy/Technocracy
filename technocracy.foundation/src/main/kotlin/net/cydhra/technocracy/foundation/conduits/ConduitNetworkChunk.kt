@@ -280,7 +280,8 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
 
             typeList.forEach { typeTag ->
                 val pipeType = PipeType.values()[(typeTag as NBTTagCompound).getInteger(NBT_KEY_EDGE_TYPE_LIST_ENTRY)]
-                val facings = typeTag.getIntArray(NBT_KEY_EDGE_TYPE_LIST_DIRECTION_LIST).map { EnumFacing.values()[it] }
+                val facings = typeTag.getIntArray(NBT_KEY_EDGE_TYPE_LIST_DIRECTION_LIST)
+                        .map { EnumFacing.values()[it] }
                         .toMutableSet()
 
                 this.edges[blockPos]!![pipeType] = facings
@@ -307,7 +308,8 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
             this.chunkTransitEdges[blockPos] = mutableSetOf()
 
             typeList.forEach { transitEdgeEntry ->
-                this.chunkTransitEdges[blockPos]!!.add(TransitChunkEdge().apply { deserializeNBT(transitEdgeEntry as NBTTagCompound) })
+                this.chunkTransitEdges[blockPos]!!.add(TransitChunkEdge()
+                        .apply { deserializeNBT(transitEdgeEntry as NBTTagCompound) })
             }
         }
     }
@@ -390,17 +392,35 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      * Recalculate the internal transit network
      */
     internal fun recalculatePaths() {
-        val transitNodesQueue =
-                ArrayDeque(this.attachedSinks.values.flatten().union(this.chunkTransitEdges.values.flatten()))
+        val transitEndpoints = mutableMapOf(*PipeType.values()
+                .map { it to ArrayDeque<Pair<BlockPos, TransitEdge>>() }
+                .toTypedArray())
 
-        val graphComponents = mutableListOf<List<TransitEdge>>()
+        this.attachedSinks.entries
+                .union(this.chunkTransitEdges.entries)
+                .map { (pos, set) -> set.map { sink -> pos to sink } }
+                .flatten()
+                .groupBy { (_, edge) -> edge.type }
+                .forEach { (pipeType, list) ->
+                    transitEndpoints[pipeType]!!.addAll(list)
+                }
 
-        // find all graph components
-        while (transitNodesQueue.isNotEmpty()) {
-            val currentGraphComponent = mutableListOf<TransitEdge>()
+        for ((pipeType, dequeue) in transitEndpoints) {
+            while (dequeue.isNotEmpty()) {
+                val currentConnectedComponent = mutableListOf<TransitEdge>()
+                val (currentPosition, currentTransitEdge) = dequeue.pop()
 
-            var currentEdge = transitNodesQueue.pop()
+            }
         }
+
+        // alle conduits traversieren, die erreichbar sind
+
+        // transit endpunkte finden, die an erreichbaren conduits hängen
+
+        // diese transit punkte in zusammenhangskomponente speichern
+
+        // n zu n pfade innerhalb der zusammenhangskomponenten finden
+        // zusammenhangskomponente nehmen und n! pfade berechnen
     }
 
     /**
