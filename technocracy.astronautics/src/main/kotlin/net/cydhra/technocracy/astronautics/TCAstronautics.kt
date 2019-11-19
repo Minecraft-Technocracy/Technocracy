@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.astronautics
 
 import net.cydhra.technocracy.astronautics.client.renderer.CustomSkyRenderer
+import net.cydhra.technocracy.astronautics.content.commands.DysonSphereCommand
 import net.cydhra.technocracy.astronautics.content.world.WrappedWorldProvider
 import net.cydhra.technocracy.astronautics.proxy.CommonProxy
 import net.minecraftforge.common.MinecraftForge
@@ -11,6 +12,7 @@ import net.minecraftforge.fml.common.SidedProxy
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent
 import org.apache.logging.log4j.Logger
@@ -79,12 +81,20 @@ object TCAstronautics {
         proxy.postInit()
     }
 
+    @Suppress("unused")
+    @Mod.EventHandler
+    fun serverStarting(start: FMLServerStartingEvent) {
+        start.registerServerCommand(DysonSphereCommand())
+    }
+
+    @Suppress("unused")
     @SubscribeEvent
     fun loadWorld(event: WorldEvent.Load) {
         event.world.provider.skyRenderer = CustomSkyRenderer
         event.world.provider = WrappedWorldProvider(event.world.provider)
     }
 
+    @Suppress("unused")
     @SubscribeEvent
     fun render(event: TickEvent.WorldTickEvent) {
         if (event.phase == TickEvent.Phase.END) {
