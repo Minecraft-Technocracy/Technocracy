@@ -3,7 +3,7 @@ package net.cydhra.technocracy.astronautics.content.items
 import net.cydhra.technocracy.astronautics.content.blocks.ScaffoldBlock
 import net.cydhra.technocracy.astronautics.content.blocks.wetConcreteBlock
 import net.cydhra.technocracy.astronautics.content.blocks.wetReinforcedConcreteBlock
-import net.cydhra.technocracy.astronautics.items.color.ConcreteSprayerColor
+import net.cydhra.technocracy.astronautics.model.items.color.ConcreteSprayerColor
 import net.cydhra.technocracy.foundation.content.items.emptyCanItem
 import net.cydhra.technocracy.foundation.model.blocks.color.DyeBlockColor
 import net.cydhra.technocracy.foundation.model.items.api.BaseItem

@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.astronautics.items.color
+package net.cydhra.technocracy.astronautics.model.items.color
 
 import net.cydhra.technocracy.foundation.model.blocks.color.IBlockColor
 import net.minecraft.block.state.IBlockState

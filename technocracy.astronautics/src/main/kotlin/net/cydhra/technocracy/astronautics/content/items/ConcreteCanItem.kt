@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.astronautics.content.items
 
-import net.cydhra.technocracy.astronautics.items.color.ConcreteSprayerColor
+import net.cydhra.technocracy.astronautics.model.items.color.ConcreteSprayerColor
 import net.cydhra.technocracy.foundation.model.items.api.BaseItem
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.EnumDyeColor
