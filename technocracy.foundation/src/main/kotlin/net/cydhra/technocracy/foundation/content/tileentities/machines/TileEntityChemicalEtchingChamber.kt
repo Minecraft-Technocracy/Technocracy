@@ -50,7 +50,7 @@ class TileEntityChemicalEtchingChamber : MachineTileEntity(), TEInventoryProvide
                 energyStorage = this.energyStorageComponent.energyStorage,
                 machineUpgrades = this.machineUpgradesComponent,
                 progress = this.progressComponent,
-                baseTickEnergyCost = 60
+                baseTickEnergyCost = 120
         ))
     }
 

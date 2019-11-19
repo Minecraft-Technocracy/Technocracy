@@ -40,7 +40,7 @@ class TileEntityPolymerizationChamber : MachineTileEntity(), TEInventoryProvider
                 energyStorage = this.energyStorageComponent.energyStorage,
                 machineUpgrades = this.machineUpgradesComponent,
                 progress = this.progressComponent,
-                baseTickEnergyCost = 40
+                baseTickEnergyCost = 100
         ))
     }
 

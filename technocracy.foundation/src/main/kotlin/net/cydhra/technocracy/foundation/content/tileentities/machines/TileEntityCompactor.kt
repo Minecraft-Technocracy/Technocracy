@@ -43,7 +43,7 @@ class TileEntityCompactor : MachineTileEntity(), TEInventoryProvider {
                 outputInventory = this.outputInventoryComponent.inventory,
                 energyStorage = this.energyStorageComponent.energyStorage,
                 machineUpgrades = this.machineUpgradesComponent,
-                baseTickEnergyCost = 20,
+                baseTickEnergyCost = 10,
                 progress = this.progressComponent))
     }
 

@@ -44,7 +44,7 @@ class TileEntityPulverizer : MachineTileEntity(), TEInventoryProvider {
                 outputInventory = this.outputInventoryComponent.inventory,
                 energyStorage = this.energyStorageComponent.energyStorage,
                 machineUpgrades = this.machineUpgradesComponent,
-                baseTickEnergyCost = 10,
+                baseTickEnergyCost = 20,
                 progress = this.progressComponent))
     }
 

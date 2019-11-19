@@ -48,7 +48,7 @@ class TileEntityCrystallizationChamber : MachineTileEntity(), TEInventoryProvide
                 outputInventory = this.outputInventoryComponent.inventory,
                 energyStorage = this.energyStorageComponent.energyStorage,
                 machineUpgrades = this.machineUpgradesComponent,
-                baseTickEnergyCost = 60,
+                baseTickEnergyCost = 100,
                 progress = this.progressComponent))
     }
 
