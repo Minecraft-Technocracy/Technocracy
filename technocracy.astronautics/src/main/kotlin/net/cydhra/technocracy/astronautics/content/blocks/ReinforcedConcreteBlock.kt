@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.astronautics.blocks
+package net.cydhra.technocracy.astronautics.content.blocks
 
 import net.cydhra.technocracy.astronautics.client.astronauticsColorTabs
 import net.cydhra.technocracy.foundation.model.blocks.impl.ColoredPlainBlock

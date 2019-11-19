@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.astronautics.capabilities.satellites
+package net.cydhra.technocracy.astronautics.content.capabilities.satellites
 
 /**
  * Interface for the chunk capability that holds satellite data of a chunk or a world dimension

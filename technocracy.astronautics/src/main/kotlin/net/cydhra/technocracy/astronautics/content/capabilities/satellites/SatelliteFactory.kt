@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.astronautics.capabilities.satellites
+package net.cydhra.technocracy.astronautics.content.capabilities.satellites
 
 /**
  * A registry for all satellite types where constructors are registered, so the deserialization of

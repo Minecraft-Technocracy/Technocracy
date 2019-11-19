@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.astronautics.client.render.entity
 
-import net.cydhra.technocracy.astronautics.entity.EntityRocket
+import net.cydhra.technocracy.astronautics.content.entity.EntityRocket
 import net.cydhra.technocracy.foundation.util.structures.TemplateRenderHelper
 import net.minecraft.client.renderer.entity.Render
 import net.minecraft.client.renderer.entity.RenderManager

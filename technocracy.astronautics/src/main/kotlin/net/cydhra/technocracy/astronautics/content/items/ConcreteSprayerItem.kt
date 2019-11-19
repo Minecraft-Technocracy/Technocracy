@@ -1,17 +1,17 @@
-package net.cydhra.technocracy.astronautics.items
+package net.cydhra.technocracy.astronautics.content.items
 
-import net.cydhra.technocracy.astronautics.blocks.ScaffoldBlock
-import net.cydhra.technocracy.astronautics.blocks.general.wetConcreteBlock
-import net.cydhra.technocracy.astronautics.blocks.general.wetReinforcedConcreteBlock
+import net.cydhra.technocracy.astronautics.content.blocks.ScaffoldBlock
+import net.cydhra.technocracy.astronautics.content.blocks.wetConcreteBlock
+import net.cydhra.technocracy.astronautics.content.blocks.wetReinforcedConcreteBlock
 import net.cydhra.technocracy.astronautics.items.color.ConcreteSprayerColor
-import net.cydhra.technocracy.astronautics.items.general.concreteCanItem
+import net.cydhra.technocracy.foundation.content.items.emptyCanItem
 import net.cydhra.technocracy.foundation.model.blocks.color.DyeBlockColor
 import net.cydhra.technocracy.foundation.model.items.api.BaseItem
-import net.cydhra.technocracy.foundation.content.items.emptyCanItem
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.item.*
+import net.minecraft.item.EnumDyeColor
+import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.*
 import net.minecraft.util.math.BlockPos

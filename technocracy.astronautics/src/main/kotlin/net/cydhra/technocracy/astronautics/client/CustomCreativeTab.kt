@@ -1,8 +1,7 @@
 package net.cydhra.technocracy.astronautics.client
 
-import net.cydhra.technocracy.astronautics.blocks.general.rocketHullBlock
-import net.cydhra.technocracy.astronautics.blocks.general.scaffoldBlock
-import net.cydhra.technocracy.astronautics.blocks.general.wetReinforcedConcreteBlock
+import net.cydhra.technocracy.astronautics.content.blocks.scaffoldBlock
+import net.cydhra.technocracy.astronautics.content.blocks.wetReinforcedConcreteBlock
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.ItemBlock
 import net.minecraft.item.ItemStack

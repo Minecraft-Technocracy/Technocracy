@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.astronautics.capabilities.satellites
+package net.cydhra.technocracy.astronautics.content.capabilities.satellites
 
 /**
  * Default implementation for a satellite orbit that does not mark modified chunks as dirty.

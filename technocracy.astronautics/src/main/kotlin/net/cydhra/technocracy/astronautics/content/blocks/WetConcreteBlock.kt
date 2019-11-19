@@ -1,30 +1,31 @@
-package net.cydhra.technocracy.astronautics.blocks
+package net.cydhra.technocracy.astronautics.content.blocks
 
-import net.cydhra.technocracy.astronautics.blocks.general.reinforcedConcreteBlock
 import net.cydhra.technocracy.astronautics.client.astronauticsColorTabs
-import net.cydhra.technocracy.foundation.model.blocks.impl.ColoredPlainBlock
 import net.cydhra.technocracy.foundation.model.blocks.color.DyeBlockColor
-import net.cydhra.technocracy.foundation.model.blocks.util.IDynamicBlockDisplayName
+import net.cydhra.technocracy.foundation.model.blocks.impl.ColoredPlainBlock
 import net.minecraft.block.BlockColored
 import net.minecraft.block.SoundType
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
+import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.Entity
+import net.minecraft.init.Blocks
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import java.util.*
 
 
-class WetReinforcedConcreteBlock : ColoredPlainBlock("wet_reinforced_concrete", Material.IRON, colorTab = astronauticsColorTabs), IDynamicBlockDisplayName {
+class WetConcreteBlock : ColoredPlainBlock("wet_concrete", Material.ROCK, colorTab = astronauticsColorTabs) {
     init {
         setHardness(2F)
         setResistance(10.0f)
+        setCreativeTab(CreativeTabs.SEARCH)
         soundType = SoundType.GROUND
     }
 
     override fun randomTick(worldIn: World, pos: BlockPos, state: IBlockState, random: Random) {
         if (random.nextInt(10) <= 2) {
-            worldIn.setBlockState(pos,reinforcedConcreteBlock.defaultState.withProperty(BlockColored.COLOR, state.getValue(DyeBlockColor.COLOR)))
+            worldIn.setBlockState(pos,Blocks.CONCRETE.defaultState.withProperty(BlockColored.COLOR, state.getValue(DyeBlockColor.COLOR)))
         }
     }
 

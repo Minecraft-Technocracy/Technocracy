@@ -1,8 +1,11 @@
 package net.cydhra.technocracy.astronautics.client.model.concreteSprayer
 
-import net.cydhra.technocracy.astronautics.items.ConcreteSprayerItem
+import net.cydhra.technocracy.astronautics.content.items.ConcreteSprayerItem
 import net.minecraft.block.state.IBlockState
-import net.minecraft.client.renderer.block.model.*
+import net.minecraft.client.renderer.block.model.BakedQuad
+import net.minecraft.client.renderer.block.model.IBakedModel
+import net.minecraft.client.renderer.block.model.ItemOverride
+import net.minecraft.client.renderer.block.model.ItemOverrideList
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing

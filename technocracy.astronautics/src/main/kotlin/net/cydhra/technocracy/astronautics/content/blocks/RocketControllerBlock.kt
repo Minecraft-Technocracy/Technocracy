@@ -1,12 +1,10 @@
-package net.cydhra.technocracy.astronautics.blocks
+package net.cydhra.technocracy.astronautics.content.blocks
 
-import net.cydhra.technocracy.astronautics.blocks.general.rocketHullBlock
-import net.cydhra.technocracy.astronautics.blocks.general.rocketStorageBlock
-import net.cydhra.technocracy.astronautics.entity.EntityRocket
-import net.cydhra.technocracy.astronautics.tileentity.TileEntityRocketController
+import net.cydhra.technocracy.astronautics.content.entity.EntityRocket
+import net.cydhra.technocracy.astronautics.content.tileentity.TileEntityRocketController
+import net.cydhra.technocracy.foundation.data.world.groups.GroupManager
 import net.cydhra.technocracy.foundation.model.blocks.api.AbstractRotatableTileEntityBlock
 import net.cydhra.technocracy.foundation.model.blocks.util.IDynamicBlockPlaceBehavior
-import net.cydhra.technocracy.foundation.data.world.groups.GroupManager
 import net.cydhra.technocracy.foundation.util.structures.Template
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState

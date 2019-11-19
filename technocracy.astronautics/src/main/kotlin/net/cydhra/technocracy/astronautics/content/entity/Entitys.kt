@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.astronautics.entity
+package net.cydhra.technocracy.astronautics.content.entity
 
 import net.cydhra.technocracy.astronautics.client.render.entity.RenderEntityRocket
 import net.cydhra.technocracy.foundation.model.entities.util.EntityRegistryElement

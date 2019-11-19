@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.astronautics.capabilities.satellites
+package net.cydhra.technocracy.astronautics.content.capabilities.satellites
 
 import net.minecraft.nbt.NBTTagCompound
 

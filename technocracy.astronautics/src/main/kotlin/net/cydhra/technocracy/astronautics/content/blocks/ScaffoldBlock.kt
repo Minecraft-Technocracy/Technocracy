@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.astronautics.blocks
+package net.cydhra.technocracy.astronautics.content.blocks
 
 import net.cydhra.technocracy.foundation.model.blocks.api.AbstractBaseBlock
 import net.minecraft.block.material.Material

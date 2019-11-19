@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.astronautics.world
+package net.cydhra.technocracy.astronautics.content.world
 
 import net.cydhra.technocracy.astronautics.dyson.DysonSphereController
 import net.minecraft.entity.player.EntityPlayerMP

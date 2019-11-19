@@ -1,13 +1,13 @@
-package net.cydhra.technocracy.astronautics.tileentity
+package net.cydhra.technocracy.astronautics.content.tileentity
 
-import net.cydhra.technocracy.astronautics.entity.EntityRocket
+import net.cydhra.technocracy.astronautics.content.entity.EntityRocket
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
-import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableTileEntity
 import net.cydhra.technocracy.foundation.content.tileentities.components.FluidComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.OwnerShipComponent
 import net.cydhra.technocracy.foundation.model.tileentities.api.TEInventoryProvider
+import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableTileEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
 

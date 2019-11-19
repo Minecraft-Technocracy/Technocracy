@@ -1,8 +1,8 @@
 package net.cydhra.technocracy.astronautics
 
 import net.cydhra.technocracy.astronautics.client.renderer.CustomSkyRenderer
+import net.cydhra.technocracy.astronautics.content.world.WrappedWorldProvider
 import net.cydhra.technocracy.astronautics.proxy.CommonProxy
-import net.cydhra.technocracy.astronautics.world.WrappedWorldProvider
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.world.WorldEvent
 import net.minecraftforge.fml.common.FMLLog
