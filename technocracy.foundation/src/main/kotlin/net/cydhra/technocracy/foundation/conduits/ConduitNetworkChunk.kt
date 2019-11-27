@@ -423,7 +423,9 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
                     transitEndpoints[pipeType]!!.addAll(list)
                 }
 
-        for ((pipeType, transitEdgeQueue) in transitEndpoints) {
+        for ((pipeType, transitQueue) in transitEndpoints) {
+            val transitEdgeQueue = transitQueue.clone()
+
             while (transitEdgeQueue.isNotEmpty()) {
                 val currentConnectedTransitComponent = mutableMapOf<TransitEdge, Int>()
                 val currentKnownComponent = mutableMapOf<BlockPos, Int>()
