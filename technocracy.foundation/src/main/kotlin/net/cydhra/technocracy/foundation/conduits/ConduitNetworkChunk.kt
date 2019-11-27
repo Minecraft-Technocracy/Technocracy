@@ -264,8 +264,9 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      * @return transit edge instance or null, if this id is not valid within this chunk
      */
     fun getTransitEdge(id: Int): Pair<BlockPos, TransitEdge>? {
-        return this.chunkTransitEdges
-                .map { (pos, set) ->
+        return this.chunkTransitEdges.entries
+                .union(this.attachedSinks.entries)
+                .mapNotNull { (pos, set) ->
                     val target = set.find { it.id == id }
                     if (target != null) {
                         Pair(pos, target)
@@ -273,7 +274,6 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
                         null
                     }
                 }
-                .filterNotNull()
                 .firstOrNull()
     }
 
@@ -410,10 +410,15 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      */
     internal fun recalculatePaths() {
         val transitEndpoints =
-                mutableMapOf(*PipeType.values().map { it to ArrayDeque<Pair<BlockPos, TransitEdge>>() }.toTypedArray())
+                mutableMapOf(*PipeType.values()
+                        .map { it to ArrayDeque<Pair<BlockPos, TransitEdge>>() }
+                        .toTypedArray())
 
-        this.attachedSinks.entries.union(this.chunkTransitEdges.entries)
-                .map { (pos, set) -> set.map { sink -> pos to sink } }.flatten().groupBy { (_, edge) -> edge.type }
+        this.attachedSinks.entries
+                .union(this.chunkTransitEdges.entries)
+                .map { (pos, set) -> set.map { sink -> pos to sink } }
+                .flatten()
+                .groupBy { (_, edge) -> edge.type }
                 .forEach { (pipeType, list) ->
                     transitEndpoints[pipeType]!!.addAll(list)
                 }
