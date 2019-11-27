@@ -1,0 +1,12 @@
+{
+  "parent": "block/orientable",
+  "textures": {
+    "particle": "technocracy.foundation:block/machine_bottom",
+    "up": "technocracy.foundation:block/oxidizer_top",
+    "down": "technocracy.foundation:block/machine_bottom",
+    "north": "technocracy.foundation:block/industrial_machine_frame",
+    "east": "technocracy.foundation:block/industrial_machine_frame",
+    "south": "technocracy.foundation:block/industrial_machine_frame",
+    "west": "technocracy.foundation:block/industrial_machine_frame"
+  }
+}

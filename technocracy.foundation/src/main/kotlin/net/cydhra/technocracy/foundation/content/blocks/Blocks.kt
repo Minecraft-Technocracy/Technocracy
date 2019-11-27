@@ -1,6 +1,5 @@
 package net.cydhra.technocracy.foundation.content.blocks
 
-import net.cydhra.technocracy.foundation.model.blocks.impl.*
 import net.cydhra.technocracy.foundation.content.tileentities.machines.*
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartBoiler
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartCapacitor
@@ -21,6 +20,7 @@ import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refiner
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refinery.TileEntityRefineryOutput
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.tank.TileEntityTankMultiBlockPart
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.tank.TileEntityTankPort
+import net.cydhra.technocracy.foundation.model.blocks.impl.*
 import net.minecraft.block.material.Material
 import net.minecraft.util.BlockRenderLayer
 
@@ -38,6 +38,7 @@ val electrolysisChamberBlock = MachineBlock("electrolysis_chamber", ::TileEntity
 val kilnBlock = MachineBlock("kiln", ::TileEntityKiln)
 val polymerizationChamberBlock = MachineBlock("polymerization_chamber", ::TileEntityPolymerizationChamber)
 val pulverizerBlock = MachineBlock("pulverizer", ::TileEntityPulverizer)
+val laserDrillBlock = MachineBlock("laser_drill", ::TileEntityLaserDrill)
 
 val boilerControllerBlock = MultiBlockRotatableActiveBlock("boiler_controller", ::TileEntityBoilerController)
 val boilerHeaterBlock = MultiBlockActiveBlock("boiler_heater", ::TileEntityBoilerHeater, renderLayer = BlockRenderLayer.CUTOUT)

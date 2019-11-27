@@ -14,21 +14,8 @@ import net.cydhra.technocracy.foundation.content.blocks.*
 import net.cydhra.technocracy.foundation.content.fluids.*
 import net.cydhra.technocracy.foundation.content.items.*
 import net.cydhra.technocracy.foundation.content.oresystems.*
-import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
-import net.cydhra.technocracy.foundation.model.blocks.manager.BlockManager
-import net.cydhra.technocracy.foundation.model.fluids.manager.FluidManager
-import net.cydhra.technocracy.foundation.model.items.manager.ItemManager
-import net.cydhra.technocracy.foundation.network.ItemKeyBindPacket
-import net.cydhra.technocracy.foundation.network.ItemScrollPacket
-import net.cydhra.technocracy.foundation.network.PacketHandler
-import net.cydhra.technocracy.foundation.network.componentsync.ClientComponentUpdatePacket
-import net.cydhra.technocracy.foundation.network.componentsync.GuiUpdateListener
-import net.cydhra.technocracy.foundation.network.componentsync.MachineInfoPacket
-import net.cydhra.technocracy.foundation.model.potions.manager.PotionManager
 import net.cydhra.technocracy.foundation.content.potions.oilyEffect
-import net.cydhra.technocracy.foundation.content.tileentities.storage.TileEntityDrum
 import net.cydhra.technocracy.foundation.content.tileentities.machines.*
-import net.cydhra.technocracy.foundation.model.tileentities.manager.TileEntityManager
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartBoiler
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartCapacitor
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartHeatExchanger
@@ -49,10 +36,23 @@ import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refiner
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.tank.TileEntityTankMultiBlockPart
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.tank.TileEntityTankPort
 import net.cydhra.technocracy.foundation.content.tileentities.pipe.TileEntityPipe
+import net.cydhra.technocracy.foundation.content.tileentities.storage.TileEntityDrum
 import net.cydhra.technocracy.foundation.content.world.OilLakeGen
 import net.cydhra.technocracy.foundation.content.world.OilSandGen
 import net.cydhra.technocracy.foundation.content.world.WorldGenDeco
+import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
+import net.cydhra.technocracy.foundation.model.blocks.manager.BlockManager
+import net.cydhra.technocracy.foundation.model.fluids.manager.FluidManager
+import net.cydhra.technocracy.foundation.model.items.manager.ItemManager
 import net.cydhra.technocracy.foundation.model.oresystems.api.OreSystem
+import net.cydhra.technocracy.foundation.model.potions.manager.PotionManager
+import net.cydhra.technocracy.foundation.model.tileentities.manager.TileEntityManager
+import net.cydhra.technocracy.foundation.network.ItemKeyBindPacket
+import net.cydhra.technocracy.foundation.network.ItemScrollPacket
+import net.cydhra.technocracy.foundation.network.PacketHandler
+import net.cydhra.technocracy.foundation.network.componentsync.ClientComponentUpdatePacket
+import net.cydhra.technocracy.foundation.network.componentsync.GuiUpdateListener
+import net.cydhra.technocracy.foundation.network.componentsync.MachineInfoPacket
 import net.minecraft.client.Minecraft
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.MinecraftForge
@@ -153,6 +153,7 @@ open class CommonProxy {
         blockManager.prepareBlocksForRegistration(kilnBlock, MachineConnectorModel())
         blockManager.prepareBlocksForRegistration(polymerizationChamberBlock, MachineConnectorModel())
         blockManager.prepareBlocksForRegistration(pulverizerBlock, MachineConnectorModel())
+        blockManager.prepareBlocksForRegistration(laserDrillBlock, MachineConnectorModel())
 
         blockManager.prepareBlocksForRegistration(boilerControllerBlock)
         blockManager.prepareBlocksForRegistration(boilerHeaterBlock)
@@ -268,6 +269,7 @@ open class CommonProxy {
         tileEntityManager.prepareTileEntityForRegistration(TileEntityPolymerizationChamber::class)
         tileEntityManager.prepareTileEntityForRegistration(TileEntityPulverizer::class)
         tileEntityManager.prepareTileEntityForRegistration(TileEntityPipe::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityLaserDrill::class)
 
         tileEntityManager.prepareTileEntityForRegistration(TileEntityMultiBlockPartBoiler::class)
         tileEntityManager.prepareTileEntityForRegistration(TileEntityBoilerController::class)
