@@ -18,6 +18,8 @@ system.gold=Gold
 system.zirconium=Zirconium
 
 item.machine_frame.name=Machine Frame
+item.advanced_frame.name=Advanced Machine Frame
+item.industrial_frame.name=Industrial Machine Frame
 item.sulfur.name=Sulfur
 item.battery.name=Battery
 item.akkumulator.name=Lithium Ion Akkumulator
