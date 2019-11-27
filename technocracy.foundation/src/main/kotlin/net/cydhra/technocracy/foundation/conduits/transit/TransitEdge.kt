@@ -3,7 +3,6 @@ package net.cydhra.technocracy.foundation.conduits.transit
 import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
-import net.minecraft.util.math.BlockPos
 import net.minecraftforge.common.util.INBTSerializable
 
 /**
@@ -24,6 +23,7 @@ abstract class TransitEdge : INBTSerializable<NBTTagCompound> {
         private const val NBT_KEY_ID = "id"
         private const val NBT_KEY_TYPE = "type"
         private const val NBT_KEY_FACING = "facing"
+        private const val NBT_KEY_PATHS = "paths"
     }
 
     var id: Int = -1
@@ -35,6 +35,8 @@ abstract class TransitEdge : INBTSerializable<NBTTagCompound> {
     lateinit var facing: EnumFacing
         protected set
 
+    val paths: MutableMap<Int, Int> = mutableMapOf()
+
     operator fun component1(): PipeType = type
 
     operator fun component2(): EnumFacing = facing
@@ -43,6 +45,12 @@ abstract class TransitEdge : INBTSerializable<NBTTagCompound> {
         this.id = nbt.getInteger(NBT_KEY_ID)
         this.type = PipeType.values()[nbt.getInteger(NBT_KEY_TYPE)]
         this.facing = EnumFacing.values()[nbt.getInteger(NBT_KEY_FACING)]
+
+        val pathTag = nbt.getCompoundTag(NBT_KEY_PATHS)
+
+        for (key in pathTag.keySet) {
+            this.paths[key.toInt()] = pathTag.getInteger(key)
+        }
     }
 
     override fun serializeNBT(): NBTTagCompound {
@@ -50,6 +58,12 @@ abstract class TransitEdge : INBTSerializable<NBTTagCompound> {
             setInteger(NBT_KEY_ID, this@TransitEdge.id)
             setInteger(NBT_KEY_TYPE, this@TransitEdge.type.ordinal)
             setInteger(NBT_KEY_FACING, this@TransitEdge.facing.ordinal)
+
+            val paths = NBTTagCompound()
+            this@TransitEdge.paths.forEach { (id, cost) ->
+                paths.setInteger(id.toString(), cost)
+            }
+            setTag(NBT_KEY_PATHS, paths)
         }
     }
 }
