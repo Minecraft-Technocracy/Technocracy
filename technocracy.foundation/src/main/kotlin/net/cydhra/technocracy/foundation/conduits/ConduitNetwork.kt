@@ -390,6 +390,28 @@ object ConduitNetwork {
                         GL11.glPopMatrix()
                     }
 
+                    set.forEach { transitEdge ->
+                        when (transitEdge.type) {
+                            PipeType.ENERGY -> GL11.glColor3d(1.0, .6, .6)
+                            PipeType.ITEM -> GL11.glColor3d(.6, 1.0, .6)
+                            PipeType.FLUID -> GL11.glColor3d(.6, .6, 1.0)
+                        }
+
+                        transitEdge.paths.forEach { (id, cost) ->
+                            val (otherPos, otherEdge) = nChunk.getTransitEdge(id)!!
+
+                            GL11.glBegin(GL11.GL_LINES)
+                            GL11.glVertex3d(transitEdge.facing.directionVec.x / 2.0, transitEdge.facing.directionVec.y / 2.0,
+                                    transitEdge.facing.directionVec.z / 2.0)
+                            GL11.glVertex3d(
+                                    otherPos.x.toDouble() - pos.x + otherEdge.facing.directionVec.x / 2.0,
+                                    otherPos.y.toDouble() - pos.y + otherEdge.facing.directionVec.y / 2.0,
+                                    otherPos.z.toDouble() - pos.z + otherEdge.facing.directionVec.z / 2.0)
+
+                            GL11.glEnd()
+                        }
+                    }
+
                     GL11.glPopMatrix()
                 }
 
