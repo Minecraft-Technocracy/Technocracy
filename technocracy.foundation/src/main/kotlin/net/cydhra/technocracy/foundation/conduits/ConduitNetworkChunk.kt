@@ -258,6 +258,25 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
         return this.attachedSinks[pos]?.any { it.facing == face && it.type == type } ?: false
     }
 
+    /**
+     * Find transit edge with given id within this chunk.
+     *
+     * @return transit edge instance or null, if this id is not valid within this chunk
+     */
+    fun getTransitEdge(id: Int): Pair<BlockPos, TransitEdge>? {
+        return this.chunkTransitEdges.entries
+                .union(this.attachedSinks.entries)
+                .mapNotNull { (pos, set) ->
+                    val target = set.find { it.id == id }
+                    if (target != null) {
+                        Pair(pos, target)
+                    } else {
+                        null
+                    }
+                }
+                .firstOrNull()
+    }
+
     override fun deserializeNBT(nbt: NBTTagCompound) {
         this.transitEdgeCounter = nbt.getInteger(NBT_KEY_TRANSIT_COUNTER_STATE)
 
@@ -280,8 +299,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
 
             typeList.forEach { typeTag ->
                 val pipeType = PipeType.values()[(typeTag as NBTTagCompound).getInteger(NBT_KEY_EDGE_TYPE_LIST_ENTRY)]
-                val facings = typeTag.getIntArray(NBT_KEY_EDGE_TYPE_LIST_DIRECTION_LIST)
-                        .map { EnumFacing.values()[it] }
+                val facings = typeTag.getIntArray(NBT_KEY_EDGE_TYPE_LIST_DIRECTION_LIST).map { EnumFacing.values()[it] }
                         .toMutableSet()
 
                 this.edges[blockPos]!![pipeType] = facings
@@ -308,8 +326,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
             this.chunkTransitEdges[blockPos] = mutableSetOf()
 
             typeList.forEach { transitEdgeEntry ->
-                this.chunkTransitEdges[blockPos]!!.add(TransitChunkEdge()
-                        .apply { deserializeNBT(transitEdgeEntry as NBTTagCompound) })
+                this.chunkTransitEdges[blockPos]!!.add(TransitChunkEdge().apply { deserializeNBT(transitEdgeEntry as NBTTagCompound) })
             }
         }
     }
@@ -392,9 +409,10 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      * Recalculate the internal transit network
      */
     internal fun recalculatePaths() {
-        val transitEndpoints = mutableMapOf(*PipeType.values()
-                .map { it to ArrayDeque<Pair<BlockPos, TransitEdge>>() }
-                .toTypedArray())
+        val transitEndpoints =
+                mutableMapOf(*PipeType.values()
+                        .map { it to ArrayDeque<Pair<BlockPos, TransitEdge>>() }
+                        .toTypedArray())
 
         this.attachedSinks.entries
                 .union(this.chunkTransitEdges.entries)
@@ -405,22 +423,65 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
                     transitEndpoints[pipeType]!!.addAll(list)
                 }
 
-        for ((pipeType, dequeue) in transitEndpoints) {
-            while (dequeue.isNotEmpty()) {
-                val currentConnectedComponent = mutableListOf<TransitEdge>()
-                val (currentPosition, currentTransitEdge) = dequeue.pop()
+        for ((pipeType, transitQueue) in transitEndpoints) {
+            val transitEdgeQueue = transitQueue.clone()
 
+            while (transitEdgeQueue.isNotEmpty()) {
+                val currentConnectedTransitComponent = mutableMapOf<TransitEdge, Int>()
+                val currentKnownComponent = mutableMapOf<BlockPos, Int>()
+                val (currentTransitPosition, currentTransitEdge) = transitEdgeQueue.pop()
+
+                // the first position has distance one from the actual transit sink
+                currentKnownComponent[currentTransitPosition] = 1
+                currentConnectedTransitComponent[currentTransitEdge] = 0
+
+                // inner loop state
+                var currentPosition: BlockPos
+                val positionQueue = ArrayDeque<BlockPos>()
+                positionQueue.add(currentTransitPosition)
+
+                while (positionQueue.isNotEmpty()) {
+                    currentPosition = positionQueue.pop()
+
+                    this.edges[currentPosition]!![pipeType]!!.forEach { facing ->
+                        val neighbor = currentPosition.offset(facing)
+
+                        // test if the edge actually leads to a node (instead of being a transit edge)
+                        if (this.nodes[neighbor]?.contains(pipeType) == true) {
+                            // if neighbor is already known
+                            if (currentKnownComponent[neighbor] != null) {
+                                if (currentKnownComponent[neighbor]!! > currentKnownComponent[currentPosition]!! + 1) {
+                                    currentKnownComponent[neighbor] = currentKnownComponent[currentPosition]!! + 1
+                                }
+                            } else {
+                                currentKnownComponent[neighbor] = currentKnownComponent[currentPosition]!! + 1
+                                positionQueue.add(neighbor)
+                            }
+                        } else {
+                            val transitEdge = transitEndpoints[pipeType]
+                                    ?.find { (pos, edge) -> pos == currentPosition && edge.facing == facing }
+                                    ?.second
+
+                            if (transitEdge != null) {
+                                if (currentConnectedTransitComponent.containsKey(transitEdge)) {
+                                    if (currentConnectedTransitComponent[transitEdge]!! > currentKnownComponent[currentPosition]!! + 1) {
+                                        currentConnectedTransitComponent[transitEdge] =
+                                                currentKnownComponent[currentPosition]!! + 1
+                                    }
+                                } else {
+                                    currentConnectedTransitComponent[transitEdge] =
+                                            currentKnownComponent[currentPosition]!! + 1
+                                }
+                            }
+                        }
+                    }
+                }
+
+                currentTransitEdge.paths.clear()
+                currentTransitEdge.paths.putAll(currentConnectedTransitComponent
+                        .filter { (_, cost) -> cost > 0 }.map { (edge, cost) -> Pair(edge.id, cost) }.toMap())
             }
         }
-
-        // alle conduits traversieren, die erreichbar sind
-
-        // transit endpunkte finden, die an erreichbaren conduits hängen
-
-        // diese transit punkte in zusammenhangskomponente speichern
-
-        // n zu n pfade innerhalb der zusammenhangskomponenten finden
-        // zusammenhangskomponente nehmen und n! pfade berechnen
     }
 
     /**
