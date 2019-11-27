@@ -1,6 +1,5 @@
 package net.cydhra.technocracy.foundation.conduits
 
-import net.cydhra.technocracy.foundation.conduits.ConduitNetwork.removeAllAttachedSinks
 import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.minecraft.client.Minecraft
 import net.minecraft.util.EnumFacing
@@ -14,7 +13,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import org.lwjgl.opengl.GL11
 import org.lwjgl.util.glu.Disk
 import org.lwjgl.util.glu.Sphere
-import sun.nio.ch.Net
 
 /**
  * Global facade to the conduit network. All components that interact with the conduit network shall talk to this
@@ -41,10 +39,10 @@ object ConduitNetwork {
      * @throws IllegalStateException if the node already exists
      * @throws IllegalStateException if the respective chunk is not loaded
      */
-    fun addConduitNode(transactionContext: NetworkTransactionContext,
-                       world: WorldServer, pos: BlockPos, type: PipeType) {
-        val dimension = dimensions[world.provider.dimension]
-                ?: throw IllegalStateException("the dimension is not loaded")
+    fun addConduitNode(transactionContext: NetworkTransactionContext, world: WorldServer, pos: BlockPos,
+            type: PipeType) {
+        val dimension =
+                dimensions[world.provider.dimension] ?: throw IllegalStateException("the dimension is not loaded")
         val chunk = dimension.getChunkAt(ChunkPos(pos)) ?: throw IllegalStateException("the chunk is not loaded")
 
         chunk.insertNode(pos, type)
@@ -62,10 +60,10 @@ object ConduitNetwork {
      * @throws IllegalStateException if the node does not exist
      * @throws IllegalStateException if the respective chunk is not loaded
      */
-    fun removeConduitNode(transactionContext: NetworkTransactionContext,
-                          world: WorldServer, pos: BlockPos, type: PipeType) {
-        val dimension = dimensions[world.provider.dimension]
-                ?: throw IllegalStateException("the dimension is not loaded")
+    fun removeConduitNode(transactionContext: NetworkTransactionContext, world: WorldServer, pos: BlockPos,
+            type: PipeType) {
+        val dimension =
+                dimensions[world.provider.dimension] ?: throw IllegalStateException("the dimension is not loaded")
         val chunk = dimension.getChunkAt(ChunkPos(pos)) ?: throw IllegalStateException("the chunk is not loaded")
 
         chunk.removeNode(pos, type)
@@ -90,20 +88,20 @@ object ConduitNetwork {
      * @throws [IllegalStateException] if the dimension is not loaded
      * @throws [IllegalStateException] if one of the chunks is not loaded
      */
-    fun insertConduitEdge(transactionContext: NetworkTransactionContext,
-                          world: WorldServer, nodeA: BlockPos, nodeB: BlockPos, type: PipeType) {
+    fun insertConduitEdge(transactionContext: NetworkTransactionContext, world: WorldServer, nodeA: BlockPos,
+            nodeB: BlockPos, type: PipeType) {
         val directionFromA = EnumFacing.values().firstOrNull { nodeA.add(it.directionVec) == nodeB }
                 ?: throw IllegalArgumentException("the positions are not adjacent")
 
-        val dimension = dimensions[world.provider.dimension]
-                ?: throw IllegalStateException("the dimension is not loaded")
+        val dimension =
+                dimensions[world.provider.dimension] ?: throw IllegalStateException("the dimension is not loaded")
 
-        val chunkA = dimension.getChunkAt(ChunkPos(nodeA))
-                ?: throw IllegalStateException("the chunk of nodeA is not loaded")
+        val chunkA =
+                dimension.getChunkAt(ChunkPos(nodeA)) ?: throw IllegalStateException("the chunk of nodeA is not loaded")
         chunkA.insertEdge(nodeA, directionFromA, type)
 
-        val chunkB = dimension.getChunkAt(ChunkPos(nodeB))
-                ?: throw IllegalStateException("the chunk of nodeB is not loaded")
+        val chunkB =
+                dimension.getChunkAt(ChunkPos(nodeB)) ?: throw IllegalStateException("the chunk of nodeB is not loaded")
         chunkB.insertEdge(nodeB, directionFromA.opposite, type)
         transactionContext.markChunkModified(chunkA)
         transactionContext.markChunkModified(chunkB)
@@ -121,30 +119,29 @@ object ConduitNetwork {
      * @throws [IllegalArgumentException] if the positions given are not adjacent
      * @throws [IllegalStateException] if the edge does not exist
      */
-    fun removeConduitEdge(transactionContext: NetworkTransactionContext,
-                          world: WorldServer, nodeA: BlockPos, nodeB: BlockPos, type: PipeType) {
+    fun removeConduitEdge(transactionContext: NetworkTransactionContext, world: WorldServer, nodeA: BlockPos,
+            nodeB: BlockPos, type: PipeType) {
         val directionFromA = EnumFacing.values().firstOrNull { nodeA.add(it.directionVec) == nodeB }
                 ?: throw IllegalArgumentException("the positions are not adjacent")
 
-        val dimension = dimensions[world.provider.dimension]
-                ?: throw IllegalStateException("the dimension is not loaded")
+        val dimension =
+                dimensions[world.provider.dimension] ?: throw IllegalStateException("the dimension is not loaded")
 
-        val chunkA = dimension.getChunkAt(ChunkPos(nodeA))
-                ?: throw IllegalStateException("the chunk of nodeA is not loaded")
+        val chunkA =
+                dimension.getChunkAt(ChunkPos(nodeA)) ?: throw IllegalStateException("the chunk of nodeA is not loaded")
         chunkA.removeEdge(nodeA, directionFromA, type)
 
-        val chunkB = dimension.getChunkAt(ChunkPos(nodeB))
-                ?: throw IllegalStateException("the chunk of nodeB is not loaded")
+        val chunkB =
+                dimension.getChunkAt(ChunkPos(nodeB)) ?: throw IllegalStateException("the chunk of nodeB is not loaded")
         chunkB.removeEdge(nodeB, directionFromA.opposite, type)
         transactionContext.markChunkModified(chunkA)
         transactionContext.markChunkModified(chunkB)
     }
 
-    fun attachTransitSink(transactionContext: NetworkTransactionContext,
-                          world: WorldServer, pos: BlockPos, facing: EnumFacing,
-                          type: PipeType) {
-        val dimension = dimensions[world.provider.dimension]
-                ?: throw IllegalStateException("the dimension is not loaded")
+    fun attachTransitSink(transactionContext: NetworkTransactionContext, world: WorldServer, pos: BlockPos,
+            facing: EnumFacing, type: PipeType) {
+        val dimension =
+                dimensions[world.provider.dimension] ?: throw IllegalStateException("the dimension is not loaded")
 
         val chunk = dimension.getChunkAt(ChunkPos(pos)) ?: throw IllegalStateException("the chunk is not loaded")
 
@@ -158,11 +155,10 @@ object ConduitNetwork {
      * but just remove the edge. If there was no sink, the adjacent block in direction of [facing] will have a
      * dangling edge left.
      */
-    fun removeTransitSink(transactionContext: NetworkTransactionContext,
-                          world: WorldServer, pos: BlockPos, facing: EnumFacing,
-                          type: PipeType) {
-        val dimension = dimensions[world.provider.dimension]
-                ?: throw IllegalStateException("the dimension is not loaded")
+    fun removeTransitSink(transactionContext: NetworkTransactionContext, world: WorldServer, pos: BlockPos,
+            facing: EnumFacing, type: PipeType) {
+        val dimension =
+                dimensions[world.provider.dimension] ?: throw IllegalStateException("the dimension is not loaded")
 
         val chunk = dimension.getChunkAt(ChunkPos(pos)) ?: throw IllegalStateException("the chunk is not loaded")
 
@@ -179,10 +175,10 @@ object ConduitNetwork {
      * @param type the type of sinks to remove
      *
      */
-    fun removeAllAttachedSinks(transactionContext: NetworkTransactionContext,
-                               world: WorldServer, pos: BlockPos, type: PipeType) {
-        val dimension = dimensions[world.provider.dimension]
-                ?: throw IllegalStateException("the dimension is not loaded")
+    fun removeAllAttachedSinks(transactionContext: NetworkTransactionContext, world: WorldServer, pos: BlockPos,
+            type: PipeType) {
+        val dimension =
+                dimensions[world.provider.dimension] ?: throw IllegalStateException("the dimension is not loaded")
 
         val chunk = dimension.getChunkAt(ChunkPos(pos)) ?: throw IllegalStateException("the chunk is not loaded")
 
@@ -198,16 +194,16 @@ object ConduitNetwork {
      * @return true if the conduit network has a node of given type at given block position
      */
     fun hasConduitNode(world: WorldServer, pos: BlockPos, type: PipeType): Boolean {
-        val dimension = dimensions[world.provider.dimension]
-                ?: throw IllegalStateException("the dimension is not loaded")
+        val dimension =
+                dimensions[world.provider.dimension] ?: throw IllegalStateException("the dimension is not loaded")
         val chunk = dimension.getChunkAt(ChunkPos(pos)) ?: throw IllegalStateException("the chunk is not loaded")
 
         return chunk.hasNode(pos, type)
     }
 
     fun hasSink(world: WorldServer, pos: BlockPos, face: EnumFacing, type: PipeType): Boolean {
-        val dimension = dimensions[world.provider.dimension]
-                ?: throw IllegalStateException("the dimension is not loaded")
+        val dimension =
+                dimensions[world.provider.dimension] ?: throw IllegalStateException("the dimension is not loaded")
 
         val chunk = dimension.getChunkAt(ChunkPos(pos)) ?: throw IllegalStateException("the chunk is not loaded")
 
@@ -243,8 +239,7 @@ object ConduitNetwork {
     @Suppress("unused")
     @SubscribeEvent
     fun onChunkDataLoad(event: ChunkDataEvent.Load) {
-        if (event.world.isRemote)
-            return
+        if (event.world.isRemote) return
 
         val dimensionId = event.world.provider.dimension
         val dimension = dimensions[dimensionId] ?: ConduitNetworkDimension(dimensionId).apply {
@@ -261,8 +256,7 @@ object ConduitNetwork {
     @Suppress("unused")
     @SubscribeEvent
     fun onChunkDataSave(event: ChunkDataEvent.Save) {
-        if (event.world.isRemote)
-            return
+        if (event.world.isRemote) return
 
         val dimensionId = event.world.provider.dimension
         val dimension = dimensions[dimensionId]!!
@@ -276,8 +270,7 @@ object ConduitNetwork {
     @Suppress("unused")
     @SubscribeEvent
     fun onChunkLoad(event: ChunkEvent.Load) {
-        if (event.world.isRemote)
-            return
+        if (event.world.isRemote) return
 
         val dimensionId = event.world.provider.dimension
         val dimension = dimensions[dimensionId] ?: ConduitNetworkDimension(dimensionId).apply {
@@ -293,8 +286,7 @@ object ConduitNetwork {
     @Suppress("unused")
     @SubscribeEvent
     fun onChunkUnload(event: ChunkEvent.Unload) {
-        if (event.world.isRemote)
-            return
+        if (event.world.isRemote) return
 
         val dimensionId = event.world.provider.dimension
         val dimension = dimensions[dimensionId]!!
@@ -363,7 +355,8 @@ object ConduitNetwork {
                         facings.forEach { face ->
                             GL11.glVertex3d(0.0, 0.0, 0.0)
                             GL11.glVertex3d(face.directionVec.x / 2.0,
-                                    face.directionVec.y / 2.0, face.directionVec.z / 2.0)
+                                    face.directionVec.y / 2.0,
+                                    face.directionVec.z / 2.0)
 
                         }
                         GL11.glEnd()
@@ -422,6 +415,22 @@ object ConduitNetwork {
                         }
                         Disk().draw(0.2f, 0.3f, 16, 4)
                         GL11.glPopMatrix()
+                    }
+
+                    set.forEach { transitEdge ->
+                        transitEdge.paths.forEach { (id, cost) ->
+                            val (otherPos, otherEdge) = nChunk.getTransitEdge(id)!!
+
+                            GL11.glBegin(GL11.GL_LINES)
+                            GL11.glVertex3d(transitEdge.facing.directionVec.x / 2.0, transitEdge.facing.directionVec.y / 2.0,
+                                    transitEdge.facing.directionVec.z / 2.0)
+                            GL11.glVertex3d(
+                                    otherPos.x.toDouble() + otherEdge.facing.directionVec.x / 2.0,
+                                    otherPos.y.toDouble() + otherEdge.facing.directionVec.y / 2.0,
+                                    otherPos.z.toDouble() + otherEdge.facing.directionVec.z / 2.0)
+
+                            GL11.glEnd()
+                        }
                     }
 
                     GL11.glPopMatrix()
