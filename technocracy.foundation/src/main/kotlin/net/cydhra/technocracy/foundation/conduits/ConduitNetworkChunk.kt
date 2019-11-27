@@ -456,8 +456,10 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
                                 positionQueue.add(neighbor)
                             }
                         } else {
-                            val transitEdge =
-                                    this.chunkTransitEdges[currentPosition]?.find { it.facing == facing && it.type == pipeType }
+                            val transitEdge = transitEndpoints[pipeType]
+                                    ?.find { (pos, edge) -> pos == currentPosition && edge.facing == facing }
+                                    ?.second
+
                             if (transitEdge != null) {
                                 if (currentConnectedTransitComponent.containsKey(transitEdge)) {
                                     if (currentConnectedTransitComponent[transitEdge]!! > currentKnownComponent[currentPosition]!! + 1) {
@@ -474,10 +476,8 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
                 }
 
                 currentTransitEdge.paths.clear()
-                currentTransitEdge.paths.putAll(currentConnectedTransitComponent.filter { (_, cost) -> cost > 0 }.map { (edge, cost) ->
-                            Pair(edge.id,
-                                    cost)
-                        }.toMap())
+                currentTransitEdge.paths.putAll(currentConnectedTransitComponent
+                        .filter { (_, cost) -> cost > 0 }.map { (edge, cost) -> Pair(edge.id, cost) }.toMap())
             }
         }
     }
