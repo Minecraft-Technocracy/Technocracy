@@ -3,10 +3,10 @@ package net.cydhra.technocracy.foundation.content.tileentities.logic
 import net.cydhra.technocracy.foundation.content.capabilities.energy.DynamicEnergyCapability
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
-import net.cydhra.technocracy.foundation.data.crafting.IMachineRecipe
-import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesComponents
 import net.cydhra.technocracy.foundation.content.tileentities.components.ProgressComponent
+import net.cydhra.technocracy.foundation.data.crafting.IMachineRecipe
+import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.model.tileentities.api.logic.ILogic
 import net.minecraft.item.ItemStack
 
@@ -62,6 +62,10 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
             // update current recipe and reset progress
             this.processingProgress = 0
             this.currentRecipe = activeRecipe
+
+            if (this.currentRecipe == null) {
+                progress.progress = 0
+            }
         }
 
         return this.currentRecipe != null && energyStorage.consumeEnergy(this.getTickEnergyCost(), simulate = true)
@@ -141,7 +145,7 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
     /**
      * Get the energy cost of progressing one tick. This is the base cost multiplied with all related upgrades.
      */
-    fun getTickEnergyCost(): Int {
+    private fun getTickEnergyCost(): Int {
         // TODO upgrade modifier calculation
         return this.baseTickEnergyCost
     }
@@ -150,7 +154,7 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
      * Get the progress to recipes the machine does per tick. This is the base progress (1 by default) multiplied
      * with related upgrade multipliers
      */
-    fun getTickProgressAmount(): Int {
+    private fun getTickProgressAmount(): Int {
         return baseMachineProgressPerTick
     }
 
