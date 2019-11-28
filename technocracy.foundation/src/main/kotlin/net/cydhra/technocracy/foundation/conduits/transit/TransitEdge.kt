@@ -3,6 +3,7 @@ package net.cydhra.technocracy.foundation.conduits.transit
 import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
+import net.minecraft.util.math.BlockPos
 import net.minecraftforge.common.util.INBTSerializable
 
 /**
@@ -17,7 +18,7 @@ import net.minecraftforge.common.util.INBTSerializable
  *
  * @see [TransitSink]
  */
-abstract class TransitEdge : INBTSerializable<NBTTagCompound> {
+abstract class TransitEdge(val pos: BlockPos) : INBTSerializable<NBTTagCompound> {
 
     companion object {
         private const val NBT_KEY_ID = "id"

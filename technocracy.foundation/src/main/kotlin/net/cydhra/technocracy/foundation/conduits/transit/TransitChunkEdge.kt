@@ -7,9 +7,9 @@ import net.minecraft.util.math.BlockPos
 /**
  * A transit network edge that connects two chunks.
  */
-class TransitChunkEdge() : TransitEdge() {
+class TransitChunkEdge(pos: BlockPos) : TransitEdge(pos) {
 
-    constructor(id: Int, type: PipeType, facing: EnumFacing, pos: BlockPos) : this() {
+    constructor(id: Int, type: PipeType, facing: EnumFacing, pos: BlockPos) : this(pos) {
         this.id = id
         this.type = type
         this.facing = facing

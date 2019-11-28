@@ -326,7 +326,8 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
             this.chunkTransitEdges[blockPos] = mutableSetOf()
 
             typeList.forEach { transitEdgeEntry ->
-                this.chunkTransitEdges[blockPos]!!.add(TransitChunkEdge().apply { deserializeNBT(transitEdgeEntry as NBTTagCompound) })
+                this.chunkTransitEdges[blockPos]!!.add(TransitChunkEdge(blockPos)
+                        .apply { deserializeNBT(transitEdgeEntry as NBTTagCompound) })
             }
         }
     }
@@ -495,5 +496,15 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      */
     fun hasNode(pos: BlockPos, type: PipeType): Boolean {
         return nodes[pos]?.contains(type) ?: false
+    }
+
+    /**
+     * Get a list of all transit edges within this chunk. The list can not be mutated. All edges contain their
+     * respective path cost entries to other edges within the chunk.
+     */
+    fun getTransitEdges(): List<TransitEdge> {
+        return this.chunkTransitEdges.values
+                .union(this.attachedSinks.values)
+                .flatten()
     }
 }
