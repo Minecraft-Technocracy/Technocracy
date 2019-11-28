@@ -27,7 +27,7 @@ class TransitSink(pos: BlockPos) : TransitEdge(pos) {
             return false
         }
 
-        return false
+        return this.type.offersContent(world, this.pos.offset(facing), facing.opposite)
     }
 
     fun acceptsContent(world: WorldServer, content: Any): Boolean {
