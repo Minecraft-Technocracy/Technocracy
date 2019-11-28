@@ -1,6 +1,8 @@
 package net.cydhra.technocracy.foundation.conduits
 
+import net.cydhra.technocracy.foundation.conduits.transit.TransitSink
 import net.minecraft.util.math.ChunkPos
+import net.minecraft.world.WorldServer
 import net.minecraft.world.chunk.Chunk
 import net.minecraftforge.event.world.ChunkDataEvent
 
@@ -72,5 +74,33 @@ internal class ConduitNetworkDimension(private val dimensionId: Int) {
 
     internal fun debug_getChunks(): Collection<ConduitNetworkChunk> {
         return this.loadedChunks.values
+    }
+
+    /**
+     * Tick the network within this dimension.
+     */
+    fun tick(world: WorldServer) {
+        val transitGraph = this.loadedChunks
+                .map { (_, chunk) -> chunk.getTransitEdges() }
+                .flatten()
+                .map { Pair(it.id, it) }
+                .toMap()
+
+        transitGraph.values
+                .filterIsInstance<TransitSink>()
+                .forEach(TransitSink::tick)
+
+        transitGraph.values
+                .filterIsInstance<TransitSink>()
+                .filter { it.offersContent(world) }
+                .forEach { source ->
+                    // get offered content of source
+
+                    // find available sink using routing strategy
+
+                    // test if sink currently accepts content
+
+                    // transfer content
+                }
     }
 }

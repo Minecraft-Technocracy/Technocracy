@@ -215,6 +215,15 @@ object ConduitNetwork {
     }
 
     /**
+     * Tick the conduit network. This will perform routing algorithms and actually transfer contents
+     */
+    fun tick(world: WorldServer) {
+        this.dimensions.values.forEach {
+            it.tick(world)
+        }
+    }
+
+    /**
      * Context of a network modification. Stores all modified chunks. After a full transaction, call [commit] to
      * recalculate network paths.
      */
