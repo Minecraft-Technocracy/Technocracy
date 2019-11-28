@@ -1,12 +1,14 @@
 package net.cydhra.technocracy.foundation
 
+import net.cydhra.technocracy.foundation.conduits.ConduitNetwork
 import net.cydhra.technocracy.foundation.content.commands.ClearTemplateCommand
 import net.cydhra.technocracy.foundation.content.commands.GenerateTemplateCommand
 import net.cydhra.technocracy.foundation.content.commands.PasteTemplateCommand
+import net.cydhra.technocracy.foundation.content.multiblock.MultiBlockPhysics
 import net.cydhra.technocracy.foundation.data.world.api.DataManager
 import net.cydhra.technocracy.foundation.integration.top.TOPIntegration
-import net.cydhra.technocracy.foundation.content.multiblock.MultiBlockPhysics
 import net.cydhra.technocracy.foundation.proxy.CommonProxy
+import net.minecraft.world.WorldServer
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.config.Configuration
 import net.minecraftforge.fluids.FluidRegistry
@@ -16,6 +18,8 @@ import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.Mod.EventHandler
 import net.minecraftforge.fml.common.SidedProxy
 import net.minecraftforge.fml.common.event.*
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import net.minecraftforge.fml.common.gameevent.TickEvent
 import org.apache.logging.log4j.Logger
 
 @Mod(modid = TCFoundation.MODID, name = TCFoundation.NAME, version = TCFoundation.VERSION,
@@ -76,6 +80,7 @@ object TCFoundation {
         config = Configuration(event.suggestedConfigurationFile)
         config.load()
         MinecraftForge.EVENT_BUS.register(proxy)
+        MinecraftForge.EVENT_BUS.register(this)
 
         // initialize physics configurable options
         MultiBlockPhysics.initialize()
@@ -98,6 +103,13 @@ object TCFoundation {
             TOPIntegration().init()
     }
 
+    @Suppress("unused")
+    @SubscribeEvent
+    fun onTick(event: TickEvent.WorldTickEvent) {
+        ConduitNetwork.tick(event.world as WorldServer)
+    }
+
+    @Suppress("unused")
     @Mod.EventHandler
     fun serverStarting(start: FMLServerStartingEvent) {
         if (start.server.isSinglePlayer) {
@@ -107,6 +119,7 @@ object TCFoundation {
         }
     }
 
+    @Suppress("unused")
     @Mod.EventHandler
     fun serverStarted(event: FMLServerStartedEvent) {
         DataManager.init()
