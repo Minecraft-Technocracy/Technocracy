@@ -32,16 +32,11 @@ object TemplateRenderHelper {
 
         GlStateManager.enableBlend()
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
-        RenderHelper.disableStandardItemLighting()
 
         val mc = Minecraft.getMinecraft()
 
         GlStateManager.disableLighting()
         Minecraft.getMinecraft().textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE)
-
-        GL11.glTexEnvi(GL11.GL_TEXTURE_ENV,GL11.GL_TEXTURE_ENV_MODE,GL11.GL_MODULATE)
-        GL11.glColor4f(1f,1f,1f,0.2f)
-
 
         val intX = posX - mc.renderManager.viewerPosX
         val intY = posY - mc.renderManager.viewerPosY
@@ -50,6 +45,7 @@ object TemplateRenderHelper {
         GL11.glTranslated(intX - 0.5, intY, intZ - 0.5)
 
         mc.entityRenderer.enableLightmap()
+
 
         if (Minecraft.isAmbientOcclusionEnabled())
             GlStateManager.shadeModel(7425)

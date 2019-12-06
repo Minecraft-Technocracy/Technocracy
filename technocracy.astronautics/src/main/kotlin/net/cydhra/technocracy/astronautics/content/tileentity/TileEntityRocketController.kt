@@ -21,22 +21,33 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
     }
 
     val ownerShip = OwnerShipComponent()
-    val fluidBuffer = FluidComponent(DynamicFluidCapability(16000, mutableListOf("rocket_fuel")), EnumFacing.values().toMutableSet())
+    val dynCapability = DynamicFluidCapability(0, mutableListOf("rocket_fuel"))
+    val fluidBuffer = FluidComponent(dynCapability, EnumFacing.values().toMutableSet())
     val inventoryBuffer = InventoryComponent(3, this, EnumFacing.values().toMutableSet())
 
     var currentRocket: EntityRocket? = null
 
-    fun setToCurrentRocket(rocket: EntityRocket): Boolean {
+    fun linkToCurrentRocket(rocket: EntityRocket): Boolean {
         if (currentRocket == null || currentRocket!!.isDead) {
             currentRocket = rocket
+
+            //forward capability to entity
+            fluidBuffer.fluid = rocket.tank.fluid
             return true
         }
         return false
+    }
+
+    fun unlinkRocket() {
+        currentRocket = null
+        fluidBuffer.fluid = dynCapability
     }
 
     init {
         registerComponent(ownerShip, "ownership")
         registerComponent(fluidBuffer, "fluidBuffer")
         registerComponent(inventoryBuffer, "invBuffer")
+        //no need to save or update as it only references to the entity
+        fluidBuffer.allowAutoSave = false
     }
 }

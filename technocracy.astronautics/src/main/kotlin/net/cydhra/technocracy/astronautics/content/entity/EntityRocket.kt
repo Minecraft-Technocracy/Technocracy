@@ -4,6 +4,7 @@ package net.cydhra.technocracy.astronautics.content.entity
 import io.netty.buffer.ByteBuf
 import net.cydhra.technocracy.astronautics.content.blocks.rocketDriveBlock
 import net.cydhra.technocracy.astronautics.content.fx.ParticleSmoke
+import net.cydhra.technocracy.astronautics.content.tileentity.TileEntityRocketController
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.tileentities.components.FluidComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.OwnerShipComponent
@@ -20,6 +21,7 @@ import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTUtil
 import net.minecraft.network.datasync.DataSerializers
 import net.minecraft.network.datasync.EntityDataManager
+import net.minecraft.util.DamageSource
 import net.minecraft.util.EntitySelectors
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.AxisAlignedBB
@@ -30,7 +32,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
-import java.util.concurrent.ThreadLocalRandom
 import kotlin.math.max
 import kotlin.math.min
 import net.minecraftforge.event.world.GetCollisionBoxesEvent as GetCollisionBoxesEvent1
@@ -45,6 +46,8 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
             allowAutoSave = false
             setOwnerShip(owner)
         }
+
+        tank.allowAutoSave = false
     }
 
     @SideOnly(Side.CLIENT)
@@ -111,7 +114,18 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
     override fun onRemovedFromWorld() {
         if (vbo != null)
             vbo!!.deleteGlBuffers()
+
+        if (::controllerBlock.isInitialized)
+            (world.getTileEntity(controllerBlock) as? TileEntityRocketController)?.unlinkRocket()
+
         super.onRemovedFromWorld()
+    }
+
+    override fun attackEntityFrom(source: DamageSource, amount: Float): Boolean {
+        if (source.isCreativePlayer)
+            world.removeEntity(this)
+
+        return super.attackEntityFrom(source, amount)
     }
 
     override fun onUpdate() {
@@ -161,11 +175,11 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
             }
         }
 
-        if (world.isRemote && liftOff) {
+        if (world.isRemote) {
             for (info in template.blocks) {
                 if (info.pos.y == 0) {
                     if (info.block == rocketDriveBlock) {
-                        TCParticleManager.addParticle(ParticleSmoke(world, posX + info.pos.x + ThreadLocalRandom.current().nextFloat(), posY - ThreadLocalRandom.current().nextFloat(), posZ + info.pos.z + ThreadLocalRandom.current().nextFloat()))
+                        TCParticleManager.addParticle(ParticleSmoke(world, posX + info.pos.x + rand.nextFloat() - 0.5f, posY - rand.nextFloat(), posZ + info.pos.z + rand.nextFloat() - 0.5f))
                     }
                 }
             }

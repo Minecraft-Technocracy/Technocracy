@@ -68,6 +68,11 @@ class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controlle
             satellite_cargo.loadFromAssets("rocket/satellite_module")
         }
 
+        if(tile.currentRocket != null) {
+            playerIn.sendMessage(TextComponentTranslation("rocket.controller.invalid.already_linked"))
+            return true
+        }
+
         val matches = launchpad.matches(worldIn, pos, true)
 
         if (matches != null) {
@@ -156,6 +161,12 @@ class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controlle
                     //ent.motionY = 0.005
                     ent.setPosition(pos.x + 0.5, pos.y.toDouble(), pos.z + 0.5)
                     worldIn.spawnEntity(ent)
+
+                    //16 buckets base rocket + 16 buckets for each tank module
+
+                    ent.tank.fluid.capacity = (16 + tank * 16) * 1000
+
+                    tile.linkToCurrentRocket(ent)
 
                     playerIn.sendMessage(TextComponentString("rocket build: $totalStorageElements storage modules with $dysonCargo elements and $tank tank modules"))
 
