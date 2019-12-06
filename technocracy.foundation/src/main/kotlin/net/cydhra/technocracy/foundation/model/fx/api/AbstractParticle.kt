@@ -13,7 +13,7 @@ abstract class AbstractParticle(worldIn: World, posXIn: Double, posYIn: Double, 
 
     abstract fun getType(): IParticleType
 
-    abstract fun renderParticle()
+    abstract fun renderParticle(partialTicks: Float)
 
     fun getPosX(): Double {
         return posX

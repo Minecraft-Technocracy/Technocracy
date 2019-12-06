@@ -3,6 +3,7 @@ package net.cydhra.technocracy.foundation.model.fx.manager
 import net.cydhra.technocracy.foundation.model.fx.api.AbstractParticle
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.culling.Frustum
+import net.minecraft.profiler.Profiler
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.client.event.RenderWorldLastEvent
 import net.minecraftforge.event.world.WorldEvent
@@ -31,7 +32,6 @@ object TCParticleManager {
 
     @SubscribeEvent
     fun render(event: RenderWorldLastEvent) {
-        val player = Minecraft.getMinecraft().renderViewEntity ?: return
 
         val icamera = Frustum()
         val entity = Minecraft.getMinecraft().renderViewEntity!!
@@ -42,13 +42,19 @@ object TCParticleManager {
 
         lastRender = 0
 
-        particles.filter { icamera.isBoundingBoxInFrustum(it.boundingBox) }.groupBy { it.getType() }.forEach { (type, particles) ->
-            type.preRenderType()
-            particles.sortedBy { -player.getDistance(it.getPosX(), it.getPosY(), it.getPosZ()) }.forEach {
-                lastRender++
-                it.renderParticle()
+        with(Minecraft.getMinecraft().mcProfiler) {
+            startSection("TC_Particles")
+            particles.filter { icamera.isBoundingBoxInFrustum(it.boundingBox) }.groupBy { it.getType() }.forEach { (type, particles) ->
+                startSection(type.name)
+                type.preRenderType()
+                particles/*.sortedBy { -player.getDistanceSq(it.getPosX(), it.getPosY(), it.getPosZ()) }*/.forEach {
+                    lastRender++
+                    it.renderParticle(event.partialTicks)
+                }
+                type.postRenderType()
+                endSection()
             }
-            type.postRenderType()
+            endSection()
         }
     }
 
@@ -56,9 +62,16 @@ object TCParticleManager {
     fun tick(event: TickEvent.ClientTickEvent) {
         if (event.phase == TickEvent.Phase.START) {
             if (!Minecraft.getMinecraft().isGamePaused) {
-                particles.removeIf {
-                    it.onUpdate()
-                    !it.isAlive
+                val player = Minecraft.getMinecraft().renderViewEntity ?: return
+
+                with(particles) {
+                    removeIf {
+                        it.onUpdate()
+                        !it.isAlive
+                    }
+                    sortBy {
+                        -player.getDistanceSq(it.getPosX(), it.getPosY(), it.getPosZ())
+                    }
                 }
             }
         }

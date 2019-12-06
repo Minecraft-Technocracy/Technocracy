@@ -27,29 +27,31 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
     var time = 0f
 
     init {
-        rotation = ThreadLocalRandom.current().nextInt(360).toFloat()
-        size = ThreadLocalRandom.current().nextFloat() * 4f + 1
+        rotation = rand.nextInt(360).toFloat()
+        size = rand.nextFloat() * 4f + 1
 
         motionY = -0.8
 
-        val rand = (ThreadLocalRandom.current().nextInt(360) - 180)
-        motionX -= sin(Math.toRadians(rand.toDouble())) * 0.06
-        motionZ += cos(Math.toRadians(rand.toDouble())) * 0.06
+        val randMovementRotation = (rand.nextInt(360) - 180)
+        motionX -= sin(Math.toRadians(randMovementRotation.toDouble())) * 0.06
+        motionZ += cos(Math.toRadians(randMovementRotation.toDouble())) * 0.06
 
-        time = ThreadLocalRandom.current().nextFloat()
+        time = rand.nextFloat()
 
-        setMaxAge(20 * 5 + ThreadLocalRandom.current().nextInt(300))
+        setMaxAge(20 * 5 + rand.nextInt(20 * 15)) // max 20 seconds screen time min 5 seconds
+        //setMaxAge(maxAge)
+        //particleAge = rand.nextInt(20 * 15)
     }
 
     override fun move(x: Double, y: Double, z: Double) {
         time += 0.0005f * size
+        rotation += 0.0005f * size
 
         if (onGround) {
-
-            val rand = (ThreadLocalRandom.current().nextInt(360) - 180)
+            val rand = (rand.nextInt(360) - 180)
             motionX -= sin(Math.toRadians(rand.toDouble())) * motionY * 0.35
             motionZ += cos(Math.toRadians(rand.toDouble())) * motionY * 0.35
-            motionY = ThreadLocalRandom.current().nextFloat().toDouble()  / 2
+            motionY = -(motionY / 6f)//-ThreadLocalRandom.current().nextFloat().toDouble() / 2
 
             super.move(motionX, motionY, motionZ)
             return
@@ -58,11 +60,19 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
         super.move(x, y, z)
     }
 
-    override fun renderParticle() {
-        ParticleSmokeType.updateMatrix(Vector3f((posX - Minecraft.getMinecraft().renderManager.viewerPosX).toFloat(), (posY - Minecraft.getMinecraft().renderManager.viewerPosY).toFloat(), (posZ - Minecraft.getMinecraft().renderManager.viewerPosZ).toFloat()), 0f, size, ParticleSmokeType.currentMatrix)
+    override fun renderParticle(partialTicks: Float) {
+
+        val posX = prevPosX + (posX - prevPosX) * partialTicks
+        val posY = prevPosY + (posY - prevPosY) * partialTicks
+        val posZ = prevPosZ + (posZ - prevPosZ) * partialTicks
+
+        ParticleSmokeType.updateMatrix(Vector3f((posX - Minecraft.getMinecraft().renderManager.viewerPosX).toFloat(), (posY - Minecraft.getMinecraft().renderManager.viewerPosY).toFloat(), (posZ - Minecraft.getMinecraft().renderManager.viewerPosZ).toFloat()), rotation, size, ParticleSmokeType.currentMatrix)
 
         //upload time to shader
-        ParticleSmokeType.smokeShader.uploadUniform("time", time)
+        ParticleSmokeType.smokeShader.uploadUniform("renderTime", time)
+        ParticleSmokeType.smokeShader.uploadUniform("screenTime", this.particleAge + partialTicks)
+        ParticleSmokeType.smokeShader.uploadUniform("maxAge", this.particleMaxAge)
+
 
         //TODO instanced rendering
 
@@ -75,6 +85,7 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
     }
 
     object ParticleSmokeType : IParticleType {
+        override val name = "Smoke"
 
         val currentMatrix: Matrix4f = Matrix4f()
 
@@ -94,15 +105,19 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
                 smokeShader = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shader/smoke.vsh"), ResourceLocation("technocracy.astronautics", "shader/smoke.fsh"), attributeBinder = Consumer { GL20.glBindAttribLocation(it, 0, "position") })
 
                 smokeShader.start()
-                smokeShader.uploadUniform("sampler0", 0)
-                smokeShader.uploadUniform("sampler1", 2)
+                smokeShader.uploadUniform("smoke", 0)
+                smokeShader.uploadUniform("noise", 2)
+                smokeShader.uploadUniform("lighting", 3)
             } else {
                 smokeShader.start()
             }
 
-            //bind the 2 textures
+            //bind the 3 textures
             GlStateManager.setActiveTexture(OpenGlHelper.GL_TEXTURE2)
             Minecraft.getMinecraft().renderEngine.bindTexture(ResourceLocation("technocracy.astronautics", "textures/fx/clouds.png"))
+
+            GlStateManager.setActiveTexture(OpenGlHelper.GL_TEXTURE2 + 1)
+            Minecraft.getMinecraft().renderEngine.bindTexture(ResourceLocation("technocracy.astronautics", "textures/fx/lighting.png"))
 
             GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit)
             Minecraft.getMinecraft().renderEngine.bindTexture(ResourceLocation("technocracy.astronautics", "textures/fx/smoke.png"))
@@ -120,6 +135,8 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
         }
 
         override fun postRenderType() {
+            smokeShader.stop()
+
             //unbind vao
             GL30.glBindVertexArray(0)
 
@@ -127,7 +144,8 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
             GlStateManager.disableBlend()
             GlStateManager.depthMask(true)
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1f)
-            smokeShader.stop()
+            GlStateManager.enableLighting()
+
 
             GL11.glPopMatrix()
         }
@@ -136,7 +154,7 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
             val modelMatrix = Matrix4f()
             Matrix4f.translate(position, modelMatrix, modelMatrix)
 
-            //remove roation from matrix
+            //remove rotation from matrix
             modelMatrix.m00 = viewMatrix.m00
             modelMatrix.m01 = viewMatrix.m10
             modelMatrix.m02 = viewMatrix.m20
@@ -148,7 +166,7 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
             modelMatrix.m22 = viewMatrix.m22
 
             //apply custom rotation and scale
-            Matrix4f.rotate(Math.toRadians(rotation.toDouble()).toFloat(), Vector3f(0f, 0f, 1f), modelMatrix, modelMatrix)
+            Matrix4f.rotate(rotation, Vector3f(0f, 0f, 1f), modelMatrix, modelMatrix)
             Matrix4f.scale(Vector3f(scale, scale, scale), modelMatrix, modelMatrix)
 
             //upload to shader
