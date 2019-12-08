@@ -3,6 +3,8 @@ package net.cydhra.technocracy.foundation.model.multiblock.api
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import it.zerono.mods.zerocore.api.multiblock.validation.ValidationError
 import net.minecraft.block.state.IBlockState
+import net.minecraft.init.Blocks
+import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import java.util.function.Predicate
@@ -36,7 +38,7 @@ abstract class TiledBaseMultiBlock(
     /**
      * Contains min and max coordinate of each tile
      */
-    protected val tiles = mutableSetOf<Pair<BlockPos, BlockPos>>()
+    protected val tiles = mutableSetOf<Tile>()
 
     override fun isMachineWhole(validatorCallback: IMultiblockValidator): Boolean {
         if (this.connectedParts.size < this.minimumNumberOfBlocksForAssembledMachine) {
@@ -116,12 +118,32 @@ abstract class TiledBaseMultiBlock(
             //  where there isn't one
             for (x in minX until (maxX - 1) step xAxisSize) {
                 for (z in minZ until (maxZ - 1) step zAxisSize) {
-                    val pos = BlockPos(x, maxY, z)
-                    //This whole code doesn't work anyway if every block is accepted as a frame
-                    if (frameBlockWhitelist!!.test(this.WORLD.getBlockState(pos))) {
-                        this.tiles += Pair(pos, BlockPos(x + xAxisSize, minY, z + zAxisSize))
+                    val minPos = BlockPos(x, maxY, z)
+                    //Only works if the frame doesn't allow AIR blocks obviously
+                    if (this.WORLD.getBlockState(minPos).block != Blocks.AIR)
+                        this.tiles += Tile(minPos, BlockPos(x + xAxisSize, minY, z + zAxisSize))
+                }
+            }
+
+            //Calculate adjacent tiles for each tile. Required to know if a frame block should be checked using
+            //  frameBlockWhitelist or tileFrameBlockWhitelist
+            tiles.forEach {
+                tiles.forEach { other ->
+                    if (it != other) {
+                        if(it.maxPos.x == other.maxPos.x) {
+                            if(it.maxPos.z - other.maxPos.z == tileSizeZ)
+                                it.adjacentTileSides += EnumFacing.NORTH
+                            else if(other.maxPos.z - it.maxPos.z == tileSizeZ)
+                                it.adjacentTileSides += EnumFacing.SOUTH
+                        } else if(it.maxPos.z == other.maxPos.z) {
+                            if(it.maxPos.x - other.maxPos.x == tileSizeZ)
+                                it.adjacentTileSides += EnumFacing.WEST
+                            else if(other.maxPos.z - it.maxPos.z == tileSizeZ)
+                                it.adjacentTileSides += EnumFacing.EAST
+                        }
                     }
                 }
+            }
             }
 
             if (tiles.isEmpty()) {
@@ -183,14 +205,15 @@ abstract class TiledBaseMultiBlock(
 class Tile(val minPos: BlockPos, val maxPos: BlockPos) {
 
     /**
-     * A list of directions in which no other tile is adjacent
+     * A list of directions in which a tile is adjacent.
+     * Can only contain NORTH, EAST, SOUTH or WEST.
      */
-    val edgeSides = mutableSetOf<EnumFacing>()
+    val adjacentTileSides = mutableSetOf<EnumFacing>()
 
     /**
      * @return *true* if the tile is surrounded on all sides by other tiles; *false* otherwise
      */
-    fun isCenterTile() = edgeSides.isEmpty()
+    fun isCenterTile() = adjacentTileSides.isEmpty()
 
     override fun hashCode(): Int {
         return minPos.hashCode() * 31 + maxPos.hashCode()

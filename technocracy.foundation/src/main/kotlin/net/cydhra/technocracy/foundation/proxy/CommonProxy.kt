@@ -11,10 +11,7 @@ import net.cydhra.technocracy.foundation.content.items.*
 import net.cydhra.technocracy.foundation.content.oresystems.*
 import net.cydhra.technocracy.foundation.content.potions.oilyEffect
 import net.cydhra.technocracy.foundation.content.tileentities.machines.*
-import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartBoiler
-import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartCapacitor
-import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartHeatExchanger
-import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartRefinery
+import net.cydhra.technocracy.foundation.content.tileentities.multiblock.*
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.boiler.TileEntityBoilerController
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.boiler.TileEntityBoilerHeater
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.boiler.TileEntityBoilerInput
