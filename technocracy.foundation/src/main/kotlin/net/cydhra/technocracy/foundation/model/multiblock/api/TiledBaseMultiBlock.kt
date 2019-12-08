@@ -179,3 +179,29 @@ abstract class TiledBaseMultiBlock(
         return this.tileSizeZ
     }
 }
+
+class Tile(val minPos: BlockPos, val maxPos: BlockPos) {
+
+    /**
+     * A list of directions in which no other tile is adjacent
+     */
+    val edgeSides = mutableSetOf<EnumFacing>()
+
+    /**
+     * @return *true* if the tile is surrounded on all sides by other tiles; *false* otherwise
+     */
+    fun isCenterTile() = edgeSides.isEmpty()
+
+    override fun hashCode(): Int {
+        return minPos.hashCode() * 31 + maxPos.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Tile
+
+        return minPos != other.minPos && maxPos != other.maxPos
+    }
+}
