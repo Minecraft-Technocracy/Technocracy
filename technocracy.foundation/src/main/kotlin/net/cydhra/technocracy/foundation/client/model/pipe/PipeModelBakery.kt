@@ -53,11 +53,10 @@ class PipeModelBakery : IBakedModel {
         val pos = (state as IExtendedBlockState).getValue(POSITION)
         val tileEntityPipe = Minecraft.getMinecraft().world.getTileEntity(pos) as TileEntityPipe
 
-        if (currentLayer == BlockRenderLayer.CUTOUT) {
-            val boxes = tileEntityPipe.getPipeModelParts()
+        //todo needs lots of caching
 
-            if (side != null)
-                return quads
+        if (currentLayer == BlockRenderLayer.CUTOUT && side == null) {
+            val boxes = tileEntityPipe.getPipeModelParts()
 
             for (it in boxes) {
                 val boundingBox = it.first.second

@@ -17,17 +17,21 @@ import net.minecraft.client.renderer.vertex.VertexBuffer
 import net.minecraft.entity.Entity
 import net.minecraft.entity.MoverType
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.nbt.NBTTagList
 import net.minecraft.nbt.NBTUtil
 import net.minecraft.network.datasync.DataSerializers
 import net.minecraft.network.datasync.EntityDataManager
 import net.minecraft.util.DamageSource
 import net.minecraft.util.EntitySelectors
 import net.minecraft.util.EnumFacing
+import net.minecraft.util.NonNullList
 import net.minecraft.util.math.AxisAlignedBB
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import net.minecraftforge.common.MinecraftForge
+import net.minecraftforge.common.util.Constants
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData
 import net.minecraftforge.fml.relauncher.Side
@@ -59,6 +63,8 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
     val owner = OwnerShipComponent()
     //TODO config
     val tank = FluidComponent(DynamicFluidCapability(0, mutableListOf("rocket_fuel")), EnumFacing.values().toMutableSet())
+    var cargoSlots: NonNullList<ItemStack>? = null
+    var dysonCargo = false
 
     var liftOff: Boolean
         get() = dataManager.get(LIFTOFF)
@@ -76,6 +82,16 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
             setTag("controller", NBTUtil.createPosTag(controllerBlock))
             setTag("owner", owner.serializeNBT())
             setTag("tank", tank.serializeNBT())
+
+            val cargo = NBTTagCompound()
+            cargo.setInteger("cargoSize", cargoSlots!!.size)
+            val list = NBTTagList()
+            for (item in cargoSlots!!) {
+                list.appendTag(item.serializeNBT())
+            }
+            cargo.setTag("items", list)
+
+            setTag("cargo", cargo)
         }
     }
 
@@ -85,6 +101,14 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
             controllerBlock = NBTUtil.getPosFromTag(getCompoundTag("controller"))
             owner.deserializeNBT(getCompoundTag("owner"))
             tank.deserializeNBT(getCompoundTag("tank"))
+
+            val cargo = getCompoundTag("cargo")
+            val size = cargo.getInteger("cargoSize")
+            cargoSlots = NonNullList.withSize(size, ItemStack.EMPTY)
+            val list = cargo.getTagList("items", Constants.NBT.TAG_COMPOUND)
+            for(i in 0 until size) {
+                cargoSlots!![i] = ItemStack(list.getCompoundTagAt(i))
+            }
         }
     }
 
@@ -175,7 +199,7 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
             }
         }
 
-        if (world.isRemote) {
+        if (world.isRemote && liftOff) {
             for (info in template.blocks) {
                 if (info.pos.y == 0) {
                     if (info.block == rocketDriveBlock) {

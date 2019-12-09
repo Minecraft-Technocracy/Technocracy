@@ -59,7 +59,7 @@ object GroupManager : AbstractSaveDataElement("ownership") {
 
                 ownership.appendTag(userTag)
             }
-            groups.setTag(os.ownerShipUUID.toString(), ownership)
+            groups.setTag(os.groupId.toString(), ownership)
         }
 
         for (pair in playerPriories) {
@@ -87,15 +87,39 @@ object GroupManager : AbstractSaveDataElement("ownership") {
      * @return the group the player has prioritized, if none is available it generates one
      */
     fun getGroupFromUser(user: UUID): PlayerGroup {
-        return getGroup(playerPriories.getOrPut(user) { mutableListOf() }.getOrElse(0) {
-            val id = UUID.randomUUID()
-            val group = PlayerGroup(id)
-            group.users[user] = PlayerGroup.GroupRights.OWNER
-            groups.add(group)
-            playerPriories[user]!!.add(id)
-            DataManager.manager!!.markDirty()
-            id
-        })!!
+        val playersGroups = playerPriories.getOrPut(user) { mutableListOf() }
+
+        val group = getGroup(playersGroups.getOrElse(0) {
+            //no best group found, generate one
+            genGroup(user).groupId
+        })
+
+        if (group == null) {
+            //group does not exist, remove it and retry
+            playersGroups.removeAt(0)
+            return getGroupFromUser(user)
+        }
+        return group
+    }
+
+    /**
+     * Generates a new group for a user
+     *
+     * @param owner the uuid of the group owner
+     * @return the new group that was generated
+     */
+    private fun genGroup(owner: UUID): PlayerGroup {
+        val id = UUID.randomUUID()
+        val group = PlayerGroup(id)
+        //give owner the owner rights
+        group.users[owner] = PlayerGroup.GroupRights.OWNER
+        //add group to group list
+        groups.add(group)
+        //set the new group to the nr 1 of the user
+        playerPriories[owner]!!.add(id)
+        //save changes
+        DataManager.manager!!.markDirty()
+        return group
     }
 
     /**
@@ -103,7 +127,7 @@ object GroupManager : AbstractSaveDataElement("ownership") {
      * @return the group with the uuid, null if none was found
      */
     fun getGroup(groupID: UUID): PlayerGroup? {
-        return groups.find { it.ownerShipUUID == groupID }
+        return groups.find { it.groupId == groupID }
     }
 
     /**
@@ -117,7 +141,7 @@ object GroupManager : AbstractSaveDataElement("ownership") {
      * @return true if the update was successful
      */
     fun updateUserAccess(groupID: UUID, executor: UUID, updateUser: UUID, newRight: PlayerGroup.GroupRights): Boolean {
-        val group = groups.find { it.ownerShipUUID == groupID }
+        val group = groups.find { it.groupId == groupID }
         if (group != null) {
             val executorRank = group.getRights(executor)
             val currentRank = group.getRights(updateUser)
@@ -131,7 +155,7 @@ object GroupManager : AbstractSaveDataElement("ownership") {
         return false
     }
 
-    class PlayerGroup(val ownerShipUUID: UUID) {
+    class PlayerGroup(val groupId: UUID) {
         val users = mutableMapOf<UUID, GroupRights>()
 
         fun getRights(user: UUID): GroupRights {

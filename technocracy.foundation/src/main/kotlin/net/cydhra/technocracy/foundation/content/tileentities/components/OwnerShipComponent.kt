@@ -20,7 +20,7 @@ class OwnerShipComponent : AbstractComponent() {
     override fun serializeNBT(): NBTTagCompound {
         if (currentOwner != null) {
             return compound {
-                "ownerGroup" to currentOwner!!.ownerShipUUID
+                "ownerGroup" to currentOwner!!.groupId
             }
         }
         return NBTTagCompound()

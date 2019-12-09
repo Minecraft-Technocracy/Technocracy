@@ -10,8 +10,9 @@ import net.cydhra.technocracy.foundation.model.tileentities.api.TEInventoryProvi
 import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableTileEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
+import net.minecraft.util.NonNullList
 
-class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider {
+class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider, DynamicInventoryCapability.CustomItemStackStackLimit {
 
     override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack) {
     }
@@ -20,10 +21,19 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
         return true
     }
 
+    override fun getStackLimit(slot: Int, stack: ItemStack, default: Int): Int {
+        if(currentRocket != null) {
+            if(!currentRocket!!.dysonCargo)
+                return 1
+        }
+        //Todo limit some kinds of cargo to one per slot
+        return default
+    }
+
     val ownerShip = OwnerShipComponent()
     val dynCapability = DynamicFluidCapability(0, mutableListOf("rocket_fuel"))
     val fluidBuffer = FluidComponent(dynCapability, EnumFacing.values().toMutableSet())
-    val inventoryBuffer = InventoryComponent(3, this, EnumFacing.values().toMutableSet())
+    val inventoryBuffer = InventoryComponent(0, this, EnumFacing.values().toMutableSet())
 
     var currentRocket: EntityRocket? = null
 
@@ -33,6 +43,10 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
 
             //forward capability to entity
             fluidBuffer.fluid = rocket.tank.fluid
+
+            inventoryBuffer.inventory.stacks = rocket.cargoSlots!!
+            inventoryBuffer.inventory.forceSlotTypes(DynamicInventoryCapability.InventoryType.BOTH)
+
             return true
         }
         return false
@@ -41,6 +55,7 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
     fun unlinkRocket() {
         currentRocket = null
         fluidBuffer.fluid = dynCapability
+        inventoryBuffer.inventory.stacks = NonNullList.withSize(0, ItemStack.EMPTY)
     }
 
     init {
@@ -49,5 +64,6 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
         registerComponent(inventoryBuffer, "invBuffer")
         //no need to save or update as it only references to the entity
         fluidBuffer.allowAutoSave = false
+        inventoryBuffer.allowAutoSave = false
     }
 }

@@ -30,6 +30,13 @@ class DynamicInventoryCapability(size: Int = 0, private val machine: TEInventory
         }
     }
 
+    fun forceSlotTypes(type: InventoryType) {
+        slotTypes.clear()
+        for (slot in 0 until stacks.size) {
+            slotTypes[slot] = type
+        }
+    }
+
     fun setSize(size: Int) {
         stacks = NonNullList.withSize(size, ItemStack.EMPTY)
     }
@@ -134,7 +141,10 @@ class DynamicInventoryCapability(size: Int = 0, private val machine: TEInventory
     }
 
     fun getStackLimit(slot: Int, stack: ItemStack): Int {
-        return min(getSlotLimit(slot), stack.maxStackSize)
+        val min = min(getSlotLimit(slot), stack.maxStackSize)
+        if (machine is CustomItemStackStackLimit)
+            return machine.getStackLimit(slot, stack, min)
+        return min
     }
 
     override fun isItemValid(slot: Int, stack: ItemStack): Boolean {
@@ -183,5 +193,9 @@ class DynamicInventoryCapability(size: Int = 0, private val machine: TEInventory
 
     enum class InventoryType {
         INPUT, OUTPUT, BOTH
+    }
+
+    interface CustomItemStackStackLimit {
+        fun getStackLimit(slot: Int, stack: ItemStack, default: Int): Int
     }
 }
