@@ -16,10 +16,11 @@ import org.lwjgl.opengl.GL20
 import org.lwjgl.opengl.GL30
 import org.lwjgl.util.vector.Matrix4f
 import org.lwjgl.util.vector.Vector3f
-import java.util.concurrent.ThreadLocalRandom
 import java.util.function.Consumer
 import kotlin.math.cos
 import kotlin.math.sin
+import net.cydhra.technocracy.foundation.util.opengl.BasicShaderProgram.ShaderUniform.UniformType.*
+import net.minecraft.client.shader.ShaderGroup
 
 
 class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) : AbstractParticle(worldIn, posXIn, posYIn, posZIn) {
@@ -43,6 +44,7 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
         //particleAge = rand.nextInt(20 * 15)
     }
 
+
     override fun move(x: Double, y: Double, z: Double) {
         time += 0.0005f * size
         rotation += 0.0005f * size
@@ -62,16 +64,28 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
 
     override fun renderParticle(partialTicks: Float) {
 
+        val manager = Minecraft.getMinecraft().renderManager
+
         val posX = prevPosX + (posX - prevPosX) * partialTicks
         val posY = prevPosY + (posY - prevPosY) * partialTicks
         val posZ = prevPosZ + (posZ - prevPosZ) * partialTicks
 
-        ParticleSmokeType.updateMatrix(Vector3f((posX - Minecraft.getMinecraft().renderManager.viewerPosX).toFloat(), (posY - Minecraft.getMinecraft().renderManager.viewerPosY).toFloat(), (posZ - Minecraft.getMinecraft().renderManager.viewerPosZ).toFloat()), rotation, size, ParticleSmokeType.currentMatrix)
+        ParticleSmokeType.pos.uploadUniform((posX - manager.viewerPosX).toFloat(), (posY - manager.viewerPosY).toFloat(), (posZ - manager.viewerPosZ).toFloat())
+        ParticleSmokeType.rot_scale.uploadUniform(rotation, size)
+
+        //ParticleSmokeType.projectionMatrix.uploadUniform(ActiveRenderInfo.PROJECTION.asReadOnlyBuffer())
+        //ParticleSmokeType.modelViewMatrix.uploadUniform(ActiveRenderInfo.MODELVIEW.asReadOnlyBuffer())
+
+        //ParticleSmokeType.updateMatrix(Vector3f((posX - Minecraft.getMinecraft().renderManager.viewerPosX).toFloat(), (posY - Minecraft.getMinecraft().renderManager.viewerPosY).toFloat(), (posZ - Minecraft.getMinecraft().renderManager.viewerPosZ).toFloat()), rotation, size, ParticleSmokeType.currentMatrix)
+
+        //ParticleSmokeType.smokeShader.uploadUniform("values", time, this.particleAge + partialTicks, this.particleMaxAge.toFloat())
+        ParticleSmokeType.values.uploadUniform(time, this.particleAge + partialTicks, this.particleMaxAge.toFloat())
+        ParticleSmokeType.smokeShader.updateUniforms()
 
         //upload time to shader
-        ParticleSmokeType.smokeShader.uploadUniform("renderTime", time)
-        ParticleSmokeType.smokeShader.uploadUniform("screenTime", this.particleAge + partialTicks)
-        ParticleSmokeType.smokeShader.uploadUniform("maxAge", this.particleMaxAge)
+        //ParticleSmokeType.smokeShader.uploadUniform("renderTime", time)
+        //ParticleSmokeType.smokeShader.uploadUniform("screenTime", this.particleAge + partialTicks)
+        //ParticleSmokeType.smokeShader.uploadUniform("maxAge", this.particleMaxAge)
 
 
         //TODO instanced rendering
@@ -87,11 +101,29 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
     object ParticleSmokeType : IParticleType {
         override val name = "Smoke"
 
-        val currentMatrix: Matrix4f = Matrix4f()
-
         var vao: Int = -1
         var vertexCount: Int = -1
         lateinit var smokeShader: BasicShaderProgram
+
+        lateinit var modelViewMatrix: BasicShaderProgram.ShaderUniform
+        lateinit var projectionMatrix: BasicShaderProgram.ShaderUniform
+        lateinit var values: BasicShaderProgram.ShaderUniform
+
+        lateinit var rot_scale: BasicShaderProgram.ShaderUniform
+        lateinit var pos: BasicShaderProgram.ShaderUniform
+
+        fun init() {
+            smokeShader.getUniform("smoke", SAMPLER).uploadUniform(0)
+            smokeShader.getUniform("noise", SAMPLER).uploadUniform(2)
+            smokeShader.getUniform("lighting", SAMPLER).uploadUniform(3)
+            modelViewMatrix = smokeShader.getUniform("modelViewMatrix", MATRIX_4x4)
+            projectionMatrix = smokeShader.getUniform("projectionMatrix", MATRIX_4x4)
+            values = smokeShader.getUniform("values", FLOAT_3)
+            rot_scale = smokeShader.getUniform("rot_scale", FLOAT_2)
+            pos = smokeShader.getUniform("pos", FLOAT_3)
+        }
+
+        val currentMatrix = Matrix4f();
 
         override fun preRenderType() {
 
@@ -99,18 +131,23 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
 
             currentMatrix.load(ActiveRenderInfo.MODELVIEW.asReadOnlyBuffer())
 
+
             if (vao == -1) {
                 vao = generateVAO()
 
                 smokeShader = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shader/smoke.vsh"), ResourceLocation("technocracy.astronautics", "shader/smoke.fsh"), attributeBinder = Consumer { GL20.glBindAttribLocation(it, 0, "position") })
 
                 smokeShader.start()
-                smokeShader.uploadUniform("smoke", 0)
-                smokeShader.uploadUniform("noise", 2)
-                smokeShader.uploadUniform("lighting", 3)
+                init()
             } else {
                 smokeShader.start()
             }
+
+            this.modelViewMatrix.uploadUniform(currentMatrix)
+            //smokeShader.uploadUniform("modelViewMatrix", modelViewMatrix)
+
+            val projection = Matrix4f().load(ActiveRenderInfo.PROJECTION.asReadOnlyBuffer()) as Matrix4f
+            this.projectionMatrix.uploadUniform(projection)
 
             //bind the 3 textures
             GlStateManager.setActiveTexture(OpenGlHelper.GL_TEXTURE2)
@@ -166,15 +203,19 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
             modelMatrix.m22 = viewMatrix.m22
 
             //apply custom rotation and scale
-            Matrix4f.rotate(rotation, Vector3f(0f, 0f, 1f), modelMatrix, modelMatrix)
-            Matrix4f.scale(Vector3f(scale, scale, scale), modelMatrix, modelMatrix)
+            position.set(0f,0f,1f)
+            Matrix4f.rotate(rotation, position, modelMatrix, modelMatrix)
+            position.set(scale,scale,scale)
+            Matrix4f.scale(position, modelMatrix, modelMatrix)
 
             //upload to shader
             val modelViewMatrix = Matrix4f.mul(viewMatrix, modelMatrix, null)
-            smokeShader.uploadUniform("modelViewMatrix", modelViewMatrix)
+            this.modelViewMatrix.uploadUniform(modelViewMatrix)
+            //smokeShader.uploadUniform("modelViewMatrix", modelViewMatrix)
 
             val projection = Matrix4f().load(ActiveRenderInfo.PROJECTION.asReadOnlyBuffer()) as Matrix4f
-            smokeShader.uploadUniform("projectionMatrix", projection)
+            this.projectionMatrix.uploadUniform(projection)
+            //smokeShader.uploadUniform("projectionMatrix", projection)
         }
 
         fun generateVAO(): Int {
