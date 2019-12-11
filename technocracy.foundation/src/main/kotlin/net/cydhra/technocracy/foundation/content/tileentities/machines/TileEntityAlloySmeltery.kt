@@ -1,15 +1,15 @@
 package net.cydhra.technocracy.foundation.content.tileentities.machines
 
-import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.client.gui.TCGui
-import net.cydhra.technocracy.foundation.client.gui.components.label.DefaultLabel
 import net.cydhra.technocracy.foundation.client.gui.TCTab
-import net.cydhra.technocracy.foundation.data.crafting.IMachineRecipe
-import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
-import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
+import net.cydhra.technocracy.foundation.client.gui.components.label.DefaultLabel
+import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryComponent
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ItemProcessingLogic
+import net.cydhra.technocracy.foundation.data.crafting.IMachineRecipe
+import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.model.tileentities.api.TEInventoryProvider
+import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
 
@@ -46,7 +46,8 @@ class TileEntityAlloySmeltery : MachineTileEntity(), TEInventoryProvider {
                 inputInventory = this.inputInventoryComponent.inventory,
                 outputInventory = this.outputInventoryComponent.inventory,
                 energyStorage = this.energyStorageComponent.energyStorage,
-                machineUpgrades = this.machineUpgradesComponent,
+                processSpeedComponent = this.processingSpeedComponent,
+                energyCostComponent = this.energyCostComponent,
                 baseTickEnergyCost = 10,
                 progress = this.progressComponent))
     }

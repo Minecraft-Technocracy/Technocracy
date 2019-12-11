@@ -1,6 +1,5 @@
 package net.cydhra.technocracy.foundation.model.tileentities.machines
 
-import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.components.energymeter.DefaultEnergyMeter
 import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.DefaultFluidMeter
@@ -10,6 +9,7 @@ import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
 import net.cydhra.technocracy.foundation.client.gui.machine.BaseMachineTab
 import net.cydhra.technocracy.foundation.client.gui.machine.MachineContainer
 import net.cydhra.technocracy.foundation.client.gui.machine.MachineSettingsTab
+import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.tileentities.components.*
 import net.cydhra.technocracy.foundation.content.tileentities.logic.RedstoneLogic
 import net.cydhra.technocracy.foundation.model.tileentities.api.TCMachineTileEntity
@@ -40,9 +40,9 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
 
     protected val progressComponent = ProgressComponent()
 
-    protected val processingSpeedComponent = ProcessSpeedComponent()
+    protected val processingSpeedComponent = MultiplierComponent()
 
-    protected val energyCostComponent = ConsumptionMultiplierComponent()
+    protected val energyCostComponent = MultiplierComponent()
 
     init {
         this.registerComponent(redstoneModeComponent, "redstone_mode")

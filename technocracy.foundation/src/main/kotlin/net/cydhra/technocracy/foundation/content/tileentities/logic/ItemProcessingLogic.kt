@@ -3,7 +3,7 @@ package net.cydhra.technocracy.foundation.content.tileentities.logic
 import net.cydhra.technocracy.foundation.content.capabilities.energy.DynamicEnergyCapability
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
-import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesComponents
+import net.cydhra.technocracy.foundation.content.tileentities.components.MultiplierComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.ProgressComponent
 import net.cydhra.technocracy.foundation.data.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
@@ -16,7 +16,8 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
                           private val inputFluidSlots: Array<DynamicFluidCapability> = emptyArray(),
                           private val outputFluidSlots: Array<DynamicFluidCapability> = emptyArray(),
                           private val energyStorage: DynamicEnergyCapability,
-                          private val machineUpgrades: MachineUpgradesComponents,
+                          private val processSpeedComponent: MultiplierComponent,
+                          private val energyCostComponent: MultiplierComponent,
                           private val baseTickEnergyCost: Int,
                           private val progress: ProgressComponent) : ILogic {
 

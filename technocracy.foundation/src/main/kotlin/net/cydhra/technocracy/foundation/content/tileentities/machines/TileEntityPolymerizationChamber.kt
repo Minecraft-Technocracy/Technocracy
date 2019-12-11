@@ -2,14 +2,14 @@ package net.cydhra.technocracy.foundation.content.tileentities.machines
 
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
-import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
-import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
-import net.cydhra.technocracy.foundation.content.tileentities.components.ConsumptionMultiplierComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.FluidComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.MultiplierComponent
 import net.cydhra.technocracy.foundation.content.tileentities.logic.AdditiveConsumptionLogic
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ItemProcessingLogic
+import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.model.tileentities.api.TEInventoryProvider
+import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
 
@@ -23,7 +23,7 @@ class TileEntityPolymerizationChamber : MachineTileEntity(), TEInventoryProvider
     private val additiveFluidComponent = FluidComponent(4000,
             tanktype = DynamicFluidCapability.TankType.INPUT, facing = mutableSetOf(EnumFacing.UP))
 
-    private val additiveMultiplierComponent = ConsumptionMultiplierComponent()
+    private val additiveMultiplierComponent = MultiplierComponent()
 
     private val outputInventoryComponent = InventoryComponent(1, this, EnumFacing.EAST)
 
@@ -38,7 +38,8 @@ class TileEntityPolymerizationChamber : MachineTileEntity(), TEInventoryProvider
                 outputInventory = outputInventoryComponent.inventory,
                 inputFluidSlots = arrayOf(inputFluidComponent.fluid),
                 energyStorage = this.energyStorageComponent.energyStorage,
-                machineUpgrades = this.machineUpgradesComponent,
+                processSpeedComponent = this.processingSpeedComponent,
+                energyCostComponent = this.energyCostComponent,
                 progress = this.progressComponent,
                 baseTickEnergyCost = 100
         ))

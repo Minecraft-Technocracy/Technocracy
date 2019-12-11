@@ -5,11 +5,11 @@ import net.cydhra.technocracy.foundation.model.tileentities.api.components.Compo
 import net.minecraft.nbt.NBTTagCompound
 
 /**
- * A component that stores a value indicating the a process speed multiplier of a machine.
+ * A component that stores a value indicating the energy/fuel/input consumption multiplier of a machine.
  */
-class ProcessSpeedComponent : AbstractComponent() {
+class MultiplierComponent : AbstractComponent() {
     companion object {
-        private const val NBT_KEY_PROCESS_SPEED = "speed"
+        private const val NBT_KEY_ENERGY = "energy"
     }
 
     override val type: ComponentType = ComponentType.OTHER
@@ -17,16 +17,16 @@ class ProcessSpeedComponent : AbstractComponent() {
     /**
      * Current multiplier progress per tick of the machine
      */
-    var processMultiplier: Double = 1.0
+    var energyMultiplier: Double = 1.0
 
     override fun serializeNBT(): NBTTagCompound {
         return NBTTagCompound().apply {
-            setDouble(NBT_KEY_PROCESS_SPEED, this@ProcessSpeedComponent.processMultiplier)
+            setDouble(NBT_KEY_ENERGY, this@MultiplierComponent.energyMultiplier)
         }
     }
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
-        this.processMultiplier = nbt.getDouble(NBT_KEY_PROCESS_SPEED)
+        this.energyMultiplier = nbt.getDouble(NBT_KEY_ENERGY)
     }
 
 }
