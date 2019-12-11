@@ -136,7 +136,7 @@ project('technocracy.astronautics') {
     // jar configuration
     jar {
         manifest {
-            attributes 'FMLAT': 'technocracy.astronautics.cfg'
+            attributes 'FMLAT': 'astronautics_at.cfg'
         }
     }
 }
