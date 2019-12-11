@@ -1,16 +1,15 @@
 [
 {
-  "modid": "${modid}",
-  "name": "Technocracy Astronautics",
-  "description": "Technocracy Astronautics expansion",
-  "version": "${version}",
-  "mcversion": "${mcversion}",
-  "url": "",
-  "updateUrl": "",
-  "authorList": ["Cydhra, Poke, Flaflo"],
-  "credits": "",
-  "logoFile": "",
-  "screenshots": [],
-  "dependencies": []
+    "modid": "technocracy.astronautics",
+    "name": "Technocracy Astronautics",
+    "description": "First expansion of the mod; adding space flight and interstellar industrial options.",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": ["Cydhra, Poke"],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": []
 }
 ]
