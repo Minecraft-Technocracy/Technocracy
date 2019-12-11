@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumHand
+import net.minecraft.util.NonNullList
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.text.TextComponentString
 import net.minecraft.util.text.TextComponentTranslation
@@ -165,6 +166,15 @@ class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controlle
                     //16 buckets base rocket + 16 buckets for each tank module
 
                     ent.tank.fluid.capacity = (16 + tank * 16) * 1000
+
+                    if(dysonCargo != 0) {
+                        ent.dysonCargo = true
+                        ent.cargoSlots = NonNullList.withSize(dysonCargo, ItemStack.EMPTY)
+                    } else {
+                        ent.cargoSlots = NonNullList.withSize(totalStorageElements, ItemStack.EMPTY)
+                    }
+
+
 
                     tile.linkToCurrentRocket(ent)
 
