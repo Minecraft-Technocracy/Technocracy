@@ -1,8 +1,4 @@
 rootProject.name = "technocracy"
 
-if (file("technocracy.foundation").exists()) {
-    includeBuild "technocracy.foundation"
-}
-if (file("technocracy.astronautics").exists()) {
-    includeBuild "technocracy.astronautics"
-}
+include 'technocracy.foundation'
+include 'technocracy.astronautics'

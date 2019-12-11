@@ -1,7 +1,0 @@
-rootProject.name = 'technocracy.astronautics'
-
-boolean inComposite = gradle.parent != null
-
-if (!inComposite) {
-    includeBuild "../technocracy.foundation"
-}
