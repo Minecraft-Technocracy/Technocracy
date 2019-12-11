@@ -16,7 +16,7 @@ class AdditiveConsumptionLogic(private val additiveComponent: FluidComponent,
     }
 
     override fun processing() {
-        additiveComponent.fluid.drain((baseConsumption * this.multiplier.energyMultiplier).roundToInt(), true)
+        additiveComponent.fluid.drain((baseConsumption * this.multiplier.multiplier).roundToInt(), true)
     }
 
     override fun postProcessing(wasProcessing: Boolean) {

@@ -17,16 +17,16 @@ class MultiplierComponent : AbstractComponent() {
     /**
      * Current multiplier progress per tick of the machine
      */
-    var energyMultiplier: Double = 1.0
+    var multiplier: Double = 1.0
 
     override fun serializeNBT(): NBTTagCompound {
         return NBTTagCompound().apply {
-            setDouble(NBT_KEY_ENERGY, this@MultiplierComponent.energyMultiplier)
+            setDouble(NBT_KEY_ENERGY, this@MultiplierComponent.multiplier)
         }
     }
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
-        this.energyMultiplier = nbt.getDouble(NBT_KEY_ENERGY)
+        this.multiplier = nbt.getDouble(NBT_KEY_ENERGY)
     }
 
 }

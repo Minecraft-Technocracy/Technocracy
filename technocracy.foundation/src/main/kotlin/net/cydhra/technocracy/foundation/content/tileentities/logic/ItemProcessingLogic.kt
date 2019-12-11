@@ -148,7 +148,7 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
      */
     private fun getTickEnergyCost(): Int {
         // TODO upgrade modifier calculation
-        return this.baseTickEnergyCost
+        return (this.baseTickEnergyCost * this.energyCostComponent.multiplier).toInt()
     }
 
     /**
@@ -156,7 +156,7 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
      * with related upgrade multipliers
      */
     private fun getTickProgressAmount(): Int {
-        return baseMachineProgressPerTick
+        return (baseMachineProgressPerTick * this.processSpeedComponent.multiplier).toInt()
     }
 
 }
