@@ -31,13 +31,6 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
      */
     protected val energyStorageComponent = EnergyStorageComponent(mutableSetOf(EnumFacing.DOWN))
 
-    /**
-     * The machine upgrades component.
-     */
-    /* TODO as the possible upgrades are dependant of machine type, either split this compound into single upgrades or
-        at least handle it from subclass*/
-    protected val machineUpgradesComponent = MachineUpgradesComponents()
-
     protected val progressComponent = ProgressComponent()
 
     protected val processingSpeedComponent = MultiplierComponent()
@@ -47,7 +40,6 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
     init {
         this.registerComponent(redstoneModeComponent, "redstone_mode")
         this.registerComponent(energyStorageComponent, "energy")
-        this.registerComponent(machineUpgradesComponent, "upgrades")
         this.registerComponent(progressComponent, "progress")
         this.registerComponent(processingSpeedComponent, "processing_speed")
         this.registerComponent(energyCostComponent, "processing_cost")
