@@ -24,10 +24,10 @@ class MachineUpgradesComponent(val numberOfUpgradeSlots: Int,
     override val type: ComponentType = ComponentType.OTHER
 
     override fun serializeNBT(): NBTTagCompound {
-        TODO("not implemented")
+        return NBTTagCompound()
     }
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
-        TODO("not implemented")
+
     }
 }
