@@ -46,7 +46,7 @@ class TileEntityPolymerizationChamber : MachineTileEntity(), TEInventoryProvider
         ))
     }
 
-    override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack) {
+    override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack, originalStack: ItemStack) {
     }
 
     override fun isItemValid(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack): Boolean {

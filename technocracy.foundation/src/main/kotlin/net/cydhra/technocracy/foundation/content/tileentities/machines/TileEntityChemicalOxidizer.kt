@@ -49,6 +49,6 @@ class TileEntityChemicalOxidizer : MachineTileEntity(), TEInventoryProvider {
         }
     }
 
-    override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack) {
+    override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack, originalStack: ItemStack) {
     }
 }

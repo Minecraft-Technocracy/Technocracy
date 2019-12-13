@@ -57,6 +57,6 @@ class TileEntityCrystallizationChamber : MachineTileEntity(), TEInventoryProvide
         return inventory == outputInventoryComponent.inventory && this.recipes.any { it.getOutput()[0].item == stack.item }
     }
 
-    override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack) {
+    override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack, originalStack: ItemStack) {
     }
 }

@@ -43,8 +43,9 @@ class DynamicInventoryCapability(size: Int = 0, private val machine: TEInventory
 
     override fun setStackInSlot(slot: Int, stack: ItemStack) {
         validateSlotIndex(slot)
+        val original = this.stacks[slot]
         this.stacks[slot] = stack
-        onContentsChanged(slot)
+        onContentsChanged(slot, original)
     }
 
     override fun getSlots(): Int {
@@ -89,12 +90,14 @@ class DynamicInventoryCapability(size: Int = 0, private val machine: TEInventory
         val reachedLimit = stack.count > limit
 
         if (!simulate) {
+            val original = existing.copy()
+
             if (existing.isEmpty) {
                 this.stacks[slot] = if (reachedLimit) ItemHandlerHelper.copyStackWithSize(stack, limit) else stack
             } else {
                 existing.grow(if (reachedLimit) limit else stack.count)
             }
-            onContentsChanged(slot)
+            onContentsChanged(slot, original)
         }
 
         return if (reachedLimit) ItemHandlerHelper.copyStackWithSize(stack, stack.count - limit) else ItemStack.EMPTY
@@ -123,13 +126,13 @@ class DynamicInventoryCapability(size: Int = 0, private val machine: TEInventory
         return if (existing.count <= toExtract) {
             if (!simulate) {
                 this.stacks[slot] = ItemStack.EMPTY
-                onContentsChanged(slot)
+                onContentsChanged(slot, existing)
             }
             existing
         } else {
             if (!simulate) {
                 this.stacks[slot] = ItemHandlerHelper.copyStackWithSize(existing, existing.count - toExtract)
-                onContentsChanged(slot)
+                onContentsChanged(slot, existing)
             }
 
             ItemHandlerHelper.copyStackWithSize(existing, toExtract)
@@ -186,9 +189,9 @@ class DynamicInventoryCapability(size: Int = 0, private val machine: TEInventory
             throw RuntimeException("Slot " + slot + " not in valid range - [0," + stacks.size + ")")
     }
 
-    fun onContentsChanged(slot: Int) {
+    private fun onContentsChanged(slot: Int, oldContent: ItemStack) {
         markDirty(true)
-        machine.onSlotUpdate(this, slot, stacks[slot])
+        machine.onSlotUpdate(this, slot, stacks[slot], oldContent)
     }
 
     enum class InventoryType {

@@ -26,5 +26,5 @@ interface TEInventoryProvider {
      * @param slot inventory slot
      * @param stack the new ItemStack in the slot
      */
-    fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack)
+    fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack, originalStack: ItemStack)
 }

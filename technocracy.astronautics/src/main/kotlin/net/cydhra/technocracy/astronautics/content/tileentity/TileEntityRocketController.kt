@@ -14,7 +14,7 @@ import net.minecraft.util.NonNullList
 
 class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider, DynamicInventoryCapability.CustomItemStackStackLimit {
 
-    override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack) {
+    override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack, originalStack: ItemStack) {
     }
 
     override fun isItemValid(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack): Boolean {

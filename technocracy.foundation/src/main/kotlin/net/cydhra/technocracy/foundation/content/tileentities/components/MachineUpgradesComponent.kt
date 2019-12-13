@@ -8,6 +8,7 @@ import net.cydhra.technocracy.foundation.model.tileentities.api.components.Compo
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeClass
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeParameter
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MultiplierUpgrade
+import net.minecraft.init.Items
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 
@@ -66,14 +67,20 @@ class MachineUpgradesComponent(val numberOfUpgradeSlots: Int,
         return true
     }
 
-    override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack) {
+    override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack, originalStack: ItemStack) {
         val upgradeItem = stack.item
-        if (upgradeItem !is UpgradeItem) {
-            throw IllegalStateException("Non-upgrade item installed in upgrade slot.")
-        }
 
-        if (upgradeItem is MultiplierUpgrade) {
+        if (upgradeItem == Items.AIR) {
 
+        } else {
+            if (upgradeItem !is UpgradeItem) {
+                throw IllegalStateException("Non-upgrade item installed in upgrade slot.")
+            }
+
+            if (upgradeItem is MultiplierUpgrade) {
+                val componentToUpgrade = this.multipliers.single { it.upgradeParameter == upgradeItem.upgradeType }
+                componentToUpgrade.multiplier += upgradeItem.multiplier
+            }
         }
     }
 }

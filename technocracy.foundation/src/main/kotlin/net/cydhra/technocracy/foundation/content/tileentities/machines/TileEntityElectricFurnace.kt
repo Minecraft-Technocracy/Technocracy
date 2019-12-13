@@ -52,7 +52,7 @@ class TileEntityElectricFurnace : MachineTileEntity(), TEInventoryProvider {
         return inventory == inputInventoryComponent.inventory && this.recipes.any { it.getInput()[0].test(stack) }
     }
 
-    override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack) {
+    override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack, originalStack: ItemStack) {
     }
 
 }

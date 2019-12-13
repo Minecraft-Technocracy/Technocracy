@@ -33,7 +33,7 @@ class TileEntityLaserDrill : AggregatableTileEntity(), TCMachineTileEntity, ILog
         return false
     }
 
-    override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack) {}
+    override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack, originalStack: ItemStack) {}
 
     override fun update() {
         // update ILogic strategies, but only server side
