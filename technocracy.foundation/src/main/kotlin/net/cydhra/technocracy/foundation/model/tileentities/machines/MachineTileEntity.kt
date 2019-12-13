@@ -9,6 +9,7 @@ import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
 import net.cydhra.technocracy.foundation.client.gui.machine.BaseMachineTab
 import net.cydhra.technocracy.foundation.client.gui.machine.MachineContainer
 import net.cydhra.technocracy.foundation.client.gui.machine.MachineSettingsTab
+import net.cydhra.technocracy.foundation.client.gui.machine.MachineUpgradesTab
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.tileentities.components.*
 import net.cydhra.technocracy.foundation.content.tileentities.logic.RedstoneLogic
@@ -130,6 +131,11 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
         })
         initGui(gui)
         gui.registerTab(MachineSettingsTab(gui, this))
+
+        val upgradesComponent = this.getComponents().firstOrNull { (_, c) -> c is MachineUpgradesComponent }?.second
+        if (upgradesComponent != null) {
+            gui.registerTab(MachineUpgradesTab(gui, upgradesComponent as MachineUpgradesComponent))
+        }
         return gui
     }
 

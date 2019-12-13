@@ -5,10 +5,15 @@ import net.cydhra.technocracy.foundation.client.gui.TCTab
 import net.cydhra.technocracy.foundation.client.gui.components.label.DefaultLabel
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesComponent
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ItemProcessingLogic
+import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_ENERGY
+import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_GENERIC
+import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_SPEED
 import net.cydhra.technocracy.foundation.data.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.model.tileentities.api.TEInventoryProvider
+import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeClass
 import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
@@ -29,6 +34,10 @@ class TileEntityAlloySmeltery : MachineTileEntity(), TEInventoryProvider {
      */
     private val outputInventoryComponent = InventoryComponent(1, this, EnumFacing.EAST)
 
+    private val upgradesComponent = MachineUpgradesComponent(3,
+            setOf(MACHINE_UPGRADE_ENERGY, MACHINE_UPGRADE_SPEED, MACHINE_UPGRADE_GENERIC),
+            setOf(MachineUpgradeClass.THERMAL, MachineUpgradeClass.ELECTRICAL, MachineUpgradeClass.ALIEN))
+
     /**
      * All recipes of the pulverizer; loaded lazily so they are not loaded before game loop, as they might not have
      * been registered yet.
@@ -40,6 +49,7 @@ class TileEntityAlloySmeltery : MachineTileEntity(), TEInventoryProvider {
     init {
         this.registerComponent(inputInventoryComponent, "input_inventory")
         this.registerComponent(outputInventoryComponent, "output_inventory")
+        this.registerComponent(upgradesComponent, "upgrades")
 
         this.addLogicStrategy(ItemProcessingLogic(
                 recipeType = RecipeManager.RecipeType.ALLOY,
