@@ -112,16 +112,21 @@ abstract class TiledBaseMultiBlock(
         //If tileSizeX and tileSizeZ have a common multiple in deltaX or deltaZ then the tile detection has to be
         //  repeated with flipped axis, only if no tile previously was valid. This has to be done, because if that
         //  condition is true there's no way to determine the AxisSize for a delta value.
-        for (i in 0..2) {
+        for (i in 0 until 2) {
             tiles.clear()
             //maxX and Z are decremented by one because otherwise the loop would hit the edge and add another tile where
             //  where there isn't one
             for (x in minX until (maxX - 1) step xAxisSize) {
                 for (z in minZ until (maxZ - 1) step zAxisSize) {
-                    val minPos = BlockPos(x, maxY, z)
-                    //Only works if the frame doesn't allow AIR blocks obviously
-                    if (this.WORLD.getBlockState(minPos).block != Blocks.AIR)
-                        this.tiles += Tile(minPos, BlockPos(x + xAxisSize, minY, z + zAxisSize))
+                    val minPos = BlockPos(x, minY, z)
+                    //Checks the corner block, next corner block and the center block to hopefully predict a tile being
+                    // there
+                    if (frameBlockWhitelist!!.test(this.WORLD.getBlockState(minPos)) &&
+                            frameBlockWhitelist.test(this.WORLD.getBlockState(minPos.south(zAxisSize))) &&
+                            (bottomBlockWhitelist == null ||
+                                    bottomBlockWhitelist.test(this.WORLD.getBlockState(minPos.south(zAxisSize / 2)
+                                            .east(xAxisSize / 2)))))
+                        this.tiles += Tile(minPos, BlockPos(x + xAxisSize, maxY, z + zAxisSize))
                 }
             }
 
