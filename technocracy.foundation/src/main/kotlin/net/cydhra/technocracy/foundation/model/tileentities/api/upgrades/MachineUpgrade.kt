@@ -12,3 +12,18 @@ abstract class MachineUpgrade(val upgradeType: MachineUpgradeParameter)
  * parameters, either positively or negatively.
  */
 typealias MachineUpgradeParameter = String
+
+/**
+ * Every upgrade item has a class assigned and certain machines may only accept certain upgrade classes (so a
+ * pulverizer is not upgradeable with a "semipermeable membrane" or something of that kind)
+ */
+enum class MachineUpgradeClass {
+    MECHANICAL,
+    ELECTRICAL,
+    MAGNETIC,
+    OPTICAL,
+    THERMAL,
+    CHEMICAL,
+    NUCLEAR,
+    ALIEN
+}

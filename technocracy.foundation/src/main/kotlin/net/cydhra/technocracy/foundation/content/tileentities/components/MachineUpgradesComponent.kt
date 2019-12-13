@@ -2,6 +2,7 @@ package net.cydhra.technocracy.foundation.content.tileentities.components
 
 import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractComponent
 import net.cydhra.technocracy.foundation.model.tileentities.api.components.ComponentType
+import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeClass
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeParameter
 import net.minecraft.nbt.NBTTagCompound
 
@@ -12,8 +13,9 @@ import net.minecraft.nbt.NBTTagCompound
  * machine, all of its upgrade types must be supported for installation to work.
  * @param numberOfUpgradeSlots how many upgrade slots the machine has.
  */
-class MachineUpgradesComponent(vararg val supportedUpgradeTypes: MachineUpgradeParameter,
-                               val numberOfUpgradeSlots: Int) : AbstractComponent() {
+class MachineUpgradesComponent(val numberOfUpgradeSlots: Int,
+                               val supportedUpgradeTypes: Set<MachineUpgradeParameter>,
+                               val acceptsUpgradeClasses: Set<MachineUpgradeClass>) : AbstractComponent() {
 
     companion object {
         private const val NBT_KEY_UPGRADES = "upgrades"
