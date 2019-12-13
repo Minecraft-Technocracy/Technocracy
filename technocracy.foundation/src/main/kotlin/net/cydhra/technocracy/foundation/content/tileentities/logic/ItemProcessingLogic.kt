@@ -40,7 +40,8 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
     private var currentRecipe: IMachineRecipe? = null
 
     /**
-     * Current progress of recipe processing.
+     * Current progress of recipe processing. Processing progress keeps going up until reaching the current recipes
+     * processing cost value. However, progress is stored multiplied by 100, to be able to handle decimal speed ups.
      */
     private var processingProgress: Int = 0
 
@@ -76,14 +77,15 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
         // process recipe
         if (this.currentRecipe != null) {
             // if more progress is required then try to add it
-            if (this.processingProgress < this.currentRecipe!!.processingCost) {
+            // progress is stored multiplied with 100, so cost must as well
+            if (this.processingProgress < this.currentRecipe!!.processingCost * 100) {
                 if (energyStorage.consumeEnergy(this.getTickEnergyCost())) {
                     this.processingProgress += this.getTickProgressAmount()
                 }
             }
 
             // if enough progress happened, try process the recipe (if enough space for recipe output is present)
-            if (this.processingProgress >= this.currentRecipe!!.processingCost) {
+            if (this.processingProgress >= this.currentRecipe!!.processingCost * 100) {
                 val recipeOutput = this.currentRecipe!!.getOutput()
                 val recipeFluidOutput = this.currentRecipe!!.getFluidOutput()
                 assert(recipeOutput.size <= this.outputInventory?.slots ?: 0)
@@ -136,7 +138,7 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
         }
 
         progress.progress = if (currentRecipe != null)
-            ((processingProgress.toFloat() / currentRecipe!!.processingCost.toFloat()) * 100f).toInt() else 0
+            (processingProgress.toFloat() / currentRecipe!!.processingCost.toFloat()).toInt() else 0
     }
 
     override fun postProcessing(wasProcessing: Boolean) {
@@ -156,7 +158,7 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
      * with related upgrade multipliers
      */
     private fun getTickProgressAmount(): Int {
-        return (baseMachineProgressPerTick * this.processSpeedComponent.multiplier).toInt()
+        return (100 * baseMachineProgressPerTick * this.processSpeedComponent.multiplier).toInt()
     }
 
 }

@@ -68,18 +68,40 @@ class MachineUpgradesComponent(val numberOfUpgradeSlots: Int,
     }
 
     override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack, originalStack: ItemStack) {
-        val upgradeItem = stack.item
+        if (stack.item == originalStack.item)
+            return
 
-        if (upgradeItem == Items.AIR) {
+        if (stack.item == Items.AIR) {
+            val upgradeItem = originalStack.item
 
+            if (upgradeItem !is UpgradeItem) {
+                throw IllegalStateException("Non-upgrade item was installed in upgrade slot.")
+            }
+
+            upgradeItem.upgrades.forEach { upgrade ->
+                if (upgrade is MultiplierUpgrade) {
+                    val componentToUpgrade = this.multipliers.single { it.upgradeParameter == upgrade.upgradeType }
+                    componentToUpgrade.multiplier -= upgrade.multiplier
+                    println(componentToUpgrade.upgradeParameter + ": " + componentToUpgrade.multiplier)
+                } else {
+                    // TODO complex upgrade uninstalling
+                }
+            }
         } else {
+            val upgradeItem = stack.item
+
             if (upgradeItem !is UpgradeItem) {
                 throw IllegalStateException("Non-upgrade item installed in upgrade slot.")
             }
 
-            if (upgradeItem is MultiplierUpgrade) {
-                val componentToUpgrade = this.multipliers.single { it.upgradeParameter == upgradeItem.upgradeType }
-                componentToUpgrade.multiplier += upgradeItem.multiplier
+            upgradeItem.upgrades.forEach { upgrade ->
+                if (upgrade is MultiplierUpgrade) {
+                    val componentToUpgrade = this.multipliers.single { it.upgradeParameter == upgrade.upgradeType }
+                    componentToUpgrade.multiplier += upgrade.multiplier
+                    println(componentToUpgrade.upgradeParameter + ": " + componentToUpgrade.multiplier)
+                } else {
+                    // TODO complex upgrade installation
+                }
             }
         }
     }
