@@ -2,14 +2,18 @@ package net.cydhra.technocracy.foundation.content.tileentities.components
 
 import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractComponent
 import net.cydhra.technocracy.foundation.model.tileentities.api.components.ComponentType
+import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeParameter
 import net.minecraft.nbt.NBTTagCompound
 
 /**
  * A component that stores a value indicating the energy/fuel/input consumption multiplier of a machine.
+ *
+ * @param upgradeParameter the upgrade parameter that affects this multiplier. If set to null, this multiplier cannot
+ * be modified by upgrades.
  */
-class MultiplierComponent : AbstractComponent() {
+class MultiplierComponent(val upgradeParameter: MachineUpgradeParameter?) : AbstractComponent() {
     companion object {
-        private const val NBT_KEY_ENERGY = "energy"
+        private const val NBT_KEY_ENERGY = "multiplier"
     }
 
     override val type: ComponentType = ComponentType.OTHER

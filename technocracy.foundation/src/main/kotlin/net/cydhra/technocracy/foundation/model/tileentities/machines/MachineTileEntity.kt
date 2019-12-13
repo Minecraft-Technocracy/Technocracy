@@ -13,6 +13,8 @@ import net.cydhra.technocracy.foundation.client.gui.machine.MachineUpgradesTab
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.tileentities.components.*
 import net.cydhra.technocracy.foundation.content.tileentities.logic.RedstoneLogic
+import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_ENERGY
+import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_SPEED
 import net.cydhra.technocracy.foundation.model.tileentities.api.TCMachineTileEntity
 import net.cydhra.technocracy.foundation.model.tileentities.api.logic.ILogicClient
 import net.cydhra.technocracy.foundation.model.tileentities.api.logic.LogicClientDelegate
@@ -34,9 +36,9 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
 
     protected val progressComponent = ProgressComponent()
 
-    protected val processingSpeedComponent = MultiplierComponent()
+    protected val processingSpeedComponent = MultiplierComponent(MACHINE_UPGRADE_SPEED)
 
-    protected val energyCostComponent = MultiplierComponent()
+    protected val energyCostComponent = MultiplierComponent(MACHINE_UPGRADE_ENERGY)
 
     init {
         this.registerComponent(redstoneModeComponent, "redstone_mode")

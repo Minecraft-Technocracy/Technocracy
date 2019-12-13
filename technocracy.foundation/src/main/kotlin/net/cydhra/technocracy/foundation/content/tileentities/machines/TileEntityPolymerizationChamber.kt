@@ -7,6 +7,7 @@ import net.cydhra.technocracy.foundation.content.tileentities.components.Invento
 import net.cydhra.technocracy.foundation.content.tileentities.components.MultiplierComponent
 import net.cydhra.technocracy.foundation.content.tileentities.logic.AdditiveConsumptionLogic
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ItemProcessingLogic
+import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_ADDITIVE_CONSUMPTION
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.model.tileentities.api.TEInventoryProvider
 import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
@@ -23,7 +24,7 @@ class TileEntityPolymerizationChamber : MachineTileEntity(), TEInventoryProvider
     private val additiveFluidComponent = FluidComponent(4000,
             tanktype = DynamicFluidCapability.TankType.INPUT, facing = mutableSetOf(EnumFacing.UP))
 
-    private val additiveMultiplierComponent = MultiplierComponent()
+    private val additiveMultiplierComponent = MultiplierComponent(MACHINE_UPGRADE_ADDITIVE_CONSUMPTION)
 
     private val outputInventoryComponent = InventoryComponent(1, this, EnumFacing.EAST)
 

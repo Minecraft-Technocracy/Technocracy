@@ -8,6 +8,7 @@ import net.cydhra.technocracy.foundation.content.tileentities.components.Invento
 import net.cydhra.technocracy.foundation.content.tileentities.components.MultiplierComponent
 import net.cydhra.technocracy.foundation.content.tileentities.logic.AdditiveConsumptionLogic
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ItemProcessingLogic
+import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_ADDITIVE_CONSUMPTION
 import net.cydhra.technocracy.foundation.data.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.model.tileentities.api.TEInventoryProvider
@@ -22,7 +23,7 @@ class TileEntityChemicalEtchingChamber : MachineTileEntity(), TEInventoryProvide
     private val inputInventory = InventoryComponent(3, this, EnumFacing.EAST)
     private val outputInventoryComponent = InventoryComponent(1, this, EnumFacing.WEST)
 
-    private val additiveMultiplierComponent = MultiplierComponent()
+    private val additiveMultiplierComponent = MultiplierComponent(MACHINE_UPGRADE_ADDITIVE_CONSUMPTION)
 
     private val acidFluidInput = FluidComponent(4000, hydrochloricAcidFluid.name,
             tanktype = DynamicFluidCapability.TankType.INPUT, facing = mutableSetOf(EnumFacing.NORTH))

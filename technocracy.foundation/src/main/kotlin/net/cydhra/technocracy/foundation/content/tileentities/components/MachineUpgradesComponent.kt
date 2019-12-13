@@ -7,6 +7,7 @@ import net.cydhra.technocracy.foundation.model.tileentities.api.components.Abstr
 import net.cydhra.technocracy.foundation.model.tileentities.api.components.ComponentType
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeClass
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeParameter
+import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MultiplierUpgrade
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 
@@ -16,10 +17,16 @@ import net.minecraft.nbt.NBTTagCompound
  * @param supportedUpgradeTypes a set of supported upgrade types. If a player tries to install an upgrade into the
  * machine, all of its upgrade types must be supported for installation to work.
  * @param numberOfUpgradeSlots how many upgrade slots the machine has.
+ * @param supportedUpgradeClasses the [MachineUpgradeClass]es that are supported by this component's machine.
+ * Upgrades must be of one of these classes
+ * @param multipliers the multiplier components of the machine that can be upgraded. For each [MultiplierUpgrade]
+ * that is supported by this component, a respective [MultiplierComponent] must be added to this set
  */
 class MachineUpgradesComponent(val numberOfUpgradeSlots: Int,
                                val supportedUpgradeTypes: Set<MachineUpgradeParameter>,
-                               val supportedUpgradeClasses: Set<MachineUpgradeClass>) : AbstractComponent(), TEInventoryProvider {
+                               val supportedUpgradeClasses: Set<MachineUpgradeClass>,
+                               val multipliers: Set<MultiplierComponent>) : AbstractComponent(),
+        TEInventoryProvider {
 
     override val type: ComponentType = ComponentType.OTHER
 
@@ -60,6 +67,13 @@ class MachineUpgradesComponent(val numberOfUpgradeSlots: Int,
     }
 
     override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack) {
+        val upgradeItem = stack.item
+        if (upgradeItem !is UpgradeItem) {
+            throw IllegalStateException("Non-upgrade item installed in upgrade slot.")
+        }
 
+        if (upgradeItem is MultiplierUpgrade) {
+
+        }
     }
 }

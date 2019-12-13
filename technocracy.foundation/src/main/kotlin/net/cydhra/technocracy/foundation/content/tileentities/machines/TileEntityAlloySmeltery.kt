@@ -36,7 +36,8 @@ class TileEntityAlloySmeltery : MachineTileEntity(), TEInventoryProvider {
 
     private val upgradesComponent = MachineUpgradesComponent(3,
             setOf(MACHINE_UPGRADE_ENERGY, MACHINE_UPGRADE_SPEED, MACHINE_UPGRADE_GENERIC),
-            setOf(MachineUpgradeClass.THERMAL, MachineUpgradeClass.ELECTRICAL, MachineUpgradeClass.ALIEN))
+            setOf(MachineUpgradeClass.THERMAL, MachineUpgradeClass.ELECTRICAL, MachineUpgradeClass.ALIEN),
+            setOf(this.processingSpeedComponent, this.energyCostComponent))
 
     /**
      * All recipes of the pulverizer; loaded lazily so they are not loaded before game loop, as they might not have
@@ -75,7 +76,7 @@ class TileEntityAlloySmeltery : MachineTileEntity(), TEInventoryProvider {
     }
 
     override fun initGui(gui: TCGui) {
-        gui.registerTab(object: TCTab("Example", gui) {
+        gui.registerTab(object : TCTab("Example", gui) {
             override fun init() {
                 addComponent(DefaultLabel(10, 20, "Hello World"))
             }
