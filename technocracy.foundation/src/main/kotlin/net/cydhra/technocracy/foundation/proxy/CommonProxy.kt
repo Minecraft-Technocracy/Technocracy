@@ -248,6 +248,8 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(pipeItem, PipeItemModel())
         itemManager.prepareItemForRegistration(facadeItem, FacadeItemModel())
 
+        itemManager.prepareItemForRegistration(upgradeTestItem)
+
         if (!Minecraft.getMinecraft().isSingleplayer) {
             //Dev tools
             itemManager.prepareItemForRegistration(structureMarkerItem)

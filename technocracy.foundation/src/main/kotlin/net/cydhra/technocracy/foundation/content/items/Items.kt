@@ -1,10 +1,12 @@
 package net.cydhra.technocracy.foundation.content.items
 
-import net.cydhra.technocracy.foundation.content.items.*
+import net.cydhra.technocracy.foundation.content.tileentities.upgrades.SpeedMultiplier
 import net.cydhra.technocracy.foundation.model.items.api.AlloyItem
 import net.cydhra.technocracy.foundation.model.items.api.BaseItem
 import net.cydhra.technocracy.foundation.model.items.api.ColoredPrefixedItem
+import net.cydhra.technocracy.foundation.model.items.api.UpgradeItem
 import net.cydhra.technocracy.foundation.model.items.color.ConstantItemColor
+import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeClass
 
 val coalDustItem = ColoredPrefixedItem("dust", "coal", ConstantItemColor(0x2f2f2f))
 
@@ -56,3 +58,5 @@ val facadeItem = FacadeItem()
 val structureMarkerItem = StructureMarkerItem()
 val emptyCanItem = EmptyCanItem()
 val wrenchItem = WrenchItem()
+
+val upgradeTestItem = UpgradeItem("upgrade_test", MachineUpgradeClass.ALIEN, SpeedMultiplier(0.1))
