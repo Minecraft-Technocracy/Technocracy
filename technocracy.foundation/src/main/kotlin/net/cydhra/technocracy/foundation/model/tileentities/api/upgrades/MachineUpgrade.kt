@@ -8,6 +8,13 @@ package net.cydhra.technocracy.foundation.model.tileentities.api.upgrades
 abstract class MachineUpgrade(val upgradeType: MachineUpgradeParameter)
 
 /**
+ * Upgrades that modify a machine multiplier are derived from this class and are handled specially.
+ *
+ * @param multiplier the multiplier that is added onto the machine multiplier, as long as the update is installed
+ */
+abstract class MultiplierUpgrade(val multiplier: Double, parameterName: MachineUpgradeParameter) : MachineUpgrade(parameterName)
+
+/**
  * Models exactly one parameter of a machine that can be modified. Actual upgrade items likely modify multiple
  * parameters, either positively or negatively.
  */
