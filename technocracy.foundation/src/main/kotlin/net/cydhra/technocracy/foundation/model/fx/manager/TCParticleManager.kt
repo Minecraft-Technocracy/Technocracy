@@ -28,7 +28,7 @@ object TCParticleManager {
     fun render(event: RenderGameOverlayEvent.Text) {
         if (Minecraft.getMinecraft().gameSettings.showDebugInfo) {
             event.left.add("")
-            event.left.add("TC_Particles: $lastRender/${particles.size}")
+            event.left.add("TC_Particles: $lastRender/${particles.values.stream().mapToInt { it.size }.sum()}")
         }
     }
 
@@ -72,17 +72,15 @@ object TCParticleManager {
 
     @SubscribeEvent
     fun tick(event: TickEvent.ClientTickEvent) {
-        if (event.phase == TickEvent.Phase.START) {
+        if (event.phase == TickEvent.Phase.END) {
             if (!Minecraft.getMinecraft().isGamePaused) {
                 val player = Minecraft.getMinecraft().renderViewEntity ?: return
 
                 Minecraft.getMinecraft().mcProfiler.startSection("TC_Particles_Sorting")
                 particles.iterator().forEach {
-                    val lst = it.value.stream().filter {
-                        it.onUpdate()
-                        it.isAlive
-                    }.collect(Collectors.toList())
-                    lst.sortBy { -player.getDistanceSq(it.getPosX(), it.getPosY(), it.getPosZ()) }
+                    val lst = it.value.parallelStream().filter { p ->
+                        p.onUpdate(player)
+                    }.sorted { o1, o2 -> o2.lastDistance.compareTo(o1.lastDistance) }.collect(Collectors.toList())
                     it.setValue(lst)
                 }
                 /*for ((type, list) in particles.iterator()) {

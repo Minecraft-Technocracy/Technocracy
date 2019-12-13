@@ -3,21 +3,32 @@ package net.cydhra.technocracy.foundation.model.fx.api
 import net.minecraft.client.particle.Particle
 import net.minecraft.client.renderer.BufferBuilder
 import net.minecraft.entity.Entity
+import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.world.World
+import kotlin.math.absoluteValue
 
 
 abstract class AbstractParticle(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) : Particle(worldIn, posXIn, posYIn, posZIn) {
 
     var rotation: Float = 0.0f
     var size: Float = 1.0f
+    var lastDistance = Double.MAX_VALUE
 
     abstract fun getType(): IParticleType
 
     abstract fun renderParticle(partialTicks: Float)
 
+    fun onUpdate(renderEntity: Entity): Boolean {
+        super.onUpdate()
+        if (isAlive)
+            lastDistance = renderEntity.getDistanceSq(posX, posY, posZ).absoluteValue
+        return isAlive
+    }
+
     fun getPosX(): Double {
         return posX
     }
+
     fun getPosY(): Double {
         return posY
     }
