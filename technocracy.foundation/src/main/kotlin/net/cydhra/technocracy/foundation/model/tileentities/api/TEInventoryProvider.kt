@@ -5,7 +5,10 @@ import net.minecraft.item.ItemStack
 
 /**
  * A tile entity that provides inventory should implement this in order to be compatible to
- * [net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryCapability]
+ * [net.cydhra.technocracy.foundation.capabilities.inventory.DynamicInventoryCapability]. However, the implementing
+ * class does not have to be a tile entity. Rather, any class that handles inventory-content validation and/or wants
+ * to be notified about inventory updates may implement this. Under no circumstances should there be any assumptions
+ * about the nature of an implementor of this interface.
  */
 interface TEInventoryProvider {
 
