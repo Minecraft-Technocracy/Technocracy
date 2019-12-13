@@ -2,22 +2,18 @@ package net.cydhra.technocracy.foundation.client.gui.machine
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.TCTab
-import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesComponent
-import net.cydhra.technocracy.foundation.model.tileentities.api.TEInventoryProvider
-import net.minecraft.item.ItemStack
+import net.minecraft.entity.player.EntityPlayer
 
-class MachineUpgradesTab(parent: TCGui, private val upgrades: MachineUpgradesComponent) : TCTab("Upgrades", parent),
-        TEInventoryProvider {
+class MachineUpgradesTab(parent: TCGui,
+                         private val upgrades: MachineUpgradesComponent,
+                         private val player: EntityPlayer?) : TCTab("Upgrades", parent) {
+
     override fun init() {
+        if (player != null) {
+            addPlayerInventorySlots(player, 8, 84)
+        }
 
-    }
-
-    override fun isItemValid(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack): Boolean {
-        return false
-    }
-
-    override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack) {
 
     }
 

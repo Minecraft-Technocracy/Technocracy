@@ -134,7 +134,7 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
 
         val upgradesComponent = this.getComponents().firstOrNull { (_, c) -> c is MachineUpgradesComponent }?.second
         if (upgradesComponent != null) {
-            gui.registerTab(MachineUpgradesTab(gui, upgradesComponent as MachineUpgradesComponent))
+            gui.registerTab(MachineUpgradesTab(gui, upgradesComponent as MachineUpgradesComponent, player))
         }
         return gui
     }
