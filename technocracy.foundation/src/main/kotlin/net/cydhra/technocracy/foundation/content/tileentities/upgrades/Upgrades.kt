@@ -9,7 +9,7 @@ const val MACHINE_UPGRADE_ADDITIVE_CONSUMPTION: MachineUpgradeParameter = "addit
 
 /**
  * This parameter type is used for all upgrades that do something to the machine but do not rely on a specific
- * machine parameter to be present. For example, [ActiveCoolingUpgrade] is a generic-parameter upgrade, as it can be
+ * machine parameter to be present. For example, [LubricantUpgrade] is a generic-parameter upgrade, as it can be
  * used on all machines per se.
  */
 const val MACHINE_UPGRADE_GENERIC: MachineUpgradeParameter = "generic"
@@ -30,6 +30,6 @@ class SpeedMultiplier(val multiplier: Double) : MachineUpgrade(MACHINE_UPGRADE_S
 class AdditiveConsumptionMultiplier(val multiplier: Double) : MachineUpgrade(MACHINE_UPGRADE_ADDITIVE_CONSUMPTION)
 
 /**
- * An upgrade that enables the machine to use coolants for speed increase.
+ * An upgrade that enables the machine to use lubricant additives for speed increase.
  */
-class ActiveCoolingUpgrade : MachineUpgrade(MACHINE_UPGRADE_GENERIC)
+class LubricantUpgrade : MachineUpgrade(MACHINE_UPGRADE_GENERIC)
