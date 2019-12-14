@@ -52,7 +52,10 @@ class UpgradeItem(unlocalizedName: String,
                                             .setStyle(Style()
                                                     .setColor(TextFormatting.AQUA)))
                                     .appendSibling(
-                                            TextComponentString("${(upgrade.multiplier * 100).toInt()}%")
+                                            TextComponentString("${if (upgrade.multiplier > 0)
+                                                "+"
+                                            else
+                                                ""}${(upgrade.multiplier * 100).toInt()}%")
                                                     .setStyle(Style()
                                                             .setColor(TextFormatting.WHITE)))
                                     .formattedText)
