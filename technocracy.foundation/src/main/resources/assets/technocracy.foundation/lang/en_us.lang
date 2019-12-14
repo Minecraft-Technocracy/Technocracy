@@ -59,6 +59,14 @@ item.facade.name=Facade
 
 item.structure_marker.name=Structure Marker
 
+item.mech_speed_up_1.name=Gear Translation
+item.mech_speed_up_2.name=Torque Motor
+item.mech_speed_up_3.name=Software-Guided Torque Motor
+item.chem_speed_up_1.name=Resistive Heater
+item.chem_speed_up_2.name=Catalyst
+item.chem_speed_up_3.name=Platinum Catalyst
+item.chem_speed_up_4.name=Porous Coating
+
 tile.oil_sand.name=Oil Sand
 tile.ore.aluminum.name=Aluminum Ore
 tile.ore.copper.name=Copper Ore
