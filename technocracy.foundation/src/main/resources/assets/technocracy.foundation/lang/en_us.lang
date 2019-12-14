@@ -214,3 +214,17 @@ multiblock.capacitor.error.too_many_connections=The block at %d, %d, %d has too 
 multiblock.capacitor.error.uncompleted_connection=The connection at %d, %d, %d is a dead end and must be properly connected.
 multiblock.capacitor.error.connection_of_same_electrode_types=Can't complete connection at %d, %d, %d because the two connected electrodes have the same type.
 multiblock.capacitor.error.adjacent_electrode_types=Electrode at %d, %d, %d is invalid because electrodes of the same type can't be adjacent in a row or column.
+
+tooltips.upgrades.title.class=Upgrade Classification
+tooltips.upgrades.class.mechanical=Mechanical
+tooltips.upgrades.class.electrical=Electrical
+tooltips.upgrades.class.magnetic=Magnetic
+tooltips.upgrades.class.optical=Optical
+tooltips.upgrades.class.thermal=Thermal
+tooltips.upgrades.class.chemical=Chemical
+tooltips.upgrades.class.nuclear=Nuclear
+tooltips.upgrades.class.alien=Alien
+
+tooltips.upgrades.parameter.energy=Energy
+tooltips.upgrades.parameter.speed=Speed
+tooltips.upgrades.parameter.additive=Additive Consumption

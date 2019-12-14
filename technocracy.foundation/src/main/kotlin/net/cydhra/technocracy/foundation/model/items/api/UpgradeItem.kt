@@ -2,6 +2,14 @@ package net.cydhra.technocracy.foundation.model.items.api
 
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgrade
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeClass
+import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MultiplierUpgrade
+import net.minecraft.client.util.ITooltipFlag
+import net.minecraft.item.ItemStack
+import net.minecraft.util.text.Style
+import net.minecraft.util.text.TextComponentString
+import net.minecraft.util.text.TextComponentTranslation
+import net.minecraft.util.text.TextFormatting
+import net.minecraft.world.World
 
 /**
  * Every item that can be used as an machine upgrade, derives from this base class. Upgrades are not stackable. This
@@ -17,5 +25,37 @@ class UpgradeItem(unlocalizedName: String,
                   vararg val upgrades: MachineUpgrade) : BaseItem(unlocalizedName) {
     init {
         maxStackSize = 1
+    }
+
+    override fun addInformation(stack: ItemStack, worldIn: World?, tooltip: MutableList<String>, flagIn: ITooltipFlag) {
+        tooltip.add(
+                TextComponentTranslation("tooltips.upgrades.title.class")
+                        .setStyle(Style()
+                                .setColor(TextFormatting.GREEN))
+                        .appendSibling(TextComponentString(": ")
+                                .setStyle(Style()
+                                        .setColor(TextFormatting.GREEN)))
+                        .appendSibling(
+                                TextComponentTranslation("tooltips.upgrades.class.${upgradeClass.unlocalizedName}")
+                                        .setStyle(Style()
+                                                .setColor(TextFormatting.GOLD)))
+                        .formattedText)
+
+        this.upgrades
+                .filterIsInstance<MultiplierUpgrade>()
+                .forEach { upgrade ->
+                    tooltip.add(
+                            TextComponentTranslation("tooltips.upgrades.parameter.${upgrade.upgradeType}")
+                                    .setStyle(Style()
+                                            .setColor(TextFormatting.AQUA))
+                                    .appendSibling(TextComponentString(": ")
+                                            .setStyle(Style()
+                                                    .setColor(TextFormatting.AQUA)))
+                                    .appendSibling(
+                                            TextComponentString("${(upgrade.multiplier * 100).toInt()}%")
+                                                    .setStyle(Style()
+                                                            .setColor(TextFormatting.WHITE)))
+                                    .formattedText)
+                }
     }
 }
