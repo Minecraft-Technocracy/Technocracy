@@ -248,7 +248,12 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(pipeItem, PipeItemModel())
         itemManager.prepareItemForRegistration(facadeItem, FacadeItemModel())
 
-        itemManager.prepareItemForRegistration(upgradeTestItem)
+        itemManager.prepareItemForRegistration(mechSpeedUp1Item)
+        itemManager.prepareItemForRegistration(mechSpeedUp2Item)
+        itemManager.prepareItemForRegistration(mechSpeedUp3Item)
+        itemManager.prepareItemForRegistration(chemSpeedUp1Item)
+        itemManager.prepareItemForRegistration(chemSpeedUp2Item)
+        itemManager.prepareItemForRegistration(chemSpeedUp3Item)
 
         if (!Minecraft.getMinecraft().isSingleplayer) {
             //Dev tools

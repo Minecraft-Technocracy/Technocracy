@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.content.items
 
+import net.cydhra.technocracy.foundation.content.tileentities.upgrades.EnergyMultiplier
 import net.cydhra.technocracy.foundation.content.tileentities.upgrades.SpeedMultiplier
 import net.cydhra.technocracy.foundation.model.items.api.AlloyItem
 import net.cydhra.technocracy.foundation.model.items.api.BaseItem
@@ -59,4 +60,17 @@ val structureMarkerItem = StructureMarkerItem()
 val emptyCanItem = EmptyCanItem()
 val wrenchItem = WrenchItem()
 
-val upgradeTestItem = UpgradeItem("upgrade_test", MachineUpgradeClass.ALIEN, SpeedMultiplier(0.1))
+val mechSpeedUp1Item = UpgradeItem("mech_speed_up_1", MachineUpgradeClass.MECHANICAL,
+        SpeedMultiplier(0.25), EnergyMultiplier(0.3))
+val mechSpeedUp2Item = UpgradeItem("mech_speed_up_2", MachineUpgradeClass.MECHANICAL,
+        SpeedMultiplier(0.5), EnergyMultiplier(0.75))
+val mechSpeedUp3Item = UpgradeItem("mech_speed_up_3", MachineUpgradeClass.MECHANICAL,
+        SpeedMultiplier(1.0), EnergyMultiplier(1.5))
+
+val chemSpeedUp1Item = UpgradeItem("chem_speed_up_1", MachineUpgradeClass.CHEMICAL,
+        SpeedMultiplier(0.25), EnergyMultiplier(0.3))
+val chemSpeedUp2Item = UpgradeItem("chem_speed_up_2", MachineUpgradeClass.CHEMICAL,
+        SpeedMultiplier(0.5), EnergyMultiplier(0.75))
+val chemSpeedUp3Item = UpgradeItem("chem_speed_up_3", MachineUpgradeClass.CHEMICAL,
+        SpeedMultiplier(1.0), EnergyMultiplier(1.5))
+
