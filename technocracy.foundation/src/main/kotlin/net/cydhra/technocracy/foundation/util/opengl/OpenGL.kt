@@ -8,7 +8,9 @@ import net.minecraft.client.renderer.texture.TextureMap
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.util.math.AxisAlignedBB
 import net.minecraftforge.fluids.Fluid
-import org.lwjgl.opengl.GL11
+import org.lwjgl.BufferUtils
+import org.lwjgl.opengl.*
+import java.nio.FloatBuffer
 
 object OpenGLFluidRenderer {
 
@@ -24,6 +26,56 @@ object OpenGLFluidRenderer {
                 TextureAtlasManager.getTextureAtlasSprite(if (state == FluidState.STILL) fluid.still else fluid.flowing)
         Minecraft.getMinecraft().textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE)
         OpenGLBoundingBox.drawTexturedBoundingBox(boundingBox, texture)
+    }
+}
+
+object OpenGLObjectLoader {
+    fun generateVBO(data: FloatArray, usage: Int): Int {
+        val vboID = GL15.glGenBuffers()
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID)
+        //put data into buffer
+        val buffer = BufferUtils.createFloatBuffer(data.size)
+        buffer.put(data)
+        buffer.flip()
+        //put buffer into vbo
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, usage)
+        //unbind vbo
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
+        return vboID
+    }
+
+    fun generateVBO(size: Int, usage: Int): Int {
+        val vboID = GL15.glGenBuffers()
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID)
+        //set vbo size
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, size.toLong(), usage)
+        //unbind vbo
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
+        return vboID
+    }
+
+    fun addInstancedFloatAttributeToVAO(vao: Int, vbo: Int, attributeIndex: Int, dataSize: Int, stride: Int, offset: Int) {
+        GL30.glBindVertexArray(vao)
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo)
+        GL20.glVertexAttribPointer(attributeIndex, dataSize, GL11.GL_FLOAT, false, stride * 4, offset * 4L)
+        GL33.glVertexAttribDivisor(attributeIndex, 1)
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
+        GL30.glBindVertexArray(0)
+    }
+
+    fun addFloatAttributeToVAO(vao: Int, vbo: Int, attributeIndex: Int, dataSize: Int, stride: Int = 0, offset: Int = 0) {
+        GL30.glBindVertexArray(vao)
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo)
+        GL20.glVertexAttribPointer(attributeIndex, dataSize, GL11.GL_FLOAT, false, stride * 4, offset * 4L)
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
+        GL30.glBindVertexArray(0)
+    }
+
+    fun updateVBO(vbo: Int, buffer: FloatBuffer, usage: Int) {
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo)
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer.capacity() * 4L, usage)
+        GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, 0, buffer)
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
     }
 }
 

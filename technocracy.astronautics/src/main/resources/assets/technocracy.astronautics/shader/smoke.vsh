@@ -1,14 +1,21 @@
 #version 140
 
 in vec2 position;
+//in vec3 pos;
+//in vec2 rot_scale;
+in vec4 maxtime_currenttime_rendertime_rotation;
+in float scale;
+in vec3 pos;
+//in mat4 modelViewMatrix;
 
 out vec2 textureCoords;
+out vec4 mt_ct_rt_rot;
 
 uniform mat4 projectionMatrix;
 uniform mat4 modelViewMatrix;
 
-uniform vec3 pos;
-uniform vec2 rot_scale;
+//uniform vec3 pos;
+//uniform vec2 rot_scale;
 
 void translate(vec3 vec, inout mat4 src) {
     src[3][0] += src[0][0] * vec.x + src[1][0] * vec.y + src[2][0] * vec.z;
@@ -17,13 +24,16 @@ void translate(vec3 vec, inout mat4 src) {
     src[3][3] += src[0][3] * vec.x + src[1][3] * vec.y + src[2][3] * vec.z;
 }
 
-void scale(vec4 vec, inout mat4 src) {
+void scaleMatrix(vec4 vec, inout mat4 src) {
     src[0] *= vec;
     src[1] *= vec;
     src[2] *= vec;
 }
 
 void rotate(float angle, inout mat4 src) {
+
+
+
     vec3 axis = vec3(0f, 0f, 1f);
     float c = cos(angle);
     float s = sin(angle);
@@ -91,17 +101,16 @@ mat4 calculateMat() {
     modelMatrix[2][1] = modelViewMatrix[1][2];
     modelMatrix[2][2] = modelViewMatrix[2][2];
 
-    rotate(rot_scale.x, modelMatrix);
-    scale(vec4(rot_scale.y),modelMatrix);
+    rotate(maxtime_currenttime_rendertime_rotation.w, modelMatrix);
+    scaleMatrix(vec4(scale),modelMatrix);
 
     return modelViewMatrix * modelMatrix;
 }
 
 void main(void){
-
+    mt_ct_rt_rot = maxtime_currenttime_rendertime_rotation;
     textureCoords = position + vec2(0.5, 0.5);
     textureCoords.y = 1.0 - textureCoords.y;
 
     gl_Position = projectionMatrix * calculateMat() * vec4(position, 0.0, 1.0);
-
 }

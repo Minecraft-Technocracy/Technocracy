@@ -47,12 +47,24 @@ object TCParticleManager {
         with(Minecraft.getMinecraft().mcProfiler) {
             startSection("TC_Particles")
             for ((type, list) in particles) {
+                if (list.isEmpty()) continue
+
                 startSection(type.name)
                 type.preRenderType()
-                for (particle in list.filter { icamera.isBoundingBoxInFrustum(it.boundingBox) }) {
-                    lastRender++
-                    particle.renderParticle(event.partialTicks)
+
+                if (type.perParticleRender) {
+                    for (particle in list.filter { icamera.isBoundingBoxInFrustum(it.boundingBox) }) {
+                        lastRender++
+                        particle.renderParticle(event.partialTicks)
+                    }
+                } else {
+                    for (p in list) {
+
+                    }
+                    val stream = list.parallelStream().filter { icamera.isBoundingBoxInFrustum(it.boundingBox) }.unordered()
+                    lastRender += type.render(stream, event.partialTicks)
                 }
+
                 type.postRenderType()
                 endSection()
             }

@@ -9,23 +9,20 @@ import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.OpenGlHelper
 import net.minecraft.util.ResourceLocation
 import net.minecraft.world.World
-import org.lwjgl.BufferUtils
-import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL15
-import org.lwjgl.opengl.GL20
-import org.lwjgl.opengl.GL30
 import org.lwjgl.util.vector.Matrix4f
 import org.lwjgl.util.vector.Vector3f
 import java.util.function.Consumer
 import kotlin.math.cos
 import kotlin.math.sin
 import net.cydhra.technocracy.foundation.util.opengl.BasicShaderProgram.ShaderUniform.UniformType.*
-import net.minecraft.client.shader.ShaderGroup
+import net.cydhra.technocracy.foundation.util.opengl.OpenGLObjectLoader
+import net.minecraft.client.renderer.GLAllocation
+import org.lwjgl.BufferUtils
+import org.lwjgl.opengl.*
+import java.util.stream.Stream
 
 
 class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) : AbstractParticle(worldIn, posXIn, posYIn, posZIn) {
-
-    var time = 0f
 
     init {
         rotation = rand.nextInt(360).toFloat()
@@ -37,16 +34,15 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
         motionX -= sin(Math.toRadians(randMovementRotation.toDouble())) * 0.06
         motionZ += cos(Math.toRadians(randMovementRotation.toDouble())) * 0.06
 
-        time = rand.nextFloat()
+        renderTime = rand.nextFloat()
 
         setMaxAge(20 * 5 + rand.nextInt(20 * 15)) // max 20 seconds screen time min 5 seconds
         //setMaxAge(maxAge)
         //particleAge = rand.nextInt(20 * 15)
     }
 
-
     override fun move(x: Double, y: Double, z: Double) {
-        time += 0.0005f * size
+        renderTime += 0.0005f * size
         rotation += 0.0005f * size
 
         if (onGround) {
@@ -63,35 +59,6 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
     }
 
     override fun renderParticle(partialTicks: Float) {
-
-        val manager = Minecraft.getMinecraft().renderManager
-
-        val posX = prevPosX + (posX - prevPosX) * partialTicks
-        val posY = prevPosY + (posY - prevPosY) * partialTicks
-        val posZ = prevPosZ + (posZ - prevPosZ) * partialTicks
-
-        ParticleSmokeType.pos.uploadUniform((posX - manager.viewerPosX).toFloat(), (posY - manager.viewerPosY).toFloat(), (posZ - manager.viewerPosZ).toFloat())
-        ParticleSmokeType.rot_scale.uploadUniform(rotation, size)
-
-        //ParticleSmokeType.projectionMatrix.uploadUniform(ActiveRenderInfo.PROJECTION.asReadOnlyBuffer())
-        //ParticleSmokeType.modelViewMatrix.uploadUniform(ActiveRenderInfo.MODELVIEW.asReadOnlyBuffer())
-
-        //ParticleSmokeType.updateMatrix(Vector3f((posX - Minecraft.getMinecraft().renderManager.viewerPosX).toFloat(), (posY - Minecraft.getMinecraft().renderManager.viewerPosY).toFloat(), (posZ - Minecraft.getMinecraft().renderManager.viewerPosZ).toFloat()), rotation, size, ParticleSmokeType.currentMatrix)
-
-        //ParticleSmokeType.smokeShader.uploadUniform("values", time, this.particleAge + partialTicks, this.particleMaxAge.toFloat())
-        ParticleSmokeType.values.uploadUniform(time, this.particleAge + partialTicks, this.particleMaxAge.toFloat())
-        ParticleSmokeType.smokeShader.updateUniforms()
-
-        //upload time to shader
-        //ParticleSmokeType.smokeShader.uploadUniform("renderTime", time)
-        //ParticleSmokeType.smokeShader.uploadUniform("screenTime", this.particleAge + partialTicks)
-        //ParticleSmokeType.smokeShader.uploadUniform("maxAge", this.particleMaxAge)
-
-
-        //TODO instanced rendering
-
-        //render vao
-        GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, ParticleSmokeType.vertexCount)
     }
 
     override fun getType(): IParticleType {
@@ -99,43 +66,57 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
     }
 
     object ParticleSmokeType : IParticleType {
+        override val perParticleRender = false
         override val name = "Smoke"
 
-        var vao: Int = -1
+        var vaoID: Int = -1
+        var vbo_data_ID: Int = -1
         var vertexCount: Int = -1
+
+        val vboElementSize = (1 // maxTime
+                + 1 // currentTime
+                + 1 // renderTime
+                + 1 // rotation
+                //+ 16// viewMatrix
+
+                + 1 // size
+                + 3 // pos
+                )
+
+        val vboData = GLAllocation.createDirectFloatBuffer(10000 * vboElementSize)
+        //val tmpBuffer = GLAllocation.createDirectFloatBuffer(4 * 4)
+
         lateinit var smokeShader: BasicShaderProgram
-
-        lateinit var modelViewMatrix: BasicShaderProgram.ShaderUniform
         lateinit var projectionMatrix: BasicShaderProgram.ShaderUniform
-        lateinit var values: BasicShaderProgram.ShaderUniform
-
-        lateinit var rot_scale: BasicShaderProgram.ShaderUniform
-        lateinit var pos: BasicShaderProgram.ShaderUniform
+        lateinit var modelMatrix: BasicShaderProgram.ShaderUniform
 
         fun init() {
             smokeShader.getUniform("smoke", SAMPLER).uploadUniform(0)
             smokeShader.getUniform("noise", SAMPLER).uploadUniform(2)
             smokeShader.getUniform("lighting", SAMPLER).uploadUniform(3)
-            modelViewMatrix = smokeShader.getUniform("modelViewMatrix", MATRIX_4x4)
             projectionMatrix = smokeShader.getUniform("projectionMatrix", MATRIX_4x4)
-            values = smokeShader.getUniform("values", FLOAT_3)
-            rot_scale = smokeShader.getUniform("rot_scale", FLOAT_2)
-            pos = smokeShader.getUniform("pos", FLOAT_3)
+            modelMatrix = smokeShader.getUniform("modelViewMatrix", MATRIX_4x4)
         }
 
-        val currentMatrix = Matrix4f();
+        val MODELVIEW = Matrix4f()
+        val tmpMatrix = Matrix4f()
+        val position = Vector3f()
 
         override fun preRenderType() {
 
-            GL11.glPushMatrix()
+            Minecraft.getMinecraft().mcProfiler.startSection("PreRender")
 
-            currentMatrix.load(ActiveRenderInfo.MODELVIEW.asReadOnlyBuffer())
+            if (vaoID == -1) {
+                generateVAO()
 
+                smokeShader = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shader/smoke.vsh"), ResourceLocation("technocracy.astronautics", "shader/smoke.fsh"), attributeBinder = Consumer {
+                    GL20.glBindAttribLocation(it, 0, "position")
+                    GL20.glBindAttribLocation(it, 1, "maxtime_currenttime_rendertime_rotation")
+                    GL20.glBindAttribLocation(it, 2, "scale")
+                    GL20.glBindAttribLocation(it, 3, "pos")
 
-            if (vao == -1) {
-                vao = generateVAO()
-
-                smokeShader = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shader/smoke.vsh"), ResourceLocation("technocracy.astronautics", "shader/smoke.fsh"), attributeBinder = Consumer { GL20.glBindAttribLocation(it, 0, "position") })
+                    //GL20.glBindAttribLocation(it, 2, "modelViewMatrix")
+                })
 
                 smokeShader.start()
                 init()
@@ -143,11 +124,14 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
                 smokeShader.start()
             }
 
-            this.modelViewMatrix.uploadUniform(currentMatrix)
+            //this.modelViewMatrix.uploadUniform(currentMatrix)
             //smokeShader.uploadUniform("modelViewMatrix", modelViewMatrix)
 
-            val projection = Matrix4f().load(ActiveRenderInfo.PROJECTION.asReadOnlyBuffer()) as Matrix4f
-            this.projectionMatrix.uploadUniform(projection)
+            MODELVIEW.load(ActiveRenderInfo.PROJECTION.asReadOnlyBuffer())
+            this.projectionMatrix.uploadUniform(MODELVIEW)
+            MODELVIEW.load(ActiveRenderInfo.MODELVIEW.asReadOnlyBuffer())
+            this.modelMatrix.uploadUniform(MODELVIEW)
+
 
             //bind the 3 textures
             GlStateManager.setActiveTexture(OpenGlHelper.GL_TEXTURE2)
@@ -160,18 +144,58 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
             Minecraft.getMinecraft().renderEngine.bindTexture(ResourceLocation("technocracy.astronautics", "textures/fx/smoke.png"))
 
             //bind vao
-            GL30.glBindVertexArray(vao)
+            GL30.glBindVertexArray(vaoID)
+            //enable attributes
             GL20.glEnableVertexAttribArray(0)
+            GL20.glEnableVertexAttribArray(1)
+            GL20.glEnableVertexAttribArray(2)
+            GL20.glEnableVertexAttribArray(3)
+            //GL20.glEnableVertexAttribArray(4)
+            //GL20.glEnableVertexAttribArray(5)
 
             GlStateManager.disableTexture2D()
             GlStateManager.enableBlend()
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
-            GlStateManager.disableLighting()
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0.003921569f)
             GlStateManager.depthMask(false)
+
+            Minecraft.getMinecraft().mcProfiler.endSection()
+        }
+
+        override fun render(particles: Stream<AbstractParticle>, partialTicks: Float): Int {
+            Minecraft.getMinecraft().mcProfiler.startSection("matrix_calc")
+            vboData.clear()
+            var i = 0
+            for (p in particles) {
+                vboData.put(p.getMaxAge().toFloat())
+                vboData.put(p.getAge() + partialTicks)
+                vboData.put(p.renderTime)
+
+                vboData.put(p.rotation)
+                vboData.put(p.size)
+                p.interpolatePosition(position, partialTicks).store(vboData)
+                //updateMatrix(p.interpolatePosition(position, partialTicks), p.rotation, p.size).store(vboData)
+                i++
+            }
+            vboData.flip()
+            Minecraft.getMinecraft().mcProfiler.endStartSection("uploading")
+            OpenGLObjectLoader.updateVBO(vbo_data_ID, vboData, GL15.GL_STREAM_DRAW)
+            smokeShader.updateUniforms()
+            Minecraft.getMinecraft().mcProfiler.endStartSection("rendering")
+            GL31.glDrawArraysInstanced(GL11.GL_TRIANGLE_STRIP, 0, vertexCount, i)
+            Minecraft.getMinecraft().mcProfiler.endSection()
+            return i
         }
 
         override fun postRenderType() {
+            Minecraft.getMinecraft().mcProfiler.startSection("PostRender")
+            GL20.glDisableVertexAttribArray(0)
+            GL20.glDisableVertexAttribArray(1)
+            GL20.glDisableVertexAttribArray(2)
+            GL20.glDisableVertexAttribArray(3)
+            //GL20.glDisableVertexAttribArray(4)
+            //GL20.glDisableVertexAttribArray(5)
+
             smokeShader.stop()
 
             //unbind vao
@@ -181,78 +205,82 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
             GlStateManager.disableBlend()
             GlStateManager.depthMask(true)
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1f)
-            GlStateManager.enableLighting()
-
-
-            GL11.glPopMatrix()
+            Minecraft.getMinecraft().mcProfiler.endSection()
         }
 
-        fun updateMatrix(position: Vector3f, rotation: Float, scale: Float, viewMatrix: Matrix4f) {
-            val modelMatrix = Matrix4f()
-            Matrix4f.translate(position, modelMatrix, modelMatrix)
+        fun updateMatrix(position: Vector3f, rotation: Float, scale: Float): Matrix4f {
+            tmpMatrix.setIdentity()
+            Matrix4f.translate(position, tmpMatrix, tmpMatrix)
 
             //remove rotation from matrix
-            modelMatrix.m00 = viewMatrix.m00
-            modelMatrix.m01 = viewMatrix.m10
-            modelMatrix.m02 = viewMatrix.m20
-            modelMatrix.m10 = viewMatrix.m01
-            modelMatrix.m11 = viewMatrix.m11
-            modelMatrix.m12 = viewMatrix.m21
-            modelMatrix.m20 = viewMatrix.m02
-            modelMatrix.m21 = viewMatrix.m12
-            modelMatrix.m22 = viewMatrix.m22
+            tmpMatrix.m00 = MODELVIEW.m00
+            tmpMatrix.m01 = MODELVIEW.m10
+            tmpMatrix.m02 = MODELVIEW.m20
+            tmpMatrix.m10 = MODELVIEW.m01
+            tmpMatrix.m11 = MODELVIEW.m11
+            tmpMatrix.m12 = MODELVIEW.m21
+            tmpMatrix.m20 = MODELVIEW.m02
+            tmpMatrix.m21 = MODELVIEW.m12
+            tmpMatrix.m22 = MODELVIEW.m22
 
             //apply custom rotation and scale
-            position.set(0f,0f,1f)
-            Matrix4f.rotate(rotation, position, modelMatrix, modelMatrix)
-            position.set(scale,scale,scale)
-            Matrix4f.scale(position, modelMatrix, modelMatrix)
+            rotate(rotation, tmpMatrix, tmpMatrix)
+            position.set(scale, scale, scale)
+            Matrix4f.scale(position, tmpMatrix, tmpMatrix)
 
             //upload to shader
-            val modelViewMatrix = Matrix4f.mul(viewMatrix, modelMatrix, null)
-            this.modelViewMatrix.uploadUniform(modelViewMatrix)
-            //smokeShader.uploadUniform("modelViewMatrix", modelViewMatrix)
+            Matrix4f.mul(MODELVIEW, tmpMatrix, tmpMatrix)
 
-            val projection = Matrix4f().load(ActiveRenderInfo.PROJECTION.asReadOnlyBuffer()) as Matrix4f
-            this.projectionMatrix.uploadUniform(projection)
-            //smokeShader.uploadUniform("projectionMatrix", projection)
+            return tmpMatrix
         }
 
-        fun generateVAO(): Int {
-            //generate vao
-            val vaoID = GL30.glGenVertexArrays()
-            GL30.glBindVertexArray(vaoID)
+        fun rotate(angle: Float, src: Matrix4f, dest: Matrix4f): Matrix4f {
+            val c = cos(angle)
+            val s = sin(angle)
 
-            //generate vbo
-            val vboID = GL15.glGenBuffers()
-            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID)
+            val t00 = src.m00 * c + src.m10 * s
+            val t01 = src.m01 * c + src.m11 * s
+            val t02 = src.m02 * c + src.m12 * s
+            val t03 = src.m03 * c + src.m13 * s
+            dest.m10 = src.m00 * -s + src.m10 * c
+            dest.m11 = src.m01 * -s + src.m11 * c
+            dest.m12 = src.m02 * -s + src.m12 * c
+            dest.m13 = src.m03 * -s + src.m13 * c
+            dest.m00 = t00
+            dest.m01 = t01
+            dest.m02 = t02
+            dest.m03 = t03
+            return dest
+        }
+
+
+        fun generateVAO() {
+            vaoID = GL30.glGenVertexArrays()
 
             val data = floatArrayOf(
                     -0.5f, 0.5f,
                     -0.5f, -0.5f,
                     0.5f, 0.5f,
-                    0.5f, -0.5f)
+                    0.5f, -0.5f
+            )
 
-            //put data into buffer
-            val buffer = BufferUtils.createFloatBuffer(data.size)
-            buffer.put(data)
-            buffer.flip()
+            vertexCount = data.size / 2
 
-            //put buffer into vbo
-            GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW)
+            val vbo_vertex_ID = OpenGLObjectLoader.generateVBO(data, GL15.GL_STATIC_DRAW)
 
-            val attributeNumber = 0
-            val coordinateSize = 2
+            //todo max amount of smoke particles
+            vbo_data_ID = OpenGLObjectLoader.generateVBO(10000 * vboElementSize, GL15.GL_STREAM_DRAW)
 
-            GL20.glVertexAttribPointer(attributeNumber, coordinateSize, GL11.GL_FLOAT, false, 0, 0)
+            //stride is the length of data per instance (1 float = 4 bytes)
+            OpenGLObjectLoader.addFloatAttributeToVAO(vaoID, vbo_vertex_ID, 0, 2)
+            OpenGLObjectLoader.addInstancedFloatAttributeToVAO(vaoID, vbo_data_ID, 1, 4, vboElementSize, 0)//maxtime_currenttime_renderTime_rotation
+            OpenGLObjectLoader.addInstancedFloatAttributeToVAO(vaoID, vbo_data_ID, 2, 1, vboElementSize, 4)//scale
+            OpenGLObjectLoader.addInstancedFloatAttributeToVAO(vaoID, vbo_data_ID, 3, 3, vboElementSize, 5)//pos
 
-            vertexCount = data.size / coordinateSize
-
-            //unbind vbo and vao
-            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
-            GL30.glBindVertexArray(0)
-
-            return vaoID
+            //OpenGLObjectLoader.addInstancedFloatAttributeToVAO(vaoID, vbo_data_ID, 2, 4, vboElementSize, 4)//matrix coll A
+            //OpenGLObjectLoader.addInstancedFloatAttributeToVAO(vaoID, vbo_data_ID, 3, 4, vboElementSize, 8)//matrix coll B
+            //OpenGLObjectLoader.addInstancedFloatAttributeToVAO(vaoID, vbo_data_ID, 4, 4, vboElementSize, 12)//matrix coll C
+            //OpenGLObjectLoader.addInstancedFloatAttributeToVAO(vaoID, vbo_data_ID, 5, 4, vboElementSize, 16)//matrix coll D
         }
     }
 }

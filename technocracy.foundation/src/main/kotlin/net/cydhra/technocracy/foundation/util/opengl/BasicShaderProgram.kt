@@ -64,6 +64,7 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
         OpenGlHelper.glAttachShader(programID, vertexShaderID)
         OpenGlHelper.glAttachShader(programID, fragmentShaderID)
 
+        //No binding after linking possible without relinking it
         attributeBinder?.accept(programID)
 
         OpenGlHelper.glLinkProgram(programID)
@@ -258,12 +259,14 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
         }
 
         fun uploadUniform(x: Int) {
-            if (buffer_int!![0] != x)
-                with(buffer_int!!) {
+            val buffer_int = buffer_int!!
+            with(buffer_int) {
+                if (this[0] != x) {
                     position(0)
                     put(0, x)
                     dirty = true
                 }
+            }
         }
 
         fun uploadUniform(matrix4f: Matrix4f) {
@@ -272,9 +275,10 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
             dirty = true
         }
 
-        fun uploadUniform(matrix4f: FloatBuffer) {
+        fun uploadUniform(bufferIn: FloatBuffer) {
+            bufferIn.flip()
             buffer_float!!.position(0)
-            buffer_float!!.put(matrix4f)
+            buffer_float!!.put(bufferIn)
             dirty = true
         }
 
