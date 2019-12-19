@@ -18,23 +18,33 @@ uniform mat4 modelViewMatrix;
 //uniform vec2 rot_scale;
 
 void translate(vec3 vec, inout mat4 src) {
-    src[3][0] += src[0][0] * vec.x + src[1][0] * vec.y + src[2][0] * vec.z;
+    src[3] += src * vec4(vec, 0f);
+    //src[3] += src[0] * vec.x + src[1] * vec.y + src[2] * vec.z;
+    /*src[3][0] += src[0][0] * vec.x + src[1][0] * vec.y + src[2][0] * vec.z;
     src[3][1] += src[0][1] * vec.x + src[1][1] * vec.y + src[2][1] * vec.z;
     src[3][2] += src[0][2] * vec.x + src[1][2] * vec.y + src[2][2] * vec.z;
-    src[3][3] += src[0][3] * vec.x + src[1][3] * vec.y + src[2][3] * vec.z;
+    src[3][3] += src[0][3] * vec.x + src[1][3] * vec.y + src[2][3] * vec.z;*/
 }
 
 void scaleMatrix(vec4 vec, inout mat4 src) {
+    //src *= mat4(vec, vec, vec, vec4(1f));
     src[0] *= vec;
     src[1] *= vec;
     src[2] *= vec;
 }
 
 void rotate(float angle, inout mat4 src) {
+    float c = cos(angle);
+    float s = sin(angle);
+
+    vec4 first = src[0] * c + src[1] * s;
+    vec4 second = src[0] * -s + src[1] * c;
+
+    src[0] = first;
+    src[1] = second;
 
 
-
-    vec3 axis = vec3(0f, 0f, 1f);
+    /*    vec3 axis = vec3(0f, 0f, 1f);
     float c = cos(angle);
     float s = sin(angle);
     float oneminusc = 1.0f - c;
@@ -63,46 +73,21 @@ void rotate(float angle, inout mat4 src) {
 
     src[0] = first;
     src[1] = second;
-    src[2] = thrid;
-
-    /*float t00 = src[0][0] * f00 + src[1][0] * f01 + src[2][0] * f02;
-    float t01 = src[0][1] * f00 + src[1][1] * f01 + src[2][1] * f02;
-    float t02 = src[0][2] * f00 + src[1][2] * f01 + src[2][2] * f02;
-    float t03 = src[0][3] * f00 + src[1][3] * f01 + src[2][3] * f02;*/
-    /*float t10 = src[0][0] * f10 + src[1][0] * f11 + src[2][0] * f12;
-    float t11 = src[0][1] * f10 + src[1][1] * f11 + src[2][1] * f12;
-    float t12 = src[0][2] * f10 + src[1][2] * f11 + src[2][2] * f12;
-    float t13 = src[0][3] * f10 + src[1][3] * f11 + src[2][3] * f12;*/
-    /*src[2][0] = src[0][0] * f20 + src[1][0] * f21 + src[2][0] * f22;
-    src[2][1] = src[0][1] * f20 + src[1][1] * f21 + src[2][1] * f22;
-    src[2][2] = src[0][2] * f20 + src[1][2] * f21 + src[2][2] * f22;
-    src[2][3] = src[0][3] * f20 + src[1][3] * f21 + src[2][3] * f22;
-    src[0][0] = t00;
-    src[0][1] = t01;
-    src[0][2] = t02;
-    src[0][3] = t03;
-    src[1][0] = t10;
-    src[1][1] = t11;
-    src[1][2] = t12;
-    src[1][3] = t13;*/
+    src[2] = thrid;*/
 }
 
 mat4 calculateMat() {
     mat4 modelMatrix = mat4(1f);
     translate(pos, modelMatrix);
 
-    modelMatrix[0][0] = modelViewMatrix[0][0];
-    modelMatrix[0][1] = modelViewMatrix[1][0];
-    modelMatrix[0][2] = modelViewMatrix[2][0];
-    modelMatrix[1][0] = modelViewMatrix[0][1];
-    modelMatrix[1][1] = modelViewMatrix[1][1];
-    modelMatrix[1][2] = modelViewMatrix[2][1];
-    modelMatrix[2][0] = modelViewMatrix[0][2];
-    modelMatrix[2][1] = modelViewMatrix[1][2];
-    modelMatrix[2][2] = modelViewMatrix[2][2];
+    mat4 tp = transpose(modelViewMatrix);
+    modelMatrix[0].xyz = tp[0].xyz;
+    modelMatrix[1].xyz = tp[1].xyz;
+    modelMatrix[2].xyz = tp[2].xyz;
 
     rotate(maxtime_currenttime_rendertime_rotation.w, modelMatrix);
-    scaleMatrix(vec4(scale),modelMatrix);
+
+    scaleMatrix(vec4(scale), modelMatrix);
 
     return modelViewMatrix * modelMatrix;
 }
