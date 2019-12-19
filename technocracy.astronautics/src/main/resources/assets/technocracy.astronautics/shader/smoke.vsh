@@ -18,7 +18,7 @@ uniform mat4 modelViewMatrix;
 //uniform vec2 rot_scale;
 
 void translate(vec3 vec, inout mat4 src) {
-    src[3] += src * vec4(vec, 0f);
+    src[3] += src * vec4(vec, 0.0);
     //src[3] += src[0] * vec.x + src[1] * vec.y + src[2] * vec.z;
     /*src[3][0] += src[0][0] * vec.x + src[1][0] * vec.y + src[2][0] * vec.z;
     src[3][1] += src[0][1] * vec.x + src[1][1] * vec.y + src[2][1] * vec.z;
@@ -77,7 +77,7 @@ void rotate(float angle, inout mat4 src) {
 }
 
 mat4 calculateMat() {
-    mat4 modelMatrix = mat4(1f);
+    mat4 modelMatrix = mat4(1.0);
     translate(pos, modelMatrix);
 
     mat4 tp = transpose(modelViewMatrix);
