@@ -224,6 +224,8 @@ multiblock.capacitor.error.connection_of_same_electrode_types=Can't complete con
 multiblock.capacitor.error.adjacent_electrode_types=Electrode at %d, %d, %d is invalid because electrodes of the same type can't be adjacent in a row or column.
 
 tooltips.upgrades.title.class=Upgrade Classification
+tooltips.upgrades.title.description=Upgrades
+
 tooltips.upgrades.class.mechanical=Mechanical
 tooltips.upgrades.class.electrical=Electrical
 tooltips.upgrades.class.magnetic=Magnetic
@@ -235,4 +237,4 @@ tooltips.upgrades.class.alien=Alien
 
 tooltips.upgrades.parameter.energy=Energy
 tooltips.upgrades.parameter.speed=Speed
-tooltips.upgrades.parameter.additive=Additive Consumption
+tooltips.upgrades.parameter.additive=Additive

@@ -11,6 +11,8 @@ import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.Multipl
 import net.minecraft.init.Items
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.util.text.*
+import kotlin.math.roundToInt
 
 /**
  * A machine component that handles all machine upgrades.
@@ -23,11 +25,11 @@ import net.minecraft.nbt.NBTTagCompound
  * @param multipliers the multiplier components of the machine that can be upgraded. For each [MultiplierUpgrade]
  * that is supported by this component, a respective [MultiplierComponent] must be added to this set
  */
-class MachineUpgradesComponent(val numberOfUpgradeSlots: Int,
-                               val supportedUpgradeTypes: Set<MachineUpgradeParameter>,
-                               val supportedUpgradeClasses: Set<MachineUpgradeClass>,
-                               val multipliers: Set<MultiplierComponent>) : AbstractComponent(),
-        TEInventoryProvider {
+class MachineUpgradesComponent(val numberOfUpgradeSlots: Int, val supportedUpgradeTypes: Set<MachineUpgradeParameter>,
+        val supportedUpgradeClasses: Set<MachineUpgradeClass>, val multipliers: Set<MultiplierComponent>) :
+        AbstractComponent(), TEInventoryProvider {
+
+    private val descriptionLines = mutableListOf<Pair<ITextComponent, ITextComponent>>()
 
     override val type: ComponentType = ComponentType.OTHER
 
@@ -35,6 +37,11 @@ class MachineUpgradesComponent(val numberOfUpgradeSlots: Int,
      * The inventory where to place upgrade items. Is public because GUI must be able to access it for modification
      */
     val inventory: DynamicInventoryCapability = DynamicInventoryCapability(numberOfUpgradeSlots, this)
+
+    /**
+     * A list of text lines describing the effects of all installed upgrades
+     */
+    val description: List<Pair<ITextComponent, ITextComponent>> = descriptionLines
 
     init {
         this.inventory.componentParent = this
@@ -46,6 +53,7 @@ class MachineUpgradesComponent(val numberOfUpgradeSlots: Int,
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
         inventory.deserializeNBT(nbt)
+        this.updateDescription()
     }
 
     override fun isItemValid(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack): Boolean {
@@ -53,23 +61,20 @@ class MachineUpgradesComponent(val numberOfUpgradeSlots: Int,
         val item = stack.item
 
         // only accept upgrade items
-        if (item !is UpgradeItem)
-            return false
+        if (item !is UpgradeItem) return false
 
         // check whether this component accepts upgrades of the given item's upgrade class
-        if (!this.supportedUpgradeClasses.contains(item.upgradeClass))
-            return false
+        if (!this.supportedUpgradeClasses.contains(item.upgradeClass)) return false
 
         // check whether the upgrade item's parameters are all supported
-        if (!item.upgrades.all { upgrade -> this.supportedUpgradeTypes.contains(upgrade.upgradeType) })
-            return false
+        if (!item.upgrades.all { upgrade -> this.supportedUpgradeTypes.contains(upgrade.upgradeType) }) return false
 
         return true
     }
 
-    override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack, originalStack: ItemStack) {
-        if (stack.item == originalStack.item)
-            return
+    override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack,
+            originalStack: ItemStack) {
+        if (stack.item == originalStack.item) return
 
         if (stack.item == Items.AIR) {
             val upgradeItem = originalStack.item
@@ -103,6 +108,23 @@ class MachineUpgradesComponent(val numberOfUpgradeSlots: Int,
                     // TODO complex upgrade installation
                 }
             }
+        }
+
+        this.updateDescription()
+    }
+
+    fun updateDescription() {
+        this.descriptionLines.clear()
+        this.descriptionLines.add(TextComponentTranslation("tooltips.upgrades.title.description")
+                .appendSibling(TextComponentString(":")) to TextComponentString(
+                "${this.inventory.stacks.filter { !it.isEmpty }.count()}/${this.numberOfUpgradeSlots}")
+                .setStyle(Style().setColor(TextFormatting.GOLD)))
+
+        this.multipliers.forEach { multiplier ->
+            this.descriptionLines.add(TextComponentTranslation("tooltips.upgrades.parameter.${multiplier.upgradeParameter}")
+                    .appendSibling(TextComponentString(":")) to TextComponentString(
+                    "${(multiplier.getCappedMultiplier() * 100).roundToInt()}%")
+                    .setStyle(Style().setColor(TextFormatting.GOLD)))
         }
     }
 }
