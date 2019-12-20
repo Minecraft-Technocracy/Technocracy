@@ -43,6 +43,7 @@ class TileEntityPolymerizationChamber : MachineTileEntity(), TEInventoryProvider
         this.registerComponent(inputFluidComponent, "input")
         this.registerComponent(outputInventoryComponent, "output")
         this.registerComponent(additiveFluidComponent, "additive")
+        this.registerComponent(additiveMultiplierComponent, "additive_usage")
         this.registerComponent(upgradesComponent, "upgrades")
 
         this.addLogicStrategy(AdditiveConsumptionLogic(additiveFluidComponent, 5, additiveMultiplierComponent))
