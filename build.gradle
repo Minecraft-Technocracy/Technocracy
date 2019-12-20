@@ -1,20 +1,20 @@
 buildscript {
     project.ext {
-        jvm_target='1.8'
+        jvm_target = '1.8'
 
-        kotlin_version='1.3.40'
-        forgelin_version='1.8.2'
-        jgrapht_version='1.3.0'
-        jei_version='4.15.0.268'
-        zerocore_version='1.12-0.1.1.0'
-        ctm_version='MC1.12.2-0.3.3.22'
-        waila_version='1.8.26-B41_1.12.2'
-        top_version='1.12-1.4.28-17'
-        minecraft_version='1.12.2'
-        forge_version='14.23.5.2815'
-        forge_plugin_version='2.3-SNAPSHOT'
-        mappings_version='snapshot_20180609'
-        mod_version='1.0'
+        kotlin_version = '1.3.40'
+        forgelin_version = '1.8.2'
+        jgrapht_version = '1.3.0'
+        jei_version = '4.15.0.268'
+        zerocore_version = '1.12-0.1.1.0'
+        ctm_version = 'MC1.12.2-0.3.3.22'
+        waila_version = '1.8.26-B41_1.12.2'
+        top_version = '1.12-1.4.28-17'
+        minecraft_version = '1.12.2'
+        forge_version = '14.23.5.2815'
+        forge_plugin_version = '2.3-SNAPSHOT'
+        mappings_version = 'snapshot_20180609'
+        mod_version = '1.0'
     }
 
     ext.mod_id = 'technocracy.monolith'
@@ -88,7 +88,7 @@ allprojects {
             include 'mcmod.info'
 
             // replace version and mcversion
-            expand 'version':project.version, 'mcversion':project.minecraft.version, 'modid':project.mod_id
+            expand 'version': project.version, 'mcversion': project.minecraft.version, 'modid': project.mod_id
         }
 
         // copy everything else except the mcmod.info
@@ -103,8 +103,8 @@ allprojects {
         kotlinOptions.jvmTarget = project.jvm_target
     }
 
-    idea{
-        module{
+    idea {
+        module {
             inheritOutputDirs = false
             outputDir = file("out")
         }
@@ -130,7 +130,7 @@ project('technocracy.foundation') {
 
 project('technocracy.astronautics') {
     dependencies {
-        compile  project(':technocracy.foundation')
+        compile project(':technocracy.foundation')
     }
 
     // jar configuration
@@ -147,4 +147,17 @@ project('technocracy.astronautics') {
 dependencies {
     compile project('technocracy.foundation')
     compile project('technocracy.astronautics')
+}
+
+/*
+ * A setup task to setup all modules at once
+ */
+task setup() {
+    setGroup("setup")
+
+    dependsOn('technocracy.foundation:setupDecompWorkspace',
+            'technocracy.foundation:setupDevWorkspace',
+            'technocracy.astronautics:setupDecompWorkspace',
+            'technocracy.astronautics:setupDevWorkspace',
+            ':setupDecompWorkspace')
 }
