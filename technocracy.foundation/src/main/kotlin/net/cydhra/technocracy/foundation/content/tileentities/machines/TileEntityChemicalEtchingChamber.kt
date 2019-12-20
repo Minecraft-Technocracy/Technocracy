@@ -52,7 +52,8 @@ class TileEntityChemicalEtchingChamber : MachineTileEntity(), TEInventoryProvide
         registerComponent(inputInventory, "input")
         registerComponent(outputInventoryComponent, "output")
         registerComponent(acidFluidInput, "acid")
-        this.registerComponent(upgradesComponent, "upgrades")
+        registerComponent(additiveMultiplierComponent, "additive_speed")
+        registerComponent(upgradesComponent, "upgrades")
 
         this.addLogicStrategy(AdditiveConsumptionLogic(acidFluidInput, 5, additiveMultiplierComponent))
         this.addLogicStrategy(ItemProcessingLogic(
