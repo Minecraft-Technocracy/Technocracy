@@ -30,7 +30,6 @@ classes
 # gradle
 build
 .gradle
-gradle/
 
 eclipse
 **/run/**
