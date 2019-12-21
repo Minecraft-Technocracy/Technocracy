@@ -3,17 +3,18 @@ package net.cydhra.technocracy.foundation.integration.jei.machines
 import mezz.jei.api.IGuiHelper
 import mezz.jei.api.gui.IRecipeLayout
 import mezz.jei.api.ingredients.IIngredients
-import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
+import mezz.jei.api.ingredients.VanillaTypes
 import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
 import net.cydhra.technocracy.foundation.client.gui.components.energymeter.DefaultEnergyMeter
 import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.DefaultFluidMeter
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
+import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
+import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryComponent
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.integration.jei.AbstractRecipeCategory
 import net.cydhra.technocracy.foundation.integration.jei.AbstractRecipeWrapper
 import net.cydhra.technocracy.foundation.integration.jei.gui.TabDrawable
 import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
-import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryComponent
 import net.minecraft.block.Block
 import net.minecraft.client.Minecraft
 import net.minecraft.inventory.Slot
@@ -60,6 +61,8 @@ class MachineRecipeCategory(guiHelper: IGuiHelper, val tileEntity: MachineTileEn
     override fun setRecipe(layout: IRecipeLayout, wrapper: MachineRecipeWrapper, ingredients: IIngredients) {
         val itemStacks = layout.itemStacks
         val fluidStacks = layout.fluidStacks
+        val inputFluids = ingredients.getInputs(VanillaTypes.FLUID)
+        val outputFluids = ingredients.getOutputs(VanillaTypes.FLUID)
 
         var itemIndex = 0
         var fluidIndex = 0
@@ -70,7 +73,22 @@ class MachineRecipeCategory(guiHelper: IGuiHelper, val tileEntity: MachineTileEn
                 itemStacks.setBackground(itemIndex, slotDrawable)
                 itemIndex++
             } else if (component is DefaultFluidMeter) {
-                fluidStacks.init(fluidIndex, isInput, component.posX, component.posY, component.width, component.height, component.component.fluid.capacity, false, if (isInput) fluidInputOverlay else fluidOutputOverlay)
+                val amount = if (isInput) {
+                    if (inputFluids.size > fluidIndex) {
+                        inputFluids[fluidIndex][0].amount
+                    } else {
+                        1000
+                    }
+                } else {
+                    if (outputFluids.size > fluidIndex - inputFluids.size) {
+                        outputFluids[fluidIndex - inputFluids.size][0].amount
+                    } else {
+                        1000
+                    }
+                }
+
+                fluidStacks.init(fluidIndex, isInput, component.posX, component.posY, component.width, component.height,
+                        amount, false, if (isInput) fluidInputOverlay else fluidOutputOverlay)
                 fluidIndex++
             }
         }
