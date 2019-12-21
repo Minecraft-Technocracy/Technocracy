@@ -1,7 +1,7 @@
 {
   "item": {
     "type": "forge:ore_dict",
-    "ore": "itemSalt"
+    "ore": "dustSalt"
   },
   "fluid": {
     "fluid": "acrylic_acid",

@@ -42,15 +42,24 @@ item.glue_ball.name=Glue Ball
 item.iron_rod.name=Iron Rod
 item.asbestos.name=Asbestos
 item.biphenyl.name=Biphenyl
+item.membrane.name=Membrane
+item.coil.name=Coil
+item.servo.name=Servomotor
+item.polyfibre.name=Polyfibre
+item.pump.name=Pump
 
 item.ingot.invar.name=Invar Ingot
 item.ingot.steel.name=Steel Ingot
 item.ingot.bronze.name=Bronze Ingot
-item.ingot.siliconBronze.name=Conductive Bronze Ingot
+item.ingot.siliconBronze.name=Electrical Bronze Ingot
 item.ingot.superconductor.name=Superconductor Ingot
-item.ingot.mPCM.name=Metallic Phase Change Material
+item.ingot.mPCM.name=Thermoconductive Alloy
 item.ingot.lightAlloy.name=Light Alloy
 item.ingot.zircalloy.name=Zircalloy
+
+item.sheet.invar.name=Invar Sheet
+item.sheet.steel.name=Steel Sheet
+item.gear.steel.name=Steel Gear
 
 item.pipe_item.item.name=Item Pipe
 item.pipe_item.fluid.name=Fluid Pipe
@@ -59,6 +68,7 @@ item.pipe_item.energy.name=Energy Pipe
 item.facade.name=Facade
 
 item.structure_marker.name=Structure Marker
+item.wrench.name=Technocratic Wrench
 
 item.mech_speed_up_1.name=Gear Translation
 item.mech_speed_up_2.name=Torque Motor
@@ -68,7 +78,8 @@ item.chem_speed_up_2.name=Catalyst
 item.chem_speed_up_3.name=Platinum Catalyst
 item.chem_speed_up_4.name=Porous Coating
 
-tile.oil_sand.name=Oil Sand
+tile.oil_sand.name=Oily Sand
+tile.oil_stone.name=Oily Stone
 tile.ore.aluminum.name=Aluminum Ore
 tile.ore.copper.name=Copper Ore
 tile.ore.lead.name=Lead Ore
@@ -84,6 +95,7 @@ tile.lead_oxide_block.name=Lead Oxide Block
 tile.chrysotile.name=Chrysotile
 tile.asbestos_block.name=Block of Asbestos
 tile.salt_block.name=Rock Salt
+tile.lead_glass_pane.name=Lead Glass Pane
 
 tile.alloy_smeltery.name=Alloy Smeltery
 tile.centrifuge.name=Centrifuge
@@ -131,6 +143,10 @@ tile.capacitor_wall.name=Capacitor Wall
 tile.tank_wall.name=Tank Wall
 tile.tank_glass.name=Tank Glass
 tile.tank_io.name=Tank IO Port
+
+tile.drum.iron.name=Iron Drum
+tile.drum.steel.name=Steel Drum
+tile.drum.bedrock.name=Bedrockium Drum
 
 fluid.mineral_oil=Mineral Oil
 fluid.mineral_oil_hot=Heated Mineral Oil
@@ -244,3 +260,8 @@ tooltips.upgrades.class.alien=Alien
 tooltips.upgrades.parameter.energy=Energy
 tooltips.upgrades.parameter.speed=Speed
 tooltips.upgrades.parameter.additive=Additive
+
+wrenchmode.default.name=Default Mode
+wrenchmode.pipe.energy.name=Energy Pipes Mode
+wrenchmode.pipe.item.name=Item Pipes Mode
+wrenchmode.pipe.fluid.name=Fluid Pipe Mode
