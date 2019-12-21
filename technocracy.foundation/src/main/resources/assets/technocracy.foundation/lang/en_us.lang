@@ -77,6 +77,7 @@ tile.ore.nickel.name=Nickel Ore
 tile.ore.niobium.name=Niobium Ore
 tile.ore.silver.name=Silver Ore
 tile.ore.tin.name=Tin Ore
+tile.nether_ore.zirconium.name=Zirconium Ore
 
 tile.lead_block.name=Lead Block
 tile.lead_oxide_block.name=Lead Oxide Block
