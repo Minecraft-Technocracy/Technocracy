@@ -163,9 +163,9 @@ fluid.aqueous_lithium=Aqueous Lithium
 fluid.aqueous_sodium_acrylate=Hydrogel
 fluid.glue=Glue
 fluid.phenol=Phenol
-fluid.chloroBenzene=Chlorobenzene
-fluid.diphenylEther=Diphenyl Ether
-fluid.heatTransferOilFluid=Heat Transfer Oil
+fluid.chloro_benzene=Chlorobenzene
+fluid.diphenyl_ether=Diphenyl Ether
+fluid.heat_transfer_oil=Heat Transfer Oil
 
 fluid.slag.aluminum=Aluminum Slag
 fluid.slag.copper=Copper Slag

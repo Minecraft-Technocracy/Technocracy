@@ -1,0 +1,17 @@
+{
+  "input": [
+    {
+      "fluid": "propene",
+      "amount": 100
+    },
+    {
+      "fluid": "benzene",
+      "amount": 100
+    }
+  ],
+  "output": {
+    "fluid": "phenol",
+    "amount": 200
+  },
+  "cost": 60
+}

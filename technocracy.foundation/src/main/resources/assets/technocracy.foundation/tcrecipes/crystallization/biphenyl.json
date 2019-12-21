@@ -1,0 +1,11 @@
+{
+  "input": {
+    "fluid": "phenol",
+    "amount": 400
+  },
+  "output": {
+    "item": "technocracy.foundation:biphenyl",
+    "count": 1
+  },
+  "cost": 200
+}

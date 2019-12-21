@@ -1,0 +1,14 @@
+{
+  "item": {
+    "item": "technocracy.foundation:biphenyl"
+  },
+  "fluid": {
+    "fluid": "diphenyl_ether",
+    "amount": 200
+  },
+  "output": {
+    "fluid": "heat_transfer_oil",
+    "amount": 250
+  },
+  "cost": 120
+}

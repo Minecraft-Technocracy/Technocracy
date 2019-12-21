@@ -1,0 +1,17 @@
+{
+  "input": [
+    {
+      "fluid": "chlorine",
+      "amount": 100
+    },
+    {
+      "fluid": "benzene",
+      "amount": 100
+    }
+  ],
+  "output": {
+    "fluid": "chloro_benzene",
+    "amount": 200
+  },
+  "cost": 80
+}
