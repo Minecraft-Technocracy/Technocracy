@@ -113,7 +113,10 @@ class MachineUpgradesComponent(val numberOfUpgradeSlots: Int, val supportedUpgra
         this.updateDescription()
     }
 
-    fun updateDescription() {
+    /**
+     * Update the [descriptionLines] list with the current upgrade modifiers.
+     */
+    private fun updateDescription() {
         this.descriptionLines.clear()
         this.descriptionLines.add(TextComponentTranslation("tooltips.upgrades.title.description")
                 .appendSibling(TextComponentString(":")) to TextComponentString(
