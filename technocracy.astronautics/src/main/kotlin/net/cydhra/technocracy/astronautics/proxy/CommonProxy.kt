@@ -7,6 +7,7 @@ import net.cydhra.technocracy.astronautics.content.blocks.*
 import net.cydhra.technocracy.astronautics.content.capabilities.satellites.DefaultSatelliteOrbit
 import net.cydhra.technocracy.astronautics.content.capabilities.satellites.ISatelliteOrbit
 import net.cydhra.technocracy.astronautics.content.capabilities.satellites.SatelliteOrbitStorage
+import net.cydhra.technocracy.astronautics.content.entity.entityParticleEmitter
 import net.cydhra.technocracy.astronautics.content.entity.entityRocket
 import net.cydhra.technocracy.astronautics.content.items.concreteCanItem
 import net.cydhra.technocracy.astronautics.content.items.concreteSprayerItem
@@ -65,6 +66,7 @@ open class CommonProxy {
         tileEntityManager.prepareTileEntityForRegistration(TileEntityRocketController::class)
 
         entityManager.prepareEntityForRegistration(entityRocket)
+        entityManager.prepareEntityForRegistration(entityParticleEmitter)
     }
 
     open fun init() {
