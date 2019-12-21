@@ -4,7 +4,7 @@ import net.cydhra.technocracy.foundation.model.fx.api.AbstractParticle
 import net.cydhra.technocracy.foundation.model.fx.api.IParticleType
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.culling.Frustum
-import net.minecraft.profiler.Profiler
+import net.minecraftforge.client.event.EntityViewRenderEvent
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.client.event.RenderWorldLastEvent
 import net.minecraftforge.event.world.WorldEvent
@@ -12,7 +12,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
+import java.util.*
 import java.util.stream.Collectors
+import kotlin.math.max
 
 
 @SideOnly(Side.CLIENT)
@@ -20,8 +22,11 @@ object TCParticleManager {
     val particles = mutableMapOf<IParticleType, MutableList<AbstractParticle>>()
     var lastRender = 0
 
+    val rnd = Random()
+
     fun addParticle(p: AbstractParticle) {
-        particles.getOrPut(p.getType()) { mutableListOf() }.add(p)
+        val list = particles.getOrPut(p.getType()) { mutableListOf() }
+        list.add(p)
     }
 
     @SubscribeEvent
@@ -47,37 +52,29 @@ object TCParticleManager {
         with(Minecraft.getMinecraft().mcProfiler) {
             startSection("TC_Particles")
             for ((type, list) in particles) {
+                val list = list.filter { icamera.isBoundingBoxInFrustum(it.boundingBox) }
                 if (list.isEmpty()) continue
 
                 startSection(type.name)
                 type.preRenderType()
 
                 if (type.perParticleRender) {
-                    for (particle in list.filter { icamera.isBoundingBoxInFrustum(it.boundingBox) }) {
+                    for (particle in list) {
                         lastRender++
                         particle.renderParticle(event.partialTicks)
                     }
                 } else {
-                    for (p in list) {
+                    var stream = list.stream()
 
-                    }
-                    val stream = list.parallelStream().filter { icamera.isBoundingBoxInFrustum(it.boundingBox) }.unordered()
+                    if (type.maxParticles != -1)
+                        stream = stream.skip(max(0, list.size - type.maxParticles).toLong())
+
                     lastRender += type.render(stream, event.partialTicks)
                 }
 
                 type.postRenderType()
                 endSection()
             }
-            /*particles.filter { icamera.isBoundingBoxInFrustum(it.boundingBox) }.groupBy { it.getType() }.forEach { (type, particles) ->
-                startSection(type.name)
-                type.preRenderType()
-                particles.forEach {
-                    lastRender++
-                    it.renderParticle(event.partialTicks)
-                }
-                type.postRenderType()
-                endSection()
-            }*/
             endSection()
         }
     }
@@ -89,31 +86,15 @@ object TCParticleManager {
                 val player = Minecraft.getMinecraft().renderViewEntity ?: return
 
                 Minecraft.getMinecraft().mcProfiler.startSection("TC_Particles_Sorting")
+
                 particles.iterator().forEach {
                     val lst = it.value.parallelStream().filter { p ->
                         p.onUpdate(player)
                     }.sorted { o1, o2 -> o2.lastDistance.compareTo(o1.lastDistance) }.collect(Collectors.toList())
                     it.setValue(lst)
                 }
-                /*for ((type, list) in particles.iterator()) {
-                    list.removeIf()
-                    list.removeIf {
-                        it.onUpdate()
-                        !it.isAlive
-                    }
-                    //list.sortBy { -player.getDistanceSq(it.getPosX(), it.getPosY(), it.getPosZ()) }
-                }*/
-                Minecraft.getMinecraft().mcProfiler.endSection()
 
-                /*with(particles) {
-                    removeIf {
-                        it.onUpdate()
-                        !it.isAlive
-                    }
-                    sortBy {
-                        -player.getDistanceSq(it.getPosX(), it.getPosY(), it.getPosZ())
-                    }
-                }*/
+                Minecraft.getMinecraft().mcProfiler.endSection()
             }
         }
     }

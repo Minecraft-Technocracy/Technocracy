@@ -2,6 +2,7 @@ package net.cydhra.technocracy.foundation.util.opengl
 
 import net.cydhra.technocracy.foundation.client.textures.TextureAtlasManager
 import net.minecraft.client.Minecraft
+import net.minecraft.client.renderer.OpenGlHelper
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.client.renderer.texture.TextureMap
@@ -10,6 +11,7 @@ import net.minecraft.util.math.AxisAlignedBB
 import net.minecraftforge.fluids.Fluid
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.*
+import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 
 object OpenGLFluidRenderer {
@@ -54,6 +56,22 @@ object OpenGLObjectLoader {
         return vboID
     }
 
+    fun getVBOBuffer(vbo: Int, size: Int, usage: Int): ByteBuffer {
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo)
+        val buffer = GL15.glMapBuffer(GL15.GL_ARRAY_BUFFER, usage, size.toLong(), null)
+        GL15.glUnmapBuffer(GL15.GL_ARRAY_BUFFER)
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
+        return buffer
+    }
+
+    fun getVBOBuffer(vbo: Int, size: Int, usage: Int, bufferIn: ByteBuffer?): ByteBuffer {
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo)
+        val buffer = GL15.glMapBuffer(GL15.GL_ARRAY_BUFFER, usage, size.toLong(), bufferIn)
+        GL15.glUnmapBuffer(GL15.GL_ARRAY_BUFFER)
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
+        return buffer
+    }
+
     fun addInstancedFloatAttributeToVAO(vao: Int, vbo: Int, attributeIndex: Int, dataSize: Int, stride: Int, offset: Int) {
         GL30.glBindVertexArray(vao)
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo)
@@ -73,7 +91,8 @@ object OpenGLObjectLoader {
 
     fun updateVBO(vbo: Int, buffer: FloatBuffer, usage: Int) {
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo)
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer.capacity() * 4L, usage)
+        //assign new buffer, faster then cleaning the data
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer.capacity().toLong(), usage)
         GL15.glBufferSubData(GL15.GL_ARRAY_BUFFER, 0, buffer)
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
     }

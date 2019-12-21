@@ -37,16 +37,19 @@ abstract class AbstractParticle(worldIn: World, posXIn: Double, posYIn: Double, 
         return position
     }
 
-    fun getPosX(): Double {
-        return posX
+    fun getX(partialTicks: Float): Float {
+        val manager = Minecraft.getMinecraft().renderManager
+        return ((prevPosX + (posX - prevPosX) * partialTicks) - manager.viewerPosX).toFloat()
     }
 
-    fun getPosY(): Double {
-        return posY
+    fun getY(partialTicks: Float): Float {
+        val manager = Minecraft.getMinecraft().renderManager
+        return ((prevPosY + (posY - prevPosY) * partialTicks) - manager.viewerPosY).toFloat()
     }
 
-    fun getPosZ(): Double {
-        return posZ
+    fun getZ(partialTicks: Float): Float {
+        val manager = Minecraft.getMinecraft().renderManager
+        return ((prevPosZ + (posZ - prevPosZ) * partialTicks) - manager.viewerPosZ).toFloat()
     }
 
     fun getMaxAge(): Int {
