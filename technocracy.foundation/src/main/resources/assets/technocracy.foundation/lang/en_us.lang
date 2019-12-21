@@ -41,6 +41,7 @@ item.circuit_board.name=Circuit Board
 item.glue_ball.name=Glue Ball
 item.iron_rod.name=Iron Rod
 item.asbestos.name=Asbestos
+item.biphenyl.name=Biphenyl
 
 item.ingot.invar.name=Invar Ingot
 item.ingot.steel.name=Steel Ingot
@@ -161,6 +162,10 @@ fluid.lithium_chloride=Lithium Chloride
 fluid.aqueous_lithium=Aqueous Lithium
 fluid.aqueous_sodium_acrylate=Hydrogel
 fluid.glue=Glue
+fluid.phenol=Phenol
+fluid.chloroBenzene=Chlorobenzene
+fluid.diphenylEther=Diphenyl Ether
+fluid.heatTransferOilFluid=Heat Transfer Oil
 
 fluid.slag.aluminum=Aluminum Slag
 fluid.slag.copper=Copper Slag

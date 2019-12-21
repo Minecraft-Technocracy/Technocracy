@@ -1,5 +1,8 @@
 package net.cydhra.technocracy.foundation.content.tileentities.upgrades
 
+import net.cydhra.technocracy.foundation.content.fluids.heatTransferOilFluid
+import net.cydhra.technocracy.foundation.content.tileentities.components.FluidComponent
+import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatable
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgrade
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeParameter
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MultiplierUpgrade
@@ -33,4 +36,14 @@ class AdditiveConsumptionMultiplier(multiplier: Double) : MultiplierUpgrade(mult
 /**
  * An upgrade that enables the machine to use lubricant additives for speed increase.
  */
-class LubricantUpgrade : MachineUpgrade(MACHINE_UPGRADE_GENERIC)
+class LubricantUpgrade : MachineUpgrade(MACHINE_UPGRADE_GENERIC) {
+    override fun canInstallUpgrade(tile: TCAggregatable): Boolean {
+        return tile.getComponents()
+                .filterIsInstance<FluidComponent>()
+                .none { it.fluid == heatTransferOilFluid }
+    }
+
+    override fun onInstallUpgrade(tile: TCAggregatable) {
+
+    }
+}

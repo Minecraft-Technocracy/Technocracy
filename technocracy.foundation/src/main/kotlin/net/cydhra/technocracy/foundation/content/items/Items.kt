@@ -32,6 +32,7 @@ val polishedMirrorItem = ItemPolishedMirror()
 val circuitBoardItem = BaseItem("circuit_board")
 val glueBallItem = BaseItem("glue_ball", oreDictName = "slimeball")
 val asbestosItem = BaseItem("asbestos", oreDictName = "itemAsbestos")
+val biphenylItem = BaseItem("biphenyl")
 
 val invarItem = AlloyItem("invar", ConstantItemColor(0xDDC2BE))
 val steelItem = AlloyItem("steel", ConstantItemColor(0x707680))
@@ -41,7 +42,6 @@ val superconductorItem = AlloyItem("superconductor", ConstantItemColor(0x7AA9DB)
 val metallicPhaseChangeMaterialItem = AlloyItem("mPCM", ConstantItemColor(0xC9BEC9))
 val lightAlloyItem = AlloyItem("lightAlloy", ConstantItemColor(0xE5E4E2))
 val toughAlloyItem = AlloyItem("zircalloy", ConstantItemColor(0x003030))
-
 
 val invarSheetItem = ColoredPrefixedItem("sheet", "invar", ConstantItemColor(0xDDC2BE), false)
 val steelSheetItem = ColoredPrefixedItem("sheet", "steel", ConstantItemColor(0x707680), false)

@@ -138,6 +138,10 @@ open class CommonProxy {
         fluidManager.registerFluid(aqueousLithium)
         fluidManager.registerFluid(aqueousSodiumAcrylate)
         fluidManager.registerFluid(glue)
+        fluidManager.registerFluid(phenolFluid)
+        fluidManager.registerFluid(chloroBenzeneFluid)
+        fluidManager.registerFluid(diphenyletherFluid)
+        fluidManager.registerFluid(heatTransferOilFluid)
 
         blockManager.prepareBlocksForRegistration(alloySmelteryBlock, MachineConnectorModel())
         blockManager.prepareBlocksForRegistration(centrifugeBlock, MachineConnectorModel())
@@ -224,6 +228,7 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(circuitBoardItem)
         itemManager.prepareItemForRegistration(glueBallItem)
         itemManager.prepareItemForRegistration(asbestosItem)
+        itemManager.prepareItemForRegistration(biphenylItem)
 
         itemManager.prepareItemForRegistration(membraneItem)
         itemManager.prepareItemForRegistration(ironRodItem)

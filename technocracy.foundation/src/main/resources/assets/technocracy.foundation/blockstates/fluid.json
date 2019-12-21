@@ -185,6 +185,27 @@
           "fluid": "steam"
         }
       }
+    ],
+    "diphenylEther": [
+      {
+        "custom": {
+          "fluid": "diphenylEther"
+        }
+      }
+    ],
+    "heatTransferOil": [
+      {
+        "custom": {
+          "fluid": "heatTransferOil"
+        }
+      }
+    ],
+    "chloroBenzene": [
+      {
+        "custom": {
+          "fluid": "chloroBenzene"
+        }
+      }
     ]
   }
 }
