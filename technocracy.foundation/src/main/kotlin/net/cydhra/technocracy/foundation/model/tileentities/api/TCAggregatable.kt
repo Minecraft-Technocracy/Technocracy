@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.model.tileentities.api
 
+import net.cydhra.technocracy.foundation.model.components.IAggregatable
 import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractComponent
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.nbt.NBTTagCompound
@@ -11,17 +12,9 @@ import net.minecraftforge.common.capabilities.Capability
  * Aggregation of [AbstractComponent] implementations used for tile entities. Note, that this interface is not necessarily
  * implemented by a tile entity, but can be implemented as a delegate instead.
  */
-interface TCAggregatable {
+interface TCAggregatable : IAggregatable {
 
     var tile: TileEntity
-
-    fun getComponents(): MutableList<Pair<String, AbstractComponent>>
-
-    fun registerComponent(component: AbstractComponent, name: String)
-
-    fun serializeNBT(compound: NBTTagCompound): NBTTagCompound
-
-    fun deserializeNBT(compound: NBTTagCompound)
 
     fun supportsCapability(capability: Capability<*>, facing: EnumFacing?): Boolean
 

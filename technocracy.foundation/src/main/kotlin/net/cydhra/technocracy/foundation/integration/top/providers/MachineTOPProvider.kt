@@ -6,9 +6,9 @@ import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyS
 import net.cydhra.technocracy.foundation.content.tileentities.components.FluidComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.OptionalAttachedComponent
+import net.cydhra.technocracy.foundation.model.components.IComponent
 import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
 import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatable
-import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractComponent
 import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
 import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.player.EntityPlayer
@@ -27,7 +27,7 @@ class MachineTOPProvider : IProbeInfoProvider {
         val te = world.getTileEntity(data.pos) as? TCAggregatable
                 ?: return
         if (te !is ICapabilityProvider) return
-        val components: Set<Pair<String, AbstractComponent>>
+        val components: Set<Pair<String, IComponent>>
         components = if (te is TileEntityMultiBlockPart<*>) {
             if (te.multiblockController != null && te.multiblockController!!.isAssembled) (te.multiblockController as BaseMultiBlock).getComponents().toSet() else setOf()
         } else {
@@ -38,11 +38,13 @@ class MachineTOPProvider : IProbeInfoProvider {
         }
     }
 
-    fun fillInfo(component: AbstractComponent, te: TCAggregatable, probeInfo: IProbeInfo) {
+    fun fillInfo(component: IComponent, te: TCAggregatable, probeInfo: IProbeInfo) {
         when (component) {
             is EnergyStorageComponent ->
                 if (!(te as ICapabilityProvider).hasCapability(CapabilityEnergy.ENERGY, null))
-                    probeInfo.progress(component.energyStorage.currentEnergy, component.energyStorage.capacity, energyStyle)
+                    probeInfo.progress(component.energyStorage.currentEnergy,
+                            component.energyStorage.capacity,
+                            energyStyle)
             is FluidComponent ->
                 if (!(te as ICapabilityProvider).hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
                     probeInfo.progress(component.fluid.currentFluid?.amount

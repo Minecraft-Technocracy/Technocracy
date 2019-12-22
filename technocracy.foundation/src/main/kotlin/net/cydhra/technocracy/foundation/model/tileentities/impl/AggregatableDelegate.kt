@@ -2,6 +2,7 @@ package net.cydhra.technocracy.foundation.model.tileentities.impl
 
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractCapabilityComponent
+import net.cydhra.technocracy.foundation.model.components.IComponent
 import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatable
 import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractComponent
 import net.minecraft.entity.player.EntityPlayerMP
@@ -32,8 +33,8 @@ class AggregatableDelegate : TCAggregatable {
     /**
      * @return all registered components
      */
-    override fun getComponents(): MutableList<Pair<String, AbstractComponent>> {
-        return this.components
+    override fun getComponents(): MutableList<Pair<String, IComponent>> {
+        return this.components.toMutableList()
     }
 
     /**
@@ -42,7 +43,11 @@ class AggregatableDelegate : TCAggregatable {
      * @param component [AbstractComponent] implementation
      * @param name machine-unique name for the component. Used in NBT serialization
      */
-    override fun registerComponent(component: AbstractComponent, name: String) {
+    override fun registerComponent(component: IComponent, name: String) {
+        if (component !is AbstractComponent) {
+            throw IllegalArgumentException("only AbstractComponents of tile entities are allowed")
+        }
+
         component.tile = tile
 
         this.components += name to component

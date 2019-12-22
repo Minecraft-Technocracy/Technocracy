@@ -2,11 +2,11 @@ package net.cydhra.technocracy.foundation.content.multiblock
 
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import net.cydhra.technocracy.foundation.content.blocks.*
-import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractComponent
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartHeatExchanger
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.heatexchanger.TileEntityHeatExchangerController
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.heatexchanger.TileEntityHeatExchangerInput
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.heatexchanger.TileEntityHeatExchangerOutput
+import net.cydhra.technocracy.foundation.model.components.IComponent
 import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.math.BlockPos
@@ -247,8 +247,8 @@ class HeatExchangerMultiBlock(world: World) :
         }
     }
 
-    override fun getComponents(): MutableList<Pair<String, AbstractComponent>> {
-        val components = mutableListOf<Pair<String, AbstractComponent>>()
+    override fun getComponents(): MutableList<Pair<String, IComponent>> {
+        val components = mutableListOf<Pair<String, IComponent>>()
         inputPorts.forEach { components.addAll(it.getComponents()) }
         outputPorts.forEach { components.addAll(it.getComponents()) }
         if (controllerTileEntity != null) components.addAll(controllerTileEntity!!.getComponents())

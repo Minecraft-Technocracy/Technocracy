@@ -7,7 +7,7 @@ import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import it.zerono.mods.zerocore.api.multiblock.validation.ValidationError
 import it.zerono.mods.zerocore.lib.block.ModTileEntity
 import net.cydhra.technocracy.foundation.model.blocks.impl.PlainMultiBlockPartBlock
-import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractComponent
+import net.cydhra.technocracy.foundation.model.components.IComponent
 import net.minecraft.block.state.IBlockState
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.math.BlockPos
@@ -98,7 +98,7 @@ abstract class BaseMultiBlock(
     override fun onMachinePaused() {
     }
 
-    abstract fun getComponents(): MutableList<Pair<String, AbstractComponent>>
+    internal abstract fun getComponents(): MutableList<Pair<String, IComponent>>
 
     /**
      * Helper function to easily assemble a multi-block structure. This method is supposed t be called from

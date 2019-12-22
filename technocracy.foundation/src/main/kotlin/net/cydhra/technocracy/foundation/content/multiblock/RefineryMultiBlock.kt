@@ -2,13 +2,13 @@ package net.cydhra.technocracy.foundation.content.multiblock
 
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import net.cydhra.technocracy.foundation.content.blocks.*
-import net.cydhra.technocracy.foundation.data.crafting.IMachineRecipe
-import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
-import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractComponent
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refinery.TileEntityRefineryController
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refinery.TileEntityRefineryHeater
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refinery.TileEntityRefineryInput
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refinery.TileEntityRefineryOutput
+import net.cydhra.technocracy.foundation.data.crafting.IMachineRecipe
+import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
+import net.cydhra.technocracy.foundation.model.components.IComponent
 import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
 import net.minecraft.init.Blocks
 import net.minecraft.world.World
@@ -149,8 +149,8 @@ class RefineryMultiBlock(world: World) : BaseMultiBlock(
         }
     }
 
-    override fun getComponents(): MutableList<Pair<String, AbstractComponent>> {
-        val components = mutableListOf<Pair<String, AbstractComponent>>()
+    override fun getComponents(): MutableList<Pair<String, IComponent>> {
+        val components = mutableListOf<Pair<String, IComponent>>()
         if (heater != null) components.addAll(heater!!.getComponents())
         //components.addAll(inputPort!!.getComponents())
         //outputPorts.forEach { components.addAll(it.getComponents()) }

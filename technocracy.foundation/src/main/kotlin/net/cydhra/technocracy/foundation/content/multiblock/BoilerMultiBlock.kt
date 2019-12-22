@@ -2,9 +2,9 @@ package net.cydhra.technocracy.foundation.content.multiblock
 
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import net.cydhra.technocracy.foundation.content.blocks.*
-import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractComponent
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.boiler.TileEntityBoilerController
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.boiler.TileEntityBoilerHeater
+import net.cydhra.technocracy.foundation.model.components.IComponent
 import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
 import net.minecraft.block.BlockAir
 import net.minecraft.init.Blocks
@@ -198,8 +198,8 @@ class BoilerMultiBlock(world: World) : BaseMultiBlock(
         return 26
     }
 
-    override fun getComponents(): MutableList<Pair<String, AbstractComponent>> {
-        val components = mutableListOf<Pair<String, AbstractComponent>>()
+    override fun getComponents(): MutableList<Pair<String, IComponent>> {
+        val components = mutableListOf<Pair<String, IComponent>>()
         heaterElements.forEach { components.addAll(it.getComponents()) }
         if (controllerTileEntity != null) components.addAll(controllerTileEntity!!.getComponents())
         return components

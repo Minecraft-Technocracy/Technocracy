@@ -4,9 +4,9 @@ import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import net.cydhra.technocracy.foundation.content.blocks.tankGlassBlock
 import net.cydhra.technocracy.foundation.content.blocks.tankIOBlock
 import net.cydhra.technocracy.foundation.content.blocks.tankWallBlock
-import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractComponent
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.tank.TileEntityTankMultiBlockPart
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.tank.TileEntityTankPort
+import net.cydhra.technocracy.foundation.model.components.IComponent
 import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
 import net.minecraft.init.Blocks
 import net.minecraft.world.World
@@ -140,8 +140,8 @@ class TankMultiBlock(world: World) : BaseMultiBlock(
         return 1
     }
 
-    override fun getComponents(): MutableList<Pair<String, AbstractComponent>> {
-        val components = mutableListOf<Pair<String, AbstractComponent>>()
+    override fun getComponents(): MutableList<Pair<String, IComponent>> {
+        val components = mutableListOf<Pair<String, IComponent>>()
         this.ports.forEach { components.addAll(it.getComponents()) }
         if (controllerTileEntity != null) components.addAll(controllerTileEntity!!.getComponents())
         return components
