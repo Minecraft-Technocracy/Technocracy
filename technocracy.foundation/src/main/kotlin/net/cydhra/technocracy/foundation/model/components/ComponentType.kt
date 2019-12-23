@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.foundation.model.tileentities.api.components
+package net.cydhra.technocracy.foundation.model.components
 
 enum class ComponentType(val supportsWaila: Boolean = false) {
     ENERGY(true),

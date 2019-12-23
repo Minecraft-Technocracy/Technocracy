@@ -1,8 +1,8 @@
 package net.cydhra.technocracy.foundation.content.tileentities.components
 
 import net.cydhra.technocracy.foundation.data.world.groups.GroupManager
+import net.cydhra.technocracy.foundation.model.components.ComponentType
 import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractComponent
-import net.cydhra.technocracy.foundation.model.tileentities.api.components.ComponentType
 import net.cydhra.technocracy.foundation.util.compound
 import net.minecraft.nbt.NBTTagCompound
 

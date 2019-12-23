@@ -3,7 +3,7 @@ package net.cydhra.technocracy.foundation.content.tileentities.components
 import net.cydhra.technocracy.foundation.content.capabilities.energy.DynamicEnergyCapability
 import net.cydhra.technocracy.foundation.content.capabilities.energy.DynamicEnergyStorageStrategy
 import net.cydhra.technocracy.foundation.content.capabilities.energy.EnergyCapabilityProvider
-import net.cydhra.technocracy.foundation.model.tileentities.api.components.ComponentType
+import net.cydhra.technocracy.foundation.model.components.ComponentType
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
