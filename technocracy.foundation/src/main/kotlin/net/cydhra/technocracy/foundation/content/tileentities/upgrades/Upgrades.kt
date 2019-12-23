@@ -2,6 +2,7 @@ package net.cydhra.technocracy.foundation.content.tileentities.upgrades
 
 import net.cydhra.technocracy.foundation.content.fluids.heatTransferOilFluid
 import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesTileEntityComponent
 import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatable
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgrade
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeParameter
@@ -43,7 +44,8 @@ class LubricantUpgrade : MachineUpgrade(MACHINE_UPGRADE_GENERIC) {
                 .none { it.fluid == heatTransferOilFluid }
     }
 
-    override fun onInstallUpgrade(tile: TCAggregatable) {
+    override fun onInstallUpgrade(tile: TCAggregatable,
+            upgrades: MachineUpgradesTileEntityComponent) {
 
     }
 }

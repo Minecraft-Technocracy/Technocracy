@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.model.tileentities.api.upgrades
 
+import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesTileEntityComponent
 import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatable
 
 /**
@@ -16,8 +17,12 @@ abstract class MachineUpgrade(val upgradeType: MachineUpgradeParameter) {
 
     /**
      * Called when the upgrade is installed in the given tile entity.
+     *
+     * @param tile the tile entitiy that this upgrade is installed in
+     * @param upgrades the upgrade component this upgrade is installed in
      */
-    abstract fun onInstallUpgrade(tile: TCAggregatable)
+    abstract fun onInstallUpgrade(tile: TCAggregatable,
+            upgrades: MachineUpgradesTileEntityComponent)
 }
 
 /**
@@ -31,7 +36,9 @@ abstract class MultiplierUpgrade(val multiplier: Double, parameterName: MachineU
         return true
     }
 
-    override fun onInstallUpgrade(tile: TCAggregatable) {}
+    override fun onInstallUpgrade(tile: TCAggregatable,
+            upgrades: MachineUpgradesTileEntityComponent) {
+    }
 }
 
 /**
