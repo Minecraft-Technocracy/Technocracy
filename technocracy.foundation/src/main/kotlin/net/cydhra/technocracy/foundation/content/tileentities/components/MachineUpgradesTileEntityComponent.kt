@@ -4,7 +4,7 @@ import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicI
 import net.cydhra.technocracy.foundation.model.components.ComponentType
 import net.cydhra.technocracy.foundation.model.items.api.UpgradeItem
 import net.cydhra.technocracy.foundation.model.tileentities.api.TEInventoryProvider
-import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractComponent
+import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractTileEntityComponent
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeClass
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeParameter
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MultiplierUpgrade
@@ -23,11 +23,11 @@ import kotlin.math.roundToInt
  * @param supportedUpgradeClasses the [MachineUpgradeClass]es that are supported by this component's machine.
  * Upgrades must be of one of these classes
  * @param multipliers the multiplier components of the machine that can be upgraded. For each [MultiplierUpgrade]
- * that is supported by this component, a respective [MultiplierComponent] must be added to this set
+ * that is supported by this component, a respective [MultiplierTileEntityComponent] must be added to this set
  */
-class MachineUpgradesComponent(val numberOfUpgradeSlots: Int, val supportedUpgradeTypes: Set<MachineUpgradeParameter>,
-        val supportedUpgradeClasses: Set<MachineUpgradeClass>, val multipliers: Set<MultiplierComponent>) :
-        AbstractComponent(), TEInventoryProvider {
+class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int, val supportedUpgradeTypes: Set<MachineUpgradeParameter>,
+        val supportedUpgradeClasses: Set<MachineUpgradeClass>, val multipliers: Set<MultiplierTileEntityComponent>) :
+        AbstractTileEntityComponent(), TEInventoryProvider {
 
     private val descriptionLines = mutableListOf<Pair<ITextComponent, ITextComponent>>()
 

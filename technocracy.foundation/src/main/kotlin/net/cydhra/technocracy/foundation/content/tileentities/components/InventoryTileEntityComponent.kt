@@ -13,8 +13,8 @@ import net.minecraftforge.items.CapabilityItemHandler
  *
  * @param size amount of inventory slots
  */
-class InventoryComponent(size: Int, provider: TEInventoryProvider, val facing: MutableSet<EnumFacing>) :
-        AbstractCapabilityComponent() {
+class InventoryTileEntityComponent(size: Int, provider: TEInventoryProvider, val facing: MutableSet<EnumFacing>) :
+        AbstractCapabilityTileEntityComponent() {
 
     constructor(size: Int, provider: TEInventoryProvider, facing: EnumFacing) : this(size, provider, mutableSetOf(facing))
 

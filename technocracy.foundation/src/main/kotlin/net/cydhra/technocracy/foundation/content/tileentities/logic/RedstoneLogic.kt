@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.content.tileentities.logic
 
-import net.cydhra.technocracy.foundation.content.tileentities.components.RedstoneModeComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.RedstoneModeTileEntityComponent
 import net.cydhra.technocracy.foundation.model.tileentities.api.logic.ILogic
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
@@ -10,12 +10,12 @@ import net.minecraft.world.World
  */
 class RedstoneLogic(private val world: World,
                     private val pos: BlockPos,
-                    private val redstoneModeComponent: RedstoneModeComponent) : ILogic {
+                    private val redstoneModeComponent: RedstoneModeTileEntityComponent) : ILogic {
     override fun preProcessing(): Boolean {
         return when (redstoneModeComponent.redstoneMode) {
-            RedstoneModeComponent.RedstoneMode.HIGH -> world.getStrongPower(pos) > 0
-            RedstoneModeComponent.RedstoneMode.LOW -> world.getStrongPower(pos) == 0
-            RedstoneModeComponent.RedstoneMode.IGNORE -> true
+            RedstoneModeTileEntityComponent.RedstoneMode.HIGH -> world.getStrongPower(pos) > 0
+            RedstoneModeTileEntityComponent.RedstoneMode.LOW -> world.getStrongPower(pos) == 0
+            RedstoneModeTileEntityComponent.RedstoneMode.IGNORE -> true
         }
     }
 

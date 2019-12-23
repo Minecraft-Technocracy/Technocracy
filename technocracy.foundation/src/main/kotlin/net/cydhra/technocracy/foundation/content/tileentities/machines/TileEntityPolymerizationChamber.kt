@@ -2,10 +2,10 @@ package net.cydhra.technocracy.foundation.content.tileentities.machines
 
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
-import net.cydhra.technocracy.foundation.content.tileentities.components.FluidComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.MultiplierComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.MultiplierTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.logic.AdditiveConsumptionLogic
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ItemProcessingLogic
 import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_ADDITIVE_CONSUMPTION
@@ -23,17 +23,17 @@ import net.minecraft.util.EnumFacing
  *
  */
 class TileEntityPolymerizationChamber : MachineTileEntity(), TEInventoryProvider {
-    private val inputFluidComponent = FluidComponent(4000,
+    private val inputFluidComponent = FluidTileEntityComponent(4000,
             tanktype = DynamicFluidCapability.TankType.INPUT, facing = mutableSetOf(EnumFacing.WEST))
 
-    private val additiveFluidComponent = FluidComponent(4000,
+    private val additiveFluidComponent = FluidTileEntityComponent(4000,
             tanktype = DynamicFluidCapability.TankType.INPUT, facing = mutableSetOf(EnumFacing.UP))
 
-    private val additiveMultiplierComponent = MultiplierComponent(MACHINE_UPGRADE_ADDITIVE_CONSUMPTION)
+    private val additiveMultiplierComponent = MultiplierTileEntityComponent(MACHINE_UPGRADE_ADDITIVE_CONSUMPTION)
 
-    private val outputInventoryComponent = InventoryComponent(1, this, EnumFacing.EAST)
+    private val outputInventoryComponent = InventoryTileEntityComponent(1, this, EnumFacing.EAST)
 
-    private val upgradesComponent = MachineUpgradesComponent(3,
+    private val upgradesComponent = MachineUpgradesTileEntityComponent(3,
             setOf(MACHINE_UPGRADE_ENERGY, MACHINE_UPGRADE_SPEED, MACHINE_UPGRADE_ADDITIVE_CONSUMPTION,
                     MACHINE_UPGRADE_GENERIC),
             setOf(MachineUpgradeClass.CHEMICAL, MachineUpgradeClass.THERMAL, MachineUpgradeClass.ALIEN),

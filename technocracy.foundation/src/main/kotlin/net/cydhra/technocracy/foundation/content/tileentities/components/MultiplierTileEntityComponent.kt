@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.content.tileentities.components
 
 import net.cydhra.technocracy.foundation.model.components.ComponentType
-import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractComponent
+import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractTileEntityComponent
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeParameter
 import net.minecraft.nbt.NBTTagCompound
 
@@ -16,7 +16,7 @@ import net.minecraft.nbt.NBTTagCompound
  * @param upgradeParameter the upgrade parameter that affects this multiplier. If set to null, this multiplier cannot
  * be modified by upgrades.
  */
-class MultiplierComponent(val upgradeParameter: MachineUpgradeParameter?) : AbstractComponent() {
+class MultiplierTileEntityComponent(val upgradeParameter: MachineUpgradeParameter?) : AbstractTileEntityComponent() {
     companion object {
         private const val NBT_KEY_ENERGY = "multiplier"
     }
@@ -30,7 +30,7 @@ class MultiplierComponent(val upgradeParameter: MachineUpgradeParameter?) : Abst
 
     override fun serializeNBT(): NBTTagCompound {
         return NBTTagCompound().apply {
-            setDouble(NBT_KEY_ENERGY, this@MultiplierComponent.multiplier)
+            setDouble(NBT_KEY_ENERGY, this@MultiplierTileEntityComponent.multiplier)
         }
     }
 

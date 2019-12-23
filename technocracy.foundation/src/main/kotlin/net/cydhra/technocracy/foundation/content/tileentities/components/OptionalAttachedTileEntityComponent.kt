@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.content.tileentities.components
 
 import net.cydhra.technocracy.foundation.model.components.ComponentType
-import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractComponent
+import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractTileEntityComponent
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
@@ -12,7 +12,7 @@ import net.minecraftforge.common.capabilities.Capability
  * This means that capabilities are exposed if present. This does however not mean, that logic can handle
  * this component instead of the wrapped one: The type is still opaque.
  */
-class OptionalAttachedComponent<T : AbstractComponent>(val innerComponent: T) : AbstractCapabilityComponent() {
+class OptionalAttachedTileEntityComponent<T : AbstractTileEntityComponent>(val innerComponent: T) : AbstractCapabilityTileEntityComponent() {
 
     var isAttached = false
     override val type: ComponentType = ComponentType.OPTIONAL
@@ -33,12 +33,12 @@ class OptionalAttachedComponent<T : AbstractComponent>(val innerComponent: T) : 
     }
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
-        return isAttached && innerComponent is AbstractCapabilityComponent &&
+        return isAttached && innerComponent is AbstractCapabilityTileEntityComponent &&
                 innerComponent.hasCapability(capability, facing)
     }
 
     override fun <T> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
-        if (!isAttached || innerComponent !is AbstractCapabilityComponent) {
+        if (!isAttached || innerComponent !is AbstractCapabilityTileEntityComponent) {
             return null
         }
 

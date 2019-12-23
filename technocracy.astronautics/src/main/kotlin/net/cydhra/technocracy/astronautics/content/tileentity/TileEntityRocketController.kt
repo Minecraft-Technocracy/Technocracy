@@ -3,9 +3,9 @@ package net.cydhra.technocracy.astronautics.content.tileentity
 import net.cydhra.technocracy.astronautics.content.entity.EntityRocket
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
-import net.cydhra.technocracy.foundation.content.tileentities.components.FluidComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.OwnerShipComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.OwnerShipTileEntityComponent
 import net.cydhra.technocracy.foundation.model.tileentities.api.TEInventoryProvider
 import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableTileEntity
 import net.minecraft.item.ItemStack
@@ -30,10 +30,10 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
         return default
     }
 
-    val ownerShip = OwnerShipComponent()
+    val ownerShip = OwnerShipTileEntityComponent()
     val dynCapability = DynamicFluidCapability(0, mutableListOf("rocket_fuel"))
-    val fluidBuffer = FluidComponent(dynCapability, EnumFacing.values().toMutableSet())
-    val inventoryBuffer = InventoryComponent(0, this, EnumFacing.values().toMutableSet())
+    val fluidBuffer = FluidTileEntityComponent(dynCapability, EnumFacing.values().toMutableSet())
+    val inventoryBuffer = InventoryTileEntityComponent(0, this, EnumFacing.values().toMutableSet())
 
     var currentRocket: EntityRocket? = null
 

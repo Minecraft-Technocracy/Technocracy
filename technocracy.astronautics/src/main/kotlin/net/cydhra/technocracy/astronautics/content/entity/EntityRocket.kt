@@ -6,8 +6,8 @@ import net.cydhra.technocracy.astronautics.content.blocks.rocketDriveBlock
 import net.cydhra.technocracy.astronautics.content.fx.ParticleSmoke
 import net.cydhra.technocracy.astronautics.content.tileentity.TileEntityRocketController
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
-import net.cydhra.technocracy.foundation.content.tileentities.components.FluidComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.OwnerShipComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.OwnerShipTileEntityComponent
 import net.cydhra.technocracy.foundation.data.world.groups.GroupManager
 import net.cydhra.technocracy.foundation.model.fx.manager.TCParticleManager
 import net.cydhra.technocracy.foundation.util.readCompoundTag
@@ -60,9 +60,9 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
     lateinit var controllerBlock: BlockPos
     private val LIFTOFF = EntityDataManager.createKey(EntityRocket::class.java, DataSerializers.BOOLEAN)
 
-    val owner = OwnerShipComponent()
+    val owner = OwnerShipTileEntityComponent()
     //TODO config
-    val tank = FluidComponent(DynamicFluidCapability(0, mutableListOf("rocket_fuel")), EnumFacing.values().toMutableSet())
+    val tank = FluidTileEntityComponent(DynamicFluidCapability(0, mutableListOf("rocket_fuel")), EnumFacing.values().toMutableSet())
     var cargoSlots: NonNullList<ItemStack>? = null
     var dysonCargo = false
 

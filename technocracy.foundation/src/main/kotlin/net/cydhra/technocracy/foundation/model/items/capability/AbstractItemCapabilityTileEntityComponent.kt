@@ -1,9 +1,9 @@
 package net.cydhra.technocracy.foundation.model.items.capability
 
-import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractCapabilityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractCapabilityTileEntityComponent
 
 
-abstract class AbstractItemCapabilityComponent : AbstractCapabilityComponent() {
+abstract class AbstractItemCapabilityTileEntityComponent : AbstractCapabilityTileEntityComponent() {
 
     lateinit var wrapper: ItemCapabilityWrapper
 

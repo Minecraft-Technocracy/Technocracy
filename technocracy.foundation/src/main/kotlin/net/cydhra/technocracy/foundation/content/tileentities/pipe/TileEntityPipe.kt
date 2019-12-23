@@ -4,8 +4,8 @@ import net.cydhra.technocracy.foundation.content.blocks.pipe
 import net.cydhra.technocracy.foundation.client.model.pipe.FacadeBakery
 import net.cydhra.technocracy.foundation.conduits.ConduitNetwork
 import net.cydhra.technocracy.foundation.conduits.types.PipeType
-import net.cydhra.technocracy.foundation.content.tileentities.components.FacadeComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.PipeTypesComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.FacadeTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.PipeTypesTileEntityComponent
 import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableTileEntity
 import net.minecraft.init.Blocks
 import net.minecraft.item.ItemStack
@@ -39,8 +39,8 @@ class TileEntityPipe : AggregatableTileEntity() {
                         Vec3d((0.5 + size), (0.5 - size), (0.5 + size))))
     }
 
-    private val pipeTypes = PipeTypesComponent()
-    private val facades = FacadeComponent()
+    private val pipeTypes = PipeTypesTileEntityComponent()
+    private val facades = FacadeTileEntityComponent()
 
     init {
         registerComponent(pipeTypes, "pipeTypes")

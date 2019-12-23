@@ -3,8 +3,8 @@ package net.cydhra.technocracy.foundation.content.tileentities.logic
 import net.cydhra.technocracy.foundation.content.capabilities.energy.DynamicEnergyCapability
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
-import net.cydhra.technocracy.foundation.content.tileentities.components.MultiplierComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.ProgressComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.MultiplierTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.ProgressTileEntityComponent
 import net.cydhra.technocracy.foundation.data.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.model.tileentities.api.logic.ILogic
@@ -16,10 +16,10 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
                           private val inputFluidSlots: Array<DynamicFluidCapability> = emptyArray(),
                           private val outputFluidSlots: Array<DynamicFluidCapability> = emptyArray(),
                           private val energyStorage: DynamicEnergyCapability,
-                          private val processSpeedComponent: MultiplierComponent,
-                          private val energyCostComponent: MultiplierComponent,
+                          private val processSpeedComponent: MultiplierTileEntityComponent,
+                          private val energyCostComponent: MultiplierTileEntityComponent,
                           private val baseTickEnergyCost: Int,
-                          private val progress: ProgressComponent) : ILogic {
+                          private val progress: ProgressTileEntityComponent) : ILogic {
 
     companion object {
         // TODO this could be a value obtained from config

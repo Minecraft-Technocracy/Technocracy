@@ -13,7 +13,7 @@ import net.minecraftforge.common.capabilities.Capability
  * capacity of 8000 and a receiving limit of 8000 FE. If a machine wants to change the defaults, it has to do so in
  * its constructor.
  */
-class EnergyStorageComponent(val facing: MutableSet<EnumFacing>) : AbstractCapabilityComponent() {
+class EnergyStorageTileEntityComponent(val facing: MutableSet<EnumFacing>) : AbstractCapabilityTileEntityComponent() {
 
     override val type: ComponentType = ComponentType.ENERGY
 

@@ -1,10 +1,10 @@
 package net.cydhra.technocracy.foundation.model.tileentities.impl
 
 import net.cydhra.technocracy.foundation.TCFoundation
-import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractCapabilityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractCapabilityTileEntityComponent
 import net.cydhra.technocracy.foundation.model.components.IComponent
 import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatable
-import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractComponent
+import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractTileEntityComponent
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTTagList
@@ -22,13 +22,13 @@ class AggregatableDelegate : TCAggregatable {
     /**
      * All machine components that are saved to NBT and possibly accessible from GUI
      */
-    private val components: MutableList<Pair<String, AbstractComponent>> = mutableListOf()
+    private val components: MutableList<Pair<String, AbstractTileEntityComponent>> = mutableListOf()
 
     /**
      * All components that also offer a capability. They must also be added to [components] but for speed they are
      * also collected in this list for quick query times in [supportsCapability]
      */
-    private val capabilityComponents: MutableSet<AbstractCapabilityComponent> = mutableSetOf()
+    private val capabilityComponents: MutableSet<AbstractCapabilityTileEntityComponent> = mutableSetOf()
 
     /**
      * @return all registered components
@@ -40,11 +40,11 @@ class AggregatableDelegate : TCAggregatable {
     /**
      * Register a machine component. Should happen during construction of the tile entity instance.
      *
-     * @param component [AbstractComponent] implementation
+     * @param component [AbstractTileEntityComponent] implementation
      * @param name machine-unique name for the component. Used in NBT serialization
      */
     override fun registerComponent(component: IComponent, name: String) {
-        if (component !is AbstractComponent) {
+        if (component !is AbstractTileEntityComponent) {
             throw IllegalArgumentException("only AbstractComponents of tile entities are allowed")
         }
 
@@ -54,7 +54,7 @@ class AggregatableDelegate : TCAggregatable {
 
         component.onRegister()
 
-        if (component is AbstractCapabilityComponent) {
+        if (component is AbstractCapabilityTileEntityComponent) {
             capabilityComponents += component
         }
     }
