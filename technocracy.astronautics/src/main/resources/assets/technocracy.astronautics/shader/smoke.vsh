@@ -1,21 +1,21 @@
-#version 140
+#version 150
 
 in vec2 position;
-//in vec3 pos;
-//in vec2 rot_scale;
 in vec4 maxtime_currenttime_rendertime_rotation;
 in float scale;
 in vec3 pos;
-//in mat4 modelViewMatrix;
 
-out vec2 textureCoords;
-out vec4 mt_ct_rt_rot;
+out vec4 geo_pass;
+out mat4 modelMatrix;
 
-uniform mat4 projectionMatrix;
+out Particle
+{
+    vec4 mt_ct_rt_rot;
+    mat4 modelMatrix;
+} particle;
+
 uniform mat4 modelViewMatrix;
-
-//uniform vec3 pos;
-//uniform vec2 rot_scale;
+uniform mat4 projectionMatrix;
 
 void translate(vec3 vec, inout mat4 src) {
     src[3] += src * vec4(vec, 0.0);
@@ -93,9 +93,9 @@ mat4 calculateMat() {
 }
 
 void main(void){
-    mt_ct_rt_rot = maxtime_currenttime_rendertime_rotation;
-    textureCoords = position + vec2(0.5, 0.5);
-    textureCoords.y = 1.0 - textureCoords.y;
+    particle.mt_ct_rt_rot = maxtime_currenttime_rendertime_rotation;
 
-    gl_Position = projectionMatrix * calculateMat() * vec4(position, 0.0, 1.0);
+    particle.modelMatrix = projectionMatrix * calculateMat();
+
+    gl_Position = vec4(0);// * vec4(position, 0.0, 1.0);
 }

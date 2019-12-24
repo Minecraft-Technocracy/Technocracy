@@ -12,10 +12,9 @@ import net.minecraftforge.client.resource.ISelectiveResourceReloadListener
 import net.minecraftforge.client.resource.VanillaResourceType
 import org.apache.commons.io.IOUtils
 import org.apache.commons.lang3.StringUtils
-import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL20
 import org.lwjgl.util.vector.Matrix4f
 import org.lwjgl.BufferUtils
+import org.lwjgl.opengl.*
 import java.io.BufferedInputStream
 import java.io.Closeable
 import java.lang.IllegalStateException
@@ -26,7 +25,7 @@ import java.util.function.Consumer
 import java.util.function.Predicate
 
 
-class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: ResourceLocation, val attributeBinder: Consumer<Int>? = null, val resourceReloader: BiConsumer<IResourceManager, Predicate<IResourceType>>? = null) : ISelectiveResourceReloadListener {
+class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: ResourceLocation, val geometryIn: ResourceLocation? = null, val attributeBinder: Consumer<Int>? = null, val resourceReloader: BiConsumer<IResourceManager, Predicate<IResourceType>>? = null) : ISelectiveResourceReloadListener {
     companion object {
         private val matrixBuffer_4 = BufferUtils.createFloatBuffer(4 * 4)
         private val matrixBuffer_3 = BufferUtils.createFloatBuffer(3 * 3)
@@ -35,6 +34,7 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
     private var programID: Int = 0
     private var vertexShaderID: Int = 0
     private var fragmentShaderID: Int = 0
+    private var geometryShaderID: Int = 0
     private var running = false
     private val uniform = mutableListOf<ShaderUniform>()
 
@@ -55,6 +55,9 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
     private fun loadShader() {
         vertexShaderID = loadShader(vertexIn, OpenGlHelper.GL_VERTEX_SHADER)
         fragmentShaderID = loadShader(fragmentIn, OpenGlHelper.GL_FRAGMENT_SHADER)
+        if (geometryIn != null) {
+            geometryShaderID = loadShader(geometryIn, GL32.GL_GEOMETRY_SHADER)
+        }
 
         programID = OpenGlHelper.glCreateProgram()
 
@@ -63,6 +66,8 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
 
         OpenGlHelper.glAttachShader(programID, vertexShaderID)
         OpenGlHelper.glAttachShader(programID, fragmentShaderID)
+        if (geometryShaderID != 0)
+            OpenGlHelper.glAttachShader(programID, geometryShaderID)
 
         //No binding after linking possible without relinking it
         attributeBinder?.accept(programID)
@@ -119,6 +124,8 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
     fun cleanUp() {
         OpenGlHelper.glDeleteShader(vertexShaderID)
         OpenGlHelper.glDeleteShader(fragmentShaderID)
+        if (geometryShaderID != 0)
+            OpenGlHelper.glDeleteShader(geometryShaderID)
         OpenGlHelper.glDeleteShader(programID)
     }
 

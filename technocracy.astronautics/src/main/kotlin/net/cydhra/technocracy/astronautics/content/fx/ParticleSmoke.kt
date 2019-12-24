@@ -71,7 +71,7 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
 
         override val perParticleRender = false
         override val name = "Smoke"
-        override val maxParticles = 10000
+        override val maxParticles = 100000
 
         var vao: VAO? = null
         var vertexCount: Int = -1
@@ -115,7 +115,7 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
             if (vao == null) {
                 generateVAO()
 
-                smokeShader = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shader/smoke.vsh"), ResourceLocation("technocracy.astronautics", "shader/smoke.fsh"), attributeBinder = Consumer {
+                smokeShader = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shader/smoke.vsh"), ResourceLocation("technocracy.astronautics", "shader/smoke.fsh"), ResourceLocation("technocracy.astronautics", "shader/smoke.gsh"), attributeBinder = Consumer {
                     GL20.glBindAttribLocation(it, 0, "position")
                     GL20.glBindAttribLocation(it, 1, "maxtime_currenttime_rendertime_rotation")
                     GL20.glBindAttribLocation(it, 2, "scale")
@@ -136,6 +136,7 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
             MODELVIEW.load(ActiveRenderInfo.PROJECTION.asReadOnlyBuffer())
             this.projectionMatrix.uploadUniform(MODELVIEW)
             MODELVIEW.load(ActiveRenderInfo.MODELVIEW.asReadOnlyBuffer())
+
             this.modelMatrix.uploadUniform(MODELVIEW)
 
 
@@ -189,7 +190,7 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
             //OpenGLObjectLoader.updateVBO(vbo_data_ID, vboData, GL15.GL_STREAM_DRAW)
             smokeShader.updateUniforms()
             Minecraft.getMinecraft().mcProfiler.endStartSection("rendering")
-            GL31.glDrawArraysInstanced(GL11.GL_TRIANGLE_STRIP, 0, vertexCount, i)
+            GL31.glDrawArraysInstanced(GL11.GL_POINTS, 0, vertexCount, i)
             Minecraft.getMinecraft().mcProfiler.endSection()
             return i
         }
@@ -212,9 +213,9 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
             vao = VAO()
 
             val data = floatArrayOf(
-                    -0.5f, 0.5f,
-                    -0.5f, -0.5f,
-                    0.5f, 0.5f,
+                    //-0.5f, 0.5f,
+                    //-0.5f, -0.5f,
+                    //0.5f, 0.5f,
                     0.5f, -0.5f
             )
 
