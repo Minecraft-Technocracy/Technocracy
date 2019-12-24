@@ -2,7 +2,7 @@ package net.cydhra.technocracy.foundation.content.tileentities.multiblock.boiler
 
 import net.cydhra.technocracy.foundation.content.capabilities.energy.DynamicEnergyCapability
 import net.cydhra.technocracy.foundation.content.multiblock.BoilerMultiBlock
-import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageTileEntityComponent
 import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.EnumFacing
@@ -21,7 +21,7 @@ class TileEntityBoilerHeater : TileEntityMultiBlockPart<BoilerMultiBlock>(Boiler
      *The energy storage of this block. It is not part of the boiler structure, as heating is decoupled from it and
      * could be done by other means than energy.
      */
-    val energyStorageComponent: EnergyStorageComponent = EnergyStorageComponent(mutableSetOf(EnumFacing.DOWN))
+    val energyStorageComponent: EnergyStorageTileEntityComponent = EnergyStorageTileEntityComponent(mutableSetOf(EnumFacing.DOWN))
 
     init {
         this.registerComponent(energyStorageComponent, "energy")

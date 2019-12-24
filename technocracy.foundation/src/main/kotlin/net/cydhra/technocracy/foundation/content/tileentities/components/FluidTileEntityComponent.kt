@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.content.tileentities.components
 
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
-import net.cydhra.technocracy.foundation.model.tileentities.api.components.ComponentType
+import net.cydhra.technocracy.foundation.model.components.ComponentType
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
@@ -11,8 +11,8 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler
 /**
  * A machine component that offers a fluid inventory for the machine. It also implements the fluid capability
  */
-class FluidComponent(var fluid: DynamicFluidCapability, val facing: MutableSet<EnumFacing>) :
-        AbstractCapabilityComponent() {
+class FluidTileEntityComponent(var fluid: DynamicFluidCapability, val facing: MutableSet<EnumFacing>) :
+        AbstractCapabilityTileEntityComponent() {
 
     constructor(fluid: DynamicFluidCapability, facing: EnumFacing) : this(fluid, mutableSetOf(facing))
 

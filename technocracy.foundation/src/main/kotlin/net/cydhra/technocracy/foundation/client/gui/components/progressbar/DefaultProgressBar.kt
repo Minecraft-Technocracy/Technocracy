@@ -3,13 +3,13 @@ package net.cydhra.technocracy.foundation.client.gui.components.progressbar
 import mezz.jei.api.IGuiHelper
 import mezz.jei.api.gui.IDrawable
 import net.cydhra.technocracy.foundation.client.gui.TCGui
-import net.cydhra.technocracy.foundation.content.tileentities.components.ProgressComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.ProgressTileEntityComponent
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
 import kotlin.math.roundToInt
 
-class DefaultProgressBar(posX: Int, posY: Int, orientation: Orientation, val component: ProgressComponent?, val gui: TCGui?) : ProgressBar(posX, posY, orientation) {
+class DefaultProgressBar(posX: Int, posY: Int, orientation: Orientation, val component: ProgressTileEntityComponent?, val gui: TCGui?) : ProgressBar(posX, posY, orientation) {
     override fun draw(mouseX: Int, mouseY: Int, partialTicks: Float) {
         Minecraft.getMinecraft().textureManager.bindTexture(TCGui.guiComponents)
 

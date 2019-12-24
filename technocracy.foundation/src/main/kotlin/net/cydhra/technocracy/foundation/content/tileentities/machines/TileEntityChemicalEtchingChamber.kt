@@ -3,10 +3,10 @@ package net.cydhra.technocracy.foundation.content.tileentities.machines
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.content.fluids.hydrochloricAcidFluid
-import net.cydhra.technocracy.foundation.content.tileentities.components.FluidComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.MultiplierComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.MultiplierTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.logic.AdditiveConsumptionLogic
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ItemProcessingLogic
 import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_ADDITIVE_CONSUMPTION
@@ -25,15 +25,15 @@ import net.minecraft.util.EnumFacing
  *
  */
 class TileEntityChemicalEtchingChamber : MachineTileEntity(), TEInventoryProvider {
-    private val inputInventory = InventoryComponent(3, this, EnumFacing.EAST)
-    private val outputInventoryComponent = InventoryComponent(1, this, EnumFacing.WEST)
+    private val inputInventory = InventoryTileEntityComponent(3, this, EnumFacing.EAST)
+    private val outputInventoryComponent = InventoryTileEntityComponent(1, this, EnumFacing.WEST)
 
-    private val additiveMultiplierComponent = MultiplierComponent(MACHINE_UPGRADE_ADDITIVE_CONSUMPTION)
+    private val additiveMultiplierComponent = MultiplierTileEntityComponent(MACHINE_UPGRADE_ADDITIVE_CONSUMPTION)
 
-    private val acidFluidInput = FluidComponent(4000, hydrochloricAcidFluid.name,
+    private val acidFluidInput = FluidTileEntityComponent(4000, hydrochloricAcidFluid.name,
             tanktype = DynamicFluidCapability.TankType.INPUT, facing = mutableSetOf(EnumFacing.NORTH))
 
-    private val upgradesComponent = MachineUpgradesComponent(3,
+    private val upgradesComponent = MachineUpgradesTileEntityComponent(3,
             setOf(MACHINE_UPGRADE_ENERGY, MACHINE_UPGRADE_SPEED, MACHINE_UPGRADE_ADDITIVE_CONSUMPTION,
                     MACHINE_UPGRADE_GENERIC),
             setOf(MachineUpgradeClass.CHEMICAL, MachineUpgradeClass.OPTICAL,

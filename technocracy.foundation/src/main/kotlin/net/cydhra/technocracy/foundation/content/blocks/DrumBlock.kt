@@ -9,7 +9,7 @@ import net.cydhra.technocracy.foundation.model.blocks.util.IDynamicBlockItemCapa
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicItemFluidStorage
 import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWrapper
-import net.cydhra.technocracy.foundation.model.items.capability.ItemFluidComponent
+import net.cydhra.technocracy.foundation.model.items.capability.ItemFluidTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.storage.TileEntityDrum
 import net.minecraft.block.material.Material
 import net.minecraft.block.properties.PropertyEnum
@@ -184,7 +184,7 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
     }
 
     override fun initCapabilities(stack: ItemStack, nbt: NBTTagCompound?): ICapabilityProvider? {
-        return ItemCapabilityWrapper(stack, mutableMapOf("fluid" to ItemFluidComponent(DynamicItemFluidStorage(stack, DrumType.values()[MathHelper.clamp(stack.metadata, 0, DrumType.values().size - 1)].amount, mutableListOf(), DynamicFluidCapability.TankType.BOTH))))
+        return ItemCapabilityWrapper(stack, mutableMapOf("fluid" to ItemFluidTileEntityComponent(DynamicItemFluidStorage(stack, DrumType.values()[MathHelper.clamp(stack.metadata, 0, DrumType.values().size - 1)].amount, mutableListOf(), DynamicFluidCapability.TankType.BOTH))))
     }
 
     enum class DrumType(val typeName: String, val amount: Int) :

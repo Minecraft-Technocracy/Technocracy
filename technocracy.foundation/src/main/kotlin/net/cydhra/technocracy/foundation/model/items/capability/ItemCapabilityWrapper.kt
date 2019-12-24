@@ -7,7 +7,7 @@ import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.common.capabilities.ICapabilitySerializable
 
 
-class ItemCapabilityWrapper(var stack: ItemStack, val capabilities: Map<String, AbstractItemCapabilityComponent>) : ICapabilitySerializable<NBTTagCompound> {
+class ItemCapabilityWrapper(var stack: ItemStack, val capabilities: Map<String, AbstractItemCapabilityTileEntityComponent>) : ICapabilitySerializable<NBTTagCompound> {
     init {
         capabilities.forEach {
             it.value.wrapper = this

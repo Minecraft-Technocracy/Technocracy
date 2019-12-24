@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.content.tileentities.upgrades
 
 import net.cydhra.technocracy.foundation.content.fluids.heatTransferOilFluid
-import net.cydhra.technocracy.foundation.content.tileentities.components.FluidComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
 import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatable
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgrade
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeParameter
@@ -39,7 +39,7 @@ class AdditiveConsumptionMultiplier(multiplier: Double) : MultiplierUpgrade(mult
 class LubricantUpgrade : MachineUpgrade(MACHINE_UPGRADE_GENERIC) {
     override fun canInstallUpgrade(tile: TCAggregatable): Boolean {
         return tile.getComponents()
-                .filterIsInstance<FluidComponent>()
+                .filterIsInstance<FluidTileEntityComponent>()
                 .none { it.fluid == heatTransferOilFluid }
     }
 

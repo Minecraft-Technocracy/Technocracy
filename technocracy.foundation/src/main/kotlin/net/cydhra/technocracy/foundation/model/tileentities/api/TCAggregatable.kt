@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.model.tileentities.api
 
 import net.cydhra.technocracy.foundation.model.components.IAggregatable
-import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractComponent
+import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractTileEntityComponent
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
@@ -9,7 +9,7 @@ import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
 
 /**
- * Aggregation of [AbstractComponent] implementations used for tile entities. Note, that this interface is not necessarily
+ * Aggregation of [AbstractTileEntityComponent] implementations used for tile entities. Note, that this interface is not necessarily
  * implemented by a tile entity, but can be implemented as a delegate instead.
  */
 interface TCAggregatable : IAggregatable {

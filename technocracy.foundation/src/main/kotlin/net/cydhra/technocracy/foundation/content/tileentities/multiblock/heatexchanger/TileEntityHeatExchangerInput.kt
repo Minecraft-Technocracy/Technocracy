@@ -4,7 +4,7 @@ import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluid
 import net.cydhra.technocracy.foundation.content.multiblock.HeatExchangerMultiBlock
 import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableDelegate
 import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatable
-import net.cydhra.technocracy.foundation.content.tileentities.components.FluidComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
 import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.EnumFacing
@@ -24,7 +24,7 @@ class TileEntityHeatExchangerInput : TileEntityMultiBlockPart<HeatExchangerMulti
     private val internalFluidHandler = DynamicFluidCapability(4000, allowedFluid = mutableListOf(),
             tanktype = DynamicFluidCapability.TankType.INPUT)
 
-    val fluidComponent = FluidComponent(internalFluidHandler, mutableSetOf(EnumFacing.NORTH, EnumFacing.EAST,
+    val fluidComponent = FluidTileEntityComponent(internalFluidHandler, mutableSetOf(EnumFacing.NORTH, EnumFacing.EAST,
             EnumFacing.SOUTH, EnumFacing.WEST))
 
     init {

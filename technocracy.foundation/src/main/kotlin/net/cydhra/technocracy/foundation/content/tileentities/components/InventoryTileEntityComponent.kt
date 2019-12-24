@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.content.tileentities.components
 
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
-import net.cydhra.technocracy.foundation.model.tileentities.api.components.ComponentType
+import net.cydhra.technocracy.foundation.model.components.ComponentType
 import net.cydhra.technocracy.foundation.model.tileentities.api.TEInventoryProvider
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
@@ -13,8 +13,8 @@ import net.minecraftforge.items.CapabilityItemHandler
  *
  * @param size amount of inventory slots
  */
-class InventoryComponent(size: Int, provider: TEInventoryProvider, val facing: MutableSet<EnumFacing>) :
-        AbstractCapabilityComponent() {
+class InventoryTileEntityComponent(size: Int, provider: TEInventoryProvider, val facing: MutableSet<EnumFacing>) :
+        AbstractCapabilityTileEntityComponent() {
 
     constructor(size: Int, provider: TEInventoryProvider, facing: EnumFacing) : this(size, provider, mutableSetOf(facing))
 

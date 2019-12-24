@@ -1,6 +1,5 @@
 package net.cydhra.technocracy.foundation.model.components
 
-import net.cydhra.technocracy.foundation.model.tileentities.api.components.ComponentType
 import net.minecraft.nbt.NBTTagCompound
 
 /**

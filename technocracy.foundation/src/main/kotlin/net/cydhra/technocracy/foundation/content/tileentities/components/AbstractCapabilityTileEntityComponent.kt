@@ -1,13 +1,13 @@
 package net.cydhra.technocracy.foundation.content.tileentities.components
 
-import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractComponent
+import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractTileEntityComponent
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
 
 /**
  * Defines structure for capabilities that also implement a capability.
  */
-abstract class AbstractCapabilityComponent : AbstractComponent() {
+abstract class AbstractCapabilityTileEntityComponent : AbstractTileEntityComponent() {
 
     /**
      * Returns true, if this component implements the capability that is given through [capability].

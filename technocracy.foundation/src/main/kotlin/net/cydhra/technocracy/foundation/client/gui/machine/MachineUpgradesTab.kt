@@ -3,12 +3,12 @@ package net.cydhra.technocracy.foundation.client.gui.machine
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.TCTab
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
-import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesTileEntityComponent
 import net.minecraft.client.Minecraft
 import net.minecraft.entity.player.EntityPlayer
 
 class MachineUpgradesTab(parent: TCGui,
-                         private val upgrades: MachineUpgradesComponent,
+                         private val upgrades: MachineUpgradesTileEntityComponent,
                          private val player: EntityPlayer?) : TCTab("Upgrades", parent) {
 
     override fun init() {

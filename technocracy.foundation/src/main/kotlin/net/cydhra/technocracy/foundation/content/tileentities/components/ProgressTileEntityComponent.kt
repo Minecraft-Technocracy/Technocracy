@@ -1,10 +1,10 @@
 package net.cydhra.technocracy.foundation.content.tileentities.components
 
-import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractComponent
-import net.cydhra.technocracy.foundation.model.tileentities.api.components.ComponentType
+import net.cydhra.technocracy.foundation.model.components.ComponentType
+import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractTileEntityComponent
 import net.minecraft.nbt.NBTTagCompound
 
-class ProgressComponent: AbstractComponent() {
+class ProgressTileEntityComponent: AbstractTileEntityComponent() {
 
     override val type: ComponentType = ComponentType.OTHER
 

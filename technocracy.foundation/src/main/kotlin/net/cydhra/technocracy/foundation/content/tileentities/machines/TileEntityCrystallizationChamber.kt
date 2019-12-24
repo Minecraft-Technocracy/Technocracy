@@ -2,9 +2,9 @@ package net.cydhra.technocracy.foundation.content.tileentities.machines
 
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
-import net.cydhra.technocracy.foundation.content.tileentities.components.FluidComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ItemProcessingLogic
 import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_ENERGY
 import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_GENERIC
@@ -25,7 +25,7 @@ class TileEntityCrystallizationChamber : MachineTileEntity(), TEInventoryProvide
     /**
      * Input inventory for the furnace with one slot
      */
-    private val inputFluidComponent = FluidComponent(capacity = 4000,
+    private val inputFluidComponent = FluidTileEntityComponent(capacity = 4000,
             allowedFluid = *arrayOf(),
             tanktype = DynamicFluidCapability.TankType.INPUT,
             facing = mutableSetOf(EnumFacing.WEST))
@@ -33,9 +33,9 @@ class TileEntityCrystallizationChamber : MachineTileEntity(), TEInventoryProvide
     /**
      * Output inventory for the furnace with one slot
      */
-    private val outputInventoryComponent = InventoryComponent(1, this, EnumFacing.EAST)
+    private val outputInventoryComponent = InventoryTileEntityComponent(1, this, EnumFacing.EAST)
 
-    private val upgradesComponent = MachineUpgradesComponent(3,
+    private val upgradesComponent = MachineUpgradesTileEntityComponent(3,
             setOf(MACHINE_UPGRADE_ENERGY, MACHINE_UPGRADE_SPEED, MACHINE_UPGRADE_GENERIC),
             setOf(MachineUpgradeClass.CHEMICAL, MachineUpgradeClass.ELECTRICAL, MachineUpgradeClass.ALIEN),
             setOf(this.processingSpeedComponent, this.energyCostComponent))

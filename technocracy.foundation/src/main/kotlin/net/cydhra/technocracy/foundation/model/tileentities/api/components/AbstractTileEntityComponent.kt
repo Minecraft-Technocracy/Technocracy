@@ -7,7 +7,7 @@ import net.minecraft.tileentity.TileEntity
  * Class defining a common component of machine tile entity implementations. All components define some ability
  * of a machine that requires saved state.
  */
-abstract class AbstractComponent : IComponent {
+abstract class AbstractTileEntityComponent : IComponent {
 
     lateinit var tile: TileEntity
 

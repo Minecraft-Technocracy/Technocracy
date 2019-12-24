@@ -9,7 +9,7 @@ import net.cydhra.technocracy.foundation.client.gui.components.energymeter.Defau
 import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.DefaultFluidMeter
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
-import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.integration.jei.AbstractRecipeCategory
 import net.cydhra.technocracy.foundation.integration.jei.AbstractRecipeWrapper
@@ -39,8 +39,8 @@ class MachineRecipeCategory(guiHelper: IGuiHelper, val tileEntity: MachineTileEn
                 stolenComponents[guiComponent] = guiComponent.component.fluid.tanktype == DynamicFluidCapability.TankType.INPUT
             } else if (guiComponent is Slot) {
                 if (guiComponent is TCSlotIO) {
-                    tileEntity.getComponents().filter { it.second is InventoryComponent }
-                            .filter { (_, component) -> (component as InventoryComponent).inventory == guiComponent.itemHandler }
+                    tileEntity.getComponents().filter { it.second is InventoryTileEntityComponent }
+                            .filter { (_, component) -> (component as InventoryTileEntityComponent).inventory == guiComponent.itemHandler }
                             .forEach { (name, _) ->
                                 stolenComponents[guiComponent] = name.toLowerCase().contains("input")
                             }

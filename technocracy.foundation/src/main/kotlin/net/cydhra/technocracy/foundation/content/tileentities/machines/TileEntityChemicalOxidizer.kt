@@ -2,9 +2,9 @@ package net.cydhra.technocracy.foundation.content.tileentities.machines
 
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
-import net.cydhra.technocracy.foundation.content.tileentities.components.FluidComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ItemProcessingLogic
 import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_ENERGY
 import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_GENERIC
@@ -23,12 +23,12 @@ import net.minecraft.util.EnumFacing
  */
 class TileEntityChemicalOxidizer : MachineTileEntity(), TEInventoryProvider {
 
-    private val inputInventoryComponent = InventoryComponent(1, this, EnumFacing.WEST)
+    private val inputInventoryComponent = InventoryTileEntityComponent(1, this, EnumFacing.WEST)
 
-    private val outputInventoryComponent = FluidComponent(4000,
+    private val outputInventoryComponent = FluidTileEntityComponent(4000,
             tanktype = DynamicFluidCapability.TankType.OUTPUT, facing = mutableSetOf(EnumFacing.EAST))
 
-    private val upgradesComponent = MachineUpgradesComponent(3,
+    private val upgradesComponent = MachineUpgradesTileEntityComponent(3,
             setOf(MACHINE_UPGRADE_ENERGY, MACHINE_UPGRADE_SPEED, MACHINE_UPGRADE_GENERIC),
             setOf(MachineUpgradeClass.CHEMICAL, MachineUpgradeClass.ALIEN),
             setOf(this.processingSpeedComponent, this.energyCostComponent))

@@ -2,8 +2,8 @@ package net.cydhra.technocracy.foundation.content.tileentities.multiblock.tank
 
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.multiblock.TankMultiBlock
-import net.cydhra.technocracy.foundation.content.tileentities.components.FluidComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.OptionalAttachedComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.OptionalAttachedTileEntityComponent
 import net.cydhra.technocracy.foundation.model.tileentities.multiblock.ITileEntityMultiblockController
 import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
 import net.minecraft.util.EnumFacing
@@ -14,7 +14,7 @@ open class TileEntityTankMultiBlockPart : TileEntityMultiBlockPart<TankMultiBloc
         ::TankMultiBlock), ITileEntityMultiblockController {
 
 
-    val fluidComp = OptionalAttachedComponent(FluidComponent(DynamicFluidCapability(), EnumFacing.values().toMutableSet()))
+    val fluidComp = OptionalAttachedTileEntityComponent(FluidTileEntityComponent(DynamicFluidCapability(), EnumFacing.values().toMutableSet()))
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
         return false

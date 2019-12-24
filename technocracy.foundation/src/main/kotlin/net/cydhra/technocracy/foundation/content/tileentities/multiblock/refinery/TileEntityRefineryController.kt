@@ -8,8 +8,8 @@ import net.cydhra.technocracy.foundation.content.fluids.heavyOilFluid
 import net.cydhra.technocracy.foundation.content.fluids.lightOilFluid
 import net.cydhra.technocracy.foundation.content.fluids.mineralOilFluid
 import net.cydhra.technocracy.foundation.content.multiblock.RefineryMultiBlock
-import net.cydhra.technocracy.foundation.content.tileentities.components.FluidComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.ProgressComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.ProgressTileEntityComponent
 import net.cydhra.technocracy.foundation.model.tileentities.multiblock.ITileEntityMultiblockController
 import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
 import net.minecraft.util.EnumFacing
@@ -27,11 +27,11 @@ class TileEntityRefineryController : TileEntityMultiBlockPart<RefineryMultiBlock
                     lightOilFluid.hotFluid.name),
             tanktype = DynamicFluidCapability.TankType.INPUT)
 
-    val inputComponent = FluidComponent(internalFluidHandler, mutableSetOf(EnumFacing.NORTH, EnumFacing.EAST,
+    val inputComponent = FluidTileEntityComponent(internalFluidHandler, mutableSetOf(EnumFacing.NORTH, EnumFacing.EAST,
             EnumFacing.SOUTH, EnumFacing.WEST))
-    private val topOutput = FluidComponent(topTank, facing = mutableSetOf(*EnumFacing.values()))
-    private val bottomOutput = FluidComponent(bottomTank, facing = mutableSetOf(*EnumFacing.values()))
-    private val progressComponent = ProgressComponent()
+    private val topOutput = FluidTileEntityComponent(topTank, facing = mutableSetOf(*EnumFacing.values()))
+    private val bottomOutput = FluidTileEntityComponent(bottomTank, facing = mutableSetOf(*EnumFacing.values()))
+    private val progressComponent = ProgressTileEntityComponent()
 
     init {
         this.registerComponent(inputComponent, "input")

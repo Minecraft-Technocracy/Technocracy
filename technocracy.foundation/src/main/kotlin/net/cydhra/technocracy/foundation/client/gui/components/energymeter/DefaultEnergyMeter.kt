@@ -1,14 +1,14 @@
 package net.cydhra.technocracy.foundation.client.gui.components.energymeter
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
-import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageTileEntityComponent
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import kotlin.math.roundToInt
 
-class DefaultEnergyMeter(posX: Int, posY: Int, val component: EnergyStorageComponent, val gui: TCGui) : EnergyMeter(posX, posY) {
+class DefaultEnergyMeter(posX: Int, posY: Int, val component: EnergyStorageTileEntityComponent, val gui: TCGui) : EnergyMeter(posX, posY) {
 
     override fun draw(mouseX: Int, mouseY: Int, partialTicks: Float) {
         GlStateManager.color(1F, 1F, 1F, 1F)

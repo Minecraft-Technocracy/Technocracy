@@ -3,7 +3,7 @@ package net.cydhra.technocracy.foundation.content.tileentities.components
 import net.cydhra.technocracy.foundation.content.capabilities.energy.DynamicEnergyCapability
 import net.cydhra.technocracy.foundation.content.capabilities.energy.DynamicEnergyStorageStrategy
 import net.cydhra.technocracy.foundation.content.capabilities.energy.EnergyCapabilityProvider
-import net.cydhra.technocracy.foundation.model.tileentities.api.components.ComponentType
+import net.cydhra.technocracy.foundation.model.components.ComponentType
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
@@ -13,7 +13,7 @@ import net.minecraftforge.common.capabilities.Capability
  * capacity of 8000 and a receiving limit of 8000 FE. If a machine wants to change the defaults, it has to do so in
  * its constructor.
  */
-class EnergyStorageComponent(val facing: MutableSet<EnumFacing>) : AbstractCapabilityComponent() {
+class EnergyStorageTileEntityComponent(val facing: MutableSet<EnumFacing>) : AbstractCapabilityTileEntityComponent() {
 
     override val type: ComponentType = ComponentType.ENERGY
 

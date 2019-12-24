@@ -2,10 +2,10 @@ package net.cydhra.technocracy.foundation.integration.top.providers
 
 import mcjty.theoneprobe.api.*
 import mcjty.theoneprobe.apiimpl.styles.ProgressStyle
-import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.FluidComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.OptionalAttachedComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.OptionalAttachedTileEntityComponent
 import net.cydhra.technocracy.foundation.model.components.IComponent
 import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
 import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatable
@@ -40,23 +40,23 @@ class MachineTOPProvider : IProbeInfoProvider {
 
     fun fillInfo(component: IComponent, te: TCAggregatable, probeInfo: IProbeInfo) {
         when (component) {
-            is EnergyStorageComponent ->
+            is EnergyStorageTileEntityComponent ->
                 if (!(te as ICapabilityProvider).hasCapability(CapabilityEnergy.ENERGY, null))
                     probeInfo.progress(component.energyStorage.currentEnergy,
                             component.energyStorage.capacity,
                             energyStyle)
-            is FluidComponent ->
+            is FluidTileEntityComponent ->
                 if (!(te as ICapabilityProvider).hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
                     probeInfo.progress(component.fluid.currentFluid?.amount
                             ?: 0, component.fluid.capacity, fluidStyle).text(component.fluid.currentFluid?.localizedName
                             ?: "")
-            is InventoryComponent -> {
+            is InventoryTileEntityComponent -> {
                 for (i in 0 until component.inventory.stacks.size) {
                     if (component.inventory.getStackInSlot(i) != ItemStack.EMPTY)
                         probeInfo.item(component.inventory.getStackInSlot(i)).text(component.inventory.getStackInSlot(i).displayName)
                 }
             }
-            is OptionalAttachedComponent<*> -> {
+            is OptionalAttachedTileEntityComponent<*> -> {
                 if(component.isAttached)
                     fillInfo(component.innerComponent, te, probeInfo)
             }
