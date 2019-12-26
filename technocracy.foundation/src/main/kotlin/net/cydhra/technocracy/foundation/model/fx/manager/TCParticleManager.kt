@@ -52,7 +52,7 @@ object TCParticleManager {
         with(Minecraft.getMinecraft().mcProfiler) {
             startSection("TC_Particles")
             for ((type, list) in particles) {
-                val list = list.filter { icamera.isBoundingBoxInFrustum(it.boundingBox) }
+                //val list = list.filter { icamera.isBoundingBoxInFrustum(it.boundingBox) }
                 if (list.isEmpty()) continue
 
                 startSection(type.name)
