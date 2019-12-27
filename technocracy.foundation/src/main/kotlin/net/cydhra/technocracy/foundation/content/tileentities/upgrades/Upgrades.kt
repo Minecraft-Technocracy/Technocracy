@@ -65,7 +65,7 @@ class LubricantUpgrade : MachineUpgrade(MACHINE_UPGRADE_GENERIC) {
         val lubricantMultiplier = MultiplierTileEntityComponent(null)
         tile.registerComponent(lubricantTank, LUBRICANT_FLUID_COMPONENT_NAME)
         tile.registerComponent(lubricantMultiplier, LUBRICANT_MULTIPLIER_COMPONENT_NAME)
-        tile.addLogicStrategy(AdditiveConsumptionLogic(lubricantTank, 20, lubricantMultiplier),
+        tile.addLogicStrategy(AdditiveConsumptionLogic(lubricantTank, 4, lubricantMultiplier),
                 LUBRICANT_CONSUMPTION_LOGIC_NAME)
     }
 
