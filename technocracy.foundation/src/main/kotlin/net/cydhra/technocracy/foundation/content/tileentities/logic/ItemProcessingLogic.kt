@@ -11,15 +11,15 @@ import net.cydhra.technocracy.foundation.model.tileentities.api.logic.ILogic
 import net.minecraft.item.ItemStack
 
 class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
-                          private val inputInventory: DynamicInventoryCapability? = null,
-                          private val outputInventory: DynamicInventoryCapability? = null,
-                          private val inputFluidSlots: Array<DynamicFluidCapability> = emptyArray(),
-                          private val outputFluidSlots: Array<DynamicFluidCapability> = emptyArray(),
-                          private val energyStorage: DynamicEnergyCapability,
-                          private val processSpeedComponent: MultiplierTileEntityComponent,
-                          private val energyCostComponent: MultiplierTileEntityComponent,
-                          private val baseTickEnergyCost: Int,
-                          private val progress: ProgressTileEntityComponent) : ILogic {
+        private val inputInventory: DynamicInventoryCapability? = null,
+        private val outputInventory: DynamicInventoryCapability? = null,
+        private val inputFluidSlots: Array<DynamicFluidCapability> = emptyArray(),
+        private val outputFluidSlots: Array<DynamicFluidCapability> = emptyArray(),
+        private val energyStorage: DynamicEnergyCapability,
+        private val processSpeedComponent: MultiplierTileEntityComponent,
+        private val energyCostComponent: MultiplierTileEntityComponent,
+        private val baseTickEnergyCost: Int,
+        private val progress: ProgressTileEntityComponent) : ILogic {
 
     companion object {
         // TODO this could be a value obtained from config
@@ -70,7 +70,29 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
             }
         }
 
-        return this.currentRecipe != null && energyStorage.consumeEnergy(this.getTickEnergyCost(), simulate = true)
+        if (this.currentRecipe != null) {
+            val recipeOutput = this.currentRecipe!!.getOutput()
+            val recipeFluidOutput = this.currentRecipe!!.getFluidOutput()
+            assert(recipeOutput.size <= this.outputInventory?.slots ?: 0)
+            assert(recipeFluidOutput.size <= this.outputFluidSlots.size)
+
+            // check if the output fits into the output slots
+            if (recipeOutput.zip(0 until (this.outputInventory?.slots ?: 0))
+                            .all { (outputStack, outputSlot) ->
+                                this.outputInventory?.insertItem(outputSlot,
+                                        outputStack,
+                                        simulate = true,
+                                        forced = true) == ItemStack.EMPTY
+                            }
+                    && recipeFluidOutput.zip(this.outputFluidSlots.indices)
+                            .all { (fluidStack, fluidSlot) ->
+                                this.outputFluidSlots[fluidSlot].fill(fluidStack, doFill = false) == fluidStack.amount
+                            }) {
+                return energyStorage.consumeEnergy(this.getTickEnergyCost(), simulate = true)
+            }
+        }
+
+        return false
     }
 
     override fun processing() {
@@ -84,56 +106,45 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
                 }
             }
 
-            // if enough progress happened, try process the recipe (if enough space for recipe output is present)
+            // if enough progress happened, try process the recipe (due to pre-processing-checks enough space in output
+            // slots should be present)
             if (this.processingProgress >= this.currentRecipe!!.processingCost * 100) {
                 val recipeOutput = this.currentRecipe!!.getOutput()
                 val recipeFluidOutput = this.currentRecipe!!.getFluidOutput()
-                assert(recipeOutput.size <= this.outputInventory?.slots ?: 0)
-                assert(recipeFluidOutput.size <= this.outputFluidSlots.size)
 
-                // check if the output fits into the output slots
-                if (recipeOutput.zip(0 until (this.outputInventory?.slots ?: 0))
-                                .all { (outputStack, outputSlot) ->
-                                    this.outputInventory?.insertItem(outputSlot, outputStack, simulate = true, forced = true) == ItemStack.EMPTY
-                                }
-                        && recipeFluidOutput.zip(this.outputFluidSlots.indices)
-                                .all { (fluidStack, fluidSlot) ->
-                                    this.outputFluidSlots[fluidSlot].fill(fluidStack, false) == fluidStack.amount
-                                }) {
-                    // consume input items
-                    val recipeInputRequirements = this.currentRecipe!!.getInput()
-                    recipeInputRequirements.forEach { ingredient ->
-                        for (slot in (0 until (this.inputInventory?.slots ?: 0))) {
-                            if (ingredient.test(inputInventory?.getStackInSlot(slot))) {
-                                inputInventory?.extractItem(slot, 1, simulate = false, forced = true)
-                                break
-                            }
+                // consume input items
+                val recipeInputRequirements = this.currentRecipe!!.getInput()
+                recipeInputRequirements.forEach { ingredient ->
+                    for (slot in (0 until (this.inputInventory?.slots ?: 0))) {
+                        if (ingredient.test(inputInventory?.getStackInSlot(slot))) {
+                            inputInventory?.extractItem(slot, 1, simulate = false, forced = true)
+                            break
                         }
                     }
-
-                    // consume input fluids
-                    val recipeFluidRequirements = this.currentRecipe!!.getFluidInput()
-                    recipeFluidRequirements.forEach { ingredient ->
-                        for (slot in this.inputFluidSlots.indices) {
-                            if (ingredient.isFluidEqual(this.inputFluidSlots[slot].currentFluid)) {
-                                inputFluidSlots[slot].drain(ingredient, true)
-                            }
-                        }
-                    }
-
-                    // insert output items
-                    recipeOutput.zip(0 until (this.outputInventory?.slots ?: 0)).forEach { (outputStack, outputSlot) ->
-                        this.outputInventory!!.insertItem(outputSlot, outputStack.copy(), simulate = false, forced = true)
-                    }
-
-                    // insert output fluids
-                    recipeFluidOutput.zip(this.outputFluidSlots.indices).forEach { (fluidStack, outputSlot) ->
-                        this.outputFluidSlots[outputSlot].fill(fluidStack, true)
-                    }
-
-                    // reset progress and the machine is good to go
-                    this.processingProgress = 0
                 }
+
+                // consume input fluids
+                val recipeFluidRequirements = this.currentRecipe!!.getFluidInput()
+                recipeFluidRequirements.forEach { ingredient ->
+                    for (slot in this.inputFluidSlots.indices) {
+                        if (ingredient.isFluidEqual(this.inputFluidSlots[slot].currentFluid)) {
+                            inputFluidSlots[slot].drain(ingredient, true)
+                        }
+                    }
+                }
+
+                // insert output items
+                recipeOutput.zip(0 until (this.outputInventory?.slots ?: 0)).forEach { (outputStack, outputSlot) ->
+                    this.outputInventory!!.insertItem(outputSlot, outputStack.copy(), simulate = false, forced = true)
+                }
+
+                // insert output fluids
+                recipeFluidOutput.zip(this.outputFluidSlots.indices).forEach { (fluidStack, outputSlot) ->
+                    this.outputFluidSlots[outputSlot].fill(fluidStack, true)
+                }
+
+                // reset progress and the machine is good to go
+                this.processingProgress = 0
             }
         }
 
