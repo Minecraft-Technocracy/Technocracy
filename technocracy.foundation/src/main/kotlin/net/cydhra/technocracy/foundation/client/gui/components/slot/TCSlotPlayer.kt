@@ -9,8 +9,13 @@ import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.init.Items
 import net.minecraft.inventory.IInventory
 import net.minecraft.inventory.Slot
-open class TCSlot(inventoryIn: IInventory, index: Int, xPosition: Int, yPosition: Int, val gui: TCGui) : Slot(inventoryIn, index,
-        xPosition, yPosition), TCComponent {
+
+/**
+ * A gui slot that is used to represent player inventory slots.
+ */
+open class TCSlotPlayer(inventoryIn: IInventory, index: Int, xPosition: Int, yPosition: Int, val gui: TCGui) :
+        Slot(inventoryIn, index,
+                xPosition, yPosition), TCComponent {
 
     var enabled: Boolean = true
 

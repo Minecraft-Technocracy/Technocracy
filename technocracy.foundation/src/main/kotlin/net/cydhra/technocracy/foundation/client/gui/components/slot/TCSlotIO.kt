@@ -9,6 +9,9 @@ import net.minecraft.init.Items
 import net.minecraftforge.items.IItemHandler
 import net.minecraftforge.items.SlotItemHandler
 
+/**
+ * A gui slot that is used to draw tile-entity inventory slots. For player inventory slots, see [TCSlotPlayer]
+ */
 class TCSlotIO(itemHandler: IItemHandler, index: Int, xPosition: Int, yPosition: Int, val gui: TCGui) : SlotItemHandler(itemHandler, index, xPosition, yPosition), TCComponent {
 
     var enabled: Boolean = true

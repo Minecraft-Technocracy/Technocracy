@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.client.gui
 
-import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlot
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
+import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotPlayer
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.gui.ScaledResolution
@@ -91,8 +91,8 @@ TCContainer)
 
                 this.tabs.withIndex().forEach { (index, tab) ->
                     tab.components.filterIsInstance<Slot>().map { index to it }.forEach { pair ->
-                        if (pair.second is TCSlot) {
-                            (pair.second as TCSlot).enabled = pair.first == it
+                        if (pair.second is TCSlotPlayer) {
+                            (pair.second as TCSlotPlayer).enabled = pair.first == it
                         } else if (pair.second is TCSlotIO) {
                             (pair.second as TCSlotIO).enabled = pair.first == it
                         }

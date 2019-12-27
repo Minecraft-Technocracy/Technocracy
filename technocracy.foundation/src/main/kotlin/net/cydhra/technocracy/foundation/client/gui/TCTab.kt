@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.client.gui
 
 import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
-import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlot
+import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotPlayer
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.entity.player.EntityPlayer
@@ -47,13 +47,13 @@ abstract class TCTab(val name: String, val parent: TCGui, val tint: Int = -1,
     protected fun addPlayerInventorySlots(player: EntityPlayer, x: Int, y: Int) {
         for (row in 0..2) {
             for (slot in 0..8) {
-                this.components.add(TCSlot(player.inventory, slot + row * 9 + 9,
+                this.components.add(TCSlotPlayer(player.inventory, slot + row * 9 + 9,
                         x + slot * 18, y + row * 18, parent))
             }
         }
 
         for (k in 0..8) {
-            this.components.add(TCSlot(player.inventory, k, x + k * 18, y + 58, parent))
+            this.components.add(TCSlotPlayer(player.inventory, k, x + k * 18, y + 58, parent))
         }
     }
 
