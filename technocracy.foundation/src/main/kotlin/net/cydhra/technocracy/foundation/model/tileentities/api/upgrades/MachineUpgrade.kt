@@ -33,6 +33,12 @@ abstract class MachineUpgrade(val upgradeType: MachineUpgradeParameter) {
      */
     abstract fun onUninstallUpgrade(tile: TCMachineTileEntity,
             upgrades: MachineUpgradesTileEntityComponent)
+
+    /**
+     * Called when the machine that holds the upgrade is loaded from NBT
+     */
+    abstract fun onUpgradeLoad(tile: TCMachineTileEntity,
+            upgrades: MachineUpgradesTileEntityComponent)
 }
 
 /**
@@ -47,12 +53,13 @@ abstract class MultiplierUpgrade(val multiplier: Double, parameterName: MachineU
         return true
     }
 
-    override fun onInstallUpgrade(tile: TCMachineTileEntity,
-            upgrades: MachineUpgradesTileEntityComponent) {
+    override fun onInstallUpgrade(tile: TCMachineTileEntity, upgrades: MachineUpgradesTileEntityComponent) {
     }
 
-    override fun onUninstallUpgrade(tile: TCMachineTileEntity,
-            upgrades: MachineUpgradesTileEntityComponent) {
+    override fun onUninstallUpgrade(tile: TCMachineTileEntity, upgrades: MachineUpgradesTileEntityComponent) {
+    }
+
+    override fun onUpgradeLoad(tile: TCMachineTileEntity, upgrades: MachineUpgradesTileEntityComponent) {
     }
 }
 

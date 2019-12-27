@@ -47,6 +47,7 @@ class LubricantUpgrade : MachineUpgrade(MACHINE_UPGRADE_GENERIC) {
         const val LUBRICANT_FLUID_COMPONENT_NAME = "special_lubricant"
         const val LUBRICANT_MULTIPLIER_COMPONENT_NAME = "special_lubricant_multiplier"
         const val LUBRICANT_CONSUMPTION_LOGIC_NAME = "special_lubricant_consumption"
+        const val LUBRICANT_BASE_USAGE = 4
     }
 
     override fun canInstallUpgrade(tile: TCMachineTileEntity,
@@ -58,6 +59,16 @@ class LubricantUpgrade : MachineUpgrade(MACHINE_UPGRADE_GENERIC) {
 
     override fun onInstallUpgrade(tile: TCMachineTileEntity,
             upgrades: MachineUpgradesTileEntityComponent) {
+        this.onUpgradeLoad(tile, upgrades)
+    }
+
+    override fun onUninstallUpgrade(tile: TCMachineTileEntity, upgrades: MachineUpgradesTileEntityComponent) {
+        tile.removeComponent(LUBRICANT_FLUID_COMPONENT_NAME)
+        tile.removeComponent(LUBRICANT_MULTIPLIER_COMPONENT_NAME)
+        tile.removeLogicStrategy(LUBRICANT_CONSUMPTION_LOGIC_NAME)
+    }
+
+    override fun onUpgradeLoad(tile: TCMachineTileEntity, upgrades: MachineUpgradesTileEntityComponent) {
         val lubricantTank = FluidTileEntityComponent(capacity = 8000,
                 allowedFluid = *arrayOf(heatTransferOilFluid.name),
                 tanktype = DynamicFluidCapability.TankType.INPUT,
@@ -65,13 +76,7 @@ class LubricantUpgrade : MachineUpgrade(MACHINE_UPGRADE_GENERIC) {
         val lubricantMultiplier = MultiplierTileEntityComponent(null)
         tile.registerComponent(lubricantTank, LUBRICANT_FLUID_COMPONENT_NAME)
         tile.registerComponent(lubricantMultiplier, LUBRICANT_MULTIPLIER_COMPONENT_NAME)
-        tile.addLogicStrategy(AdditiveConsumptionLogic(lubricantTank, 4, lubricantMultiplier),
+        tile.addLogicStrategy(AdditiveConsumptionLogic(lubricantTank, LUBRICANT_BASE_USAGE, lubricantMultiplier),
                 LUBRICANT_CONSUMPTION_LOGIC_NAME)
-    }
-
-    override fun onUninstallUpgrade(tile: TCMachineTileEntity, upgrades: MachineUpgradesTileEntityComponent) {
-        tile.removeComponent(LUBRICANT_FLUID_COMPONENT_NAME)
-        tile.removeComponent(LUBRICANT_MULTIPLIER_COMPONENT_NAME)
-        tile.removeLogicStrategy(LUBRICANT_CONSUMPTION_LOGIC_NAME)
     }
 }
