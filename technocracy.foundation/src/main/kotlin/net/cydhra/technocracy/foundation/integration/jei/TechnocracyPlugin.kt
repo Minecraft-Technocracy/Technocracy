@@ -6,6 +6,7 @@ import mezz.jei.api.JEIPlugin
 import mezz.jei.api.recipe.IRecipeCategoryRegistration
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
+import net.cydhra.technocracy.foundation.integration.jei.gui.TCGuiHandler
 import net.cydhra.technocracy.foundation.integration.jei.machines.MachineRecipeCategory
 import net.cydhra.technocracy.foundation.integration.jei.multiblocks.RefineryRecipeCategory
 import net.minecraft.item.ItemStack
@@ -21,7 +22,11 @@ class TechnocracyPlugin : IModPlugin {
         // automatically add categories for machines
         RecipeManager.RecipeType.values().forEach { recipeType ->
             if (recipeType.machineBlock != null && recipeType.tileEntityClass != null) {
-                val category = MachineRecipeCategory(guiHelper, recipeType.tileEntityClass.getDeclaredConstructor().newInstance(), recipeType, "${TCFoundation.MODID}.${recipeType.toString().toLowerCase()}", recipeType.machineBlock)
+                val category = MachineRecipeCategory(guiHelper,
+                        recipeType.tileEntityClass.getDeclaredConstructor().newInstance(),
+                        recipeType,
+                        "${TCFoundation.MODID}.${recipeType.toString().toLowerCase()}",
+                        recipeType.machineBlock)
                 categories.add(category)
             }
         }
@@ -39,6 +44,8 @@ class TechnocracyPlugin : IModPlugin {
             registry.addRecipes(loadRecipes(category.recipeType, category.recipeWrapperClass), category.categoryUid)
             registry.addRecipeCatalyst(ItemStack(category.displayBlock), category.categoryUid)
         }
+
+        registry.addAdvancedGuiHandlers(TCGuiHandler)
     }
 
     private fun loadRecipes(type: RecipeManager.RecipeType, wrapperClass: Class<out AbstractRecipeWrapper>): List<AbstractRecipeWrapper> {
