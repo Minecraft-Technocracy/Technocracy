@@ -5,6 +5,7 @@ import net.cydhra.technocracy.foundation.model.components.ComponentType
 import net.cydhra.technocracy.foundation.model.items.api.UpgradeItem
 import net.cydhra.technocracy.foundation.model.tileentities.api.TEInventoryProvider
 import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractTileEntityComponent
+import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgrade
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeClass
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeParameter
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MultiplierUpgrade
@@ -111,6 +112,17 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int, val supp
         }
 
         this.updateDescription()
+    }
+
+    fun getInstalledUpgrades(): List<MachineUpgrade> {
+        return this.inventory.stacks
+                .asSequence()
+                .filter { !it.isEmpty }
+                .map { it.item }
+                .filterIsInstance<UpgradeItem>()
+                .map { it.upgrades.toList() }
+                .flatten()
+                .toList()
     }
 
     /**
