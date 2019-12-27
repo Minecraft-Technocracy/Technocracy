@@ -10,10 +10,12 @@ import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.Machine
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeClass
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeParameter
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MultiplierUpgrade
+import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
 import net.minecraft.init.Items
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.text.*
+import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.math.roundToInt
 
 /**
@@ -127,6 +129,11 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int,
                 .map { it.upgrades.toList() }
                 .flatten()
                 .toList()
+    }
+
+    override fun onLoadAggregate() {
+        super.onLoadAggregate()
+        this.getInstalledUpgrades().forEach { it.onUpgradeLoad(this.tile as MachineTileEntity, this) }
     }
 
     /**
