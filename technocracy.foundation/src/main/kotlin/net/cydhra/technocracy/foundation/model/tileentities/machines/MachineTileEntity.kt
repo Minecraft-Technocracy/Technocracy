@@ -11,6 +11,7 @@ import net.cydhra.technocracy.foundation.client.gui.machine.MachineContainer
 import net.cydhra.technocracy.foundation.client.gui.machine.MachineSettingsTab
 import net.cydhra.technocracy.foundation.client.gui.machine.MachineUpgradesTab
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
+import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.content.tileentities.components.*
 import net.cydhra.technocracy.foundation.content.tileentities.logic.RedstoneLogic
 import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_ENERGY
@@ -97,25 +98,22 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
                             }
                         }
                         is InventoryTileEntityComponent -> {
-                            when {
-                                name.contains("input") -> {
-                                    for (i in 0 until component.inventory.slots) {
-                                        if(nextInput == 25)
-                                            nextInput = 30
-                                        components.add(TCSlotIO(component.inventory, i, nextInput, 40, gui))
-                                        if (inputNearestToTheMiddle < nextInput)
-                                            inputNearestToTheMiddle = nextInput
-                                        nextInput += 20
-                                    }
-
+                            if (component.inventoryType != DynamicInventoryCapability.InventoryType.OUTPUT) {
+                                for (i in 0 until component.inventory.slots) {
+                                    if (nextInput == 25)
+                                        nextInput = 30
+                                    components.add(TCSlotIO(component.inventory, i, nextInput, 40, gui))
+                                    if (inputNearestToTheMiddle < nextInput)
+                                        inputNearestToTheMiddle = nextInput
+                                    nextInput += 20
                                 }
-                                name.contains("output") -> {
-                                    for (i in component.inventory.slots - 1 downTo 0) {
-                                        components.add(TCSlotIO(component.inventory, i, 125 + i * 20, 40, gui))
-                                        val newX = 125 + i * 20
-                                        if (outputNearestToTheMiddle > newX)
-                                            outputNearestToTheMiddle = newX
-                                    }
+
+                            } else {
+                                for (i in component.inventory.slots - 1 downTo 0) {
+                                    components.add(TCSlotIO(component.inventory, i, 125 + i * 20, 40, gui))
+                                    val newX = 125 + i * 20
+                                    if (outputNearestToTheMiddle > newX)
+                                        outputNearestToTheMiddle = newX
                                 }
                             }
                         }
@@ -125,7 +123,11 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
                     }
                 }
                 if (foundProgressComponent != null)
-                    components.add(DefaultProgressBar((outputNearestToTheMiddle - inputNearestToTheMiddle) / 2 + inputNearestToTheMiddle, 40, Orientation.RIGHT, foundProgressComponent as ProgressTileEntityComponent, gui))
+                    components.add(DefaultProgressBar((outputNearestToTheMiddle - inputNearestToTheMiddle) / 2 + inputNearestToTheMiddle,
+                            40,
+                            Orientation.RIGHT,
+                            foundProgressComponent as ProgressTileEntityComponent,
+                            gui))
 
                 if (player != null)
                     addPlayerInventorySlots(player, 8, 84)
@@ -134,7 +136,8 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
         initGui(gui)
         gui.registerTab(MachineSettingsTab(gui, this))
 
-        val upgradesComponent = this.getComponents().firstOrNull { (_, c) -> c is MachineUpgradesTileEntityComponent }?.second
+        val upgradesComponent =
+                this.getComponents().firstOrNull { (_, c) -> c is MachineUpgradesTileEntityComponent }?.second
         if (upgradesComponent != null) {
             gui.registerTab(MachineUpgradesTab(gui, upgradesComponent as MachineUpgradesTileEntityComponent, player))
         }
