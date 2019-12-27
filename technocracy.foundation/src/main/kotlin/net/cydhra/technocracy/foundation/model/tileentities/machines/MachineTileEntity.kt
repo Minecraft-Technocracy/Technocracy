@@ -29,6 +29,7 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
     companion object {
         const val MACHINE_PROCESSING_LOGIC_NAME = "default_processing"
         const val MACHINE_DEFAULT_CONSUMPTION_LOGIC_NAME = "default_consumption"
+        const val MACHINE_REDSTONE_LOGIC_NAME = "default_redstone"
     }
 
     /**
@@ -59,7 +60,7 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
         super.onLoad()
 
         this.addLogicStrategy(RedstoneLogic(this.world, this.pos, this.redstoneModeComponent),
-                MACHINE_PROCESSING_LOGIC_NAME)
+                MACHINE_REDSTONE_LOGIC_NAME)
     }
 
     override fun getGui(player: EntityPlayer?): TCGui {

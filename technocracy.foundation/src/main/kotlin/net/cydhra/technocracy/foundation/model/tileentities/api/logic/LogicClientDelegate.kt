@@ -9,6 +9,10 @@ class LogicClientDelegate : ILogicClient {
     private val logicStrategies: MutableMap<String, ILogic> = mutableMapOf()
 
     override fun addLogicStrategy(strategy: ILogic, name: String) {
+        if (logicStrategies.containsKey(name)) {
+            throw IllegalArgumentException("cannot add two logic strategies with the same name")
+        }
+
         logicStrategies[name] = strategy
     }
 
