@@ -31,7 +31,8 @@ class TileEntityPolymerizationChamber : MachineTileEntity(), TEInventoryProvider
 
     private val additiveMultiplierComponent = MultiplierTileEntityComponent(MACHINE_UPGRADE_ADDITIVE_CONSUMPTION)
 
-    private val outputInventoryComponent = InventoryTileEntityComponent(1, this, EnumFacing.EAST)
+    private val outputInventoryComponent = InventoryTileEntityComponent(1, this, EnumFacing.EAST,
+            DynamicInventoryCapability.InventoryType.OUTPUT)
 
     private val upgradesComponent = MachineUpgradesTileEntityComponent(3,
             setOf(MACHINE_UPGRADE_ENERGY, MACHINE_UPGRADE_SPEED, MACHINE_UPGRADE_ADDITIVE_CONSUMPTION,

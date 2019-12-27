@@ -20,7 +20,8 @@ class TileEntityLaserDrill : AggregatableTileEntity(), TCMachineTileEntity, ILog
         TEInventoryProvider {
 
     private val heatStorageComponent = HeatStorageTileEntityComponent(0, 8000)
-    private val outputInventory = InventoryTileEntityComponent(9, this, EnumFacing.UP)
+    private val outputInventory = InventoryTileEntityComponent(9, this, EnumFacing.UP,
+            DynamicInventoryCapability.InventoryType.OUTPUT)
     private val progressComponent = ProgressTileEntityComponent()
 
     init {

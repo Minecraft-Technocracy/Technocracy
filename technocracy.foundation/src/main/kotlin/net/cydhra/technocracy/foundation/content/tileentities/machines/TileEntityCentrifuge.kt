@@ -29,7 +29,8 @@ class TileEntityCentrifuge : MachineTileEntity(), TEInventoryProvider {
     /**
      * Output inventory for the pulverizer with one slot
      */
-    private val outputInventoryComponent = InventoryTileEntityComponent(2, this, EnumFacing.EAST)
+    private val outputInventoryComponent = InventoryTileEntityComponent(2, this, EnumFacing.EAST,
+            DynamicInventoryCapability.InventoryType.OUTPUT)
 
     private val upgradesComponent = MachineUpgradesTileEntityComponent(3,
             setOf(MACHINE_UPGRADE_ENERGY, MACHINE_UPGRADE_SPEED, MACHINE_UPGRADE_GENERIC),

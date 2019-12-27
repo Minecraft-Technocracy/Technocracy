@@ -26,7 +26,8 @@ import net.minecraft.util.EnumFacing
  */
 class TileEntityChemicalEtchingChamber : MachineTileEntity(), TEInventoryProvider {
     private val inputInventory = InventoryTileEntityComponent(3, this, EnumFacing.EAST)
-    private val outputInventoryComponent = InventoryTileEntityComponent(1, this, EnumFacing.WEST)
+    private val outputInventoryComponent = InventoryTileEntityComponent(1, this, EnumFacing.WEST,
+            DynamicInventoryCapability.InventoryType.OUTPUT)
 
     private val additiveMultiplierComponent = MultiplierTileEntityComponent(MACHINE_UPGRADE_ADDITIVE_CONSUMPTION)
 

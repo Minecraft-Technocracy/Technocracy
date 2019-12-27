@@ -25,7 +25,8 @@ class TileEntityChemicalProcessingChamber : MachineTileEntity(), TEInventoryProv
     private val inputInventoryComponent = InventoryTileEntityComponent(1, this, EnumFacing.WEST)
     private val inputFluidComponent = FluidTileEntityComponent(4000,
             tanktype = DynamicFluidCapability.TankType.INPUT, facing = mutableSetOf(EnumFacing.UP))
-    private val outputInventoryComponent = InventoryTileEntityComponent(1, this, EnumFacing.EAST)
+    private val outputInventoryComponent = InventoryTileEntityComponent(1, this, EnumFacing.EAST,
+            DynamicInventoryCapability.InventoryType.OUTPUT)
 
     private val upgradesComponent = MachineUpgradesTileEntityComponent(3,
             setOf(MACHINE_UPGRADE_ENERGY, MACHINE_UPGRADE_SPEED, MACHINE_UPGRADE_GENERIC),

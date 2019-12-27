@@ -12,16 +12,35 @@ import net.minecraftforge.items.CapabilityItemHandler
  * A machine component that offers a inventory for the machine. It also implements the inventory capability
  *
  * @param size amount of inventory slots
+ * @param provider an instance of [TEInventoryProvider] that is handling update events to this component's inventory
+ * @param facing the tile entity facing, where this inventory is accessible from
+ * @param inventoryType the IO-type of inventory. For automation purposes, input and output slots are in different
+ * inventories (so they can be accessed from different faces of a machine block).
  */
-class InventoryTileEntityComponent(size: Int, provider: TEInventoryProvider, val facing: MutableSet<EnumFacing>) :
+class InventoryTileEntityComponent(
+        size: Int,
+        provider: TEInventoryProvider,
+        val facing: MutableSet<EnumFacing>,
+        val inventoryType: DynamicInventoryCapability.InventoryType = DynamicInventoryCapability.InventoryType.BOTH) :
         AbstractCapabilityTileEntityComponent() {
 
-    constructor(size: Int, provider: TEInventoryProvider, facing: EnumFacing) : this(size, provider, mutableSetOf(facing))
+    /**
+     * Secondary constructor that takes only one facing
+     *
+     * @see [InventoryTileEntityComponent]
+     */
+    constructor(
+            size: Int,
+            provider: TEInventoryProvider,
+            facing: EnumFacing,
+            inventoryType: DynamicInventoryCapability.InventoryType = DynamicInventoryCapability.InventoryType.BOTH)
+            : this(size, provider, mutableSetOf(facing), inventoryType)
 
     /**
      * Inventory capability of the machine
      */
-    val inventory: DynamicInventoryCapability = DynamicInventoryCapability(size, provider)
+    val inventory: DynamicInventoryCapability = DynamicInventoryCapability(size, provider,
+            (0..size).map { it to inventoryType }.toMap().toMutableMap())
 
     override val type: ComponentType = ComponentType.INVENTORY
 

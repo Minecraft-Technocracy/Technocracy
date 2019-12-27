@@ -28,7 +28,8 @@ class TileEntityCompactor : MachineTileEntity(), TEInventoryProvider {
     /**
      * Output inventory for the furnace with one slot
      */
-    private val outputInventoryComponent = InventoryTileEntityComponent(1, this, EnumFacing.EAST)
+    private val outputInventoryComponent = InventoryTileEntityComponent(1, this, EnumFacing.EAST,
+            DynamicInventoryCapability.InventoryType.OUTPUT)
 
     private val upgradesComponent = MachineUpgradesTileEntityComponent(3,
             setOf(MACHINE_UPGRADE_ENERGY, MACHINE_UPGRADE_SPEED, MACHINE_UPGRADE_GENERIC),
