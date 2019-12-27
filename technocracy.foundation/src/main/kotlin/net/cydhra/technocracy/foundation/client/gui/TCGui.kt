@@ -24,6 +24,14 @@ TCContainer)
         const val windowBodyColor = 0xFFC6C6C6.toInt()
         const val inactiveTabTint = 0xFF505050.toInt()
 
+        const val TAB_WIDTH = 25
+        const val TAB_HEIGHT = 25
+
+        const val TAB_GAP_WIDTH = 3
+
+        const val TAB_SELECTED_WIDTH = TAB_WIDTH + TAB_GAP_WIDTH
+        const val TAB_SELECTED_HEIGHT = TAB_HEIGHT + TAB_GAP_WIDTH
+
         val left = Rectangle(0, 4, 4, 1)
         val right = Rectangle(6, 3, 4, 1)
         val top = Rectangle(4, 0, 1, 4)
@@ -73,10 +81,10 @@ TCContainer)
         tabs[tab].mouseClicked(mouseX - guiX, mouseY - guiY, mouseButton)
 
         this.tabs.indices.filterNot { it == this.tab }.forEach {
-            val x = xSize + 3
-            val y = it * 28 + 3
-            val width = 25
-            val height = 25
+            val x = getTabBarPositionRelativeX() + TAB_GAP_WIDTH
+            val y = it * TAB_SELECTED_HEIGHT + getTabBarPositionRelativeY() + TAB_GAP_WIDTH
+            val width = TAB_WIDTH
+            val height = TAB_HEIGHT
 
             if (this.isPointInRegion(x, y, width, height, mouseX, mouseY)) {
                 this.tab = it
@@ -96,10 +104,10 @@ TCContainer)
 
     private fun drawTabs(partialTicks: Float, mouseX: Int, mouseY: Int) {
         this.tabs.withIndex().filterNot { it.index == this.tab }.forEach { (i, tab) ->
-            val x = xSize.toDouble() + 3
-            val y = (i * 28).toDouble() + 3
-            val width = 25
-            val height = 25
+            val x = getTabBarPositionRelativeX().toDouble() + TAB_GAP_WIDTH
+            val y = (i * TAB_SELECTED_HEIGHT).toDouble() + getTabBarPositionRelativeY() + TAB_GAP_WIDTH
+            val width = TAB_WIDTH
+            val height = TAB_HEIGHT
 
             drawWindow(x, y, width, height, tab.tint and inactiveTabTint, true)
 
@@ -115,10 +123,10 @@ TCContainer)
         }
 
         val activeTab: TCTab = this.tabs[this.tab]
-        val activeTabX = xSize.toDouble()
-        val activeTabY = (this.tab * 28).toDouble()
-        val tabWidth = 28
-        val tabHeight = 28
+        val activeTabX = getTabBarPositionRelativeX().toDouble()
+        val activeTabY = (this.tab * TAB_SELECTED_HEIGHT).toDouble() + getTabBarPositionRelativeY()
+        val tabWidth = TAB_SELECTED_WIDTH
+        val tabHeight = TAB_SELECTED_HEIGHT
 
         drawWindow(activeTabX, activeTabY, tabWidth, tabHeight, activeTab.tint and -1, true)
 
@@ -132,10 +140,10 @@ TCContainer)
         }
 
         tabs.withIndex().forEach { (i, tab) ->
-            val x = xSize.toDouble() + 3
-            val y = (i * 28).toDouble() + 3
-            val width = 25
-            val height = 25
+            val x = getTabBarPositionRelativeX().toDouble()
+            val y = (i * TAB_SELECTED_HEIGHT).toDouble() + TAB_GAP_WIDTH + getTabBarPositionRelativeY()
+            val width = TAB_WIDTH
+            val height = TAB_HEIGHT
             if (mouseX - guiX > x && mouseX - guiX < x + width && mouseY - guiY > y && mouseY - guiY < y + height) {
                 renderTooltip(mutableListOf(tab.name), mouseX - guiX + 10, mouseY - guiY)
             }
@@ -322,5 +330,33 @@ TCContainer)
 
     override fun onGuiClosed() {
         tabs[tab].onClose()
+    }
+
+    /**
+     * Get the position of the tab bar relative to the gui window position
+     */
+    fun getTabBarPositionRelativeX(): Int {
+        return this.xSize
+    }
+
+    /**
+     * Get the position of the tab bar relative to the gui window position
+     */
+    fun getTabBarPositionRelativeY(): Int {
+        return 0
+    }
+
+    /**
+     * Get the width of the tab bar
+     */
+    fun getTabBarWidth(): Int {
+        return TAB_SELECTED_WIDTH
+    }
+
+    /**
+     * Get the height of the tab bar
+     */
+    fun getTabBarHeight(): Int {
+        return this.guiHeight - getTabBarPositionRelativeY()
     }
 }
