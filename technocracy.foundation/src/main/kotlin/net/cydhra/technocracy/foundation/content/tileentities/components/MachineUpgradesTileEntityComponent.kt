@@ -116,6 +116,8 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int,
             }
         }
 
+        this.tile.markDirty()
+        this.notifyBlockUpdate()
         this.updateDescription()
     }
 

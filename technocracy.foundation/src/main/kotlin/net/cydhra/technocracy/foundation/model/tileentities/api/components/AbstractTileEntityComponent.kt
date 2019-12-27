@@ -17,11 +17,15 @@ abstract class AbstractTileEntityComponent : IComponent {
     open fun markDirty(needsClientRerender: Boolean = false) {
         if (allowAutoSave) {
             if (syncToClient && needsClientRerender) {
-                val state = tile.world.getBlockState(tile.pos)
-                tile.world.notifyBlockUpdate(tile.pos, state, state, 0)
+                notifyBlockUpdate()
             }
             tile.markDirty()
         }
+    }
+
+    fun notifyBlockUpdate() {
+        val state = tile.world.getBlockState(tile.pos)
+        tile.world.notifyBlockUpdate(tile.pos, state, state, 0)
     }
 
     override fun onRegister() {
