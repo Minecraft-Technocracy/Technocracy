@@ -1,14 +1,12 @@
 package net.cydhra.technocracy.foundation.client.gui
 
-import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
-import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotPlayer
+import net.cydhra.technocracy.foundation.client.gui.components.slot.ITCSlot
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.RenderHelper
-import net.minecraft.inventory.Slot
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.fml.client.config.GuiUtils
 
@@ -64,9 +62,9 @@ TCContainer)
 
         if (tabs.isNotEmpty()) {
             drawTabs(partialTicks, mouseX, mouseY)
-            this.tabs[this.activeTabIndex].draw(mouseX - guiX, mouseY - guiY, partialTicks)
         }
 
+        this.tabs[this.activeTabIndex].draw(mouseX - guiX, mouseY - guiY, partialTicks)
         GlStateManager.popMatrix()
     }
 
@@ -80,24 +78,25 @@ TCContainer)
 
         tabs[activeTabIndex].mouseClicked(mouseX - guiX, mouseY - guiY, mouseButton)
 
-        this.tabs.indices.filterNot { it == this.activeTabIndex }.forEach {
+        checkClick@ for (otherIndex in this.tabs.indices.filterNot { it == this.activeTabIndex }) {
             val x = getTabBarPositionRelativeX() + TAB_GAP_WIDTH
-            val y = it * TAB_SELECTED_HEIGHT + getTabBarPositionRelativeY() + TAB_GAP_WIDTH
-            val width = TAB_WIDTH
-            val height = TAB_HEIGHT
+            val y = otherIndex * TAB_SELECTED_HEIGHT + getTabBarPositionRelativeY() + TAB_GAP_WIDTH
 
-            if (this.isPointInRegion(x, y, width, height, mouseX, mouseY)) {
-                this.activeTabIndex = it
+            // check if this tab has been clicked
+            if (this.isPointInRegion(x, y, TAB_WIDTH, TAB_HEIGHT, mouseX, mouseY)) {
+                this.activeTabIndex = otherIndex
 
+                // update the enabled-state of all tabs
                 this.tabs.withIndex().forEach { (index, tab) ->
-                    tab.components.filterIsInstance<Slot>().map { index to it }.forEach { pair ->
-                        if (pair.second is TCSlotPlayer) {
-                            (pair.second as TCSlotPlayer).enabled = pair.first == it
-                        } else if (pair.second is TCSlotIO) {
-                            (pair.second as TCSlotIO).enabled = pair.first == it
-                        }
-                    }
+                    tab.components
+                            .filterIsInstance<ITCSlot>()
+                            .forEach { slot ->
+                                slot.setEnabled(index == this.activeTabIndex)
+                            }
                 }
+
+                // no reason to check further tabs, as only one can be clicked at any time
+                break@checkClick
             }
         }
     }
@@ -176,7 +175,12 @@ TCContainer)
 
         if (!windowAttachment) {
             drawTexturedModalRect(0, 0, cornerTopLeft.x, cornerTopLeft.y, cornerTopLeft.width, cornerTopLeft.height)
-            drawTexturedModalRect(0, height, cornerBottomLeft.x, cornerBottomLeft.y, cornerBottomLeft.width, cornerBottomLeft.height)
+            drawTexturedModalRect(0,
+                    height,
+                    cornerBottomLeft.x,
+                    cornerBottomLeft.y,
+                    cornerBottomLeft.width,
+                    cornerBottomLeft.height)
         }
 
         drawTexturedModalRect(width, 0, cornerTopRight.x, cornerTopRight.y, cornerTopRight.width, cornerTopRight.height)
@@ -198,6 +202,12 @@ TCContainer)
         tab.init()
 
         tab.components.forEach { this.container.registerComponent(it) }
+
+        // disable slots of tabs that aren't the first one (which is the active one by default)
+        if (this.tabs.size > 1) {
+            tab.components.filterIsInstance<ITCSlot>().forEach { it.setEnabled(false) }
+        }
+
     }
 
     fun unregisterTab(tab: TCTab) {
@@ -208,7 +218,8 @@ TCContainer)
         super.renderHoveredToolTip(mouseX, mouseY)
     }
 
-    fun renderTooltip(_str: MutableList<String>, mouseX: Int, mouseY: Int) { // have to modify the one of forge, because forge makes it unusable
+    fun renderTooltip(_str: MutableList<String>, mouseX: Int,
+            mouseY: Int) { // have to modify the one of forge, because forge makes it unusable
         if (_str.isNotEmpty()) {
             var str = _str
             val sr = ScaledResolution(Minecraft.getMinecraft())
@@ -300,15 +311,69 @@ TCContainer)
             val backgroundColor = -0xfeffff0
             val borderColorStart = 0x505000FF
             val borderColorEnd = borderColorStart and 0xFEFEFE shr 1 or (borderColorStart and -0x1000000)
-            GuiUtils.drawGradientRect(zLevel, tooltipX - 3, tooltipY - 4, tooltipX + tooltipTextWidth + 3, tooltipY - 3, backgroundColor, backgroundColor)
-            GuiUtils.drawGradientRect(zLevel, tooltipX - 3, tooltipY + tooltipHeight + 3, tooltipX + tooltipTextWidth + 3, tooltipY + tooltipHeight + 4, backgroundColor, backgroundColor)
-            GuiUtils.drawGradientRect(zLevel, tooltipX - 3, tooltipY - 3, tooltipX + tooltipTextWidth + 3, tooltipY + tooltipHeight + 3, backgroundColor, backgroundColor)
-            GuiUtils.drawGradientRect(zLevel, tooltipX - 4, tooltipY - 3, tooltipX - 3, tooltipY + tooltipHeight + 3, backgroundColor, backgroundColor)
-            GuiUtils.drawGradientRect(zLevel, tooltipX + tooltipTextWidth + 3, tooltipY - 3, tooltipX + tooltipTextWidth + 4, tooltipY + tooltipHeight + 3, backgroundColor, backgroundColor)
-            GuiUtils.drawGradientRect(zLevel, tooltipX - 3, tooltipY - 3 + 1, tooltipX - 3 + 1, tooltipY + tooltipHeight + 3 - 1, borderColorStart, borderColorEnd)
-            GuiUtils.drawGradientRect(zLevel, tooltipX + tooltipTextWidth + 2, tooltipY - 3 + 1, tooltipX + tooltipTextWidth + 3, tooltipY + tooltipHeight + 3 - 1, borderColorStart, borderColorEnd)
-            GuiUtils.drawGradientRect(zLevel, tooltipX - 3, tooltipY - 3, tooltipX + tooltipTextWidth + 3, tooltipY - 3 + 1, borderColorStart, borderColorStart)
-            GuiUtils.drawGradientRect(zLevel, tooltipX - 3, tooltipY + tooltipHeight + 2, tooltipX + tooltipTextWidth + 3, tooltipY + tooltipHeight + 3, borderColorEnd, borderColorEnd)
+            GuiUtils.drawGradientRect(zLevel,
+                    tooltipX - 3,
+                    tooltipY - 4,
+                    tooltipX + tooltipTextWidth + 3,
+                    tooltipY - 3,
+                    backgroundColor,
+                    backgroundColor)
+            GuiUtils.drawGradientRect(zLevel,
+                    tooltipX - 3,
+                    tooltipY + tooltipHeight + 3,
+                    tooltipX + tooltipTextWidth + 3,
+                    tooltipY + tooltipHeight + 4,
+                    backgroundColor,
+                    backgroundColor)
+            GuiUtils.drawGradientRect(zLevel,
+                    tooltipX - 3,
+                    tooltipY - 3,
+                    tooltipX + tooltipTextWidth + 3,
+                    tooltipY + tooltipHeight + 3,
+                    backgroundColor,
+                    backgroundColor)
+            GuiUtils.drawGradientRect(zLevel,
+                    tooltipX - 4,
+                    tooltipY - 3,
+                    tooltipX - 3,
+                    tooltipY + tooltipHeight + 3,
+                    backgroundColor,
+                    backgroundColor)
+            GuiUtils.drawGradientRect(zLevel,
+                    tooltipX + tooltipTextWidth + 3,
+                    tooltipY - 3,
+                    tooltipX + tooltipTextWidth + 4,
+                    tooltipY + tooltipHeight + 3,
+                    backgroundColor,
+                    backgroundColor)
+            GuiUtils.drawGradientRect(zLevel,
+                    tooltipX - 3,
+                    tooltipY - 3 + 1,
+                    tooltipX - 3 + 1,
+                    tooltipY + tooltipHeight + 3 - 1,
+                    borderColorStart,
+                    borderColorEnd)
+            GuiUtils.drawGradientRect(zLevel,
+                    tooltipX + tooltipTextWidth + 2,
+                    tooltipY - 3 + 1,
+                    tooltipX + tooltipTextWidth + 3,
+                    tooltipY + tooltipHeight + 3 - 1,
+                    borderColorStart,
+                    borderColorEnd)
+            GuiUtils.drawGradientRect(zLevel,
+                    tooltipX - 3,
+                    tooltipY - 3,
+                    tooltipX + tooltipTextWidth + 3,
+                    tooltipY - 3 + 1,
+                    borderColorStart,
+                    borderColorStart)
+            GuiUtils.drawGradientRect(zLevel,
+                    tooltipX - 3,
+                    tooltipY + tooltipHeight + 2,
+                    tooltipX + tooltipTextWidth + 3,
+                    tooltipY + tooltipHeight + 3,
+                    borderColorEnd,
+                    borderColorEnd)
 
             for (lineNumber in str.indices) {
                 val line = str[lineNumber]

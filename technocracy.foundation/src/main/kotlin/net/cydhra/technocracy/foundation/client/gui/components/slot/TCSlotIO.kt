@@ -1,7 +1,6 @@
 package net.cydhra.technocracy.foundation.client.gui.components.slot
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
-import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.client.renderer.GlStateManager
@@ -12,9 +11,10 @@ import net.minecraftforge.items.SlotItemHandler
 /**
  * A gui slot that is used to draw tile-entity inventory slots. For player inventory slots, see [TCSlotPlayer]
  */
-class TCSlotIO(itemHandler: IItemHandler, index: Int, xPosition: Int, yPosition: Int, val gui: TCGui) : SlotItemHandler(itemHandler, index, xPosition, yPosition), TCComponent {
+class TCSlotIO(itemHandler: IItemHandler, index: Int, xPosition: Int, yPosition: Int, val gui: TCGui) :
+        SlotItemHandler(itemHandler, index, xPosition, yPosition), ITCSlot {
 
-    var enabled: Boolean = true
+    private var enabledOverride = true
 
     override fun update() {
     }
@@ -28,7 +28,7 @@ class TCSlotIO(itemHandler: IItemHandler, index: Int, xPosition: Int, yPosition:
 
     override fun drawTooltip(mouseX: Int, mouseY: Int) {
         val stack = itemHandler.getStackInSlot(slotIndex)
-        if(stack.item != Items.AIR)
+        if (stack.item != Items.AIR)
             gui.renderHoveredItemToolTip(mouseX, mouseY)
     }
 
@@ -38,4 +38,14 @@ class TCSlotIO(itemHandler: IItemHandler, index: Int, xPosition: Int, yPosition:
         return mouseX > xPos && mouseX < xPos + 18 && mouseY > yPos && mouseY < yPos + 18
     }
 
+    override fun setEnabled(enabled: Boolean) {
+        this.enabledOverride = enabled
+    }
+
+    /**
+     * This method overrides [net.minecraft.inventory.Slot.isEnabled] and allows that to be ignored by our own value.
+     */
+    override fun isEnabled(): Boolean {
+        return super.isEnabled() && this.enabledOverride
+    }
 }

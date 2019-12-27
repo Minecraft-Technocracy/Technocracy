@@ -2,7 +2,6 @@ package net.cydhra.technocracy.foundation.client.gui.components.slot
 
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
-import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.client.renderer.GlStateManager
@@ -15,9 +14,9 @@ import net.minecraft.inventory.Slot
  */
 open class TCSlotPlayer(inventoryIn: IInventory, index: Int, xPosition: Int, yPosition: Int, val gui: TCGui) :
         Slot(inventoryIn, index,
-                xPosition, yPosition), TCComponent {
+                xPosition, yPosition), ITCSlot {
 
-    var enabled: Boolean = true
+    private var enabledOverride = true
 
     override fun update() {
     }
@@ -41,5 +40,16 @@ open class TCSlotPlayer(inventoryIn: IInventory, index: Int, xPosition: Int, yPo
 
     override fun isMouseOnComponent(mouseX: Int, mouseY: Int): Boolean {
         return mouseX > xPos && mouseX < xPos + 18 && mouseY > yPos && mouseY < yPos + 18
+    }
+
+    override fun setEnabled(enabled: Boolean) {
+        this.enabledOverride = enabled
+    }
+
+    /**
+     * This method overrides [net.minecraft.inventory.Slot.isEnabled] and allows that to be ignored by our own value.
+     */
+    override fun isEnabled(): Boolean {
+        return super.isEnabled() && this.enabledOverride
     }
 }
