@@ -34,7 +34,10 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int,
         val supportedUpgradeClasses: Set<MachineUpgradeClass>, val multipliers: Set<MultiplierTileEntityComponent>) :
         AbstractTileEntityComponent(), TEInventoryProvider {
 
-    private val descriptionLines = mutableListOf<Pair<ITextComponent, ITextComponent>>()
+    /**
+     * A set of descriptive lines about installed upgrades
+     */
+    val description = CopyOnWriteArrayList<Pair<ITextComponent, ITextComponent>>()
 
     override val type: ComponentType = ComponentType.OTHER
 
@@ -43,10 +46,6 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int,
      */
     val inventory: DynamicInventoryCapability = DynamicInventoryCapability(numberOfUpgradeSlots, this)
 
-    /**
-     * A list of text lines describing the effects of all installed upgrades
-     */
-    val description: List<Pair<ITextComponent, ITextComponent>> = descriptionLines
 
     init {
         this.inventory.componentParent = this
@@ -137,17 +136,17 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int,
     }
 
     /**
-     * Update the [descriptionLines] list with the current upgrade modifiers.
+     * Update the [description] list with the current upgrade modifiers.
      */
     private fun updateDescription() {
-        this.descriptionLines.clear()
-        this.descriptionLines.add(TextComponentTranslation("tooltips.upgrades.title.description")
+        this.description.clear()
+        this.description.add(TextComponentTranslation("tooltips.upgrades.title.description")
                 .appendSibling(TextComponentString(":")) to TextComponentString(
                 "${this.inventory.stacks.filter { !it.isEmpty }.count()}/${this.numberOfUpgradeSlots}")
                 .setStyle(Style().setColor(TextFormatting.GOLD)))
 
         this.multipliers.forEach { multiplier ->
-            this.descriptionLines.add(TextComponentTranslation("tooltips.upgrades.parameter.${multiplier.upgradeParameter}")
+            this.description.add(TextComponentTranslation("tooltips.upgrades.parameter.${multiplier.upgradeParameter}")
                     .appendSibling(TextComponentString(":")) to TextComponentString(
                     "${(multiplier.getCappedMultiplier() * 100).roundToInt()}%")
                     .setStyle(Style().setColor(TextFormatting.GOLD)))
