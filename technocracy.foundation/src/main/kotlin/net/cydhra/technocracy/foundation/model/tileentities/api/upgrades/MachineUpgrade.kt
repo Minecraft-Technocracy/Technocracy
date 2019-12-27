@@ -76,7 +76,7 @@ typealias MachineUpgradeParameter = String
 enum class MachineUpgradeClass(val unlocalizedName: String) {
     MECHANICAL("mechanical"),
     ELECTRICAL("electrical"),
-    MAGNETIC("magnetic"),
+    COMPUTER("computer"),
     OPTICAL("optical"),
     THERMAL("thermal"),
     CHEMICAL("chemical"),
