@@ -61,7 +61,7 @@ class TileEntityAlloySmeltery : MachineTileEntity(), TEInventoryProvider {
                 processSpeedComponent = this.processingSpeedComponent,
                 energyCostComponent = this.energyCostComponent,
                 baseTickEnergyCost = 10,
-                progress = this.progressComponent))
+                progress = this.progressComponent), MACHINE_PROCESSING_LOGIC_NAME)
     }
 
     override fun isItemValid(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack): Boolean {

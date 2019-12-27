@@ -3,6 +3,7 @@ package net.cydhra.technocracy.foundation.content.tileentities.components
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.model.components.ComponentType
 import net.cydhra.technocracy.foundation.model.items.api.UpgradeItem
+import net.cydhra.technocracy.foundation.model.tileentities.api.TCMachineTileEntity
 import net.cydhra.technocracy.foundation.model.tileentities.api.TEInventoryProvider
 import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractTileEntityComponent
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgrade
@@ -26,7 +27,8 @@ import kotlin.math.roundToInt
  * @param multipliers the multiplier components of the machine that can be upgraded. For each [MultiplierUpgrade]
  * that is supported by this component, a respective [MultiplierTileEntityComponent] must be added to this set
  */
-class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int, val supportedUpgradeTypes: Set<MachineUpgradeParameter>,
+class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int,
+        val supportedUpgradeTypes: Set<MachineUpgradeParameter>,
         val supportedUpgradeClasses: Set<MachineUpgradeClass>, val multipliers: Set<MultiplierTileEntityComponent>) :
         AbstractTileEntityComponent(), TEInventoryProvider {
 
@@ -70,6 +72,10 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int, val supp
         // check whether the upgrade item's parameters are all supported
         if (!item.upgrades.all { upgrade -> this.supportedUpgradeTypes.contains(upgrade.upgradeType) }) return false
 
+        // ask the item whether it can be installed
+        if (!item.upgrades.all { upgrade -> upgrade.canInstallUpgrade(this.tile as TCMachineTileEntity, this) })
+            return false
+
         return true
     }
 
@@ -88,9 +94,8 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int, val supp
                 if (upgrade is MultiplierUpgrade) {
                     val componentToUpgrade = this.multipliers.single { it.upgradeParameter == upgrade.upgradeType }
                     componentToUpgrade.multiplier -= upgrade.multiplier
-                    println(componentToUpgrade.upgradeParameter + ": " + componentToUpgrade.multiplier)
                 } else {
-                    // TODO complex upgrade uninstalling
+                    upgrade.onUninstallUpgrade(this.tile as TCMachineTileEntity, this)
                 }
             }
         } else {
@@ -104,9 +109,8 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int, val supp
                 if (upgrade is MultiplierUpgrade) {
                     val componentToUpgrade = this.multipliers.single { it.upgradeParameter == upgrade.upgradeType }
                     componentToUpgrade.multiplier += upgrade.multiplier
-                    println(componentToUpgrade.upgradeParameter + ": " + componentToUpgrade.multiplier)
                 } else {
-                    // TODO complex upgrade installation
+                    upgrade.onInstallUpgrade(this.tile as TCMachineTileEntity, this)
                 }
             }
         }

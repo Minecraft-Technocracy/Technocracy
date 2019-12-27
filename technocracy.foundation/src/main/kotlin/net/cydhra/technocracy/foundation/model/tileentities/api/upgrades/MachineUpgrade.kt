@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.model.tileentities.api.upgrades
 
 import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesTileEntityComponent
-import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatable
+import net.cydhra.technocracy.foundation.model.tileentities.api.TCMachineTileEntity
 
 /**
  * Models instances of upgrades that can be granted by upgrade items. Does not take any parameters, as different
@@ -13,15 +13,25 @@ abstract class MachineUpgrade(val upgradeType: MachineUpgradeParameter) {
     /**
      * @return true, iff the upgrade can be installed in the given tile entity.
      */
-    abstract fun canInstallUpgrade(tile: TCAggregatable): Boolean
+    abstract fun canInstallUpgrade(tile: TCMachineTileEntity,
+            upgrades: MachineUpgradesTileEntityComponent): Boolean
 
     /**
      * Called when the upgrade is installed in the given tile entity.
      *
-     * @param tile the tile entitiy that this upgrade is installed in
+     * @param tile the tile entity that this upgrade is installed in
      * @param upgrades the upgrade component this upgrade is installed in
      */
-    abstract fun onInstallUpgrade(tile: TCAggregatable,
+    abstract fun onInstallUpgrade(tile: TCMachineTileEntity,
+            upgrades: MachineUpgradesTileEntityComponent)
+
+    /**
+     * Called when the upgrade is uninstalled from the given tile entity
+     *
+     * @param tile the tile entity that this upgrade was installed in
+     * @param upgrades the upgrade component this upgrade is installed in
+     */
+    abstract fun onUninstallUpgrade(tile: TCMachineTileEntity,
             upgrades: MachineUpgradesTileEntityComponent)
 }
 
@@ -32,11 +42,16 @@ abstract class MachineUpgrade(val upgradeType: MachineUpgradeParameter) {
  */
 abstract class MultiplierUpgrade(val multiplier: Double, parameterName: MachineUpgradeParameter)
     : MachineUpgrade(parameterName) {
-    override fun canInstallUpgrade(tile: TCAggregatable): Boolean {
+    override fun canInstallUpgrade(tile: TCMachineTileEntity,
+            upgrades: MachineUpgradesTileEntityComponent): Boolean {
         return true
     }
 
-    override fun onInstallUpgrade(tile: TCAggregatable,
+    override fun onInstallUpgrade(tile: TCMachineTileEntity,
+            upgrades: MachineUpgradesTileEntityComponent) {
+    }
+
+    override fun onUninstallUpgrade(tile: TCMachineTileEntity,
             upgrades: MachineUpgradesTileEntityComponent) {
     }
 }

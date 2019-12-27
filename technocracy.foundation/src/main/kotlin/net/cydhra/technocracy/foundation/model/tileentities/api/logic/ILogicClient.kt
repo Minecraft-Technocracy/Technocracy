@@ -10,8 +10,15 @@ interface ILogicClient {
      * Register a new logic strategy.
      *
      * @param strategy [ILogic] implementation
+     * @param name a unique name for the strategy instance. no two instances with the same name may be registered at
+     * a client
      */
-    fun addLogicStrategy(strategy: ILogic)
+    fun addLogicStrategy(strategy: ILogic, name: String)
+
+    /**
+     * Remove the logic strategy with the given name
+     */
+    fun removeLogicStrategy(name: String)
 
     /**
      * Updates all adopted logic strategies. Must be called by the implementor on its tick update function. Calls

@@ -6,18 +6,22 @@ package net.cydhra.technocracy.foundation.model.tileentities.api.logic
  */
 class LogicClientDelegate : ILogicClient {
 
-    private val logicStrategies: MutableSet<ILogic> = mutableSetOf()
+    private val logicStrategies: MutableMap<String, ILogic> = mutableMapOf()
 
-    override fun addLogicStrategy(strategy: ILogic) {
-        logicStrategies += strategy
+    override fun addLogicStrategy(strategy: ILogic, name: String) {
+        logicStrategies[name] = strategy
+    }
+
+    override fun removeLogicStrategy(name: String) {
+        this.logicStrategies.remove(name)
     }
 
     override fun tick() {
-        val canProcess = this.logicStrategies.all(ILogic::preProcessing)
+        val canProcess = this.logicStrategies.values.all(ILogic::preProcessing)
 
         if (canProcess) {
-            this.logicStrategies.forEach(ILogic::processing)
+            this.logicStrategies.values.forEach(ILogic::processing)
         }
-        this.logicStrategies.forEach { it.postProcessing(canProcess) }
+        this.logicStrategies.values.forEach { it.postProcessing(canProcess) }
     }
 }

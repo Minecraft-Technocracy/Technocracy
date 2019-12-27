@@ -15,8 +15,15 @@ interface IAggregatable {
      * Register a new component within the system
      *
      * @param component component implementation
+     * @param name unique name for the component that is used as NBT key. If this is not unique, no guarantees about
+     * the machines behaviour and stability of the mod can be made.
      */
     fun registerComponent(component: IComponent, name: String)
+
+    /**
+     * Remove the component associated with the given name
+     */
+    fun removeComponent(name: String)
 
     /**
      * Serialize this aggregatable into an NBT tag compound

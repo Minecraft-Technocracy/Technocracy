@@ -25,6 +25,12 @@ import net.minecraft.util.EnumFacing
 import net.minecraft.util.ResourceLocation
 
 open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, ILogicClient by LogicClientDelegate() {
+
+    companion object {
+        const val MACHINE_PROCESSING_LOGIC_NAME = "default_processing"
+        const val MACHINE_DEFAULT_CONSUMPTION_LOGIC_NAME = "default_consumption"
+    }
+
     /**
      * The machine's redstone mode
      */
@@ -52,7 +58,8 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
     override fun onLoad() {
         super.onLoad()
 
-        this.addLogicStrategy(RedstoneLogic(this.world, this.pos, this.redstoneModeComponent))
+        this.addLogicStrategy(RedstoneLogic(this.world, this.pos, this.redstoneModeComponent),
+                MACHINE_PROCESSING_LOGIC_NAME)
     }
 
     override fun getGui(player: EntityPlayer?): TCGui {

@@ -43,6 +43,6 @@ class TileEntityKiln : MachineTileEntity() {
                 energyCostComponent = this.energyCostComponent,
                 baseTickEnergyCost = 40,
                 progress = this.progressComponent
-        ))
+        ), MACHINE_PROCESSING_LOGIC_NAME)
     }
 }

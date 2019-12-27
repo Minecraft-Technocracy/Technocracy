@@ -47,7 +47,8 @@ class TileEntityPolymerizationChamber : MachineTileEntity(), TEInventoryProvider
         this.registerComponent(additiveMultiplierComponent, "additive_usage")
         this.registerComponent(upgradesComponent, "upgrades")
 
-        this.addLogicStrategy(AdditiveConsumptionLogic(additiveFluidComponent, 5, additiveMultiplierComponent))
+        this.addLogicStrategy(AdditiveConsumptionLogic(additiveFluidComponent, 5, additiveMultiplierComponent),
+                MACHINE_DEFAULT_CONSUMPTION_LOGIC_NAME)
         this.addLogicStrategy(ItemProcessingLogic(
                 RecipeManager.RecipeType.POLYMERIZATION,
                 outputInventory = outputInventoryComponent.inventory,
@@ -57,7 +58,7 @@ class TileEntityPolymerizationChamber : MachineTileEntity(), TEInventoryProvider
                 energyCostComponent = this.energyCostComponent,
                 progress = this.progressComponent,
                 baseTickEnergyCost = 100
-        ))
+        ), MACHINE_PROCESSING_LOGIC_NAME)
     }
 
     override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack, originalStack: ItemStack) {

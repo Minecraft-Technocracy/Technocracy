@@ -45,6 +45,6 @@ class TileEntityElectrolysisChamber : MachineTileEntity() {
                 energyCostComponent = this.energyCostComponent,
                 baseTickEnergyCost = 80,
                 progress = this.progressComponent
-        ))
+        ), MACHINE_PROCESSING_LOGIC_NAME)
     }
 }

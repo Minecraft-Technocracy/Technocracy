@@ -56,7 +56,8 @@ class TileEntityChemicalEtchingChamber : MachineTileEntity(), TEInventoryProvide
         registerComponent(additiveMultiplierComponent, "additive_speed")
         registerComponent(upgradesComponent, "upgrades")
 
-        this.addLogicStrategy(AdditiveConsumptionLogic(acidFluidInput, 5, additiveMultiplierComponent))
+        this.addLogicStrategy(AdditiveConsumptionLogic(acidFluidInput, 5, additiveMultiplierComponent),
+                MACHINE_DEFAULT_CONSUMPTION_LOGIC_NAME)
         this.addLogicStrategy(ItemProcessingLogic(
                 RecipeManager.RecipeType.CHEMICAL_ETCHING,
                 inputInventory = inputInventory.inventory,
@@ -66,7 +67,7 @@ class TileEntityChemicalEtchingChamber : MachineTileEntity(), TEInventoryProvide
                 energyCostComponent = this.energyCostComponent,
                 progress = this.progressComponent,
                 baseTickEnergyCost = 120
-        ))
+        ), MACHINE_PROCESSING_LOGIC_NAME)
     }
 
 

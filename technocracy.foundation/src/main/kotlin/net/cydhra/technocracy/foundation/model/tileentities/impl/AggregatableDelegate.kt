@@ -50,6 +50,10 @@ class AggregatableDelegate : TCAggregatable {
 
         component.tile = tile
 
+        if (this.components.find { (componentName, _) -> componentName == name } != null) {
+            throw IllegalArgumentException("cannot register the same component twice")
+        }
+
         this.components += name to component
 
         component.onRegister()
@@ -57,6 +61,10 @@ class AggregatableDelegate : TCAggregatable {
         if (component is AbstractCapabilityTileEntityComponent) {
             capabilityComponents += component
         }
+    }
+
+    override fun removeComponent(name: String) {
+        this.components.removeIf { (componentName, _) -> componentName == name }
     }
 
     override fun serializeNBT(compound: NBTTagCompound): NBTTagCompound {

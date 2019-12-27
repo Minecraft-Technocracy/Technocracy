@@ -2,6 +2,7 @@ package net.cydhra.technocracy.foundation.content.items
 
 import net.cydhra.technocracy.foundation.content.tileentities.upgrades.AdditiveConsumptionMultiplier
 import net.cydhra.technocracy.foundation.content.tileentities.upgrades.EnergyMultiplier
+import net.cydhra.technocracy.foundation.content.tileentities.upgrades.LubricantUpgrade
 import net.cydhra.technocracy.foundation.content.tileentities.upgrades.SpeedMultiplier
 import net.cydhra.technocracy.foundation.model.items.api.AlloyItem
 import net.cydhra.technocracy.foundation.model.items.api.BaseItem
@@ -77,3 +78,5 @@ val chemSpeedUp3Item = UpgradeItem("chem_speed_up_3", MachineUpgradeClass.CHEMIC
 val chemSpeedUp4Item = UpgradeItem("chem_speed_up_4", MachineUpgradeClass.CHEMICAL,
         SpeedMultiplier(-0.5), EnergyMultiplier(-0.3), AdditiveConsumptionMultiplier(-0.3))
 
+val mechLubricantUpItem = UpgradeItem("mech_lubricant_up", MachineUpgradeClass.MECHANICAL,
+        SpeedMultiplier(2.0), LubricantUpgrade())

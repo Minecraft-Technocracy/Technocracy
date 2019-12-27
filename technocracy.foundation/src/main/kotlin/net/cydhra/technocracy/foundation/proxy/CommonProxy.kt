@@ -260,6 +260,7 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(chemSpeedUp2Item)
         itemManager.prepareItemForRegistration(chemSpeedUp3Item)
         itemManager.prepareItemForRegistration(chemSpeedUp4Item)
+        itemManager.prepareItemForRegistration(mechLubricantUpItem)
 
         if (!Minecraft.getMinecraft().isSingleplayer) {
             //Dev tools

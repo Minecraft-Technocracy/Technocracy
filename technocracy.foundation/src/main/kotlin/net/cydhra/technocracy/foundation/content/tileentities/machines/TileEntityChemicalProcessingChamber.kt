@@ -53,7 +53,7 @@ class TileEntityChemicalProcessingChamber : MachineTileEntity(), TEInventoryProv
                 energyCostComponent = this.energyCostComponent,
                 baseTickEnergyCost = 60,
                 progress = this.progressComponent
-        ))
+        ), MACHINE_PROCESSING_LOGIC_NAME)
     }
 
     override fun isItemValid(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack): Boolean {
