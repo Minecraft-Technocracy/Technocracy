@@ -28,7 +28,7 @@ class AggregatableDelegate : TCAggregatable {
      * All components that also offer a capability. They must also be added to [components] but for speed they are
      * also collected in this list for quick query times in [supportsCapability]
      */
-    private val capabilityComponents: MutableSet<AbstractCapabilityTileEntityComponent> = mutableSetOf()
+    private val capabilityComponents: MutableMap<String, AbstractCapabilityTileEntityComponent> = mutableMapOf()
 
     /**
      * @return all registered components
@@ -50,7 +50,7 @@ class AggregatableDelegate : TCAggregatable {
 
         component.tile = tile
 
-        if (this.components.find { (componentName, _) -> componentName == name } != null) {
+        if (this.components.any { (componentName, _) -> componentName == name }) {
             throw IllegalArgumentException("cannot register the same component twice")
         }
 
@@ -59,12 +59,13 @@ class AggregatableDelegate : TCAggregatable {
         component.onRegister()
 
         if (component is AbstractCapabilityTileEntityComponent) {
-            capabilityComponents += component
+            capabilityComponents[name] = component
         }
     }
 
     override fun removeComponent(name: String) {
         this.components.removeIf { (componentName, _) -> componentName == name }
+        this.capabilityComponents.remove(name)
     }
 
     override fun serializeNBT(compound: NBTTagCompound): NBTTagCompound {
@@ -85,11 +86,11 @@ class AggregatableDelegate : TCAggregatable {
     }
 
     override fun supportsCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
-        return capabilityComponents.any { it.hasCapability(capability, facing) }
+        return capabilityComponents.values.any { it.hasCapability(capability, facing) }
     }
 
     override fun <T : Any?> castCapability(capability: Capability<T>, facing: EnumFacing?): T? {
-        return capabilityComponents
+        return capabilityComponents.values
                 .firstOrNull { it.hasCapability(capability, facing) }
                 ?.getCapability(capability, facing)
     }
