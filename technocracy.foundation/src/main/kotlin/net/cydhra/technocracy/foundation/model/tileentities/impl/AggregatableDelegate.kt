@@ -75,6 +75,11 @@ class AggregatableDelegate : TCAggregatable {
     }
 
     override fun deserializeNBT(compound: NBTTagCompound) {
+        var i = 0
+        while (i < components.size) {
+            components[i++].second.onLoadAggregate()
+        }
+
         for ((name, component) in components) {
             if (compound.hasKey(name))
                 component.deserializeNBT(compound.getCompoundTag(name))

@@ -27,5 +27,9 @@ abstract class AbstractTileEntityComponent : IComponent {
     override fun onRegister() {
         // do nothing by default
     }
+
+    override fun onLoadAggregate() {
+        // do nothing by default
+    }
 }
 

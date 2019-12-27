@@ -24,4 +24,10 @@ interface IComponent {
      * called while the component is getting registered
      */
     fun onRegister()
+
+    /**
+     * Called when the aggregate this component belongs to is loaded from NBT. During execution of this method,
+     * further components may be registered at the aggregate
+     */
+    fun onLoadAggregate()
 }
