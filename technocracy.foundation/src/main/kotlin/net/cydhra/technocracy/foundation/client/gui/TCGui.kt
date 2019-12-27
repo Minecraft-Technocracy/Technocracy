@@ -92,9 +92,9 @@ TCContainer)
                 this.tabs.withIndex().forEach { (index, tab) ->
                     tab.components.filterIsInstance<Slot>().map { index to it }.forEach { pair ->
                         if (pair.second is TCSlot) {
-                            (pair.second as TCSlot).isEnabled = pair.first == it
+                            (pair.second as TCSlot).enabled = pair.first == it
                         } else if (pair.second is TCSlotIO) {
-                            (pair.second as TCSlotIO).isEnabled = pair.first == it
+                            (pair.second as TCSlotIO).enabled = pair.first == it
                         }
                     }
                 }

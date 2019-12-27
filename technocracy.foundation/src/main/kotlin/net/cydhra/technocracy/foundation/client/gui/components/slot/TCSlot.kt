@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.client.gui.components.slot
 
+
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
 import net.minecraft.client.Minecraft
@@ -8,9 +9,10 @@ import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.init.Items
 import net.minecraft.inventory.IInventory
 import net.minecraft.inventory.Slot
-
 open class TCSlot(inventoryIn: IInventory, index: Int, xPosition: Int, yPosition: Int, val gui: TCGui) : Slot(inventoryIn, index,
         xPosition, yPosition), TCComponent {
+
+    var enabled: Boolean = true
 
     override fun update() {
     }
@@ -34,15 +36,5 @@ open class TCSlot(inventoryIn: IInventory, index: Int, xPosition: Int, yPosition
 
     override fun isMouseOnComponent(mouseX: Int, mouseY: Int): Boolean {
         return mouseX > xPos && mouseX < xPos + 18 && mouseY > yPos && mouseY < yPos + 18
-    }
-
-    private var enabled: Boolean = true
-
-    override fun isEnabled(): Boolean {
-        return this.enabled
-    }
-
-    fun setEnabled(enabled: Boolean) {
-        this.enabled = enabled
     }
 }
