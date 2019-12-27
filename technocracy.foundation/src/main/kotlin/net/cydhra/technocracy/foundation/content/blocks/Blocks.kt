@@ -94,7 +94,7 @@ val sulfuricAcidBlock = SulfuricAcidBlock()
 
 val pipe = PipeBlock()
 val drum = DrumBlock()
-val leadGlassPaneBlock = PlainBlock("lead_glass_pane", Material.GLASS, opaque = false, renderLayer = BlockRenderLayer.TRANSLUCENT)
+val leadGlassPaneBlock = LeadGlassPaneBlock()
         .apply { setHardness(1.5f).setResistance(1f) }
 
 val chrysotileBlock = PlainBlock("chrysotile", Material.ROCK).apply { setHardness(1.5f).setResistance(2.3f) }
