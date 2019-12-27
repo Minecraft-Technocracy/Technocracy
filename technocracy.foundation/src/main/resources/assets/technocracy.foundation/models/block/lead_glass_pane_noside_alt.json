@@ -1,0 +1,6 @@
+{
+    "parent": "block/pane_noside_alt",
+    "textures": {
+        "pane": "technocracy.foundation:block/lead_glass"
+    }
+}

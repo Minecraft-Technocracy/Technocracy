@@ -1,0 +1,7 @@
+{
+    "parent": "block/pane_side_alt",
+    "textures": {
+        "edge": "technocracy.foundation:block/lead_glass_top",
+        "pane": "technocracy.foundation:block/lead_glass"
+    }
+}
