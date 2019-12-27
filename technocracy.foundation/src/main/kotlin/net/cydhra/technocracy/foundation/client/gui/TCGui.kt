@@ -46,7 +46,7 @@ TCContainer)
     var guiX: Int = 0
     var guiY: Int = 0
 
-    private var tab: Int = 0
+    private var activeTabIndex: Int = 0
 
     init {
         this.xSize = guiWidth
@@ -64,30 +64,30 @@ TCContainer)
 
         if (tabs.isNotEmpty()) {
             drawTabs(partialTicks, mouseX, mouseY)
+            this.tabs[this.activeTabIndex].draw(mouseX - guiX, mouseY - guiY, partialTicks)
         }
 
-        this.tabs[this.tab].draw(mouseX - guiX, mouseY - guiY, partialTicks)
         GlStateManager.popMatrix()
     }
 
     override fun drawGuiContainerForegroundLayer(mouseX: Int, mouseY: Int) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY) // draws f.e. items in slots
-        this.tabs[tab].drawToolTips(mouseX - guiX, mouseY - guiY)
+        this.tabs[activeTabIndex].drawToolTips(mouseX - guiX, mouseY - guiY)
     }
 
     override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
         super.mouseClicked(mouseX, mouseY, mouseButton)
 
-        tabs[tab].mouseClicked(mouseX - guiX, mouseY - guiY, mouseButton)
+        tabs[activeTabIndex].mouseClicked(mouseX - guiX, mouseY - guiY, mouseButton)
 
-        this.tabs.indices.filterNot { it == this.tab }.forEach {
+        this.tabs.indices.filterNot { it == this.activeTabIndex }.forEach {
             val x = getTabBarPositionRelativeX() + TAB_GAP_WIDTH
             val y = it * TAB_SELECTED_HEIGHT + getTabBarPositionRelativeY() + TAB_GAP_WIDTH
             val width = TAB_WIDTH
             val height = TAB_HEIGHT
 
             if (this.isPointInRegion(x, y, width, height, mouseX, mouseY)) {
-                this.tab = it
+                this.activeTabIndex = it
 
                 this.tabs.withIndex().forEach { (index, tab) ->
                     tab.components.filterIsInstance<Slot>().map { index to it }.forEach { pair ->
@@ -103,7 +103,7 @@ TCContainer)
     }
 
     private fun drawTabs(partialTicks: Float, mouseX: Int, mouseY: Int) {
-        this.tabs.withIndex().filterNot { it.index == this.tab }.forEach { (i, tab) ->
+        this.tabs.withIndex().filterNot { it.index == this.activeTabIndex }.forEach { (i, tab) ->
             val x = getTabBarPositionRelativeX().toDouble() + TAB_GAP_WIDTH
             val y = (i * TAB_SELECTED_HEIGHT).toDouble() + getTabBarPositionRelativeY() + TAB_GAP_WIDTH
             val width = TAB_WIDTH
@@ -122,9 +122,9 @@ TCContainer)
 
         }
 
-        val activeTab: TCTab = this.tabs[this.tab]
+        val activeTab: TCTab = this.tabs[this.activeTabIndex]
         val activeTabX = getTabBarPositionRelativeX().toDouble()
-        val activeTabY = (this.tab * TAB_SELECTED_HEIGHT).toDouble() + getTabBarPositionRelativeY()
+        val activeTabY = (this.activeTabIndex * TAB_SELECTED_HEIGHT).toDouble() + getTabBarPositionRelativeY()
         val tabWidth = TAB_SELECTED_WIDTH
         val tabHeight = TAB_SELECTED_HEIGHT
 
@@ -186,7 +186,7 @@ TCContainer)
     }
 
     override fun updateScreen() {
-        this.tabs[this.tab].update()
+        this.tabs[this.activeTabIndex].update()
     }
 
     override fun doesGuiPauseGame(): Boolean {
@@ -329,7 +329,7 @@ TCContainer)
     }
 
     override fun onGuiClosed() {
-        tabs[tab].onClose()
+        tabs[activeTabIndex].onClose()
     }
 
     /**
