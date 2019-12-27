@@ -74,9 +74,14 @@ class LubricantUpgrade : MachineUpgrade(MACHINE_UPGRADE_GENERIC) {
                 tanktype = DynamicFluidCapability.TankType.INPUT,
                 facing = mutableSetOf(EnumFacing.NORTH))
         val lubricantMultiplier = MultiplierTileEntityComponent(null)
-        tile.registerComponent(lubricantTank, LUBRICANT_FLUID_COMPONENT_NAME)
-        tile.registerComponent(lubricantMultiplier, LUBRICANT_MULTIPLIER_COMPONENT_NAME)
-        tile.addLogicStrategy(AdditiveConsumptionLogic(lubricantTank, LUBRICANT_BASE_USAGE, lubricantMultiplier),
-                LUBRICANT_CONSUMPTION_LOGIC_NAME)
+
+        // since loads are not only triggered when loading the chunk, but also upon packages from server, check
+        // whether the component is already present
+        if (tile.getComponents().none { it.first == LUBRICANT_FLUID_COMPONENT_NAME }) {
+            tile.registerComponent(lubricantTank, LUBRICANT_FLUID_COMPONENT_NAME)
+            tile.registerComponent(lubricantMultiplier, LUBRICANT_MULTIPLIER_COMPONENT_NAME)
+            tile.addLogicStrategy(AdditiveConsumptionLogic(lubricantTank, LUBRICANT_BASE_USAGE, lubricantMultiplier),
+                    LUBRICANT_CONSUMPTION_LOGIC_NAME)
+        }
     }
 }
