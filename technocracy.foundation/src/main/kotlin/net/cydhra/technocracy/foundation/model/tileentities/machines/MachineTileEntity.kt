@@ -57,8 +57,8 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
 
     override fun getGui(player: EntityPlayer?): TCGui {
         val gui = TCGui(container = MachineContainer(this))
-        gui.registerTab(object : BaseMachineTab(this, gui, ResourceLocation("technocracy.foundation",
-                "textures/item/silicon.png")) {
+        gui.registerTab(object : BaseMachineTab(this, gui,
+                ResourceLocation("technocracy.foundation", "textures/item/gear.png")) {
             override fun init() {
                 var nextOutput = 125
                 var nextInput = 10

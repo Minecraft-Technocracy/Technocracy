@@ -6,10 +6,12 @@ import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
 import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesTileEntityComponent
 import net.minecraft.client.Minecraft
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.util.ResourceLocation
 
 class MachineUpgradesTab(parent: TCGui,
-                         private val upgrades: MachineUpgradesTileEntityComponent,
-                         private val player: EntityPlayer?) : TCTab("Upgrades", parent) {
+        private val upgrades: MachineUpgradesTileEntityComponent,
+        private val player: EntityPlayer?) :
+        TCTab("Upgrades", parent, icon = ResourceLocation("technocracy.foundation", "textures/item/wrench.png")) {
 
     override fun init() {
         if (player != null) {
