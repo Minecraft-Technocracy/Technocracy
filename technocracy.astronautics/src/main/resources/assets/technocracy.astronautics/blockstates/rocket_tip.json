@@ -1,5 +1,8 @@
 {
   "variants": {
+    "type=bottom": { "model": "technocracy.astronautics:rocket_tip_base" },
+    "type=middle": { "model": "technocracy.astronautics:rocket_tip" },
+    "type=top": { "model": "technocracy.astronautics:rocket_tip_base" },
     "normal": [
       {
         "model": "technocracy.astronautics:rocket_tip"
