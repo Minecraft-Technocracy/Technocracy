@@ -47,10 +47,13 @@ item.coil.name=Coil
 item.servo.name=Servomotor
 item.polyfibre.name=Polyfibre
 item.pump.name=Pump
+item.fan.name=Fan
+item.upgrade_frame.name=Upgrade Frame
 
 item.ingot.invar.name=Invar Ingot
 item.ingot.steel.name=Steel Ingot
 item.ingot.bronze.name=Bronze Ingot
+item.ingot.electrum.name=Electrum Ingot
 item.ingot.siliconBronze.name=Electrical Bronze Ingot
 item.ingot.superconductor.name=Superconductor Ingot
 item.ingot.mPCM.name=Thermoconductive Alloy

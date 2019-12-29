@@ -1,0 +1,17 @@
+{
+  "input": [
+    {
+      "type": "forge:ore_dict",
+      "ore": "ingotGold"
+    },
+    {
+      "type": "forge:ore_dict",
+      "ore": "ingotSilver"
+    }
+  ],
+  "output": {
+    "item": "technocracy.foundation:ingot.electrum",
+    "count": 2
+  },
+  "cost": 120
+}

@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ccc",
+    "prp",
+    "sss"
+  ],
+  "key": {
+    "s": {
+      "item": "technocracy.foundation:ingot.siliconBronze"
+    },
+    "r": {
+      "type": "forge:ore_dict",
+      "ore": "dustRedstone"
+    },
+    "p": {
+      "type": "forge:ore_dict",
+      "ore": "sheetPlastic"
+    },
+    "c": {
+      "type": "forge:ore_dict",
+      "ore": "ingotCopper"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:upgrade_frame",
+    "count": 1
+  }
+}

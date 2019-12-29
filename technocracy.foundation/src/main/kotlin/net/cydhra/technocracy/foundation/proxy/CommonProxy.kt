@@ -236,6 +236,7 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(servoItem)
         itemManager.prepareItemForRegistration(polyfibreItem)
         itemManager.prepareItemForRegistration(pumpItem)
+        itemManager.prepareItemForRegistration(fanItem)
 
         itemManager.prepareItemForRegistration(invarItem)
         itemManager.prepareItemForRegistration(siliconBronzeItem)
@@ -245,6 +246,7 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(bronzeItem)
         itemManager.prepareItemForRegistration(lightAlloyItem)
         itemManager.prepareItemForRegistration(toughAlloyItem)
+        itemManager.prepareItemForRegistration(electrumItem)
 
         itemManager.prepareItemForRegistration(invarSheetItem)
         itemManager.prepareItemForRegistration(steelSheetItem)
@@ -253,6 +255,7 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(pipeItem, PipeItemModel())
         itemManager.prepareItemForRegistration(facadeItem, FacadeItemModel())
 
+        itemManager.prepareItemForRegistration(upgradeFrameItem)
         itemManager.prepareItemForRegistration(mechSpeedUp1Item)
         itemManager.prepareItemForRegistration(mechSpeedUp2Item)
         itemManager.prepareItemForRegistration(mechSpeedUp3Item)
