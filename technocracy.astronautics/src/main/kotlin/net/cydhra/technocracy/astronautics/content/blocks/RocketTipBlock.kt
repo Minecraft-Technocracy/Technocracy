@@ -1,9 +1,7 @@
 package net.cydhra.technocracy.astronautics.content.blocks
 
-import net.cydhra.technocracy.foundation.conduits.types.PipeType
-import net.cydhra.technocracy.foundation.content.tileentities.pipe.TileEntityPipe
 import net.cydhra.technocracy.foundation.model.blocks.api.AbstractBaseBlock
-import net.minecraft.block.Block
+import net.minecraft.block.material.EnumPushReaction
 import net.minecraft.block.material.Material
 import net.minecraft.block.properties.PropertyEnum
 import net.minecraft.block.state.BlockStateContainer
@@ -34,6 +32,10 @@ class RocketTipBlock : AbstractBaseBlock("rocket_tip", Material.IRON) {
     init {
         setHardness(1.5f)
         this.defaultState = this.blockState.baseState.withProperty(TIP_TYPE, TipType.MIDDLE)
+    }
+
+    override fun getMobilityFlag(state: IBlockState): EnumPushReaction {
+        return EnumPushReaction.BLOCK
     }
 
     override fun canPlaceBlockAt(worldIn: World, pos: BlockPos): Boolean {
@@ -98,10 +100,6 @@ class RocketTipBlock : AbstractBaseBlock("rocket_tip", Material.IRON) {
         return rayTraceBestBB(startPos, endPos, list) ?: AxisAlignedBB(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
     }
 
-    override fun onBlockDestroyedByPlayer(worldIn: World, pos: BlockPos, state: IBlockState) {
-        super.onBlockDestroyedByPlayer(worldIn, pos, state)
-    }
-
     @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
     override fun onBlockHarvested(worldIn: World, pos: BlockPos, state: IBlockState, player: EntityPlayer) {
         when (state.getValue(TIP_TYPE)) {
@@ -118,10 +116,6 @@ class RocketTipBlock : AbstractBaseBlock("rocket_tip", Material.IRON) {
                 worldIn.setBlockToAir(pos.offset(EnumFacing.UP, 2))
             }
         }
-    }
-
-    override fun breakBlock(worldIn: World, pos: BlockPos, state: IBlockState) {
-
     }
 
     override fun collisionRayTrace(blockState: IBlockState, worldIn: World, pos: BlockPos, startIn: Vec3d,
