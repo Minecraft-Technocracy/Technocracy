@@ -27,7 +27,8 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
                 return 1
         }
         //Todo limit some kinds of cargo to one per slot
-        return default
+        //current dyson cargo is 16 per cargo element, max rocket is 6 modules * 8 storage slots * 16 items = 768 max dyson parts per rocket
+        return 16//default
     }
 
     val ownerShip = OwnerShipTileEntityComponent()
