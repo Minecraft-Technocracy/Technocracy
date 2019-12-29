@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation
 
 import net.cydhra.technocracy.foundation.conduits.ConduitNetwork
+import net.cydhra.technocracy.foundation.content.commands.ClearParticlesCommand
 import net.cydhra.technocracy.foundation.content.commands.ClearTemplateCommand
 import net.cydhra.technocracy.foundation.content.commands.GenerateTemplateCommand
 import net.cydhra.technocracy.foundation.content.commands.PasteTemplateCommand
@@ -116,6 +117,7 @@ object TCFoundation {
             start.registerServerCommand(GenerateTemplateCommand())
             start.registerServerCommand(ClearTemplateCommand())
             start.registerServerCommand(PasteTemplateCommand())
+            start.registerServerCommand(ClearParticlesCommand())
         }
     }
 
