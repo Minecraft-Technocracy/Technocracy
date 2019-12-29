@@ -5,6 +5,7 @@ import net.cydhra.technocracy.astronautics.content.tileentity.TileEntityRocketCo
 import net.cydhra.technocracy.foundation.data.world.groups.GroupManager
 import net.cydhra.technocracy.foundation.model.blocks.api.AbstractRotatableTileEntityBlock
 import net.cydhra.technocracy.foundation.model.blocks.util.IDynamicBlockPlaceBehavior
+import net.cydhra.technocracy.foundation.model.fx.manager.TCParticleManager
 import net.cydhra.technocracy.foundation.util.structures.Template
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
@@ -19,6 +20,7 @@ import net.minecraft.util.text.TextComponentString
 import net.minecraft.util.text.TextComponentTranslation
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
+import java.util.stream.Collectors
 
 
 class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controller", material = Material.ROCK), IDynamicBlockPlaceBehavior {
@@ -69,7 +71,7 @@ class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controlle
             satellite_cargo.loadFromAssets("rocket/satellite_module")
         }
 
-        if(tile.currentRocket != null) {
+        if (tile.currentRocket != null) {
             playerIn.sendMessage(TextComponentTranslation("rocket.controller.invalid.already_linked"))
             return true
         }
@@ -80,8 +82,10 @@ class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controlle
             val base = rocket_base.matches(worldIn, pos, true)
             if (base != null) {
 
+                val rotation = base.first
+
                 val blocks = mutableListOf<BlockPos>()
-                blocks.addAll(base)
+                blocks.addAll(base.second)
 
                 var offPos = pos.add(0, 4, 0)
 
@@ -99,7 +103,7 @@ class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controlle
 
                     val match_tank = tank_module.matches(worldIn, offPos, true)
                     if (match_tank != null) {
-                        blocks.addAll(match_tank)
+                        blocks.addAll(match_tank.second)
                         if (totalStorageElements != 0) {
                             break
                         }
@@ -117,7 +121,7 @@ class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controlle
                     })
 
                     if (match_storage != null) {
-                        blocks.addAll(match_storage)
+                        blocks.addAll(match_storage.second)
                         totalStorageElements++
                         offPos = offPos.add(0, 3, 0)
                         continue
@@ -126,7 +130,7 @@ class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controlle
                     val match_satelite = satellite_cargo.matches(worldIn, offPos, true)
 
                     if (match_satelite != null) {
-                        blocks.addAll(match_satelite)
+                        blocks.addAll(match_satelite.second)
                         totalStorageElements++
                         satelliteCargo++
                         offPos = offPos.add(0, 3, 0)
@@ -137,14 +141,14 @@ class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controlle
                     var match_tip = rocket_tip_a.matches(worldIn, offPos, true, valid = { check_state, block, _ -> block == rocketHullBlock })
 
                     if (match_tip != null) {
-                        blocks.addAll(match_tip)
+                        blocks.addAll(match_tip.second)
                         tip = true
                         continue
                     }
 
                     match_tip = rocket_tip_b.matches(worldIn, offPos, true, valid = { check_state, block, _ -> block == rocketHullBlock })
                     if (match_tip != null) {
-                        blocks.addAll(match_tip)
+                        blocks.addAll(match_tip.second)
                         tip = true
                         continue
                     }
@@ -157,26 +161,31 @@ class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controlle
 
                 if (tip && tank * 2 >= totalStorageElements) {
 
-                    val template = Template(pos, worldIn, blocks)
+                    //offset the position towards the rocket
+                    val offset = pos.offset(rotation.rotate(EnumFacing.NORTH), -3)
+
+                    val template = Template(offset, worldIn, blocks)
                     val ent = EntityRocket(worldIn, template, pos, tile.ownerShip.currentOwner!!)
                     //ent.motionY = 0.005
-                    ent.setPosition(pos.x + 0.5, pos.y.toDouble(), pos.z + 0.5)
+                    ent.setPosition(offset.x + 0.5, offset.y.toDouble(), offset.z + 0.5)
                     worldIn.spawnEntity(ent)
 
                     //16 buckets base rocket + 16 buckets for each tank module
 
                     ent.tank.fluid.capacity = (16 + tank * 16) * 1000
 
-                    if(dysonCargo != 0) {
+                    if (dysonCargo != 0) {
                         ent.dysonCargo = true
                         ent.cargoSlots = NonNullList.withSize(dysonCargo, ItemStack.EMPTY)
                     } else {
                         ent.cargoSlots = NonNullList.withSize(totalStorageElements, ItemStack.EMPTY)
                     }
 
-
-
                     tile.linkToCurrentRocket(ent)
+
+                    for (e in blocks) {
+                        worldIn.setBlockToAir(e)
+                    }
 
                     playerIn.sendMessage(TextComponentString("rocket build: $totalStorageElements storage modules with $dysonCargo elements and $tank tank modules"))
 

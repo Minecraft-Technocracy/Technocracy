@@ -187,7 +187,7 @@ class Template() : INBTSerializable<NBTTagCompound> {
                 pos: BlockPos,
                 fullMirror: Boolean = false,
                 valid: (state: IBlockState, block: Block, layer: Int) -> Boolean = { _, _, _ -> true }):
-            MutableList<BlockPos>? {
+            Pair<Rotation, MutableList<BlockPos>>? {
         val rots = if (fullMirror) Rotation.values() else arrayOf(Rotation.NONE, Rotation.CLOCKWISE_90)
 
         for (rot in rots) {
@@ -200,7 +200,7 @@ class Template() : INBTSerializable<NBTTagCompound> {
                     for(block in mods.value)
                     list.add(pos.add(block.rotate(rot)))
                 }
-                return list
+                return rot to list
             }
         }
 

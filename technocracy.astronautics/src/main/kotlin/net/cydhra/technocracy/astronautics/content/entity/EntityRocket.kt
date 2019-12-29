@@ -13,10 +13,12 @@ import net.cydhra.technocracy.foundation.model.fx.manager.TCParticleManager
 import net.cydhra.technocracy.foundation.util.readCompoundTag
 import net.cydhra.technocracy.foundation.util.structures.Template
 import net.cydhra.technocracy.foundation.util.writeCompoundTag
+import net.minecraft.block.material.Material
 import net.minecraft.client.renderer.vertex.VertexBuffer
 import net.minecraft.entity.Entity
 import net.minecraft.entity.MoverType
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.init.SoundEvents
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTTagList
@@ -29,10 +31,13 @@ import net.minecraft.util.EnumFacing
 import net.minecraft.util.NonNullList
 import net.minecraft.util.math.AxisAlignedBB
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.MathHelper
 import net.minecraft.world.World
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.util.Constants
+import net.minecraftforge.event.entity.EntityEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import net.minecraftforge.fml.common.gameevent.TickEvent
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
@@ -52,13 +57,18 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
         }
 
         tank.allowAutoSave = false
+
+        initBB()
     }
 
     @SideOnly(Side.CLIENT)
     var vbo: VertexBuffer? = null
 
     lateinit var controllerBlock: BlockPos
-    private val LIFTOFF = EntityDataManager.createKey(EntityRocket::class.java, DataSerializers.BOOLEAN)
+
+    companion object {
+        private val LIFTOFF = EntityDataManager.createKey(EntityRocket::class.java, DataSerializers.BOOLEAN)
+    }
 
     val owner = OwnerShipTileEntityComponent()
     //TODO config
@@ -73,8 +83,16 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
                 this.motionY = 0.005
             }
             dataManager.set(LIFTOFF, value)
+            dataManager.setDirty(LIFTOFF)
         }
 
+    var template: Template = Template()
+    var entityBox: AxisAlignedBB? = null
+    var lastBB: List<AxisAlignedBB> = mutableListOf()
+
+    override fun isInRangeToRenderDist(distance: Double): Boolean {
+        return distance <= 100000
+    }
 
     override fun writeEntityToNBT(compound: NBTTagCompound) {
         with(compound) {
@@ -106,27 +124,48 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
             val size = cargo.getInteger("cargoSize")
             cargoSlots = NonNullList.withSize(size, ItemStack.EMPTY)
             val list = cargo.getTagList("items", Constants.NBT.TAG_COMPOUND)
-            for(i in 0 until size) {
+            for (i in 0 until size) {
                 cargoSlots!![i] = ItemStack(list.getCompoundTagAt(i))
             }
         }
     }
 
-    var template: Template = Template()
-    lateinit var entityBox: AxisAlignedBB
-    var lastBB: List<AxisAlignedBB> = mutableListOf()
-
     override fun entityInit() {
+        dataManager.register(LIFTOFF, false)
     }
 
     init {
-        dataManager.register(LIFTOFF, false)
         MinecraftForge.EVENT_BUS.register(this)
+    }
+
+    fun initBB() {
+        var minX = 0
+        var minY = 0
+        var minZ = 0
+        var maxX = 0
+        var maxY = 0
+        var maxZ = 0
+
+        for (info in template.blocks) {
+            minX = min(info.pos.x, minX)
+            minY = min(info.pos.y, minY)
+            minZ = min(info.pos.z, minZ)
+            maxX = max(info.pos.x, maxX)
+            maxY = max(info.pos.y, maxY)
+            maxZ = max(info.pos.z, maxZ)
+        }
+
+        entityBox = AxisAlignedBB(minX.toDouble() - 1, minY.toDouble(), minZ.toDouble() - 1, maxX.toDouble() + 1, maxY.toDouble() + 1, maxZ.toDouble() + 1)
+
+        //update to new bb
+        setPosition(posX, posY, posZ)
     }
 
     override fun readSpawnData(additionalData: ByteBuf?) {
         if (additionalData == null) return
         template.deserializeNBT(readCompoundTag(additionalData))
+
+        initBB()
     }
 
     override fun writeSpawnData(buffer: ByteBuf?) {
@@ -152,12 +191,13 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
         return super.attackEntityFrom(source, amount)
     }
 
+    @SubscribeEvent
+    fun worldTick(e: EntityEvent.CanUpdate) {
+        if (e.entity == this)
+            e.canUpdate = true
+    }
+
     override fun onUpdate() {
-        setNoGravity(true)
-        noClip = false
-
-        this.motionX = 0.0
-
         if (liftOff) {
             if (ticksExisted % 4 == 0)
                 this.motionY *= 1.08
@@ -165,20 +205,23 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
             this.motionY = 0.0
         }
 
-        if (posY > 300)
+        if (posY > 10000)
             world.removeEntity(this)
 
         super.onUpdate()
 
-
         this.prevPosX = this.posX
         this.prevPosY = this.posY
         this.prevPosZ = this.posZ
+
         val d0 = this.motionX
         val d1 = this.motionY
         val d2 = this.motionZ
 
-        this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ)
+        entityBoundingBox = this.entityBoundingBox.offset(motionX, motionY, motionZ)
+        posX += motionX
+        posY += motionY
+        posZ += motionZ
 
         if (!this.world.isRemote) {
             val d3 = this.motionX - d0
@@ -203,27 +246,29 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
             for (info in template.blocks) {
                 if (info.pos.y == 0) {
                     if (info.block == rocketDriveBlock) {
-                        TCParticleManager.addParticle(ParticleSmoke(world, posX + info.pos.x + rand.nextFloat() - 0.5f, posY - rand.nextFloat(), posZ + info.pos.z + rand.nextFloat() - 0.5f))
+                        if (!world.getBlockState(BlockPos(posX + info.pos.x - 0.5f, posY - 1, posZ + info.pos.z - 0.5f)).isFullBlock) {
+                            TCParticleManager.addParticle(ParticleSmoke(world, posX + info.pos.x + rand.nextFloat() - 0.5f, posY - rand.nextFloat() - 1, posZ + info.pos.z + rand.nextFloat() - 0.5f))
+                            if (rand.nextBoolean())
+                                TCParticleManager.addParticle(ParticleSmoke(world, posX + info.pos.x + rand.nextFloat() - 0.5f, posY - rand.nextFloat() - 1, posZ + info.pos.z + rand.nextFloat() - 0.5f))
+                        }
                     }
                 }
             }
         }
     }
 
+    override fun pushOutOfBlocks(x: Double, y: Double, z: Double): Boolean {
+        return false
+    }
+
     @SubscribeEvent
     fun addBB(e: GetCollisionBoxesEvent1) {
-        if (e.entity != null && ::entityBox.isInitialized) {
+        if (e.entity != null /*&& ::entityBox.isInitialized*/) {
             if (e.aabb.intersects(entityBoundingBox)) {
                 lastBB = getBlockBounds(e.aabb.grow(0.025), e.entity)
                 e.collisionBoxesList.addAll(lastBB)
             }
         }
-    }
-
-    override fun move(type: MoverType, x: Double, y: Double, z: Double) {
-        posY += y
-        posX += x
-        posZ += z
     }
 
     fun getBlockBounds(bb: AxisAlignedBB, entity: Entity): List<AxisAlignedBB> {
@@ -246,28 +291,16 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
         return list
     }
 
+    override fun setPosition(x: Double, y: Double, z: Double) {
+        super.setPosition(x, y, z)
+        if (entityBox != null)
+            entityBoundingBox = entityBox!!.offset(x, y, z)
+    }
+
     override fun getEntityBoundingBox(): AxisAlignedBB {
-        if (!::entityBox.isInitialized) {
-            var minX = 0
-            var minY = 0
-            var minZ = 0
-            var maxX = 0
-            var maxY = 0
-            var maxZ = 0
 
-            for (info in template.blocks) {
-                minX = min(info.pos.x, minX)
-                minY = min(info.pos.y, minY)
-                minZ = min(info.pos.z, minZ)
-                maxX = max(info.pos.x, maxX)
-                maxY = max(info.pos.y, maxY)
-                maxZ = max(info.pos.z, maxZ)
-            }
 
-            entityBox = AxisAlignedBB(minX.toDouble() - 1, minY.toDouble(), minZ.toDouble() - 1, maxX.toDouble() + 1, maxY.toDouble() + 1, maxZ.toDouble() + 1)
-        }
-
-        return entityBox.offset(posX, posY, posZ)
+        return super.getEntityBoundingBox()//entityBoundingBox;//entityBox.offset(posX, posY, posZ)
     }
 
     protected fun collideWithEntity(entityIn: Entity) {
