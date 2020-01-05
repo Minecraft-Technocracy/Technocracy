@@ -30,7 +30,7 @@ object TCParticleManager {
     }
 
     @SubscribeEvent
-    fun render(event: RenderGameOverlayEvent.Text) {
+    fun addDebugInfo(event: RenderGameOverlayEvent.Text) {
         if (Minecraft.getMinecraft().gameSettings.showDebugInfo) {
             event.left.add("")
             event.left.add("TC_Particles: $lastRender/${particles.values.stream().mapToInt { it.size }.sum()}")

@@ -29,11 +29,7 @@ abstract class AbstractParticle(worldIn: World, posXIn: Double, posYIn: Double, 
     }
 
     fun interpolatePosition(position: Vector3f, partialTicks: Float): Vector3f {
-        val manager = Minecraft.getMinecraft().renderManager
-        val posX = prevPosX + (posX - prevPosX) * partialTicks
-        val posY = prevPosY + (posY - prevPosY) * partialTicks
-        val posZ = prevPosZ + (posZ - prevPosZ) * partialTicks
-        position.set((posX - manager.viewerPosX).toFloat(), (posY - manager.viewerPosY).toFloat(), (posZ - manager.viewerPosZ).toFloat())
+        position.set(getX(partialTicks), getY(partialTicks), getZ(partialTicks))
         return position
     }
 
