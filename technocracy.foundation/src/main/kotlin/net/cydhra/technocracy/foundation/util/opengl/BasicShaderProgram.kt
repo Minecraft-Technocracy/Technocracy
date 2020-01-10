@@ -276,6 +276,18 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
             }
         }
 
+        fun uploadUniform(x: Boolean) {
+            val buffer_int = buffer_int!!
+            val value = if (x) 1 else 0
+            with(buffer_int) {
+                if (this[0] != value) {
+                    position(0)
+                    put(0, value)
+                    dirty = true
+                }
+            }
+        }
+
         fun uploadUniform(matrix4f: Matrix4f) {
             matrix4f.store(buffer_float)
             buffer_float!!.flip()
