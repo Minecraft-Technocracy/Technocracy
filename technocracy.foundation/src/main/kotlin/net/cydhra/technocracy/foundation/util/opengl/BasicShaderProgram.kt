@@ -1,7 +1,6 @@
 package net.cydhra.technocracy.foundation.util.opengl
 
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.OpenGlHelper
 import net.minecraft.client.resources.IResourceManager
 import net.minecraft.client.resources.SimpleReloadableResourceManager
@@ -17,7 +16,6 @@ import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.*
 import java.io.BufferedInputStream
 import java.io.Closeable
-import java.lang.IllegalStateException
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 import java.util.function.BiConsumer
@@ -26,11 +24,6 @@ import java.util.function.Predicate
 
 
 class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: ResourceLocation, val geometryIn: ResourceLocation? = null, val attributeBinder: Consumer<Int>? = null, val resourceReloader: BiConsumer<IResourceManager, Predicate<IResourceType>>? = null) : ISelectiveResourceReloadListener {
-    companion object {
-        private val matrixBuffer_4 = BufferUtils.createFloatBuffer(4 * 4)
-        private val matrixBuffer_3 = BufferUtils.createFloatBuffer(3 * 3)
-    }
-
     private var programID: Int = 0
     private var vertexShaderID: Int = 0
     private var fragmentShaderID: Int = 0
@@ -77,27 +70,6 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
 
         if (i == 0)
             throw IllegalStateException(OpenGlHelper.glGetProgramInfoLog(programID, 32768))
-    }
-
-    fun applyAndRender() {
-        start()
-        GL11.glDisable(GL11.GL_TEXTURE_2D)
-        val scaledResolution = ScaledResolution(Minecraft.getMinecraft())
-        GL11.glBegin(4)
-        GL11.glTexCoord2d(0.0, 1.0)
-        GL11.glVertex2d(0.0, 0.0)
-        GL11.glTexCoord2d(0.0, 0.0)
-        GL11.glVertex2d(0.0, scaledResolution.scaledHeight_double)
-        GL11.glTexCoord2d(1.0, 0.0)
-        GL11.glVertex2d(scaledResolution.scaledWidth_double, scaledResolution.scaledHeight_double)
-        GL11.glTexCoord2d(1.0, 0.0)
-        GL11.glVertex2d(scaledResolution.scaledWidth_double, scaledResolution.scaledHeight_double)
-        GL11.glTexCoord2d(1.0, 1.0)
-        GL11.glVertex2d(scaledResolution.scaledWidth_double, 0.0)
-        GL11.glTexCoord2d(0.0, 1.0)
-        GL11.glVertex2d(0.0, 0.0)
-        GL11.glEnd()
-        stop()
     }
 
     fun start() {
@@ -154,8 +126,15 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
     }
 
     class ShaderUniform(val type: UniformType, var uniformId: Int, var uniformName: String, var shader: BasicShaderProgram) {
-        enum class UniformType(val type: Int, val amount: Int) {
-            SAMPLER(3, 0), INT_1(0, 1), INT_2(0, 2), INT_3(0, 3), INT_4(0, 4), FLOAT_1(1, 1), FLOAT_2(1, 2), FLOAT_3(1, 3), FLOAT_4(1, 4), MATRX_2x2(2, 2 * 2), MATRIX_3x3(2, 3 * 3), MATRIX_4x4(2, 4 * 4)
+        enum class UniformType(val type: GenericType, val amount: Int) {
+            SAMPLER(GenericType.SAMPLER, 1),
+            INT_1(GenericType.INT, 1), INT_2(GenericType.INT, 2), INT_3(GenericType.INT, 3), INT_4(GenericType.INT, 4),
+            FLOAT_1(GenericType.FLOAT, 1), FLOAT_2(GenericType.FLOAT, 2), FLOAT_3(GenericType.FLOAT, 3), FLOAT_4(GenericType.FLOAT, 4),
+            MATRX_2x2(GenericType.MATRIX, 2 * 2), MATRIX_3x3(GenericType.MATRIX, 3 * 3), MATRIX_4x4(GenericType.MATRIX, 4 * 4);
+
+            enum class GenericType {
+                SAMPLER, INT, FLOAT, MATRIX
+            }
         }
 
         private var buffer_float: FloatBuffer? = null
@@ -164,9 +143,8 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
 
         init {
             when (type.type) {
-                0 -> buffer_int = BufferUtils.createIntBuffer(type.amount)
-                1, 2 -> buffer_float = BufferUtils.createFloatBuffer(type.amount)
-                3 -> buffer_int = BufferUtils.createIntBuffer(1)
+                UniformType.GenericType.INT, UniformType.GenericType.SAMPLER -> buffer_int = BufferUtils.createIntBuffer(type.amount)
+                UniformType.GenericType.FLOAT, UniformType.GenericType.MATRIX -> buffer_float = BufferUtils.createFloatBuffer(type.amount)
             }
         }
 
@@ -175,48 +153,59 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
 
             if (dirty) {
                 when (type.type) {
-                    0 -> uploadInt()
-                    1 -> uploadFloat()
-                    2 -> uploadMatrix()
-                    3 -> uploadSampler()
+                    UniformType.GenericType.INT -> uploadInt()
+                    UniformType.GenericType.FLOAT -> uploadFloat()
+                    UniformType.GenericType.MATRIX -> uploadMatrix()
+                    UniformType.GenericType.SAMPLER -> uploadSampler()
                 }
                 dirty = false
             }
         }
 
         private fun uploadInt() {
+            val tmp = buffer_int ?: return
             when (type.amount) {
-                1 -> OpenGlHelper.glUniform1(uniformId, buffer_int!!)
-                2 -> OpenGlHelper.glUniform2(uniformId, buffer_int!!)
-                3 -> OpenGlHelper.glUniform3(uniformId, buffer_int!!)
-                4 -> OpenGlHelper.glUniform4(uniformId, buffer_int!!)
+                1 -> OpenGlHelper.glUniform1(uniformId, tmp)
+                2 -> OpenGlHelper.glUniform2(uniformId, tmp)
+                3 -> OpenGlHelper.glUniform3(uniformId, tmp)
+                4 -> OpenGlHelper.glUniform4(uniformId, tmp)
             }
         }
 
         private fun uploadFloat() {
+            val tmp = buffer_float ?: return
             when (type.amount) {
-                1 -> OpenGlHelper.glUniform1(uniformId, buffer_float!!)
-                2 -> OpenGlHelper.glUniform2(uniformId, buffer_float!!)
-                3 -> OpenGlHelper.glUniform3(uniformId, buffer_float!!)
-                4 -> OpenGlHelper.glUniform4(uniformId, buffer_float!!)
+                1 -> OpenGlHelper.glUniform1(uniformId, tmp)
+                2 -> OpenGlHelper.glUniform2(uniformId, tmp)
+                3 -> OpenGlHelper.glUniform3(uniformId, tmp)
+                4 -> OpenGlHelper.glUniform4(uniformId, tmp)
             }
         }
 
         private fun uploadMatrix() {
+            val tmp = buffer_float ?: return
             when (type.amount) {
-                2 * 2 -> OpenGlHelper.glUniformMatrix2(uniformId, false, buffer_float!!)
-                3 * 3 -> OpenGlHelper.glUniformMatrix3(uniformId, false, buffer_float!!)
-                4 * 4 -> GL20.glUniformMatrix4(uniformId, false, buffer_float!!)
+                2 * 2 -> OpenGlHelper.glUniformMatrix2(uniformId, false, tmp)
+                3 * 3 -> OpenGlHelper.glUniformMatrix3(uniformId, false, tmp)
+                4 * 4 -> GL20.glUniformMatrix4(uniformId, false, tmp)
             }
         }
 
         private fun uploadSampler() {
-            OpenGlHelper.glUniform1i(uniformId, buffer_int!![0])
+            val tmp = buffer_int ?: return
+            OpenGlHelper.glUniform1i(uniformId, tmp[0])
         }
 
         fun uploadUniform(x: Float, y: Float, z: Float) {
-            if (buffer_float!![0] != x || buffer_float!![1] != y || buffer_float!![2] != z)
-                with(buffer_float!!) {
+            if (type.type == UniformType.GenericType.INT) {
+                uploadUniform(x.toInt(), y.toInt(), z.toInt())
+                return
+            }
+            val buffer_float = buffer_float
+                    ?: run { IllegalStateException("Wrong uniform type").printStackTrace(); return }
+
+            if (buffer_float[0] != x || buffer_float[1] != y || buffer_float[2] != z)
+                with(buffer_float) {
                     position(0)
                     put(0, x)
                     put(1, y)
@@ -226,8 +215,15 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
         }
 
         fun uploadUniform(x: Float, y: Float) {
-            if (buffer_float!![0] != x || buffer_float!![1] != y)
-                with(buffer_float!!) {
+            if (type.type == UniformType.GenericType.INT) {
+                uploadUniform(x.toInt(), y.toInt())
+                return
+            }
+            val buffer_float = buffer_float
+                    ?: run { IllegalStateException("Wrong uniform type").printStackTrace(); return }
+
+            if (buffer_float[0] != x || buffer_float[1] != y)
+                with(buffer_float) {
                     position(0)
                     put(0, x)
                     put(1, y)
@@ -236,8 +232,15 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
         }
 
         fun uploadUniform(x: Float) {
-            if (buffer_float!![0] != x)
-                with(buffer_float!!) {
+            if (type.type == UniformType.GenericType.INT) {
+                uploadUniform(x.toInt())
+                return
+            }
+            val buffer_float = buffer_float
+                    ?: run { IllegalStateException("Wrong uniform type").printStackTrace(); return }
+
+            if (buffer_float[0] != x)
+                with(buffer_float) {
                     position(0)
                     put(0, x)
                     dirty = true
@@ -245,8 +248,14 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
         }
 
         fun uploadUniform(x: Int, y: Int, z: Int) {
-            if (buffer_int!![0] != x || buffer_int!![1] != y || buffer_int!![2] != z)
-                with(buffer_int!!) {
+            if (type.type == UniformType.GenericType.FLOAT) {
+                uploadUniform(x.toFloat(), y.toFloat(), z.toFloat())
+                return
+            }
+            val buffer_int = buffer_int ?: run { IllegalStateException("Wrong uniform type").printStackTrace(); return }
+
+            if (buffer_int[0] != x || buffer_int[1] != y || buffer_int[2] != z)
+                with(buffer_int) {
                     position(0)
                     put(0, x)
                     put(1, y)
@@ -256,8 +265,15 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
         }
 
         fun uploadUniform(x: Int, y: Int) {
-            if (buffer_int!![0] != x || buffer_int!![1] != y)
-                with(buffer_int!!) {
+            if (type.type == UniformType.GenericType.FLOAT) {
+                uploadUniform(x.toFloat(), y.toFloat())
+                return
+            }
+
+            val buffer_int = buffer_int ?: run { IllegalStateException("Wrong uniform type").printStackTrace(); return }
+
+            if (buffer_int[0] != x || buffer_int[1] != y)
+                with(buffer_int) {
                     position(0)
                     put(0, x)
                     put(1, y)
@@ -266,7 +282,13 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
         }
 
         fun uploadUniform(x: Int) {
-            val buffer_int = buffer_int!!
+            if (type.type == UniformType.GenericType.FLOAT) {
+                uploadUniform(x.toFloat())
+                return
+            }
+
+            val buffer_int = buffer_int ?: run { IllegalStateException("Wrong uniform type").printStackTrace(); return }
+
             with(buffer_int) {
                 if (this[0] != x) {
                     position(0)
@@ -277,7 +299,8 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
         }
 
         fun uploadUniform(x: Boolean) {
-            val buffer_int = buffer_int!!
+            val buffer_int = buffer_int ?: run { IllegalStateException("Wrong uniform type").printStackTrace(); return }
+
             val value = if (x) 1 else 0
             with(buffer_int) {
                 if (this[0] != value) {
@@ -289,121 +312,22 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
         }
 
         fun uploadUniform(matrix4f: Matrix4f) {
+            val buffer_float = buffer_float
+                    ?: run { IllegalStateException("Wrong uniform type").printStackTrace(); return }
+
             matrix4f.store(buffer_float)
-            buffer_float!!.flip()
+            buffer_float.flip()
             dirty = true
         }
 
         fun uploadUniform(bufferIn: FloatBuffer) {
+            val buffer_float = buffer_float
+                    ?: run { IllegalStateException("Wrong uniform type").printStackTrace(); return }
+
             bufferIn.flip()
-            buffer_float!!.position(0)
-            buffer_float!!.put(bufferIn)
+            buffer_float.position(0)
+            buffer_float.put(bufferIn)
             dirty = true
         }
-
-        /*var uniformCache = HashMap<Int, Any>()
-
-        fun uploadUniform(name: String, x: Float, y: Float, z: Float) {
-            val id = getUniformLocation(name)
-            var obj: FloatArray? = null
-
-            if (uniformCache.containsKey(id)) {
-                obj = uniformCache[id] as FloatArray
-            }
-
-            if (obj == null || obj[0] != x || obj[1] != y || obj[2] != z) {
-                OpenGlHelper.glUniform3()
-                ARBShaderObjects.glUniform3fARB(id, x, y, z)
-                uniformCache[id] = floatArrayOf(x, y, z)
-            }
-        }
-
-        fun uploadUniform(name: String, x: Float, y: Float) {
-            val id = getUniformLocation(name)
-            var obj: FloatArray? = null
-
-            if (uniformCache.containsKey(id)) {
-                obj = uniformCache[id] as FloatArray
-            }
-
-            if (obj == null || obj[0] != x || obj[1] != y) {
-                ARBShaderObjects.glUniform2fARB(id, x, y)
-                uniformCache[id] = floatArrayOf(x, y)
-            }
-        }
-
-        fun uploadUniform(name: String, x: Float) {
-            val id = getUniformLocation(name)
-            var obj: Float? = null
-
-            if (uniformCache.containsKey(id)) {
-                obj = uniformCache[id] as Float
-            }
-
-            if (obj == null || obj != x) {
-                ARBShaderObjects.glUniform1fARB(id, x)
-                uniformCache[id] = x
-            }
-        }
-
-        fun uploadUniform(name: String, x: Int, y: Int, z: Int) {
-            val id = getUniformLocation(name)
-            var obj: IntArray? = null
-
-            if (uniformCache.containsKey(id)) {
-                obj = uniformCache[id] as IntArray
-            }
-
-            if (obj == null || obj[0] != x || obj[1] != y || obj[2] != z) {
-                ARBShaderObjects.glUniform3iARB(id, x, y, z)
-                uniformCache[id] = intArrayOf(x, y, z)
-            }
-        }
-
-        fun uploadUniform(name: String, x: Int, y: Int) {
-            val id = getUniformLocation(name)
-            var obj: IntArray? = null
-
-            if (uniformCache.containsKey(id)) {
-                obj = uniformCache[id] as IntArray
-            }
-
-            if (obj == null || obj[0] != x || obj[1] != y) {
-                ARBShaderObjects.glUniform2iARB(id, x, y)
-                uniformCache[id] = intArrayOf(x, y)
-            }
-        }
-
-        fun uploadUniform(name: String, x: Int) {
-            val id = getUniformLocation(name)
-            var obj: Int? = null
-
-            if (uniformCache.containsKey(id)) {
-                obj = uniformCache[id] as Int
-            }
-
-            if (obj == null || obj != x) {
-                OpenGlHelper.glUniform1i(id, x)
-                uniformCache[id] = x
-            }
-        }
-
-        fun uploadUniform(name: String, matrix4f: Matrix4f) {
-            val id = getUniformLocation(name)
-            var obj: Matrix4f? = null
-
-            if (uniformCache.containsKey(id)) {
-                obj = uniformCache[id] as Matrix4f
-            }
-
-            if (obj == null || obj != matrix4f) {
-
-                matrix4f.store(matrixBuffer_4)
-                matrixBuffer_4.flip()
-
-                ARBShaderObjects.glUniformMatrix4ARB(id, false, matrixBuffer_4)
-                uniformCache[id] = matrix4f
-            }
-        }*/
     }
 }
