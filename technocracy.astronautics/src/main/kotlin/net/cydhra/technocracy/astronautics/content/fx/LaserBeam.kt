@@ -94,7 +94,6 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
 
             val tess = Tessellator.getInstance()
             val buffer = tess.buffer
-            GlStateManager.enableTexture2D()
 
 
             val posX = first.getX(partialTicks).toDouble()
@@ -137,10 +136,10 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
 
 
 
-             shape = 7
-             step = 360 / (shape.toDouble() - 1)
-             baseSize = 5f
-             scaling = baseSize / 300f
+            shape = 7
+            step = 360 / (shape.toDouble() - 1)
+            baseSize = 5f
+            scaling = baseSize / 300f
 
             GlStateManager.color(0.8f, 0.1f, 0.8f, 0.1f)
             //drawWobbleNoodle(posX, posY, posZ, 10, baseSize, size, first.getAge() * 8f + partialTicks, 0.2f)
@@ -255,20 +254,36 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
         lateinit var expand: BasicShaderProgram.ShaderUniform
         lateinit var expandFaktor: BasicShaderProgram.ShaderUniform
         lateinit var exposure: BasicShaderProgram.ShaderUniform
+        lateinit var gamma: BasicShaderProgram.ShaderUniform
+
+        lateinit var u_xyPixelSize_zIteration: BasicShaderProgram.ShaderUniform
 
         var gaus: BasicShaderProgram? = null
+        lateinit var kawase: BasicShaderProgram
         lateinit var blend: BasicShaderProgram
 
         @SubscribeEvent
         fun draw(overlay: RenderGameOverlayEvent) {
+            if (overlay.type != RenderGameOverlayEvent.ElementType.ALL)
+                return
             if (mtfbo == null)
                 return
 
+            val scaledResolution = ScaledResolution(Minecraft.getMinecraft())
+            val sW = scaledResolution.getScaledWidth_double()
+            val sH = scaledResolution.getScaledHeight_double()
+
             if (gaus == null) {
+
+                kawase = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shader/gaus.vsh"), ResourceLocation("technocracy.astronautics", "shader/kawase.fsh"))
+                kawase.start()
+                u_xyPixelSize_zIteration = kawase.getUniform("u_xyPixelSize_zIteration", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_3)
+                kawase.stop()
 
                 blend = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shader/gaus.vsh"), ResourceLocation("technocracy.astronautics", "shader/blend.fsh"))
                 blend.start()
                 exposure = blend.getUniform("exposure", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1)
+                gamma = blend.getUniform("gamma", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1)
                 blend.getUniform("scene", BasicShaderProgram.ShaderUniform.UniformType.SAMPLER).uploadUniform(0)
                 blend.getUniform("bloomBlur", BasicShaderProgram.ShaderUniform.UniformType.SAMPLER).uploadUniform(2)
                 blend.stop()
@@ -279,18 +294,14 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
                 expand = gaus.getUniform("expand", BasicShaderProgram.ShaderUniform.UniformType.INT_1)
                 expandFaktor = gaus.getUniform("expandFaktor", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1)
                 this.gaus = gaus
-
-                pingPong = MultiTargetFBO(mtfbo!!.width, mtfbo!!.height, false).createFramebuffer()
+                pingPong = MultiTargetFBO(sW.toInt(), sH.toInt(), false).createFramebuffer()
+                kawase.start()
             } else {
-                pingPong = pingPong.validate(mtfbo!!.width, mtfbo!!.height)
-                gaus!!.start()
+                pingPong = pingPong.validate(sW.toInt(), sH.toInt())
+                kawase.start()
             }
 
             var horizontal = true
-
-            val scaledResolution = ScaledResolution(Minecraft.getMinecraft())
-            val scaledWidth = scaledResolution.getScaledWidth_double()
-            val scaledHeight = scaledResolution.getScaledHeight_double()
 
             GlStateManager.bindTexture(mtfbo!!.textureTwo)
 
@@ -302,10 +313,18 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
 
             pingPong.framebufferClear()
             pingPong.bindFramebuffer(false)
+
+            val tess = Tessellator.getInstance()
+            val buffer = tess.buffer
+
+            /*gaus!!.start()
             for (i in 0..4) {
+
                 this.horizontal.uploadUniform(horizontal)
+
                 expand.uploadUniform(1)
-                expandFaktor.uploadUniform(2f)
+
+                expandFaktor.uploadUniform(i + 1)
                 gaus!!.updateUniforms()
 
                 if (horizontal) {
@@ -314,28 +333,64 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
                     TCOpenGlHelper.glDrawBuffers(GL30.GL_COLOR_ATTACHMENT0)
                 }
 
-                GL11.glBegin(GL11.GL_QUADS)
-                GL11.glTexCoord2d(0.0, 1.0)
-                GL11.glVertex2d(0.0, 0.0)
-                GL11.glTexCoord2d(0.0, 0.0)
-                GL11.glVertex2d(0.0, scaledHeight)
-                GL11.glTexCoord2d(1.0, 0.0)
-                GL11.glVertex2d(scaledWidth, scaledHeight)
-                GL11.glTexCoord2d(1.0, 1.0)
-                GL11.glVertex2d(scaledWidth, 0.0)
-                GL11.glEnd()
+                buffer.begin(GL11.GL_QUADS, POSITION_TEX)
+                buffer.pos(0.0, 0.0, 1.0).tex(0.0, 1.0).endVertex()
+                buffer.pos(0.0, sH, 1.0).tex(0.0, 0.0).endVertex()
+                buffer.pos(sW, sH, 1.0).tex(1.0, 0.0).endVertex()
+                buffer.pos(sW, 0.0, 0.0).tex(1.0, 1.0).endVertex()
+                tess.draw()
+
+                GlStateManager.bindTexture(if (!horizontal) pingPong.textureOne else pingPong.textureTwo)
+
+                horizontal = !horizontal
+            }*/
+
+            //val kernel = intArrayOf(0, 1, 2, 3, 4, 5, 7, 8, 9, 10)
+
+            var blur = 2f
+            val quality = 6f
+            val step = blur / quality
+
+            val BlurBufferScale = 1
+
+            val width = 1f / ((sW + BlurBufferScale - 1) / BlurBufferScale)
+            val height = 1f / ((sH + BlurBufferScale - 1) / BlurBufferScale)
+
+            for (i in 0 .. quality.toInt()) {
+                u_xyPixelSize_zIteration.uploadUniform(1f / sW.toFloat(), 1f / sH.toFloat(), blur)
+                blur -= step
+                kawase.updateUniforms()
+
+                if (horizontal) {
+                    TCOpenGlHelper.glDrawBuffers(GL30.GL_COLOR_ATTACHMENT1)
+                } else {
+                    TCOpenGlHelper.glDrawBuffers(GL30.GL_COLOR_ATTACHMENT0)
+                }
+
+                buffer.begin(GL11.GL_QUADS, POSITION_TEX)
+                buffer.pos(0.0, 0.0, 1.0).tex(0.0, 1.0).endVertex()
+                buffer.pos(0.0, sH, 1.0).tex(0.0, 0.0).endVertex()
+                buffer.pos(sW, sH, 1.0).tex(1.0, 0.0).endVertex()
+                buffer.pos(sW, 0.0, 0.0).tex(1.0, 1.0).endVertex()
+                tess.draw()
 
                 GlStateManager.bindTexture(if (!horizontal) pingPong.textureOne else pingPong.textureTwo)
 
                 horizontal = !horizontal
             }
 
-            gaus!!.stop()
+            /*
+                        const int shaderKernel[] = { 0, 1, 2, 3, 4, 5, 7, 8, 9, 10 };
+            mSettings.KawaseBlurPasses = _countof( shaderKernel );
+             */
+
+            kawase.stop()
 
             Minecraft.getMinecraft().framebuffer.bindFramebuffer(true)
 
             blend.start()
-            exposure.uploadUniform(0.3f)
+            exposure.uploadUniform(1f)
+            gamma.uploadUniform(1f)
             blend.updateUniforms()
 
             GlStateManager.setActiveTexture(OpenGlHelper.GL_TEXTURE2)
@@ -347,20 +402,23 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
             GL11.glTexCoord2d(0.0, 1.0)
             GL11.glVertex2d(0.0, 0.0)
             GL11.glTexCoord2d(0.0, 0.0)
-            GL11.glVertex2d(0.0, scaledHeight)
+            GL11.glVertex2d(0.0, sH)
             GL11.glTexCoord2d(1.0, 0.0)
-            GL11.glVertex2d(scaledWidth, scaledHeight)
+            GL11.glVertex2d(sW, sH)
             GL11.glTexCoord2d(1.0, 1.0)
-            GL11.glVertex2d(scaledWidth, 0.0)
+            GL11.glVertex2d(sW, 0.0)
             GL11.glEnd()
 
             blend.stop()
-            GlStateManager.setActiveTexture(OpenGlHelper.GL_TEXTURE2 + 2)
+
+            GlStateManager.setActiveTexture(OpenGlHelper.GL_TEXTURE2)
             GlStateManager.bindTexture(0)
             GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit)
             GlStateManager.bindTexture(0)
 
-            GlStateManager.disableTexture2D()
+            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
+
+            GlStateManager.enableAlpha()
 
             Minecraft.getMinecraft().framebuffer.bindFramebuffer(true)
         }

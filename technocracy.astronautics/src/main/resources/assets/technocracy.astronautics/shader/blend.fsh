@@ -4,13 +4,15 @@ out vec4 FragColor;
 uniform sampler2D scene;
 uniform sampler2D bloomBlur;
 uniform float exposure;
+uniform float gamma;
 
 void main()
 {
-    const float gamma = 2.2;
+    //const float gamma = 2.2;
     vec3 hdrColor = texture(scene, gl_TexCoord[0].st).rgb;
     vec3 bloomColor = texture(bloomBlur, gl_TexCoord[0].st).rgb;
-    vec3 result = pow(bloomColor, vec3(1.0 / exposure));
+    vec3 result = pow(bloomColor, vec3(1.0 / gamma));
+    //result = pow(result, vec3(1.0 / gamma));
     hdrColor += result; // additive blending
     // tone mapping
     //vec3 result = vec3(1.0) - exp(-hdrColor * exposure);
