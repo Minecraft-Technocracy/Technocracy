@@ -79,6 +79,8 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
         var mtfbo: MultiTargetFBO? = null
         lateinit var pingPong: MultiTargetFBO
 
+        var rendered = false
+
         init {
             MinecraftForge.EVENT_BUS.register(this)
         }
@@ -87,34 +89,19 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
         }
 
         override fun render(particles: Stream<AbstractParticle>, partialTicks: Float): Int {
-
+            rendered = true
             //TODO maybe instanced rendering
 
-            val first = particles.findFirst().get()
+            //val first = particles.findFirst().get()
 
             val tess = Tessellator.getInstance()
             val buffer = tess.buffer
-
-
-            val posX = first.getX(partialTicks).toDouble()
-            val posY = first.getY(partialTicks).toDouble()
-            val posZ = first.getZ(partialTicks).toDouble()
 
             GlStateManager.enableBlend()
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
             GlStateManager.disableTexture2D()
             GlStateManager.depthMask(false)
-
-            var shape = 7
-            var step = 360 / (shape.toDouble() - 1)
-            var baseSize = 5f
-            var scaling = baseSize / 300f
-
             GlStateManager.disableAlpha()
-
-            val ringOffset = 2f
-            //Minecraft.getMinecraft().entityRenderer.enableLightmap()
-            //OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 140f, 140f)
 
             val size = max(Minecraft.getMinecraft().gameSettings.renderDistanceChunks * 16 * 16 / 10, 80)
 
@@ -125,35 +112,43 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
             }
 
             val mtfbo = mtfbo!!
-
-            //mtfbo.framebuffer = Minecraft.getMinecraft().framebuffer
-
-            //mtfbo.attachToFBO()
-
             mtfbo.framebufferClear()
             mtfbo.bindFramebuffer(false)
 
+            for (first in particles) {
+                val posX = first.getX(partialTicks).toDouble()
+                val posY = first.getY(partialTicks).toDouble()
+                val posZ = first.getZ(partialTicks).toDouble()
+
+                var shape = 7
+                var step = 360 / (shape.toDouble() - 1)
+                var baseSize = 5f
+                var scaling = baseSize / 300f
 
 
+                val ringOffset = 2f
+                //Minecraft.getMinecraft().entityRenderer.enableLightmap()
+                //OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 140f, 140f)
 
-            shape = 7
-            step = 360 / (shape.toDouble() - 1)
-            baseSize = 5f
-            scaling = baseSize / 300f
 
-            GlStateManager.color(0.8f, 0.1f, 0.8f, 0.1f)
-            //drawWobbleNoodle(posX, posY, posZ, 10, baseSize, size, first.getAge() * 8f + partialTicks, 0.2f)
+                shape = 7
+                step = 360 / (shape.toDouble() - 1)
+                baseSize = 5f
+                scaling = baseSize / 300f
 
-            GlStateManager.color(0.8f, 0.1f, 0.8f, 0.1f)
-            drawWobbleNoodle(posX, posY, posZ, 10, baseSize - 2, size, first.getAge() * 7f + partialTicks, 0f)
+                GlStateManager.color(0.8f, 0.1f, 0.8f, 0.1f)
+                //drawWobbleNoodle(posX, posY, posZ, 10, baseSize, size, first.getAge() * 8f + partialTicks, 0.2f)
 
-            GlStateManager.color(0.0f, 0.0f, 0.8f, 0.08f)
-            drawWobbleNoodle(posX, posY, posZ, 10, baseSize - 1.3f, size, first.getAge() * 8f + partialTicks, 0f)
+                GlStateManager.color(0.4f, 0.5f, 0.4f, 0.1f)
+                //drawWobbleNoodle(posX, posY, posZ, 10, baseSize - 2, size, first.getAge() * 7f + partialTicks, 0f)
 
-            GlStateManager.color(0.2f, 0.3f, 0.2f, 0.05f)
-            drawWobbleNoodle(posX, posY, posZ, 10, baseSize - 0.8f, size, first.getAge() * 10f + partialTicks, 0f)
+                GlStateManager.color(0.3f, 0.4f, 0.3f, 0.1f)
+                //drawWobbleNoodle(posX, posY, posZ, 10, baseSize - 1.3f, size, first.getAge() * 8f + partialTicks, 0f)
 
-            /*buffer.begin(GL11.GL_TRIANGLE_STRIP, DefaultVertexFormats.POSITION_COLOR)
+                GlStateManager.color(0.2f, 0.3f, 0.2f, 0.25f)
+                drawWobbleNoodle(posX, posY, posZ, 10, baseSize - 0.8f, size, first.getAge() * 10f + partialTicks, 0f)
+
+                /*buffer.begin(GL11.GL_TRIANGLE_STRIP, DefaultVertexFormats.POSITION_COLOR)
 
             for (y in 0..300) {
                 val rnd = Random(y)
@@ -186,46 +181,47 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
             }
             tess.draw()*/
 
-            shape = 5
-            step = 360 / shape.toDouble()
-            baseSize = 2f
-            scaling = baseSize / size.toFloat()
+                shape = 5
+                step = 360 / shape.toDouble()
+                baseSize = 2f
+                scaling = baseSize / size.toFloat()
 
-            val rotTime = first.getAge() + partialTicks
+                val rotTime = first.getAge() + partialTicks
 
-            GlStateManager.color(172 / 255f, 127 / 255f, 255 / 255f, 0.6f)
-            //GlStateManager.color(0.698f, 0.643f, 0.925f, 0.2f)
+                GlStateManager.color(172 / 255f, 127 / 255f, 255 / 255f, 0.6f)
+                //GlStateManager.color(0.698f, 0.643f, 0.925f, 0.2f)
+                GlStateManager.color(1f, 0.7f, 0.6f, 0.6f)
 
-            //OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240f, 240f)
+                //OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240f, 240f)
 
 
-            buffer.begin(GL11.GL_TRIANGLE_STRIP, POSITION)
+                buffer.begin(GL11.GL_TRIANGLE_STRIP, POSITION)
 
-            val rotationOffset = 10.0
-            val rotationOffsetRadians = Math.toRadians(rotationOffset)
+                val rotationOffset = 10.0
+                val rotationOffsetRadians = Math.toRadians(rotationOffset)
 
-            for (y in 0 until size) {
+                for (y in 0 until size) {
 
-                val size = baseSize - scaling * y
+                    val size = baseSize - scaling * y
 
-                for (i in 0..shape) {
-                    val currStep = step * i.toDouble() + 45 + rotTime + y * rotationOffset
-                    val rad = Math.toRadians(currStep)
+                    for (i in 0..shape) {
+                        val currStep = step * i.toDouble() + 45 + rotTime + y * rotationOffset
+                        val rad = Math.toRadians(currStep)
 
-                    val offx = sin(rad) * sqr_2half
-                    val offz = -cos(rad) * sqr_2half
+                        val offx = sin(rad) * sqr_2half
+                        val offz = -cos(rad) * sqr_2half
 
-                    val offxNext = sin(rad + rotationOffsetRadians) * sqr_2half
-                    val offzNext = -cos(rad + rotationOffsetRadians) * sqr_2half
+                        val offxNext = sin(rad + rotationOffsetRadians) * sqr_2half
+                        val offzNext = -cos(rad + rotationOffsetRadians) * sqr_2half
 
-                    //lower vertex
-                    buffer.pos(posX + offx * size, posY + y, posZ + offz * size).endVertex()
-                    //upper vertex with offsets of next ring
-                    buffer.pos(posX + offxNext * (size - scaling), posY + y + 1, posZ + offzNext * (size - scaling)).endVertex()
+                        //lower vertex
+                        buffer.pos(posX + offx * size, posY + y, posZ + offz * size).endVertex()
+                        //upper vertex with offsets of next ring
+                        buffer.pos(posX + offxNext * (size - scaling), posY + y + 1, posZ + offzNext * (size - scaling)).endVertex()
+                    }
                 }
+                tess.draw()
             }
-            tess.draw()
-
 
             Minecraft.getMinecraft().framebuffer.bindFramebuffer(true)
 
@@ -253,7 +249,7 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
         lateinit var horizontal: BasicShaderProgram.ShaderUniform
         lateinit var expand: BasicShaderProgram.ShaderUniform
         lateinit var expandFaktor: BasicShaderProgram.ShaderUniform
-        lateinit var exposure: BasicShaderProgram.ShaderUniform
+        lateinit var combines: BasicShaderProgram.ShaderUniform
         lateinit var gamma: BasicShaderProgram.ShaderUniform
 
         lateinit var u_xyPixelSize_zIteration: BasicShaderProgram.ShaderUniform
@@ -263,10 +259,8 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
         lateinit var blend: BasicShaderProgram
 
         @SubscribeEvent
-        fun draw(overlay: RenderGameOverlayEvent) {
+        fun draw(overlay: RenderGameOverlayEvent.Pre) {
             if (overlay.type != RenderGameOverlayEvent.ElementType.ALL)
-                return
-            if (mtfbo == null)
                 return
 
             val scaledResolution = ScaledResolution(Minecraft.getMinecraft())
@@ -282,7 +276,7 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
 
                 blend = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shader/gaus.vsh"), ResourceLocation("technocracy.astronautics", "shader/blend.fsh"))
                 blend.start()
-                exposure = blend.getUniform("exposure", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1)
+                combines = blend.getUniform("combines", BasicShaderProgram.ShaderUniform.UniformType.INT_1)
                 gamma = blend.getUniform("gamma", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1)
                 blend.getUniform("scene", BasicShaderProgram.ShaderUniform.UniformType.SAMPLER).uploadUniform(0)
                 blend.getUniform("bloomBlur", BasicShaderProgram.ShaderUniform.UniformType.SAMPLER).uploadUniform(2)
@@ -356,7 +350,7 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
             val width = 1f / ((sW + BlurBufferScale - 1) / BlurBufferScale)
             val height = 1f / ((sH + BlurBufferScale - 1) / BlurBufferScale)
 
-            for (i in 0 .. quality.toInt()) {
+            for (i in 0..quality.toInt()) {
                 u_xyPixelSize_zIteration.uploadUniform(1f / sW.toFloat(), 1f / sH.toFloat(), blur)
                 blur -= step
                 kawase.updateUniforms()
@@ -389,8 +383,8 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
             Minecraft.getMinecraft().framebuffer.bindFramebuffer(true)
 
             blend.start()
-            exposure.uploadUniform(1f)
-            gamma.uploadUniform(1f)
+            combines.uploadUniform(2)
+            gamma.uploadUniform(1.1f)
             blend.updateUniforms()
 
             GlStateManager.setActiveTexture(OpenGlHelper.GL_TEXTURE2)
@@ -411,6 +405,7 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
 
             blend.stop()
 
+
             GlStateManager.setActiveTexture(OpenGlHelper.GL_TEXTURE2)
             GlStateManager.bindTexture(0)
             GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit)
@@ -419,8 +414,6 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
 
             GlStateManager.enableAlpha()
-
-            Minecraft.getMinecraft().framebuffer.bindFramebuffer(true)
         }
 
         fun drawWobbleNoodle(posX: Double, posY: Double, posZ: Double, shape: Int, sizeXZ: Float, sizeY: Int, time: Float, ringOffset: Float) {

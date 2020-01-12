@@ -10,9 +10,9 @@ import org.lwjgl.opengl.*
 /**
  * A FBO with 2 color render targets
  */
-class MultiTargetFBO(var width: Int, var height: Int, var useDepth: Boolean, var hdrFrameBuffer: Boolean = false) {
+class MultiTargetFBO(var width: Int, var height: Int, var useDepth: Boolean, var hdrFrameBuffer: Boolean = false, var scale: Float = 1f) {
 
-    constructor(sharedBuffers: Framebuffer, ownDepth: Boolean = false, hdrFrameBuffer: Boolean = false) : this(sharedBuffers.framebufferWidth, sharedBuffers.framebufferHeight, ownDepth || sharedBuffers.useDepth, hdrFrameBuffer) {
+    constructor(sharedBuffers: Framebuffer, ownDepth: Boolean = false, hdrFrameBuffer: Boolean = false, scale: Float = 1f) : this(sharedBuffers.framebufferWidth, sharedBuffers.framebufferHeight, ownDepth || sharedBuffers.useDepth, hdrFrameBuffer, scale) {
         this.parentBuffer = sharedBuffers
         this.ownDepth = ownDepth
         generateBuffers = false
@@ -87,10 +87,14 @@ class MultiTargetFBO(var width: Int, var height: Int, var useDepth: Boolean, var
     }
 
     private fun setupTexture(useHDR: Boolean = hdrFrameBuffer) {
+
+        val width = ((width + scale - 1) / scale).toInt()
+        val height = ((height + scale - 1) / scale).toInt()
+
         if (useHDR) {
-            GlStateManager.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB16, width, height, 0, GL11.GL_RGB, GL11.GL_FLOAT, null)
+            GlStateManager.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB16, width, (height * scale).toInt(), 0, GL11.GL_RGB, GL11.GL_FLOAT, null)
         } else {
-            GlStateManager.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, width, height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, null)
+            GlStateManager.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, width, (height * scale).toInt(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, null)
         }
     }
 
@@ -133,7 +137,7 @@ class MultiTargetFBO(var width: Int, var height: Int, var useDepth: Boolean, var
             OpenGlHelper.glBindFramebuffer(OpenGlHelper.GL_FRAMEBUFFER, this.framebufferObject)
 
             if (viewPort) {
-                GlStateManager.viewport(0, 0, width, height)
+                GlStateManager.viewport(0, 0, (width * scale).toInt(), (height * scale).toInt())
             }
         }
     }
@@ -230,7 +234,7 @@ class MultiTargetFBO(var width: Int, var height: Int, var useDepth: Boolean, var
             this
         } else {
             this.deleteFramebuffer()
-            val tmp = MultiTargetFBO(framebuffer, ownDepth, hdrFrameBuffer)
+            val tmp = MultiTargetFBO(framebuffer, ownDepth, hdrFrameBuffer, scale)
             tmp.createFramebuffer()
             tmp
         }.updateDepth()
