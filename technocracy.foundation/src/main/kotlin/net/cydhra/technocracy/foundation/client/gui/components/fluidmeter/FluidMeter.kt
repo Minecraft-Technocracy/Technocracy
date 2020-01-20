@@ -10,7 +10,7 @@ abstract class FluidMeter(val posX: Int, val posY: Int): TCComponent {
      */
     var level = 0.0f
 
-    var width = 10
+    var width = 16
     var height = 50
 
     override fun update() {

@@ -15,12 +15,14 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.Tessellator
+import net.minecraft.client.renderer.texture.TextureMap
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.fluids.Fluid
 import org.lwjgl.opengl.GL11
 import java.awt.Color
 import kotlin.math.roundToInt
+
 
 class DefaultFluidMeter(posX: Int, posY: Int, val component: FluidTileEntityComponent, val gui: TCGui) : FluidMeter(posX, posY) {
 
@@ -88,8 +90,13 @@ class DefaultFluidMeter(posX: Int, posY: Int, val component: FluidTileEntityComp
                 val color = Color(fluid.color)
 
                 GlStateManager.color(color.red / 255f, color.green / 255f, color.blue / 255f, 1f)
-                Minecraft.getMinecraft().textureManager.bindTexture(ResourceLocation(fluid.flowing.resourceDomain, "textures/${fluid.flowing.resourcePath}.png"))
-                drawModalRectWithCustomSizedTexture(posX + x, ((1f - level) * height).toInt() + posY + y, posX + width + x, posY + height + y, 11f, flowAnimation.toFloat(), 32f, 1024f)
+                val sprite = Minecraft.getMinecraft().textureMapBlocks.getTextureExtry(fluid.still.toString())
+                Minecraft.getMinecraft().textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE)
+                gui.drawTexturedModalRect(posX + x + 1,
+                        ((1f - level) * height).toInt() + posY + y + 1,
+                        sprite,
+                        width - 2,
+                        height - 2 - ((1f - level) * height).toInt())
             }
         }
 
@@ -110,7 +117,7 @@ class DefaultFluidMeter(posX: Int, posY: Int, val component: FluidTileEntityComp
             var right = (width - 2) / 2.0
 
             if (i == 5)
-                right = width - 2.0
+                right = width - 3.0
 
             val bottom = top + 1.0
 

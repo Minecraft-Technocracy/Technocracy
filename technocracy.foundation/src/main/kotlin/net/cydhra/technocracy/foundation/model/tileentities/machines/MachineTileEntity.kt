@@ -92,13 +92,13 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
                                     if (inputNearestToTheMiddle < nextInput - 5) {
                                         inputNearestToTheMiddle = nextInput - 5 // 5 is the space between components
                                     }
-                                    nextInput += 15 // fluid meter width (10) + space (5)
+                                    nextInput += 25 // fluid meter width (10) + space (5)
                                 }
                                 component.fluid.tanktype == DynamicFluidCapability.TankType.OUTPUT -> {
                                     components.add(DefaultFluidMeter(nextOutput, 20, component, gui))
                                     if (outputNearestToTheMiddle > nextOutput)
                                         outputNearestToTheMiddle = nextOutput
-                                    nextOutput += 15
+                                    nextOutput += 25
                                 }
                                 component.fluid.tanktype == DynamicFluidCapability.TankType.BOTH -> {
                                     TODO("not implemented")
