@@ -20,7 +20,7 @@ abstract class EnergyMeter(val posX: Int, val posY: Int) : TCComponent {
 
     }
 
-    override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
+    override fun mouseClicked(x: Int, y: Int, mouseX: Int, mouseY: Int, mouseButton: Int) {
 
     }
 

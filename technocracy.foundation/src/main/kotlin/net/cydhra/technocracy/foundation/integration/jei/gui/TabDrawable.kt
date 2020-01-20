@@ -15,7 +15,7 @@ class TabDrawable(val tileEntity: MachineTileEntity) : IDrawable {
     }
 
     override fun draw(minecraft: Minecraft, x: Int, y: Int) {
-        tab?.draw(0, 0, 0f)
+        tab?.draw(x, y, 0, 0, 0f)
     }
 
     override fun getWidth(): Int {

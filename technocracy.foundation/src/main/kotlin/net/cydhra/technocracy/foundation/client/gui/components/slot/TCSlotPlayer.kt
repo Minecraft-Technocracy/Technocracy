@@ -21,20 +21,20 @@ open class TCSlotPlayer(inventoryIn: IInventory, index: Int, xPosition: Int, yPo
     override fun update() {
     }
 
-    override fun draw(mouseX: Int, mouseY: Int, partialTicks: Float) {
+    override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
         Minecraft.getMinecraft().textureManager.bindTexture(TCGui.guiComponents)
         GlStateManager.color(1F, 1F, 1F, 1F)
-        GuiContainer.drawModalRectWithCustomSizedTexture(xPos - 1, yPos - 1, 0F, 10F, 18, 18, 256F,
+        GuiContainer.drawModalRectWithCustomSizedTexture(xPos - 1 + x, yPos - 1 + y, 0F, 10F, 18, 18, 256F,
                 256F)
     }
 
     override fun drawTooltip(mouseX: Int, mouseY: Int) {
         val stack = inventory.getStackInSlot(slotIndex)
-        if(stack.item != Items.AIR)
+        if (stack.item != Items.AIR)
             gui.renderHoveredItemToolTip(mouseX, mouseY)
     }
 
-    override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
+    override fun mouseClicked(x: Int, y: Int, mouseX: Int, mouseY: Int, mouseButton: Int) {
         // handled elsewhere
     }
 

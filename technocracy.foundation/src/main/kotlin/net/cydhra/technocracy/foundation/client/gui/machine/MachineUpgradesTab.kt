@@ -9,8 +9,8 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.ResourceLocation
 
 class MachineUpgradesTab(parent: TCGui,
-        private val upgrades: MachineUpgradesTileEntityComponent,
-        private val player: EntityPlayer?) :
+                         private val upgrades: MachineUpgradesTileEntityComponent,
+                         private val player: EntityPlayer?) :
         TCTab("Upgrades", parent, icon = ResourceLocation("technocracy.foundation", "textures/item/wrench.png")) {
 
     override fun init() {
@@ -23,15 +23,15 @@ class MachineUpgradesTab(parent: TCGui,
         }
     }
 
-    override fun draw(mouseX: Int, mouseY: Int, partialTicks: Float) {
-        super.draw(mouseX, mouseY, partialTicks)
+    override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
+        super.draw(x, y, mouseX, mouseY, partialTicks)
 
         var deltaY = 20
         val fr = Minecraft.getMinecraft().fontRenderer
         upgrades.description.forEach { (title, data) ->
-            parent.drawString(fr, title.formattedText, 85, deltaY, 0xffffff)
+            parent.drawString(fr, title.formattedText, 85 + x, deltaY + y, 0xffffff)
             parent.drawString(fr, data.formattedText,
-                    parent.guiWidth - 15 - fr.getStringWidth(data.unformattedText), deltaY, 0xffffff)
+                    parent.guiWidth - 15 - fr.getStringWidth(data.unformattedText) + x, deltaY + y, 0xffffff)
             deltaY += 12
         }
     }

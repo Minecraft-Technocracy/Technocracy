@@ -19,9 +19,9 @@ class MachineSettingsTab(parent: TCGui, val machine: MachineTileEntity) : TCTab(
         }
     }
 
-    override fun draw(mouseX: Int, mouseY: Int, partialTicks: Float) {
-        super.draw(mouseX, mouseY, partialTicks)
-        Minecraft.getMinecraft().fontRenderer.drawStringWithShadow("Redstone Mode: ", 10f, 24f, -1)
+    override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
+        super.draw(x, y, mouseX, mouseY, partialTicks)
+        Minecraft.getMinecraft().fontRenderer.drawStringWithShadow("Redstone Mode: ", 10f + x, 24f + y, -1)
     }
 
 }

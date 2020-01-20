@@ -8,8 +8,8 @@ abstract class RedstoneModeControl(val posX: Int, val posY: Int) : TCComponent {
     val height = 16
     var hovered = false
 
-    override fun draw(mouseX: Int, mouseY: Int, partialTicks: Float) {
-        hovered = mouseX > posX && mouseX < posX + width && mouseY > posY && mouseY < posY + height
+    override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
+        hovered = mouseX > posX + x && mouseX < posX + width + x && mouseY > posY + y && mouseY < posY + height + y
     }
 
     override fun isMouseOnComponent(mouseX: Int, mouseY: Int): Boolean {

@@ -16,18 +16,18 @@ abstract class TCTab(val name: String, val parent: TCGui, val tint: Int = -1,
 
     abstract fun init()
 
-    open fun draw(mouseX: Int, mouseY: Int, partialTicks: Float) {
+    open fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
         GlStateManager.color(1f, 1f, 1f, 1f)
-        Minecraft.getMinecraft().fontRenderer.drawString(name, 8f, 8f, -1, true)
+        Minecraft.getMinecraft().fontRenderer.drawString(name, 8f + x, 8f + y, -1, true)
         this.components.forEach {
-            it.draw(mouseX, mouseY, partialTicks)
+            it.draw(x, y, mouseX, mouseY, partialTicks)
         }
     }
 
-    open fun drawToolTips(mouseX: Int, mouseY: Int) {
+    open fun drawToolTips(x: Int, y: Int, mouseX: Int, mouseY: Int) {
         components.forEach {
-            if(it.isMouseOnComponent(mouseX, mouseY))
-                it.drawTooltip(mouseX, mouseY)
+            if (it.isMouseOnComponent(mouseX - x, mouseY - y))
+                it.drawTooltip(mouseX - x, mouseY - y)
         }
     }
 
@@ -37,10 +37,10 @@ abstract class TCTab(val name: String, val parent: TCGui, val tint: Int = -1,
 
     open fun onClose() {}
 
-    open fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton:Int) {
+    open fun mouseClicked(x: Int, y: Int, mouseX: Int, mouseY: Int, mouseButton: Int) {
         components.forEach {
-            if(it.isMouseOnComponent(mouseX, mouseY))
-                it.mouseClicked(mouseX, mouseY, mouseButton)
+            if (it.isMouseOnComponent(mouseX - x, mouseY - y))
+                it.mouseClicked(x, y, mouseX, mouseY, mouseButton)
         }
     }
 

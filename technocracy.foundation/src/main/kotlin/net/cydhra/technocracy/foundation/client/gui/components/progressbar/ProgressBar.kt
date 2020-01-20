@@ -27,7 +27,7 @@ abstract class ProgressBar(val posX: Int, val posY: Int, val orientation: Orient
         return mouseX > posX && mouseX < posX + width && mouseY > posY && mouseY < posY + height
     }
 
-    override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
+    override fun mouseClicked(x: Int, y: Int, mouseX: Int, mouseY: Int, mouseButton: Int) {
 
     }
 }

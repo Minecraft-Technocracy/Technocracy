@@ -9,7 +9,7 @@ abstract class Label(val posX: Int, val posY: Int, val text: String, val fontRen
 
     override fun update() {}
 
-    override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {}
+    override fun mouseClicked(x: Int, y: Int, mouseX: Int, mouseY: Int, mouseButton: Int) {}
 
     override fun isMouseOnComponent(mouseX: Int, mouseY: Int): Boolean {
         return mouseX > posX && mouseX < posX + fontRenderer.getStringWidth(text) && mouseY > posY && mouseY < posY + fontRenderer.FONT_HEIGHT

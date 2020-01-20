@@ -51,32 +51,50 @@ TCContainer)
         this.ySize = guiHeight
     }
 
-    override fun drawGuiContainerBackgroundLayer(partialTicks: Float, mouseX: Int, mouseY: Int) {
+    override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
+
+        drawDefaultBackground()
+
         guiX = (width - xSize) / 2
         guiY = (height - ySize) / 2
 
-        GlStateManager.pushMatrix()
-        GlStateManager.translate(guiX.toDouble(), guiY.toDouble(), 0.0)
+        GlStateManager.enableBlend()
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
 
-        drawWindow(0.0, 0.0, xSize, ySize)
+        //GlStateManager.translate(guiX.toDouble(), guiY.toDouble(), 0.0)
+
+
+        drawWindow(guiX, guiY, xSize, ySize)
 
         if (tabs.isNotEmpty()) {
             drawTabs(partialTicks, mouseX, mouseY)
         }
 
-        this.tabs[this.activeTabIndex].draw(mouseX - guiX, mouseY - guiY, partialTicks)
-        GlStateManager.popMatrix()
+        GlStateManager.enableBlend()
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
+
+
+        this.tabs[this.activeTabIndex].draw(guiX, guiY, mouseX, mouseY, partialTicks)
+        super.drawScreen(mouseX, mouseY, partialTicks)
+
+
+    }
+
+    override fun drawGuiContainerBackgroundLayer(partialTicks: Float, mouseX: Int, mouseY: Int) {
+
     }
 
     override fun drawGuiContainerForegroundLayer(mouseX: Int, mouseY: Int) {
+        zLevel = 200.0f
         super.drawGuiContainerForegroundLayer(mouseX, mouseY) // draws f.e. items in slots
-        this.tabs[activeTabIndex].drawToolTips(mouseX - guiX, mouseY - guiY)
+        this.tabs[activeTabIndex].drawToolTips(guiX, guiY, mouseX, mouseY)
+        zLevel = 0.0f
     }
 
     override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
         super.mouseClicked(mouseX, mouseY, mouseButton)
 
-        tabs[activeTabIndex].mouseClicked(mouseX - guiX, mouseY - guiY, mouseButton)
+        tabs[activeTabIndex].mouseClicked(guiX, guiY, mouseX, mouseY, mouseButton)
 
         checkClick@ for (otherIndex in this.tabs.indices.filterNot { it == this.activeTabIndex }) {
             val x = getTabBarPositionRelativeX() + TAB_GAP_WIDTH
@@ -103,12 +121,12 @@ TCContainer)
 
     private fun drawTabs(partialTicks: Float, mouseX: Int, mouseY: Int) {
         this.tabs.withIndex().filterNot { it.index == this.activeTabIndex }.forEach { (i, tab) ->
-            val x = getTabBarPositionRelativeX().toDouble() + TAB_GAP_WIDTH
-            val y = (i * TAB_SELECTED_HEIGHT).toDouble() + getTabBarPositionRelativeY() + TAB_GAP_WIDTH
+            val x = getTabBarPositionRelativeX().toDouble() + TAB_GAP_WIDTH + guiX
+            val y = (i * TAB_SELECTED_HEIGHT).toDouble() + getTabBarPositionRelativeY() + TAB_GAP_WIDTH + guiY
             val width = TAB_WIDTH
             val height = TAB_HEIGHT
 
-            drawWindow(x, y, width, height, tab.tint and inactiveTabTint, true)
+            drawWindow(x.toInt(), y.toInt(), width, height, tab.tint and inactiveTabTint, true)
 
             if (tab.icon != null) {
                 GlStateManager.pushMatrix()
@@ -122,12 +140,12 @@ TCContainer)
         }
 
         val activeTab: TCTab = this.tabs[this.activeTabIndex]
-        val activeTabX = getTabBarPositionRelativeX().toDouble()
-        val activeTabY = (this.activeTabIndex * TAB_SELECTED_HEIGHT).toDouble() + getTabBarPositionRelativeY()
+        val activeTabX = getTabBarPositionRelativeX().toDouble() + guiX
+        val activeTabY = (this.activeTabIndex * TAB_SELECTED_HEIGHT).toDouble() + getTabBarPositionRelativeY() + guiY
         val tabWidth = TAB_SELECTED_WIDTH
         val tabHeight = TAB_SELECTED_HEIGHT
 
-        drawWindow(activeTabX, activeTabY, tabWidth, tabHeight, activeTab.tint and -1, true)
+        drawWindow(activeTabX.toInt(), activeTabY.toInt(), tabWidth, tabHeight, activeTab.tint and -1, true)
 
         if (activeTab.icon != null) {
             GlStateManager.pushMatrix()
@@ -139,21 +157,21 @@ TCContainer)
         }
 
         tabs.withIndex().forEach { (i, tab) ->
-            val x = getTabBarPositionRelativeX().toDouble()
-            val y = (i * TAB_SELECTED_HEIGHT).toDouble() + TAB_GAP_WIDTH + getTabBarPositionRelativeY()
+            val x = getTabBarPositionRelativeX().toDouble() + guiX
+            val y = (i * TAB_SELECTED_HEIGHT).toDouble() + TAB_GAP_WIDTH + getTabBarPositionRelativeY() + guiY
             val width = TAB_WIDTH
             val height = TAB_HEIGHT
-            if (mouseX - guiX > x && mouseX - guiX < x + width && mouseY - guiY > y && mouseY - guiY < y + height) {
-                renderTooltip(mutableListOf(tab.name), mouseX - guiX + 10, mouseY - guiY)
+            if (mouseX > x && mouseX < x + width && mouseY > y && mouseY < y + height) {
+                drawHoveringText(mutableListOf(tab.name), mouseX, mouseY)
             }
         }
+        GlStateManager.disableLighting()
     }
 
-    fun drawWindow(x: Double, y: Double, width: Int, height: Int, tint: Int = -1, windowAttachment: Boolean = false) {
-        GlStateManager.pushMatrix()
-        GlStateManager.translate(x, y, 0.0)
+    fun drawWindow(x: Int, y: Int, width: Int, height: Int, tint: Int = -1, windowAttachment: Boolean = false) {
+        //GlStateManager.translate(x, y, 0.0)
 
-        Gui.drawRect(if (windowAttachment) 0 else 4, 4, width, height, windowBodyColor and tint)
+        Gui.drawRect((if (windowAttachment) 0 else 4) + x, 4 + y, width + x, height + y, windowBodyColor and tint)
 
         GlStateManager.color((tint shr 8 and 255).toFloat() / 255.0F, (tint and 255).toFloat() / 255.0F,
                 (tint shr 16 and 255).toFloat() / 255.0F, (tint shr 24 and 255).toFloat() / 255.0F)
@@ -162,31 +180,30 @@ TCContainer)
 
         for (i in 3 until height) {
             if (!windowAttachment) {
-                drawTexturedModalRect(0, i, left.x, left.y, left.width, left.height)
+                drawTexturedModalRect(x, i + y, left.x, left.y, left.width, left.height)
             }
 
-            drawTexturedModalRect(width - 1, i, right.x, right.y, right.width, right.height)
+            drawTexturedModalRect(width - 1 + x, i + y, right.x, right.y, right.width, right.height)
         }
 
         for (i in (if (windowAttachment) 0 else 3) until width) {
-            drawTexturedModalRect(i, 0, top.x, top.y, top.width, top.height)
-            drawTexturedModalRect(i, height - 1, bottom.x, bottom.y, bottom.width, bottom.height)
+            drawTexturedModalRect(i + x, y, top.x, top.y, top.width, top.height)
+            drawTexturedModalRect(i + x, height - 1 + y, bottom.x, bottom.y, bottom.width, bottom.height)
         }
 
         if (!windowAttachment) {
-            drawTexturedModalRect(0, 0, cornerTopLeft.x, cornerTopLeft.y, cornerTopLeft.width, cornerTopLeft.height)
-            drawTexturedModalRect(0,
-                    height,
+            drawTexturedModalRect(x, y, cornerTopLeft.x, cornerTopLeft.y, cornerTopLeft.width, cornerTopLeft.height)
+            drawTexturedModalRect(x,
+                    height + y,
                     cornerBottomLeft.x,
                     cornerBottomLeft.y,
                     cornerBottomLeft.width,
                     cornerBottomLeft.height)
         }
 
-        drawTexturedModalRect(width, 0, cornerTopRight.x, cornerTopRight.y, cornerTopRight.width, cornerTopRight.height)
-        drawTexturedModalRect(width - 1, height - 1, cornerBottomRight.x, cornerBottomRight.y, cornerBottomRight.width,
+        drawTexturedModalRect(width + x, y, cornerTopRight.x, cornerTopRight.y, cornerTopRight.width, cornerTopRight.height)
+        drawTexturedModalRect(width - 1 + x, height - 1 + y, cornerBottomRight.x, cornerBottomRight.y, cornerBottomRight.width,
                 cornerBottomRight.height)
-        GlStateManager.popMatrix()
     }
 
     override fun updateScreen() {
@@ -219,7 +236,9 @@ TCContainer)
     }
 
     fun renderTooltip(_str: MutableList<String>, mouseX: Int,
-            mouseY: Int) { // have to modify the one of forge, because forge makes it unusable
+                      mouseY: Int) { // have to modify the one of forge, because forge makes it unusable
+
+        zLevel = 300f
         if (_str.isNotEmpty()) {
             var str = _str
             val sr = ScaledResolution(Minecraft.getMinecraft())
@@ -391,6 +410,7 @@ TCContainer)
             //RenderHelper.enableStandardItemLighting() // should stay disabled
             GlStateManager.enableRescaleNormal()
         }
+        zLevel = 0f
     }
 
     override fun onGuiClosed() {
@@ -422,6 +442,6 @@ TCContainer)
      * Get the height of the tab bar
      */
     fun getTabBarHeight(): Int {
-        return this.guiHeight - getTabBarPositionRelativeY()
+        return ((tabs.size * TAB_SELECTED_HEIGHT).toDouble() + getTabBarPositionRelativeY() + TAB_GAP_WIDTH).toInt()
     }
 }

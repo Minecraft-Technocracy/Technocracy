@@ -10,18 +10,18 @@ import net.minecraft.client.renderer.GlStateManager
 import kotlin.math.roundToInt
 
 class DefaultProgressBar(posX: Int, posY: Int, orientation: Orientation, val component: ProgressTileEntityComponent?, val gui: TCGui?) : ProgressBar(posX, posY, orientation) {
-    override fun draw(mouseX: Int, mouseY: Int, partialTicks: Float) {
+    override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
         Minecraft.getMinecraft().textureManager.bindTexture(TCGui.guiComponents)
 
         GlStateManager.color(1F, 1F, 1F, 1F)
 
         when (this.orientation) {
             Orientation.LEFT -> {
-                Gui.drawModalRectWithCustomSizedTexture(posX - 1, posY, width.toFloat(), 28F, width, height, 256F, 256F)
+                Gui.drawModalRectWithCustomSizedTexture(posX - 1 + x, posY + y, width.toFloat(), 28F, width, height, 256F, 256F)
 
                 if (progress > 0) {
-                    Gui.drawModalRectWithCustomSizedTexture(posX - 1 + width,
-                            posY + height,
+                    Gui.drawModalRectWithCustomSizedTexture(posX - 1 + width + x,
+                            posY + height + y,
                             43F,
                             58F,
                             -(width * progress).toInt(),
@@ -31,11 +31,11 @@ class DefaultProgressBar(posX: Int, posY: Int, orientation: Orientation, val com
                 }
             }
             Orientation.RIGHT -> {
-                Gui.drawModalRectWithCustomSizedTexture(posX - 1, posY, 0F, 28F, width, height, 256F, 256F)
+                Gui.drawModalRectWithCustomSizedTexture(posX - 1 + x, posY + y, 0F, 28F, width, height, 256F, 256F)
 
                 if (progress > 0) {
-                    Gui.drawModalRectWithCustomSizedTexture(posX - 1,
-                            posY - 1,
+                    Gui.drawModalRectWithCustomSizedTexture(posX - 1 + x,
+                            posY - 1 + y,
                             0F,
                             28F + height,
                             (width * progress).toInt() + 1,
@@ -45,11 +45,11 @@ class DefaultProgressBar(posX: Int, posY: Int, orientation: Orientation, val com
                 }
             }
             Orientation.UP -> {
-                Gui.drawModalRectWithCustomSizedTexture(posX - 1, posY, 60F, 37F, height, width, 256F, 256F)
+                Gui.drawModalRectWithCustomSizedTexture(posX - 1 + x, posY + y, 60F, 37F, height, width, 256F, 256F)
 
                 if (progress > 0) {
-                    Gui.drawModalRectWithCustomSizedTexture(posX - 1 + height,
-                            posY + width,
+                    Gui.drawModalRectWithCustomSizedTexture(posX - 1 + height + x,
+                            posY + width + y,
                             59F,
                             58F,
                             -height,
@@ -59,11 +59,11 @@ class DefaultProgressBar(posX: Int, posY: Int, orientation: Orientation, val com
                 }
             }
             Orientation.DOWN -> {
-                Gui.drawModalRectWithCustomSizedTexture(posX - 1, posY, 44F, 15F, height, width, 256F, 256F)
+                Gui.drawModalRectWithCustomSizedTexture(posX - 1 + x, posY + y, 44F, 15F, height, width, 256F, 256F)
 
                 if (progress > 0) {
-                    Gui.drawModalRectWithCustomSizedTexture(posX - 1,
-                            posY - 1,
+                    Gui.drawModalRectWithCustomSizedTexture(posX - 1 + x,
+                            posY - 1 + y,
                             59F,
                             15F,
                             height,
@@ -94,7 +94,7 @@ class DefaultProgressBar(posX: Int, posY: Int, orientation: Orientation, val com
 
             override fun draw(mc: Minecraft, x: Int, y: Int) {
                 this@DefaultProgressBar.progress = timer.value / 100f
-                this@DefaultProgressBar.draw(-1, -1, 0f)
+                this@DefaultProgressBar.draw(0, 0, -1, -1, 0f)
             }
 
             override fun getWidth(): Int {

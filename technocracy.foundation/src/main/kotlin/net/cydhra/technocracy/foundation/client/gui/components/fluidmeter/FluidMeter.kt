@@ -10,8 +10,8 @@ abstract class FluidMeter(val posX: Int, val posY: Int): TCComponent {
      */
     var level = 0.0f
 
-    val width = 10
-    val height = 50
+    var width = 10
+    var height = 50
 
     override fun update() {
         this.level += 0.01F
@@ -26,7 +26,7 @@ abstract class FluidMeter(val posX: Int, val posY: Int): TCComponent {
         return mouseX > posX && mouseX < posX + width && mouseY > posY && mouseY < posY + height
     }
 
-    override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
+    override fun mouseClicked(x: Int, y: Int, mouseX: Int, mouseY: Int, mouseButton: Int) {
 
     }
 }

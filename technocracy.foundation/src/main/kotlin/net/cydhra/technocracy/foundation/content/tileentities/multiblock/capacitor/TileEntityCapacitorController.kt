@@ -39,10 +39,10 @@ class TileEntityCapacitorController : TileEntityMultiBlockPart<CapacitorMultiBlo
                 addPlayerInventorySlots(Minecraft.getMinecraft().player, 8, 84)
             }
 
-            override fun draw(mouseX: Int, mouseY: Int, partialTicks: Float) {
-                super.draw(mouseX, mouseY, partialTicks)
+            override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
+                super.draw(x, y, mouseX, mouseY, partialTicks)
                 Minecraft.getMinecraft().fontRenderer.drawString("${this@TileEntityCapacitorController.multiblockController?.controllerTileEntity?.energyStorageComponent?.energyStorage?.extractionLimit} RF"
-                        ?: "0 RF", 25f, 35f, -1, true)
+                        ?: "0 RF", 25f + x, 35f + y, -1, true)
             }
 
         })

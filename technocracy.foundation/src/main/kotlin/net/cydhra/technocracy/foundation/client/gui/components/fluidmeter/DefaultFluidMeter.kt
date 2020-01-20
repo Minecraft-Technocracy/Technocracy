@@ -18,9 +18,10 @@ class DefaultFluidMeter(posX: Int, posY: Int, val component: FluidTileEntityComp
 
     private var flowAnimation: Int = 0
 
-    override fun draw(mouseX: Int, mouseY: Int, partialTicks: Float) {
+    override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
         GlStateManager.color(1f, 1f, 1f, 1f)
         GlStateManager.enableBlend()
+
         if (level > 0f) {
             if (component.fluid.currentFluid != null) {
                 val fluid: Fluid = component.fluid.currentFluid!!.fluid
@@ -28,21 +29,25 @@ class DefaultFluidMeter(posX: Int, posY: Int, val component: FluidTileEntityComp
 
                 GlStateManager.color(color.red / 255f, color.green / 255f, color.blue / 255f, 1f)
                 Minecraft.getMinecraft().textureManager.bindTexture(ResourceLocation(fluid.flowing.resourceDomain, "textures/${fluid.flowing.resourcePath}.png"))
-                drawModalRectWithCustomSizedTexture(posX, ((1f - level) * height).toInt() + posY, posX + width, posY + height, 11f, flowAnimation.toFloat(), 32f, 1024f)
+                drawModalRectWithCustomSizedTexture(posX + x, ((1f - level) * height).toInt() + posY + y, posX + width + x, posY + height + y, 11f, flowAnimation.toFloat(), 32f, 1024f)
             }
         }
 
-        GlStateManager.color(1f, 1f, 1f, 1f)
+        val col = if (component.fluid.capacity == 0) 0.5f else 1f
+
+        GlStateManager.color(col, col, col, 1f)
         Minecraft.getMinecraft().textureManager.bindTexture(TCGui.guiComponents)
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
-        Gui.drawModalRectWithCustomSizedTexture(posX, posY, if (component.fluid.tanktype == DynamicFluidCapability.TankType.INPUT) 10f else 0f, 75f, width, height, 256f, 256f)
+        Gui.drawScaledCustomSizeModalRect(posX + x, posY + y, if (component.fluid.tanktype == DynamicFluidCapability.TankType.INPUT) 10f else 0f, 75f, 10, 50, width, height, 256f, 256f)
 
         GlStateManager.disableBlend()
     }
 
     override fun drawTooltip(mouseX: Int, mouseY: Int) {
-        val str = "${if (component.fluid.currentFluid != null) "${component.fluid.currentFluid?.localizedName}\n§7" else ""}${(level * component.fluid.capacity).roundToInt()}mb/${component.fluid.capacity}mb"
-        gui.renderTooltip(mutableListOf(str), mouseX, mouseY)
+        if (component.fluid.capacity > 0) {
+            val str = "${if (component.fluid.currentFluid != null) "${component.fluid.currentFluid?.localizedName}\n§7" else ""}${(level * component.fluid.capacity).roundToInt()}mb/${component.fluid.capacity}mb"
+            gui.renderTooltip(mutableListOf(str), mouseX, mouseY)
+        }
     }
 
     override fun update() {

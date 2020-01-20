@@ -14,12 +14,12 @@ import net.minecraft.nbt.NBTTagCompound
 
 class DefaultRedstoneModeControl(posX: Int, posY: Int, val component: RedstoneModeTileEntityComponent, val gui: TCGui) : RedstoneModeControl(posX, posY) {
 
-    override fun draw(mouseX: Int, mouseY: Int, partialTicks: Float) {
-        super.draw(mouseX, mouseY, partialTicks)
+    override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
+        super.draw(x, y, mouseX, mouseY, partialTicks)
         val clr = if (hovered) 0.7f else 1f
         GlStateManager.color(clr, clr, clr, 1f)
         Minecraft.getMinecraft().textureManager.bindTexture(TCGui.guiComponents)
-        Gui.drawModalRectWithCustomSizedTexture(posX, posY, component.redstoneMode.ordinal * 16f, 59f, width, height, 256f, 256f)
+        Gui.drawModalRectWithCustomSizedTexture(posX + x, posY + y, component.redstoneMode.ordinal * 16f, 59f, width, height, 256f, 256f)
     }
 
     override fun drawTooltip(mouseX: Int, mouseY: Int) {
@@ -27,7 +27,7 @@ class DefaultRedstoneModeControl(posX: Int, posY: Int, val component: RedstoneMo
         gui.renderTooltip(mutableListOf(str), mouseX, mouseY)
     }
 
-    override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
+    override fun mouseClicked(x: Int, y: Int, mouseX: Int, mouseY: Int, mouseButton: Int) {
         component.redstoneMode = RedstoneModeTileEntityComponent.RedstoneMode.values()[(component.redstoneMode.ordinal + 1) % RedstoneModeTileEntityComponent.RedstoneMode.values().size]
         val tag = NBTTagCompound()
         tag.setTag("component", component.serializeNBT())
