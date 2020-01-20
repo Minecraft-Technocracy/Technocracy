@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.client.gui
 
 import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
+import net.cydhra.technocracy.foundation.client.gui.components.label.DefaultLabel
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotPlayer
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.GlStateManager
@@ -18,7 +19,8 @@ abstract class TCTab(val name: String, val parent: TCGui, val tint: Int = -1,
 
     open fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
         GlStateManager.color(1f, 1f, 1f, 1f)
-        Minecraft.getMinecraft().fontRenderer.drawString(name, 8f + x, 8f + y, -1, true)
+        Minecraft.getMinecraft().fontRenderer.drawString(name, 8f + x, 8f + y, 4210752, false)
+
         this.components.forEach {
             it.draw(x, y, mouseX, mouseY, partialTicks)
         }
@@ -45,6 +47,11 @@ abstract class TCTab(val name: String, val parent: TCGui, val tint: Int = -1,
     }
 
     protected fun addPlayerInventorySlots(player: EntityPlayer, x: Int, y: Int) {
+
+        this.components.add(DefaultLabel(x, y, player.inventory.displayName.unformattedText, 4210752, false))
+
+        val y  = y + 12
+
         for (row in 0..2) {
             for (slot in 0..8) {
                 this.components.add(TCSlotPlayer(player.inventory, slot + row * 9 + 9,

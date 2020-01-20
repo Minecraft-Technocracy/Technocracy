@@ -36,7 +36,7 @@ class TileEntityCapacitorController : TileEntityMultiBlockPart<CapacitorMultiBlo
                 }
                 components.add(DefaultLabel(25, 25, "Transfer Limit:"))
 
-                addPlayerInventorySlots(Minecraft.getMinecraft().player, 8, 84)
+                addPlayerInventorySlots(Minecraft.getMinecraft().player, 8, gui.guiHeight - 58 - 16 - 5 - 12)
             }
 
             override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {

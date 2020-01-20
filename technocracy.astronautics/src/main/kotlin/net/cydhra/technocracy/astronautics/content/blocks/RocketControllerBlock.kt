@@ -2,14 +2,17 @@ package net.cydhra.technocracy.astronautics.content.blocks
 
 import net.cydhra.technocracy.astronautics.content.entity.EntityRocket
 import net.cydhra.technocracy.astronautics.content.tileentity.TileEntityRocketController
+import net.cydhra.technocracy.foundation.TCFoundation
+import net.cydhra.technocracy.foundation.client.gui.handler.TCGuiHandler
 import net.cydhra.technocracy.foundation.data.world.groups.GroupManager
 import net.cydhra.technocracy.foundation.model.blocks.api.AbstractRotatableTileEntityBlock
 import net.cydhra.technocracy.foundation.model.blocks.util.IDynamicBlockPlaceBehavior
-import net.cydhra.technocracy.foundation.model.fx.manager.TCParticleManager
+import net.cydhra.technocracy.foundation.network.componentsync.guiInfoPacketSubscribers
 import net.cydhra.technocracy.foundation.util.structures.Template
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.item.ItemStack
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
@@ -20,7 +23,6 @@ import net.minecraft.util.text.TextComponentString
 import net.minecraft.util.text.TextComponentTranslation
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
-import java.util.stream.Collectors
 
 
 class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controller", material = Material.ROCK), IDynamicBlockPlaceBehavior {
@@ -46,9 +48,26 @@ class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controlle
     val satellite_cargo = Template()
 
     override fun onBlockActivated(worldIn: World, pos: BlockPos, state: IBlockState, playerIn: EntityPlayer, hand: EnumHand, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean {
-        if (worldIn.isRemote || hand != EnumHand.MAIN_HAND)
-            return true//super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ)
+        if (!playerIn.isSneaking) {
+            if (!worldIn.isRemote && hand == EnumHand.MAIN_HAND) {
+                playerIn.openGui(TCFoundation, TCGuiHandler.machineGui, worldIn, pos.x, pos.y, pos.z)
+                guiInfoPacketSubscribers[playerIn as EntityPlayerMP] = Pair(pos, worldIn.provider.dimension)
+            }
 
+            return true
+        }
+
+        if(true)
+            return true
+
+
+        if (worldIn.isRemote || hand != EnumHand.MAIN_HAND) {
+
+            //TCParticleManager.addParticle(LaserBeam(worldIn, playerIn.posX, playerIn.posY, playerIn.posZ))
+
+
+            return true//super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ)
+        }
 
         val tile = worldIn.getTileEntity(pos) as TileEntityRocketController
 
@@ -180,6 +199,8 @@ class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controlle
                     } else {
                         ent.cargoSlots = NonNullList.withSize(totalStorageElements, ItemStack.EMPTY)
                     }
+
+                    ent.liftOff = true
 
                     tile.linkToCurrentRocket(ent)
 

@@ -1,18 +1,25 @@
 package net.cydhra.technocracy.astronautics.content.tileentity
 
 import net.cydhra.technocracy.astronautics.content.entity.EntityRocket
+import net.cydhra.technocracy.foundation.client.gui.TCContainer
+import net.cydhra.technocracy.foundation.client.gui.TCGui
+import net.cydhra.technocracy.foundation.client.gui.TCTab
+import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.DefaultFluidMeter
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.OwnerShipTileEntityComponent
+import net.cydhra.technocracy.foundation.model.tileentities.api.TCTileEntityGuiProvider
 import net.cydhra.technocracy.foundation.model.tileentities.api.TEInventoryProvider
 import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableTileEntity
+import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.NonNullList
+import net.minecraft.util.ResourceLocation
 
-class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider, DynamicInventoryCapability.CustomItemStackStackLimit {
+class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider, TCTileEntityGuiProvider, DynamicInventoryCapability.CustomItemStackStackLimit {
 
     override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack, originalStack: ItemStack) {
     }
@@ -22,8 +29,8 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
     }
 
     override fun getStackLimit(slot: Int, stack: ItemStack, default: Int): Int {
-        if(currentRocket != null) {
-            if(!currentRocket!!.dysonCargo)
+        if (currentRocket != null) {
+            if (!currentRocket!!.dysonCargo)
                 return 1
         }
         //Todo limit some kinds of cargo to one per slot
@@ -51,6 +58,28 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
             return true
         }
         return false
+    }
+
+    override fun getGui(player: EntityPlayer?): TCGui {
+        val gui = TCGui(guiHeight = 230, container = TCContainer(1, 1))
+        gui.registerTab(object : TCTab("${getBlockType().localizedName} linked: ${currentRocket != null}", gui, -1,
+                ResourceLocation("technocracy.foundation", "textures/item/gear.png")) {
+            override fun init() {
+
+                if (player != null) {
+                    //stick to bottom
+                    addPlayerInventorySlots(player, 8, gui.guiHeight - 58 - 16 - 5 - 12)
+                }
+
+                val fm = DefaultFluidMeter(10, 25, fluidBuffer, gui)
+                fm.width = 20
+                fm.height = 105
+
+                components.add(fm)
+            }
+        })
+
+        return gui
     }
 
     fun unlinkRocket() {

@@ -138,7 +138,7 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
                             gui))
 
                 if (player != null)
-                    addPlayerInventorySlots(player, 8, 84)
+                    addPlayerInventorySlots(player, 8, gui.guiHeight - 58 - 16 - 5 - 12)
             }
         })
         initGui(gui)

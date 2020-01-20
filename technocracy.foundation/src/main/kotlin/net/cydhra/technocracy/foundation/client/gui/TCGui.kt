@@ -38,6 +38,18 @@ TCContainer)
         val cornerTopRight = Rectangle(7, 0, 3, 3)
         val cornerBottomLeft = Rectangle(0, 7, 3, 3)
         val cornerBottomRight = Rectangle(6, 6, 4, 4)
+
+        val slotCornerTopLeft = Rectangle(0,10,2,2)
+        val slotCornerTopRight = Rectangle(16,10,2,2)
+        val slotCornerBottomLeft = Rectangle(0,26,2,2)
+        val slotCornerBottomRight = Rectangle(16,26,2,2)
+
+        val slotLineTop = Rectangle(1,10,16,1)
+        val slotLineBottom = Rectangle(1,27,16,1)
+        val slotLineLeft = Rectangle(0,11,1,16)
+        val slotLineRight = Rectangle(17,11,1,16)
+
+        val slotContent = Rectangle(1,11,15,15)
     }
 
     val tabs: ArrayList<TCTab> = ArrayList()

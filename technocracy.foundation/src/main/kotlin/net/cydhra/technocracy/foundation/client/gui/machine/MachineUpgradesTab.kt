@@ -15,7 +15,7 @@ class MachineUpgradesTab(parent: TCGui,
 
     override fun init() {
         if (player != null) {
-            addPlayerInventorySlots(player, 8, 84)
+            addPlayerInventorySlots(player, 8, parent.guiHeight - 58 - 16 - 5 - 12)
         }
 
         for (i in 0 until upgrades.numberOfUpgradeSlots) {

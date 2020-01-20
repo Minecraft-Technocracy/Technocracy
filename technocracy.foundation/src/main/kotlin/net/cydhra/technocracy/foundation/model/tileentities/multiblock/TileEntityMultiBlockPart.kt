@@ -200,7 +200,7 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
                     components.add(DefaultProgressBar((outputNearestToTheMiddle - inputNearestToTheMiddle) / 2 + inputNearestToTheMiddle, 40, Orientation.RIGHT, foundProgressComponent as ProgressTileEntityComponent, gui))
 
                 if (player != null)
-                    addPlayerInventorySlots(player, 8, 84)
+                    addPlayerInventorySlots(player, 8, gui.guiHeight - 58 - 16 - 5 - 12)
             }
         })
         initGui(gui)
