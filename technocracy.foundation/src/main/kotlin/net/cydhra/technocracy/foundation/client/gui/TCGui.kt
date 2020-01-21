@@ -39,17 +39,17 @@ TCContainer)
         val cornerBottomLeft = Rectangle(0, 7, 3, 3)
         val cornerBottomRight = Rectangle(6, 6, 4, 4)
 
-        val slotCornerTopLeft = Rectangle(0,10,2,2)
-        val slotCornerTopRight = Rectangle(16,10,2,2)
-        val slotCornerBottomLeft = Rectangle(0,26,2,2)
-        val slotCornerBottomRight = Rectangle(16,26,2,2)
+        val slotCornerTopLeft = Rectangle(0, 10, 2, 2)
+        val slotCornerTopRight = Rectangle(16, 10, 2, 2)
+        val slotCornerBottomLeft = Rectangle(0, 26, 2, 2)
+        val slotCornerBottomRight = Rectangle(16, 26, 2, 2)
 
-        val slotLineTop = Rectangle(1,10,16,1)
-        val slotLineBottom = Rectangle(1,27,16,1)
-        val slotLineLeft = Rectangle(0,11,1,16)
-        val slotLineRight = Rectangle(17,11,1,16)
+        val slotLineTop = Rectangle(1, 10, 16, 1)
+        val slotLineBottom = Rectangle(1, 27, 16, 1)
+        val slotLineLeft = Rectangle(0, 11, 1, 16)
+        val slotLineRight = Rectangle(17, 11, 1, 16)
 
-        val slotContent = Rectangle(1,11,15,15)
+        val slotContent = Rectangle(1, 11, 15, 15)
     }
 
     val tabs: ArrayList<TCTab> = ArrayList()
@@ -78,7 +78,7 @@ TCContainer)
 
         drawWindow(guiX, guiY, xSize, ySize)
 
-        if (tabs.isNotEmpty()) {
+        if (tabs.size > 1) {
             drawTabs(partialTicks, mouseX, mouseY)
         }
 
@@ -108,25 +108,27 @@ TCContainer)
 
         tabs[activeTabIndex].mouseClicked(guiX, guiY, mouseX, mouseY, mouseButton)
 
-        checkClick@ for (otherIndex in this.tabs.indices.filterNot { it == this.activeTabIndex }) {
-            val x = getTabBarPositionRelativeX() + TAB_GAP_WIDTH
-            val y = otherIndex * TAB_SELECTED_HEIGHT + getTabBarPositionRelativeY() + TAB_GAP_WIDTH
+        if (tabs.size > 1) {
+            checkClick@ for (otherIndex in this.tabs.indices.filterNot { it == this.activeTabIndex }) {
+                val x = getTabBarPositionRelativeX() + TAB_GAP_WIDTH
+                val y = otherIndex * TAB_SELECTED_HEIGHT + getTabBarPositionRelativeY() + TAB_GAP_WIDTH
 
-            // check if this tab has been clicked
-            if (this.isPointInRegion(x, y, TAB_WIDTH, TAB_HEIGHT, mouseX, mouseY)) {
-                this.activeTabIndex = otherIndex
+                // check if this tab has been clicked
+                if (this.isPointInRegion(x, y, TAB_WIDTH, TAB_HEIGHT, mouseX, mouseY)) {
+                    this.activeTabIndex = otherIndex
 
-                // update the enabled-state of all tabs
-                this.tabs.withIndex().forEach { (index, tab) ->
-                    tab.components
-                            .filterIsInstance<ITCSlot>()
-                            .forEach { slot ->
-                                slot.setEnabled(index == this.activeTabIndex)
-                            }
+                    // update the enabled-state of all tabs
+                    this.tabs.withIndex().forEach { (index, tab) ->
+                        tab.components
+                                .filterIsInstance<ITCSlot>()
+                                .forEach { slot ->
+                                    slot.setEnabled(index == this.activeTabIndex)
+                                }
+                    }
+
+                    // no reason to check further tabs, as only one can be clicked at any time
+                    break@checkClick
                 }
-
-                // no reason to check further tabs, as only one can be clicked at any time
-                break@checkClick
             }
         }
     }
@@ -148,7 +150,6 @@ TCContainer)
                 drawModalRectWithCustomSizedTexture(0, 0, 0F, 0F, 17, 17, 17F, 17F)
                 GlStateManager.popMatrix()
             }
-
         }
 
         val activeTab: TCTab = this.tabs[this.activeTabIndex]
@@ -177,6 +178,7 @@ TCContainer)
                 drawHoveringText(mutableListOf(tab.name), mouseX, mouseY)
             }
         }
+
         GlStateManager.disableLighting()
     }
 

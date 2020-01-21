@@ -32,7 +32,7 @@ class DefaultFluidMeter(posX: Int, posY: Int, val component: FluidTileEntityComp
         GlStateManager.color(1f, 1f, 1f, 1f)
         GlStateManager.enableBlend()
 
-        val col = if (component.fluid.capacity == 0) 0.5f else 0.8f
+        val col = if (component.fluid.capacity == 0) 0.5f else 1f
 
         GlStateManager.color(col, col, col, 1f)
         Minecraft.getMinecraft().textureManager.bindTexture(TCGui.guiComponents)
@@ -91,18 +91,21 @@ class DefaultFluidMeter(posX: Int, posY: Int, val component: FluidTileEntityComp
 
                 GlStateManager.color(color.red / 255f, color.green / 255f, color.blue / 255f, 1f)
                 val sprite = Minecraft.getMinecraft().textureMapBlocks.getTextureExtry(fluid.still.toString())
-                Minecraft.getMinecraft().textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE)
-                gui.drawTexturedModalRect(posX + x + 1,
-                        ((1f - level) * height).toInt() + posY + y + 1,
-                        sprite,
-                        width - 2,
-                        height - 2 - ((1f - level) * height).toInt())
+                if (sprite != null) {
+                    Minecraft.getMinecraft().textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE)
+                    gui.drawTexturedModalRect(posX + x + 1,
+                            ((1f - level) * height).toInt() + posY + y + 1,
+                            sprite,
+                            width - 2,
+                            height - 2 - ((1f - level) * height).toInt())
+                }
             }
         }
 
 
         val tessellator = Tessellator.getInstance()
         val bufferbuilder = tessellator.buffer
+
         GlStateManager.enableBlend()
         GlStateManager.disableTexture2D()
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
@@ -157,18 +160,4 @@ class DefaultFluidMeter(posX: Int, posY: Int, val component: FluidTileEntityComp
         if (flowAnimation > 1024)
             flowAnimation = 0
     }
-
-    fun drawModalRectWithCustomSizedTexture(left: Int, top: Int, right: Int, bottom: Int, texX: Float, texY: Float, textureWidth: Float, textureHeight: Float) {
-        val f = 1.0f / textureWidth
-        val f1 = 1.0f / textureHeight
-        val tessellator = Tessellator.getInstance()
-        val bufferbuilder = tessellator.buffer
-        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX)
-        bufferbuilder.pos(left.toDouble(), bottom.toDouble(), 0.0).tex((texX * f).toDouble(), ((top - bottom + texY) * f1).toDouble()).endVertex()
-        bufferbuilder.pos(right.toDouble(), bottom.toDouble(), 0.0).tex(((right - left + texX) * f).toDouble(), ((top - bottom + texY) * f1).toDouble()).endVertex()
-        bufferbuilder.pos(right.toDouble(), top.toDouble(), 0.0).tex(((right - left + texX) * f).toDouble(), (texY * f1).toDouble()).endVertex()
-        bufferbuilder.pos(left.toDouble(), top.toDouble(), 0.0).tex((texX * f).toDouble(), (texY * f1).toDouble()).endVertex()
-        tessellator.draw()
-    }
-
 }
