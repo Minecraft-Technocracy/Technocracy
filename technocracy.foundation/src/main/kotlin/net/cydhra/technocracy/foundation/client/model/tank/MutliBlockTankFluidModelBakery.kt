@@ -11,13 +11,13 @@ import net.minecraft.block.state.IBlockState
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.client.renderer.block.model.IBakedModel
+import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.util.BlockRenderLayer
 import net.minecraft.util.EnumFacing
+import net.minecraft.util.math.BlockPos
 import net.minecraftforge.client.MinecraftForgeClient
 import net.minecraftforge.common.property.IExtendedBlockState
-import net.minecraft.client.renderer.texture.TextureAtlasSprite
-import net.minecraft.util.math.BlockPos
 import net.minecraftforge.fluids.FluidStack
 
 
@@ -77,7 +77,15 @@ class MutliBlockTankFluidModelBakery(val baseModel: IBakedModel) : IBakedModel b
         val mc = Minecraft.getMinecraft()
 
         val color = fluid.fluid.getColor(fluid)
-        val brightness = mc.world.getCombinedLight(pos, fluid.getFluid().getLuminosity())
+        //val brightness = mc.world.getCombinedLight(pos, fluid.fluid.luminosity)
+
+        val i: Int = mc.world.getCombinedLight(pos, fluid.fluid.luminosity)
+        val j: Int = mc.world.getCombinedLight(pos.up(), fluid.fluid.luminosity)
+        val k = i and 255
+        val l = j and 255
+        val i1 = i shr 16 and 255
+        val j1 = j shr 16 and 255
+        val brightness = (if (k > l) k else l) or (if (i1 > j1) i1 else j1) shl 16
 
         var still = mc.textureMapBlocks.getTextureExtry(fluid.fluid.getStill(fluid).toString())
         var flowing = mc.textureMapBlocks.getTextureExtry(fluid.fluid.getFlowing(fluid).toString())
@@ -155,19 +163,20 @@ class MutliBlockTankFluidModelBakery(val baseModel: IBakedModel) : IBakedModel b
 
     fun putTexturedQuad(list: MutableList<SimpleQuad>, sprite: TextureAtlasSprite?, x: Float, y: Float, z: Float, w: Float, h: Float, d: Float, face: EnumFacing,
                         color: Int, brightness: Int, flowing: Boolean, flipHorizontally: Boolean) {
-        val l1 = brightness shr 0x10 and 0xFFFF
-        val l2 = brightness and 0xFFFF
+
+        val sky = brightness shr 0x04 and 0xF
+        val block = brightness shr 0x14 and 0xF
 
         val a = color shr 24 and 0xFF
         val r = color shr 16 and 0xFF
         val g = color shr 8 and 0xFF
         val b = color and 0xFF
 
-        putTexturedQuad(list, sprite, x, y, z, w, h, d, face, r, g, b, a, l1, l2, flowing, flipHorizontally)
+        putTexturedQuad(list, sprite, x, y, z, w, h, d, face, r, g, b, a, block, sky, flowing, flipHorizontally)
     }
 
     fun putTexturedQuad(list: MutableList<SimpleQuad>, sprite: TextureAtlasSprite?, x: Float, y: Float, z: Float, w: Float, h: Float, d: Float, face: EnumFacing,
-                        r: Int, g: Int, b: Int, a: Int, light1: Int, light2: Int, flowing: Boolean, flipHorizontally: Boolean) {
+                        r: Int, g: Int, b: Int, a: Int, block: Int, sky: Int, flowing: Boolean, flipHorizontally: Boolean) {
 
         val r = r / 255f
         val g = g / 255f
@@ -202,12 +211,10 @@ class MutliBlockTankFluidModelBakery(val baseModel: IBakedModel) : IBakedModel b
         var zt2 = zt1 + d
         while (zt2 > 1f) zt2 -= 1.0
 
-        // flowing stuff should start from the bottom, not from the start
-        if (flowing) {
-            val tmp = 1.0 - yt1
-            yt1 = 1.0 - yt2
-            yt2 = tmp
-        }
+        //start from the bottom, not from the top
+        val tmp = 1.0 - yt1
+        yt1 = 1.0 - yt2
+        yt2 = tmp
 
         when (face) {
             EnumFacing.DOWN, EnumFacing.UP -> {
@@ -241,69 +248,54 @@ class MutliBlockTankFluidModelBakery(val baseModel: IBakedModel) : IBakedModel b
             maxV = minV
         }
 
+        val quad = SimpleQuad(DefaultVertexFormats.BLOCK).setTexture(sprite).setFace(face)
+
+        quad.addColor(r, g, b, a).addColor(r, g, b, a).addColor(r, g, b, a).addColor(r, g, b, a)
+        quad.addLight(block, sky).addLight(block, sky).addLight(block, sky).addLight(block, sky)
+
         when (face) {
             EnumFacing.DOWN -> {
-
-                val quad = SimpleQuad(DefaultVertexFormats.BLOCK)
-                quad.sprite = sprite
-                quad.face = face
-                quad.addPos(x, y, z).addColor(r, g, b, a).addUV(minU, minV).addLight(light1, light2)
-                quad.addPos(x2, y, z).addColor(r, g, b, a).addUV(maxU, minV).addLight(light1, light2)
-                quad.addPos(x2, y, z2).addColor(r, g, b, a).addUV(maxU, maxV).addLight(light1, light2)
-                quad.addPos(x, y, z2).addColor(r, g, b, a).addUV(minU, maxV).addLight(light1, light2)
-
-                list.add(quad)
+                quad.addPos(x, y, z).addUV(minU, minV)
+                quad.addPos(x2, y, z).addUV(maxU, minV)
+                quad.addPos(x2, y, z2).addUV(maxU, maxV)
+                quad.addPos(x, y, z2).addUV(minU, maxV)
             }
             EnumFacing.UP -> {
-                val quad = SimpleQuad(DefaultVertexFormats.BLOCK)
-                quad.sprite = sprite
-                quad.face = face
-                quad.addPos(x, y2, z).addColor(r, g, b, a).addUV(minU, minV).addLight(light1, light2)
-                quad.addPos(x, y2, z2).addColor(r, g, b, a).addUV(minU, maxV).addLight(light1, light2)
-                quad.addPos(x2, y2, z2).addColor(r, g, b, a).addUV(maxU, maxV).addLight(light1, light2)
-                quad.addPos(x2, y2, z).addColor(r, g, b, a).addUV(maxU, minV).addLight(light1, light2)
-                list.add(quad)
+                quad.addPos(x, y2, z).addUV(minU, minV)
+                quad.addPos(x, y2, z2).addUV(minU, maxV)
+                quad.addPos(x2, y2, z2).addUV(maxU, maxV)
+                quad.addPos(x2, y2, z).addUV(maxU, minV)
             }
             EnumFacing.NORTH -> {
-                val quad = SimpleQuad(DefaultVertexFormats.BLOCK)
-                quad.sprite = sprite
-                quad.face = face
-                quad.addPos(x, y, z).addColor(r, g, b, a).addUV(minU, maxV).addLight(light1, light2)
-                quad.addPos(x, y2, z).addColor(r, g, b, a).addUV(minU, minV).addLight(light1, light2)
-                quad.addPos(x2, y2, z).addColor(r, g, b, a).addUV(maxU, minV).addLight(light1, light2)
-                quad.addPos(x2, y, z).addColor(r, g, b, a).addUV(maxU, maxV).addLight(light1, light2)
-                list.add(quad)
+                quad.addPos(x, y, z).addUV(minU, maxV)
+                quad.addPos(x, y2, z).addUV(minU, minV)
+                quad.addPos(x2, y2, z).addUV(maxU, minV)
+                quad.addPos(x2, y, z).addUV(maxU, maxV)
             }
             EnumFacing.SOUTH -> {
-                val quad = SimpleQuad(DefaultVertexFormats.BLOCK)
-                quad.sprite = sprite
-                quad.face = face
-                quad.addPos(x, y, z2).addColor(r, g, b, a).addUV(maxU, maxV).addLight(light1, light2)
-                quad.addPos(x2, y, z2).addColor(r, g, b, a).addUV(minU, maxV).addLight(light1, light2)
-                quad.addPos(x2, y2, z2).addColor(r, g, b, a).addUV(minU, minV).addLight(light1, light2)
-                quad.addPos(x, y2, z2).addColor(r, g, b, a).addUV(maxU, minV).addLight(light1, light2)
-                list.add(quad)
+                quad.addPos(x, y, z2).addUV(maxU, maxV)
+                quad.addPos(x2, y, z2).addUV(minU, maxV)
+                quad.addPos(x2, y2, z2).addUV(minU, minV)
+                quad.addPos(x, y2, z2).addUV(maxU, minV)
             }
             EnumFacing.WEST -> {
-                val quad = SimpleQuad(DefaultVertexFormats.BLOCK)
-                quad.sprite = sprite
-                quad.face = face
-                quad.addPos(x, y, z).addColor(r, g, b, a).addUV(maxU, maxV).addLight(light1, light2)
-                quad.addPos(x, y, z2).addColor(r, g, b, a).addUV(minU, maxV).addLight(light1, light2)
-                quad.addPos(x, y2, z2).addColor(r, g, b, a).addUV(minU, minV).addLight(light1, light2)
-                quad.addPos(x, y2, z).addColor(r, g, b, a).addUV(maxU, minV).addLight(light1, light2)
-                list.add(quad)
+                quad.addPos(x, y, z).addUV(maxU, maxV)
+                quad.addPos(x, y, z2).addUV(minU, maxV)
+                quad.addPos(x, y2, z2).addUV(minU, minV)
+                quad.addPos(x, y2, z).addUV(maxU, minV)
             }
             EnumFacing.EAST -> {
-                val quad = SimpleQuad(DefaultVertexFormats.BLOCK)
-                quad.sprite = sprite
-                quad.face = face
-                quad.addPos(x2, y, z).addColor(r, g, b, a).addUV(minU, maxV).addLight(light1, light2)
-                quad.addPos(x2, y2, z).addColor(r, g, b, a).addUV(minU, minV).addLight(light1, light2)
-                quad.addPos(x2, y2, z2).addColor(r, g, b, a).addUV(maxU, minV).addLight(light1, light2)
-                quad.addPos(x2, y, z2).addColor(r, g, b, a).addUV(maxU, maxV).addLight(light1, light2)
-                list.add(quad)
+                quad.addPos(x2, y, z).addUV(minU, maxV)
+                quad.addPos(x2, y2, z).addUV(minU, minV)
+                quad.addPos(x2, y2, z2).addUV(maxU, minV)
+                quad.addPos(x2, y, z2).addUV(maxU, maxV)
             }
         }
+
+        list.add(quad)
+    }
+
+    override fun isAmbientOcclusion(): Boolean {
+        return false
     }
 }

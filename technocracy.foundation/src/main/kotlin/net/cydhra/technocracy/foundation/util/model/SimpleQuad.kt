@@ -13,8 +13,6 @@ import org.apache.commons.lang3.tuple.Pair
 import org.lwjgl.util.vector.Vector2f
 import org.lwjgl.util.vector.Vector3f
 import org.lwjgl.util.vector.Vector4f
-import team.chisel.ctm.client.util.Quad
-import java.lang.IllegalStateException
 import java.util.*
 
 
@@ -192,6 +190,27 @@ class SimpleQuad() {
         builder.setApplyDiffuseLighting(applyDiffuseLighting)
         builder.setTexture(sprite!!)
 
+        //generate normals if list is empty
+        /*if(vertNormal.isEmpty()) {
+            val v1 = Vector3f(vertPos[3])
+            val t = Vector3f(vertPos[1])
+            val v2 = Vector3f(vertPos[2])
+
+            Vector3f.sub(v1, t, v1)
+
+            t.set(vertPos[0])
+
+            Vector3f.sub(v2, t, v2)
+
+            Vector3f.cross(v2, v1, v1)
+
+            v1.normalise()
+
+            for (v in 0..3) {
+                vertNormal.add(Vector3f(v1))
+            }
+        }*/
+
         for (v in 0..3) {
             for (i in 0 until format.elementCount) {
                 val ele = format.getElement(i)
@@ -232,6 +251,7 @@ class SimpleQuad() {
                     }
                     VertexFormatElement.EnumUsage.NORMAL -> {
                         if (vertNormal.size > v) {
+                            //vec4 in mc???
                             val normal = vertNormal[v]
                             builder.put(i, normal.x, normal.y, normal.z)
                         } else {
@@ -244,6 +264,7 @@ class SimpleQuad() {
                 }
             }
         }
+
         return builder.build()
     }
 }
