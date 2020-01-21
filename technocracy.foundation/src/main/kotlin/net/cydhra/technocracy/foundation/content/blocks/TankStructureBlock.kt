@@ -10,10 +10,15 @@ import net.cydhra.technocracy.foundation.util.propertys.POSITION
 import net.cydhra.technocracy.foundation.util.propertys.TANKSIZE
 import net.minecraft.block.state.BlockStateContainer
 import net.minecraft.block.state.IBlockState
+import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.BlockRenderLayer
+import net.minecraft.util.EnumFacing
+import net.minecraft.util.EnumHand
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.text.TextComponentTranslation
 import net.minecraft.world.IBlockAccess
+import net.minecraft.world.World
 import net.minecraftforge.common.property.IExtendedBlockState
 import javax.vecmath.Vector3f
 
@@ -29,6 +34,25 @@ class TankStructureBlock<T>(unlocalizedName: String,
                             renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID)
     : PlainMultiBlockPartBlock<T>(unlocalizedName, tileEntityConstructor, opaque, isFullCube, glassSides, renderLayer)
         where T : TileEntity, T : TCMultiBlockActiveTileEntity, T : IMultiblockPart {
+
+    override fun onBlockActivated(worldIn: World, pos: BlockPos, state: IBlockState, playerIn: EntityPlayer, hand: EnumHand, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean {
+        if (!playerIn.isSneaking) {
+            if (!worldIn.isRemote) {
+                val controllerTileEntity = getMultiBlockPartTileEntity(worldIn, pos)
+                val multiBlockController = controllerTileEntity.multiblockController
+                if (controllerTileEntity.validateStructure()) {
+                    controllerTileEntity.onActivate(worldIn, pos, playerIn, hand, facing)
+                } else {
+                    playerIn.sendMessage(multiBlockController.lastError?.chatMessage
+                            ?: TextComponentTranslation("null"))
+                }
+            }
+
+            return true
+        }
+
+        return super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ)
+    }
 
     override fun getExtendedState(state: IBlockState, world: IBlockAccess?, pos: BlockPos?): IExtendedBlockState {
         if (world != null && pos != null) {
