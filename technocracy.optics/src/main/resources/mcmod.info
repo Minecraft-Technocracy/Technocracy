@@ -1,0 +1,15 @@
+[
+{
+    "modid": "technocracy.optics",
+    "name": "Technocracy Optics",
+    "description": "Second expansion of the mod; adding lasers and laser applications to the mod.",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": ["Cydhra, Poke"],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": []
+}
+]
