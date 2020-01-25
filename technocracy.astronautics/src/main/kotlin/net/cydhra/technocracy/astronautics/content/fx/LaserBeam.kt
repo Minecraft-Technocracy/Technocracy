@@ -79,7 +79,18 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
         var mtfbo: MultiTargetFBO? = null
         lateinit var pingPong: MultiTargetFBO
 
-        var rendered = false
+        lateinit var horizontal: BasicShaderProgram.ShaderUniform
+        lateinit var expand: BasicShaderProgram.ShaderUniform
+        lateinit var expandFaktor: BasicShaderProgram.ShaderUniform
+        lateinit var combines: BasicShaderProgram.ShaderUniform
+        lateinit var gamma: BasicShaderProgram.ShaderUniform
+
+        lateinit var u_xyPixelSize_zIteration: BasicShaderProgram.ShaderUniform
+
+        var gaus: BasicShaderProgram? = null
+        lateinit var kawase: BasicShaderProgram
+        lateinit var blend: BasicShaderProgram
+        var renderedParticle = false
 
         init {
             MinecraftForge.EVENT_BUS.register(this)
@@ -89,7 +100,7 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
         }
 
         override fun render(particles: Stream<AbstractParticle>, partialTicks: Float): Int {
-            rendered = true
+            renderedParticle = true
             //TODO maybe instanced rendering
 
             //val first = particles.findFirst().get()
@@ -242,26 +253,12 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
             return 0
         }
 
-        fun drawSpinningHelix(posX: Double, posY: Double, posZ: Double, shape: Int, offset: Float) {
-
-        }
-
-        lateinit var horizontal: BasicShaderProgram.ShaderUniform
-        lateinit var expand: BasicShaderProgram.ShaderUniform
-        lateinit var expandFaktor: BasicShaderProgram.ShaderUniform
-        lateinit var combines: BasicShaderProgram.ShaderUniform
-        lateinit var gamma: BasicShaderProgram.ShaderUniform
-
-        lateinit var u_xyPixelSize_zIteration: BasicShaderProgram.ShaderUniform
-
-        var gaus: BasicShaderProgram? = null
-        lateinit var kawase: BasicShaderProgram
-        lateinit var blend: BasicShaderProgram
-
         @SubscribeEvent
         fun draw(overlay: RenderGameOverlayEvent.Pre) {
-            if (overlay.type != RenderGameOverlayEvent.ElementType.ALL)
+            if (!renderedParticle || overlay.type != RenderGameOverlayEvent.ElementType.ALL)
                 return
+
+            renderedParticle = false
 
             val scaledResolution = ScaledResolution(Minecraft.getMinecraft())
             val sW = scaledResolution.getScaledWidth_double()
