@@ -1,11 +1,11 @@
 package net.cydhra.technocracy.astronautics.api.capabilities.satellites
 
-import net.cydhra.technocracy.astronautics.TCAstronautics
 import net.minecraft.nbt.NBTBase
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTTagList
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
+import org.apache.logging.log4j.LogManager
 
 /**
  * Basic storage implementation for satellites, that simply gets all satellites of an orbit and serializes them to a
@@ -15,6 +15,7 @@ class SatelliteOrbitStorage : Capability.IStorage<ISatelliteOrbit> {
 
     companion object {
         const val NBT_KEY_TYPE = "type"
+        private val logger = LogManager.getLogger()
     }
 
     override fun readNBT(capability: Capability<ISatelliteOrbit>, instance: ISatelliteOrbit, side: EnumFacing?,
@@ -29,13 +30,13 @@ class SatelliteOrbitStorage : Capability.IStorage<ISatelliteOrbit> {
                     val satellite = SatelliteFactory.createSatellite(type)
 
                     if (satellite == null) {
-                        TCAstronautics.logger.warn("satellite of type $type could not be deserialized. Removing it " +
+                        logger.warn("satellite of type $type could not be deserialized. Removing it " +
                                 "from chunk")
                     } else {
                         try {
                             satellite.deserializeNbt(element)
                         } catch (t: Throwable) {
-                            TCAstronautics.logger.error("error while deserializing satellite ($type)", t)
+                            logger.error("error while deserializing satellite ($type)", t)
                         }
 
                         capability.defaultInstance!!.add(satellite, false)
