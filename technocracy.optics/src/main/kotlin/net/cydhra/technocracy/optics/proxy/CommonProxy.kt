@@ -9,8 +9,10 @@ import net.cydhra.technocracy.foundation.model.tileentities.manager.TileEntityMa
 import net.cydhra.technocracy.optics.TCOptics
 import net.cydhra.technocracy.optics.api.capabilities.laser.*
 import net.cydhra.technocracy.optics.client.opticsCreativeTab
+import net.cydhra.technocracy.optics.content.blocks.laserDrillBlock
 import net.cydhra.technocracy.optics.content.blocks.laserEmitterBlock
 import net.cydhra.technocracy.optics.content.tileentities.machines.TileEntityLaser
+import net.cydhra.technocracy.optics.content.tileentities.machines.TileEntityLaserDrill
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.capabilities.CapabilityManager
 
@@ -42,8 +44,10 @@ open class CommonProxy {
         MinecraftForge.EVENT_BUS.register(entityManager)
 
         blockManager.prepareBlocksForRegistration(laserEmitterBlock, MachineConnectorModel())
+        blockManager.prepareBlocksForRegistration(laserDrillBlock, MachineConnectorModel())
 
         tileEntityManager.prepareTileEntityForRegistration(TileEntityLaser::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityLaserDrill::class)
     }
 
     open fun init() {

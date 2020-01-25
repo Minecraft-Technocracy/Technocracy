@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "technocracy.optics:laser_drill"
+    },
+    "facing=east": {
+      "model": "technocracy.optics:laser_drill",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "technocracy.optics:laser_drill",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "technocracy.optics:laser_drill",
+      "y": 270
+    }
+  }
+}

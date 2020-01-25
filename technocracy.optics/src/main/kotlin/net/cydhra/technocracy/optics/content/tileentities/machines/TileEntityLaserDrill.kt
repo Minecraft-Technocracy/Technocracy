@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.foundation.content.tileentities.machines
+package net.cydhra.technocracy.optics.content.tileentities.machines
 
 import net.cydhra.technocracy.foundation.client.gui.TCContainer
 import net.cydhra.technocracy.foundation.client.gui.TCGui
