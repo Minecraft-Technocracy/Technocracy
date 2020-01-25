@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.optics.proxy
 
+import net.cydhra.technocracy.foundation.client.model.customModel.connector.MachineConnectorModel
 import net.cydhra.technocracy.foundation.model.blocks.manager.BlockManager
 import net.cydhra.technocracy.foundation.model.entities.manager.EntityManager
 import net.cydhra.technocracy.foundation.model.fluids.manager.FluidManager
@@ -7,6 +8,8 @@ import net.cydhra.technocracy.foundation.model.items.manager.ItemManager
 import net.cydhra.technocracy.foundation.model.tileentities.manager.TileEntityManager
 import net.cydhra.technocracy.optics.TCOptics
 import net.cydhra.technocracy.optics.client.opticsCreativeTab
+import net.cydhra.technocracy.optics.content.tileentities.blocks.laserEmitterBlock
+import net.cydhra.technocracy.optics.content.tileentities.machines.TileEntityLaser
 import net.minecraftforge.common.MinecraftForge
 
 open class CommonProxy {
@@ -36,6 +39,9 @@ open class CommonProxy {
         MinecraftForge.EVENT_BUS.register(tileEntityManager)
         MinecraftForge.EVENT_BUS.register(entityManager)
 
+        blockManager.prepareBlocksForRegistration(laserEmitterBlock, MachineConnectorModel())
+
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityLaser::class)
     }
 
     open fun init() {
