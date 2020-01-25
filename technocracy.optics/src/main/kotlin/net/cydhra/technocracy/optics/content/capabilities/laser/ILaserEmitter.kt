@@ -13,4 +13,9 @@ interface ILaserEmitter {
      * @param facing the facing of this emitter where the connected [ILaserAbsorber] can no longer accept a laser
      */
     fun stopTransmission(facing: EnumFacing)
+
+    /**
+     * Whether this emitter can emit a laser at the given face
+     */
+    fun canEmitLaser(facing: EnumFacing): Boolean
 }
