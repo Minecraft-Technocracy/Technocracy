@@ -13,7 +13,7 @@ import net.minecraft.util.EnumFacing
 class TileEntityLaser : AggregatableTileEntity(), TCMachineTileEntity, ILogicClient by LogicClientDelegate() {
 
     init {
-        this.registerComponent(LaserEmitterComponent(arrayOf(EnumFacing.NORTH)), "laser_emitter")
+        this.registerComponent(LaserEmitterComponent(arrayOf(EnumFacing.NORTH), limit = -1), "laser_emitter")
     }
 
     override fun update() {
