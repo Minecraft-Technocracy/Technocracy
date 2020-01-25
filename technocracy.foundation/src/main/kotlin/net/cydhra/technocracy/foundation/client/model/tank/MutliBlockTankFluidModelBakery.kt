@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.util.BlockRenderLayer
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
+import net.minecraft.world.EnumSkyBlock
 import net.minecraftforge.client.MinecraftForgeClient
 import net.minecraftforge.common.property.IExtendedBlockState
 import net.minecraftforge.fluids.FluidStack
@@ -40,7 +41,7 @@ class MutliBlockTankFluidModelBakery(val baseModel: IBakedModel) : IBakedModel b
 
         val renderLayer = stack.fluid.block?.blockLayer ?: BlockRenderLayer.TRANSLUCENT
 
-        if (currentLayer != renderLayer)
+        if (currentLayer != renderLayer || side != null)
             return quads
 
         val dimension = extended.getValue(DIMENSIONS) ?: return quads
@@ -75,17 +76,11 @@ class MutliBlockTankFluidModelBakery(val baseModel: IBakedModel) : IBakedModel b
     fun generateFluidCube(fluid: FluidStack, minX: Float, minY: Float, minZ: Float, maxX: Float, maxY: Float, maxZ: Float, offsetToBlockEdge: Float, pos: BlockPos): MutableList<SimpleQuad> {
 
         val mc = Minecraft.getMinecraft()
-
         val color = fluid.fluid.getColor(fluid)
-        //val brightness = mc.world.getCombinedLight(pos, fluid.fluid.luminosity)
 
-        val i: Int = mc.world.getCombinedLight(pos, fluid.fluid.luminosity)
-        val j: Int = mc.world.getCombinedLight(pos.up(), fluid.fluid.luminosity)
-        val k = i and 255
-        val l = j and 255
-        val i1 = i shr 16 and 255
-        val j1 = j shr 16 and 255
-        val brightness = (if (k > l) k else l) or (if (i1 > j1) i1 else j1) shl 16
+        val i = mc.world.getLightFromNeighborsFor(EnumSkyBlock.SKY, pos)
+
+        val brightness = (i shl 4) or fluid.fluid.luminosity
 
         var still = mc.textureMapBlocks.getTextureExtry(fluid.fluid.getStill(fluid).toString())
         var flowing = mc.textureMapBlocks.getTextureExtry(fluid.fluid.getFlowing(fluid).toString())
@@ -164,8 +159,8 @@ class MutliBlockTankFluidModelBakery(val baseModel: IBakedModel) : IBakedModel b
     fun putTexturedQuad(list: MutableList<SimpleQuad>, sprite: TextureAtlasSprite?, x: Float, y: Float, z: Float, w: Float, h: Float, d: Float, face: EnumFacing,
                         color: Int, brightness: Int, flowing: Boolean, flipHorizontally: Boolean) {
 
-        val sky = brightness shr 0x04 and 0xF
-        val block = brightness shr 0x14 and 0xF
+        val sky: Int = brightness shr 4
+        val block: Int = brightness and 15
 
         val a = color shr 24 and 0xFF
         val r = color shr 16 and 0xFF
@@ -181,7 +176,7 @@ class MutliBlockTankFluidModelBakery(val baseModel: IBakedModel) : IBakedModel b
         val r = r / 255f
         val g = g / 255f
         val b = b / 255f
-        val a = 0.8f//a / 255f
+        val a = a / 255f
 
         // safety
         if (sprite == null) {

@@ -37,18 +37,11 @@ class TankStructureBlock<T>(unlocalizedName: String,
 
     override fun onBlockActivated(worldIn: World, pos: BlockPos, state: IBlockState, playerIn: EntityPlayer, hand: EnumHand, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean {
         if (!playerIn.isSneaking) {
-            if (!worldIn.isRemote) {
                 val controllerTileEntity = getMultiBlockPartTileEntity(worldIn, pos)
-                val multiBlockController = controllerTileEntity.multiblockController
                 if (controllerTileEntity.validateStructure()) {
                     controllerTileEntity.onActivate(worldIn, pos, playerIn, hand, facing)
-                } else {
-                    playerIn.sendMessage(multiBlockController.lastError?.chatMessage
-                            ?: TextComponentTranslation("null"))
+                    return true
                 }
-            }
-
-            return true
         }
 
         return super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ)
@@ -58,7 +51,7 @@ class TankStructureBlock<T>(unlocalizedName: String,
         if (world != null && pos != null) {
             val tile = world.getTileEntity(pos) as? TileEntityTankMultiBlockPart
                     ?: return (state as IExtendedBlockState).withProperty(FLUIDSTACK, null).withProperty(DIMENSIONS, null).withProperty(TANKSIZE, null).withProperty(POSITION, null)
-            if (tile.fluidComp.isAttached && tile.multiblockController != null && tile.multiblockController!!.isAssembled && tile.fluidComp.innerComponent.fluid.currentFluid != null) {
+            if (tile.fluidComp.isAttached && tile.multiblockController != null && tile.multiblockController!!.isAssembled && tile.multiblockController!!.controllerTileEntity == tile && tile.fluidComp.innerComponent.fluid.currentFluid != null) {
                 val minimumCoord = tile.multiblockController!!.minimumCoord!!
                 val maximumCoord = tile.multiblockController!!.maximumCoord!!
                 val sizeX = maximumCoord.x - minimumCoord.x + 1f
