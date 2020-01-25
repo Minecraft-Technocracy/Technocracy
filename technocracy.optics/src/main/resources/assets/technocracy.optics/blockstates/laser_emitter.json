@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "technocracy.optics:laser_emitter"
+    },
+    "facing=east": {
+      "model": "technocracy.optics:laser_emitter",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "technocracy.optics:laser_emitter",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "technocracy.optics:laser_emitter",
+      "y": 270
+    }
+  }
+}

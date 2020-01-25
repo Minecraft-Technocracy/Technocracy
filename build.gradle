@@ -144,12 +144,19 @@ project('technocracy.astronautics') {
     }
 }
 
+project('technocracy.optics') {
+    dependencies {
+        compile project(':technocracy.foundation')
+    }
+}
+
 /*
  * MONOLITH CONFIGURATION
  */
 dependencies {
     compile project('technocracy.foundation')
     compile project('technocracy.astronautics')
+    compile project('technocracy.optics')
 }
 
 /*

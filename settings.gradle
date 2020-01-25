@@ -2,3 +2,4 @@ rootProject.name = "technocracy"
 
 include 'technocracy.foundation'
 include 'technocracy.astronautics'
+include 'technocracy.optics'
