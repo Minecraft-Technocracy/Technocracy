@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.optics.content.capabilities.laser
+package net.cydhra.technocracy.optics.api.capabilities.laser
 
 import net.minecraft.util.EnumFacing
 

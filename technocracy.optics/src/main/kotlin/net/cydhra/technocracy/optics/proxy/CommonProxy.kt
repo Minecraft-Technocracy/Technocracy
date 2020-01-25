@@ -7,10 +7,12 @@ import net.cydhra.technocracy.foundation.model.fluids.manager.FluidManager
 import net.cydhra.technocracy.foundation.model.items.manager.ItemManager
 import net.cydhra.technocracy.foundation.model.tileentities.manager.TileEntityManager
 import net.cydhra.technocracy.optics.TCOptics
+import net.cydhra.technocracy.optics.api.capabilities.laser.*
 import net.cydhra.technocracy.optics.client.opticsCreativeTab
 import net.cydhra.technocracy.optics.content.blocks.laserEmitterBlock
 import net.cydhra.technocracy.optics.content.tileentities.machines.TileEntityLaser
 import net.minecraftforge.common.MinecraftForge
+import net.minecraftforge.common.capabilities.CapabilityManager
 
 open class CommonProxy {
 
@@ -45,7 +47,8 @@ open class CommonProxy {
     }
 
     open fun init() {
-
+        CapabilityManager.INSTANCE.register(ILaserEmitter::class.java, LaserEmitterStorage(), ::DefaultLaserEmitter)
+        CapabilityManager.INSTANCE.register(ILaserAbsorber::class.java, LaserAbsorberStorage(), ::DefaultLaserAbsorber)
     }
 
     open fun postInit() {
