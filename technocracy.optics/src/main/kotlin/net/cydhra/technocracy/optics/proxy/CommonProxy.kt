@@ -8,7 +8,7 @@ import net.cydhra.technocracy.foundation.model.items.manager.ItemManager
 import net.cydhra.technocracy.foundation.model.tileentities.manager.TileEntityManager
 import net.cydhra.technocracy.optics.TCOptics
 import net.cydhra.technocracy.optics.client.opticsCreativeTab
-import net.cydhra.technocracy.optics.content.tileentities.blocks.laserEmitterBlock
+import net.cydhra.technocracy.optics.content.blocks.laserEmitterBlock
 import net.cydhra.technocracy.optics.content.tileentities.machines.TileEntityLaser
 import net.minecraftforge.common.MinecraftForge
 

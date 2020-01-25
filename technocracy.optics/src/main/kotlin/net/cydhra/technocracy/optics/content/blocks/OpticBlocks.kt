@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.optics.content.tileentities.blocks
+package net.cydhra.technocracy.optics.content.blocks
 
 import net.cydhra.technocracy.foundation.model.blocks.impl.MachineBlock
 import net.cydhra.technocracy.optics.content.tileentities.machines.TileEntityLaser
