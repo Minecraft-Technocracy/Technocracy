@@ -13,15 +13,15 @@ import net.cydhra.technocracy.foundation.client.gui.TCGui.Companion.slotLineTop
 import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
+import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.texture.TextureMap
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
-import net.minecraft.util.ResourceLocation
 import net.minecraftforge.fluids.Fluid
 import org.lwjgl.opengl.GL11
 import java.awt.Color
-import kotlin.math.roundToInt
+import kotlin.math.*
 
 
 class DefaultFluidMeter(posX: Int, posY: Int, val component: FluidTileEntityComponent, val gui: TCGui) : FluidMeter(posX, posY) {
@@ -82,7 +82,8 @@ class DefaultFluidMeter(posX: Int, posY: Int, val component: FluidTileEntityComp
                 width - slotCornerBottomLeft.width, height - slotCornerBottomRight.height,
                 256f, 256f)
 
-
+        val tessellator = Tessellator.getInstance()
+        val bufferbuilder = tessellator.buffer
 
         if (level > 0f) {
             if (component.fluid.currentFluid != null) {
@@ -91,20 +92,40 @@ class DefaultFluidMeter(posX: Int, posY: Int, val component: FluidTileEntityComp
 
                 GlStateManager.color(color.red / 255f, color.green / 255f, color.blue / 255f, 1f)
                 val sprite = Minecraft.getMinecraft().textureMapBlocks.getTextureExtry(fluid.still.toString())
+
                 if (sprite != null) {
                     Minecraft.getMinecraft().textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE)
-                    gui.drawTexturedModalRect(posX + x + 1,
-                            ((1f - level) * height).toInt() + posY + y + 1,
-                            sprite,
-                            width - 2,
-                            height - 2 - ((1f - level) * height).toInt())
+
+                    val croppedWidth = width - 1.0
+                    val croppedHeight = height - 1.0
+
+                    val mw = floor(croppedWidth / sprite.iconWidth.toDouble()).toInt()
+                    val mh = floor(croppedHeight * level / sprite.iconHeight.toDouble()).toInt()
+
+                    for (w in 0..mw) {
+                        for (h in 0..mh) {
+                            val xCoord = min(posX + x + 1.0 + sprite.iconWidth * (w + 1), posX + x + croppedWidth)
+                            val widthIn = posX + x + 1.0 + sprite.iconWidth * w - xCoord
+                            val yCoord = posY + y + croppedHeight - sprite.iconHeight * h
+                            val heightIn = max(posY + y + croppedHeight - sprite.iconHeight * (h + 1.0), posY + y + 1 + (croppedHeight * (1.0 - level))) - yCoord
+
+                            bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX)
+
+                            val maxU = sprite.minU.toDouble()
+                            val minU = sprite.getInterpolatedU(abs(widthIn)).toDouble()
+                            val minV = sprite.minV.toDouble()
+                            val maxV = sprite.getInterpolatedV(abs(heightIn)).toDouble()
+
+                            bufferbuilder.pos(xCoord + 0, (yCoord + heightIn), 0.0).tex(minU, maxV).endVertex()
+                            bufferbuilder.pos((xCoord + widthIn), (yCoord + heightIn), 0.0).tex(maxU, maxV).endVertex()
+                            bufferbuilder.pos((xCoord + widthIn), (yCoord + 0), 0.0).tex(maxU, minV).endVertex()
+                            bufferbuilder.pos((xCoord + 0), (yCoord + 0), 0.0).tex(minU, minV).endVertex()
+                            tessellator.draw()
+                        }
+                    }
                 }
             }
         }
-
-
-        val tessellator = Tessellator.getInstance()
-        val bufferbuilder = tessellator.buffer
 
         GlStateManager.enableBlend()
         GlStateManager.disableTexture2D()
@@ -135,16 +156,6 @@ class DefaultFluidMeter(posX: Int, posY: Int, val component: FluidTileEntityComp
 
         GlStateManager.enableTexture2D()
         GlStateManager.disableBlend()
-
-
-        //Gui.drawScaledCustomSizeModalRect(posX + x, posY + y, 0f, 10f, 18, 18, width, 18, 256f, 256f)
-        //Gui.drawScaledCustomSizeModalRect(posX + x, posY + y + height - 18, 0f, 10f, 18, 18, width, 18, 256f, 256f)
-        //Gui.drawScaledCustomSizeModalRect(posX + x, posY + y + 2, 0f, 12f, 18, 14, width, height - 4, 256f, 256f)
-
-
-        //Gui.drawRect(posX + x + 18, posY + y, posX + x + 35 + width, posY + y + height, -1)
-        //Gui.drawScaledCustomSizeModalRect(posX + x + 35, posY + y, 0f, 12f, 18, 18 , width, height, 256f, 256f)
-
     }
 
     override fun drawTooltip(mouseX: Int, mouseY: Int) {
