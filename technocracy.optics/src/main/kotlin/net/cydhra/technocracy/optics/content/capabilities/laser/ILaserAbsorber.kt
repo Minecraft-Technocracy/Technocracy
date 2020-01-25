@@ -20,13 +20,15 @@ interface ILaserAbsorber {
      *
      * @param facing where the laser enters the block
      * @param energyPerTick how much energy the laser transfers uses per tick.
+     * @param emitter the emitter that is sending energy through the laser
      */
-    fun beginTransmission(facing: EnumFacing, energyPerTick: Long)
+    fun beginTransmission(facing: EnumFacing, energyPerTick: Long, emitter: ILaserEmitter)
 
     /**
      * End the incoming laser at the given face. No more energy is provided.
      *
      * @param facing Which face no longer is exposed to a laser.
+     * @param emitter the emitter that was sending energy to the laser.
      */
-    fun endTransmission(facing: EnumFacing)
+    fun endTransmission(facing: EnumFacing, emitter: ILaserEmitter)
 }
