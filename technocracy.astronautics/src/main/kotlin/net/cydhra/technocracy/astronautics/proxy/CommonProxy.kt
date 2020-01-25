@@ -1,12 +1,12 @@
 package net.cydhra.technocracy.astronautics.proxy
 
 import net.cydhra.technocracy.astronautics.TCAstronautics
+import net.cydhra.technocracy.astronautics.api.capabilities.satellites.DefaultSatelliteOrbit
+import net.cydhra.technocracy.astronautics.api.capabilities.satellites.ISatelliteOrbit
+import net.cydhra.technocracy.astronautics.api.capabilities.satellites.SatelliteOrbitStorage
 import net.cydhra.technocracy.astronautics.client.astronauticsCreativeTabs
 import net.cydhra.technocracy.astronautics.client.model.concreteSprayer.ConcreteSprayerItemModel
 import net.cydhra.technocracy.astronautics.content.blocks.*
-import net.cydhra.technocracy.astronautics.content.capabilities.satellites.DefaultSatelliteOrbit
-import net.cydhra.technocracy.astronautics.content.capabilities.satellites.ISatelliteOrbit
-import net.cydhra.technocracy.astronautics.content.capabilities.satellites.SatelliteOrbitStorage
 import net.cydhra.technocracy.astronautics.content.entity.entityParticleEmitter
 import net.cydhra.technocracy.astronautics.content.entity.entityRocket
 import net.cydhra.technocracy.astronautics.content.items.concreteCanItem

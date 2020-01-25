@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.astronautics.content.capabilities.satellites
+package net.cydhra.technocracy.astronautics.api.capabilities.satellites
 
 import net.cydhra.technocracy.astronautics.TCAstronautics
 import net.minecraft.nbt.NBTBase
