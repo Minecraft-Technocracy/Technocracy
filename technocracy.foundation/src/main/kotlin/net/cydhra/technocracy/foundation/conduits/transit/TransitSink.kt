@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.conduits.transit
 
+import net.cydhra.technocracy.foundation.conduits.types.PipeContent
 import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
@@ -12,6 +13,9 @@ import net.minecraft.world.WorldServer
 class TransitSink(pos: BlockPos) : TransitEdge(pos) {
 
     private var transferCoolDown = 0
+
+    // TODO delegate to the tile entity that is represented by this sink
+    var transferLimit: Int = 4
 
     // TODO: this is not assigned yet
     lateinit var routingStrategy: RoutingStrategy
@@ -44,5 +48,9 @@ class TransitSink(pos: BlockPos) : TransitEdge(pos) {
     fun tick() {
         if (transferCoolDown > 0)
             transferCoolDown--
+    }
+
+    fun getContent(world: WorldServer): PipeContent {
+        return this.type.getContent(world, this.pos.offset(facing), facing.opposite, this.transferLimit)
     }
 }

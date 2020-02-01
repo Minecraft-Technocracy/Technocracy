@@ -12,7 +12,8 @@ import net.minecraftforge.items.CapabilityItemHandler
 
 enum class PipeType(val unlocalizedName: String,
                     val capability: Capability<*>,
-                    val offersContent: (world: WorldServer, pos: BlockPos, facing: EnumFacing) -> Boolean)
+                    val offersContent: (world: WorldServer, pos: BlockPos, facing: EnumFacing) -> Boolean,
+                    val getContent: (world: WorldServer, pos: BlockPos, facing: EnumFacing, limit: Int) -> PipeContent)
     : IStringSerializable {
     ENERGY("energy",
             EnergyCapabilityProvider.CAPABILITY_ENERGY!!,
@@ -20,12 +21,21 @@ enum class PipeType(val unlocalizedName: String,
                 world.getTileEntity(pos)
                         ?.getCapability(EnergyCapabilityProvider.CAPABILITY_ENERGY!!, facing)
                         ?.let { it.canExtract() && it.energyStored > 0 } ?: false
+            },
+            { world, pos, facing, limit ->
+                world.getTileEntity(pos)
+                        ?.getCapability(EnergyCapabilityProvider.CAPABILITY_ENERGY!!, facing)!!
+                        .let { PipeEnergyContent(it, it.extractEnergy(limit, true)) }
+
             }),
     FLUID("fluid", CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
             { world, pos, facing ->
                 world.getTileEntity(pos)
                         ?.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY!!, facing)
                         ?.drain(1, false)?.amount ?: 0 > 0
+            },
+            { world, pos, facing, limit ->
+                TODO()
             }),
     ITEM("item", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
             { world, pos, facing ->
@@ -34,6 +44,9 @@ enum class PipeType(val unlocalizedName: String,
                         ?.let { itemCap ->
                             (0..itemCap.slots).any { !itemCap.extractItem(it, 1, true).isEmpty }
                         } ?: false
+            },
+            { world, pos, facing, limit ->
+                TODO()
             });
 
     override fun getName(): String {
