@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.astronautics.proxy
 
 import net.cydhra.technocracy.astronautics.TCAstronautics
-import net.cydhra.technocracy.astronautics.api.capabilities.satellites.SatelliteOrbitProvider
+import net.cydhra.technocracy.astronautics.content.capabilities.satellites.SatelliteOrbitProvider
 import net.minecraft.util.ResourceLocation
 import net.minecraft.world.WorldServer
 import net.minecraft.world.chunk.Chunk

@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.astronautics.api.capabilities.satellites
+package net.cydhra.technocracy.astronautics.content.capabilities.satellites
 
 import net.minecraft.world.chunk.Chunk
 
