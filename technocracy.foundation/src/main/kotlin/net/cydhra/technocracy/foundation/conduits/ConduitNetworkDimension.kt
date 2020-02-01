@@ -98,7 +98,7 @@ internal class ConduitNetworkDimension(private val dimensionId: Int) {
                     val content = source.getContent(world)
 
                     // find available sink using routing strategy
-                    val target = source.routingStrategy.findSinks(content)
+                    val targets = source.routingStrategy.findSinks(source, content)
 
                     // transfer content
 
