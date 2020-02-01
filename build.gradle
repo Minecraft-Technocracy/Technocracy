@@ -46,6 +46,11 @@ allprojects {
 
     libsDirName = "$root_build_dir/artifacts"
 
+    sourceSets {
+        // the api source set creates more problems on compile than it solves, so we just throw it away
+        remove api
+    }
+
     repositories {
         jcenter()
         maven {
