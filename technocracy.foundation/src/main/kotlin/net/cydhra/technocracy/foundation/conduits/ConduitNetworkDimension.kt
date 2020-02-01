@@ -95,12 +95,13 @@ internal class ConduitNetworkDimension(private val dimensionId: Int) {
                 .filter { it.offersContent(world) }
                 .forEach { source ->
                     // get offered content of source
+                    val content = source.getContent(world)
 
                     // find available sink using routing strategy
-
-                    // test if sink currently accepts content
+                    val target = source.routingStrategy.findSinks(content)
 
                     // transfer content
+
                 }
     }
 }
