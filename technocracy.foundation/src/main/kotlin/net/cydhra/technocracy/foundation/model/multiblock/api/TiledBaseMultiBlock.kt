@@ -3,7 +3,6 @@ package net.cydhra.technocracy.foundation.model.multiblock.api
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import it.zerono.mods.zerocore.api.multiblock.validation.ValidationError
 import net.minecraft.block.state.IBlockState
-import net.minecraft.init.Blocks
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
@@ -39,6 +38,12 @@ abstract class TiledBaseMultiBlock(
      * Contains min and max coordinate of each tile
      */
     protected val tiles = mutableSetOf<Tile>()
+
+    init {
+        if (tileSizeX < 3 || tileSizeZ < 3) {
+            throw IllegalStateException("Tiles need at least a size of 3x3!")
+        }
+    }
 
     override fun isMachineWhole(validatorCallback: IMultiblockValidator): Boolean {
         if (this.connectedParts.size < this.minimumNumberOfBlocksForAssembledMachine) {
@@ -107,7 +112,15 @@ abstract class TiledBaseMultiBlock(
         //Get the tile size corresponding to each axis. Subtract one because the size is actually one block too much
         //  (e.g. if minX is 5 and sizeX is 5 then maxX should be 9 and not 10)
         var xAxisSize = (if (deltaX % tileSizeX == 0) tileSizeX else tileSizeZ) - 1
-        var zAxisSize = (if (deltaZ % tileSizeX == 0) tileSizeZ else tileSizeX) - 1
+        var zAxisSize = (if (deltaZ % tileSizeZ == 0) tileSizeZ else tileSizeX) - 1
+
+        //Error in first iteration
+        var error1 = false
+        //Error in second iteration
+        var error2 = false
+
+        //Used to make sure the checked blocks belong to this multi block
+        val connectedPositions = this.connectedParts.map { it.worldPosition }
 
         //If tileSizeX and tileSizeZ have a common multiple in deltaX or deltaZ then the tile detection has to be
         //  repeated with flipped axis, only if no tile previously was valid. This has to be done, because if that
@@ -118,15 +131,38 @@ abstract class TiledBaseMultiBlock(
             //  where there isn't one
             for (x in minX until (maxX - 1) step xAxisSize) {
                 for (z in minZ until (maxZ - 1) step zAxisSize) {
+                    //First corner
                     val minPos = BlockPos(x, minY, z)
-                    //Checks the corner block, next corner block and the center block to hopefully predict a tile being
-                    // there
-                    if (frameBlockWhitelist!!.test(this.WORLD.getBlockState(minPos)) &&
-                            frameBlockWhitelist.test(this.WORLD.getBlockState(minPos.south(zAxisSize))) &&
-                            (bottomBlockWhitelist == null ||
-                                    bottomBlockWhitelist.test(this.WORLD.getBlockState(minPos.south(zAxisSize / 2)
-                                            .east(xAxisSize / 2)))))
+                    //One block further east or south
+                    val minPosClose: BlockPos
+                    //East or south corner
+                    val minPosFar: BlockPos
+                    //Center block
+                    val centerPos = minPos.south(zAxisSize / 2).east(xAxisSize / 2)
+
+                    //Go east if in the first row, south otherwise
+                    if (z == minZ) {
+                        minPosClose = minPos.east(1)
+                        minPosFar = minPos.east(xAxisSize)
+                    } else {
+                        minPosClose = minPos.south(1)
+                        minPosFar = minPos.south(zAxisSize)
+                    }
+
+                    //Checks the east of the corner block, the east corner block, and the center block to
+                    //  hopefully predict a tile being there. Also makes sure the blocks are not from another multi block.
+                    //
+                    //  Could be made more efficient by checking all blocks in the area of the tile, but the performance
+                    //  decrease isn't worth it
+                    if ((frameBlockWhitelist!!.test(this.WORLD.getBlockState(minPosClose)) &&
+                                    connectedPositions.contains(minPosClose)) ||
+                            (frameBlockWhitelist.test(this.WORLD.getBlockState(minPosFar)) &&
+                                    connectedPositions.contains(minPosFar)) ||
+                            (bottomBlockWhitelist != null &&
+                                    bottomBlockWhitelist.test(this.WORLD.getBlockState(centerPos)) &&
+                                    connectedPositions.contains(centerPos))) {
                         this.tiles += Tile(minPos, BlockPos(x + xAxisSize, maxY, z + zAxisSize))
+                    }
                 }
             }
 
@@ -135,34 +171,141 @@ abstract class TiledBaseMultiBlock(
             tiles.forEach {
                 tiles.forEach { other ->
                     if (it != other) {
-                        if(it.maxPos.x == other.maxPos.x) {
-                            if(it.maxPos.z - other.maxPos.z == tileSizeZ)
+                        if (it.maxPos.x == other.maxPos.x) {
+                            if (it.maxPos.z - other.maxPos.z == zAxisSize)
                                 it.adjacentTileSides += EnumFacing.NORTH
-                            else if(other.maxPos.z - it.maxPos.z == tileSizeZ)
+                            else if (other.maxPos.z - it.maxPos.z == zAxisSize)
                                 it.adjacentTileSides += EnumFacing.SOUTH
-                        } else if(it.maxPos.z == other.maxPos.z) {
-                            if(it.maxPos.x - other.maxPos.x == tileSizeZ)
+                        } else if (it.maxPos.z == other.maxPos.z) {
+                            if (it.maxPos.x - other.maxPos.x == xAxisSize)
                                 it.adjacentTileSides += EnumFacing.WEST
-                            else if(other.maxPos.z - it.maxPos.z == tileSizeZ)
+                            else if (other.maxPos.x - it.maxPos.x == xAxisSize)
                                 it.adjacentTileSides += EnumFacing.EAST
                         }
                     }
                 }
             }
+
+            //Validate each block of each tile
+            tiles.forEach outer@{
+                for (x in it.minPos.x..it.maxPos.x) {
+                    for (y in it.minPos.y..it.maxPos.y) {
+                        for (z in it.minPos.z..it.maxPos.z) {
+                            val pos = BlockPos(x, y, z)
+                            var whitelist: Predicate<IBlockState>?
+                            //Get correct tester
+                            whitelist = when {
+                                x == it.maxPos.x -> getWhitelistForSideBlock(it, pos,
+                                        it.adjacentTileSides.firstOrNull { s -> s == EnumFacing.EAST })
+                                x == it.minPos.x -> getWhitelistForSideBlock(it, pos,
+                                        it.adjacentTileSides.firstOrNull { s -> s == EnumFacing.WEST })
+                                z == it.minPos.z -> getWhitelistForSideBlock(it, pos,
+                                        it.adjacentTileSides.firstOrNull { s -> s == EnumFacing.NORTH })
+                                z == it.maxPos.z -> getWhitelistForSideBlock(it, pos,
+                                        it.adjacentTileSides.firstOrNull { s -> s == EnumFacing.SOUTH })
+                                y == it.maxPos.y -> topBlockWhitelist
+                                y == it.minPos.y -> bottomBlockWhitelist
+                                else -> interiorBlockWhitelist
+                            }
+
+                            //Use tester to test the block
+                            if (whitelist != null && !whitelist.test(WORLD.getBlockState(pos))) {
+                                //TODO: Error message can be unprecise in some cases. Only thing to add could be to save
+                                //  the amount of valid blocks and tiles for both iterations and then check which one had
+                                //  more valid stuff. The error message of that iteration could then be expected to be
+                                //  more accurate.
+                                validatorCallback.setLastError("multiblock.error.invalid_block", pos.x, pos.y, pos.z)
+                                if (i == 0)
+                                    error1 = true
+                                else
+                                    error2 = true
+                                return@outer
+                            }
+                        }
+                    }
+                }
             }
 
-            if (tiles.isEmpty()) {
+            //If the axis sizes aren't the same, the other option (axis flipped) has to be evaluated
+            if (i == 0 && xAxisSize != zAxisSize && (error1 || tiles.isEmpty())) {
                 //Switch axis and try again
                 val tmp = xAxisSize
                 xAxisSize = zAxisSize
                 zAxisSize = tmp
             } else {
+                //The tiles list is not allowed to be empty at this point
+                if (tiles.isEmpty())
+                    error2 = true
                 break
             }
         }
 
-        println("valid")
-        return true
+        //Make sure one iteration was valid
+        return !(error1 && error2)
+    }
+
+    /**
+     * Finds the correct whitelist that should be used for a block of a tile, that is located on the NORTH, EAST, SOUTH
+     * or WEST side of the tile (Either frame or actual side)
+     *
+     * @param tile The tile that the block is in
+     * @param pos The [BlockPos] that should be validated
+     * @param adjacentSide The facing of the side that the block is in; or *null* if the side of this block does not
+     * have another side adjacent to it. Only allowed values are NORTH, EAST, SOUTH and WEST
+     * @return The proper whitelist that should be used for the given block
+     */
+    private fun getWhitelistForSideBlock(tile: Tile, pos: BlockPos,
+                                         adjacentSide: EnumFacing?): Predicate<IBlockState>? {
+        val hasAdjacent = adjacentSide != null
+        val isFrame =
+                ((pos.x == tile.maxPos.x || pos.x == tile.minPos.x) && //East and west
+                        (pos.y == tile.maxPos.y || pos.y == tile.minPos.y) || //Top bottom
+                        (pos.z == tile.maxPos.z || pos.z == tile.minPos.z)) || //North and south frame
+                        ((pos.z == tile.maxPos.z || pos.z == tile.minPos.z) && //North and south
+                                (pos.y == tile.maxPos.y || pos.y == tile.minPos.y) || //Top bottom
+                                (pos.x == tile.maxPos.x || pos.x == tile.minPos.x)) //East and west frame
+
+        //Frame
+        if (isFrame) {
+            //The first corner when going counter-clockwise the side
+            val firstCorner = when (adjacentSide) {
+                EnumFacing.NORTH -> pos.x == tile.minPos.x
+                EnumFacing.EAST -> pos.z == tile.minPos.z
+                EnumFacing.SOUTH -> pos.x == tile.maxPos.x
+                EnumFacing.WEST -> pos.z == tile.maxPos.z
+                null -> false
+                else -> throw IllegalArgumentException("adjacentSide has to be NORTH, EAST, SOUTH or WEST!")
+            }
+            //The first corner when going clockwise from the side
+            val secondCorner = when (adjacentSide) {
+                EnumFacing.NORTH -> pos.x == tile.maxPos.x
+                EnumFacing.EAST -> pos.z == tile.maxPos.z
+                EnumFacing.SOUTH -> pos.x == tile.minPos.x
+                EnumFacing.WEST -> pos.z == tile.minPos.z
+                null -> false
+                else -> throw IllegalArgumentException("adjacentSide has to be NORTH, EAST, SOUTH or WEST!")
+            }
+            val isCorner = firstCorner || secondCorner
+
+            //Use tile frame if a corner is surrounded on both sides or on that side another tile is adjacent and the
+            // block is not a corner
+            if (hasAdjacent &&
+                    ((firstCorner && tile.adjacentTileSides.contains(adjacentSide!!.rotateYCCW())) ||
+                            (secondCorner && tile.adjacentTileSides.contains(adjacentSide!!.rotateY())) ||
+                            (!isCorner && tileFrameBlockWhitelist != null)) //Any other frame part
+            ) {
+                return tileFrameBlockWhitelist
+            } else if (((!hasAdjacent) || (hasAdjacent && isCorner)) &&
+                    frameBlockWhitelist != null) {
+                //Use normal frame. Happens for corners that are not surrounded on both sides
+                // or when there's no adjacent tile on this side
+                return frameBlockWhitelist
+            }
+        } else { //Side
+            return if (hasAdjacent) tileSideBlockWhitelist else sideBlockWhitelist
+        }
+
+        throw IllegalArgumentException("$pos is not in frame or side")
     }
 
     /**
@@ -186,14 +329,6 @@ abstract class TiledBaseMultiBlock(
         return tempDelta
     }
 
-    fun isBlockGoodForTileFrame(world: World, x: Int, y: Int, z: Int): Boolean {
-        return tileFrameBlockWhitelist == null || tileFrameBlockWhitelist.test(world.getBlockState(BlockPos(x, y, z)))
-    }
-
-    fun isBlockGoodForTileSide(world: World, x: Int, y: Int, z: Int): Boolean {
-        return tileSideBlockWhitelist == null || tileSideBlockWhitelist.test(world.getBlockState(BlockPos(x, y, z)))
-    }
-
     override fun getMaximumXSize(): Int {
         return this.tileSizeX
     }
@@ -215,11 +350,6 @@ class Tile(val minPos: BlockPos, val maxPos: BlockPos) {
      */
     val adjacentTileSides = mutableSetOf<EnumFacing>()
 
-    /**
-     * @return *true* if the tile is surrounded on all sides by other tiles; *false* otherwise
-     */
-    fun isCenterTile() = adjacentTileSides.isEmpty()
-
     override fun hashCode(): Int {
         return minPos.hashCode() * 31 + maxPos.hashCode()
     }
@@ -230,6 +360,11 @@ class Tile(val minPos: BlockPos, val maxPos: BlockPos) {
 
         other as Tile
 
-        return minPos != other.minPos && maxPos != other.maxPos
+        return minPos.x == other.minPos.x && minPos.y == other.minPos.y && minPos.z == other.minPos.z &&
+                maxPos.x == other.maxPos.x && maxPos.y == other.maxPos.y && maxPos.z == other.maxPos.z
+    }
+
+    override fun toString(): String {
+        return "Tile(minPos=$minPos, maxPos=$maxPos, adjacentTileSides=$adjacentTileSides)"
     }
 }

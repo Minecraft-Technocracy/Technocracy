@@ -259,6 +259,7 @@ multiblock.error.number_of_blocks=%s: Expected %d but found %d.
 multiblock.error.too_few_blocks=%s: Expected at least %d but found %d.
 multiblock.error.too_many_blocks=%s: Expected at most %d but found %d.
 multiblock.error.inconsistent_tile_size=All tiles of this machine must be of equal size (%dx%dx%d).
+multiblock.error.invalid_block=The block at %d, %d, %d is not allowed at this location.
 multiblock.boiler.error.wider_than_high=The machine must be at least as high as the average side length (%d blocks) but is only %d blocks high.
 multiblock.heat_exchanger.error.unused_input_port=An ingress port is unused.
 multiblock.heat_exchanger.error.tube_flow_diverges=A tube diverges its coolant flow.

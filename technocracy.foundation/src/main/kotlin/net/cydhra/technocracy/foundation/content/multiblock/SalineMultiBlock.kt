@@ -1,8 +1,8 @@
 package net.cydhra.technocracy.foundation.content.multiblock
 
 import net.cydhra.technocracy.foundation.content.blocks.*
+import net.cydhra.technocracy.foundation.model.components.IComponent
 import net.cydhra.technocracy.foundation.model.multiblock.api.TiledBaseMultiBlock
-import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractComponent
 import net.minecraft.init.Blocks
 import net.minecraft.world.World
 import java.util.function.Predicate
@@ -31,7 +31,8 @@ class SalineMultiBlock(world: World) : TiledBaseMultiBlock(
         sizeY = 2,
         world = world
 ) {
-    override fun getComponents(): MutableList<Pair<String, AbstractComponent>> {
+
+    override fun getComponents(): MutableList<Pair<String, IComponent>> {
         return mutableListOf()
     }
 
@@ -45,5 +46,4 @@ class SalineMultiBlock(world: World) : TiledBaseMultiBlock(
 
     override fun updateClient() {
     }
-
 }
