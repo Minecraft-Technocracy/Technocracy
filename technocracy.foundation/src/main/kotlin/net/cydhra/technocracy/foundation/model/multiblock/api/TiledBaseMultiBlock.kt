@@ -108,7 +108,7 @@ abstract class TiledBaseMultiBlock(
             validatorCallback.setLastError("multiblock.error.inconsistent_tile_size", tileSizeX, tileSizeZ, sizeY)
             return false
         }
-
+        
         //Get the tile size corresponding to each axis. Subtract one because the size is actually one block too much
         //  (e.g. if minX is 5 and sizeX is 5 then maxX should be 9 and not 10)
         var xAxisSize = (if (deltaX % tileSizeX == 0) tileSizeX else tileSizeZ) - 1
@@ -233,15 +233,17 @@ abstract class TiledBaseMultiBlock(
                 xAxisSize = zAxisSize
                 zAxisSize = tmp
             } else {
-                //The tiles list is not allowed to be empty at this point
-                if (tiles.isEmpty())
+                //The tiles list is not allowed to be empty at this point, so just force an error
+                if (tiles.isEmpty()) {
                     error2 = true
+                    validatorCallback.setLastError("multiblock.error.no_tile_found")
+                }
                 break
             }
         }
 
-        //Make sure one iteration was valid
-        return !(error1 && error2)
+        //Make sure one is valid. First part is for multi blocks with the same allowed x and z length
+        return (xAxisSize == zAxisSize && !error1 && tiles.isNotEmpty()) || ((xAxisSize != zAxisSize) && !(error1 && error2))
     }
 
     /**
