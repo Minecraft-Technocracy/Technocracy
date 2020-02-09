@@ -103,6 +103,11 @@ TCContainer)
         zLevel = 0.0f
     }
 
+    override fun handleMouseInput() {
+        this.tabs[this.activeTabIndex].handleMouseInput()
+        super.handleMouseInput()
+    }
+
     override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
         super.mouseClicked(mouseX, mouseY, mouseButton)
 

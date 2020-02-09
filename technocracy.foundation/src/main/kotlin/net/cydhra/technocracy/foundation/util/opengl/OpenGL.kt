@@ -197,7 +197,7 @@ object OpenGLBoundingBox {
         val tessellator = Tessellator.getInstance()
         val buffer = tessellator.buffer
 
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX)
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION)
         //Front Quad (NORTH)
         buffer.pos(boundingBox.maxX, boundingBox.minY, boundingBox.minZ).endVertex()
         buffer.pos(boundingBox.minX, boundingBox.minY, boundingBox.minZ).endVertex()
