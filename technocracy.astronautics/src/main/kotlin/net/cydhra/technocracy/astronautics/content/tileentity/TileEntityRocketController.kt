@@ -13,11 +13,30 @@ import net.cydhra.technocracy.foundation.content.tileentities.components.OwnerSh
 import net.cydhra.technocracy.foundation.model.tileentities.api.TCTileEntityGuiProvider
 import net.cydhra.technocracy.foundation.model.tileentities.api.TEInventoryProvider
 import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableTileEntity
+import net.cydhra.technocracy.foundation.util.Interpolator
+import net.cydhra.technocracy.foundation.util.opengl.BasicShaderProgram
+import net.cydhra.technocracy.foundation.util.opengl.OpenGLBoundingBox
+import net.cydhra.technocracy.foundation.util.validateAndClear
+import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.ScaledResolution
+import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.client.renderer.Tessellator
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats
+import net.minecraft.client.shader.Framebuffer
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.NonNullList
 import net.minecraft.util.ResourceLocation
+import net.minecraft.util.math.AxisAlignedBB
+import net.minecraft.util.math.MathHelper
+import org.lwjgl.input.Mouse
+import org.lwjgl.opengl.GL11
+import org.lwjgl.util.glu.Project
+import org.lwjgl.util.vector.Vector3f
+import org.lwjgl.util.vector.Vector4f
+import kotlin.math.*
+
 
 class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider, TCTileEntityGuiProvider, DynamicInventoryCapability.CustomItemStackStackLimit {
 
@@ -60,6 +79,10 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
         return false
     }
 
+    lateinit var buffer: Framebuffer
+    var depthShader: BasicShaderProgram? = null
+    lateinit var Ufarplane: BasicShaderProgram.ShaderUniform
+
     override fun getGui(player: EntityPlayer?): TCGui {
         val gui = TCGui(guiHeight = 230, container = TCContainer(1, 1))
         gui.registerTab(object : TCTab("${getBlockType().localizedName} linked: ${currentRocket != null}", gui, -1,
@@ -79,7 +102,315 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
             }
         })
 
+        gui.registerTab(object : TCTab("uwu", gui, -1,
+                ResourceLocation("technocracy.foundation", "textures/item/gear.png")) {
+
+            val ic = Interpolator.InterpolationCycle<Interpolator.PosLook>()
+            val gridPolater = Interpolator.InterpolationCycle<Interpolator.InterpolateFloat>()
+
+            var counter = 1.0
+
+            override fun update() {
+                counter += 4
+                super.update()
+            }
+
+            override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
+                val mc = Minecraft.getMinecraft()
+
+                val scaledResolution = ScaledResolution(Minecraft.getMinecraft())
+                val sW = scaledResolution.getScaledWidth_double()
+                val sH = scaledResolution.getScaledHeight_double()
+
+                GlStateManager.color(1f, 1f, 1f, 1f)
+                mc.fontRenderer.drawString(name + " " + zoom + " " + min(5f * (zoom * 10), 5f), 8f + x, 8f + y, 4210752, false)
+
+                val tess = Tessellator.getInstance()
+                val tessBuff = tess.buffer
+
+                if (depthShader == null) {
+                    depthShader = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shader/logdepth.vsh"), ResourceLocation("technocracy.astronautics", "shader/logdepth.fsh"))
+                    depthShader!!.start()
+                    Ufarplane = depthShader!!.getUniform("farplane", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1)
+                } else {
+                    depthShader!!.start()
+                }
+
+                buffer = buffer.validateAndClear()
+
+                val playerPos = ic.getInterpolated(this.zoom)
+                setupCameraTransform(playerPos)
+
+                GlStateManager.enableDepth()
+                GL11.glDepthMask(true)
+                GlStateManager.disableAlpha()
+                GlStateManager.disableTexture2D()
+                GlStateManager.disableCull()
+                GlStateManager.enableBlend()
+                GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ZERO, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE)
+                GlStateManager.shadeModel(7425)
+                GL11.glLineWidth(2f)
+
+                val sizeEarth = 256
+
+                //earth
+                //offset position 1 radius down so 0 0 0 is on the top plane of the planet
+                drawCube(sizeEarth, 0.0f, 1f, 0.0f, Vector3f(0f, -sizeEarth.toFloat(), 0f), playerPos.pos)
+
+                //moon
+                val rot = MathHelper.wrapDegrees(counter + Minecraft.getMinecraft().renderPartialTicks.toDouble()).toFloat()
+                val rad = Math.toRadians(rot.toDouble()).toFloat()
+                GlStateManager.rotate(-90f, 0f, 1f, 0f)
+                GlStateManager.rotate(-35f, 0f, 0f, 1f)
+
+                drawCube(sizeEarth / 4, 0.3f, 0.3f, 0.3f, Vector3f(3000f * sin(rad), -sizeEarth.toFloat(), 3000f * -cos(rad)), playerPos.pos, Vector3f(-rot, -0f, 35f))
+                GlStateManager.rotate(35f, 0f, 0f, 1f)
+                GlStateManager.rotate(90f, 0f, 1f, 0f)
+
+                drawCube(sizeEarth / 2, 1f, 0f, 0f, Vector3f(3000f, -sizeEarth.toFloat(), 0f), playerPos.pos)
+
+
+                depthShader!!.stop()
+
+                mc.entityRenderer.setupOverlayRendering()
+
+                GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_DST_ALPHA)
+
+
+                mc.framebuffer.bindFramebuffer(false)
+
+                //black background
+                //todo add "stars"
+                GlStateManager.color(1f, 1f, 1f, 1f)
+                tessBuff.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR)
+                tessBuff.pos(0.0, 0.0, 1.0).color(0.0f, 0.0f, 0.0f, 1f).endVertex()
+                tessBuff.pos(0.0, sH, 1.0).color(0.0f, 0.0f, 0.0f, 1f).endVertex()
+                tessBuff.pos(sW, sH, 1.0).color(0.0f, 0.0f, 0.0f, 1f).endVertex()
+                tessBuff.pos(sW, 0.0, 0.0).color(0.0f, 0.0f, 0.0f, 1f).endVertex()
+                tess.draw()
+
+                buffer.bindFramebufferTexture()
+
+
+                GlStateManager.enableTexture2D()
+                tessBuff.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX)
+                tessBuff.pos(0.0, 0.0, 1.0).tex(0.0, 1.0).endVertex()
+                tessBuff.pos(0.0, sH, 1.0).tex(0.0, 0.0).endVertex()
+                tessBuff.pos(sW, sH, 1.0).tex(1.0, 0.0).endVertex()
+                tessBuff.pos(sW, 0.0, 0.0).tex(1.0, 1.0).endVertex()
+                tess.draw()
+            }
+
+            fun drawTopBottom(factor: Float, size: Float, color: Vector4f) {
+                val test = if (factor == 0f) 1 else (size * 2 / factor).roundToInt()
+                val sizei = size.toInt()
+                var height = size
+
+                GL11.glBegin(GL11.GL_LINES)
+                for (unused in 0..1) {
+                    var b = true
+                    for (i in -sizei..sizei) {
+                        if (i != -sizei && i != sizei && i % test != 0) continue
+                        GlStateManager.color(color.x, color.y, color.z, if (!b) color.w else 1f)
+                        b = !b
+                        GL11.glVertex3f(i.toFloat(), height, -size)
+                        GL11.glVertex3f(i.toFloat(), height, size)
+                        GL11.glVertex3f(-size, height, i.toFloat())
+                        GL11.glVertex3f(size, height, i.toFloat())
+                    }
+                    height *= -1
+                }
+                GL11.glEnd()
+            }
+
+            fun drawSide(factor: Float, size: Float, color: Vector4f) {
+                val test = if (factor == 0f) 1 else (size * 2 / factor).roundToInt()
+                val sizei = size.toInt()
+                var height = size
+
+                GL11.glBegin(GL11.GL_LINES)
+                for (unused in 0..1) {
+                    var b = true
+                    for (i in -sizei..sizei) {
+                        if (i != -sizei && i != sizei && i % test != 0) continue
+                        GlStateManager.color(color.x, color.y, color.z, if (!b) color.w else 1f)
+                        b = !b
+                        GL11.glVertex3f(height, i.toFloat(), -size)
+                        GL11.glVertex3f(height, i.toFloat(), size)
+                        GL11.glVertex3f(height, -size, i.toFloat())
+                        GL11.glVertex3f(height, size, i.toFloat())
+                    }
+                    height *= -1
+                }
+                GL11.glEnd()
+            }
+
+            fun drawFace(factor: Float, size: Float, color: Vector4f) {
+                val test = if (factor == 0f) 1 else (size * 2 / factor).roundToInt()
+                val sizei = size.toInt()
+                var height = size
+
+                GL11.glBegin(GL11.GL_LINES)
+                for (unused in 0..1) {
+                    var b = true
+                    for (i in -sizei..sizei) {
+                        if (i != -sizei && i != sizei && i % test != 0) continue
+                        GlStateManager.color(color.x, color.y, color.z, if (!b) color.w else 1f)
+                        b = !b
+                        GL11.glVertex3f(i.toFloat(), -size, height)
+                        GL11.glVertex3f(i.toFloat(), size, height)
+                        GL11.glVertex3f(-size, i.toFloat(), height)
+                        GL11.glVertex3f(size, i.toFloat(), height)
+                    }
+                    height *= -1
+                }
+                GL11.glEnd()
+            }
+
+            fun drawCube(size: Int, r: Float, g: Float, b: Float, posCube: Vector3f, posPlayer: Vector3f, tilt: Vector3f = Vector3f(0f, 0f, 0f)) {
+
+                GlStateManager.translate(posCube.x, posCube.y, posCube.z)
+                GlStateManager.rotate(tilt.z, 0.0f, 0.0f, 1.0f)
+                GlStateManager.rotate(tilt.y, 1.0f, 0.0f, 0.0f)
+                GlStateManager.rotate(tilt.x, 0.0f, 1.0f, 0.0f)
+
+                //use rough distance for performance and quick checking
+                val distance = sqrt((posPlayer.x - posCube.x).pow(2f) + (posPlayer.y - posCube.y).pow(2f) + (posPlayer.z - posCube.z).pow(2f)) - size - 1.6f
+
+                val currentGrid = gridPolater.getCurrent(distance)
+                val nextGrid = gridPolater.getNext(distance)
+                val currentScale = currentGrid.value.value
+
+                val sizef = size.toFloat()
+
+                //render smaller inner cube used for depth clipping
+                GlStateManager.colorMask(false, false, false, false)
+                GL11.glColor4f(0f, 0f, 1f, 0.4f)
+
+                val offset = 0.1
+                var bb = AxisAlignedBB(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+                bb = bb.grow(sizef.toDouble())
+                bb = bb.shrink(offset)
+
+                OpenGLBoundingBox.drawBoundingBox(bb)
+
+                GlStateManager.colorMask(true, true, true, true)
+
+                GlStateManager.color(r, g, b, 1.0f)
+
+                //rings
+                var d = sizef
+                GL11.glBegin(GL11.GL_LINE_LOOP)
+                GL11.glVertex3f(-sizef - d, 0f, -sizef - d)
+                GL11.glVertex3f(-sizef - d, 0f, sizef + d)
+                GL11.glVertex3f(sizef + d, 0f, sizef + d)
+                GL11.glVertex3f(sizef + d, 0f, -sizef - d)
+                GL11.glEnd()
+                d = sizef * 1.25f
+                GL11.glBegin(GL11.GL_LINE_LOOP)
+                GL11.glVertex3f(-sizef - d, 0f, -sizef - d)
+                GL11.glVertex3f(-sizef - d, 0f, sizef + d)
+                GL11.glVertex3f(sizef + d, 0f, sizef + d)
+                GL11.glVertex3f(sizef + d, 0f, -sizef - d)
+                GL11.glEnd()
+                d = sizef * 1.33f
+                GL11.glBegin(GL11.GL_LINE_LOOP)
+                GL11.glVertex3f(-sizef - d, 0f, -sizef - d)
+                GL11.glVertex3f(-sizef - d, 0f, sizef + d)
+                GL11.glVertex3f(sizef + d, 0f, sizef + d)
+                GL11.glVertex3f(sizef + d, 0f, -sizef - d)
+                GL11.glEnd()
+                d = sizef * 0.8f
+                GL11.glBegin(GL11.GL_LINE_LOOP)
+                GL11.glVertex3f(-sizef - d, 0f, -sizef - d)
+                GL11.glVertex3f(-sizef - d, 0f, sizef + d)
+                GL11.glVertex3f(sizef + d, 0f, sizef + d)
+                GL11.glVertex3f(sizef + d, 0f, -sizef - d)
+                GL11.glEnd()
+                d = sizef * 1.4f
+                GL11.glBegin(GL11.GL_LINE_LOOP)
+                GL11.glVertex3f(-sizef - d, 0f, -sizef - d)
+                GL11.glVertex3f(-sizef - d, 0f, sizef + d)
+                GL11.glVertex3f(sizef + d, 0f, sizef + d)
+                GL11.glVertex3f(sizef + d, 0f, -sizef - d)
+                GL11.glEnd()
+                d = sizef * 1.5f
+                GL11.glBegin(GL11.GL_LINE_LOOP)
+                GL11.glVertex3f(-sizef - d, 0f, -sizef - d)
+                GL11.glVertex3f(-sizef - d, 0f, sizef + d)
+                GL11.glVertex3f(sizef + d, 0f, sizef + d)
+                GL11.glVertex3f(sizef + d, 0f, -sizef - d)
+                GL11.glEnd()
+
+                val alpha = if (nextGrid == null) 1f else 1f - Interpolator.linearInterpolate(0.0f, 1f, currentGrid.time, nextGrid.time, distance)
+                val color = Vector4f(r, g, b, alpha)
+
+                drawTopBottom(currentScale, sizef, color)
+                drawSide(currentScale, sizef, color)
+                drawFace(currentScale, sizef, color)
+
+                GlStateManager.rotate(-tilt.x, 0.0f, 1.0f, 0.0f)
+                GlStateManager.rotate(-tilt.y, 1.0f, 0.0f, 0.0f)
+                GlStateManager.rotate(-tilt.z, 0.0f, 0.0f, 1.0f)
+                GlStateManager.translate(-posCube.x, -posCube.y, -posCube.z)
+            }
+
+            fun setupCameraTransform(playerPos: Interpolator.PosLook) {
+                val mc = Minecraft.getMinecraft()
+                GlStateManager.matrixMode(5889)
+                GlStateManager.loadIdentity()
+
+                val farPlaneDistance = 100000f
+                Project.gluPerspective(90f, mc.displayWidth.toFloat() / mc.displayHeight.toFloat(), 0.00f, 100000f)
+                GlStateManager.matrixMode(5888)
+                GlStateManager.loadIdentity()
+
+                GlStateManager.translate(-playerPos.pos.x, -playerPos.pos.y, -playerPos.pos.z)
+                GlStateManager.rotate(playerPos.look.z, 0.0f, 0.0f, 1.0f)
+                GlStateManager.rotate(playerPos.look.y, 1.0f, 0.0f, 0.0f)
+                GlStateManager.rotate(playerPos.look.x, 0.0f, 1.0f, 0.0f)
+
+                Ufarplane.uploadUniform(farPlaneDistance)
+                depthShader!!.updateUniforms()
+            }
+
+            var zoom = 0f
+
+
+            override fun handleMouseInput() {
+                val i = Mouse.getEventDWheel()
+                if (i > 0)
+                    zoom += 0.1f
+                else if (i < 0)
+                    zoom -= 0.1f
+            }
+
+            override fun init() {
+                //add offset to prevent clipping
+                ic.addStep(Interpolator.PosLook(Vector3f(0f, 1.62f + 0.25f, 0f), Vector3f(0f, 5f, 0f)), 0f)
+                ic.addStep(Interpolator.PosLook(Vector3f(0f, 16.2f, 0f), Vector3f(0f, 5f, 0f)), 10f)
+                ic.addStep(Interpolator.PosLook(Vector3f(0f, 126.2f, 100f), Vector3f(0f, 0f, 0f)), 20f)
+                //ic.addStep(Interpolator.PosLook(Vector3f(100f, 0f, 8000f), Vector3f(-15f, 0f, 0f)), 40f)
+                ic.addStep(Interpolator.PosLook(Vector3f(00f, 0f, 8000f), Vector3f(0f, 0f, 0f)), 40f)
+
+                gridPolater.addStep(Interpolator.InterpolateFloat(0f), 0f)
+                gridPolater.addStep(Interpolator.InterpolateFloat(256f), 5f)
+                gridPolater.addStep(Interpolator.InterpolateFloat(128f), 10f)
+                gridPolater.addStep(Interpolator.InterpolateFloat(64f), 30f)
+                gridPolater.addStep(Interpolator.InterpolateFloat(32f), 75f)
+                gridPolater.addStep(Interpolator.InterpolateFloat(16f), 100f)
+                gridPolater.addStep(Interpolator.InterpolateFloat(8f), 200f)
+                gridPolater.addStep(Interpolator.InterpolateFloat(4f), 600f)
+                gridPolater.addStep(Interpolator.InterpolateFloat(2f), 2000f)
+            }
+        })
+
+
         return gui
+    }
+
+    fun render() {
+
     }
 
     fun unlinkRocket() {
