@@ -136,6 +136,18 @@ class TankMultiBlock(world: World) : BaseMultiBlock(
         }
     }
 
+    override fun getMinimumXSize(): Int {
+        return 3
+    }
+
+    override fun getMinimumYSize(): Int {
+        return 3
+    }
+
+    override fun getMinimumZSize(): Int {
+        return 3
+    }
+
     override fun getMinimumNumberOfBlocksForAssembledMachine(): Int {
         return 1
     }
