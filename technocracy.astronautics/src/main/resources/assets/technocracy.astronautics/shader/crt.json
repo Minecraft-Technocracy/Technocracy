@@ -1,0 +1,61 @@
+{
+  "targets": [
+    "swap",
+    "swap2",
+    "previous"
+  ],
+  "passes": [
+    {
+      "name": "color_convolve",
+      "intarget": "minecraft:main",
+      "outtarget": "swap"
+    },
+    {
+      "name": "deconverge",
+      "intarget": "minecraft:main",
+      "outtarget": "swap2",
+      "uniforms" : [
+        {
+          "name": "ConvergeX",
+          "values": [ -1, 0.0, 2.0]
+        },
+        {
+          "name": "ConvergeY",
+          "values": [ 0.0, -1, 2.0]
+        }
+      ]
+    },
+    {
+      "name": "blit",
+      "intarget": "swap2",
+      "outtarget": "minecraft:main"
+    },
+    {
+      "name": "scan_pincushion",
+      "intarget": "minecraft:main",
+      "outtarget": "swap"
+    },
+    {
+      "name": "phosphor",
+      "intarget": "swap",
+      "outtarget": "swap2",
+      "auxtargets": [
+        {
+          "name": "PrevSampler",
+          "id": "previous"
+        }
+      ],
+      "uniforms": [
+        {
+          "name": "Phosphor",
+          "values": [ 0.4, 0.4, 0.4 ]
+        }
+      ]
+    },
+    {
+      "name": "blit",
+      "intarget": "swap2",
+      "outtarget": "minecraft:main"
+    }
+  ]
+}

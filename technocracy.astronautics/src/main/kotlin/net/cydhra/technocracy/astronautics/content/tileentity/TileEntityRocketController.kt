@@ -23,6 +23,7 @@ import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.client.shader.Framebuffer
+import net.minecraft.client.shader.ShaderGroup
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
@@ -30,6 +31,7 @@ import net.minecraft.util.NonNullList
 import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.AxisAlignedBB
 import net.minecraft.util.math.MathHelper
+import net.minecraft.util.math.Vec3d
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
 import org.lwjgl.util.glu.Project
@@ -79,9 +81,10 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
         return false
     }
 
-    lateinit var buffer: Framebuffer
+    var buffer: Framebuffer? = null
     var depthShader: BasicShaderProgram? = null
     lateinit var Ufarplane: BasicShaderProgram.ShaderUniform
+    lateinit var UInSize: BasicShaderProgram.ShaderUniform
 
     override fun getGui(player: EntityPlayer?): TCGui {
         val gui = TCGui(guiHeight = 230, container = TCContainer(1, 1))
@@ -107,11 +110,16 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
 
             val ic = Interpolator.InterpolationCycle<Interpolator.PosLook>()
             val gridPolater = Interpolator.InterpolationCycle<Interpolator.InterpolateFloat>()
+            var crtShader: ShaderGroup? = null
 
             var counter = 1.0
 
+            val pointsSmall = mutableListOf<Vec3d>()
+            val pointsMedium = mutableListOf<Vec3d>()
+            val pointsBig = mutableListOf<Vec3d>()
+
             override fun update() {
-                counter += 4
+                counter += 1
                 super.update()
             }
 
@@ -132,14 +140,55 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
                     depthShader = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shader/logdepth.vsh"), ResourceLocation("technocracy.astronautics", "shader/logdepth.fsh"))
                     depthShader!!.start()
                     Ufarplane = depthShader!!.getUniform("farplane", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1)
+                    UInSize = depthShader!!.getUniform("InSize", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_2)
+                    depthShader!!.getUniform("farplane", BasicShaderProgram.ShaderUniform.UniformType.SAMPLER).uploadUniform(0)
                 } else {
                     depthShader!!.start()
                 }
 
+                val last = buffer
                 buffer = buffer.validateAndClear()
+                buffer?.setFramebufferColor(0.05f, 0.05f, 0.05f, 0f)
+
+                if (crtShader == null || last != buffer) {
+                    crtShader?.deleteShaderGroup()
+
+                    crtShader = ShaderGroup(mc.textureManager, mc.resourceManager, buffer, ResourceLocation("technocracy.astronautics", "shader/crt.json"))
+                    crtShader!!.createBindFramebuffers(mc.displayWidth, mc.displayHeight)
+                }
 
                 val playerPos = ic.getInterpolated(this.zoom)
+
                 setupCameraTransform(playerPos)
+
+                val r = kotlin.random.Random(12147)
+
+                GlStateManager.color(0f, 1f, 0f, 1f)
+                GlStateManager.enableDepth()
+                GL11.glDepthMask(true)
+
+                if (pointsSmall.isEmpty()) {
+                    //size of farplane for now
+                    val xyz = 800_000f
+
+                    val perList = 2000 / 3
+
+                    for (i in 0..perList) {
+                        val yaw = Math.toRadians(MathHelper.wrapDegrees(r.nextInt()).toDouble())
+                        val pitch = Math.toRadians(MathHelper.wrapDegrees(r.nextInt()).toDouble())
+                        pointsSmall.add(Vec3d(cos(pitch) * sin(yaw) * xyz, sin(pitch) * xyz, cos(pitch) * cos(yaw) * xyz))
+                    }
+                    for (i in 0..perList) {
+                        val yaw = Math.toRadians(MathHelper.wrapDegrees(r.nextInt()).toDouble())
+                        val pitch = Math.toRadians(MathHelper.wrapDegrees(r.nextInt()).toDouble())
+                        pointsMedium.add(Vec3d(cos(pitch) * sin(yaw) * xyz, sin(pitch) * xyz, cos(pitch) * cos(yaw) * xyz))
+                    }
+                    for (i in 0..(perList * 0.5).toInt()) {
+                        val yaw = Math.toRadians(MathHelper.wrapDegrees(r.nextInt()).toDouble())
+                        val pitch = Math.toRadians(MathHelper.wrapDegrees(r.nextInt()).toDouble())
+                        pointsBig.add(Vec3d(cos(pitch) * sin(yaw) * xyz, sin(pitch) * xyz, cos(pitch) * cos(yaw) * xyz))
+                    }
+                }
 
                 GlStateManager.enableDepth()
                 GL11.glDepthMask(true)
@@ -151,11 +200,48 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
                 GlStateManager.shadeModel(7425)
                 GL11.glLineWidth(2f)
 
+                GL11.glEnable(GL11.GL_POINT_SMOOTH)
+                GL11.glPointSize(1f)
+
+                //apply rotation
+                GlStateManager.rotate(playerPos.look.z, 0.0f, 0.0f, 1.0f)
+                GlStateManager.rotate(playerPos.look.y, 1.0f, 0.0f, 0.0f)
+                GlStateManager.rotate(playerPos.look.x, 0.0f, 1.0f, 0.0f)
+
+                GL11.glBegin(GL11.GL_POINTS)
+                for (p in pointsSmall) {
+                    GL11.glVertex3d(p.x, p.y, p.z)
+                }
+                GL11.glEnd()
+                GL11.glPointSize(1.5f)
+                GL11.glBegin(GL11.GL_POINTS)
+                for (p in pointsMedium) {
+                    GL11.glVertex3d(p.x, p.y, p.z)
+                }
+                GL11.glEnd()
+                GL11.glPointSize(4f)
+                GL11.glBegin(GL11.GL_POINTS)
+                for (p in pointsBig) {
+                    GL11.glVertex3d(p.x, p.y, p.z)
+                }
+                GL11.glEnd()
+
+                //remove rotation
+                GlStateManager.rotate(-playerPos.look.x, 0.0f, 1.0f, 0.0f)
+                GlStateManager.rotate(-playerPos.look.y, 1.0f, 0.0f, 0.0f)
+                GlStateManager.rotate(-playerPos.look.z, 0.0f, 0.0f, 1.0f)
+
+                //translate and then rotate
+                GlStateManager.translate(-playerPos.pos.x, -playerPos.pos.y, -playerPos.pos.z)
+                GlStateManager.rotate(playerPos.look.z, 0.0f, 0.0f, 1.0f)
+                GlStateManager.rotate(playerPos.look.y, 1.0f, 0.0f, 0.0f)
+                GlStateManager.rotate(playerPos.look.x, 0.0f, 1.0f, 0.0f)
+
                 val sizeEarth = 256
 
                 //earth
                 //offset position 1 radius down so 0 0 0 is on the top plane of the planet
-                drawCube(sizeEarth, 0.0f, 1f, 0.0f, Vector3f(0f, -sizeEarth.toFloat(), 0f), playerPos.pos)
+                drawCube(sizeEarth, 0f, 0.467f, 0.745f, Vector3f(0f, -sizeEarth.toFloat(), 0f), playerPos.pos)
 
                 //moon
                 val rot = MathHelper.wrapDegrees(counter + Minecraft.getMinecraft().renderPartialTicks.toDouble()).toFloat()
@@ -163,42 +249,45 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
                 GlStateManager.rotate(-90f, 0f, 1f, 0f)
                 GlStateManager.rotate(-35f, 0f, 0f, 1f)
 
-                drawCube(sizeEarth / 4, 0.3f, 0.3f, 0.3f, Vector3f(3000f * sin(rad), -sizeEarth.toFloat(), 3000f * -cos(rad)), playerPos.pos, Vector3f(-rot, -0f, 35f))
+                drawCube(sizeEarth / 4, 162 / 255f, 168 / 255f, 174 / 255f, Vector3f(2000f * sin(rad), -sizeEarth.toFloat(), 3000f * -cos(rad)), playerPos.pos, Vector3f(-rot, -0f, 35f))
                 GlStateManager.rotate(35f, 0f, 0f, 1f)
                 GlStateManager.rotate(90f, 0f, 1f, 0f)
 
-                drawCube(sizeEarth / 2, 1f, 0f, 0f, Vector3f(3000f, -sizeEarth.toFloat(), 0f), playerPos.pos)
 
+                GlStateManager.rotate(46f, 0f, 1f, 0f)
+                //mars
+                drawCube(sizeEarth / 2, 193 / 255f, 68 / 255f, 14 / 255f, Vector3f(8000f, -sizeEarth.toFloat(), 0f), playerPos.pos)
+
+                GlStateManager.rotate(-46f, 0f, 1f, 0f)
+
+                //sun
+                drawCube(sizeEarth * 100, 1f,1f,1f, Vector3f(400000f, -sizeEarth.toFloat(), 0f), playerPos.pos)
+
+                GlStateManager.rotate(-76f, 0f, 1f, 0f)
+                //saturn
+                drawCube(sizeEarth * 10, 234 / 255f, 214 / 255f, 184 / 255f, Vector3f(30000f, -sizeEarth.toFloat(), 0f), playerPos.pos, hasRings = true)
+
+                GlStateManager.rotate(76f, 0f, 1f, 0f)
 
                 depthShader!!.stop()
 
                 mc.entityRenderer.setupOverlayRendering()
 
-                GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_DST_ALPHA)
-
+                crtShader!!.render(partialTicks)
+                buffer?.bindFramebufferTexture()
 
                 mc.framebuffer.bindFramebuffer(false)
 
-                //black background
-                //todo add "stars"
-                GlStateManager.color(1f, 1f, 1f, 1f)
-                tessBuff.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR)
-                tessBuff.pos(0.0, 0.0, 1.0).color(0.0f, 0.0f, 0.0f, 1f).endVertex()
-                tessBuff.pos(0.0, sH, 1.0).color(0.0f, 0.0f, 0.0f, 1f).endVertex()
-                tessBuff.pos(sW, sH, 1.0).color(0.0f, 0.0f, 0.0f, 1f).endVertex()
-                tessBuff.pos(sW, 0.0, 0.0).color(0.0f, 0.0f, 0.0f, 1f).endVertex()
-                tess.draw()
-
-                buffer.bindFramebufferTexture()
-
-
+                GlStateManager.translate(sW / 1.5 / 4.0, sH / 1.5 / 4.0, 0.0)
                 GlStateManager.enableTexture2D()
                 tessBuff.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX)
                 tessBuff.pos(0.0, 0.0, 1.0).tex(0.0, 1.0).endVertex()
-                tessBuff.pos(0.0, sH, 1.0).tex(0.0, 0.0).endVertex()
-                tessBuff.pos(sW, sH, 1.0).tex(1.0, 0.0).endVertex()
-                tessBuff.pos(sW, 0.0, 0.0).tex(1.0, 1.0).endVertex()
+                tessBuff.pos(0.0, sH / 1.5, 1.0).tex(0.0, 0.0).endVertex()
+                tessBuff.pos(sW / 1.5, sH / 1.5, 1.0).tex(1.0, 0.0).endVertex()
+                tessBuff.pos(sW / 1.5, 0.0, 0.0).tex(1.0, 1.0).endVertex()
                 tess.draw()
+
+
             }
 
             fun drawTopBottom(factor: Float, size: Float, color: Vector4f) {
@@ -267,7 +356,7 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
                 GL11.glEnd()
             }
 
-            fun drawCube(size: Int, r: Float, g: Float, b: Float, posCube: Vector3f, posPlayer: Vector3f, tilt: Vector3f = Vector3f(0f, 0f, 0f)) {
+            fun drawCube(size: Int, r: Float, g: Float, b: Float, posCube: Vector3f, posPlayer: Vector3f, tilt: Vector3f = Vector3f(0f, 0f, 0f), hasRings: Boolean = false) {
 
                 GlStateManager.translate(posCube.x, posCube.y, posCube.z)
                 GlStateManager.rotate(tilt.z, 0.0f, 0.0f, 1.0f)
@@ -282,10 +371,11 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
                 val currentScale = currentGrid.value.value
 
                 val sizef = size.toFloat()
+                GlStateManager.enableBlend()
 
                 //render smaller inner cube used for depth clipping
-                GlStateManager.colorMask(false, false, false, false)
-                GL11.glColor4f(0f, 0f, 1f, 0.4f)
+                GlStateManager.colorMask(true, true, true, true)
+                GlStateManager.color(0.1f * r, 0.1f * g, 0.1f * b, 1.0f)
 
                 val offset = 0.1
                 var bb = AxisAlignedBB(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
@@ -298,49 +388,51 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
 
                 GlStateManager.color(r, g, b, 1.0f)
 
-                //rings
-                var d = sizef
-                GL11.glBegin(GL11.GL_LINE_LOOP)
-                GL11.glVertex3f(-sizef - d, 0f, -sizef - d)
-                GL11.glVertex3f(-sizef - d, 0f, sizef + d)
-                GL11.glVertex3f(sizef + d, 0f, sizef + d)
-                GL11.glVertex3f(sizef + d, 0f, -sizef - d)
-                GL11.glEnd()
-                d = sizef * 1.25f
-                GL11.glBegin(GL11.GL_LINE_LOOP)
-                GL11.glVertex3f(-sizef - d, 0f, -sizef - d)
-                GL11.glVertex3f(-sizef - d, 0f, sizef + d)
-                GL11.glVertex3f(sizef + d, 0f, sizef + d)
-                GL11.glVertex3f(sizef + d, 0f, -sizef - d)
-                GL11.glEnd()
-                d = sizef * 1.33f
-                GL11.glBegin(GL11.GL_LINE_LOOP)
-                GL11.glVertex3f(-sizef - d, 0f, -sizef - d)
-                GL11.glVertex3f(-sizef - d, 0f, sizef + d)
-                GL11.glVertex3f(sizef + d, 0f, sizef + d)
-                GL11.glVertex3f(sizef + d, 0f, -sizef - d)
-                GL11.glEnd()
-                d = sizef * 0.8f
-                GL11.glBegin(GL11.GL_LINE_LOOP)
-                GL11.glVertex3f(-sizef - d, 0f, -sizef - d)
-                GL11.glVertex3f(-sizef - d, 0f, sizef + d)
-                GL11.glVertex3f(sizef + d, 0f, sizef + d)
-                GL11.glVertex3f(sizef + d, 0f, -sizef - d)
-                GL11.glEnd()
-                d = sizef * 1.4f
-                GL11.glBegin(GL11.GL_LINE_LOOP)
-                GL11.glVertex3f(-sizef - d, 0f, -sizef - d)
-                GL11.glVertex3f(-sizef - d, 0f, sizef + d)
-                GL11.glVertex3f(sizef + d, 0f, sizef + d)
-                GL11.glVertex3f(sizef + d, 0f, -sizef - d)
-                GL11.glEnd()
-                d = sizef * 1.5f
-                GL11.glBegin(GL11.GL_LINE_LOOP)
-                GL11.glVertex3f(-sizef - d, 0f, -sizef - d)
-                GL11.glVertex3f(-sizef - d, 0f, sizef + d)
-                GL11.glVertex3f(sizef + d, 0f, sizef + d)
-                GL11.glVertex3f(sizef + d, 0f, -sizef - d)
-                GL11.glEnd()
+                if (hasRings) {
+                    //rings
+                    var d = sizef
+                    GL11.glBegin(GL11.GL_LINE_LOOP)
+                    GL11.glVertex3f(-sizef - d, 0f, -sizef - d)
+                    GL11.glVertex3f(-sizef - d, 0f, sizef + d)
+                    GL11.glVertex3f(sizef + d, 0f, sizef + d)
+                    GL11.glVertex3f(sizef + d, 0f, -sizef - d)
+                    GL11.glEnd()
+                    d = sizef * 1.25f
+                    GL11.glBegin(GL11.GL_LINE_LOOP)
+                    GL11.glVertex3f(-sizef - d, 0f, -sizef - d)
+                    GL11.glVertex3f(-sizef - d, 0f, sizef + d)
+                    GL11.glVertex3f(sizef + d, 0f, sizef + d)
+                    GL11.glVertex3f(sizef + d, 0f, -sizef - d)
+                    GL11.glEnd()
+                    d = sizef * 1.33f
+                    GL11.glBegin(GL11.GL_LINE_LOOP)
+                    GL11.glVertex3f(-sizef - d, 0f, -sizef - d)
+                    GL11.glVertex3f(-sizef - d, 0f, sizef + d)
+                    GL11.glVertex3f(sizef + d, 0f, sizef + d)
+                    GL11.glVertex3f(sizef + d, 0f, -sizef - d)
+                    GL11.glEnd()
+                    d = sizef * 0.8f
+                    GL11.glBegin(GL11.GL_LINE_LOOP)
+                    GL11.glVertex3f(-sizef - d, 0f, -sizef - d)
+                    GL11.glVertex3f(-sizef - d, 0f, sizef + d)
+                    GL11.glVertex3f(sizef + d, 0f, sizef + d)
+                    GL11.glVertex3f(sizef + d, 0f, -sizef - d)
+                    GL11.glEnd()
+                    d = sizef * 1.4f
+                    GL11.glBegin(GL11.GL_LINE_LOOP)
+                    GL11.glVertex3f(-sizef - d, 0f, -sizef - d)
+                    GL11.glVertex3f(-sizef - d, 0f, sizef + d)
+                    GL11.glVertex3f(sizef + d, 0f, sizef + d)
+                    GL11.glVertex3f(sizef + d, 0f, -sizef - d)
+                    GL11.glEnd()
+                    d = sizef * 1.5f
+                    GL11.glBegin(GL11.GL_LINE_LOOP)
+                    GL11.glVertex3f(-sizef - d, 0f, -sizef - d)
+                    GL11.glVertex3f(-sizef - d, 0f, sizef + d)
+                    GL11.glVertex3f(sizef + d, 0f, sizef + d)
+                    GL11.glVertex3f(sizef + d, 0f, -sizef - d)
+                    GL11.glEnd()
+                }
 
                 val alpha = if (nextGrid == null) 1f else 1f - Interpolator.linearInterpolate(0.0f, 1f, currentGrid.time, nextGrid.time, distance)
                 val color = Vector4f(r, g, b, alpha)
@@ -360,17 +452,14 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
                 GlStateManager.matrixMode(5889)
                 GlStateManager.loadIdentity()
 
-                val farPlaneDistance = 100000f
-                Project.gluPerspective(90f, mc.displayWidth.toFloat() / mc.displayHeight.toFloat(), 0.00f, 100000f)
+                val farPlaneDistance = 500_000f
+                Project.gluPerspective(90f, mc.displayWidth.toFloat() / mc.displayHeight.toFloat(), 0.005f, 200_000f)
                 GlStateManager.matrixMode(5888)
                 GlStateManager.loadIdentity()
 
-                GlStateManager.translate(-playerPos.pos.x, -playerPos.pos.y, -playerPos.pos.z)
-                GlStateManager.rotate(playerPos.look.z, 0.0f, 0.0f, 1.0f)
-                GlStateManager.rotate(playerPos.look.y, 1.0f, 0.0f, 0.0f)
-                GlStateManager.rotate(playerPos.look.x, 0.0f, 1.0f, 0.0f)
 
                 Ufarplane.uploadUniform(farPlaneDistance)
+                UInSize.uploadUniform(1f, 1f)
                 depthShader!!.updateUniforms()
             }
 
@@ -391,7 +480,9 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
                 ic.addStep(Interpolator.PosLook(Vector3f(0f, 16.2f, 0f), Vector3f(0f, 5f, 0f)), 10f)
                 ic.addStep(Interpolator.PosLook(Vector3f(0f, 126.2f, 100f), Vector3f(0f, 0f, 0f)), 20f)
                 //ic.addStep(Interpolator.PosLook(Vector3f(100f, 0f, 8000f), Vector3f(-15f, 0f, 0f)), 40f)
-                ic.addStep(Interpolator.PosLook(Vector3f(00f, 0f, 8000f), Vector3f(0f, 0f, 0f)), 40f)
+                ic.addStep(Interpolator.PosLook(Vector3f(00f, 0f, 8000f), Vector3f(180f, 0f, 0f)), 40f)
+                ic.addStep(Interpolator.PosLook(Vector3f(0f, 0f, 8000f), Vector3f(360f, 0f, 0f)), 60f)
+                ic.addStep(Interpolator.PosLook(Vector3f(7800f, 1.62f + 0.25f - 128, 0f), Vector3f(360f, 5f, 0f)), 70f)
 
                 gridPolater.addStep(Interpolator.InterpolateFloat(0f), 0f)
                 gridPolater.addStep(Interpolator.InterpolateFloat(256f), 5f)
