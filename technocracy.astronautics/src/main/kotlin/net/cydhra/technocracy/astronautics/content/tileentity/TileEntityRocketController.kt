@@ -87,21 +87,23 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
     lateinit var UInSize: BasicShaderProgram.ShaderUniform
 
     override fun getGui(player: EntityPlayer?): TCGui {
+
         val gui = TCGui(guiHeight = 230, container = TCContainer(1, 1))
         gui.registerTab(object : TCTab("${getBlockType().localizedName} linked: ${currentRocket != null}", gui, -1,
                 ResourceLocation("technocracy.foundation", "textures/item/gear.png")) {
-            override fun init() {
 
-                if (player != null) {
-                    //stick to bottom
-                    addPlayerInventorySlots(player, 8, gui.guiHeight - 58 - 16 - 5 - 12)
-                }
+            override fun init() {
 
                 val fm = DefaultFluidMeter(10, 25, fluidBuffer, gui)
                 fm.width = 20
                 fm.height = 105
 
                 components.add(fm)
+
+                if (player != null) {
+                    //stick to bottom
+                    addPlayerInventorySlots(player, 8, gui.origHeight - 58 - 16 - 5 - 12)
+                }
             }
         })
 
@@ -118,12 +120,33 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
             val pointsMedium = mutableListOf<Vec3d>()
             val pointsBig = mutableListOf<Vec3d>()
 
+            override fun getSizeX(): Int {
+                val scaledResolution = ScaledResolution(Minecraft.getMinecraft())
+                val sW = scaledResolution.scaledWidth_double
+
+                return (sW / 1.5).toInt() + 10
+            }
+
+            override fun getSizeY(): Int {
+                val scaledResolution = ScaledResolution(Minecraft.getMinecraft())
+                val sH = scaledResolution.scaledHeight_double
+
+                return (sH / 1.5).toInt() + 10
+            }
+
             override fun update() {
                 counter += 1
+
+                val scaledResolution = ScaledResolution(Minecraft.getMinecraft())
+                val sW = scaledResolution.scaledWidth_double
+                val sH = scaledResolution.scaledHeight_double
+
                 super.update()
             }
 
             override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
+
+                GlStateManager.pushMatrix()
                 val mc = Minecraft.getMinecraft()
 
                 val scaledResolution = ScaledResolution(Minecraft.getMinecraft())
@@ -163,10 +186,6 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
 
                 val r = kotlin.random.Random(12147)
 
-                GlStateManager.color(0f, 1f, 0f, 1f)
-                GlStateManager.enableDepth()
-                GL11.glDepthMask(true)
-
                 if (pointsSmall.isEmpty()) {
                     //size of farplane for now
                     val xyz = 800_000f
@@ -195,10 +214,8 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
                 GlStateManager.disableAlpha()
                 GlStateManager.disableTexture2D()
                 GlStateManager.disableCull()
-                GlStateManager.enableBlend()
-                GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ZERO, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE)
                 GlStateManager.shadeModel(7425)
-                GL11.glLineWidth(2f)
+                GlStateManager.glLineWidth(2f)
 
                 GL11.glEnable(GL11.GL_POINT_SMOOTH)
                 GL11.glPointSize(1f)
@@ -261,7 +278,7 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
                 GlStateManager.rotate(-46f, 0f, 1f, 0f)
 
                 //sun
-                drawCube(sizeEarth * 100, 1f,1f,1f, Vector3f(400000f, -sizeEarth.toFloat(), 0f), playerPos.pos)
+                drawCube(sizeEarth * 100, 1f, 1f, 1f, Vector3f(400000f, -sizeEarth.toFloat(), 0f), playerPos.pos)
 
                 GlStateManager.rotate(-76f, 0f, 1f, 0f)
                 //saturn
@@ -278,7 +295,7 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
 
                 mc.framebuffer.bindFramebuffer(false)
 
-                GlStateManager.translate(sW / 1.5 / 4.0, sH / 1.5 / 4.0, 0.0)
+                GlStateManager.translate(sW / 1.5 / 4.0 + 1, sH / 1.5 / 4.0 + 1, 0.0)
                 GlStateManager.enableTexture2D()
                 tessBuff.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX)
                 tessBuff.pos(0.0, 0.0, 1.0).tex(0.0, 1.0).endVertex()
@@ -287,7 +304,7 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
                 tessBuff.pos(sW / 1.5, 0.0, 0.0).tex(1.0, 1.0).endVertex()
                 tess.draw()
 
-
+                GlStateManager.popMatrix()
             }
 
             fun drawTopBottom(factor: Float, size: Float, color: Vector4f) {
@@ -465,7 +482,6 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
 
             var zoom = 0f
 
-
             override fun handleMouseInput() {
                 val i = Mouse.getEventDWheel()
                 if (i > 0)
@@ -475,6 +491,7 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
             }
 
             override fun init() {
+                ic.clear()
                 //add offset to prevent clipping
                 ic.addStep(Interpolator.PosLook(Vector3f(0f, 1.62f + 0.25f, 0f), Vector3f(0f, 5f, 0f)), 0f)
                 ic.addStep(Interpolator.PosLook(Vector3f(0f, 16.2f, 0f), Vector3f(0f, 5f, 0f)), 10f)
@@ -484,6 +501,7 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
                 ic.addStep(Interpolator.PosLook(Vector3f(0f, 0f, 8000f), Vector3f(360f, 0f, 0f)), 60f)
                 ic.addStep(Interpolator.PosLook(Vector3f(7800f, 1.62f + 0.25f - 128, 0f), Vector3f(360f, 5f, 0f)), 70f)
 
+                gridPolater.clear()
                 gridPolater.addStep(Interpolator.InterpolateFloat(0f), 0f)
                 gridPolater.addStep(Interpolator.InterpolateFloat(256f), 5f)
                 gridPolater.addStep(Interpolator.InterpolateFloat(128f), 10f)
@@ -495,7 +513,6 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
                 gridPolater.addStep(Interpolator.InterpolateFloat(2f), 2000f)
             }
         })
-
 
         return gui
     }

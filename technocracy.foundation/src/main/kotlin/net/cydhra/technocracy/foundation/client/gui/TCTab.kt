@@ -17,6 +17,11 @@ abstract class TCTab(val name: String, val parent: TCGui, val tint: Int = -1,
 
     abstract fun init()
 
+    /**
+     * called when the gui is beeing resized to reset values
+     */
+    open fun onResize() {}
+
     open fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
         GlStateManager.color(1f, 1f, 1f, 1f)
         Minecraft.getMinecraft().fontRenderer.drawString(name, 8f + x, 8f + y, 4210752, false)
@@ -68,6 +73,14 @@ abstract class TCTab(val name: String, val parent: TCGui, val tint: Int = -1,
 
     protected fun addComponent(component: TCComponent) {
         components.add(component)
+    }
+
+    open fun getSizeX(): Int {
+        return parent.origWidth
+    }
+
+    open fun getSizeY(): Int {
+        return parent.origHeight
     }
 
 }

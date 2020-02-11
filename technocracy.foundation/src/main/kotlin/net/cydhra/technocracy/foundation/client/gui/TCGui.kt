@@ -9,8 +9,10 @@ import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.RenderHelper
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.fml.client.config.GuiUtils
+import org.lwjgl.opengl.GL11
+import kotlin.math.max
 
-open class TCGui(val guiWidth: Int = 176, val guiHeight: Int = 166, val container:
+open class TCGui(guiWidth: Int = 176, guiHeight: Int = 166, val container:
 TCContainer)
     : GuiContainer(container) {
 
@@ -56,16 +58,40 @@ TCContainer)
     var guiX: Int = 0
     var guiY: Int = 0
 
+    var guiWidth: Int
+        get() {
+            return this.xSize
+        }
+        set(value) {
+            this.xSize = value
+        }
+
+    var guiHeight: Int
+        get() {
+            return this.ySize
+        }
+        set(value) {
+            this.ySize = value
+        }
+
+    val origWidth: Int
+    val origHeight: Int
+
     private var activeTabIndex: Int = 0
 
     init {
         this.xSize = guiWidth
         this.ySize = guiHeight
+        origWidth = guiWidth
+        origHeight = guiHeight
     }
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
 
         drawDefaultBackground()
+
+        xSize = this.tabs[this.activeTabIndex].getSizeX()
+        ySize = this.tabs[this.activeTabIndex].getSizeY()
 
         guiX = (width - xSize) / 2
         guiY = (height - ySize) / 2
@@ -78,17 +104,18 @@ TCContainer)
 
         drawWindow(guiX, guiY, xSize, ySize)
 
+        GlStateManager.enableBlend()
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
+
         if (tabs.size > 1) {
             drawTabs(partialTicks, mouseX, mouseY)
         }
 
-        GlStateManager.enableBlend()
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
-
-
         this.tabs[this.activeTabIndex].draw(guiX, guiY, mouseX, mouseY, partialTicks)
-        super.drawScreen(mouseX, mouseY, partialTicks)
 
+
+
+        super.drawScreen(mouseX, mouseY, partialTicks)
 
     }
 
@@ -115,11 +142,11 @@ TCContainer)
 
         if (tabs.size > 1) {
             checkClick@ for (otherIndex in this.tabs.indices.filterNot { it == this.activeTabIndex }) {
-                val x = getTabBarPositionRelativeX() + TAB_GAP_WIDTH
-                val y = otherIndex * TAB_SELECTED_HEIGHT + getTabBarPositionRelativeY() + TAB_GAP_WIDTH
+                val x = getTabBarPositionRelativeX() + TAB_GAP_WIDTH + guiX
+                val y = otherIndex * TAB_SELECTED_HEIGHT + getTabBarPositionRelativeY() + TAB_GAP_WIDTH + guiY
 
                 // check if this tab has been clicked
-                if (this.isPointInRegion(x, y, TAB_WIDTH, TAB_HEIGHT, mouseX, mouseY)) {
+                if (mouseX > x && mouseX < x + TAB_WIDTH && mouseY > y && mouseY < y + TAB_HEIGHT) {
                     this.activeTabIndex = otherIndex
 
                     // update the enabled-state of all tabs
@@ -177,9 +204,8 @@ TCContainer)
         tabs.withIndex().forEach { (i, tab) ->
             val x = getTabBarPositionRelativeX().toDouble() + guiX
             val y = (i * TAB_SELECTED_HEIGHT).toDouble() + TAB_GAP_WIDTH + getTabBarPositionRelativeY() + guiY
-            val width = TAB_WIDTH
-            val height = TAB_HEIGHT
-            if (mouseX > x && mouseX < x + width && mouseY > y && mouseY < y + height) {
+
+            if (mouseX > x && mouseX < x + TAB_WIDTH && mouseY > y && mouseY < y + TAB_HEIGHT) {
                 drawHoveringText(mutableListOf(tab.name), mouseX, mouseY)
             }
         }
@@ -252,6 +278,28 @@ TCContainer)
 
     fun renderHoveredItemToolTip(mouseX: Int, mouseY: Int) {
         super.renderHoveredToolTip(mouseX, mouseY)
+    }
+
+    override fun onResize(mcIn: Minecraft, w: Int, h: Int) {
+        this.container.clearComponents()
+
+        for(t in this.tabs) {
+            t.onResize()
+            t.components.clear()
+
+            t.init()
+            t.components.forEach {
+                this.container.registerComponent(it)
+            }
+        }
+        this.tabs.withIndex().forEach { (index, tab) ->
+            tab.components
+                    .filterIsInstance<ITCSlot>()
+                    .forEach { slot ->
+                        slot.setEnabled(index == this.activeTabIndex)
+                    }
+        }
+        super.onResize(mcIn, w, h)
     }
 
     fun renderTooltip(_str: MutableList<String>, mouseX: Int,

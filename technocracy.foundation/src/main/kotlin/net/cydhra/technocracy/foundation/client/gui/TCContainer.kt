@@ -55,6 +55,10 @@ open class TCContainer(val machineInputs: Int = 0, val machineOutputs: Int = 0) 
         return newStack
     }
 
+    fun clearComponents() {
+        this.inventorySlots.clear()
+    }
+
     fun registerComponent(component: TCComponent) {
         if (component is Slot) {
             this.addSlotToContainer(component)

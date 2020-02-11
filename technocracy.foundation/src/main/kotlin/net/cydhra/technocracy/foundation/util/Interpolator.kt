@@ -44,6 +44,10 @@ object Interpolator {
         private fun interpolate(from: InterpolationStep<T>, to: InterpolationStep<T>, time: Float): T {
             return from.value.interpolate(to.value, from.time, to.time, time)
         }
+
+        fun clear() {
+            steps.clear()
+        }
     }
 
     class InterpolationStep<T : InterpolateableValue<T>>(val time: Float, val value: T)
