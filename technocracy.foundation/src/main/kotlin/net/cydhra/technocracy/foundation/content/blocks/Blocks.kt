@@ -85,13 +85,13 @@ val tankIOBlock = TankStructureBlock("tank_io", ::TileEntityTankPort)
 val salineControllerBlock = MultiBlockRotatableActiveBlock("saline_controller", ::TileEntitySalineController)
 val salineWallBlock = PlainMultiBlockPartBlock("saline_wall", ::TileEntityMultiBlockPartSaline)
 val salineHeatedWallBlock = PlainMultiBlockPartBlock("saline_heated_wall", ::TileEntityMultiBlockPartSaline)
-val salineFluidInput = MultiBlockRotatableActiveBlock("saline_fluid_input", ::TileEntitySalineFluidInput,
+val salineFluidInputBlock = MultiBlockRotatableActiveBlock("saline_fluid_input", ::TileEntitySalineFluidInput,
         renderLayer = BlockRenderLayer.CUTOUT)
-val salineFluidOutput = MultiBlockActiveBlock("saline_fluid_output", ::TileEntitySalineFluidOutput,
+val salineFluidOutputBlock = MultiBlockActiveBlock("saline_fluid_output", ::TileEntitySalineFluidOutput,
         renderLayer = BlockRenderLayer.CUTOUT)
-val salineHeatingAgentInput = MultiBlockRotatableActiveBlock("saline_heating_agent_input", ::TileEntitySalineHeatingAgentOutput,
+val salineHeatingAgentInputBlock = MultiBlockRotatableActiveBlock("saline_heating_agent_input", ::TileEntitySalineHeatingAgentOutput,
         renderLayer = BlockRenderLayer.CUTOUT)
-val salineHeatingAgentOutput = MultiBlockRotatableActiveBlock("saline_heating_agent_output", ::TileEntitySalineHeatingAgentInput,
+val salineHeatingAgentOutputBlock = MultiBlockRotatableActiveBlock("saline_heating_agent_output", ::TileEntitySalineHeatingAgentInput,
         renderLayer = BlockRenderLayer.CUTOUT)
 
 val leadBlock = PlainBlock("lead_block", Material.IRON, oreDictionaryName = "blockLead")

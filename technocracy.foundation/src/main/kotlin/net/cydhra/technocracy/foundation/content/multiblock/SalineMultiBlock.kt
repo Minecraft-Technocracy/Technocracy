@@ -9,22 +9,22 @@ import java.util.function.Predicate
 
 class SalineMultiBlock(world: World) : TiledBaseMultiBlock(
         frameBlockWhitelist = Predicate {
-            it.block == salineWallBlock || it.block == salineFluidInput || it.block == salineControllerBlock ||
-                    it.block == salineHeatingAgentInput || it.block == salineHeatingAgentOutput
+            it.block == salineWallBlock || it.block == salineFluidInputBlock || it.block == salineControllerBlock ||
+                    it.block == salineHeatingAgentInputBlock || it.block == salineHeatingAgentOutputBlock
         },
         sideBlockWhitelist = null,
         topBlockWhitelist = Predicate {
             it.block == Blocks.AIR
         },
         bottomBlockWhitelist = Predicate {
-            it.block == salineWallBlock || it.block == salineHeatedWallBlock || it.block == salineFluidOutput
+            it.block == salineWallBlock || it.block == salineHeatedWallBlock || it.block == salineFluidOutputBlock
         },
         interiorBlockWhitelist = null,
         tileFrameBlockWhitelist = Predicate {
-            it.block == salineWallBlock || it.block == salineFluidInput
+            it.block == salineWallBlock || it.block == salineFluidInputBlock
         },
         tileSideBlockWhitelist = Predicate {
-            it.block == salineWallBlock || it.block == salineFluidInput || it.block == salineFluidOutput
+            it.block == salineWallBlock || it.block == salineFluidInputBlock || it.block == salineFluidOutputBlock
         },
         tileSizeX = 5,
         tileSizeZ = 5,
