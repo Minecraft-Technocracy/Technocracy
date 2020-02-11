@@ -2,8 +2,9 @@
   "parent": "block/orientable",
   "textures": {
     "particle": "technocracy.foundation:block/saline_wall",
-    "front": "technocracy.foundation:block/saline_heating_agent_front",
+    "heat_input": "technocracy.foundation:block/heating_agent_input",
     "wall": "technocracy.foundation:block/saline_wall",
+    "wall_clean": "technocracy.foundation:block/saline_wall_clean",
     "port": "technocracy.foundation:block/port_ingress"
   },
   "elements": [
@@ -23,7 +24,7 @@
         },
         "north": {
           "tintindex": 0,
-          "texture": "#wall",
+          "texture": "#wall_clean",
           "cullface": "north"
         },
         "south": {
@@ -48,7 +49,7 @@
       "faces": {
         "north": {
           "tintindex": 0,
-          "texture": "#front",
+          "texture": "#heat_input",
           "cullface": "north"
         }
       }
