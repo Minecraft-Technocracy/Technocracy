@@ -23,7 +23,7 @@ abstract class TiledBaseMultiBlock(
         frameBlockWhitelist: Predicate<IBlockState>?,
         sideBlockWhitelist: Predicate<IBlockState>?,
         topBlockWhitelist: Predicate<IBlockState>?,
-        bottomBlockWhitelist: Predicate<IBlockState>?,
+        bottomBlockWhitelist: Predicate<IBlockState>,
         interiorBlockWhitelist: Predicate<IBlockState>?,
         val tileFrameBlockWhitelist: Predicate<IBlockState>?,
         val tileSideBlockWhitelist: Predicate<IBlockState>?,
@@ -35,7 +35,7 @@ abstract class TiledBaseMultiBlock(
         interiorBlockWhitelist, 0, 0, world) {
 
     /**
-     * Contains min and max coordinate of each tile
+     * Contains all tiles belonging to this multi block in row-major order
      */
     protected val tiles = mutableSetOf<Tile>()
 
@@ -108,7 +108,7 @@ abstract class TiledBaseMultiBlock(
             validatorCallback.setLastError("multiblock.error.inconsistent_tile_size", tileSizeX, tileSizeZ, sizeY)
             return false
         }
-        
+
         //Get the tile size corresponding to each axis. Subtract one because the size is actually one block too much
         //  (e.g. if minX is 5 and sizeX is 5 then maxX should be 9 and not 10)
         var xAxisSize = (if (deltaX % tileSizeX == 0) tileSizeX else tileSizeZ) - 1
@@ -134,20 +134,11 @@ abstract class TiledBaseMultiBlock(
                     //First corner
                     val minPos = BlockPos(x, minY, z)
                     //One block further east or south
-                    val minPosClose: BlockPos
+                    val minPosClose: BlockPos = minPos.east(1)
                     //East or south corner
-                    val minPosFar: BlockPos
+                    val minPosFar: BlockPos =  minPos.east(xAxisSize)
                     //Center block
                     val centerPos = minPos.south(zAxisSize / 2).east(xAxisSize / 2)
-
-                    //Go east if in the first row, south otherwise
-                    if (z == minZ) {
-                        minPosClose = minPos.east(1)
-                        minPosFar = minPos.east(xAxisSize)
-                    } else {
-                        minPosClose = minPos.south(1)
-                        minPosFar = minPos.south(zAxisSize)
-                    }
 
                     //Checks the east of the corner block, the east corner block, and the center block to
                     //  hopefully predict a tile being there. Also makes sure the blocks are not from another multi block.
@@ -155,11 +146,10 @@ abstract class TiledBaseMultiBlock(
                     //  Could be made more efficient by checking all blocks in the area of the tile, but the performance
                     //  decrease isn't worth it
                     if ((frameBlockWhitelist!!.test(this.WORLD.getBlockState(minPosClose)) &&
-                                    connectedPositions.contains(minPosClose)) ||
+                                    connectedPositions.contains(minPosClose)) &&
                             (frameBlockWhitelist.test(this.WORLD.getBlockState(minPosFar)) &&
-                                    connectedPositions.contains(minPosFar)) ||
-                            (bottomBlockWhitelist != null &&
-                                    bottomBlockWhitelist.test(this.WORLD.getBlockState(centerPos)) &&
+                                    connectedPositions.contains(minPosFar)) &&
+                            (bottomBlockWhitelist!!.test(this.WORLD.getBlockState(centerPos)) &&
                                     connectedPositions.contains(centerPos))) {
                         this.tiles += Tile(minPos, BlockPos(x + xAxisSize, maxY, z + zAxisSize))
                     }
