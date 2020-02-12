@@ -99,35 +99,55 @@ TCContainer)
         GlStateManager.enableBlend()
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
 
-        //GlStateManager.translate(guiX.toDouble(), guiY.toDouble(), 0.0)
-
-
+        //draw gui background
         drawWindow(guiX, guiY, xSize, ySize)
 
         GlStateManager.enableBlend()
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
 
         if (tabs.size > 1) {
-            drawTabs(partialTicks, mouseX, mouseY)
+            drawTabs()
         }
 
+        //render tab content
         this.tabs[this.activeTabIndex].draw(guiX, guiY, mouseX, mouseY, partialTicks)
 
-
+        //drawTooltips(mouseX, mouseY)
 
         super.drawScreen(mouseX, mouseY, partialTicks)
 
     }
 
-    override fun drawGuiContainerBackgroundLayer(partialTicks: Float, mouseX: Int, mouseY: Int) {
+    fun drawTooltips(mouseX: Int, mouseY: Int) {
+        if (tabs.size > 1) {
+            tabs.withIndex().filterNot { it.index == activeTabIndex }.forEach { (i, tab) ->
+                val x = getTabBarPositionRelativeX() + TAB_GAP_WIDTH
+                val y = i * TAB_SELECTED_HEIGHT + getTabBarPositionRelativeY() + TAB_GAP_WIDTH
 
+                if (mouseX > x && mouseX < x + TAB_WIDTH && mouseY > y && mouseY < y + TAB_HEIGHT) {
+                    drawHoveringText(mutableListOf(tab.name), mouseX, mouseY)
+                }
+            }
+
+            val activeTabX = getTabBarPositionRelativeX()
+            val activeTabY = activeTabIndex * TAB_SELECTED_HEIGHT + getTabBarPositionRelativeY()
+
+            if (mouseX > activeTabX && mouseX < activeTabX + TAB_SELECTED_WIDTH && mouseY > activeTabY && mouseY < activeTabY + TAB_SELECTED_HEIGHT) {
+                drawHoveringText(mutableListOf(tabs[activeTabIndex].name), mouseX, mouseY)
+            }
+        }
+
+        this.tabs[activeTabIndex].drawToolTips(mouseX, mouseY)
     }
 
+    override fun drawGuiContainerBackgroundLayer(partialTicks: Float, mouseX: Int, mouseY: Int) {}
+
     override fun drawGuiContainerForegroundLayer(mouseX: Int, mouseY: Int) {
-        zLevel = 200.0f
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY) // draws f.e. items in slots
-        this.tabs[activeTabIndex].drawToolTips(guiX, guiY, mouseX, mouseY)
-        zLevel = 0.0f
+        this.zLevel = 200f
+        //remove the translation that is added by vanilla
+        drawTooltips(mouseX - guiX, mouseY - guiY)
+        super.drawGuiContainerForegroundLayer(mouseX, mouseY)
+        this.zLevel = 0f
     }
 
     override fun handleMouseInput() {
@@ -138,84 +158,62 @@ TCContainer)
     override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
         super.mouseClicked(mouseX, mouseY, mouseButton)
 
-        tabs[activeTabIndex].mouseClicked(guiX, guiY, mouseX, mouseY, mouseButton)
+        var active = tabs[activeTabIndex]
+        active.mouseClicked(guiX, guiY, mouseX, mouseY, mouseButton)
 
         if (tabs.size > 1) {
-            checkClick@ for (otherIndex in this.tabs.indices.filterNot { it == this.activeTabIndex }) {
+            for (index in tabs.indices) {
+                if (index == activeTabIndex) continue
                 val x = getTabBarPositionRelativeX() + TAB_GAP_WIDTH + guiX
-                val y = otherIndex * TAB_SELECTED_HEIGHT + getTabBarPositionRelativeY() + TAB_GAP_WIDTH + guiY
-
+                val y = index * TAB_SELECTED_HEIGHT + getTabBarPositionRelativeY() + TAB_GAP_WIDTH + guiY
                 // check if this tab has been clicked
                 if (mouseX > x && mouseX < x + TAB_WIDTH && mouseY > y && mouseY < y + TAB_HEIGHT) {
-                    this.activeTabIndex = otherIndex
+                    activeTabIndex = index
+                    active = tabs[activeTabIndex]
 
-                    // update the enabled-state of all tabs
-                    this.tabs.withIndex().forEach { (index, tab) ->
-                        tab.components
-                                .filterIsInstance<ITCSlot>()
-                                .forEach { slot ->
-                                    slot.setEnabled(index == this.activeTabIndex)
-                                }
+                    //update state of components
+                    tabs.forEachIndexed { inner, tcTab ->
+                        tcTab.components.filterIsInstance<ITCSlot>().forEach {
+                            it.setEnabled(inner == index)
+                        }
                     }
 
-                    // no reason to check further tabs, as only one can be clicked at any time
-                    break@checkClick
+                    //update position of the components to new gui size
+                    xSize = active.getSizeX()
+                    ySize = active.getSizeY()
+                    guiX = (width - xSize) / 2
+                    guiY = (height - ySize) / 2
+                    onResize(mc, width, height)
+
+                    break
                 }
             }
         }
     }
 
-    private fun drawTabs(partialTicks: Float, mouseX: Int, mouseY: Int) {
-        this.tabs.withIndex().filterNot { it.index == this.activeTabIndex }.forEach { (i, tab) ->
-            val x = getTabBarPositionRelativeX().toDouble() + TAB_GAP_WIDTH + guiX
-            val y = (i * TAB_SELECTED_HEIGHT).toDouble() + getTabBarPositionRelativeY() + TAB_GAP_WIDTH + guiY
-            val width = TAB_WIDTH
-            val height = TAB_HEIGHT
+    private fun renderTabCard(x: Int, y: Int, width: Int, height: Int, active: Boolean, tab: TCTab) {
+        drawWindow(x, y, width, height, tab.tint and if (active) -1 else inactiveTabTint, true)
 
-            drawWindow(x.toInt(), y.toInt(), width, height, tab.tint and inactiveTabTint, true)
-
-            if (tab.icon != null) {
-                GlStateManager.pushMatrix()
-                GlStateManager.translate(x + (width - 16) / 2, y + (height - 16) / 2 + 2, 0.0)
-                Minecraft.getMinecraft().textureManager.bindTexture(tab.icon)
-                GlStateManager.color(1F, 1F, 1F, 1F)
-                drawModalRectWithCustomSizedTexture(0, 0, 0F, 0F, 17, 17, 17F, 17F)
-                GlStateManager.popMatrix()
-            }
-        }
-
-        val activeTab: TCTab = this.tabs[this.activeTabIndex]
-        val activeTabX = getTabBarPositionRelativeX().toDouble() + guiX
-        val activeTabY = (this.activeTabIndex * TAB_SELECTED_HEIGHT).toDouble() + getTabBarPositionRelativeY() + guiY
-        val tabWidth = TAB_SELECTED_WIDTH
-        val tabHeight = TAB_SELECTED_HEIGHT
-
-        drawWindow(activeTabX.toInt(), activeTabY.toInt(), tabWidth, tabHeight, activeTab.tint and -1, true)
-
-        if (activeTab.icon != null) {
-            GlStateManager.pushMatrix()
-            GlStateManager.translate(activeTabX + (tabWidth - 16) / 2, activeTabY + (tabHeight - 16) / 2 + 1, 0.0)
-            Minecraft.getMinecraft().textureManager.bindTexture(activeTab.icon)
+        if (tab.icon != null) {
+            Minecraft.getMinecraft().textureManager.bindTexture(tab.icon)
             GlStateManager.color(1F, 1F, 1F, 1F)
-            drawModalRectWithCustomSizedTexture(0, 0, 0F, 0F, 17, 17, 17F, 17F)
-            GlStateManager.popMatrix()
+            drawModalRectWithCustomSizedTexture((x + (width - 16) / 2), (y + (height - 16) / 2 + 2), 0F, 0F, 16, 16, 16F, 16F)
+        }
+    }
+
+    private fun drawTabs() {
+        tabs.withIndex().filterNot { it.index == activeTabIndex }.forEach { (i, tab) ->
+            val x = getTabBarPositionRelativeX() + TAB_GAP_WIDTH + guiX
+            val y = i * TAB_SELECTED_HEIGHT + getTabBarPositionRelativeY() + TAB_GAP_WIDTH + guiY
+            renderTabCard(x, y, TAB_WIDTH, TAB_HEIGHT, false, tab)
         }
 
-        tabs.withIndex().forEach { (i, tab) ->
-            val x = getTabBarPositionRelativeX().toDouble() + guiX
-            val y = (i * TAB_SELECTED_HEIGHT).toDouble() + TAB_GAP_WIDTH + getTabBarPositionRelativeY() + guiY
-
-            if (mouseX > x && mouseX < x + TAB_WIDTH && mouseY > y && mouseY < y + TAB_HEIGHT) {
-                drawHoveringText(mutableListOf(tab.name), mouseX, mouseY)
-            }
-        }
-
-        GlStateManager.disableLighting()
+        val activeTabX = getTabBarPositionRelativeX() + guiX
+        val activeTabY = activeTabIndex * TAB_SELECTED_HEIGHT + getTabBarPositionRelativeY() + guiY
+        renderTabCard(activeTabX, activeTabY, TAB_SELECTED_WIDTH, TAB_SELECTED_HEIGHT, true, tabs[activeTabIndex])
     }
 
     fun drawWindow(x: Int, y: Int, width: Int, height: Int, tint: Int = -1, windowAttachment: Boolean = false) {
-        //GlStateManager.translate(x, y, 0.0)
-
         Gui.drawRect((if (windowAttachment) 0 else 4) + x, 4 + y, width + x, height + y, windowBodyColor and tint)
 
         GlStateManager.color((tint shr 8 and 255).toFloat() / 255.0F, (tint and 255).toFloat() / 255.0F,
@@ -281,203 +279,14 @@ TCContainer)
     }
 
     override fun onResize(mcIn: Minecraft, w: Int, h: Int) {
-        this.container.clearComponents()
+        //set size of gui before a resize
+        xSize = this.tabs[this.activeTabIndex].getSizeX()
+        ySize = this.tabs[this.activeTabIndex].getSizeY()
 
-        for(t in this.tabs) {
-            t.onResize()
-            t.components.clear()
+        guiX = (width - xSize) / 2
+        guiY = (height - ySize) / 2
 
-            t.init()
-            t.components.forEach {
-                this.container.registerComponent(it)
-            }
-        }
-        this.tabs.withIndex().forEach { (index, tab) ->
-            tab.components
-                    .filterIsInstance<ITCSlot>()
-                    .forEach { slot ->
-                        slot.setEnabled(index == this.activeTabIndex)
-                    }
-        }
         super.onResize(mcIn, w, h)
-    }
-
-    fun renderTooltip(_str: MutableList<String>, mouseX: Int,
-                      mouseY: Int) { // have to modify the one of forge, because forge makes it unusable
-
-        zLevel = 300f
-        if (_str.isNotEmpty()) {
-            var str = _str
-            val sr = ScaledResolution(Minecraft.getMinecraft())
-            val screenWidth = sr.scaledWidth
-            val screenHeight = sr.scaledHeight
-            val maxTextWidth = 100
-            val font = Minecraft.getMinecraft().fontRenderer
-
-            GlStateManager.disableRescaleNormal()
-            RenderHelper.disableStandardItemLighting()
-            GlStateManager.disableLighting()
-            GlStateManager.disableDepth()
-            var tooltipTextWidth = 0
-
-            for (textLine in str) {
-                val textLineWidth = font.getStringWidth(textLine)
-
-                if (textLineWidth > tooltipTextWidth) {
-                    tooltipTextWidth = textLineWidth
-                }
-            }
-
-            var needsWrap = false
-
-            var titleLinesCount = 1
-            var tooltipX = mouseX + 12
-            if (tooltipX + tooltipTextWidth + 4 > screenWidth) {
-                tooltipX = mouseX - 16 - tooltipTextWidth
-                if (tooltipX < 4) {
-                    tooltipTextWidth = if (mouseX > screenWidth / 2) {
-                        mouseX - 12 - 8
-                    } else {
-                        screenWidth - 16 - mouseX
-                    }
-                    needsWrap = true
-                }
-            }
-
-            if (maxTextWidth in 1 until tooltipTextWidth) {
-                tooltipTextWidth = maxTextWidth
-                needsWrap = true
-            }
-
-            if (needsWrap) {
-                var wrappedTooltipWidth = 0
-                val wrappedTextLines = mutableListOf<String>()
-                for (i in str.indices) {
-                    val textLine = str[i]
-                    val wrappedLine = font.listFormattedStringToWidth(textLine, tooltipTextWidth)
-                    if (i == 0) {
-                        titleLinesCount = wrappedLine.size
-                    }
-
-                    for (line in wrappedLine) {
-                        val lineWidth = font.getStringWidth(line)
-                        if (lineWidth > wrappedTooltipWidth) {
-                            wrappedTooltipWidth = lineWidth
-                        }
-                        wrappedTextLines.add(line)
-                    }
-                }
-                tooltipTextWidth = wrappedTooltipWidth
-                str = wrappedTextLines
-
-                tooltipX = if (mouseX > screenWidth / 2) {
-                    mouseX - 16 - tooltipTextWidth
-                } else {
-                    mouseX + 12
-                }
-            }
-
-            var tooltipY = mouseY - 12
-            var tooltipHeight = 8
-
-            if (str.size > 1) {
-                tooltipHeight += (str.size - 1) * 10
-                if (str.size > titleLinesCount) {
-                    tooltipHeight += 2
-                }
-            }
-
-            if (tooltipY < 4) {
-                tooltipY = 4
-            } else if (tooltipY + tooltipHeight + 4 > screenHeight) {
-                tooltipY = screenHeight - tooltipHeight - 4
-            }
-
-            val zLevel = 300
-            val backgroundColor = -0xfeffff0
-            val borderColorStart = 0x505000FF
-            val borderColorEnd = borderColorStart and 0xFEFEFE shr 1 or (borderColorStart and -0x1000000)
-            GuiUtils.drawGradientRect(zLevel,
-                    tooltipX - 3,
-                    tooltipY - 4,
-                    tooltipX + tooltipTextWidth + 3,
-                    tooltipY - 3,
-                    backgroundColor,
-                    backgroundColor)
-            GuiUtils.drawGradientRect(zLevel,
-                    tooltipX - 3,
-                    tooltipY + tooltipHeight + 3,
-                    tooltipX + tooltipTextWidth + 3,
-                    tooltipY + tooltipHeight + 4,
-                    backgroundColor,
-                    backgroundColor)
-            GuiUtils.drawGradientRect(zLevel,
-                    tooltipX - 3,
-                    tooltipY - 3,
-                    tooltipX + tooltipTextWidth + 3,
-                    tooltipY + tooltipHeight + 3,
-                    backgroundColor,
-                    backgroundColor)
-            GuiUtils.drawGradientRect(zLevel,
-                    tooltipX - 4,
-                    tooltipY - 3,
-                    tooltipX - 3,
-                    tooltipY + tooltipHeight + 3,
-                    backgroundColor,
-                    backgroundColor)
-            GuiUtils.drawGradientRect(zLevel,
-                    tooltipX + tooltipTextWidth + 3,
-                    tooltipY - 3,
-                    tooltipX + tooltipTextWidth + 4,
-                    tooltipY + tooltipHeight + 3,
-                    backgroundColor,
-                    backgroundColor)
-            GuiUtils.drawGradientRect(zLevel,
-                    tooltipX - 3,
-                    tooltipY - 3 + 1,
-                    tooltipX - 3 + 1,
-                    tooltipY + tooltipHeight + 3 - 1,
-                    borderColorStart,
-                    borderColorEnd)
-            GuiUtils.drawGradientRect(zLevel,
-                    tooltipX + tooltipTextWidth + 2,
-                    tooltipY - 3 + 1,
-                    tooltipX + tooltipTextWidth + 3,
-                    tooltipY + tooltipHeight + 3 - 1,
-                    borderColorStart,
-                    borderColorEnd)
-            GuiUtils.drawGradientRect(zLevel,
-                    tooltipX - 3,
-                    tooltipY - 3,
-                    tooltipX + tooltipTextWidth + 3,
-                    tooltipY - 3 + 1,
-                    borderColorStart,
-                    borderColorStart)
-            GuiUtils.drawGradientRect(zLevel,
-                    tooltipX - 3,
-                    tooltipY + tooltipHeight + 2,
-                    tooltipX + tooltipTextWidth + 3,
-                    tooltipY + tooltipHeight + 3,
-                    borderColorEnd,
-                    borderColorEnd)
-
-            for (lineNumber in str.indices) {
-                val line = str[lineNumber]
-                font.drawStringWithShadow(line, tooltipX.toFloat(), tooltipY.toFloat(), -1)
-
-                if (lineNumber + 1 == titleLinesCount) {
-                    tooltipY += 2
-                }
-
-                tooltipY += 10
-            }
-
-            // GlStateManager.enableLighting() // should stay disabled
-            GlStateManager.enableDepth()
-            //RenderHelper.enableStandardItemLighting() // should stay disabled
-            GlStateManager.enableRescaleNormal()
-        }
-        zLevel = 0f
     }
 
     override fun onGuiClosed() {
@@ -502,7 +311,7 @@ TCContainer)
      * Get the width of the tab bar
      */
     fun getTabBarWidth(): Int {
-        return TAB_SELECTED_WIDTH
+        return if(tabs.size > 1) TAB_SELECTED_WIDTH else 0
     }
 
     /**

@@ -33,7 +33,7 @@ class DefaultEnergyMeter(posX: Int, posY: Int, val component: EnergyStorageTileE
 
     override fun drawTooltip(mouseX: Int, mouseY: Int) {
         val str = "${(level * component.energyStorage.capacity).roundToInt()}RF/${component.energyStorage.capacity}RF"
-        gui.renderTooltip(mutableListOf(str), mouseX, mouseY)
+        gui.drawHoveringText(mutableListOf(str), mouseX, mouseY)
     }
 
     fun drawModalRectWithCustomSizedTexture(left: Int, top: Int, right: Int, bottom: Int, texX: Float, texY: Float, textureWidth: Float, textureHeight: Float) {

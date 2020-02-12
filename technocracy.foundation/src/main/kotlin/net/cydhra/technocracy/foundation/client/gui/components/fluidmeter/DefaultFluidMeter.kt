@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.texture.TextureMap
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
+import net.minecraft.util.text.TextFormatting
 import net.minecraftforge.fluids.Fluid
 import org.lwjgl.opengl.GL11
 import java.awt.Color
@@ -160,8 +161,13 @@ class DefaultFluidMeter(posX: Int, posY: Int, val component: FluidTileEntityComp
 
     override fun drawTooltip(mouseX: Int, mouseY: Int) {
         if (component.fluid.capacity > 0) {
-            val str = "${if (component.fluid.currentFluid != null) "${component.fluid.currentFluid?.localizedName}\n§7" else ""}${(level * component.fluid.capacity).roundToInt()}mb/${component.fluid.capacity}mb"
-            gui.renderTooltip(mutableListOf(str), mouseX, mouseY)
+
+            val text = mutableListOf<String>()
+            if (component.fluid.currentFluid != null)
+                text.add(component.fluid.currentFluid!!.localizedName + ": ")
+
+            text.add("${TextFormatting.GRAY}${(level * component.fluid.capacity).roundToInt()}mb / ${component.fluid.capacity}mb")
+            gui.drawHoveringText(text, mouseX, mouseY)
         }
     }
 

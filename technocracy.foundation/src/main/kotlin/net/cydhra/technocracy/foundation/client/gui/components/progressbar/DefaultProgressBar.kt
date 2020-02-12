@@ -83,7 +83,7 @@ class DefaultProgressBar(posX: Int, posY: Int, orientation: Orientation, val com
     override fun drawTooltip(mouseX: Int, mouseY: Int) {
         if (gui != null) {
             val str = "${(progress * 100).roundToInt()}%"
-            gui.renderTooltip(mutableListOf(str), mouseX, mouseY)
+            gui.drawHoveringText(mutableListOf(str), mouseX, mouseY)
         }
     }
 

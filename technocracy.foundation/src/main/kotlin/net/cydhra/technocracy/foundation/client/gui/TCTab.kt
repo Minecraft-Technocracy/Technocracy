@@ -31,10 +31,10 @@ abstract class TCTab(val name: String, val parent: TCGui, val tint: Int = -1,
         }
     }
 
-    open fun drawToolTips(x: Int, y: Int, mouseX: Int, mouseY: Int) {
+    open fun drawToolTips(mouseX: Int, mouseY: Int) {
         components.forEach {
-            if (it.isMouseOnComponent(mouseX - x, mouseY - y))
-                it.drawTooltip(mouseX - x, mouseY - y)
+            if (it.isMouseOnComponent(mouseX, mouseY))
+                it.drawTooltip(mouseX, mouseY)
         }
     }
 
