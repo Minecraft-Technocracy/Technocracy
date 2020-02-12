@@ -11,9 +11,10 @@ import net.minecraftforge.client.resource.ISelectiveResourceReloadListener
 import net.minecraftforge.client.resource.VanillaResourceType
 import org.apache.commons.io.IOUtils
 import org.apache.commons.lang3.StringUtils
-import org.lwjgl.util.vector.Matrix4f
 import org.lwjgl.BufferUtils
-import org.lwjgl.opengl.*
+import org.lwjgl.opengl.GL20
+import org.lwjgl.opengl.GL32
+import org.lwjgl.util.vector.Matrix4f
 import java.io.BufferedInputStream
 import java.io.Closeable
 import java.nio.FloatBuffer
@@ -115,9 +116,9 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
 
             if (OpenGlHelper.glGetShaderi(i, OpenGlHelper.GL_COMPILE_STATUS) == 0) {
                 val s = StringUtils.trim(OpenGlHelper.glGetShaderInfoLog(i, 32768))
-                val jsonexception = JsonException("Couldn't compile " + resource.resourcePackName + " program: " + s)
-                jsonexception.setFilenameAndFlush(shader.resourcePath)
-                throw jsonexception
+                val ex = JsonException("Couldn't compile " + resource.resourcePackName + " program: " + s)
+                ex.setFilenameAndFlush(shader.resourcePath)
+                throw ex
             }
             return i
         } finally {
@@ -141,6 +142,18 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
         private var buffer_int: IntBuffer? = null
         private var dirty = false
 
+        private var notified = false
+        private val notifyWrongSize = "The uniform has the wrong size"
+        private val notifyWrongType = "Wrong uniform type"
+        private val notifyShaderNotRunning = "The shader is not running"
+
+        private fun notify(msg: String) {
+            if (!notified) {
+                IllegalStateException(msg).printStackTrace()
+                notified = true
+            }
+        }
+
         init {
             when (type.type) {
                 UniformType.GenericType.INT, UniformType.GenericType.SAMPLER -> buffer_int = BufferUtils.createIntBuffer(type.amount)
@@ -149,7 +162,9 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
         }
 
         fun uploadUniforms() {
-            if (!shader.running) throw IllegalStateException("Shader not running")
+            if (!shader.running) {
+                notifyShaderNotRunning; return
+            }
 
             if (dirty) {
                 when (type.type) {
@@ -191,142 +206,76 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
             }
         }
 
+
         private fun uploadSampler() {
             val tmp = buffer_int ?: return
             OpenGlHelper.glUniform1i(uniformId, tmp[0])
         }
 
-        fun uploadUniform(x: Float, y: Float, z: Float) {
-            if (type.type == UniformType.GenericType.INT) {
-                uploadUniform(x.toInt(), y.toInt(), z.toInt())
-                return
-            }
-            val buffer_float = buffer_float
-                    ?: run { IllegalStateException("Wrong uniform type").printStackTrace(); return }
-
-            if (buffer_float[0] != x || buffer_float[1] != y || buffer_float[2] != z)
-                with(buffer_float) {
-                    position(0)
-                    put(0, x)
-                    put(1, y)
-                    put(2, z)
-                    dirty = true
-                }
-        }
-
-        fun uploadUniform(x: Float, y: Float) {
-            if (type.type == UniformType.GenericType.INT) {
-                uploadUniform(x.toInt(), y.toInt())
-                return
-            }
-            val buffer_float = buffer_float
-                    ?: run { IllegalStateException("Wrong uniform type").printStackTrace(); return }
-
-            if (buffer_float[0] != x || buffer_float[1] != y)
-                with(buffer_float) {
-                    position(0)
-                    put(0, x)
-                    put(1, y)
-                    dirty = true
-                }
-        }
-
-        fun uploadUniform(x: Float) {
-            if (type.type == UniformType.GenericType.INT) {
-                uploadUniform(x.toInt())
-                return
-            }
-            val buffer_float = buffer_float
-                    ?: run { IllegalStateException("Wrong uniform type").printStackTrace(); return }
-
-            if (buffer_float[0] != x)
-                with(buffer_float) {
-                    position(0)
-                    put(0, x)
-                    dirty = true
-                }
-        }
-
-        fun uploadUniform(x: Int, y: Int, z: Int) {
+        fun uploadUniform(vararg ints: Int) {
             if (type.type == UniformType.GenericType.FLOAT) {
-                uploadUniform(x.toFloat(), y.toFloat(), z.toFloat())
+                uploadUniform(*ints.asSequence().map { it.toFloat() }.toList().toFloatArray())
                 return
             }
-            val buffer_int = buffer_int ?: run { IllegalStateException("Wrong uniform type").printStackTrace(); return }
 
-            if (buffer_int[0] != x || buffer_int[1] != y || buffer_int[2] != z)
-                with(buffer_int) {
-                    position(0)
-                    put(0, x)
-                    put(1, y)
-                    put(2, z)
+            val buffer = buffer_int
+                    ?: run { notify(notifyWrongType); return }
+            if (type.amount != ints.size) {
+                notify(notifyWrongSize); return
+            }
+
+            ints.asSequence().forEachIndexed { i, value ->
+                if (buffer[i] != value) {
+                    buffer.put(i, value)
                     dirty = true
                 }
+            }
         }
 
-        fun uploadUniform(x: Int, y: Int) {
-            if (type.type == UniformType.GenericType.FLOAT) {
-                uploadUniform(x.toFloat(), y.toFloat())
+        fun uploadUniform(vararg floats: Float) {
+            if (type.type == UniformType.GenericType.INT) {
+                uploadUniform(*floats.asSequence().map { it.toInt() }.toList().toIntArray())
                 return
             }
 
-            val buffer_int = buffer_int ?: run { IllegalStateException("Wrong uniform type").printStackTrace(); return }
-
-            if (buffer_int[0] != x || buffer_int[1] != y)
-                with(buffer_int) {
-                    position(0)
-                    put(0, x)
-                    put(1, y)
-                    dirty = true
-                }
-        }
-
-        fun uploadUniform(x: Int) {
-            if (type.type == UniformType.GenericType.FLOAT) {
-                uploadUniform(x.toFloat())
-                return
+            val buffer = buffer_float
+                    ?: run { notify(notifyWrongType); return }
+            if (type.amount != floats.size) {
+                notify(notifyWrongSize); return
             }
 
-            val buffer_int = buffer_int ?: run { IllegalStateException("Wrong uniform type").printStackTrace(); return }
-
-            with(buffer_int) {
-                if (this[0] != x) {
-                    position(0)
-                    put(0, x)
+            floats.asSequence().forEachIndexed { i, value ->
+                if (buffer[i] != value) {
+                    buffer.put(i, value)
                     dirty = true
                 }
             }
         }
 
         fun uploadUniform(x: Boolean) {
-            val buffer_int = buffer_int ?: run { IllegalStateException("Wrong uniform type").printStackTrace(); return }
-
             val value = if (x) 1 else 0
-            with(buffer_int) {
-                if (this[0] != value) {
-                    position(0)
-                    put(0, value)
-                    dirty = true
-                }
-            }
+            uploadUniform(value)
         }
 
         fun uploadUniform(matrix4f: Matrix4f) {
-            val buffer_float = buffer_float
-                    ?: run { IllegalStateException("Wrong uniform type").printStackTrace(); return }
+            val buffer = buffer_float
+                    ?: run { notify(notifyWrongType); return }
+            if (type.amount != 4 * 4) {
+                notifyWrongSize; return
+            }
 
-            matrix4f.store(buffer_float)
-            buffer_float.flip()
+            matrix4f.store(buffer)
+            buffer.flip()
             dirty = true
         }
 
         fun uploadUniform(bufferIn: FloatBuffer) {
-            val buffer_float = buffer_float
-                    ?: run { IllegalStateException("Wrong uniform type").printStackTrace(); return }
+            val buffer = buffer_float
+                    ?: run { notify(notifyWrongType); return }
 
             bufferIn.flip()
-            buffer_float.position(0)
-            buffer_float.put(bufferIn)
+            buffer.position(0)
+            buffer.put(bufferIn)
             dirty = true
         }
     }
