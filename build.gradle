@@ -11,7 +11,7 @@ buildscript {
         top_version = '1.12-1.4.28-17'
         minecraft_version = '1.12.2'
         forge_version = '14.23.5.2815'
-        forge_plugin_version = '2.3-SNAPSHOT'
+        forge_plugin_version = '2.3.2-SNAPSHOT'
         mappings_version = 'snapshot_20180609'
         mod_version = '1.0'
 
@@ -24,11 +24,12 @@ buildscript {
         mavenCentral()
         jcenter()
         maven { url = "https://files.minecraftforge.net/maven" }
+        maven { url 'https://jitpack.io' }
     }
 
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: forge_plugin_version
         classpath group: 'org.jetbrains.kotlin', name: 'kotlin-gradle-plugin', version: kotlin_version
+        classpath group: 'com.github.Minecraft-Technocracy', name: 'ForgeGradle', version: forge_plugin_version
     }
 }
 
