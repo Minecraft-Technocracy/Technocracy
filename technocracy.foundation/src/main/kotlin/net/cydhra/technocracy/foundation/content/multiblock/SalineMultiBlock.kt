@@ -5,6 +5,8 @@ import net.cydhra.technocracy.foundation.content.blocks.*
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.saline.*
 import net.cydhra.technocracy.foundation.model.components.IComponent
 import net.cydhra.technocracy.foundation.model.multiblock.api.TiledBaseMultiBlock
+import net.cydhra.technocracy.foundation.util.getFluidStack
+import net.minecraft.block.BlockHorizontal
 import net.minecraft.init.Blocks
 import net.minecraft.util.EnumFacing
 import net.minecraft.world.World
@@ -52,10 +54,10 @@ class SalineMultiBlock(world: World) : TiledBaseMultiBlock(
                 //Top and right edge
                 edgeCount += 2
                 //Left edge
-                if(!it.adjacentTileSides.contains(EnumFacing.WEST))
+                if (!it.adjacentTileSides.contains(EnumFacing.WEST))
                     edgeCount++
                 //Bottom edge
-                if(!it.adjacentTileSides.contains(EnumFacing.SOUTH))
+                if (!it.adjacentTileSides.contains(EnumFacing.SOUTH))
                     edgeCount++
             }
 
@@ -79,6 +81,50 @@ class SalineMultiBlock(world: World) : TiledBaseMultiBlock(
                                    fluidOutputs: MutableList<TileEntitySalineFluidOutput>,
                                    heatingAgentInputs: MutableList<TileEntitySalineHeatingAgentInput>,
                                    heatingAgentOutputs: MutableList<TileEntitySalineHeatingAgentOutput>): Boolean {
+        fun invalidFluidInput(tile: TileEntitySalineFluidInput): Boolean {
+            validatorCallback.setLastError("multiblock.saline.error.invalid_fluid_input_position", tile.pos.x,
+                    tile.pos.y, tile.pos.z)
+            return false
+        }
+
+        //Validate fluid input positions (only works for size 5x5!)
+        outer@ for (it in fluidInputs) {
+            //Input is in the bottom layer of the machine
+            if (it.pos.y != maximumCoord.y)
+                return invalidFluidInput(it)
+
+            val facing = WORLD.getBlockState(it.pos).getValue(BlockHorizontal.FACING)
+            //Each possible x position
+            for (x in (minimumCoord.x + 2) until (maximumCoord.x - 1) step 4) {
+                if (x == it.pos.x) {
+                    if (facing.axis == EnumFacing.Axis.X)
+                        return invalidFluidInput(it)
+                    continue@outer
+                }
+            }
+            //Each possible z position
+            for (z in (minimumCoord.z + 2) until (maximumCoord.z - 1) step 4) {
+                if (z == it.pos.z) {
+                    if (facing.axis == EnumFacing.Axis.Z)
+                        return invalidFluidInput(it)
+                    continue@outer
+                }
+            }
+
+            //Not in the middle of any tile
+            return invalidFluidInput(it)
+        }
+
+        //Validate outputs
+        outer@for(it in fluidOutputs) {
+            for (tile in tiles) {
+                if(tile.minPos.add(2, 0, 2) == it.pos)
+                    continue@outer
+            }
+            validatorCallback.setLastError("multiblock.saline.error.invalid_fluid_output_position", it.pos.x,
+                    it.pos.y, it.pos.z)
+            return false
+        }
 
         return true
     }
