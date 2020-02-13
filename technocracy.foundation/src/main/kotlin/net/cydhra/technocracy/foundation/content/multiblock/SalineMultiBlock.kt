@@ -8,6 +8,7 @@ import net.cydhra.technocracy.foundation.model.multiblock.api.TiledBaseMultiBloc
 import net.cydhra.technocracy.foundation.util.getFluidStack
 import net.minecraft.block.BlockHorizontal
 import net.minecraft.init.Blocks
+import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraft.world.World
 import java.util.function.Predicate
@@ -81,6 +82,41 @@ class SalineMultiBlock(world: World) : TiledBaseMultiBlock(
                                    fluidOutputs: MutableList<TileEntitySalineFluidOutput>,
                                    heatingAgentInputs: MutableList<TileEntitySalineHeatingAgentInput>,
                                    heatingAgentOutputs: MutableList<TileEntitySalineHeatingAgentOutput>): Boolean {
+        if (heatingAgentInputs.isEmpty() && heatingAgentOutputs.isNotEmpty() ||
+                heatingAgentInputs.isNotEmpty() && heatingAgentOutputs.isEmpty()) {
+            validatorCallback.setLastError("multiblock.saline.error.insufficient_heating_ports")
+            return false
+        }
+
+        //Validate heating agent positions (only works for size 5x5!)
+        val heatingAgents: MutableList<TileEntity> = mutableListOf()
+        heatingAgents.addAll(heatingAgentInputs)
+        heatingAgents.addAll(heatingAgentOutputs)
+        outer@ for (it in heatingAgents) {
+            //Input is in the bottom layer of the machine
+            if (it.pos.y != minimumCoord.y) {
+                validatorCallback.setLastError("multiblock.saline.error.invalid_heating_agent_position", it.pos.x,
+                        it.pos.y, it.pos.z)
+                return false
+            }
+
+            //Each possible x position
+            for (x in (minimumCoord.x + 2) until (maximumCoord.x - 1) step 4) {
+                if (x == it.pos.x)
+                    continue@outer
+            }
+            //Each possible z position
+            for (z in (minimumCoord.z + 2) until (maximumCoord.z - 1) step 4) {
+                if (z == it.pos.z)
+                    continue@outer
+            }
+
+            //Not in the middle of any tile
+            validatorCallback.setLastError("multiblock.saline.error.invalid_heating_agent_position", it.pos.x,
+                    it.pos.y, it.pos.z)
+            return false
+        }
+
         fun invalidFluidInput(tile: TileEntitySalineFluidInput): Boolean {
             validatorCallback.setLastError("multiblock.saline.error.invalid_fluid_input_position", tile.pos.x,
                     tile.pos.y, tile.pos.z)
@@ -116,9 +152,9 @@ class SalineMultiBlock(world: World) : TiledBaseMultiBlock(
         }
 
         //Validate outputs
-        outer@for(it in fluidOutputs) {
+        outer@ for (it in fluidOutputs) {
             for (tile in tiles) {
-                if(tile.minPos.add(2, 0, 2) == it.pos)
+                if (tile.minPos.add(2, 0, 2) == it.pos)
                     continue@outer
             }
             validatorCallback.setLastError("multiblock.saline.error.invalid_fluid_output_position", it.pos.x,

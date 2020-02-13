@@ -279,6 +279,8 @@ multiblock.capacitor.error.connection_of_same_electrode_types=Can't complete con
 multiblock.capacitor.error.adjacent_electrode_types=Electrode at %d, %d, %d is invalid because electrodes of the same type can't be adjacent in a row or column.
 multiblock.saline.error.invalid_fluid_input_position=Fluid inputs need to be placed in the upper center of each edge on all four sides of a tile and facing towards the center. (%d, %d, %d)
 multiblock.saline.error.invalid_fluid_output_position=Fluid outputs need to be placed in the bottom center of each tile. (%d, %d, %d)
+multiblock.saline.error.insufficient_heating_ports=The machine needs at least one heating agent output/input or neither of both.
+multiblock.saline.error.invalid_heating_agent_position=Heating agents need to be placed in the bottom center on the outside of a tile. (%d, %d, %d)
 
 tooltips.upgrades.title.class=Upgrade Type
 tooltips.upgrades.title.description=Upgrades
