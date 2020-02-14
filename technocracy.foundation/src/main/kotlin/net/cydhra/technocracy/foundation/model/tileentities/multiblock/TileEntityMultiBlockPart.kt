@@ -5,6 +5,7 @@ import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.client.gui.TCGui
+import net.cydhra.technocracy.foundation.client.gui.TCIcon
 import net.cydhra.technocracy.foundation.client.gui.components.energymeter.DefaultEnergyMeter
 import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.DefaultFluidMeter
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.DefaultProgressBar
@@ -14,6 +15,7 @@ import net.cydhra.technocracy.foundation.client.gui.handler.TCGuiHandler
 import net.cydhra.technocracy.foundation.client.gui.multiblock.BaseMultiblockTab
 import net.cydhra.technocracy.foundation.client.gui.multiblock.MultiblockContainer
 import net.cydhra.technocracy.foundation.client.gui.multiblock.MultiblockSettingsTab
+import net.cydhra.technocracy.foundation.content.items.siliconItem
 import net.cydhra.technocracy.foundation.network.componentsync.guiInfoPacketSubscribers
 import net.cydhra.technocracy.foundation.model.tileentities.api.AbstractRectangularMultiBlockTileEntity
 import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableDelegate
@@ -128,8 +130,7 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
 
     override fun getGui(player: EntityPlayer?): TCGui {
         val gui = TCGui(container = MultiblockContainer(this))
-        gui.registerTab(object : BaseMultiblockTab(this, gui, ResourceLocation("technocracy.foundation",
-                "textures/item/silicon.png")) {
+        gui.registerTab(object : BaseMultiblockTab(this, gui, TCIcon(siliconItem)) {
             override fun init() {
                 var nextOutput = 125
                 var nextInput = 10

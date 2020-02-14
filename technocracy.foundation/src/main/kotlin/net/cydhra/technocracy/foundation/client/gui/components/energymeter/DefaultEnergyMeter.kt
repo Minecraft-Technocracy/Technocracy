@@ -20,7 +20,7 @@ class DefaultEnergyMeter(posX: Int, posY: Int, val component: EnergyStorageTileE
         }
         if (level > 0f) {
             GlStateManager.color(1f, 1f, 1f, 1f)
-            for (i in 0 until (level * 10).toInt()) {
+            for (i in 0 until (level * 10).roundToInt()) {
                 drawModalRectWithCustomSizedTexture(posX + x, posY + (9 - i) * 5 + y, posX + width + x, posY + (9 - i) * 5 + 5 + y, 45f, 0f, 256f, 256f)
             }
         }

@@ -2,18 +2,20 @@ package net.cydhra.technocracy.foundation.client.gui.components.redstonemode
 
 import it.zerono.mods.zerocore.api.multiblock.MultiblockTileEntityBase
 import net.cydhra.technocracy.foundation.client.gui.TCGui
-import net.cydhra.technocracy.foundation.network.PacketHandler
-import net.cydhra.technocracy.foundation.network.componentsync.ClientComponentUpdatePacket
-import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatable
 import net.cydhra.technocracy.foundation.content.tileentities.components.RedstoneModeTileEntityComponent
 import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
+import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatable
+import net.cydhra.technocracy.foundation.network.PacketHandler
+import net.cydhra.technocracy.foundation.network.componentsync.ClientComponentUpdatePacket
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
-import net.minecraft.client.renderer.RenderHelper
-import net.minecraft.init.Items
+import net.minecraft.client.renderer.Tessellator
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats
+import net.minecraft.init.Blocks
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
+import org.lwjgl.opengl.GL11
 
 class DefaultRedstoneModeControl(posX: Int, posY: Int, val component: RedstoneModeTileEntityComponent, val gui: TCGui) : RedstoneModeControl(posX, posY) {
 
@@ -21,7 +23,7 @@ class DefaultRedstoneModeControl(posX: Int, posY: Int, val component: RedstoneMo
         super.draw(x, y, mouseX, mouseY, partialTicks)
         val clr = if (hovered) 0.7f else 1f
         GlStateManager.color(clr, clr, clr, 1f)
-        Minecraft.getMinecraft().renderItem.renderItemAndEffectIntoGUI(ItemStack(Items.REDSTONE), posX + x, posY + y)
+
         Minecraft.getMinecraft().textureManager.bindTexture(TCGui.guiComponents)
         Gui.drawModalRectWithCustomSizedTexture(posX + x, posY + y, component.redstoneMode.ordinal * 16f, 59f, width, height, 256f, 256f)
     }

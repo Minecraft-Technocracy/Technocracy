@@ -5,7 +5,7 @@ import net.cydhra.technocracy.foundation.client.gui.TCTab
 import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
 import net.minecraft.util.ResourceLocation
 
-class MultiblockSettingsTab(parent: TCGui, val controller: TileEntityMultiBlockPart<*>) : TCTab("Settings", parent, icon = ResourceLocation("technocracy.foundation", "textures/item/gear.png")) {
+class MultiblockSettingsTab(parent: TCGui, val controller: TileEntityMultiBlockPart<*>) : TCTab("Settings", parent) {
 
     override fun init() {}
 

@@ -1,9 +1,11 @@
 package net.cydhra.technocracy.foundation.content.tileentities.multiblock.capacitor
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
+import net.cydhra.technocracy.foundation.client.gui.TCIcon
 import net.cydhra.technocracy.foundation.client.gui.components.energymeter.DefaultEnergyMeter
 import net.cydhra.technocracy.foundation.client.gui.components.label.DefaultLabel
 import net.cydhra.technocracy.foundation.client.gui.multiblock.BaseMultiblockTab
+import net.cydhra.technocracy.foundation.content.items.siliconItem
 import net.cydhra.technocracy.foundation.content.multiblock.CapacitorMultiBlock
 import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageTileEntityComponent
 import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
@@ -25,7 +27,7 @@ class TileEntityCapacitorController : TileEntityMultiBlockPart<CapacitorMultiBlo
 
     override fun initGui(gui: TCGui) {
         gui.tabs.clear() // remove main menu
-        gui.registerTab(object : BaseMultiblockTab(this, gui, ResourceLocation("technocracy.foundation", "textures/item/silicon.png")) {
+        gui.registerTab(object : BaseMultiblockTab(this, gui, TCIcon(siliconItem)) {
             override fun init() {
                 (this@TileEntityCapacitorController.multiblockController as BaseMultiBlock).getComponents().forEach { (_, guiComponent) ->
                     when (guiComponent) {

@@ -3,6 +3,7 @@ package net.cydhra.technocracy.astronautics.content.tileentity
 import net.cydhra.technocracy.astronautics.content.entity.EntityRocket
 import net.cydhra.technocracy.foundation.client.gui.TCContainer
 import net.cydhra.technocracy.foundation.client.gui.TCGui
+import net.cydhra.technocracy.foundation.client.gui.TCIcon
 import net.cydhra.technocracy.foundation.client.gui.TCTab
 import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.DefaultFluidMeter
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
@@ -89,8 +90,7 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
     override fun getGui(player: EntityPlayer?): TCGui {
 
         val gui = TCGui(guiHeight = 230, container = TCContainer(1, 1))
-        gui.registerTab(object : TCTab("${getBlockType().localizedName} linked: ${currentRocket != null}", gui, -1,
-                ResourceLocation("technocracy.foundation", "textures/item/gear.png")) {
+        gui.registerTab(object : TCTab("${getBlockType().localizedName} linked: ${currentRocket != null}", gui, -1, TCIcon(this.blockType)) {
 
             override fun init() {
 
@@ -107,8 +107,7 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
             }
         })
 
-        gui.registerTab(object : TCTab("uwu", gui, -1,
-                ResourceLocation("technocracy.foundation", "textures/item/gear.png")) {
+        gui.registerTab(object : TCTab("uwu", gui, -1) {
 
             val ic = Interpolator.InterpolationCycle<Interpolator.PosLook>()
             val gridPolater = Interpolator.InterpolationCycle<Interpolator.InterpolateFloat>()

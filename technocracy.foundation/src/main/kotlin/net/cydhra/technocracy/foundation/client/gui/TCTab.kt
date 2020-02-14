@@ -9,9 +9,7 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.ResourceLocation
 
 abstract class TCTab(val name: String, val parent: TCGui, val tint: Int = -1,
-                     val icon: ResourceLocation? =
-                             ResourceLocation("technocracy.foundation", "textures/item/gear.png")) {
-
+                     val icon: TCIcon = TCIcon(ResourceLocation("technocracy.foundation", "textures/item/gear.png"))) {
 
     val components: ArrayList<TCComponent> = ArrayList()
 

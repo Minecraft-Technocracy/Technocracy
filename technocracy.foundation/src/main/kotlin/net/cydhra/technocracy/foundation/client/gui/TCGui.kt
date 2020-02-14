@@ -194,11 +194,7 @@ TCContainer)
     private fun renderTabCard(x: Int, y: Int, width: Int, height: Int, active: Boolean, tab: TCTab) {
         drawWindow(x, y, width, height, tab.tint and if (active) -1 else inactiveTabTint, true)
 
-        if (tab.icon != null) {
-            Minecraft.getMinecraft().textureManager.bindTexture(tab.icon)
-            GlStateManager.color(1F, 1F, 1F, 1F)
-            drawModalRectWithCustomSizedTexture((x + (width - 16) / 2), (y + (height - 16) / 2 + 2), 0F, 0F, 16, 16, 16F, 16F)
-        }
+        tab.icon.draw((x + (width - 16) / 2), (y + (height - 16) / 2 + 2))
     }
 
     private fun drawTabs() {
