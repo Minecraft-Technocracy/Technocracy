@@ -1,6 +1,8 @@
 package net.cydhra.technocracy.astronautics.content.tileentity
 
+import com.sun.org.apache.xpath.internal.operations.Bool
 import net.cydhra.technocracy.astronautics.content.entity.EntityRocket
+import net.cydhra.technocracy.astronautics.content.fx.ParticleSmoke
 import net.cydhra.technocracy.foundation.client.gui.TCContainer
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.TCIcon
@@ -15,8 +17,12 @@ import net.cydhra.technocracy.foundation.model.tileentities.api.TCTileEntityGuiP
 import net.cydhra.technocracy.foundation.model.tileentities.api.TEInventoryProvider
 import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableTileEntity
 import net.cydhra.technocracy.foundation.util.Interpolator
+import net.cydhra.technocracy.foundation.util.color
 import net.cydhra.technocracy.foundation.util.opengl.BasicShaderProgram
 import net.cydhra.technocracy.foundation.util.opengl.OpenGLBoundingBox
+import net.cydhra.technocracy.foundation.util.opengl.VAO
+import net.cydhra.technocracy.foundation.util.opengl.VBO
+import net.cydhra.technocracy.foundation.util.pos
 import net.cydhra.technocracy.foundation.util.validateAndClear
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.ScaledResolution
@@ -33,12 +39,19 @@ import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.AxisAlignedBB
 import net.minecraft.util.math.MathHelper
 import net.minecraft.util.math.Vec3d
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import org.lwjgl.input.Mouse
+import org.lwjgl.opengl.ARBCullDistance
 import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL15
+import org.lwjgl.opengl.GL31
 import org.lwjgl.util.glu.Project
 import org.lwjgl.util.vector.Vector3f
 import org.lwjgl.util.vector.Vector4f
+import java.nio.FloatBuffer
 import kotlin.math.*
+import kotlin.random.Random
 
 
 class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider, TCTileEntityGuiProvider, DynamicInventoryCapability.CustomItemStackStackLimit {
@@ -82,22 +95,29 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
         return false
     }
 
-    var buffer: Framebuffer? = null
-    var crtBuffer: Framebuffer? = null
-    var depthShader: BasicShaderProgram? = null
-    lateinit var Ufarplane: BasicShaderProgram.ShaderUniform
-    lateinit var UInSize: BasicShaderProgram.ShaderUniform
+    @SideOnly(Side.CLIENT)
+    @Suppress("unused", "PropertyName", "SpellCheckingInspection")
+    companion object {
 
-    lateinit var basicCrtShader: BasicShaderProgram
-    lateinit var Uscalar: BasicShaderProgram.ShaderUniform
-    lateinit var UConvergeX: BasicShaderProgram.ShaderUniform
-    lateinit var UConvergeY: BasicShaderProgram.ShaderUniform
-    lateinit var UhardScan: BasicShaderProgram.ShaderUniform
-    lateinit var Uwarp: BasicShaderProgram.ShaderUniform
-    lateinit var UmaskDark: BasicShaderProgram.ShaderUniform
-    lateinit var UmaskLight: BasicShaderProgram.ShaderUniform
-    lateinit var Usaturation: BasicShaderProgram.ShaderUniform
-    lateinit var UpixelScaler: BasicShaderProgram.ShaderUniform
+        lateinit var vaoStars: VAO
+        var generatedStars = false
+
+        var buffer: Framebuffer? = null
+        var crtBuffer: Framebuffer? = null
+        var depthShader: BasicShaderProgram? = null
+        lateinit var Ufarplane: BasicShaderProgram.ShaderUniform
+
+        lateinit var basicCrtShader: BasicShaderProgram
+        lateinit var Uscalar: BasicShaderProgram.ShaderUniform
+        lateinit var UConvergeX: BasicShaderProgram.ShaderUniform
+        lateinit var UConvergeY: BasicShaderProgram.ShaderUniform
+        lateinit var UhardScan: BasicShaderProgram.ShaderUniform
+        lateinit var Uwarp: BasicShaderProgram.ShaderUniform
+        lateinit var UmaskDark: BasicShaderProgram.ShaderUniform
+        lateinit var UmaskLight: BasicShaderProgram.ShaderUniform
+        lateinit var Usaturation: BasicShaderProgram.ShaderUniform
+        lateinit var UpixelScaler: BasicShaderProgram.ShaderUniform
+    }
 
 
     override fun getGui(player: EntityPlayer?): TCGui {
@@ -128,9 +148,9 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
 
             var counter = 1.0
 
-            val pointsSmall = mutableListOf<Vec3d>()
-            val pointsMedium = mutableListOf<Vec3d>()
-            val pointsBig = mutableListOf<Vec3d>()
+            //val pointsSmall = mutableListOf<Vec3d>()
+            //val pointsMedium = mutableListOf<Vec3d>()
+            //val pointsBig = mutableListOf<Vec3d>()
 
             override fun getSizeX(): Int {
                 val scaledResolution = ScaledResolution(Minecraft.getMinecraft())
@@ -174,24 +194,22 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
                 if (depthShader == null) {
                     basicCrtShader = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shader/default.vsh"), ResourceLocation("technocracy.astronautics", "shader/crt.fsh"))
                     basicCrtShader.start()
-                    UConvergeX = basicCrtShader.getUniform("ConvergeX", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_3).uploadUniform(-1.0f, 0.0f, 0.5f)
-                    UConvergeY = basicCrtShader.getUniform("ConvergeY", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_3).uploadUniform(0.0f, -1.0f, 0.5f)
-                    UhardScan = basicCrtShader.getUniform("hardScan", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1).uploadUniform(-3.0f)
-                    Uwarp = basicCrtShader.getUniform("warp", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_2).uploadUniform(1.0f / 16.0f, 1.0f / 16.0f)
-                    UmaskDark = basicCrtShader.getUniform("maskDark", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1).uploadUniform(1f)
-                    UmaskLight = basicCrtShader.getUniform("maskLight", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1).uploadUniform(1f)
-                    Uscalar = basicCrtShader.getUniform("scalar", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_2).uploadUniform(6f, 6f)
-                    Usaturation = basicCrtShader.getUniform("saturation", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1).uploadUniform(1.8f)
-                    UpixelScaler = basicCrtShader.getUniform("pixelScaler", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1).uploadUniform(2f)
+                    //UConvergeX = basicCrtShader.getUniform("ConvergeX", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_3).uploadUniform(-1.0f, 0.0f, 0.5f)
+                    //UConvergeY = basicCrtShader.getUniform("ConvergeY", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_3).uploadUniform(0.0f, -1.0f, 0.5f)
+                    //UhardScan = basicCrtShader.getUniform("hardScan", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1).uploadUniform(-3.0f)
+                    //Uwarp = basicCrtShader.getUniform("warp", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_2).uploadUniform(1.0f / 16.0f, 1.0f / 16.0f)
+                    //UmaskDark = basicCrtShader.getUniform("maskDark", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1).uploadUniform(1f)
+                    //UmaskLight = basicCrtShader.getUniform("maskLight", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1).uploadUniform(1f)
+                    //Uscalar = basicCrtShader.getUniform("scalar", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_2).uploadUniform(6f, 6f)
+                    //Usaturation = basicCrtShader.getUniform("saturation", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1).uploadUniform(1.8f)
+                    //UpixelScaler = basicCrtShader.getUniform("pixelScaler", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1).uploadUniform(2f)
                     basicCrtShader.getUniform("sampler", BasicShaderProgram.ShaderUniform.UniformType.SAMPLER).uploadUniform(0)
+                    basicCrtShader.updateUniforms()
                     basicCrtShader.stop()
 
                     depthShader = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shader/logdepth.vsh"), ResourceLocation("technocracy.astronautics", "shader/logdepth.fsh"))
                     depthShader!!.start()
                     Ufarplane = depthShader!!.getUniform("farplane", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1)
-                    UInSize = depthShader!!.getUniform("InSize", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_2)
-                } else {
-                    depthShader!!.start()
                 }
 
                 val last = buffer
@@ -210,29 +228,22 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
 
                 setupCameraTransform(playerPos)
 
-
-                if (pointsSmall.isEmpty()) {
-                    val r = kotlin.random.Random(12147)
+                if (!generatedStars) {
+                    generatedStars = true
+                    val r = Random(12147)
                     //size of farplane for now
                     val xyz = 800_000f
 
                     val perList = 2000 / 3
 
-                    for (i in 0..perList) {
-                        val yaw = Math.toRadians(MathHelper.wrapDegrees(r.nextInt()).toDouble())
-                        val pitch = Math.toRadians(MathHelper.wrapDegrees(r.nextInt()).toDouble())
-                        pointsSmall.add(Vec3d(cos(pitch) * sin(yaw) * xyz, sin(pitch) * xyz, cos(pitch) * cos(yaw) * xyz))
-                    }
-                    for (i in 0..perList) {
-                        val yaw = Math.toRadians(MathHelper.wrapDegrees(r.nextInt()).toDouble())
-                        val pitch = Math.toRadians(MathHelper.wrapDegrees(r.nextInt()).toDouble())
-                        pointsMedium.add(Vec3d(cos(pitch) * sin(yaw) * xyz, sin(pitch) * xyz, cos(pitch) * cos(yaw) * xyz))
-                    }
-                    for (i in 0..(perList * 0.5).toInt()) {
-                        val yaw = Math.toRadians(MathHelper.wrapDegrees(r.nextInt()).toDouble())
-                        val pitch = Math.toRadians(MathHelper.wrapDegrees(r.nextInt()).toDouble())
-                        pointsBig.add(Vec3d(cos(pitch) * sin(yaw) * xyz, sin(pitch) * xyz, cos(pitch) * cos(yaw) * xyz))
-                    }
+                    val buffer = FloatBuffer.allocate(perList * 6 + ((perList * 0.5).toInt() * 3))
+
+                    generateStar(buffer, xyz, r, perList)
+                    generateStar(buffer, xyz, r, perList)
+                    generateStar(buffer, xyz, r, (perList * 0.5).toInt())
+                    buffer.flip()
+
+                    vaoStars = VAO().linkVBO(VBO(VBO.VBOUsage.STATIC_DRAW, buffer.array())).addFloatAttribute(3)
                 }
 
                 GlStateManager.enableDepth()
@@ -243,31 +254,30 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
                 GlStateManager.shadeModel(7425)
                 GlStateManager.glLineWidth(2f)
 
-                GL11.glEnable(GL11.GL_POINT_SMOOTH)
-                GL11.glPointSize(1f)
 
                 //apply rotation
                 GlStateManager.rotate(playerPos.look.z, 0.0f, 0.0f, 1.0f)
                 GlStateManager.rotate(playerPos.look.y, 1.0f, 0.0f, 0.0f)
                 GlStateManager.rotate(playerPos.look.x, 0.0f, 1.0f, 0.0f)
 
-                GL11.glBegin(GL11.GL_POINTS)
-                for (p in pointsSmall) {
-                    GL11.glVertex3d(p.x, p.y, p.z)
-                }
-                GL11.glEnd()
+
+                val perList = 2000 / 3
+
+                val max = perList * 2 + (perList * 0.5).toInt()
+
+
+                GL11.glEnable(GL11.GL_POINT_SMOOTH)
+                GL11.glPointSize(1f)
+                vaoStars.bindVAO()
+                GL31.glDrawArraysInstanced(GL11.GL_POINTS, 0, max, perList)
                 GL11.glPointSize(1.5f)
-                GL11.glBegin(GL11.GL_POINTS)
-                for (p in pointsMedium) {
-                    GL11.glVertex3d(p.x, p.y, p.z)
-                }
-                GL11.glEnd()
+                GL31.glDrawArraysInstanced(GL11.GL_POINTS, perList, max, perList)
                 GL11.glPointSize(4f)
-                GL11.glBegin(GL11.GL_POINTS)
-                for (p in pointsBig) {
-                    GL11.glVertex3d(p.x, p.y, p.z)
-                }
-                GL11.glEnd()
+                GL31.glDrawArraysInstanced(GL11.GL_POINTS, perList * 2, max, (perList * 0.5).toInt())
+                vaoStars.unbindVAO()
+
+                depthShader!!.start()
+
 
                 //remove rotation
                 GlStateManager.rotate(-playerPos.look.x, 0.0f, 1.0f, 0.0f)
@@ -317,15 +327,15 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
                 mc.entityRenderer.setupOverlayRendering()
 
                 basicCrtShader.start()
-                Uscalar.uploadUniform(12f, 12f)
-                UmaskDark.uploadUniform(0.5f)
-                UmaskLight.uploadUniform(1f)
-                UhardScan.uploadUniform(-2f)
-                Usaturation.uploadUniform(4f)
-                UpixelScaler.uploadUniform(1.5f)
-                UConvergeX.uploadUniform(-1f,0f,1f)
-                UConvergeY.uploadUniform(0f,-1f,1f)
-                basicCrtShader.updateUniforms()
+                //Uscalar.uploadUniform(12f, 12f)
+                //UmaskDark.uploadUniform(0.5f)
+                //UmaskLight.uploadUniform(1f)
+                //UhardScan.uploadUniform(-2f)
+                //Usaturation.uploadUniform(4f)
+                //UpixelScaler.uploadUniform(1.5f)
+                //UConvergeX.uploadUniform(-1f,0f,1f)
+                //UConvergeY.uploadUniform(0f,-1f,1f)
+                //basicCrtShader.updateUniforms()
 
                 GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f)
                 GlStateManager.enableTexture2D()
@@ -354,26 +364,39 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
                 GlStateManager.popMatrix()
             }
 
+            fun generateStar(buffer: FloatBuffer, distance: Float, r: Random, amount: Int) {
+                for (i in 0 until amount) {
+                    val yaw = Math.toRadians(MathHelper.wrapDegrees(r.nextInt()).toDouble())
+                    val pitch = Math.toRadians(MathHelper.wrapDegrees(r.nextInt()).toDouble())
+                    buffer.put((cos(pitch) * sin(yaw) * distance).toFloat())
+                    buffer.put((sin(pitch) * distance).toFloat())
+                    buffer.put((cos(pitch) * cos(yaw) * distance).toFloat())
+                }
+            }
+
             fun drawTopBottom(factor: Float, size: Float, color: Vector4f) {
                 val test = if (factor == 0f) 1 else (size * 2 / factor).roundToInt()
                 val sizei = size.toInt()
                 var height = size
 
-                GL11.glBegin(GL11.GL_LINES)
+                val tes = Tessellator.getInstance()
+                val buf = tes.buffer
+                buf.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR)
                 for (unused in 0..1) {
                     var b = true
                     for (i in -sizei..sizei) {
                         if (i != -sizei && i != sizei && i % test != 0) continue
-                        GlStateManager.color(color.x, color.y, color.z, if (!b) color.w else 1f)
+
+                        buf.pos(i.toFloat(), height, -size).color(color, if (!b) color.w else 1f).endVertex()
+                        buf.pos(i.toFloat(), height, size).color(color, if (!b) color.w else 1f).endVertex()
+                        buf.pos(-size, height, i.toFloat()).color(color, if (!b) color.w else 1f).endVertex()
+                        buf.pos(size, height, i.toFloat()).color(color, if (!b) color.w else 1f).endVertex()
+
                         b = !b
-                        GL11.glVertex3f(i.toFloat(), height, -size)
-                        GL11.glVertex3f(i.toFloat(), height, size)
-                        GL11.glVertex3f(-size, height, i.toFloat())
-                        GL11.glVertex3f(size, height, i.toFloat())
                     }
                     height *= -1
                 }
-                GL11.glEnd()
+                tes.draw()
             }
 
             fun drawSide(factor: Float, size: Float, color: Vector4f) {
@@ -381,21 +404,22 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
                 val sizei = size.toInt()
                 var height = size
 
-                GL11.glBegin(GL11.GL_LINES)
+                val tes = Tessellator.getInstance()
+                val buf = tes.buffer
+                buf.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR)
                 for (unused in 0..1) {
                     var b = true
                     for (i in -sizei..sizei) {
                         if (i != -sizei && i != sizei && i % test != 0) continue
-                        GlStateManager.color(color.x, color.y, color.z, if (!b) color.w else 1f)
+                        buf.pos(height, i.toFloat(), -size).color(color, if (!b) color.w else 1f).endVertex()
+                        buf.pos(height, i.toFloat(), size).color(color, if (!b) color.w else 1f).endVertex()
+                        buf.pos(height, -size, i.toFloat()).color(color, if (!b) color.w else 1f).endVertex()
+                        buf.pos(height, size, i.toFloat()).color(color, if (!b) color.w else 1f).endVertex()
                         b = !b
-                        GL11.glVertex3f(height, i.toFloat(), -size)
-                        GL11.glVertex3f(height, i.toFloat(), size)
-                        GL11.glVertex3f(height, -size, i.toFloat())
-                        GL11.glVertex3f(height, size, i.toFloat())
                     }
                     height *= -1
                 }
-                GL11.glEnd()
+                tes.draw()
             }
 
             fun drawFace(factor: Float, size: Float, color: Vector4f) {
@@ -403,21 +427,22 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
                 val sizei = size.toInt()
                 var height = size
 
-                GL11.glBegin(GL11.GL_LINES)
+                val tes = Tessellator.getInstance()
+                val buf = tes.buffer
+                buf.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR)
                 for (unused in 0..1) {
                     var b = true
                     for (i in -sizei..sizei) {
                         if (i != -sizei && i != sizei && i % test != 0) continue
-                        GlStateManager.color(color.x, color.y, color.z, if (!b) color.w else 1f)
+                        buf.pos(i.toFloat(), -size, height).color(color, if (!b) color.w else 1f).endVertex()
+                        buf.pos(i.toFloat(), size, height).color(color, if (!b) color.w else 1f).endVertex()
+                        buf.pos(-size, i.toFloat(), height).color(color, if (!b) color.w else 1f).endVertex()
+                        buf.pos(size, i.toFloat(), height).color(color, if (!b) color.w else 1f).endVertex()
                         b = !b
-                        GL11.glVertex3f(i.toFloat(), -size, height)
-                        GL11.glVertex3f(i.toFloat(), size, height)
-                        GL11.glVertex3f(-size, i.toFloat(), height)
-                        GL11.glVertex3f(size, i.toFloat(), height)
                     }
                     height *= -1
                 }
-                GL11.glEnd()
+                tes.draw()
             }
 
             fun drawCube(size: Int, r: Float, g: Float, b: Float, posCube: Vector3f, posPlayer: Vector3f, tilt: Vector3f = Vector3f(0f, 0f, 0f), hasRings: Boolean = false) {
@@ -523,7 +548,6 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
 
 
                 Ufarplane.uploadUniform(farPlaneDistance)
-                UInSize.uploadUniform(1f, 1f)
                 depthShader!!.updateUniforms()
             }
 

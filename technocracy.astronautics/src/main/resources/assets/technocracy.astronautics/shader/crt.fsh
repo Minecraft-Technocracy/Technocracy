@@ -1,16 +1,16 @@
 #version 130
 
-uniform vec2 scalar;
+uniform vec2 scalar = vec2(12.0, 12.0);
 uniform sampler2D sampler;
 
 //color offset rgb
-uniform vec3 ConvergeX = vec3(-1.0, 0.0, 2.0);
-uniform vec3 ConvergeY = vec3(0.0, -1.0, 2.0);
+uniform vec3 ConvergeX = vec3(-1.0,0.0,1.0);
+uniform vec3 ConvergeY = vec3(0.0, -1.0, 1.0);
 
 // Hardness of scanline.
 //  -8.0 = soft
 // -16.0 = medium
-uniform float hardScan=-3.0;
+uniform float hardScan=-2.0;
 
 // Display warp.
 // 0.0 = none
@@ -18,12 +18,12 @@ uniform float hardScan=-3.0;
 uniform vec2 warp=vec2(1.0/16.0, 1.0/16.0);
 
 // Amount of shadow mask.
-uniform float maskDark=1.0;
+uniform float maskDark=0.5;
 uniform float maskLight=1.0;
-uniform float pixelScaler=1.0;
+uniform float pixelScaler=1.5;
 
 //saturationboost
-uniform float saturation=1.8;
+uniform float saturation=4.0;
 
 vec2 resolution = textureSize(sampler, 0);
 vec2 texel = 1.0 / resolution;
@@ -35,24 +35,6 @@ out vec4 FragColor;
 
 //------------------------------------------------------------------------
 
-// sRGB to Linear.
-// Assuing using sRGB typed textures this should not be needed.
-float ToLinear1(float c){
-    return (c<=0.04045)?c/12.92:pow((c+0.055)/1.055, 2.4);
-}
-vec3 ToLinear(vec3 c){
-    return vec3(ToLinear1(c.r), ToLinear1(c.g), ToLinear1(c.b));
-}
-
-// Linear to sRGB.
-// Assuing using sRGB typed textures this should not be needed.
-float ToSrgb1(float c){
-    return (c<0.0031308?c*12.92:1.055*pow(c, 0.41666)-0.055);
-}
-vec3 ToSrgb(vec3 c){
-    return vec3(ToSrgb1(c.r), ToSrgb1(c.g), ToSrgb1(c.b));
-}
-
 vec3 colorCorrection(vec3 color) {
     float Luma = dot(color, vec3(0.3, 0.59, 0.11));
     vec3 Chroma = color - Luma;
@@ -61,14 +43,11 @@ vec3 colorCorrection(vec3 color) {
 
 //apply color deconverge and color correction
 vec3 deconverge(vec2 pos) {
-    vec3 RadialConvergeX = vec3(1.0);
-    vec3 RadialConvergeY = vec3(1.0);
+    vec3 CoordX = vec3(pos.x);
+    vec3 CoordY = vec3(pos.y);
 
-    vec3 CoordX = pos.x * RadialConvergeX;
-    vec3 CoordY = pos.y * RadialConvergeY;
-
-    CoordX += ConvergeX * texel.x - (RadialConvergeX - 1.0) * 0.5;
-    CoordY += ConvergeY * texel.y - (RadialConvergeY - 1.0) * 0.5;
+    CoordX = ConvergeX * texel.x + CoordX;
+    CoordY = ConvergeY * texel.y + CoordY;
 
     float r   = texture(sampler, vec2(CoordX.x, CoordY.x), -16.0).r;
     float g = texture(sampler, vec2(CoordX.y, CoordY.y), -16.0).g;
@@ -80,11 +59,15 @@ vec3 deconverge(vec2 pos) {
 
 // Nearest emulated sample given floating point position and texel offset.
 // Also zero's off screen.
-vec4 Fetch(vec2 pos){
+vec4 Fetch(vec2 pos) {
     pos=floor(pos*resolution)/resolution;
-    if (max(abs(pos.x-0.5), abs(pos.y-0.5))>0.5)return vec4(0.0, 0.0, 0.0, 0.0);
+
+
+    if (any(greaterThan(abs(pos - 0.5), vec2(0.5))))
+    return vec4(0.0);
+
     //return vec4(ToLinear(texture(sampler, pos.xy, -16.0).rgb), 1.0);
-    return vec4(ToLinear(deconverge(pos)), 1.0);
+    return vec4((deconverge(pos)), 1.0);
 }
 
 // Distance in emulated pixels to nearest texel.
@@ -112,8 +95,9 @@ vec4 Tri(vec2 pos){
 // Distortion of scanlines, and end of screen alpha.
 vec2 Warp(vec2 pos){
     pos=pos*2.0-1.0;
-    pos*=vec2(1.0+(pos.y*pos.y)*warp.x, 1.0+(pos.x*pos.x)*warp.y);
-    return pos*0.5+0.5;
+    return pos * ((pos.yx * pos.yx * warp) + 1.0) * 0.5 + 0.5;
+    //pos*=vec2(1.0+(pos.y*pos.y)*warp.x, 1.0+(pos.x*pos.x)*warp.y);
+    //return pos*0.5+0.5;
 }
 
 // Shadow mask.
@@ -131,10 +115,10 @@ vec3 Mask(vec2 pos){
 void main(){
     vec2 pos=Warp(FragCoord);
 
-    vec4 colorSample = Fetch(pos) ;
+    vec4 colorSample = Fetch(pos);
 
     FragColor=vec4(colorSample.rgb * Scan(pos) * Mask(FragCoord * scaledPixelResolution), colorSample.a);
 
     //fragColor = texture(sampler, pos);
-    FragColor.rgb=ToSrgb(FragColor.rgb);
+    FragColor.rgb=(FragColor.rgb);
 }
