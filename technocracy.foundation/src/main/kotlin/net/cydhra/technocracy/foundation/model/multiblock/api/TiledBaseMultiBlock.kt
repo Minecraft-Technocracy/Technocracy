@@ -20,7 +20,7 @@ import java.util.function.Predicate
  * @param sizeY The height of each tile
  */
 abstract class TiledBaseMultiBlock(
-        frameBlockWhitelist: Predicate<IBlockState>?,
+        frameBlockWhitelist: Predicate<IBlockState>,
         sideBlockWhitelist: Predicate<IBlockState>?,
         topBlockWhitelist: Predicate<IBlockState>?,
         bottomBlockWhitelist: Predicate<IBlockState>,

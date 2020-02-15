@@ -3,6 +3,8 @@ package net.cydhra.technocracy.foundation.content.multiblock
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import net.cydhra.technocracy.foundation.content.blocks.*
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.saline.*
+import net.cydhra.technocracy.foundation.data.crafting.IMachineRecipe
+import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.model.components.IComponent
 import net.cydhra.technocracy.foundation.model.multiblock.api.TiledBaseMultiBlock
 import net.cydhra.technocracy.foundation.util.getFluidStack
@@ -10,6 +12,7 @@ import net.minecraft.block.BlockHorizontal
 import net.minecraft.init.Blocks
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
+import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import java.util.function.Predicate
 
@@ -39,6 +42,12 @@ class SalineMultiBlock(world: World) : TiledBaseMultiBlock(
 ) {
 
     var controllerTileEntity: TileEntitySalineController? = null
+
+    private val recipes: Collection<IMachineRecipe> by lazy {
+        (RecipeManager.getMachineRecipesByType(RecipeManager.RecipeType.SALINE) ?: emptyList())
+    }
+
+    private var useHeat = false
 
     override fun isMachineWhole(validatorCallback: IMultiblockValidator): Boolean {
         if (!super.isMachineWhole(validatorCallback)) return false
@@ -117,6 +126,25 @@ class SalineMultiBlock(world: World) : TiledBaseMultiBlock(
             return false
         }
 
+        //Validate floor if heating is enabled
+        if(heatingAgents.isNotEmpty()) {
+            tiles.forEach {
+                //Loop through 3x3 center
+                for(x in (it.minPos.x + 1)..(it.minPos.x + 3)) {
+                    for(z in (it.minPos.z + 1)..(it.minPos.z + 3)) {
+                        //Ignore center
+                        if(x == it.minPos.x + 2 && z == it.minPos.z + 2)
+                            continue
+                        if(WORLD.getBlockState(BlockPos(x, it.minPos.y, z)).block != salineHeatedWallBlock) {
+                            validatorCallback.setLastError("multiblock.saline.error.missing_heated_wall", x, it.minPos.y, z)
+                            return false
+                        }
+                    }
+                }
+            }
+        }
+
+        //Bad try to shorten the code
         fun invalidFluidInput(tile: TileEntitySalineFluidInput): Boolean {
             validatorCallback.setLastError("multiblock.saline.error.invalid_fluid_input_position", tile.pos.x,
                     tile.pos.y, tile.pos.z)
@@ -161,6 +189,10 @@ class SalineMultiBlock(world: World) : TiledBaseMultiBlock(
                     it.pos.y, it.pos.z)
             return false
         }
+
+        //If this is true then everything regarding heat has been validated
+        if(heatingAgents.isNotEmpty())
+            useHeat = true
 
         return true
     }

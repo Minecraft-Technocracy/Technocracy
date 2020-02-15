@@ -281,6 +281,7 @@ multiblock.saline.error.invalid_fluid_input_position=Fluid inputs need to be pla
 multiblock.saline.error.invalid_fluid_output_position=Fluid outputs need to be placed in the bottom center of each tile. (%d, %d, %d)
 multiblock.saline.error.insufficient_heating_ports=The machine needs at least one heating agent output/input or neither of both.
 multiblock.saline.error.invalid_heating_agent_position=Heating agents need to be placed in the bottom center on the outside of a tile. (%d, %d, %d)
+multiblock.saline.error.missing_heated_wall=The machine requires a floor with integrated heat pipes to be able to use heat correctly. (%d, %d, %d)
 
 tooltips.upgrades.title.class=Upgrade Type
 tooltips.upgrades.title.description=Upgrades
