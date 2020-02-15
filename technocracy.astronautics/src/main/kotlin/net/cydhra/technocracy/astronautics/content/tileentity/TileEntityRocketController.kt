@@ -83,9 +83,22 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
     }
 
     var buffer: Framebuffer? = null
+    var crtBuffer: Framebuffer? = null
     var depthShader: BasicShaderProgram? = null
     lateinit var Ufarplane: BasicShaderProgram.ShaderUniform
     lateinit var UInSize: BasicShaderProgram.ShaderUniform
+
+    lateinit var basicCrtShader: BasicShaderProgram
+    lateinit var Uscalar: BasicShaderProgram.ShaderUniform
+    lateinit var UConvergeX: BasicShaderProgram.ShaderUniform
+    lateinit var UConvergeY: BasicShaderProgram.ShaderUniform
+    lateinit var UhardScan: BasicShaderProgram.ShaderUniform
+    lateinit var Uwarp: BasicShaderProgram.ShaderUniform
+    lateinit var UmaskDark: BasicShaderProgram.ShaderUniform
+    lateinit var UmaskLight: BasicShaderProgram.ShaderUniform
+    lateinit var Usaturation: BasicShaderProgram.ShaderUniform
+    lateinit var UpixelScaler: BasicShaderProgram.ShaderUniform
+
 
     override fun getGui(player: EntityPlayer?): TCGui {
 
@@ -159,18 +172,32 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
                 val tessBuff = tess.buffer
 
                 if (depthShader == null) {
+                    basicCrtShader = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shader/default.vsh"), ResourceLocation("technocracy.astronautics", "shader/crt.fsh"))
+                    basicCrtShader.start()
+                    UConvergeX = basicCrtShader.getUniform("ConvergeX", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_3).uploadUniform(-1.0f, 0.0f, 0.5f)
+                    UConvergeY = basicCrtShader.getUniform("ConvergeY", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_3).uploadUniform(0.0f, -1.0f, 0.5f)
+                    UhardScan = basicCrtShader.getUniform("hardScan", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1).uploadUniform(-3.0f)
+                    Uwarp = basicCrtShader.getUniform("warp", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_2).uploadUniform(1.0f / 16.0f, 1.0f / 16.0f)
+                    UmaskDark = basicCrtShader.getUniform("maskDark", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1).uploadUniform(1f)
+                    UmaskLight = basicCrtShader.getUniform("maskLight", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1).uploadUniform(1f)
+                    Uscalar = basicCrtShader.getUniform("scalar", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_2).uploadUniform(6f, 6f)
+                    Usaturation = basicCrtShader.getUniform("saturation", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1).uploadUniform(1.8f)
+                    UpixelScaler = basicCrtShader.getUniform("pixelScaler", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1).uploadUniform(2f)
+                    basicCrtShader.getUniform("sampler", BasicShaderProgram.ShaderUniform.UniformType.SAMPLER).uploadUniform(0)
+                    basicCrtShader.stop()
+
                     depthShader = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shader/logdepth.vsh"), ResourceLocation("technocracy.astronautics", "shader/logdepth.fsh"))
                     depthShader!!.start()
                     Ufarplane = depthShader!!.getUniform("farplane", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1)
                     UInSize = depthShader!!.getUniform("InSize", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_2)
-                    depthShader!!.getUniform("farplane", BasicShaderProgram.ShaderUniform.UniformType.SAMPLER).uploadUniform(0)
                 } else {
                     depthShader!!.start()
                 }
 
                 val last = buffer
+                crtBuffer = crtBuffer.validateAndClear()
                 buffer = buffer.validateAndClear()
-                buffer?.setFramebufferColor(0.05f, 0.05f, 0.05f, 0f)
+                buffer?.setFramebufferColor(0.12f, 0.12f, 0.12f, 0f)
 
                 if (crtShader == null || last != buffer) {
                     crtShader?.deleteShaderGroup()
@@ -183,9 +210,9 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
 
                 setupCameraTransform(playerPos)
 
-                val r = kotlin.random.Random(12147)
 
                 if (pointsSmall.isEmpty()) {
+                    val r = kotlin.random.Random(12147)
                     //size of farplane for now
                     val xyz = 800_000f
 
@@ -289,10 +316,28 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
 
                 mc.entityRenderer.setupOverlayRendering()
 
-                crtShader!!.render(partialTicks)
-                buffer?.bindFramebufferTexture()
+                basicCrtShader.start()
+                Uscalar.uploadUniform(12f, 12f)
+                UmaskDark.uploadUniform(0.5f)
+                UmaskLight.uploadUniform(1f)
+                UhardScan.uploadUniform(-2f)
+                Usaturation.uploadUniform(4f)
+                UpixelScaler.uploadUniform(1.5f)
+                UConvergeX.uploadUniform(-1f,0f,1f)
+                UConvergeY.uploadUniform(0f,-1f,1f)
+                basicCrtShader.updateUniforms()
 
-                mc.framebuffer.bindFramebuffer(false)
+                GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f)
+                GlStateManager.enableTexture2D()
+                GlStateManager.color(1f, 1f, 1f, 1f)
+                GlStateManager.disableAlpha()
+                GlStateManager.enableBlend()
+                GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO)
+
+                //crtShader!!.render(partialTicks)
+                buffer?.bindFramebufferTexture()
+                mc.framebuffer.bindFramebuffer(true)
+                //crtBuffer?.bindFramebuffer(false)
 
                 GlStateManager.translate(sW / 1.5 / 4.0 + 1, sH / 1.5 / 4.0 + 1, 0.0)
                 GlStateManager.enableTexture2D()
@@ -302,6 +347,9 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
                 tessBuff.pos(sW / 1.5, sH / 1.5, 1.0).tex(1.0, 0.0).endVertex()
                 tessBuff.pos(sW / 1.5, 0.0, 0.0).tex(1.0, 1.0).endVertex()
                 tess.draw()
+
+                basicCrtShader.stop()
+
 
                 GlStateManager.popMatrix()
             }
@@ -391,7 +439,7 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
 
                 //render smaller inner cube used for depth clipping
                 GlStateManager.colorMask(true, true, true, true)
-                GlStateManager.color(0.1f * r, 0.1f * g, 0.1f * b, 1.0f)
+                GlStateManager.color(0.4f * r, 0.4f * g, 0.4f * b, 1.0f)
 
                 val offset = 0.1
                 var bb = AxisAlignedBB(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
