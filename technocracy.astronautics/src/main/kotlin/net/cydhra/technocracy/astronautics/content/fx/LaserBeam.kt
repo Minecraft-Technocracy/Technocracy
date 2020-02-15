@@ -80,7 +80,6 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
         lateinit var pingPong: MultiTargetFBO
 
         lateinit var horizontal: BasicShaderProgram.ShaderUniform
-        lateinit var expand: BasicShaderProgram.ShaderUniform
         lateinit var expandFaktor: BasicShaderProgram.ShaderUniform
         lateinit var combines: BasicShaderProgram.ShaderUniform
         lateinit var gamma: BasicShaderProgram.ShaderUniform
@@ -266,12 +265,12 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
 
             if (gaus == null) {
 
-                kawase = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shader/gaus.vsh"), ResourceLocation("technocracy.astronautics", "shader/kawase.fsh"))
+                kawase = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shader/default.vsh"), ResourceLocation("technocracy.astronautics", "shader/kawase.fsh"))
                 kawase.start()
                 u_xyPixelSize_zIteration = kawase.getUniform("u_xyPixelSize_zIteration", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_3)
                 kawase.stop()
 
-                blend = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shader/gaus.vsh"), ResourceLocation("technocracy.astronautics", "shader/blend.fsh"))
+                blend = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shader/default.vsh"), ResourceLocation("technocracy.astronautics", "shader/blend.fsh"))
                 blend.start()
                 combines = blend.getUniform("combines", BasicShaderProgram.ShaderUniform.UniformType.INT_1)
                 gamma = blend.getUniform("gamma", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1)
@@ -279,13 +278,13 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
                 blend.getUniform("bloomBlur", BasicShaderProgram.ShaderUniform.UniformType.SAMPLER).uploadUniform(2)
                 blend.stop()
 
-                val gaus = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shader/gaus.vsh"), ResourceLocation("technocracy.astronautics", "shader/gaus.fsh"))
+                val gaus = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shader/default.vsh"), ResourceLocation("technocracy.astronautics", "shader/gaus.fsh"))
                 gaus.start()
                 horizontal = gaus.getUniform("horizontal", BasicShaderProgram.ShaderUniform.UniformType.INT_1)
-                expand = gaus.getUniform("expand", BasicShaderProgram.ShaderUniform.UniformType.INT_1)
-                expandFaktor = gaus.getUniform("expandFaktor", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1)
+                expandFaktor = gaus.getUniform("expandFaktor", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1).uploadUniform(1f)
                 this.gaus = gaus
                 pingPong = MultiTargetFBO(sW.toInt(), sH.toInt(), false).createFramebuffer()
+
                 kawase.start()
             } else {
                 pingPong = pingPong.validate(sW.toInt(), sH.toInt())

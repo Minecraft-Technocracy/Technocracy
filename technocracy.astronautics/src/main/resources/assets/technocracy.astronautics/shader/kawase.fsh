@@ -1,5 +1,6 @@
 #version 130
 out vec4 FragColor;
+in vec2 FragCoord;
 
 uniform sampler2D image;
 uniform vec3 u_xyPixelSize_zIteration;
@@ -44,7 +45,7 @@ vec3 KawaseBlurFilter(sampler2D tex, vec2 texCoord, vec2 pixelSize, float iterat
 void main()
 {
     //vec3 col = texture(uTex0, vTexCoord).xyz;
-    FragColor.xyz = KawaseBlurFilter(image, gl_TexCoord[0].st, u_xyPixelSize_zIteration.xy, u_xyPixelSize_zIteration.z);
+    FragColor.xyz = KawaseBlurFilter(image, FragCoord, u_xyPixelSize_zIteration.xy, u_xyPixelSize_zIteration.z);
 
     // double-Kawase is also an option, but loses some quality
     //FragColor.xyz += KawaseBlurFilter(image, gl_TexCoord[0].st, u_xyPixelSize_zIteration.xy, u_xyPixelSize_zIteration.z*2.0 + 1.0);

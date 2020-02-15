@@ -1,5 +1,6 @@
 #version 130
 out vec4 FragColor;
+in vec2 FragCoord;
 
 uniform sampler2D scene;
 uniform sampler2D bloomBlur;
@@ -9,8 +10,8 @@ uniform float gamma;
 void main()
 {
     //const float gamma = 2.2;
-    vec3 hdrColor = texture(scene, gl_TexCoord[0].st).rgb;
-    vec3 bloomColor = texture(bloomBlur, gl_TexCoord[0].st).rgb;
+    vec3 hdrColor = texture(scene, FragCoord).rgb;
+    vec3 bloomColor = texture(bloomBlur, FragCoord).rgb;
     vec3 result = pow(bloomColor, vec3(1.0 / gamma));
     //result = pow(result, vec3(1.0 / gamma));
     for (int i = 0; i < combines; i++)

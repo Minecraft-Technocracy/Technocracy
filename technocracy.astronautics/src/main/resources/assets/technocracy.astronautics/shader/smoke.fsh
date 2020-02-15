@@ -1,8 +1,8 @@
 #version 150
 
-in vec2 textureCoords;
+in vec2 FragCoord;
 in vec4 mt_ct_rt_rot;
-out vec4 fragColor;
+out vec4 FragColor;
 
 uniform sampler2D smoke;
 uniform sampler2D noise;
@@ -25,23 +25,23 @@ void main(void){
     float renderTime = mt_ct_rt_rot.z;
     float rotation = mt_ct_rt_rot.w;
 
-    vec4 texel0 = texture(smoke, textureCoords);
+    vec4 texel0 = texture(smoke, FragCoord);
 
-    vec4 texel1 = texture(noise, textureCoords + renderTime);
-    vec4 texel2 = texture(noise, textureCoords * 0.5 - renderTime);
-    vec4 texel3 = texture(noise, textureCoords * 2 + renderTime);
+    vec4 texel1 = texture(noise, FragCoord + renderTime);
+    vec4 texel2 = texture(noise, FragCoord * 0.5 - renderTime);
+    vec4 texel3 = texture(noise, FragCoord * 2 + renderTime);
 
-    fragColor = texture(lighting, rotateUV(textureCoords, rotation));
+    FragColor = texture(lighting, rotateUV(FragCoord, rotation));
 
-    fragColor.a = texel0.a * texel1.a * 2.0 * texel2.a * 2.0 * texel3.a * 2.0;
+    FragColor.a = texel0.a * texel1.a * 2.0 * texel2.a * 2.0 * texel3.a * 2.0;
 
     //gl_FragColor.a *= 1 - (sin(screenTime / 8f) * 0.4f);
-    fragColor.a *= 0.2;
+    FragColor.a *= 0.2;
 
     if (screenTime <= 35) { //3 * 20
         if (screenTime <= 15) {
             //float colorScale = 1f - ((screenTime/ 15f));
-            fragColor.rgb = mix(fragColor.rgb, vec3(1.0), vec3(1.0));
+            FragColor.rgb = mix(FragColor.rgb, vec3(1.0), vec3(1.0));
         } else {
             float colorScale = 1. - ((screenTime - 15.) / 20.);//3 * 20
             //vec3 orange = vec3(0.986f, 0.445f, 0.233f);
@@ -51,14 +51,14 @@ void main(void){
             //vec3 mixed = mix(red, orange, vec3(sin(((colorScale) * 3.14159f))));
             vec3 mixed = mix(orange, white, vec3(sin(((colorScale) * 3.14159))));
             float caped = max(colorScale - 0.2, 0.0);
-            fragColor.rgb = mix(fragColor.rgb, mixed, vec3(caped));
+            FragColor.rgb = mix(FragColor.rgb, mixed, vec3(caped));
         }
     }
 
     float timeLeft = maxtime - screenTime;
 
     if (timeLeft < 100) {
-        fragColor.a *= timeLeft / 100.;
+        FragColor.a *= timeLeft / 100.;
     }
 
 }

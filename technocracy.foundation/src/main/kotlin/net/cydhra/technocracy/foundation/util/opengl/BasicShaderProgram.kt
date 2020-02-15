@@ -212,16 +212,16 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
             OpenGlHelper.glUniform1i(uniformId, tmp[0])
         }
 
-        fun uploadUniform(vararg ints: Int) {
+        fun uploadUniform(vararg ints: Int) : ShaderUniform {
             if (type.type == UniformType.GenericType.FLOAT) {
                 uploadUniform(*ints.asSequence().map { it.toFloat() }.toList().toFloatArray())
-                return
+                return this
             }
 
             val buffer = buffer_int
-                    ?: run { notify(notifyWrongType); return }
+                    ?: run { notify(notifyWrongType); return this }
             if (type.amount != ints.size) {
-                notify(notifyWrongSize); return
+                notify(notifyWrongSize); return this
             }
 
             ints.asSequence().forEachIndexed { i, value ->
@@ -230,18 +230,19 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
                     dirty = true
                 }
             }
+            return this
         }
 
-        fun uploadUniform(vararg floats: Float) {
+        fun uploadUniform(vararg floats: Float): ShaderUniform {
             if (type.type == UniformType.GenericType.INT) {
                 uploadUniform(*floats.asSequence().map { it.toInt() }.toList().toIntArray())
-                return
+                return this
             }
 
             val buffer = buffer_float
-                    ?: run { notify(notifyWrongType); return }
+                    ?: run { notify(notifyWrongType); return this }
             if (type.amount != floats.size) {
-                notify(notifyWrongSize); return
+                notify(notifyWrongSize); return this
             }
 
             floats.asSequence().forEachIndexed { i, value ->
@@ -250,33 +251,37 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
                     dirty = true
                 }
             }
+            return this
         }
 
-        fun uploadUniform(x: Boolean) {
+        fun uploadUniform(x: Boolean) : ShaderUniform {
             val value = if (x) 1 else 0
             uploadUniform(value)
+            return this
         }
 
-        fun uploadUniform(matrix4f: Matrix4f) {
+        fun uploadUniform(matrix4f: Matrix4f) : ShaderUniform {
             val buffer = buffer_float
-                    ?: run { notify(notifyWrongType); return }
+                    ?: run { notify(notifyWrongType); return this }
             if (type.amount != 4 * 4) {
-                notifyWrongSize; return
+                notifyWrongSize; return this
             }
 
             matrix4f.store(buffer)
             buffer.flip()
             dirty = true
+            return this
         }
 
-        fun uploadUniform(bufferIn: FloatBuffer) {
+        fun uploadUniform(bufferIn: FloatBuffer) : ShaderUniform {
             val buffer = buffer_float
-                    ?: run { notify(notifyWrongType); return }
+                    ?: run { notify(notifyWrongType); return this }
 
             bufferIn.flip()
             buffer.position(0)
             buffer.put(bufferIn)
             dirty = true
+            return this
         }
     }
 }
