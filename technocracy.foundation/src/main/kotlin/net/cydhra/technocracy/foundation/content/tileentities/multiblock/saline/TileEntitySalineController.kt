@@ -1,20 +1,34 @@
 package net.cydhra.technocracy.foundation.content.tileentities.multiblock.saline
 
-import net.cydhra.technocracy.foundation.client.gui.TCGui
-import net.cydhra.technocracy.foundation.client.gui.components.energymeter.DefaultEnergyMeter
-import net.cydhra.technocracy.foundation.client.gui.components.label.DefaultLabel
-import net.cydhra.technocracy.foundation.client.gui.multiblock.BaseMultiblockTab
+import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.multiblock.SalineMultiBlock
-import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageTileEntityComponent
-import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
+import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.HeatStorageTileEntityComponent
 import net.cydhra.technocracy.foundation.model.tileentities.multiblock.ITileEntityMultiblockController
 import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
-import net.minecraft.client.Minecraft
-import net.minecraft.util.ResourceLocation
-import org.lwjgl.util.Color
 
 class TileEntitySalineController :
         TileEntityMultiBlockPart<SalineMultiBlock>(SalineMultiBlock::class, ::SalineMultiBlock),
         ITileEntityMultiblockController {
 
+    //Fluids
+    val fluidInputComponent = FluidTileEntityComponent(facing = mutableSetOf(),
+            tanktype = DynamicFluidCapability.TankType.INPUT)
+    val fluidOutputComponent = FluidTileEntityComponent(facing = mutableSetOf(),
+            tanktype = DynamicFluidCapability.TankType.OUTPUT)
+
+    //Heat
+    val heatComponent = HeatStorageTileEntityComponent(0, 2000)
+    val heatingFluidInputComponent = FluidTileEntityComponent(facing = mutableSetOf(),
+            tanktype = DynamicFluidCapability.TankType.INPUT)
+    val heatingFluidOutputComponent = FluidTileEntityComponent(facing = mutableSetOf(),
+            tanktype = DynamicFluidCapability.TankType.OUTPUT)
+
+    init {
+        registerComponent(fluidInputComponent, "input")
+        registerComponent(fluidOutputComponent, "output")
+        registerComponent(heatComponent, "heat")
+        registerComponent(heatingFluidInputComponent, "heat_input")
+        registerComponent(heatingFluidOutputComponent, "heat_output")
+    }
 }

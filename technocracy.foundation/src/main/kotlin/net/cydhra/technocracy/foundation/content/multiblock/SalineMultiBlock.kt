@@ -129,7 +129,7 @@ class SalineMultiBlock(world: World) : TiledBaseMultiBlock(
         //Validate floor if heating is enabled
         if(heatingAgents.isNotEmpty()) {
             tiles.forEach {
-                //Loop through 3x3 center
+                //Loop through 3x3 center of tile
                 for(x in (it.minPos.x + 1)..(it.minPos.x + 3)) {
                     for(z in (it.minPos.z + 1)..(it.minPos.z + 3)) {
                         //Ignore center
