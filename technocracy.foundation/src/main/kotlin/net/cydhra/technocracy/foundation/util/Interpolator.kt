@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.util
 
-import org.lwjgl.util.vector.Vector3f
+import javax.vecmath.Vector3d
 import kotlin.math.abs
 
 /**
@@ -8,7 +8,28 @@ import kotlin.math.abs
  */
 object Interpolator {
 
+    fun easeCircIn(t: Float, b: Double, c: Double, d: Float): Double {
+        var t = t
+        return c * d.let { t /= it; t } * t * t + b
+    }
+
+    fun circInInterpolate(from: Double, to: Double, timeFrom: Float, timeTo: Float, currentTime: Float): Double {
+        return from + (to - from) * easeCircIn(currentTime - timeFrom, 0.0, 1.0, timeTo - timeFrom)
+    }
+
+    fun linearInterpolate(from: Double, to: Double, percentage: Float): Double {
+        return from + (to - from) * percentage
+    }
+
     fun linearInterpolate(from: Float, to: Float, timeFrom: Float, timeTo: Float, currentTime: Float): Float {
+        val delta = currentTime - timeFrom
+        val distance = timeTo - timeFrom
+        val percentage = delta / distance
+
+        return from + (to - from) * percentage
+    }
+
+    fun linearInterpolate(from: Double, to: Double, timeFrom: Float, timeTo: Float, currentTime: Float): Double {
         val delta = currentTime - timeFrom
         val distance = timeTo - timeFrom
         val percentage = delta / distance
@@ -62,17 +83,18 @@ object Interpolator {
         }
     }
 
-    class PosLook(val pos: Vector3f, val look: Vector3f) : InterpolateableValue<PosLook>() {
+    open class PosLook(open val pos: Vector3d, open val look: Vector3d) : InterpolateableValue<PosLook>() {
+
         override fun interpolate(to: PosLook, timeFrom: Float, timeTo: Float, currentTime: Float): PosLook {
-            val x = linearInterpolate(pos.x, to.pos.x, timeFrom, timeTo, currentTime)
-            val y = linearInterpolate(pos.y, to.pos.y, timeFrom, timeTo, currentTime)
-            val z = linearInterpolate(pos.z, to.pos.z, timeFrom, timeTo, currentTime)
+            val x = circInInterpolate(pos.x, to.pos.x, timeFrom, timeTo, currentTime)
+            val y = circInInterpolate(pos.y, to.pos.y, timeFrom, timeTo, currentTime)
+            val z = circInInterpolate(pos.z, to.pos.z, timeFrom, timeTo, currentTime)
 
-            val yaw = linearInterpolate(look.x, to.look.x, timeFrom, timeTo, currentTime)
-            val pitch = linearInterpolate(look.y, to.look.y, timeFrom, timeTo, currentTime)
-            val roll = linearInterpolate(look.z, to.look.z, timeFrom, timeTo, currentTime)
+            val yaw = circInInterpolate(look.x, to.look.x, timeFrom, timeTo, currentTime)
+            val pitch = circInInterpolate(look.y, to.look.y, timeFrom, timeTo, currentTime)
+            val roll = circInInterpolate(look.z, to.look.z, timeFrom, timeTo, currentTime)
 
-            return PosLook(Vector3f(x, y, z), Vector3f(yaw, pitch, roll))
+            return PosLook(Vector3d(x, y, z), Vector3d(yaw, pitch, roll))
         }
     }
 }
