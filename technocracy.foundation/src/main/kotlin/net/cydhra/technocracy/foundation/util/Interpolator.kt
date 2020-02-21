@@ -14,7 +14,7 @@ object Interpolator {
     }
 
     fun circInInterpolate(from: Double, to: Double, timeFrom: Float, timeTo: Float, currentTime: Float): Double {
-        return from + (to - from) * easeCircIn(currentTime - timeFrom, 0.0, 1.0, timeTo - timeFrom)
+        return linearInterpolate(from, to, timeFrom, timeTo, currentTime)//from + (to - from) * easeCircIn(currentTime - timeFrom, 0.0, 1.0, timeTo - timeFrom)
     }
 
     fun linearInterpolate(from: Double, to: Double, percentage: Float): Double {
@@ -86,13 +86,20 @@ object Interpolator {
     open class PosLook(open val pos: Vector3d, open val look: Vector3d) : InterpolateableValue<PosLook>() {
 
         override fun interpolate(to: PosLook, timeFrom: Float, timeTo: Float, currentTime: Float): PosLook {
-            val x = circInInterpolate(pos.x, to.pos.x, timeFrom, timeTo, currentTime)
-            val y = circInInterpolate(pos.y, to.pos.y, timeFrom, timeTo, currentTime)
-            val z = circInInterpolate(pos.z, to.pos.z, timeFrom, timeTo, currentTime)
 
-            val yaw = circInInterpolate(look.x, to.look.x, timeFrom, timeTo, currentTime)
-            val pitch = circInInterpolate(look.y, to.look.y, timeFrom, timeTo, currentTime)
-            val roll = circInInterpolate(look.z, to.look.z, timeFrom, timeTo, currentTime)
+            val pos = this.pos
+            val topos = to.pos
+
+            val look = this.look
+            val tolook = to.look
+
+            val x = circInInterpolate(pos.x, topos.x, timeFrom, timeTo, currentTime)
+            val y = circInInterpolate(pos.y, topos.y, timeFrom, timeTo, currentTime)
+            val z = circInInterpolate(pos.z, topos.z, timeFrom, timeTo, currentTime)
+
+            val yaw = circInInterpolate(look.x, tolook.x, timeFrom, timeTo, currentTime)
+            val pitch = circInInterpolate(look.y, tolook.y, timeFrom, timeTo, currentTime)
+            val roll = circInInterpolate(look.z, tolook.z, timeFrom, timeTo, currentTime)
 
             return PosLook(Vector3d(x, y, z), Vector3d(yaw, pitch, roll))
         }

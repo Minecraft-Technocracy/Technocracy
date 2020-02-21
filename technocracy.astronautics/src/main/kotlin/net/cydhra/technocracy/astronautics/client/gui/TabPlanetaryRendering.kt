@@ -59,7 +59,6 @@ class TabPlanetaryRendering(gui: TCGui) : TCTab("", gui, -1) {
     val gridPolater = Interpolator.InterpolationCycle<Interpolator.InterpolateFloat>()
 
     val planets = PlanetarySolarSystem()
-
     var counter = 1.0
 
     override fun getSizeX(): Int {
@@ -164,18 +163,17 @@ class TabPlanetaryRendering(gui: TCGui) : TCTab("", gui, -1) {
         GlStateManager.shadeModel(7425)
         GlStateManager.glLineWidth(2f)
 
-
         //apply rotation
 
-        GL11.glRotated(playerPos.look.z, 0.0, 0.0, 1.0)
         GL11.glRotated(playerPos.look.x, 0.0, 1.0, 0.0)
         GL11.glRotated(playerPos.look.y, 1.0, 0.0, 0.0)
-
+        //GlStateManager.translate(-playerPos.pos.x, -playerPos.pos.y, -playerPos.pos.z)
         //GL11.glRotated(playerPos.look.z, 0.0, 0.0, 1.0)
         //GL11.glRotated(playerPos.look.y, 1.0, 0.0, 0.0)
         //GL11.glRotated(playerPos.look.x, 0.0, 1.0, 0.0)
-        GlStateManager.translate(-playerPos.pos.x, -playerPos.pos.y, -playerPos.pos.z)
+        GL11.glRotated(playerPos.look.z, 0.0, 0.0, 1.0)
 
+        GlStateManager.translate(-playerPos.pos.x, -playerPos.pos.y, -playerPos.pos.z)
         val perList = 2000 / 3
         val max = perList * 2 + (perList * 0.5).toInt()
 
@@ -188,7 +186,7 @@ class TabPlanetaryRendering(gui: TCGui) : TCTab("", gui, -1) {
         GL11.glPointSize(4f)
         GL31.glDrawArraysInstanced(GL11.GL_POINTS, perList * 2, max, (perList * 0.5).toInt())
         vaoStars.unbindVAO()
-
+        GlStateManager.translate(playerPos.pos.x, playerPos.pos.y, playerPos.pos.z)
         depthShader!!.start()
 
 
@@ -204,7 +202,7 @@ class TabPlanetaryRendering(gui: TCGui) : TCTab("", gui, -1) {
 
         val sizeEarth = 256
 
-        planets.render(playerPos.pos)
+        planets.render(playerPos)
 
         /*//earth
         //offset position 1 radius down so 0 0 0 is on the top plane of the planet
@@ -295,7 +293,7 @@ class TabPlanetaryRendering(gui: TCGui) : TCTab("", gui, -1) {
         GlStateManager.loadIdentity()
 
         val farPlaneDistance = 500_000f
-        Project.gluPerspective(90f, mc.displayWidth.toFloat() / mc.displayHeight.toFloat(), 0.005f, 200_000f)
+        Project.gluPerspective(110f, mc.displayWidth.toFloat() / mc.displayHeight.toFloat(), 0.005f, 200_000f)
         GlStateManager.matrixMode(5888)
         GlStateManager.loadIdentity()
 
@@ -320,7 +318,7 @@ class TabPlanetaryRendering(gui: TCGui) : TCTab("", gui, -1) {
 
         //499
         val earth = PlanetarySolarSystem.Moon(earthSize, Vector4f(0f, 0.467f, 0.745f, 1f), false, Vector3d(0.1, 0.0, 0.0), distance = 300000.0 * distanceScaler)
-        val earthMoon = PlanetarySolarSystem.Moon(earthSize / 4, Vector4f(162 / 255f, 168 / 255f, 174 / 255f, 1f), false, Vector3d(0.0, 0.0, 0.0), distance = 3000.0)
+        val earthMoon = PlanetarySolarSystem.Moon(earthSize / 4, Vector4f(162 / 255f, 168 / 255f, 174 / 255f, 1f), false, Vector3d(1.0, 0.0, 0.0), distance = 3000.0)
         earthMoon.setInitOrbitRotation(Vector3d(0.0, 0.0, 35.0))
         earthMoon.faceToPlanet = true
 
@@ -357,9 +355,10 @@ class TabPlanetaryRendering(gui: TCGui) : TCTab("", gui, -1) {
 
         //374
 
-        ic.addStep(PlanetarySolarSystem.PlanetLock(earthMoon, Vector3d(0.0, 1.62 + 0.9, 0.0), Vector3d(0.0, 5.0, 0.0)), 0.0f)
-        ic.addStep(PlanetarySolarSystem.PlanetLock(earthMoon, Vector3d(0.0, 16.2, 0.0), Vector3d(0.0, 5.0, 0.0)), 10.0f)
-        ic.addStep(PlanetarySolarSystem.PlanetLock(earthMoon, Vector3d(0.0, 1262.0 + 256, 0.0), Vector3d(0.0, 90.0, 0.0)), 30.0f)
+        ic.addStep(PlanetarySolarSystem.PlanetLock(earthMoon, Vector3d(0.0, 1.62 + 2, 0.0), Vector3d(0.0, 90.0, 0.0)), 0.0f)
+        ic.addStep(PlanetarySolarSystem.PlanetLock(earthMoon, Vector3d(0.0, 162.0 + 2, 0.0), Vector3d(0.0, 90.0, 0.0)), 10.0f)
+        ic.addStep(PlanetarySolarSystem.PlanetLock(earth, Vector3d(0.0, 1262.0, 0.0), Vector3d(0.0, 90.0, 0.0)), 30.0f)
+        ic.addStep(PlanetarySolarSystem.PlanetLock(earth, Vector3d(0.0, 5262.0, 0.0), Vector3d(0.0, 90.0, 0.0)), 40.0f)
         ic.addStep(Interpolator.PosLook(Vector3d(0.0, 100000.0, 00.0), Vector3d(0.0, 90.0, 0.0)), 120.0f)
         /*ic.addStep(Interpolator.PosLook(Vector3d(0.0, 1.62 + 0.25, 0.0), Vector3d(0.0, 5.0, 0.0)), 0.0f)
         ic.addStep(Interpolator.PosLook(Vector3d(0.0, 16.2, 0.0), Vector3d(0.0, 5.0, 0.0)), 10.0f)
