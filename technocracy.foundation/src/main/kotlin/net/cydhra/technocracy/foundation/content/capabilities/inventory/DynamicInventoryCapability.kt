@@ -20,6 +20,12 @@ class DynamicInventoryCapability(size: Int = 0, private val machine: TEInventory
 
     var stacks: NonNullList<ItemStack>
 
+    var size: Int
+        get() = stacks.size
+        set(value) {
+            stacks = NonNullList.withSize(value, ItemStack.EMPTY)
+        }
+
     init {
 
         stacks = NonNullList.withSize(size, ItemStack.EMPTY)
@@ -35,10 +41,6 @@ class DynamicInventoryCapability(size: Int = 0, private val machine: TEInventory
         for (slot in 0 until stacks.size) {
             slotTypes[slot] = type
         }
-    }
-
-    fun setSize(size: Int) {
-        stacks = NonNullList.withSize(size, ItemStack.EMPTY)
     }
 
     override fun setStackInSlot(slot: Int, stack: ItemStack) {
@@ -172,7 +174,7 @@ class DynamicInventoryCapability(size: Int = 0, private val machine: TEInventory
     }
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
-        setSize(if (nbt.hasKey("Size", Constants.NBT.TAG_INT)) nbt.getInteger("Size") else stacks.size)
+        size = (if (nbt.hasKey("Size", Constants.NBT.TAG_INT)) nbt.getInteger("Size") else stacks.size)
         val tagList = nbt.getTagList("Items", Constants.NBT.TAG_COMPOUND)
         for (i in 0 until tagList.tagCount()) {
             val itemTags = tagList.getCompoundTagAt(i)
