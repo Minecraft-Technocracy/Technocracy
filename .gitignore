@@ -28,6 +28,7 @@ out
 .idea/.name
 .idea/compiler.xml
 .idea/jarRepositories.xml
+.idea/vcs.xml
 .idea/codeStyles/codeStyleConfig.xml
 classes
 
