@@ -1,18 +1,23 @@
+import org.ajoberstar.grgit.Grgit
+
 buildscript {
     project.ext {
         jvm_target = '1.8'
-
         kotlin_version = '1.3.40'
+
+        minecraft_version = '1.12.2'
+        forge_version = '14.23.5.2815'
+        forge_plugin_version = '2.3.2-SNAPSHOT'
+        mappings_version = 'snapshot_20180609'
+        grgit_version = '3.1.1'
+
         forgelin_version = '1.8.2'
         jei_version = '4.15.0.268'
         zerocore_version = '1.12-0.1.1.0'
         ctm_version = 'MC1.12.2-0.3.3.22'
         waila_version = '1.8.26-B41_1.12.2'
         top_version = '1.12-1.4.28-17'
-        minecraft_version = '1.12.2'
-        forge_version = '14.23.5.2815'
-        forge_plugin_version = '2.3.2-SNAPSHOT'
-        mappings_version = 'snapshot_20180609'
+
         mod_version = '1.0'
 
         root_build_dir = project.buildDir
@@ -30,6 +35,7 @@ buildscript {
     dependencies {
         classpath group: 'org.jetbrains.kotlin', name: 'kotlin-gradle-plugin', version: kotlin_version
         classpath group: 'com.github.Minecraft-Technocracy', name: 'ForgeGradle', version: forge_plugin_version
+        classpath group: 'org.ajoberstar.grgit', name: 'grgit-gradle', version: grgit_version
     }
 }
 
@@ -78,6 +84,10 @@ allprojects {
             name 'tterrag maven'
             url "https://maven.tterrag.com/"
         }
+        maven {
+            name 'jitpack'
+            url 'https://jitpack.io'
+        }
     }
 
     minecraft {
@@ -125,6 +135,7 @@ project('technocracy.foundation') {
         deobfCompile group: 'net.shadowfacts', name: 'Forgelin', version: project.forgelin_version
         deobfCompile group: 'mezz.jei', name: "jei_$project.minecraft_version", version: project.jei_version, classifier: 'api'
         deobfCompile group: "it.zerono.mods.zerocore", name: "zerocore", version: project.zerocore_version
+        deobfCompile group: 'com.github.Minecraft-Technocracy', name: 'technoblock', version: 'master-SNAPSHOT'
         deobfCompile group: "team.chisel.ctm", name: "CTM", version: project.ctm_version
         deobfCompile group: "mcp.mobius.waila", name: "Hwyla", version: project.waila_version, classifier: 'api'
         deobfCompile group: "mcjty.theoneprobe", name: "TheOneProbe-1.12", version: project.top_version
@@ -176,4 +187,15 @@ task setup() {
             'technocracy.astronautics:setupDecompWorkspace',
             'technocracy.astronautics:setupDevWorkspace',
             ':setupDecompWorkspace')
+}
+
+task cloneTechnoblock() {
+    setGroup("environment")
+    def destination = "$projectDir/libs/technoblock"
+
+    doLast {
+        if (!file(destination).exists()) {
+            Grgit.clone(dir: destination, uri: "https://github.com/Minecraft-Technocracy/Technoblock")
+        }
+    }
 }
