@@ -6,6 +6,10 @@ bin
 .classpath
 .project
 
+eclipse
+**/run/**
+!**/run/.keep
+
 # idea
 out
 *.ipr
@@ -31,6 +35,6 @@ classes
 build
 .gradle
 
-eclipse
-**/run/**
-!**/run/.keep
+# gradle dependency replacement
+libs/*
+!libs/.keep
