@@ -6,7 +6,6 @@ import net.minecraft.client.renderer.entity.Render
 import net.minecraft.client.renderer.entity.RenderManager
 import net.minecraft.client.renderer.texture.TextureMap
 import net.minecraft.util.ResourceLocation
-import org.lwjgl.opengl.GL11
 
 
 class RenderEntityRocket(renderManagerIn: RenderManager) : Render<EntityRocket>(renderManagerIn) {
@@ -18,7 +17,6 @@ class RenderEntityRocket(renderManagerIn: RenderManager) : Render<EntityRocket>(
         val intY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks
         val intZ = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTicks
 
-        GL11.glColor4f(1f,1f,1f, 0.2f)
         TemplateRenderHelper.renderVBO(entity.vbo, intX, intY, intZ)
     }
 

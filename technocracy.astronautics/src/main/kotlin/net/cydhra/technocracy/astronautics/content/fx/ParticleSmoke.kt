@@ -15,13 +15,11 @@ import java.util.function.Consumer
 import kotlin.math.cos
 import kotlin.math.sin
 import net.cydhra.technocracy.foundation.util.opengl.BasicShaderProgram.ShaderUniform.UniformType.*
-import net.cydhra.technocracy.foundation.util.opengl.OpenGLObjectLoader
 import net.cydhra.technocracy.foundation.util.opengl.VAO
 import net.cydhra.technocracy.foundation.util.opengl.VBO
 import org.lwjgl.opengl.*
 import java.nio.ByteBuffer
 import java.util.stream.Stream
-import kotlin.streams.toList
 
 
 class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) : AbstractParticle(worldIn, posXIn, posYIn, posZIn) {
@@ -49,8 +47,8 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
 
         if (onGround) {
             val rand = (rand.nextInt(360) - 180)
-            motionX -= sin(Math.toRadians(rand.toDouble())) * motionY * 0.35
-            motionZ += cos(Math.toRadians(rand.toDouble())) * motionY * 0.35
+            motionX -= sin(Math.toRadians(rand.toDouble())) * motionY * 0.45
+            motionZ += cos(Math.toRadians(rand.toDouble())) * motionY * 0.45
             motionY = -(motionY / 6f)//-ThreadLocalRandom.current().nextFloat().toDouble() / 2
 
             super.move(motionX, motionY, motionZ)
