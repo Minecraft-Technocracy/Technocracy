@@ -1,6 +1,9 @@
 package net.cydhra.technocracy.foundation.util.opengl
 
+import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL15
+import org.lwjgl.opengl.GL20
+import org.lwjgl.opengl.GL30
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 
@@ -12,6 +15,16 @@ class VBO {
         private set
 
     var mappedBuffer: ByteBuffer? = null
+
+    /**
+     * the current amount of attributes in this vbo
+     */
+    private var currentAttributeIndex: Int = 0
+
+    /**
+     * the current offset in the vbo
+     */
+    private var currentVBOOffset: Int = 0
 
     constructor(usage: VBOUsage, size: Int) {
         vboId = OpenGLObjectLoader.generateVBO(size, usage.id)
@@ -33,6 +46,55 @@ class VBO {
     fun mapBuffer(usage: BufferUsage): ByteBuffer {
         mappedBuffer = OpenGLObjectLoader.getVBOBuffer(vboId, size, usage.id, mappedBuffer)
         return mappedBuffer!!
+    }
+
+
+    /**
+     * Add a attribute the vao of the given size
+     *
+     * @param size the amount of floats for this attribute
+     * @param stride the maximum size of all attributes that are going to be added
+     * @return this VBO
+     */
+    fun addFloatAttribute(size: Int, stride: Int = size, attributeIndex: Int = currentAttributeIndex++): VBO {
+        OpenGLObjectLoader.addFloatAttributeToVBO(vboId, attributeIndex, size, stride, currentVBOOffset)
+        currentVBOOffset += size
+        return this
+    }
+
+    /**
+     * Used for a single draw call
+     *
+     * @param mode the gl mode
+     * @param first the index of the first byte to read from
+     * @param amount the amount of objects to draw
+     */
+    fun drawSingle(mode: Int, first: Int = 0, amount: Int = size) {
+        bindVBO()
+        GL11.glDrawArrays(mode, first, amount)
+        unbindVBO()
+    }
+
+    /**
+     * Bind the VBO and enable the attributes
+     */
+    fun bindVBO() {
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboId)
+        //enable attributes
+        for (i in 0 until currentAttributeIndex) {
+            GL20.glEnableVertexAttribArray(i)
+        }
+    }
+
+    /**
+     * Unbind the VAO and disable the attributes
+     */
+    fun unbindVBO() {
+        //disable attributes
+        for (i in 0 until currentAttributeIndex) {
+            GL20.glDisableVertexAttribArray(i)
+        }
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
     }
 
     /**

@@ -81,12 +81,10 @@ object OpenGLObjectLoader {
         GL30.glBindVertexArray(0)
     }
 
-    fun addFloatAttributeToVAO(vao: Int, vbo: Int, attributeIndex: Int, dataSize: Int, stride: Int = 0, offset: Int = 0) {
-        GL30.glBindVertexArray(vao)
+    fun addFloatAttributeToVBO(vbo: Int, attributeIndex: Int, dataSize: Int, stride: Int = 0, offset: Int = 0) {
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo)
         GL20.glVertexAttribPointer(attributeIndex, dataSize, GL11.GL_FLOAT, false, stride * 4, offset * 4L)
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
-        GL30.glBindVertexArray(0)
     }
 
     fun updateVBO(vbo: Int, buffer: FloatBuffer, usage: Int) {

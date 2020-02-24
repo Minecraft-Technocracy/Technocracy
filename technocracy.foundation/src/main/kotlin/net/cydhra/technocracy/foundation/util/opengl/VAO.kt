@@ -38,11 +38,14 @@ class VAO {
      * Add a attribute the vao of the given size
      *
      * @param size the amount of floats for this attribute
+     * @param stride the maximum size of all attributes that are going to be added
      * @return this VAO
      */
-    fun addFloatAttribute(size: Int): VAO {
+    fun addFloatAttribute(size: Int, stride: Int = size): VAO {
         if (currentVBO != null) {
-            OpenGLObjectLoader.addFloatAttributeToVAO(vaoId, currentVBO!!.vboId, currentAttributeIndex++, size)
+            GL30.glBindVertexArray(vaoId)
+            currentVBO!!.addFloatAttribute(size, stride, currentAttributeIndex++)
+            GL30.glBindVertexArray(0)
             currentVBOOffset += size
         }
         return this
