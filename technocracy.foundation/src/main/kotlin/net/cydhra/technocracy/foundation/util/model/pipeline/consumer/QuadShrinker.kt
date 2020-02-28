@@ -14,6 +14,7 @@ import net.minecraft.util.math.MathHelper
 object QuadShrinker : IQuadConsumer {
 
     override var origQuad: BakedQuad? = null
+    override var unmodifiedQuad: SimpleQuad? = null
 
     var coverFace: EnumFacing? = null
     var faces: BooleanArray? = null

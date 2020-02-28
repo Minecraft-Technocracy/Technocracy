@@ -10,4 +10,5 @@ interface IQuadConsumer {
     fun reset()
 
     var origQuad: BakedQuad?
+    var unmodifiedQuad: SimpleQuad?
 }

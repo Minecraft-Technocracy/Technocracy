@@ -3,29 +3,16 @@ package net.cydhra.technocracy.foundation.util.model.pipeline.consumer
 import net.cydhra.technocracy.foundation.util.model.SimpleQuad
 import net.cydhra.technocracy.foundation.util.model.pipeline.IQuadConsumer
 import net.minecraft.client.renderer.block.model.BakedQuad
+import java.util.function.BiConsumer
 
 
-object QuadOffsetter : IQuadConsumer {
-
+class QuadDynamicTransformer(val callBack: BiConsumer<QuadDynamicTransformer, SimpleQuad>) : IQuadConsumer {
     override var origQuad: BakedQuad? = null
     override var unmodifiedQuad: SimpleQuad? = null
 
-    var offsetX: Float = 0f
-    var offsetY: Float = 0f
-    var offsetZ: Float = 0f
-
     override fun consume(quad: SimpleQuad) {
-        for (vertPo in quad.vertPos) {
-            vertPo.x += offsetX
-            vertPo.y += offsetY
-            vertPo.z += offsetZ
-        }
+        callBack.accept(this, quad)
     }
 
-    override fun reset() {
-        offsetX = 0f
-        offsetY = 0f
-        offsetZ = 0f
-        origQuad = null
-    }
+    override fun reset() {}
 }

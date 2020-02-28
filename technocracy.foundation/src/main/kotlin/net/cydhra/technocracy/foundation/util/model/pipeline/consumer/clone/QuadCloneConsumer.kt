@@ -8,11 +8,12 @@ import net.minecraft.client.renderer.block.model.BakedQuad
 
 object QuadCloneConsumer : IQuadConsumer {
     override var origQuad: BakedQuad? = null
+    override var unmodifiedQuad: SimpleQuad? = null
     var clonePos: Boolean = false
 
     override fun reset() {
         clonePos = false
-        QuadFacadeTransformer.origQuad = null
+        origQuad = null
     }
 
     override fun consume(quad: SimpleQuad) {
@@ -36,5 +37,6 @@ object QuadCloneConsumer : IQuadConsumer {
         }
 
         bakedQuad.pipe(QuadCloneVertexConsumer(quad, clonePos))
+        unmodifiedQuad = SimpleQuad(quad)
     }
 }
