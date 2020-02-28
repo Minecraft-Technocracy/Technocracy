@@ -11,5 +11,4 @@ import net.minecraftforge.fluids.Fluid
 class HeatRecipe(
         val coldFluid: Fluid,
         val hotFluid: Fluid,
-        val temperatureDifference: Int,
         val milliHeatPerDegree: Int) : ISpecialRecipe
