@@ -6,6 +6,7 @@ import net.cydhra.technocracy.foundation.content.commands.ClearTemplateCommand
 import net.cydhra.technocracy.foundation.content.commands.GenerateTemplateCommand
 import net.cydhra.technocracy.foundation.content.commands.PasteTemplateCommand
 import net.cydhra.technocracy.foundation.content.multiblock.MultiBlockPhysics
+import net.cydhra.technocracy.foundation.data.config.PhysicSystem
 import net.cydhra.technocracy.foundation.data.world.api.DataManager
 import net.cydhra.technocracy.foundation.integration.top.TOPIntegration
 import net.cydhra.technocracy.foundation.proxy.CommonProxy
@@ -69,6 +70,8 @@ object TCFoundation {
     lateinit var config: Configuration
         private set
 
+    lateinit var physics: PhysicSystem
+
     @SidedProxy(
             serverSide = "net.cydhra.technocracy.foundation.proxy.CommonProxy",
             clientSide = "net.cydhra.technocracy.foundation.proxy.ClientProxy")
@@ -80,6 +83,8 @@ object TCFoundation {
         logger = FMLLog.log
         config = Configuration(event.suggestedConfigurationFile)
         config.load()
+        physics = PhysicSystem(config)
+
         MinecraftForge.EVENT_BUS.register(proxy)
         MinecraftForge.EVENT_BUS.register(this)
 
