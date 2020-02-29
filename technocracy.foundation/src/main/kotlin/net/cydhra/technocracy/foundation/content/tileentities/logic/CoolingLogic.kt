@@ -52,7 +52,7 @@ class CoolingLogic(
 
         // check if output is not blocked by other fluid than current output
         if (this.hotFluidComponent.fluid.currentFluid != null
-                && this.currentRecipe!!.hotFluid != this.hotFluidComponent.fluid.currentFluid) {
+                && this.currentRecipe!!.hotFluid != this.hotFluidComponent.fluid.currentFluid!!.fluid) {
             return
         }
 
