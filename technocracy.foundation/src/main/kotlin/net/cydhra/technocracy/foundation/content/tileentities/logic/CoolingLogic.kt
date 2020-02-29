@@ -70,11 +70,13 @@ class CoolingLogic(
 
         // process no more heat than possible within the limits of the heat buffer
         maximumConversionMb =
-                maximumConversionMb.coerceAtMost(this.heatBuffer.heat / this.currentRecipe!!.milliHeatPerDegree)
+                maximumConversionMb.coerceAtMost(this.heatBuffer.heat / (this.currentRecipe!!.milliHeatPerDegree *
+                        (this.currentRecipe!!.hotFluid.temperature - this.currentRecipe!!.coldFluid.temperature)))
 
 
         this.coldFluidComponent.fluid.drain(maximumConversionMb, true)
         this.hotFluidComponent.fluid.fill(FluidStack(currentRecipe!!.hotFluid, maximumConversionMb), true)
-        this.heatBuffer.heat -= maximumConversionMb / this.currentRecipe!!.milliHeatPerDegree
+        this.heatBuffer.heat -= maximumConversionMb * this.currentRecipe!!.milliHeatPerDegree *
+                (this.currentRecipe!!.hotFluid.temperature - this.currentRecipe!!.coldFluid.temperature)
     }
 }
