@@ -8,9 +8,8 @@ import net.cydhra.technocracy.foundation.content.tileentities.components.HeatSto
 import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.MultiplierTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.logic.AdditiveConsumptionLogic
-import net.cydhra.technocracy.foundation.content.tileentities.logic.ConversionDirection
+import net.cydhra.technocracy.foundation.content.tileentities.logic.CoolingLogic
 import net.cydhra.technocracy.foundation.content.tileentities.logic.GenerateHeatLogic
-import net.cydhra.technocracy.foundation.content.tileentities.logic.HeatTransferLogic
 import net.cydhra.technocracy.foundation.model.tileentities.api.TCMachineTileEntity
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgrade
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeParameter
@@ -145,13 +144,12 @@ class CoolerUpgrade : MachineUpgrade(MACHINE_UPGRADE_GENERIC) {
             tile.registerComponent(heatStorage, COOLER_HEAT_STORAGE_COMPONENT_NAME)
             tile.registerComponent(coolerAgentInput, COOLER_FLUID_INPUT_NAME)
             tile.registerComponent(coolerAgentOutput, COOLER_FLUID_OUTPUT_NAME)
-            tile.addLogicStrategy(HeatTransferLogic(
+            tile.addLogicStrategy(CoolingLogic(
                     hotFluidComponent = coolerAgentOutput,
                     coldFluidComponent = coolerAgentInput,
-                    direction = ConversionDirection.COLD_TO_HOT,
                     heatBuffer = heatStorage), COOLER_LOGIC)
             tile.addLogicStrategy(GenerateHeatLogic(
-                    baseHeatGeneration = TCFoundation.physics.milliHeatPerRf / 4,
+                    baseHeatGeneration = TCFoundation.physics.milliHeatPerRf / 2,
                     energyMultiplierComponent = tile.getComponents()
                             .map { it.second }
                             .filterIsInstance<MultiplierTileEntityComponent>()
