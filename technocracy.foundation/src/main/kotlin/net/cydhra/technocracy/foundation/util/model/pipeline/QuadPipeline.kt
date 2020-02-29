@@ -20,16 +20,22 @@ class QuadPipeline {
     }
 
     fun pipe(quad: SimpleQuad, origQuad: BakedQuad): SimpleQuad {
+        var unmod = SimpleQuad(quad)
         for (cons in consumers) {
             cons.origQuad = origQuad
+            cons.unmodifiedQuad = unmod
             cons.consume(quad)
+            unmod = cons.unmodifiedQuad!!
         }
         return quad
     }
 
     fun pipe(quad: SimpleQuad): SimpleQuad {
+        var unmod = SimpleQuad(quad)
         for (cons in consumers) {
+            cons.unmodifiedQuad = unmod
             cons.consume(quad)
+            unmod = cons.unmodifiedQuad!!
         }
         return quad
     }

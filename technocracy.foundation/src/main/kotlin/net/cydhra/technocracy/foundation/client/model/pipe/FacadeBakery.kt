@@ -5,10 +5,7 @@ import net.cydhra.technocracy.foundation.content.items.FacadeItem
 import net.cydhra.technocracy.foundation.util.facade.FakeBlockAccess
 import net.cydhra.technocracy.foundation.util.model.SimpleQuad
 import net.cydhra.technocracy.foundation.util.model.pipeline.QuadPipeline
-import net.cydhra.technocracy.foundation.util.model.pipeline.consumer.QuadFacadeTransformer
-import net.cydhra.technocracy.foundation.util.model.pipeline.consumer.QuadShrinker
-import net.cydhra.technocracy.foundation.util.model.pipeline.consumer.QuadTinter
-import net.cydhra.technocracy.foundation.util.model.pipeline.consumer.QuadUVTransformer
+import net.cydhra.technocracy.foundation.util.model.pipeline.consumer.*
 import net.cydhra.technocracy.foundation.util.model.pipeline.consumer.clone.QuadCloneConsumer
 import net.minecraft.block.Block
 import net.minecraft.block.BlockDirectional
@@ -24,6 +21,7 @@ import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.MathHelper
 import net.minecraft.world.IBlockAccess
+import java.util.function.BiConsumer
 
 object FacadeBakery {
     @Suppress("DEPRECATION")//no other method available to get state from meta
@@ -101,8 +99,8 @@ object FacadeBakery {
         val quads = mutableListOf<BakedQuad>()
         var origQuads = coverModel.getQuads(customState, null, 0)
 
-
-        val pipeline = QuadPipeline().addConsumer(QuadCloneConsumer, QuadTinter, QuadShrinker,QuadFacadeTransformer, QuadUVTransformer)
+        //TODO rework the QuadFacadeTransformer so it uses the vertex position for the translation instead of just the facing
+        val pipeline = QuadPipeline().addConsumer(QuadCloneConsumer, QuadTinter, QuadShrinker, QuadFacadeTransformer, QuadUVTransformer)
         QuadShrinker.coverFace = coverFace
         QuadShrinker.faces = faces
         QuadFacadeTransformer.coverFace = coverFace
@@ -132,8 +130,14 @@ object FacadeBakery {
                             quads.add(pipeline.pipe(quad, bakedQuad).bake())
                         }
                     } else {
-                        pipeline.removeConsumer(QuadShrinker)
-                        pipeline.removeConsumer(QuadFacadeTransformer)
+
+                        val pipeline = QuadPipeline().addConsumer(QuadCloneConsumer, QuadDynamicTransformer(BiConsumer { instance, _ ->
+                            //generate a copy of the original quad and set it as the unmodified one to fix texture issues
+                            QuadCloneConsumer.clonePos = true
+                            QuadPipeline().addConsumer(QuadCloneConsumer).pipe(SimpleQuad(DefaultVertexFormats.BLOCK), instance.origQuad!!)
+                            instance.unmodifiedQuad = QuadCloneConsumer.unmodifiedQuad
+                        }), QuadTinter, QuadUVTransformer)
+
                         QuadCloneConsumer.clonePos = false
                         //ctm block
                         val vertices = mutableListOf<FloatArray>()
@@ -144,7 +148,6 @@ object FacadeBakery {
                         origQuads.forEachIndexed { index, bakedQuad ->
                             splits[index].format = DefaultVertexFormats.BLOCK
                             QuadTinter.tint = Minecraft.getMinecraft().blockColors.colorMultiplier(customState, access, pos, bakedQuad.tintIndex)
-                            QuadUVTransformer.quadNum = index
                             quads.add(pipeline.pipe(splits[index], bakedQuad).bake())
                         }
                     }
@@ -196,7 +199,7 @@ object FacadeBakery {
             EnumFacing.NORTH -> 1 - height
             else -> 0.0f
         }
-        
+
         if (facing == EnumFacing.NORTH) {
             when (vertices) {
                 1 -> {

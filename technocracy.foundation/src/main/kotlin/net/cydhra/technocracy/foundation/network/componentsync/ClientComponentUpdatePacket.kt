@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf
 import it.zerono.mods.zerocore.api.multiblock.MultiblockTileEntityBase
 import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
 import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatable
+import net.minecraft.client.gui.inventory.GuiFurnace
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.math.BlockPos
 import net.minecraftforge.fml.common.network.ByteBufUtils
@@ -22,16 +23,20 @@ class ClientComponentUpdatePacket(var tag: NBTTagCompound = NBTTagCompound()) : 
     }
 
     override fun onMessage(packet: ClientComponentUpdatePacket, ctx: MessageContext): IMessage? {
+        //todo packet can be send all the time, no check if the te is even the right one
         val te = ctx.serverHandler.player.world.getTileEntity(BlockPos.fromLong(packet.tag.getLong("pos")))
         if (te is MultiblockTileEntityBase) {
             (te.multiblockController as BaseMultiBlock).getComponents().filter { it.first == packet.tag.getString("name") }.forEach { (_, component) ->
-                component.deserializeNBT(tag.getCompoundTag("component"))
+                component.deserializeNBT(packet.tag.getCompoundTag("component"))
             }
+            te.markDirty()
         } else if (te is TCAggregatable) {
             te.getComponents().filter { it.first == packet.tag.getString("name") }.forEach { (_, component) ->
-                component.deserializeNBT(tag.getCompoundTag("component"))
+                component.deserializeNBT(packet.tag.getCompoundTag("component"))
             }
+            te.markDirty()
         }
+
         return null
     }
 }

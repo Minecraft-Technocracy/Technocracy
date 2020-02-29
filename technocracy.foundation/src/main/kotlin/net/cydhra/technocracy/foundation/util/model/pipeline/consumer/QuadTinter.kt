@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad
 
 object QuadTinter : IQuadConsumer {
     override var origQuad: BakedQuad? = null
+    override var unmodifiedQuad: SimpleQuad? = null
 
     var tint = -1
 

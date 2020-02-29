@@ -12,6 +12,7 @@ import kotlin.math.abs
 
 object QuadFacadeTransformer : IQuadConsumer {
     override var origQuad: BakedQuad? = null
+    override var unmodifiedQuad: SimpleQuad? = null
 
     var coverFace: EnumFacing? = null
     var faces: BooleanArray? = null
@@ -37,7 +38,6 @@ object QuadFacadeTransformer : IQuadConsumer {
         val south = faces[EnumFacing.SOUTH.ordinal]
         val east = faces[EnumFacing.EAST.ordinal]
         val west = faces[EnumFacing.WEST.ordinal]
-
 
         for (vertices in 0 until 4) {
 

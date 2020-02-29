@@ -17,6 +17,26 @@ import java.util.*
 
 
 class SimpleQuad() {
+    constructor(clone: SimpleQuad) : this() {
+        for (v in clone.vertPos)
+            vertPos.add(Vector3f(v))
+        for (v in clone.vertUv)
+            vertUv.add(Vector2f(v))
+        for (v in clone.vertLight)
+            vertLight.add(Vector2f(v))
+        for (v in clone.vertColor)
+            vertColor.add(Vector4f(v))
+        for (v in clone.vertNormal)
+            vertNormal.add(Vector3f(v))
+
+        format = clone.format
+        face = clone.face
+        tintIndex = clone.tintIndex
+        tintColor = clone.tintColor
+        sprite = clone.sprite
+        applyDiffuseLighting = clone.applyDiffuseLighting
+    }
+
     constructor(data: List<Vector3f>, clone: SimpleQuad) : this() {
         vertPos.addAll(data)
         face = clone.face
