@@ -286,6 +286,7 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(nucSpeedUp3Item)
 
         itemManager.prepareItemForRegistration(mechLubricantUpItem)
+        itemManager.prepareItemForRegistration(elecCoolerUpgradeItem)
 
         if (!Minecraft.getMinecraft().isSingleplayer) {
             //Dev tools
