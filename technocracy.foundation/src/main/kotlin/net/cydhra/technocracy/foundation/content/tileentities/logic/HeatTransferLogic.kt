@@ -89,19 +89,23 @@ class HeatTransferLogic(
 
         // process no more heat than possible within the limits of the heat buffer
         maximumConversionMb = if (this.direction == COLD_TO_HOT) {
-            maximumConversionMb.coerceAtMost(this.heatBuffer.heat / this.currentRecipe!!.milliHeatPerDegree)
+            maximumConversionMb.coerceAtMost(this.heatBuffer.heat / (this.currentRecipe!!.milliHeatPerDegree *
+                    (currentRecipe!!.hotFluid.temperature - currentRecipe!!.coldFluid.temperature)))
         } else {
             maximumConversionMb.coerceAtMost(
-                    (this.heatBuffer.heatCapacity - this.heatBuffer.heat) / this.currentRecipe!!.milliHeatPerDegree)
+                    (this.heatBuffer.heatCapacity - this.heatBuffer.heat) / (this.currentRecipe!!.milliHeatPerDegree *
+                            (currentRecipe!!.hotFluid.temperature - currentRecipe!!.coldFluid.temperature)))
         }
 
         this.inputFluidComponent.fluid.drain(maximumConversionMb, true)
         if (this.direction == COLD_TO_HOT) {
             this.outputFluidComponent.fluid.fill(FluidStack(currentRecipe!!.hotFluid, maximumConversionMb), true)
-            this.heatBuffer.heat -= maximumConversionMb / this.currentRecipe!!.milliHeatPerDegree
+            this.heatBuffer.heat -= maximumConversionMb * this.currentRecipe!!.milliHeatPerDegree *
+                    (currentRecipe!!.hotFluid.temperature - currentRecipe!!.coldFluid.temperature)
         } else {
             this.outputFluidComponent.fluid.fill(FluidStack(currentRecipe!!.coldFluid, maximumConversionMb), true)
-            this.heatBuffer.heat += maximumConversionMb / this.currentRecipe!!.milliHeatPerDegree
+            this.heatBuffer.heat += maximumConversionMb * this.currentRecipe!!.milliHeatPerDegree *
+                    (currentRecipe!!.hotFluid.temperature - currentRecipe!!.coldFluid.temperature)
         }
     }
 

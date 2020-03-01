@@ -104,6 +104,7 @@ item.nuc_speed_up_2.name=Graphite Moderator
 item.nuc_speed_up_3.name=Fusion Cryostat
 
 item.mech_lubricant_up.name=Lubricant Injection
+item.elec_cooler_up.name=Liquid Cooling
 
 tile.oil_sand.name=Oily Sand
 tile.oil_stone.name=Oily Stone

@@ -1,9 +1,6 @@
 package net.cydhra.technocracy.foundation.content.items
 
-import net.cydhra.technocracy.foundation.content.tileentities.upgrades.AdditiveConsumptionMultiplier
-import net.cydhra.technocracy.foundation.content.tileentities.upgrades.EnergyMultiplier
-import net.cydhra.technocracy.foundation.content.tileentities.upgrades.LubricantUpgrade
-import net.cydhra.technocracy.foundation.content.tileentities.upgrades.SpeedMultiplier
+import net.cydhra.technocracy.foundation.content.tileentities.upgrades.*
 import net.cydhra.technocracy.foundation.model.items.api.AlloyItem
 import net.cydhra.technocracy.foundation.model.items.api.BaseItem
 import net.cydhra.technocracy.foundation.model.items.api.ColoredPrefixedItem
@@ -135,3 +132,5 @@ val nucSpeedUp3Item = UpgradeItem("nuc_speed_up_3", MachineUpgradeClass.NUCLEAR,
 
 val mechLubricantUpItem = UpgradeItem("mech_lubricant_up", MachineUpgradeClass.MECHANICAL,
         SpeedMultiplier(2.0), LubricantUpgrade())
+val elecCoolerUpgradeItem = UpgradeItem("elec_cooler_up", MachineUpgradeClass.ELECTRICAL,
+        SpeedMultiplier(2.5), EnergyMultiplier(2.5), CoolerUpgrade())
