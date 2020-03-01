@@ -15,17 +15,14 @@ import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.client.shader.Framebuffer
 import net.minecraft.util.ResourceLocation
-import net.minecraft.util.math.MathHelper
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL31
 import org.lwjgl.util.glu.Project
-import org.lwjgl.util.vector.Vector3f
 import org.lwjgl.util.vector.Vector4f
 import java.nio.FloatBuffer
-import java.util.concurrent.ThreadLocalRandom
 import javax.vecmath.Vector3d
 import kotlin.math.*
 import kotlin.random.Random
@@ -36,7 +33,7 @@ class TabPlanetaryRendering(gui: TCGui) : TCTab("", gui, -1) {
     @SideOnly(Side.CLIENT)
     @Suppress("unused", "PropertyName", "SpellCheckingInspection")
     companion object {
-        lateinit var vaoStars: VAO
+        lateinit var vboStars: VBO
         var generatedStars = false
 
         var buffer: Framebuffer? = null
@@ -134,7 +131,7 @@ class TabPlanetaryRendering(gui: TCGui) : TCTab("", gui, -1) {
             generateStar(buffer, xyz, r, (perList * 0.5).toInt())
             buffer.flip()
 
-            vaoStars = VAO().linkVBO(VBO(VBO.VBOUsage.STATIC_DRAW, buffer.array())).addFloatAttribute(3)
+            vboStars = VBO(VBO.VBOUsage.STATIC_DRAW, buffer.array()).addFloatAttribute(3)
         }
 
         buffer?.setFramebufferColor(0.12f, 0.12f, 0.12f, 0f)
@@ -179,13 +176,16 @@ class TabPlanetaryRendering(gui: TCGui) : TCTab("", gui, -1) {
 
         GL11.glEnable(GL11.GL_POINT_SMOOTH)
         GL11.glPointSize(0.2f)
-        vaoStars.bindVAO()
+        vboStars.bindVBO()
         //GL31.glDrawArraysInstanced(GL11.GL_POINTS, 0, max, perList)
         GL11.glPointSize(0.5f)
-        GL31.glDrawArraysInstanced(GL11.GL_POINTS, perList, max, perList)
+        GL11.glDrawArrays(GL11.GL_POINTS, perList, perList)
+        //GL31.glDrawArraysInstanced(GL11.GL_POINTS, perList, max, perList)
         GL11.glPointSize(4f)
-        GL31.glDrawArraysInstanced(GL11.GL_POINTS, perList * 2, max, (perList * 0.5).toInt())
-        vaoStars.unbindVAO()
+        GL11.glDrawArrays(GL11.GL_POINTS, perList * 2, (perList * 0.5).toInt())
+        //GL31.glDrawArraysInstanced(GL11.GL_POINTS, perList * 2, max, (perList * 0.5).toInt())
+
+        vboStars.unbindVBO()
         GlStateManager.translate(playerPos.pos.x, playerPos.pos.y, playerPos.pos.z)
         depthShader!!.start()
 
