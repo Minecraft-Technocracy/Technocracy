@@ -133,9 +133,12 @@ object FacadeBakery {
 
                         val pipeline = QuadPipeline().addConsumer(QuadCloneConsumer, QuadDynamicTransformer(BiConsumer { instance, _ ->
                             //generate a copy of the original quad and set it as the unmodified one to fix texture issues
+                            val pipe = QuadPipeline().addConsumer(QuadCloneConsumer)
                             QuadCloneConsumer.clonePos = true
-                            QuadPipeline().addConsumer(QuadCloneConsumer).pipe(SimpleQuad(DefaultVertexFormats.BLOCK), instance.origQuad!!)
-                            instance.unmodifiedQuad = QuadCloneConsumer.unmodifiedQuad
+                            val q = SimpleQuad(DefaultVertexFormats.BLOCK)
+                            pipe.pipe(q, instance.origQuad!!)
+                            instance.unmodifiedQuad = q
+                            QuadCloneConsumer.clonePos = false
                         }), QuadTinter, QuadUVTransformer)
 
                         QuadCloneConsumer.clonePos = false
