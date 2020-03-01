@@ -8,7 +8,7 @@ enum class Orientation() {
 }
 
 abstract class ProgressBar(val posX: Int, val posY: Int, val orientation: Orientation = Orientation.RIGHT) :
-        TCComponent {
+        TCComponent() {
     var progress = 0F
 
     val width = 22

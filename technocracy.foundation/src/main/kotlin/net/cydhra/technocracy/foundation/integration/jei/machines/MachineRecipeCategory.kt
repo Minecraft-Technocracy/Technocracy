@@ -4,6 +4,7 @@ import mezz.jei.api.IGuiHelper
 import mezz.jei.api.gui.IRecipeLayout
 import mezz.jei.api.ingredients.IIngredients
 import mezz.jei.api.ingredients.VanillaTypes
+import net.cydhra.technocracy.foundation.client.gui.components.ITCComponent
 import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
 import net.cydhra.technocracy.foundation.client.gui.components.energymeter.DefaultEnergyMeter
 import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.DefaultFluidMeter
@@ -30,7 +31,7 @@ class MachineRecipeCategory(guiHelper: IGuiHelper, val tileEntity: MachineTileEn
 ) {
 
     private val tabDrawable = TabDrawable(tileEntity)
-    private val stolenComponents = mutableMapOf<TCComponent, Boolean>() // component, isInput
+    private val stolenComponents = mutableMapOf<ITCComponent, Boolean>() // component, isInput
 
 
     init {

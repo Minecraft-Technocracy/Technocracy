@@ -39,25 +39,26 @@ class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controlle
         return TileEntityRocketController()
     }
 
-    val launchpad = Template()
-    val rocket_base = Template()
-    val rocket_tip_a = Template()
-    val rocket_tip_b = Template()
-    val tank_module = Template()
-    val dyson_cargo = Template()
-    val satellite_cargo = Template()
+    companion object {
+        val launchpad = Template()
+        val rocket_base = Template()
+        val rocket_tip_a = Template()
+        val rocket_tip_b = Template()
+        val tank_module = Template()
+        val dyson_cargo = Template()
+        val satellite_cargo = Template()
+    }
 
     override fun onBlockActivated(worldIn: World, pos: BlockPos, state: IBlockState, playerIn: EntityPlayer, hand: EnumHand, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean {
         if (!playerIn.isSneaking) {
             if (!worldIn.isRemote && hand == EnumHand.MAIN_HAND) {
                 playerIn.openGui(TCFoundation, TCGuiHandler.machineGui, worldIn, pos.x, pos.y, pos.z)
-                guiInfoPacketSubscribers[playerIn as EntityPlayerMP] = Pair(pos, worldIn.provider.dimension)
             }
 
             return true
         }
 
-        if(true)
+        if (true)
             return true
 
 

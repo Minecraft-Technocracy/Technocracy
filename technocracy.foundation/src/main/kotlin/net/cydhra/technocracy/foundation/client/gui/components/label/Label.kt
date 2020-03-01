@@ -3,7 +3,7 @@ package net.cydhra.technocracy.foundation.client.gui.components.label
 import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
 import net.minecraft.client.gui.FontRenderer
 
-abstract class Label(val posX: Int, val posY: Int, val text: String, val fontRenderer: FontRenderer) : TCComponent {
+abstract class Label(val posX: Int, val posY: Int, val text: String, val fontRenderer: FontRenderer) : TCComponent() {
 
     override fun drawTooltip(mouseX: Int, mouseY: Int) {}
 

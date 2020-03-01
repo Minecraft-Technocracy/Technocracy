@@ -6,16 +6,11 @@ import net.cydhra.technocracy.foundation.content.tileentities.components.Redston
 import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
 import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatable
 import net.cydhra.technocracy.foundation.network.PacketHandler
-import net.cydhra.technocracy.foundation.network.componentsync.ClientComponentUpdatePacket
+import net.cydhra.technocracy.foundation.network.componentsync.ComponentUpdatePacket
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
-import net.minecraft.client.renderer.Tessellator
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats
-import net.minecraft.init.Blocks
-import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
-import org.lwjgl.opengl.GL11
 
 class DefaultRedstoneModeControl(posX: Int, posY: Int, val component: RedstoneModeTileEntityComponent, val gui: TCGui) : RedstoneModeControl(posX, posY) {
 
@@ -43,6 +38,6 @@ class DefaultRedstoneModeControl(posX: Int, posY: Int, val component: RedstoneMo
             tag.setString("name", (component.tile as TCAggregatable).getComponents().filter { it.second == component }[0].first)
         }
         tag.setLong("pos", component.tile.pos.toLong())
-        PacketHandler.sendToServer(ClientComponentUpdatePacket(tag))
+        PacketHandler.sendToServer(ComponentUpdatePacket(tag))
     }
 }

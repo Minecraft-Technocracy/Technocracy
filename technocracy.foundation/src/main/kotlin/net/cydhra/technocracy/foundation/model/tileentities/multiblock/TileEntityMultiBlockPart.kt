@@ -122,7 +122,6 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
             if (!world.isRemote) {
                 if (this is ITileEntityMultiblockController && validateStructure()) {
                     player.openGui(TCFoundation, TCGuiHandler.multiblockGui, world, pos.x, pos.y, pos.z)
-                    guiInfoPacketSubscribers[player as EntityPlayerMP] = Pair(pos, world.provider.dimension)
                 }
             }
         }

@@ -50,9 +50,7 @@ import net.cydhra.technocracy.foundation.model.tileentities.manager.TileEntityMa
 import net.cydhra.technocracy.foundation.network.ItemKeyBindPacket
 import net.cydhra.technocracy.foundation.network.ItemScrollPacket
 import net.cydhra.technocracy.foundation.network.PacketHandler
-import net.cydhra.technocracy.foundation.network.componentsync.ClientComponentUpdatePacket
-import net.cydhra.technocracy.foundation.network.componentsync.GuiUpdateListener
-import net.cydhra.technocracy.foundation.network.componentsync.MachineInfoPacket
+import net.cydhra.technocracy.foundation.network.componentsync.*
 import net.minecraft.client.Minecraft
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.MinecraftForge
@@ -349,7 +347,8 @@ open class CommonProxy {
         PacketHandler.registerPacket(ItemScrollPacket::class.java, ItemScrollPacket::class.java, Side.SERVER)
         PacketHandler.registerPacket(ItemKeyBindPacket::class.java, ItemKeyBindPacket::class.java, Side.SERVER)
         PacketHandler.registerPacket(MachineInfoPacket::class.java, MachineInfoPacket::class.java, Side.CLIENT)
-        PacketHandler.registerPacket(ClientComponentUpdatePacket::class.java, ClientComponentUpdatePacket::class.java, Side.SERVER)
+        PacketHandler.registerPacket(ComponentUpdatePacket::class.java, ComponentUpdatePacket::class.java, Side.SERVER)
+        PacketHandler.registerPacket(ClientRequestSyncPacket::class.java, ClientRequestSyncPacket::class.java, Side.SERVER)
     }
 
     open fun init() {
