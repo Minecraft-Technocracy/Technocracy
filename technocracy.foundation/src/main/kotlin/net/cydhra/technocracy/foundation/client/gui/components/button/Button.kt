@@ -13,22 +13,16 @@ abstract class Button(val posX: Int, val posY: Int, val width: Int, val height: 
 
     override fun update() {}
 
+    override fun handleClientClick(player: EntityPlayer, mouseButton: Int) {
+        if (mouseButton == 0)
+            onClick.accept(player)
+    }
+
     override fun mouseClicked(x: Int, y: Int, mouseX: Int, mouseY: Int, mouseButton: Int) {
-        if (mouseButton == 0 && isMouseOnComponent(mouseX - x, mouseY - y)) {
+        if (mouseButton == 0) {
             onClick.accept(Minecraft.getMinecraft().player)
-
-            /*component.redstoneMode = RedstoneModeTileEntityComponent.RedstoneMode.values()[(component.redstoneMode.ordinal + 1) % RedstoneModeTileEntityComponent.RedstoneMode.values().size]
-            val tag = NBTTagCompound()
-            tag.setTag("component", component.serializeNBT())
-            if (component.tile is MultiblockTileEntityBase) { // not tested yet for multiblocks (because multiblocks currently haven't redstonemode stuff)
-                tag.setString("name", ((component.tile as MultiblockTileEntityBase).multiblockController as BaseMultiBlock).getComponents().filter { it.second == component }[0].first)
-            } else if (component.tile is TCAggregatable) {
-                tag.setString("name", (component.tile as TCAggregatable).getComponents().filter { it.second == component }[0].first)
-            }
-            tag.setLong("pos", component.tile.pos.toLong())
-            PacketHandler.sendToServer(ClientComponentUpdatePacket(tag))*/
-
         }
+        super.mouseClicked(x, y, mouseX, mouseY, mouseButton)
     }
 
     override fun isMouseOnComponent(mouseX: Int, mouseY: Int): Boolean {

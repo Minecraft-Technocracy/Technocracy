@@ -47,6 +47,7 @@ import net.cydhra.technocracy.foundation.model.items.manager.ItemManager
 import net.cydhra.technocracy.foundation.model.oresystems.api.OreSystem
 import net.cydhra.technocracy.foundation.model.potions.manager.PotionManager
 import net.cydhra.technocracy.foundation.model.tileentities.manager.TileEntityManager
+import net.cydhra.technocracy.foundation.network.ComponentClickPacket
 import net.cydhra.technocracy.foundation.network.ItemKeyBindPacket
 import net.cydhra.technocracy.foundation.network.ItemScrollPacket
 import net.cydhra.technocracy.foundation.network.PacketHandler
@@ -349,6 +350,7 @@ open class CommonProxy {
         PacketHandler.registerPacket(MachineInfoPacket::class.java, MachineInfoPacket::class.java, Side.CLIENT)
         PacketHandler.registerPacket(ComponentUpdatePacket::class.java, ComponentUpdatePacket::class.java, Side.SERVER)
         PacketHandler.registerPacket(ClientRequestSyncPacket::class.java, ClientRequestSyncPacket::class.java, Side.SERVER)
+        PacketHandler.registerPacket(ComponentClickPacket::class.java, ComponentClickPacket::class.java, Side.SERVER)
     }
 
     open fun init() {

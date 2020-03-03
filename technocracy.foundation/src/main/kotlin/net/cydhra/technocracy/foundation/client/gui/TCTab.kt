@@ -71,7 +71,6 @@ abstract class TCTab(val name: String, val parent: TCGui, val tint: Int = -1,
     }
 
     protected fun addComponent(component: TCComponent) {
-        component.componentId = components.size
         components.add(component)
     }
 

@@ -14,6 +14,7 @@ open class TCContainer(val machineInputs: Int = 0, val machineOutputs: Int = 0) 
     private val playerInventorySize = machineInputs + machineOutputs + 26
     private val playerHotBarStart = playerInventorySize + 1
     private val playerHotBarEnd = playerHotBarStart + 8
+    private val components = mutableListOf<TCComponent>()
 
     /**
      * The tileentity this gui belongs to if there is one
@@ -69,6 +70,17 @@ open class TCContainer(val machineInputs: Int = 0, val machineOutputs: Int = 0) 
     fun registerComponent(component: ITCComponent) {
         if (component is Slot) {
             this.addSlotToContainer(component)
+        } else if (component is TCComponent) {
+            component.componentId = components.size
+            components.add(component)
+        }
+    }
+
+    fun clickComponent(player: EntityPlayer, componentId: Int, clickType: Int) {
+        for (comp in components) {
+            if (comp.componentId == componentId) {
+                comp.handleClientClick(player, clickType)
+            }
         }
     }
 
