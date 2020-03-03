@@ -6,14 +6,14 @@ import net.cydhra.technocracy.foundation.model.tileentities.api.TCMachineTileEnt
 import net.cydhra.technocracy.foundation.model.tileentities.api.logic.ILogicClient
 import net.cydhra.technocracy.foundation.model.tileentities.api.logic.LogicClientDelegate
 import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableTileEntity
-import net.cydhra.technocracy.optics.api.tileentities.components.LaserEmitterComponent
+import net.cydhra.technocracy.optics.api.tileentities.components.LaserEmitterTileEntityComponent
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.EnumFacing
 
 class TileEntityLaser : AggregatableTileEntity(), TCMachineTileEntity, ILogicClient by LogicClientDelegate() {
 
     init {
-        this.registerComponent(LaserEmitterComponent(arrayOf(EnumFacing.NORTH), limit = -1), "laser_emitter")
+        this.registerComponent(LaserEmitterTileEntityComponent(setOf(EnumFacing.NORTH), limit = -1), "laser_emitter")
     }
 
     override fun update() {

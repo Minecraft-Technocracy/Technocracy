@@ -9,7 +9,9 @@ import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.common.capabilities.CapabilityInject
 
-class LaserEmitterComponent(private val canEmitAt: Array<EnumFacing>, var limit: Int)
+class LaserEmitterTileEntityComponent(
+        var canEmitAt: Set<EnumFacing>,
+        var limit: Int)
     : AbstractCapabilityTileEntityComponent(), ILaserEmitter {
 
     companion object {
@@ -37,8 +39,8 @@ class LaserEmitterComponent(private val canEmitAt: Array<EnumFacing>, var limit:
 
     override fun serializeNBT(): NBTTagCompound {
         return compound {
-            NBT_KEY_EMITTER_CAP to CAPABILITY_LASER_EMITTER.storage.writeNBT(CAPABILITY_LASER_EMITTER, this@LaserEmitterComponent, null)
-            NBT_KEY_LIMIT to this@LaserEmitterComponent.limit
+            NBT_KEY_EMITTER_CAP to CAPABILITY_LASER_EMITTER.storage.writeNBT(CAPABILITY_LASER_EMITTER, this@LaserEmitterTileEntityComponent, null)
+            NBT_KEY_LIMIT to this@LaserEmitterTileEntityComponent.limit
         }
     }
 
