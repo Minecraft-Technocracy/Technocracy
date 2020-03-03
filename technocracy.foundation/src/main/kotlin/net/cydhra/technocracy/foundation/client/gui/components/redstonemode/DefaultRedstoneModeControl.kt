@@ -6,16 +6,12 @@ import net.cydhra.technocracy.foundation.content.tileentities.components.Redston
 import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
 import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatable
 import net.cydhra.technocracy.foundation.network.PacketHandler
-import net.cydhra.technocracy.foundation.network.componentsync.ClientComponentUpdatePacket
+import net.cydhra.technocracy.foundation.network.componentsync.ComponentUpdatePacket
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
-import net.minecraft.client.renderer.Tessellator
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats
-import net.minecraft.init.Blocks
-import net.minecraft.item.ItemStack
+import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.nbt.NBTTagCompound
-import org.lwjgl.opengl.GL11
 
 class DefaultRedstoneModeControl(posX: Int, posY: Int, val component: RedstoneModeTileEntityComponent, val gui: TCGui) : RedstoneModeControl(posX, posY) {
 
@@ -33,16 +29,14 @@ class DefaultRedstoneModeControl(posX: Int, posY: Int, val component: RedstoneMo
         gui.drawHoveringText(mutableListOf(str), mouseX, mouseY)
     }
 
+    override fun handleClientClick(player: EntityPlayer, mouseButton: Int) {
+        if (mouseButton == 0) {
+            component.redstoneMode = RedstoneModeTileEntityComponent.RedstoneMode.values()[(component.redstoneMode.ordinal + 1) % RedstoneModeTileEntityComponent.RedstoneMode.values().size]
+        }
+    }
+
     override fun mouseClicked(x: Int, y: Int, mouseX: Int, mouseY: Int, mouseButton: Int) {
         component.redstoneMode = RedstoneModeTileEntityComponent.RedstoneMode.values()[(component.redstoneMode.ordinal + 1) % RedstoneModeTileEntityComponent.RedstoneMode.values().size]
-        val tag = NBTTagCompound()
-        tag.setTag("component", component.serializeNBT())
-        if (component.tile is MultiblockTileEntityBase) { // not tested yet for multiblocks (because multiblocks currently haven't redstonemode stuff)
-            tag.setString("name", ((component.tile as MultiblockTileEntityBase).multiblockController as BaseMultiBlock).getComponents().filter { it.second == component }[0].first)
-        } else if (component.tile is TCAggregatable) {
-            tag.setString("name", (component.tile as TCAggregatable).getComponents().filter { it.second == component }[0].first)
-        }
-        tag.setLong("pos", component.tile.pos.toLong())
-        PacketHandler.sendToServer(ClientComponentUpdatePacket(tag))
+        super.mouseClicked(x, y, mouseX, mouseY, mouseButton)
     }
 }

@@ -48,7 +48,6 @@ class MachineBlock(name: String, private val tileEntityConstructor: () -> TileEn
         if (!playerIn.isSneaking) {
             if (!worldIn.isRemote) {
                 playerIn.openGui(TCFoundation, TCGuiHandler.machineGui, worldIn, pos.x, pos.y, pos.z)
-                guiInfoPacketSubscribers[playerIn as EntityPlayerMP] = Pair(pos, worldIn.provider.dimension)
             }
 
             return true

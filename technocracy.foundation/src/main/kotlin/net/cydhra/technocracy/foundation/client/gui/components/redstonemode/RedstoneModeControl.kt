@@ -2,7 +2,7 @@ package net.cydhra.technocracy.foundation.client.gui.components.redstonemode
 
 import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
 
-abstract class RedstoneModeControl(val posX: Int, val posY: Int) : TCComponent {
+abstract class RedstoneModeControl(val posX: Int, val posY: Int) : TCComponent() {
 
     val width = 16
     val height = 16

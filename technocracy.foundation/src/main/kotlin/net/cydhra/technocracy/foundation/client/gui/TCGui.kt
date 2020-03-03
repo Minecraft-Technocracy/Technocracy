@@ -1,12 +1,16 @@
 package net.cydhra.technocracy.foundation.client.gui
 
 import net.cydhra.technocracy.foundation.client.gui.components.slot.ITCSlot
+import net.cydhra.technocracy.foundation.network.PacketHandler
+import net.cydhra.technocracy.foundation.network.componentsync.ClientRequestSyncPacket
+import net.cydhra.technocracy.foundation.network.componentsync.ComponentUpdatePacket
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.RenderHelper
+import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.fml.client.config.GuiUtils
 import org.lwjgl.opengl.GL11
@@ -84,6 +88,11 @@ TCContainer)
         this.ySize = guiHeight
         origWidth = guiWidth
         origHeight = guiHeight
+    }
+
+    override fun initGui() {
+        super.initGui()
+        PacketHandler.sendToServer(ClientRequestSyncPacket())
     }
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {

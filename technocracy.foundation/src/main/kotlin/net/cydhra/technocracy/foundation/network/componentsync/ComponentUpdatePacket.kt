@@ -2,18 +2,19 @@ package net.cydhra.technocracy.foundation.network.componentsync
 
 import io.netty.buffer.ByteBuf
 import it.zerono.mods.zerocore.api.multiblock.MultiblockTileEntityBase
+import net.cydhra.technocracy.foundation.client.gui.TCContainer
+import net.cydhra.technocracy.foundation.client.gui.TCGui
+import net.cydhra.technocracy.foundation.model.components.IComponent
 import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
 import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatable
-import net.minecraft.client.gui.inventory.GuiFurnace
+import net.minecraft.client.Minecraft
 import net.minecraft.nbt.NBTTagCompound
-import net.minecraft.util.math.BlockPos
 import net.minecraftforge.fml.common.network.ByteBufUtils
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext
 
-class ClientComponentUpdatePacket(var tag: NBTTagCompound = NBTTagCompound()) : IMessage, IMessageHandler<ClientComponentUpdatePacket, IMessage> {
-
+class ComponentUpdatePacket(var tag: NBTTagCompound = NBTTagCompound()) : IMessage, IMessageHandler<ComponentUpdatePacket, IMessage> {
     override fun fromBytes(buf: ByteBuf?) {
         tag = ByteBufUtils.readTag(buf)!!
     }
@@ -22,9 +23,14 @@ class ClientComponentUpdatePacket(var tag: NBTTagCompound = NBTTagCompound()) : 
         ByteBufUtils.writeTag(buf, tag)
     }
 
-    override fun onMessage(packet: ClientComponentUpdatePacket, ctx: MessageContext): IMessage? {
-        //todo packet can be send all the time, no check if the te is even the right one
-        val te = ctx.serverHandler.player.world.getTileEntity(BlockPos.fromLong(packet.tag.getLong("pos")))
+    override fun onMessage(packet: ComponentUpdatePacket, ctx: MessageContext): IMessage? {
+        val container = if (ctx.side.isClient) Minecraft.getMinecraft().player.openContainer else ctx.serverHandler.player.openContainer
+
+        if (container !is TCContainer)
+            return null
+
+        //todo send update packet to clients that have open the same gui
+        val te = container.tileEntity
         if (te is MultiblockTileEntityBase) {
             (te.multiblockController as BaseMultiBlock).getComponents().filter { it.first == packet.tag.getString("name") }.forEach { (_, component) ->
                 component.deserializeNBT(packet.tag.getCompoundTag("component"))

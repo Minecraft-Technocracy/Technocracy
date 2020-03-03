@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.client.gui
 
+import net.cydhra.technocracy.foundation.client.gui.components.ITCComponent
 import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
 import net.cydhra.technocracy.foundation.client.gui.components.label.DefaultLabel
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotPlayer
@@ -11,7 +12,7 @@ import net.minecraft.util.ResourceLocation
 abstract class TCTab(val name: String, val parent: TCGui, val tint: Int = -1,
                      val icon: TCIcon = TCIcon(ResourceLocation("technocracy.foundation", "textures/item/gear.png"))) {
 
-    val components: ArrayList<TCComponent> = ArrayList()
+    val components: ArrayList<ITCComponent> = ArrayList()
 
     abstract fun init()
 
@@ -37,7 +38,7 @@ abstract class TCTab(val name: String, val parent: TCGui, val tint: Int = -1,
     }
 
     open fun update() {
-        this.components.forEach(TCComponent::update)
+        this.components.forEach(ITCComponent::update)
     }
 
     open fun onClose() {}
@@ -55,7 +56,7 @@ abstract class TCTab(val name: String, val parent: TCGui, val tint: Int = -1,
 
         this.components.add(DefaultLabel(x, y, player.inventory.displayName.unformattedText, 4210752, false))
 
-        val y  = y + 12
+        val y = y + 12
 
         for (row in 0..2) {
             for (slot in 0..8) {

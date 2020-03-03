@@ -4,13 +4,13 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.FontRenderer
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
-import net.minecraft.client.renderer.Tessellator
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats
+import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.ResourceLocation
+import java.util.function.Consumer
 
 
-open class DefaultButton(posX: Int, posY: Int, width: Int, height: Int, text: String) :
-        Button(posX, posY, width, height, text, Minecraft.getMinecraft().fontRenderer) {
+open class DefaultButton(posX: Int, posY: Int, width: Int, height: Int, text: String, onClick: Consumer<EntityPlayer>) :
+        Button(posX, posY, width, height, text, Minecraft.getMinecraft().fontRenderer, onClick) {
 
     protected val BUTTON_TEXTURES = ResourceLocation("textures/gui/widgets.png")
 

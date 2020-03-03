@@ -3,7 +3,7 @@ package net.cydhra.technocracy.foundation.client.gui.components.fluidmeter
 import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
 import net.minecraft.util.math.MathHelper
 
-abstract class FluidMeter(val posX: Int, val posY: Int): TCComponent {
+abstract class FluidMeter(val posX: Int, val posY: Int): TCComponent() {
 
     /**
      * fluid level from 0.0 to 1.0

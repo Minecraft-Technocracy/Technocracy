@@ -15,34 +15,45 @@ class TCGuiHandler : IGuiHandler {
     }
 
     override fun getServerGuiElement(ID: Int, player: EntityPlayer, world: World, x: Int, y: Int, z: Int): Any? {
-        return when (ID) {
+        val te = world.getTileEntity(BlockPos(x, y, z))
+
+        val gui = when (ID) {
             machineGui -> {
-                val machine = world.getTileEntity(BlockPos(x, y, z)) as TCTileEntityGuiProvider
-                machine.getGui(player).container
+                if (te is TCTileEntityGuiProvider) {
+                    te.getGui(player).container
+                } else null
             }
             multiblockGui -> {
-                val obj = world.getTileEntity(BlockPos(x, y, z))
-                if(obj is TileEntityMultiBlockPart<*>) {
-                    obj.getGui(player).container
+                if (te is TileEntityMultiBlockPart<*>) {
+                    te.getGui(player).container
                 } else null
             }
             else -> null
         }
+
+        gui?.tileEntity = te
+
+        return gui
     }
 
     override fun getClientGuiElement(ID: Int, player: EntityPlayer, world: World, x: Int, y: Int, z: Int): Any? {
-        return when (ID) {
+        val te = world.getTileEntity(BlockPos(x, y, z))
+        val gui = when (ID) {
             machineGui -> {
-                val machine = world.getTileEntity(BlockPos(x, y, z)) as TCTileEntityGuiProvider
-                machine.getGui(player)
+                if (te is TCTileEntityGuiProvider) {
+                    te.getGui(player)
+                } else null
             }
             multiblockGui -> {
-                val obj = world.getTileEntity(BlockPos(x, y, z))
-                if(obj is TileEntityMultiBlockPart<*>) {
-                    obj.getGui(player)
+                if (te is TileEntityMultiBlockPart<*>) {
+                    te.getGui(player)
                 } else null
             }
             else -> null
         }
+
+        gui?.container?.tileEntity = te
+
+        return gui
     }
 }

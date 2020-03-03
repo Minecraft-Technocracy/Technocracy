@@ -1,10 +1,12 @@
 package net.cydhra.technocracy.foundation.client.gui
 
+import net.cydhra.technocracy.foundation.client.gui.components.ITCComponent
 import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.Container
 import net.minecraft.inventory.Slot
 import net.minecraft.item.ItemStack
+import net.minecraft.tileentity.TileEntity
 
 
 open class TCContainer(val machineInputs: Int = 0, val machineOutputs: Int = 0) : Container() {
@@ -12,6 +14,12 @@ open class TCContainer(val machineInputs: Int = 0, val machineOutputs: Int = 0) 
     private val playerInventorySize = machineInputs + machineOutputs + 26
     private val playerHotBarStart = playerInventorySize + 1
     private val playerHotBarEnd = playerHotBarStart + 8
+    private val components = mutableListOf<TCComponent>()
+
+    /**
+     * The tileentity this gui belongs to if there is one
+     */
+    var tileEntity: TileEntity? = null
 
     override fun transferStackInSlot(player: EntityPlayer, index: Int): ItemStack? {
         var newStack = ItemStack.EMPTY
@@ -59,9 +67,20 @@ open class TCContainer(val machineInputs: Int = 0, val machineOutputs: Int = 0) 
         this.inventorySlots.clear()
     }
 
-    fun registerComponent(component: TCComponent) {
+    fun registerComponent(component: ITCComponent) {
         if (component is Slot) {
             this.addSlotToContainer(component)
+        } else if (component is TCComponent) {
+            component.componentId = components.size
+            components.add(component)
+        }
+    }
+
+    fun clickComponent(player: EntityPlayer, componentId: Int, clickType: Int) {
+        for (comp in components) {
+            if (comp.componentId == componentId) {
+                comp.handleClientClick(player, clickType)
+            }
         }
     }
 
