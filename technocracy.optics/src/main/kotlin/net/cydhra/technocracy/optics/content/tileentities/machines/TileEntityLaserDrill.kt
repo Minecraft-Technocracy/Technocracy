@@ -12,6 +12,7 @@ import net.cydhra.technocracy.foundation.model.tileentities.api.TEInventoryProvi
 import net.cydhra.technocracy.foundation.model.tileentities.api.logic.ILogicClient
 import net.cydhra.technocracy.foundation.model.tileentities.api.logic.LogicClientDelegate
 import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableTileEntity
+import net.cydhra.technocracy.optics.api.tileentities.components.LaserAbsorberComponent
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
@@ -23,11 +24,14 @@ class TileEntityLaserDrill : AggregatableTileEntity(), TCMachineTileEntity, ILog
     private val outputInventory = InventoryTileEntityComponent(9, this, EnumFacing.UP,
             DynamicInventoryCapability.InventoryType.OUTPUT)
     private val progressComponent = ProgressTileEntityComponent()
+    private val laserAbsorberComponent = LaserAbsorberComponent(
+            mutableSetOf(EnumFacing.NORTH, EnumFacing.EAST, EnumFacing.SOUTH, EnumFacing.WEST))
 
     init {
         this.registerComponent(progressComponent, "progress")
         this.registerComponent(heatStorageComponent, "heat")
         this.registerComponent(outputInventory, "output")
+        this.registerComponent(laserAbsorberComponent, "laser_input")
     }
 
     override fun isItemValid(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack): Boolean {
