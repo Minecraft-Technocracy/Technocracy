@@ -25,7 +25,7 @@ class TileEntityIndustrialRefinery : MachineTileEntity(), TEInventoryProvider {
             tanktype = DynamicFluidCapability.TankType.INPUT, facing = mutableSetOf(EnumFacing.WEST))
 
     private val inputItemComponent = InventoryTileEntityComponent(2, this, EnumFacing.NORTH,
-            DynamicInventoryCapability.InventoryType.INPUT)
+            DynamicInventoryCapability.InventoryType.BOTH)
 
     private val outputInventoryComponent = InventoryTileEntityComponent(1, this, EnumFacing.EAST,
             DynamicInventoryCapability.InventoryType.OUTPUT)
