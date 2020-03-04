@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "type": "forge:ore_dict",
+      "ore": "itemRubber"
+    },
+    {
+      "item": "technocracy.foundation:biphenyl"
+    }
+  ],
+  "fluids": [
+    {
+      "fluid": "chloro_benzene",
+      "amount": 400
+    }
+  ],
+  "output": {
+    "item": "technocracy.foundation:spandex",
+    "count": 1
+  },
+  "cost": 240
+}
