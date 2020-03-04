@@ -143,18 +143,6 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int,
     private fun updateDescription() {
         this.description.clear()
 
-        val textClasses = this.supportedUpgradeClasses.map { TextComponentTranslation(it.unlocalizedName) }
-        val classDescription = textClasses[0]
-        for (i in (1 until textClasses.size)) {
-            classDescription.appendSibling(TextComponentString(", ")).appendSibling(textClasses[i])
-        }
-        classDescription.style = Style().setColor(TextFormatting.DARK_GREEN)
-        this.description.add(TextComponentTranslation("tooltips.upgrades.title.class").setStyle(Style()
-                        .setColor(TextFormatting.DARK_PURPLE))
-                .appendSibling(TextComponentString(":")) to classDescription)
-
-        this.description.add(TextComponentString("\n") to TextComponentString("\n"))
-
         this.description.add(TextComponentTranslation("tooltips.upgrades.title.description")
                 .appendSibling(TextComponentString(":")) to TextComponentString(
                 "${this.inventory.stacks.filter { !it.isEmpty }.count()}/${this.numberOfUpgradeSlots}")
@@ -166,5 +154,17 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int,
                     "${(multiplier.getCappedMultiplier() * 100).roundToInt()}%")
                     .setStyle(Style().setColor(TextFormatting.DARK_GREEN)))
         }
+
+        val textClasses = this.supportedUpgradeClasses.map { TextComponentTranslation(it.unlocalizedName) }
+        val classDescription = textClasses[0]
+        for (i in (1 until textClasses.size)) {
+            classDescription.appendSibling(TextComponentString(", ")).appendSibling(textClasses[i])
+        }
+        classDescription.style = Style().setColor(TextFormatting.DARK_GREEN)
+        this.description.add(TextComponentTranslation("tooltips.upgrades.title.class").setStyle(Style()
+                        .setColor(TextFormatting.DARK_PURPLE))
+                .appendSibling(TextComponentString(":")) to classDescription)
+
+        this.description.add(TextComponentString("\n") to TextComponentString("\n"))
     }
 }
