@@ -9,7 +9,8 @@ import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.common.capabilities.CapabilityInject
 
-class LaserAbsorberComponent(private val canAbsorbAt: Array<EnumFacing>) : AbstractCapabilityTileEntityComponent(), ILaserAbsorber {
+class LaserAbsorberComponent(private val canAbsorbAt: MutableSet<EnumFacing>) : AbstractCapabilityTileEntityComponent(),
+        ILaserAbsorber {
 
     companion object {
         @JvmStatic
