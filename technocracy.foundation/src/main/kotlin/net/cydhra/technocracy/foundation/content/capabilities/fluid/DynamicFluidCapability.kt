@@ -149,6 +149,7 @@ open class DynamicFluidCapability(var capacity: Int = 1000, val allowedFluid: Mu
 
     override fun deserializeNBT(nbt: NBTTagCompound?) {
         currentFluid = FluidStack.loadFluidStackFromNBT(nbt)
+        capacity = nbt?.getInteger("Capacity") ?: 1000
     }
 
     override fun serializeNBT(): NBTTagCompound {

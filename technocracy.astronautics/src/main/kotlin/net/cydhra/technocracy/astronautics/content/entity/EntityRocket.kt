@@ -120,6 +120,9 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
             owner.deserializeNBT(getCompoundTag("owner"))
             tank.deserializeNBT(getCompoundTag("tank"))
 
+            owner.allowAutoSave = false
+            tank.allowAutoSave = false
+
             val cargo = getCompoundTag("cargo")
             val size = cargo.getInteger("cargoSize")
             cargoSlots = NonNullList.withSize(size, ItemStack.EMPTY)
@@ -127,6 +130,7 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
             for (i in 0 until size) {
                 cargoSlots!![i] = ItemStack(list.getCompoundTagAt(i))
             }
+            (world.getTileEntity(controllerBlock) as? TileEntityRocketController)?.linkToCurrentRocket(this@EntityRocket)
         }
     }
 

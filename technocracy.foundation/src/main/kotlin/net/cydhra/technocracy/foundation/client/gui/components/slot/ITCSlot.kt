@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.client.gui.components.slot
 
 import net.cydhra.technocracy.foundation.client.gui.components.ITCComponent
+import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 
 /**
  * Common interface to GUI item slots. Since two different kinds of slots are required, because player-inventories
@@ -11,4 +12,8 @@ interface ITCSlot : ITCComponent {
     fun setEnabled(enabled: Boolean)
 
     fun isEnabled(): Boolean
+
+    val isPlayerInventory: Boolean
+    val index: Int
+    var type: DynamicInventoryCapability.InventoryType
 }

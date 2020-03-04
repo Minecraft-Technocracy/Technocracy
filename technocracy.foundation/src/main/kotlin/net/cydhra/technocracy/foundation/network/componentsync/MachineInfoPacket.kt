@@ -2,6 +2,7 @@ package net.cydhra.technocracy.foundation.network.componentsync
 
 import io.netty.buffer.ByteBuf
 import net.cydhra.technocracy.foundation.client.gui.TCContainer
+import net.cydhra.technocracy.foundation.model.components.IAggregatable
 import net.cydhra.technocracy.foundation.model.components.IComponent
 import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
 import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
@@ -19,7 +20,7 @@ class MachineInfoPacket() : IMessage, IMessageHandler<MachineInfoPacket, IMessag
     var tag: NBTTagCompound = NBTTagCompound()
 
     constructor(te: TileEntity?) : this() {
-        if (te is MachineTileEntity) {
+        if (te is IAggregatable) {
             tag = getTagForMachine(te.getComponents())
         } else if (te is TileEntityMultiBlockPart<*>) {
             if (te.multiblockController != null)
@@ -61,7 +62,7 @@ class MachineInfoPacket() : IMessage, IMessageHandler<MachineInfoPacket, IMessag
         //todo send update packet to clients that have open the same gui
         val te = container.tileEntity
         //val te = Minecraft.getMinecraft().world.getTileEntity((BlockPos.fromLong(packet.tag.getLong("pos"))))
-        if (te is MachineTileEntity) {
+        if (te is IAggregatable) {
             te.getComponents().forEach { (name, component) ->
                 val tag = packet.tag.getCompoundTag(name)
                 component.deserializeNBT(tag)

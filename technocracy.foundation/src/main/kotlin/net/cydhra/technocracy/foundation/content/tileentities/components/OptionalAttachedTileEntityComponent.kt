@@ -46,6 +46,7 @@ class OptionalAttachedTileEntityComponent<T : AbstractTileEntityComponent>(val i
     }
 
     override fun onRegister() {
+        super.onRegister()
         innerComponent.tile = this.tile
     }
 }
