@@ -7,11 +7,11 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParseException
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.content.blocks.*
+import net.cydhra.technocracy.foundation.content.tileentities.machines.*
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager.RECIPE_ASSETS_FOLDER
 import net.cydhra.technocracy.foundation.data.crafting.special.HeatRecipeParser
 import net.cydhra.technocracy.foundation.data.crafting.types.*
 import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
-import net.cydhra.technocracy.foundation.content.tileentities.machines.*
 import net.minecraft.block.Block
 import net.minecraft.util.JsonUtils
 import net.minecraftforge.common.crafting.CraftingHelper
@@ -66,6 +66,7 @@ object RecipeManager {
         parseMachineRecipes("dissolution", IFTFRecipeParser, loadedMachineRecipes, RecipeType.DISSOLUTION)
         parseMachineRecipes("electric_furnace", ITIRecipeParser, loadedMachineRecipes, RecipeType.ELECTRIC_FURNACE)
         parseMachineRecipes("electrolysis", FTMFRecipeParser, loadedMachineRecipes, RecipeType.ELECTROLYSIS)
+        parseMachineRecipes("industrial_refinery", MIMFTIRecipeParser, loadedMachineRecipes, RecipeType.INDUSTRIAL_REFINERY)
         parseMachineRecipes("kiln", FTFRecipeParser, loadedMachineRecipes, RecipeType.KILN)
         parseMachineRecipes("polymerization", FTIRecipeParser, loadedMachineRecipes, RecipeType.POLYMERIZATION)
         parseMachineRecipes("pulverizer", ITIRecipeParser, loadedMachineRecipes, RecipeType.PULVERIZER)
@@ -193,6 +194,7 @@ object RecipeManager {
         DISSOLUTION(dissolutionChamberBlock, TileEntityDissolutionChamber::class.java),
         ELECTRIC_FURNACE(electricFurnaceBlock, TileEntityElectricFurnace::class.java),
         ELECTROLYSIS(electrolysisChamberBlock, TileEntityElectrolysisChamber::class.java),
+        INDUSTRIAL_REFINERY(industrialRefineryBlock, TileEntityIndustrialRefinery::class.java),
         KILN(kilnBlock, TileEntityKiln::class.java),
         POLYMERIZATION(polymerizationChamberBlock, TileEntityPolymerizationChamber::class.java),
         PULVERIZER(pulverizerBlock, TileEntityPulverizer::class.java),

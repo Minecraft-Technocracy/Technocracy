@@ -137,6 +137,7 @@ tile.crystallization_chamber.name=Crystallization Chamber
 tile.dissolution_chamber.name=Dissolution Chamber
 tile.electric_furnace.name=Electric Furnace
 tile.electrolysis_chamber.name=Electrolysis Chamber
+tile.industrial_refinery.name=Industrial Refinery
 tile.kiln.name=Pyrolysis Kiln
 tile.polymerization_chamber.name=Polymerization Chamber
 tile.pulverizer.name=Pulverizer
