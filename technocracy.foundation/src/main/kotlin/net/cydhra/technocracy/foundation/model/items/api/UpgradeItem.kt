@@ -5,11 +5,9 @@ import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.Machine
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MultiplierUpgrade
 import net.minecraft.client.util.ITooltipFlag
 import net.minecraft.item.ItemStack
-import net.minecraft.util.text.Style
-import net.minecraft.util.text.TextComponentString
-import net.minecraft.util.text.TextComponentTranslation
-import net.minecraft.util.text.TextFormatting
+import net.minecraft.util.text.*
 import net.minecraft.world.World
+import java.util.*
 
 /**
  * Every item that can be used as an machine upgrade, derives from this base class. Upgrades are not stackable. This
@@ -60,5 +58,12 @@ class UpgradeItem(unlocalizedName: String,
                                                             .setColor(TextFormatting.WHITE)))
                                     .formattedText)
                 }
+
+        // append custom tooltips of special upgrades
+        this.upgrades
+                .map(MachineUpgrade::getUpgradeDescription)
+                .filter(Optional<ITextComponent>::isPresent)
+                .map(Optional<ITextComponent>::get)
+                .forEach { tooltip.add(it.formattedText) }
     }
 }

@@ -15,6 +15,11 @@ import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.Machine
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeParameter
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MultiplierUpgrade
 import net.minecraft.util.EnumFacing
+import net.minecraft.util.text.ITextComponent
+import net.minecraft.util.text.Style
+import net.minecraft.util.text.TextComponentTranslation
+import net.minecraft.util.text.TextFormatting
+import java.util.*
 
 const val MACHINE_UPGRADE_ENERGY: MachineUpgradeParameter = "energy"
 const val MACHINE_UPGRADE_SPEED: MachineUpgradeParameter = "speed"
@@ -88,6 +93,13 @@ class LubricantUpgrade : MachineUpgrade(MACHINE_UPGRADE_GENERIC) {
                     LUBRICANT_CONSUMPTION_LOGIC_NAME)
         }
     }
+
+    override fun getUpgradeDescription(): Optional<ITextComponent> {
+        return Optional.of(
+                TextComponentTranslation("tooltips.upgrades.hint.lubricant")
+                        .setStyle(Style().setColor(TextFormatting.GREEN))
+        )
+    }
 }
 
 class CoolerUpgrade : MachineUpgrade(MACHINE_UPGRADE_GENERIC) {
@@ -158,4 +170,10 @@ class CoolerUpgrade : MachineUpgrade(MACHINE_UPGRADE_GENERIC) {
         }
     }
 
+    override fun getUpgradeDescription(): Optional<ITextComponent> {
+        return Optional.of(
+                TextComponentTranslation("tooltips.upgrades.hint.cooler")
+                        .setStyle(Style().setColor(TextFormatting.GREEN))
+        )
+    }
 }

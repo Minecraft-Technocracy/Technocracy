@@ -2,6 +2,8 @@ package net.cydhra.technocracy.foundation.model.tileentities.api.upgrades
 
 import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesTileEntityComponent
 import net.cydhra.technocracy.foundation.model.tileentities.api.TCMachineTileEntity
+import net.minecraft.util.text.ITextComponent
+import java.util.*
 
 /**
  * Models instances of upgrades that can be granted by upgrade items. Does not take any parameters, as different
@@ -32,13 +34,18 @@ abstract class MachineUpgrade(val upgradeType: MachineUpgradeParameter) {
      * @param upgrades the upgrade component this upgrade is installed in
      */
     abstract fun onUninstallUpgrade(tile: TCMachineTileEntity,
-            upgrades: MachineUpgradesTileEntityComponent)
+                                    upgrades: MachineUpgradesTileEntityComponent)
 
     /**
      * Called when the machine that holds the upgrade is loaded from NBT
      */
     abstract fun onUpgradeLoad(tile: TCMachineTileEntity,
-            upgrades: MachineUpgradesTileEntityComponent)
+                               upgrades: MachineUpgradesTileEntityComponent)
+
+    /**
+     * Get an optional upgrade description text for items for special upgrades that need explanation
+     */
+    abstract fun getUpgradeDescription(): Optional<ITextComponent>
 }
 
 /**
@@ -60,6 +67,10 @@ abstract class MultiplierUpgrade(val multiplier: Double, parameterName: MachineU
     }
 
     override fun onUpgradeLoad(tile: TCMachineTileEntity, upgrades: MachineUpgradesTileEntityComponent) {
+    }
+
+    override fun getUpgradeDescription(): Optional<ITextComponent> {
+        return Optional.empty()
     }
 }
 

@@ -288,6 +288,9 @@ tooltips.upgrades.parameter.energy=Energy
 tooltips.upgrades.parameter.speed=Speed
 tooltips.upgrades.parameter.additive=Additive
 
+tooltips.upgrades.hint.cooler=Machine requires a coolant to work properly. Can only be installed once per machine.
+tooltips.upgrades.hint.lubricant=Machine requires a lubricant to work properly. Can only be installed once per machine.
+
 wrenchmode.default.name=Default Mode
 wrenchmode.pipe.energy.name=Energy Pipes Mode
 wrenchmode.pipe.item.name=Item Pipes Mode
