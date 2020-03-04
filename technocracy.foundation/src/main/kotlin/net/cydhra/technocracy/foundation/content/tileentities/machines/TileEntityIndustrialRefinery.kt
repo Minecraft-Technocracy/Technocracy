@@ -21,8 +21,11 @@ import net.minecraft.util.EnumFacing
  *
  */
 class TileEntityIndustrialRefinery : MachineTileEntity(), TEInventoryProvider {
-    private val inputFluidComponent = FluidTileEntityComponent(4000,
+    private val inputFluidComponent1 = FluidTileEntityComponent(4000,
             tanktype = DynamicFluidCapability.TankType.INPUT, facing = mutableSetOf(EnumFacing.WEST))
+
+    private val inputFluidComponent2 = FluidTileEntityComponent(4000,
+            tanktype = DynamicFluidCapability.TankType.INPUT, facing = mutableSetOf(EnumFacing.SOUTH))
 
     private val inputItemComponent = InventoryTileEntityComponent(2, this, EnumFacing.NORTH,
             DynamicInventoryCapability.InventoryType.BOTH)
@@ -44,7 +47,8 @@ class TileEntityIndustrialRefinery : MachineTileEntity(), TEInventoryProvider {
     }
 
     init {
-        this.registerComponent(inputFluidComponent, "fluid")
+        this.registerComponent(inputFluidComponent1, "fluid1")
+        this.registerComponent(inputFluidComponent2, "fluid2")
         this.registerComponent(inputItemComponent, "item")
         this.registerComponent(outputInventoryComponent, "output")
         this.registerComponent(upgradesComponent, "upgrades")
@@ -53,7 +57,7 @@ class TileEntityIndustrialRefinery : MachineTileEntity(), TEInventoryProvider {
                 RecipeManager.RecipeType.INDUSTRIAL_REFINERY,
                 inputInventory = inputItemComponent.inventory,
                 outputInventory = outputInventoryComponent.inventory,
-                inputFluidSlots = arrayOf(inputFluidComponent.fluid),
+                inputFluidSlots = arrayOf(inputFluidComponent1.fluid, inputFluidComponent2.fluid),
                 energyStorage = this.energyStorageComponent.energyStorage,
                 processSpeedComponent = this.processingSpeedComponent,
                 energyCostComponent = this.energyCostComponent,
