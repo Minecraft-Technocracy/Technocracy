@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "mem",
+    "eee",
+    "mem"
+  ],
+  "key": {
+    "e": {
+      "type": "forge:ore_dict",
+      "ore": "ingotSiliconBronze"
+    },
+    "m": {
+      "type": "forge:ore_dict",
+      "ore": "ingotMPCM"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:boiler_conductor",
+    "count": 1
+  }
+}

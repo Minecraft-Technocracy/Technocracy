@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "www",
+    "fbf",
+    "www"
+  ],
+  "key": {
+    "w": {
+      "item": "technocracy.foundation:boiler_wall"
+    },
+    "f": {
+      "item": "technocracy.foundation:pipe_item",
+      "data": 1
+    },
+    "b": {
+      "item": "minecraft:bucket"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:boiler_output",
+    "count": 1
+  }
+}

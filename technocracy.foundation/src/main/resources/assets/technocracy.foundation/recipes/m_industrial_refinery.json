@@ -1,0 +1,37 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "gpg",
+    "fmb",
+    "trt"
+  ],
+  "key": {
+    "m": {
+      "item": "technocracy.foundation:industrial_machine_frame"
+    },
+    "f": {
+      "item": "technocracy.foundation:fan"
+    },
+    "r": {
+      "type": "forge:ore_dict",
+      "ore": "itemRubber"
+    },
+    "t": {
+      "type": "forge:ore_dict",
+      "ore": "ingotZircalloy"
+    },
+    "b": {
+      "item": "technocracy.foundation:membrane"
+    },
+    "g": {
+      "item": "technocracy.foundation:glue_ball"
+    },
+    "p": {
+      "item": "technocracy.foundation:polyacrylate"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:industrial_refinery",
+    "count": 1
+  }
+}

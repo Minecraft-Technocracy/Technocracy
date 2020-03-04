@@ -7,7 +7,8 @@
   ],
   "key": {
     "p": {
-      "item": "technocracy.foundation:ingot.mpcm"
+      "type": "forge:ore_dict",
+      "ore": "ingotMPCM"
     },
     "s": {
       "type": "forge:ore_dict",

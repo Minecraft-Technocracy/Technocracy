@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "psp",
+    "sfs",
+    "prp"
+  ],
+  "key": {
+    "p": {
+      "item": "technocracy.foundation:boiler_wall"
+    },
+    "f": {
+      "item": "technocracy.foundation:advanced_machine_frame"
+    },
+    "s": {
+      "type": "forge:ore_dict",
+      "ore": "sheetAluminum"
+    },
+    "r": {
+      "type": "forge:ore_dict",
+      "ore": "dustRedstone"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:boiler_controller",
+    "count": 1
+  }
+}

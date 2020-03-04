@@ -1,8 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "ccc",
-    "prp",
+    "rrr",
+    "pgp",
     "sss"
   ],
   "key": {
@@ -17,9 +17,8 @@
       "type": "forge:ore_dict",
       "ore": "sheetPlastic"
     },
-    "c": {
-      "type": "forge:ore_dict",
-      "ore": "ingotCopper"
+    "g": {
+      "item": "technocracy.foundation:glue_ball"
     }
   },
   "result": {
