@@ -18,7 +18,7 @@
     },
     "b": {
       "type": "forge:ore_dict",
-      "ore": "ingotBronze"
+      "ore": "ingotLead"
     },
     "c": {
       "type": "forge:ore_dict",
