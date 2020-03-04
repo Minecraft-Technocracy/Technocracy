@@ -3,6 +3,7 @@ package net.cydhra.technocracy.optics.api.tileentities.components
 import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractCapabilityTileEntityComponent
 import net.cydhra.technocracy.foundation.model.components.ComponentType
 import net.cydhra.technocracy.foundation.util.compound
+import net.cydhra.technocracy.optics.api.capabilities.laser.ILaserAbsorber
 import net.cydhra.technocracy.optics.api.capabilities.laser.ILaserEmitter
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
@@ -13,6 +14,10 @@ class LaserEmitterTileEntityComponent(
         var canEmitAt: Set<EnumFacing>,
         var limit: Int)
     : AbstractCapabilityTileEntityComponent(), ILaserEmitter {
+
+    // this is not serialized, because reestablishing laser link is a lot easier and less error-prone, while not
+    // really disturbing connectivity by more than a few ticks.
+    val connectedTo = mutableMapOf<EnumFacing, ILaserAbsorber>()
 
     companion object {
         @JvmStatic
