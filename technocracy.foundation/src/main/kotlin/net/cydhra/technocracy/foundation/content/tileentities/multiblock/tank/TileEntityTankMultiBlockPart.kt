@@ -33,7 +33,8 @@ open class TileEntityTankMultiBlockPart : TileEntityMultiBlockPart<TankMultiBloc
 
 
     override fun getGui(player: EntityPlayer?): TCGui {
-        val gui = TCGui(guiWidth = 176,  guiHeight = 200, container = TCContainer(0, 0))
+
+        val gui = TCGui(guiWidth = 176,  guiHeight = 200, container = TCContainer())
 
         //176, val guiHeight: Int = 166
 

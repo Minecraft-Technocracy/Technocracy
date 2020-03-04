@@ -8,6 +8,7 @@ import net.cydhra.technocracy.foundation.util.propertys.DIMENSIONS
 import net.cydhra.technocracy.foundation.util.propertys.FLUIDSTACK
 import net.cydhra.technocracy.foundation.util.propertys.POSITION
 import net.cydhra.technocracy.foundation.util.propertys.TANKSIZE
+import net.minecraft.block.Block
 import net.minecraft.block.state.BlockStateContainer
 import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.player.EntityPlayer
@@ -37,11 +38,11 @@ class TankStructureBlock<T>(unlocalizedName: String,
 
     override fun onBlockActivated(worldIn: World, pos: BlockPos, state: IBlockState, playerIn: EntityPlayer, hand: EnumHand, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean {
         if (!playerIn.isSneaking) {
-                val controllerTileEntity = getMultiBlockPartTileEntity(worldIn, pos)
-                if (controllerTileEntity.validateStructure()) {
-                    controllerTileEntity.onActivate(worldIn, pos, playerIn, hand, facing)
-                    return true
-                }
+            val controllerTileEntity = getMultiBlockPartTileEntity(worldIn, pos)
+            if (controllerTileEntity.validateStructure()) {
+                controllerTileEntity.onActivate(worldIn, pos, playerIn, hand, facing)
+                return true
+            }
         }
 
         return super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ)

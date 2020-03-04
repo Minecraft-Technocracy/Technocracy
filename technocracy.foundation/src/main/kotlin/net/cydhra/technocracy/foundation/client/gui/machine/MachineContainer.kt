@@ -5,10 +5,10 @@ import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTile
 import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
 
 open class MachineContainer(machine: MachineTileEntity) : TCContainer(
-        (machine.getComponents().filter { (name, component) -> component is InventoryTileEntityComponent && name.contains("input") }
+        /*(machine.getComponents().filter { (name, component) -> component is InventoryTileEntityComponent && name.contains("input") }
                 .elementAtOrNull(0)?.second as? InventoryTileEntityComponent)?.inventory?.slots ?: 0,
         (machine.getComponents().filter { (name, component) -> component is InventoryTileEntityComponent && name.contains("output") }
-                .elementAtOrNull(0)?.second as? InventoryTileEntityComponent)?.inventory?.slots ?: 0
+                .elementAtOrNull(0)?.second as? InventoryTileEntityComponent)?.inventory?.slots ?: 0*/
 ) {
     init {
         tileEntity = machine

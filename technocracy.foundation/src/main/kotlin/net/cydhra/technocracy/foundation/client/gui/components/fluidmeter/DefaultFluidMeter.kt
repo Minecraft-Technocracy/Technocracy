@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.texture.TextureMap
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
+import net.minecraft.util.math.MathHelper
 import net.minecraft.util.text.TextFormatting
 import net.minecraftforge.fluids.Fluid
 import org.lwjgl.opengl.GL11
@@ -173,6 +174,7 @@ class DefaultFluidMeter(posX: Int, posY: Int, val component: FluidTileEntityComp
 
     override fun update() {
         level = if (component.fluid.currentFluid != null) component.fluid.currentFluid!!.amount.toFloat() / component.fluid.capacity.toFloat() else 0f
+        this.level = MathHelper.clamp(this.level, 0F, 1F)
         flowAnimation++
         if (flowAnimation > 1024)
             flowAnimation = 0

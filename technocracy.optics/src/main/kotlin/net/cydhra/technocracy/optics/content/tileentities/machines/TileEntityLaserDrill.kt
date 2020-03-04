@@ -43,7 +43,7 @@ class TileEntityLaserDrill : AggregatableTileEntity(), TCMachineTileEntity, ILog
     }
 
     override fun getGui(player: EntityPlayer?): TCGui {
-        val gui = TCGui(container = TCContainer(machineOutputs = 9))
+        val gui = TCGui(container = TCContainer())
         gui.registerTab(object : TCTab(this.blockType?.localizedName ?: "Laser Drill", gui) {
             override fun init() {
                 // TODO

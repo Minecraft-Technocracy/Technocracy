@@ -103,7 +103,7 @@ open class CommonProxy {
         MinecraftForge.EVENT_BUS.register(blockManager)
         MinecraftForge.EVENT_BUS.register(fluidManager)
         MinecraftForge.EVENT_BUS.register(itemManager)
-        MinecraftForge.EVENT_BUS.register(GuiUpdateListener())
+        MinecraftForge.EVENT_BUS.register(GuiUpdateListener)
         MinecraftForge.EVENT_BUS.register(PotionManager)
         MinecraftForge.EVENT_BUS.register(ConduitNetwork)
 

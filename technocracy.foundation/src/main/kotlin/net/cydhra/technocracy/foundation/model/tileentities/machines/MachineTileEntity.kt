@@ -109,7 +109,9 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
                                 for (i in 0 until component.inventory.slots) {
                                     if (nextInput == 25)
                                         nextInput = 30
-                                    components.add(TCSlotIO(component.inventory, i, nextInput, 40, gui))
+                                    val slot = TCSlotIO(component.inventory, i, nextInput, 40, gui)
+                                    slot.type = component.inventoryType
+                                    components.add(slot)
                                     if (inputNearestToTheMiddle < nextInput)
                                         inputNearestToTheMiddle = nextInput
                                     nextInput += 20
@@ -117,7 +119,9 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
 
                             } else {
                                 for (i in component.inventory.slots - 1 downTo 0) {
-                                    components.add(TCSlotIO(component.inventory, i, 125 + i * 20, 40, gui))
+                                    val slot = TCSlotIO(component.inventory, i, 125 + i * 20, 40, gui)
+                                    slot.type = component.inventoryType
+                                    components.add(slot)
                                     val newX = 125 + i * 20
                                     if (outputNearestToTheMiddle > newX)
                                         outputNearestToTheMiddle = newX
