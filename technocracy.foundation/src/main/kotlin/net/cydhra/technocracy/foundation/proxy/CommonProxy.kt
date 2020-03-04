@@ -51,7 +51,10 @@ import net.cydhra.technocracy.foundation.network.ComponentClickPacket
 import net.cydhra.technocracy.foundation.network.ItemKeyBindPacket
 import net.cydhra.technocracy.foundation.network.ItemScrollPacket
 import net.cydhra.technocracy.foundation.network.PacketHandler
-import net.cydhra.technocracy.foundation.network.componentsync.*
+import net.cydhra.technocracy.foundation.network.componentsync.ClientRequestSyncPacket
+import net.cydhra.technocracy.foundation.network.componentsync.ComponentUpdatePacket
+import net.cydhra.technocracy.foundation.network.componentsync.GuiUpdateListener
+import net.cydhra.technocracy.foundation.network.componentsync.MachineInfoPacket
 import net.minecraft.client.Minecraft
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.MinecraftForge
@@ -235,6 +238,7 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(polyfibreItem)
         itemManager.prepareItemForRegistration(pumpItem)
         itemManager.prepareItemForRegistration(fanItem)
+        itemManager.prepareItemForRegistration(spandexItem)
 
         itemManager.prepareItemForRegistration(invarItem)
         itemManager.prepareItemForRegistration(siliconBronzeItem)

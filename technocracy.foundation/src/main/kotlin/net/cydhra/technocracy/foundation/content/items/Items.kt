@@ -54,6 +54,7 @@ val servoItem = BaseItem("servo")
 val polyfibreItem = BaseItem("polyfibre")
 val pumpItem = BaseItem("pump")
 val fanItem = BaseItem("fan")
+val spandexItem = BaseItem("spandex")
 
 val pipeItem = PipeItem()
 val facadeItem = FacadeItem()
