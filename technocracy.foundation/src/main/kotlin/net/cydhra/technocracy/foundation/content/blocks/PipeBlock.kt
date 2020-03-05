@@ -367,18 +367,18 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
     }
 
     override fun onFallenUpon(world: World, pos: BlockPos, entityIn: Entity, fallDistance: Float) {
-        val tile = world.getTileEntity(pos) as? TileEntityPipe ?: return
-        val pair = getBlockOnFacing(tile, EnumFacing.UP) ?: return
-        //can use current pos as onLanded is called in same method
         lastFallLoc = pos
+        val tile = world.getTileEntity(pos) as? TileEntityPipe ?: return super.onFallenUpon(world, pos, entityIn, fallDistance)
+        val pair = getBlockOnFacing(tile, EnumFacing.UP) ?: return super.onFallenUpon(world, pos, entityIn, fallDistance)
+        //can use current pos as onLanded is called in same method
         return pair.first.onFallenUpon(world, pos, entityIn, fallDistance)
     }
 
     override fun onLanded(world: World, entityIn: Entity) {
         if (lastFallLoc == null) return
 
-        val tile = world.getTileEntity(lastFallLoc!!) as? TileEntityPipe ?: return
-        val pair = getBlockOnFacing(tile, EnumFacing.UP) ?: return
+        val tile = world.getTileEntity(lastFallLoc!!) as? TileEntityPipe ?: return super.onLanded(world, entityIn)
+        val pair = getBlockOnFacing(tile, EnumFacing.UP) ?: return super.onLanded(world, entityIn)
         return pair.first.onLanded(world, entityIn)
     }
 
