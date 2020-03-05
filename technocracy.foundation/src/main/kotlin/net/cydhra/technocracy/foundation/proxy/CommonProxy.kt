@@ -41,6 +41,7 @@ import net.cydhra.technocracy.foundation.content.world.OilLakeGen
 import net.cydhra.technocracy.foundation.content.world.OilSandGen
 import net.cydhra.technocracy.foundation.content.world.WorldGenDeco
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
+import net.cydhra.technocracy.foundation.data.crafting.types.ITIRecipe
 import net.cydhra.technocracy.foundation.model.blocks.manager.BlockManager
 import net.cydhra.technocracy.foundation.model.fluids.manager.FluidManager
 import net.cydhra.technocracy.foundation.model.items.manager.ItemManager
@@ -56,6 +57,8 @@ import net.cydhra.technocracy.foundation.network.componentsync.ComponentUpdatePa
 import net.cydhra.technocracy.foundation.network.componentsync.GuiUpdateListener
 import net.cydhra.technocracy.foundation.network.componentsync.MachineInfoPacket
 import net.minecraft.client.Minecraft
+import net.minecraft.item.crafting.FurnaceRecipes
+import net.minecraft.item.crafting.Ingredient
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.animation.ITimeValue
@@ -364,6 +367,19 @@ open class CommonProxy {
     }
 
     open fun postInit() {
+        // register all furnace recipes within electrical furnace
+        FurnaceRecipes.instance().smeltingList.forEach { recipe ->
+            RecipeManager.registerRecipe(
+                    type = RecipeManager.RecipeType.ELECTRIC_FURNACE,
+                    recipe = ITIRecipe(
+                            inputItem = Ingredient.fromStacks(recipe.key),
+                            outputItem = recipe.value,
+                            // the processing cost is derived from EXP output, as more valuable items give more exp
+                            // and thus should be expected to be more late game.
+                            processingCost = (200 * FurnaceRecipes.instance().getSmeltingExperience(recipe.value)).toInt()
+                    ))
+        }
+
         RecipeManager.initialize()
     }
 
