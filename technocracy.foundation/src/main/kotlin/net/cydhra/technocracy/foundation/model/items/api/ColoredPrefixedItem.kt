@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.util.text.translation.I18n
 
 /**
- * Any additional ingots created by this mod are ultimately an instance of this class
+ * Items that are tinted and belong to a class of items and are thus prefixed in their ID. (like sheets, gears, etc).
  */
 open class ColoredPrefixedItem(val prefix: String,
                                val ingotMaterialName: String,
