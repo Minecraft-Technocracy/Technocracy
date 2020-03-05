@@ -27,7 +27,6 @@ class TCItemRenderer : IWailaTooltipRenderer {
     private fun renderItemStack(itm: ItemStack, txt: String) {
         GlStateManager.color(1.0f, 1.0f, 1.0f)
         if (!itm.isEmpty) {
-            GlStateManager.pushMatrix()
             GlStateManager.translate(0.0f, 0.0f, 32.0f)
             GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f)
             GlStateManager.enableRescaleNormal()
@@ -38,7 +37,7 @@ class TCItemRenderer : IWailaTooltipRenderer {
             Minecraft.getMinecraft().renderItem.renderItemAndEffectIntoGUI(itm, 0, 0)
             Minecraft.getMinecraft().renderItem.renderItemOverlayIntoGUI(Minecraft.getMinecraft().fontRenderer, itm, 0, 0, txt)
 
-            GlStateManager.popMatrix()
+            GlStateManager.translate(0.0f, 0.0f, -32.0f)
             GlStateManager.disableRescaleNormal()
             GlStateManager.disableLighting()
         }
