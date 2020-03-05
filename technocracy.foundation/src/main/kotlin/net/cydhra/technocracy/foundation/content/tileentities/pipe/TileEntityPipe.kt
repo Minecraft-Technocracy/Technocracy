@@ -7,6 +7,7 @@ import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.cydhra.technocracy.foundation.content.tileentities.components.FacadeTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.PipeTypesTileEntityComponent
 import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableTileEntity
+import net.minecraft.block.Block
 import net.minecraft.init.Blocks
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
@@ -105,6 +106,10 @@ class TileEntityPipe : AggregatableTileEntity() {
         pipeTypes.types.remove(type)
 
         if (pipeTypes.types.isEmpty()) {
+            for (f in facades.facades) {
+                f.value.count = 1
+                Block.spawnAsEntity(world, pos, f.value)
+            }
             world.setBlockState(this.pos, Blocks.AIR.defaultState)
         }
 
