@@ -1,9 +1,11 @@
 package net.cydhra.technocracy.foundation.content.items
 
 import net.cydhra.technocracy.foundation.api.IWrench
+import net.cydhra.technocracy.foundation.client.textures.TextureAtlasManager
 import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.cydhra.technocracy.foundation.model.items.api.BaseItem
 import net.cydhra.technocracy.foundation.model.items.util.IItemScrollEvent
+import net.minecraft.client.Minecraft
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
@@ -19,6 +21,9 @@ import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.util.EnumHelper
 import net.minecraftforge.event.entity.player.PlayerInteractEvent
 import net.minecraftforge.fml.common.eventhandler.Event
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import net.minecraftforge.fml.common.gameevent.TickEvent
+import net.minecraftforge.fml.relauncher.Side
 
 
 class WrenchItem : BaseItem("Wrench"), IWrench, IItemScrollEvent {
@@ -26,6 +31,36 @@ class WrenchItem : BaseItem("Wrench"), IWrench, IItemScrollEvent {
     init {
         for (type in PipeType.values()) {
             EnumHelper.addEnum(WrenchMode::class.java, "PIPE_${type.name}", arrayOf(String::class.java, PipeType::class.java), "pipe.${type.unlocalizedName}", type)
+        }
+        maxStackSize = 1
+        MinecraftForge.EVENT_BUS.register(this)
+    }
+
+    @SubscribeEvent
+    fun onClientTick(event: TickEvent.ClientTickEvent) {
+        if (event.phase != TickEvent.Phase.END)
+            return
+        val player = Minecraft.getMinecraft().player ?: return
+        val stack = player.heldItemMainhand
+        if (!stack.isEmpty && stack.item == this) {
+            val mode = getWrenchMode(stack)
+            if (mode == WrenchMode.DEFAULT) {
+                for (pt in PipeType.values()) {
+                    TextureAtlasManager.getTextureForConnectionType(pt).setAnimationTime(0)
+                }
+            } else {
+                for (pt in PipeType.values()) {
+                    if (mode.allowedPipe == pt) {
+                        TextureAtlasManager.getTextureForConnectionType(pt).setAnimationTime(0)
+                    } else {
+                        TextureAtlasManager.getTextureForConnectionType(pt).setAnimationTime(1)
+                    }
+                }
+            }
+        } else {
+            for (pt in PipeType.values()) {
+                TextureAtlasManager.getTextureForConnectionType(pt).setAnimationTime(0)
+            }
         }
     }
 
@@ -59,6 +94,7 @@ class WrenchItem : BaseItem("Wrench"), IWrench, IItemScrollEvent {
     }
 
     override fun mouseScroll(player: EntityPlayer, itemStack: ItemStack, dir: Int) {
+
         var currMode = getWrenchMode(itemStack).ordinal
 
         currMode += dir
