@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " n ",
+    " nn",
+    "r  "
+  ],
+  "key": {
+    "n": {
+      "type": "forge:ore_dict",
+      "ore": "ingotNickel"
+    },
+    "r": {
+      "type": "forge:ore_dict",
+      "ore": "rodIron"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:wrench",
+    "count": 1
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "s s",
+    " s "
+  ],
+  "key": {
+    "s": {
+      "type": "forge:ore_dict",
+      "ore": "sheetTin"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:empty_can",
+    "count": 2
+  }
+}

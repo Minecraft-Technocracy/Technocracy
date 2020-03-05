@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " a ",
+    "aca",
+    " a "
+  ],
+  "key": {
+    "a": {
+      "type": "forge:ore_dict",
+      "ore": "sheetAluminum"
+    },
+    "c": {
+      "item": "technocracy.foundation:coil"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:fan",
+    "count": 1
+  }
+}

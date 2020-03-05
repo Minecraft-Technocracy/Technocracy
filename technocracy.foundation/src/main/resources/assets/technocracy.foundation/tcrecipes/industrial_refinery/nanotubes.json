@@ -1,0 +1,26 @@
+{
+  "items": [
+    {
+      "type": "forge:ore_dict",
+      "ore": "ingotSuperconductor"
+    },
+    {
+      "item": "technocracy.foundation:biphenyl"
+    }
+  ],
+  "fluids": [
+    {
+      "fluid": "cryogenic_gel",
+      "amount": 500
+    },
+    {
+      "fluid": "aqueous_sodium_acrylate",
+      "amount": 500
+    }
+  ],
+  "output": {
+    "item": "technocracy.foundation:nanotubes",
+    "count": 1
+  },
+  "cost": 460
+}
