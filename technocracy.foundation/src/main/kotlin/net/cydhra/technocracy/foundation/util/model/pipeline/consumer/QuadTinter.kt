@@ -5,14 +5,13 @@ import net.cydhra.technocracy.foundation.util.model.pipeline.IQuadConsumer
 import net.minecraft.client.renderer.block.model.BakedQuad
 
 object QuadTinter : IQuadConsumer {
-    override var origQuad: BakedQuad? = null
-    override var unmodifiedQuad: SimpleQuad? = null
+    override lateinit var  origQuad: BakedQuad
+    override lateinit var  unmodifiedQuad: SimpleQuad
 
     var tint = -1
 
     override fun reset() {
         tint = -1
-        QuadFacadeTransformer.origQuad = null
     }
 
     override fun consume(quad: SimpleQuad) {

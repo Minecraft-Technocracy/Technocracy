@@ -6,14 +6,11 @@ import net.cydhra.technocracy.foundation.util.model.pipeline.consumer.QuadFacade
 import net.minecraft.client.renderer.block.model.BakedQuad
 
 
-object QuadCloneConsumer : IQuadConsumer {
-    override var origQuad: BakedQuad? = null
-    override var unmodifiedQuad: SimpleQuad? = null
-    var clonePos: Boolean = false
+class QuadCloneConsumer(var clonePos: Boolean) : IQuadConsumer {
+    override lateinit var origQuad: BakedQuad
+    override lateinit var unmodifiedQuad: SimpleQuad
 
     override fun reset() {
-        clonePos = false
-        origQuad = null
     }
 
     override fun consume(quad: SimpleQuad) {
@@ -32,7 +29,7 @@ object QuadCloneConsumer : IQuadConsumer {
         quad.vertNormal.clear()
         quad.data.clear()
 
-        if(clonePos) {
+        if (clonePos) {
             quad.vertPos.clear()
         }
 

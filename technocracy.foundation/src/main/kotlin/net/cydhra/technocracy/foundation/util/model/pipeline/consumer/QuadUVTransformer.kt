@@ -11,11 +11,10 @@ import org.lwjgl.util.vector.Vector4f
 
 @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
 object QuadUVTransformer : IQuadConsumer {
-    override var origQuad: BakedQuad? = null
-    override var unmodifiedQuad: SimpleQuad? = null
+    override lateinit var  origQuad: BakedQuad
+    override lateinit var  unmodifiedQuad: SimpleQuad
 
     override fun reset() {
-        QuadFacadeTransformer.origQuad = null
     }
 
     /**

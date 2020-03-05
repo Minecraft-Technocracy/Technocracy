@@ -56,6 +56,7 @@ object FacadeBakery {
             try {
                 quads.addAll(genQuads(coverModel, customState, coverFace, faces, fakeWorld, pos, customState.block.blockLayer == BlockRenderLayer.TRANSLUCENT))
             } catch (e: Exception) {
+                e.printStackTrace()
                 TCFoundation.logger.error("Facade of block ${customState.block} has special renderer and references a tile entity that is not in the world")
             }
         }
@@ -78,10 +79,7 @@ object FacadeBakery {
         }
         origQuads.addAll(coverModel.getQuads(null, null, 0))
 
-        val pipeline = QuadPipeline().addConsumer(QuadCloneConsumer, QuadTinter, QuadShrinker, QuadUVTransformer)
-        QuadCloneConsumer.clonePos = true
-        QuadShrinker.coverFace = EnumFacing.NORTH
-        QuadShrinker.faces = faces
+        val pipeline = QuadPipeline().addConsumer(QuadCloneConsumer(true), QuadTinter, QuadShrinker(EnumFacing.NORTH, faces), QuadUVTransformer)
 
         for (bakedQuad in origQuads) {
             val quad = SimpleQuad(DefaultVertexFormats.ITEM)
@@ -100,12 +98,7 @@ object FacadeBakery {
         var origQuads = coverModel.getQuads(customState, null, 0)
 
         //TODO rework the QuadFacadeTransformer so it uses the vertex position for the translation instead of just the facing
-        val pipeline = QuadPipeline().addConsumer(QuadCloneConsumer, QuadTinter, QuadShrinker, QuadFacadeTransformer, QuadUVTransformer)
-        QuadShrinker.coverFace = coverFace
-        QuadShrinker.faces = faces
-        QuadFacadeTransformer.coverFace = coverFace
-        QuadFacadeTransformer.faces = faces
-        QuadCloneConsumer.clonePos = true
+        val pipeline = QuadPipeline().addConsumer(QuadCloneConsumer(true), QuadTinter, QuadShrinker(coverFace, faces), QuadFacadeTransformer(coverFace, faces), QuadUVTransformer)
 
         //TODO cleanup
         if (origQuads.isNotEmpty()) {
@@ -131,17 +124,14 @@ object FacadeBakery {
                         }
                     } else {
 
-                        val pipeline = QuadPipeline().addConsumer(QuadCloneConsumer, QuadDynamicTransformer(BiConsumer { instance, _ ->
+                        val pipeline = QuadPipeline().addConsumer(QuadCloneConsumer(false), QuadDynamicTransformer(BiConsumer { instance, _ ->
                             //generate a copy of the original quad and set it as the unmodified one to fix texture issues
-                            val pipe = QuadPipeline().addConsumer(QuadCloneConsumer)
-                            QuadCloneConsumer.clonePos = true
+                            val pipe = QuadPipeline().addConsumer(QuadCloneConsumer(true))
                             val q = SimpleQuad(DefaultVertexFormats.BLOCK)
                             pipe.pipe(q, instance.origQuad!!)
                             instance.unmodifiedQuad = q
-                            QuadCloneConsumer.clonePos = false
                         }), QuadTinter, QuadUVTransformer)
 
-                        QuadCloneConsumer.clonePos = false
                         //ctm block
                         val vertices = mutableListOf<FloatArray>()
                         for (i in 0..3) {

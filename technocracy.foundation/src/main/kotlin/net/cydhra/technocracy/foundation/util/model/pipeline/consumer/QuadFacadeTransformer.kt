@@ -10,24 +10,15 @@ import org.lwjgl.util.vector.Vector4f
 import kotlin.math.abs
 
 
-object QuadFacadeTransformer : IQuadConsumer {
-    override var origQuad: BakedQuad? = null
-    override var unmodifiedQuad: SimpleQuad? = null
-
-    var coverFace: EnumFacing? = null
-    var faces: BooleanArray? = null
+class QuadFacadeTransformer(var coverFace: EnumFacing, var faces: BooleanArray) : IQuadConsumer {
+    override lateinit var  origQuad: BakedQuad
+    override lateinit var  unmodifiedQuad: SimpleQuad
 
     override fun reset() {
-        coverFace = null
-        faces = null
-        origQuad = null
     }
 
     override fun consume(quad: SimpleQuad) {
-        if (faces == null || coverFace == null)
-            return
-
-        val faces = faces!!
+        val faces = faces
 
         val pixelSize = 1 / 16f
         val height = pixelSize * FacadeBakery.facadeSize

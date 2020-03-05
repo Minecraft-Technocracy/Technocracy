@@ -7,8 +7,8 @@ import java.util.function.BiConsumer
 
 
 class QuadDynamicTransformer(val callBack: BiConsumer<QuadDynamicTransformer, SimpleQuad>) : IQuadConsumer {
-    override var origQuad: BakedQuad? = null
-    override var unmodifiedQuad: SimpleQuad? = null
+    override lateinit var  origQuad: BakedQuad
+    override lateinit var  unmodifiedQuad: SimpleQuad
 
     override fun consume(quad: SimpleQuad) {
         callBack.accept(this, quad)

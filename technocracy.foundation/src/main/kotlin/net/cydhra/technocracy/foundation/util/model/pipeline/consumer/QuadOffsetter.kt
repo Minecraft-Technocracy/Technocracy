@@ -7,8 +7,8 @@ import net.minecraft.client.renderer.block.model.BakedQuad
 
 object QuadOffsetter : IQuadConsumer {
 
-    override var origQuad: BakedQuad? = null
-    override var unmodifiedQuad: SimpleQuad? = null
+    override lateinit var  origQuad: BakedQuad
+    override lateinit var  unmodifiedQuad: SimpleQuad
 
     var offsetX: Float = 0f
     var offsetY: Float = 0f
@@ -26,6 +26,5 @@ object QuadOffsetter : IQuadConsumer {
         offsetX = 0f
         offsetY = 0f
         offsetZ = 0f
-        origQuad = null
     }
 }
