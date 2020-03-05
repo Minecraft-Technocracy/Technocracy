@@ -5,19 +5,19 @@ package net.cydhra.technocracy.foundation.model.oresystems.api
 import com.google.common.base.Predicate
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.content.blocks.OreBlock
-import net.cydhra.technocracy.foundation.model.blocks.manager.BlockManager
+import net.cydhra.technocracy.foundation.content.fluids.drossFluid
+import net.cydhra.technocracy.foundation.content.fluids.hydrochloricAcidFluid
 import net.cydhra.technocracy.foundation.data.config.BooleanConfigurable
 import net.cydhra.technocracy.foundation.data.config.IntegerConfigurable
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.data.crafting.types.*
-import net.cydhra.technocracy.foundation.model.items.color.ConstantItemColor
-import net.cydhra.technocracy.foundation.model.items.api.BaseItem
-import net.cydhra.technocracy.foundation.model.items.api.ColoredPrefixedItem
-import net.cydhra.technocracy.foundation.model.items.manager.ItemManager
+import net.cydhra.technocracy.foundation.model.blocks.manager.BlockManager
 import net.cydhra.technocracy.foundation.model.fluids.api.BaseFluid
 import net.cydhra.technocracy.foundation.model.fluids.manager.FluidManager
-import net.cydhra.technocracy.foundation.content.fluids.drossFluid
-import net.cydhra.technocracy.foundation.content.fluids.hydrochloricAcidFluid
+import net.cydhra.technocracy.foundation.model.items.api.BaseItem
+import net.cydhra.technocracy.foundation.model.items.api.ColoredPrefixedItem
+import net.cydhra.technocracy.foundation.model.items.color.ConstantItemColor
+import net.cydhra.technocracy.foundation.model.items.manager.ItemManager
 import net.cydhra.technocracy.foundation.model.world.api.OreGenerator
 import net.minecraft.block.Block
 import net.minecraft.block.state.IBlockState
@@ -192,11 +192,16 @@ class OreSystemBuilder {
                     // add default ingot recipe
                     GameRegistry.addSmelting(ore, ItemStack(ingot, 1), 0.5f)
 
-                    // add pulverizer recipe
+                    // add pulverizer recipes
                     RecipeManager.registerRecipe(RecipeManager.RecipeType.PULVERIZER,
                             ITIRecipe(Ingredient.fromItem(Item.getItemFromBlock(ore)),
                                     ItemStack(dust, 2),
                                     60))
+
+                    RecipeManager.registerRecipe(RecipeManager.RecipeType.PULVERIZER,
+                            ITIRecipe(Ingredient.fromItem(ingot),
+                                    ItemStack(dust, 1),
+                                    30))
 
                     // add dust smelting recipe
                     GameRegistry.addSmelting(dust, ItemStack(ingot, 1), 0.5f)
