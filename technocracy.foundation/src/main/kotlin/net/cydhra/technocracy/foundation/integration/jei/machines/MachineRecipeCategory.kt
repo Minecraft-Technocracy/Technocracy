@@ -2,18 +2,20 @@ package net.cydhra.technocracy.foundation.integration.jei.machines
 
 import mezz.jei.api.IGuiHelper
 import mezz.jei.api.gui.IRecipeLayout
+import mezz.jei.api.gui.ITickTimer
 import mezz.jei.api.ingredients.IIngredients
 import mezz.jei.api.ingredients.VanillaTypes
 import net.cydhra.technocracy.foundation.client.gui.components.ITCComponent
-import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
 import net.cydhra.technocracy.foundation.client.gui.components.energymeter.DefaultEnergyMeter
 import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.DefaultFluidMeter
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
-import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
+import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.integration.jei.AbstractRecipeCategory
 import net.cydhra.technocracy.foundation.integration.jei.AbstractRecipeWrapper
+import net.cydhra.technocracy.foundation.integration.jei.gui.FluidBackgroundDrawable
+import net.cydhra.technocracy.foundation.integration.jei.gui.FluidOverlayDrawable
 import net.cydhra.technocracy.foundation.integration.jei.gui.TabDrawable
 import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
 import net.minecraft.block.Block
@@ -31,20 +33,17 @@ class MachineRecipeCategory(guiHelper: IGuiHelper, val tileEntity: MachineTileEn
 ) {
 
     private val tabDrawable = TabDrawable(tileEntity)
-    private val stolenComponents = mutableMapOf<ITCComponent, Boolean>() // component, isInput
-
+    private val stolenComponents = mutableListOf<ITCComponent>() // component, isInput
+    private val timer: ITickTimer
 
     init {
         tabDrawable.tab?.components?.forEach { guiComponent ->
             if (guiComponent is DefaultFluidMeter) {
-                stolenComponents[guiComponent] = guiComponent.component.fluid.tanktype == DynamicFluidCapability.TankType.INPUT
+                stolenComponents.add(guiComponent)
+                //stolenComponents[guiComponent] = guiComponent.component.fluid.tanktype == DynamicFluidCapability.TankType.INPUT
             } else if (guiComponent is Slot) {
                 if (guiComponent is TCSlotIO) {
-                    tileEntity.getComponents().filter { it.second is InventoryTileEntityComponent }
-                            .filter { (_, component) -> (component as InventoryTileEntityComponent).inventory == guiComponent.itemHandler }
-                            .forEach { (name, _) ->
-                                stolenComponents[guiComponent] = name.toLowerCase().contains("input")
-                            }
+                    stolenComponents.add(guiComponent)
                 }
             } else if (guiComponent is DefaultEnergyMeter) {
                 guiComponent.component.energyStorage.forceUpdateOfCurrentEnergy(guiComponent.component.energyStorage.maxEnergyStored)
@@ -52,9 +51,11 @@ class MachineRecipeCategory(guiHelper: IGuiHelper, val tileEntity: MachineTileEn
             }
         }
 
-        stolenComponents.forEach { (component, _) ->
+        timer = guiHelper.createTickTimer(40,40,false)
+
+        stolenComponents.forEach {
             // stolen components are handled by jei
-            tabDrawable.tab?.components?.remove(component)
+            tabDrawable.tab?.components?.remove(it)
         }
     }
 
@@ -68,13 +69,15 @@ class MachineRecipeCategory(guiHelper: IGuiHelper, val tileEntity: MachineTileEn
         var itemIndex = 0
         var fluidIndex = 0
 
-        stolenComponents.forEach { (component, isInput) ->
-            if (component is TCSlotIO) {
-                itemStacks.init(itemIndex, isInput, component.xPos, component.yPos)
+        stolenComponents.forEach {
+            if (it is TCSlotIO) {
+                itemStacks.init(itemIndex, it.type != DynamicInventoryCapability.InventoryType.OUTPUT, it.xPos, it.yPos)
                 itemStacks.setBackground(itemIndex, slotDrawable)
                 itemIndex++
-            } else if (component is DefaultFluidMeter) {
-                val amount = if (isInput) {
+            } else if (it is DefaultFluidMeter) {
+                val input = it.component.fluid.tanktype != DynamicFluidCapability.TankType.OUTPUT
+
+                val amount = if (input) {
                     if (inputFluids.size > fluidIndex) {
                         inputFluids[fluidIndex][0].amount
                     } else {
@@ -88,8 +91,10 @@ class MachineRecipeCategory(guiHelper: IGuiHelper, val tileEntity: MachineTileEn
                     }
                 }
 
-                fluidStacks.init(fluidIndex, isInput, component.posX, component.posY, component.width, component.height,
-                        amount, false, if (isInput) fluidInputOverlay else fluidOutputOverlay)
+                fluidStacks.init(fluidIndex, input, it.posX + 1, it.posY + 1, it.width - 2, it.height - 2,
+                        amount, false, FluidOverlayDrawable(it))
+                fluidStacks.setBackground(fluidIndex, FluidBackgroundDrawable(it))
+
                 fluidIndex++
             }
         }
@@ -99,6 +104,7 @@ class MachineRecipeCategory(guiHelper: IGuiHelper, val tileEntity: MachineTileEn
     }
 
     override fun drawExtras(minecraft: Minecraft) {
+        tabDrawable.deltaTime = timer.value / timer.maxValue.toFloat()
         tabDrawable.draw(minecraft)
     }
 

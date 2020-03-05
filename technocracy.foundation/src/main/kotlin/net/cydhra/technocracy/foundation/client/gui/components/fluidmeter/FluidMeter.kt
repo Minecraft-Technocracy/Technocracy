@@ -3,7 +3,7 @@ package net.cydhra.technocracy.foundation.client.gui.components.fluidmeter
 import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
 import net.minecraft.util.math.MathHelper
 
-abstract class FluidMeter(val posX: Int, val posY: Int): TCComponent() {
+abstract class FluidMeter(val posX: Int, val posY: Int) : TCComponent() {
 
     /**
      * fluid level from 0.0 to 1.0
@@ -29,4 +29,7 @@ abstract class FluidMeter(val posX: Int, val posY: Int): TCComponent() {
     override fun mouseClicked(x: Int, y: Int, mouseX: Int, mouseY: Int, mouseButton: Int) {
 
     }
+
+    abstract fun drawOverlay(x: Int, y: Int)
+    abstract fun drawBackground(x: Int, y: Int)
 }
