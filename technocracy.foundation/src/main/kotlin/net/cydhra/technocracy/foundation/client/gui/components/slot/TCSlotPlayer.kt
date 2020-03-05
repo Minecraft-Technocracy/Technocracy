@@ -17,6 +17,9 @@ open class TCSlotPlayer(inventoryIn: IInventory, override val index: Int, xPosit
         Slot(inventoryIn, index,
                 xPosition, yPosition), ITCSlot {
 
+    override var width = 18
+    override var height = 18
+
     private var enabledOverride = true
     override var type: DynamicInventoryCapability.InventoryType = DynamicInventoryCapability.InventoryType.BOTH
 
@@ -26,7 +29,7 @@ open class TCSlotPlayer(inventoryIn: IInventory, override val index: Int, xPosit
     override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
         Minecraft.getMinecraft().textureManager.bindTexture(TCGui.guiComponents)
         GlStateManager.color(1F, 1F, 1F, 1F)
-        GuiContainer.drawModalRectWithCustomSizedTexture(xPos - 1 + x, yPos - 1 + y, 0F, 10F, 18, 18, 256F,
+        GuiContainer.drawModalRectWithCustomSizedTexture(xPos - 1 + x, yPos - 1 + y, 0F, 10F, width, height, 256F,
                 256F)
     }
 
@@ -41,7 +44,7 @@ open class TCSlotPlayer(inventoryIn: IInventory, override val index: Int, xPosit
     }
 
     override fun isMouseOnComponent(mouseX: Int, mouseY: Int): Boolean {
-        return mouseX > xPos && mouseX < xPos + 18 && mouseY > yPos && mouseY < yPos + 18
+        return mouseX > xPos && mouseX < xPos + width && mouseY > yPos && mouseY < yPos + height
     }
 
     override fun setEnabled(enabled: Boolean) {

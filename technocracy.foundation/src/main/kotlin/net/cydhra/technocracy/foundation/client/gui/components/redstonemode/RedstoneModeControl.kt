@@ -4,8 +4,8 @@ import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
 
 abstract class RedstoneModeControl(val posX: Int, val posY: Int) : TCComponent() {
 
-    val width = 16
-    val height = 16
+    override var width = 16
+    override var height = 16
     var hovered = false
 
     override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {

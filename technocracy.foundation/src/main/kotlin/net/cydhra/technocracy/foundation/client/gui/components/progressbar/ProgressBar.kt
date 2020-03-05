@@ -11,8 +11,8 @@ abstract class ProgressBar(val posX: Int, val posY: Int, val orientation: Orient
         TCComponent() {
     var progress = 0F
 
-    val width = 22
-    val height = 15
+    override var width = 22
+    override var height = 15
 
     override fun update() {
         this.progress += 0.01F

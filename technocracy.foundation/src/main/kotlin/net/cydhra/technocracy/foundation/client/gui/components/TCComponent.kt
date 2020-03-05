@@ -15,6 +15,8 @@ abstract class TCComponent : ITCComponent {
 }
 
 interface ITCComponent {
+    var width: Int
+    var height: Int
 
     fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float)
     fun drawTooltip(mouseX: Int, mouseY: Int)

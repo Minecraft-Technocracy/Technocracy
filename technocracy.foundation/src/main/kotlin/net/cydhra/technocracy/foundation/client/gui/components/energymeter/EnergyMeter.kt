@@ -10,8 +10,8 @@ abstract class EnergyMeter(val posX: Int, val posY: Int) : TCComponent() {
      */
     var level = 0.0f
 
-    val width = 10
-    val height = 50
+    override var width = 10
+    override var height = 50
 
     override fun update() {
         this.level += 0.01f

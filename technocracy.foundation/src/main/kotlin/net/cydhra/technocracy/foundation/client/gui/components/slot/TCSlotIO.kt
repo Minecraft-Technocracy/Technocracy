@@ -16,8 +16,12 @@ import net.minecraftforge.items.SlotItemHandler
 class TCSlotIO(itemHandler: IItemHandler, override val index: Int, xPosition: Int, yPosition: Int, val gui: TCGui) :
         SlotItemHandler(itemHandler, index, xPosition, yPosition), ITCSlot {
 
+    override var width = 18
+    override var height = 18
+
     private var enabledOverride = true
     override var type: DynamicInventoryCapability.InventoryType = DynamicInventoryCapability.InventoryType.BOTH
+
 
     override fun update() {
     }
@@ -25,7 +29,7 @@ class TCSlotIO(itemHandler: IItemHandler, override val index: Int, xPosition: In
     override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
         Minecraft.getMinecraft().textureManager.bindTexture(TCGui.guiComponents)
         GlStateManager.color(1F, 1F, 1F, 1F)
-        GuiContainer.drawModalRectWithCustomSizedTexture(xPos - 1 + x, yPos - 1 + y, 0F, 10F, 18, 18, 256F,
+        GuiContainer.drawModalRectWithCustomSizedTexture(xPos - 1 + x, yPos - 1 + y, 0F, 10F, width, height, 256F,
                 256F)
     }
 
@@ -38,7 +42,7 @@ class TCSlotIO(itemHandler: IItemHandler, override val index: Int, xPosition: In
     override fun mouseClicked(x: Int, y: Int, mouseX: Int, mouseY: Int, mouseButton: Int) {}
 
     override fun isMouseOnComponent(mouseX: Int, mouseY: Int): Boolean {
-        return mouseX > xPos && mouseX < xPos + 18 && mouseY > yPos && mouseY < yPos + 18
+        return mouseX > xPos && mouseX < xPos + height && mouseY > yPos && mouseY < yPos + height
     }
 
     override fun setEnabled(enabled: Boolean) {

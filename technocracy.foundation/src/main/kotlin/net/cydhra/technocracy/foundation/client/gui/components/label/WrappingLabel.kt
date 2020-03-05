@@ -7,6 +7,9 @@ import org.lwjgl.opengl.GL11
 class WrappingLabel(posX: Int, posY: Int, val maxWidth: Int, val scaling: Double, text: String, val color: Int = 0xffffff, val shadow: Boolean = true) :
         Label(posX, posY, text, Minecraft.getMinecraft().fontRenderer) {
 
+    override var width: Int = maxWidth
+    override var height: Int = (fontRenderer.FONT_HEIGHT / scaling).toInt()
+
     override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
         GL11.glTranslated(posX + x.toDouble(), posY + y.toDouble(), 0.0)
         GL11.glScaled(scaling, scaling, scaling)
