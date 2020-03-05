@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sss",
+    "iai",
+    "sss"
+  ],
+  "key": {
+    "i": {
+      "type": "forge:ore_dict",
+      "ore": "sheetInvar"
+    },
+    "s": {
+      "type": "forge:ore_dict",
+      "ore": "sheetSteel"
+    },
+    "a": {
+      "item": "technocracy.foundation:asbestos"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:refinery_wall",
+    "count": 4
+  }
+}

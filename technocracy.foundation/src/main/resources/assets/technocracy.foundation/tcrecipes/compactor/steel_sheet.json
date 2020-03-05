@@ -1,0 +1,11 @@
+{
+  "input": {
+    "type": "forge:ore_dict",
+    "ore": "ingotSteel"
+  },
+  "output": {
+    "item": "technocracy.foundation:sheet.steel",
+    "count": 1
+  },
+  "cost": 100
+}

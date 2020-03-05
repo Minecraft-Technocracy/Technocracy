@@ -1,13 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "sgs",
+    "sxs",
     "tmt",
     "aga"
   ],
   "key": {
     "m": {
       "item": "technocracy.foundation:machine_frame"
+    },
+    "x": {
+      "item": "technocracy.foundation:servo"
     },
     "s": {
       "type": "forge:ore_dict",

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ttt",
+    "wcw",
+    "ece"
+  ],
+  "key": {
+    "t": {
+      "type": "forge:ore_dict",
+      "ore": "ingotMPCM"
+    },
+    "w": {
+      "item": "technocracy.foundation:refinery_wall"
+    },
+    "e": {
+      "type": "forge:ore_dict",
+      "ore": "ingotElectrum"
+    },
+    "c": {
+      "item": "technocracy.foundation:coil"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:refinery_heater",
+    "count": 1
+  }
+}

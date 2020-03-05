@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "wsw",
+    "sss",
+    "wsw"
+  ],
+  "key": {
+    "w": {
+      "item": "technocracy.foundation:capacitor_wall"
+    },
+    "s": {
+      "type": "forge:ore_dict",
+      "ore": "ingotSuperconductor"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:capacitor_connector",
+    "count": 1
+  }
+}

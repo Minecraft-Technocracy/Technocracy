@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "wsw",
+    "wbw",
+    "wsw"
+  ],
+  "key": {
+    "w": {
+      "item": "technocracy.foundation:capacitor_wall"
+    },
+    "s": {
+      "type": "forge:ore_dict",
+      "ore": "ingotSuperconductor"
+    },
+    "b": {
+      "item": "technocracy.foundation:biphenyl"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:capacitor_energy_port",
+    "count": 1
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "wsw",
+    "fhf",
+    "wsw"
+  ],
+  "key": {
+    "s": {
+      "type": "forge:ore_dict",
+      "ore": "sheetSteel"
+    },
+    "f": {
+      "item": "technocracy.foundation:pipe_item",
+      "data": 1
+    },
+    "h": {
+      "item": "minecraft:bucket"
+    },
+    "w": {
+      "item": "technocracy.foundation:refinery_wall"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:refinery_output",
+    "count": 1
+  }
+}

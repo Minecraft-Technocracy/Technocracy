@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "zzz",
+    "zsz",
+    "zzz"
+  ],
+  "key": {
+    "z": {
+      "type": "forge:ore_dict",
+      "ore": "ingotZircalloy"
+    },
+    "s": {
+      "type": "forge:ore_dict",
+      "ore": "sheetPlastic"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:capacitor_wall",
+    "count": 4
+  }
+}

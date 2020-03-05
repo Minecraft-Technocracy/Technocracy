@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "wiw",
+    "rfr",
+    "wew"
+  ],
+  "key": {
+    "i": {
+      "type": "forge:ore_dict",
+      "ore": "ingotInvar"
+    },
+    "r": {
+      "type": "forge:ore_dict",
+      "ore": "dustRedstone"
+    },
+    "e": {
+      "type": "forge:ore_dict",
+      "ore": "ingotElectrum"
+    },
+    "w": {
+      "item": "technocracy.foundation:refinery_wall"
+    },
+    "f": {
+      "item": "technocracy.foundation:advanced_machine_frame"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:refinery_controller",
+    "count": 1
+  }
+}

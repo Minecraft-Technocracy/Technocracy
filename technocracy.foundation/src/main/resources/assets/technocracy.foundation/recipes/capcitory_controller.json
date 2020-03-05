@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "wcw",
+    "ifi",
+    "wrw"
+  ],
+  "key": {
+    "i": {
+      "type": "forge:ore_dict",
+      "ore": "ingotInvar"
+    },
+    "r": {
+      "type": "forge:ore_dict",
+      "ore": "dustRedstone"
+    },
+    "c": {
+      "item": "technocracy.foundation:circuit_board"
+    },
+    "w": {
+      "item": "technocracy.foundation:capacitor_wall"
+    },
+    "f": {
+      "item": "technocracy.foundation:industrial_machine_frame"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:capacitor_controller",
+    "count": 1
+  }
+}
