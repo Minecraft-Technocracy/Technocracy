@@ -9,6 +9,12 @@ abstract class TCComponent : ITCComponent {
     var componentId by Delegates.notNull<Int>()
     open fun handleClientClick(player: EntityPlayer, mouseButton: Int) {}
 
+    fun setSize(width: Int = this.width, height: Int = this.height): TCComponent {
+        this.width = width
+        this.height = height
+        return this
+    }
+
     override fun mouseClicked(x: Int, y: Int, mouseX: Int, mouseY: Int, mouseButton: Int) {
         PacketHandler.sendToServer(ComponentClickPacket(componentId, mouseButton))
     }
