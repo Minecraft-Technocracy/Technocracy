@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.integration.top.providers
 
 import mcjty.theoneprobe.api.*
+import mcjty.theoneprobe.apiimpl.styles.ItemStyle
 import mcjty.theoneprobe.apiimpl.styles.ProgressStyle
 import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
@@ -51,9 +52,19 @@ class MachineTOPProvider : IProbeInfoProvider {
                             ?: 0, component.fluid.capacity, fluidStyle).text(component.fluid.currentFluid?.localizedName
                             ?: "")
             is InventoryTileEntityComponent -> {
+                val horizontalStyleElement = probeInfo.horizontal(
+                        probeInfo.defaultLayoutStyle()
+                                .alignment(ElementAlignment.ALIGN_CENTER)
+                                .spacing(8))
+
                 for (i in 0 until component.inventory.stacks.size) {
-                    if (component.inventory.getStackInSlot(i) != ItemStack.EMPTY)
-                        probeInfo.item(component.inventory.getStackInSlot(i)).text(component.inventory.getStackInSlot(i).displayName)
+                    if (component.inventory.getStackInSlot(i) != ItemStack.EMPTY) {
+                        horizontalStyleElement.item(component.inventory.getStackInSlot(i))
+
+                        if (component.inventory.stacks.filter { !it.isEmpty }.size == 1) {
+                            horizontalStyleElement.itemLabel(component.inventory.getStackInSlot(i))
+                        }
+                    }
                 }
             }
             is OptionalAttachedTileEntityComponent<*> -> {
