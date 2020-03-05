@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.client.textures
 
 import net.cydhra.technocracy.foundation.conduits.types.PipeType
+import net.cydhra.technocracy.foundation.util.DynamicTextureAtlasSprite
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.client.renderer.texture.TextureMap
 import net.minecraft.util.ResourceLocation
@@ -17,9 +18,9 @@ class TextureAtlasManager {
     companion object {
         lateinit var connector_energy: TextureAtlasSprite
         lateinit var connector_inventory: TextureAtlasSprite
-        lateinit var pipe_item: TextureAtlasSprite
-        lateinit var pipe_fluid: TextureAtlasSprite
-        lateinit var pipe_energy: TextureAtlasSprite
+        lateinit var pipe_item: DynamicTextureAtlasSprite
+        lateinit var pipe_fluid: DynamicTextureAtlasSprite
+        lateinit var pipe_energy: DynamicTextureAtlasSprite
         lateinit var pipe_node: TextureAtlasSprite
 
         lateinit var drum_iron: TextureAtlasSprite
@@ -46,13 +47,25 @@ class TextureAtlasManager {
         /**
          * Returns the texture for connections of a specific pipe type
          */
-        fun getTextureForConnectionType(type: PipeType): TextureAtlasSprite {
+        fun getTextureForConnectionType(type: PipeType): DynamicTextureAtlasSprite {
+            //todo make it easier to add new pipe types without editing this method
             return when (type) {
-                PipeType.ENERGY -> TextureAtlasManager.pipe_energy
-                PipeType.FLUID -> TextureAtlasManager.pipe_fluid
-                PipeType.ITEM -> TextureAtlasManager.pipe_item
+                PipeType.ENERGY -> pipe_energy
+                PipeType.FLUID -> pipe_fluid
+                PipeType.ITEM -> pipe_item
             }
         }
+    }
+
+    fun getDynamicAnimatedSprite(location: ResourceLocation): DynamicTextureAtlasSprite {
+        val sprite = textureMap.getTextureExtry(location.toString())
+        if (sprite == null) {
+            val dynamicSprite = DynamicTextureAtlasSprite.makeAtlasSprite(location)
+            textureMap.setTextureEntry(dynamicSprite)
+            return dynamicSprite
+        }
+
+        return sprite as DynamicTextureAtlasSprite
     }
 
     @Suppress("unused")
@@ -61,9 +74,10 @@ class TextureAtlasManager {
         textureMap = event.map
         connector_energy = event.map.registerSprite(getResourceLocation("extra/connector_energy"))
         connector_inventory = event.map.registerSprite(getResourceLocation("extra/connector_inventory"))
-        pipe_item = event.map.registerSprite(getResourceLocation("block/steel"))
-        pipe_fluid = event.map.registerSprite(getResourceLocation("block/steel_dark"))
-        pipe_energy = event.map.registerSprite(getResourceLocation("block/boiler_wall"))
+
+        pipe_item = getDynamicAnimatedSprite(getResourceLocation("block/pipe_item"))
+        pipe_fluid = getDynamicAnimatedSprite(getResourceLocation("block/pipe_fluid"))
+        pipe_energy = getDynamicAnimatedSprite(getResourceLocation("block/pipe_energy"))
         pipe_node = event.map.registerSprite(getResourceLocation("block/frame_corners"))
 
         drum_iron = event.map.registerSprite(getResourceLocation("block/drum/drum_iron"))

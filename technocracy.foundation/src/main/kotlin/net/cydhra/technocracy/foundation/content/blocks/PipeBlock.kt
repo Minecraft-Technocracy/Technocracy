@@ -1,12 +1,12 @@
 package net.cydhra.technocracy.foundation.content.blocks
 
-import net.cydhra.technocracy.foundation.model.blocks.api.AbstractTileEntityBlock
 import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.cydhra.technocracy.foundation.content.items.FacadeItem
 import net.cydhra.technocracy.foundation.content.items.PipeItem
 import net.cydhra.technocracy.foundation.content.items.WrenchItem
 import net.cydhra.technocracy.foundation.content.items.pipeItem
 import net.cydhra.technocracy.foundation.content.tileentities.pipe.TileEntityPipe
+import net.cydhra.technocracy.foundation.model.blocks.api.AbstractTileEntityBlock
 import net.cydhra.technocracy.foundation.util.facade.FacadeStack
 import net.cydhra.technocracy.foundation.util.facade.extras.workbench.InterfaceFacadeCraftingTable
 import net.cydhra.technocracy.foundation.util.propertys.POSITION
@@ -247,13 +247,17 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
     }
 
     fun rayTraceBestBB(start: Vec3d, end: Vec3d, boundingBoxes: List<Triple<Pair<EnumFacing, AxisAlignedBB>, PipeType?, Int>>, offset: BlockPos): Triple<Pair<EnumFacing, AxisAlignedBB>, PipeType?, Int>? {
-        var bestTriple: Triple<Pair<EnumFacing, AxisAlignedBB>, PipeType?, Int>? = null
-        var distance = 0.0
+        if (boundingBoxes.isEmpty()) return null
+
+        var bestTriple: Triple<Pair<EnumFacing, AxisAlignedBB>, PipeType?, Int> = boundingBoxes[0]
+        val tmpbb = bestTriple.first.second.offset(offset)
+        var distance = tmpbb.calculateIntercept(start, end)?.hitVec?.distanceTo(start) ?: Double.MAX_VALUE
+
         for (triple in boundingBoxes) {
             val rayTraceResult = triple.first.second.offset(offset).calculateIntercept(start, end)
             if (rayTraceResult != null) {
-                val d7 = start.squareDistanceTo(rayTraceResult.hitVec)
-                if (d7 < distance || distance == 0.0) {
+                val d7 = rayTraceResult.hitVec.distanceTo(start)
+                if (d7 < distance) {
                     bestTriple = triple
                     distance = d7
                 }
@@ -263,15 +267,18 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
     }
 
     fun rayTraceBestBB(start: Vec3d, end: Vec3d, boundingBoxes: List<AxisAlignedBB>): AxisAlignedBB? {
-        var bestbb: AxisAlignedBB? = null
-        var distance = 0.0
+        if (boundingBoxes.isEmpty()) return null
+
+        var bestbb: AxisAlignedBB = boundingBoxes[0]
+        var distance = bestbb.calculateIntercept(start, end)?.hitVec?.distanceTo(start) ?: Double.MAX_VALUE
+
         for (bb in boundingBoxes) {
             val rayTraceResult = bb.calculateIntercept(start, end)
             if (rayTraceResult != null) {
-                val d7 = start.squareDistanceTo(rayTraceResult.hitVec)
-                if (d7 < distance || distance == 0.0) {
+                val curr = rayTraceResult.hitVec.distanceTo(start)
+                if (curr < distance) {
                     bestbb = bb
-                    distance = d7
+                    distance = curr
                 }
             }
         }
@@ -360,18 +367,18 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
     }
 
     override fun onFallenUpon(world: World, pos: BlockPos, entityIn: Entity, fallDistance: Float) {
-        val tile = world.getTileEntity(pos) as? TileEntityPipe ?: return
-        val pair = getBlockOnFacing(tile, EnumFacing.UP) ?: return
-        //can use current pos as onLanded is called in same method
         lastFallLoc = pos
+        val tile = world.getTileEntity(pos) as? TileEntityPipe ?: return super.onFallenUpon(world, pos, entityIn, fallDistance)
+        val pair = getBlockOnFacing(tile, EnumFacing.UP) ?: return super.onFallenUpon(world, pos, entityIn, fallDistance)
+        //can use current pos as onLanded is called in same method
         return pair.first.onFallenUpon(world, pos, entityIn, fallDistance)
     }
 
     override fun onLanded(world: World, entityIn: Entity) {
         if (lastFallLoc == null) return
 
-        val tile = world.getTileEntity(lastFallLoc!!) as? TileEntityPipe ?: return
-        val pair = getBlockOnFacing(tile, EnumFacing.UP) ?: return
+        val tile = world.getTileEntity(lastFallLoc!!) as? TileEntityPipe ?: return super.onLanded(world, entityIn)
+        val pair = getBlockOnFacing(tile, EnumFacing.UP) ?: return super.onLanded(world, entityIn)
         return pair.first.onLanded(world, entityIn)
     }
 
