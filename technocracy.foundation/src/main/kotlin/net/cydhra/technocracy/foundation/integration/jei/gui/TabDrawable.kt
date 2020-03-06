@@ -10,7 +10,7 @@ class TabDrawable(val tileEntity: MachineTileEntity) : IDrawable {
 
     var tab: TCTab? = null
 
-    var deltaTime: Float = 0f
+    var deltaTime: Double = 0.0
 
     init {
         val tabs = tileEntity.getGui(null).tabs // Minecraft.getMinecraft().player is at this point null
@@ -21,11 +21,15 @@ class TabDrawable(val tileEntity: MachineTileEntity) : IDrawable {
         val tab = this.tab ?: return
 
         for (c in tab.components) {
-            if (c is ProgressBar)
+            if (c is ProgressBar) {
+                c.lastprogress = c.progress
                 c.progress = deltaTime
+                if (c.progress == 0.0)
+                    c.lastprogress = 0.0
+            }
         }
 
-        tab.draw(x, y, 0, 0, 0f)
+        tab.draw(x, y, 0, 0, minecraft.renderPartialTicks)
     }
 
     override fun getWidth(): Int {

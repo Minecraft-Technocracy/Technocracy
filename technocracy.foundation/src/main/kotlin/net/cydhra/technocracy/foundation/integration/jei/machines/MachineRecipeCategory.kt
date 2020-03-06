@@ -104,7 +104,7 @@ class MachineRecipeCategory(guiHelper: IGuiHelper, val tileEntity: MachineTileEn
     }
 
     override fun drawExtras(minecraft: Minecraft) {
-        tabDrawable.deltaTime = timer.value / timer.maxValue.toFloat()
+        tabDrawable.deltaTime = timer.value / (timer.maxValue.toDouble() + 1)
         tabDrawable.draw(minecraft)
     }
 
