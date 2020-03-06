@@ -133,4 +133,4 @@ val nucSpeedUp3Item = UpgradeItem("nuc_speed_up_3", MachineUpgradeClass.NUCLEAR,
 val mechLubricantUpItem = UpgradeItem("mech_lubricant_up", MachineUpgradeClass.MECHANICAL,
         SpeedMultiplier(2.0), LubricantUpgrade())
 val elecCoolerUpgradeItem = UpgradeItem("elec_cooler_up", MachineUpgradeClass.ELECTRICAL,
-        SpeedMultiplier(2.5), EnergyMultiplier(2.5), CoolerUpgrade())
+        SpeedMultiplier(2.5), EnergyMultiplier(2.5), CoolingUpgrade())
