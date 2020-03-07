@@ -8,6 +8,7 @@ import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
+import net.minecraft.util.math.MathHelper
 import org.lwjgl.opengl.GL11
 import java.awt.Color
 import kotlin.math.roundToInt
@@ -68,7 +69,10 @@ class DefaultHeatMeter(posX: Int, posY: Int, val component: HeatStorageTileEntit
 
         val level = Interpolator.linearInterpolate(lastLevel, this.level, partialTicks)
 
-        drawGradientRect(posX + x + 1.0, posY + y + 1.0 + ((height - 1) * (1 - level)), posX + x + width - 1.0, posY + y + height - 1.0, Color(255, 35, 39).rgb, Color(39, 35, 255).rgb)
+        val interpolR = MathHelper.clamp(Interpolator.linearInterpolate(39.0, 255.0, level.toFloat()).toInt(), 0, 255)
+        val interpolB = MathHelper.clamp(Interpolator.linearInterpolate(255.0, 39.0, level.toFloat()).toInt(), 0, 255)
+
+        drawGradientRect(posX + x + 1.0, posY + y + 1.0, posX + x + (width - 1.0) * (level), posY + y + height - 1.0, Color(interpolR, 35, interpolB).rgb, Color(39, 35, 255).rgb)
         GlStateManager.disableBlend()
     }
 
@@ -90,9 +94,9 @@ class DefaultHeatMeter(posX: Int, posY: Int, val component: HeatStorageTileEntit
         val bufferbuilder = tessellator.buffer
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR)
         bufferbuilder.pos(right, top, 0.0).color(f1, f2, f3, f).endVertex()
-        bufferbuilder.pos(left, top, 0.0).color(f1, f2, f3, f).endVertex()
+        bufferbuilder.pos(left, top, 0.0).color(f5, f6, f7, f4).endVertex()
         bufferbuilder.pos(left, bottom, 0.0).color(f5, f6, f7, f4).endVertex()
-        bufferbuilder.pos(right, bottom, 0.0).color(f5, f6, f7, f4).endVertex()
+        bufferbuilder.pos(right, bottom, 0.0).color(f1, f2, f3, f).endVertex()
         tessellator.draw()
         GlStateManager.shadeModel(7424)
         GlStateManager.disableBlend()

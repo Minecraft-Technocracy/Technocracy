@@ -1,23 +1,29 @@
 package net.cydhra.technocracy.foundation.content.tileentities.machines
 
+import net.cydhra.technocracy.foundation.client.gui.TCGui
+import net.cydhra.technocracy.foundation.client.gui.components.energymeter.DefaultEnergyMeter
+import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.DefaultFluidMeter
+import net.cydhra.technocracy.foundation.client.gui.components.heatmeter.DefaultHeatMeter
+import net.cydhra.technocracy.foundation.client.gui.components.progressbar.DefaultProgressBar
+import net.cydhra.technocracy.foundation.client.gui.components.progressbar.Orientation
+import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
+import net.cydhra.technocracy.foundation.client.gui.machine.BaseMachineTab
+import net.cydhra.technocracy.foundation.client.gui.machine.MachineContainer
+import net.cydhra.technocracy.foundation.client.gui.machine.MachineSettingsTab
+import net.cydhra.technocracy.foundation.client.gui.machine.MachineUpgradesTab
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.content.fluids.hydrochloricAcidFluid
-import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.MultiplierTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.*
 import net.cydhra.technocracy.foundation.content.tileentities.logic.AdditiveConsumptionLogic
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ItemProcessingLogic
-import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_ADDITIVE_CONSUMPTION
-import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_ENERGY
-import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_GENERIC
-import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_SPEED
+import net.cydhra.technocracy.foundation.content.tileentities.upgrades.*
 import net.cydhra.technocracy.foundation.data.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.model.tileentities.api.TEInventoryProvider
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeClass
 import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
+import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
 
@@ -68,6 +74,77 @@ class TileEntityChemicalEtchingChamber : MachineTileEntity(), TEInventoryProvide
                 progress = this.progressComponent,
                 baseTickEnergyCost = 120
         ), MACHINE_PROCESSING_LOGIC_NAME)
+    }
+
+    override fun getGui(player: EntityPlayer?): TCGui {
+
+        val upgrades = upgradesComponent.getInstalledUpgrades()
+        val hasCooling = upgrades.find { it is CoolingUpgrade } != null
+
+        val gui = TCGui(guiHeight = 180 + if(hasCooling) 35 else 0, container = MachineContainer(this))
+        gui.registerTab(object : BaseMachineTab(this, gui) {
+            override fun init() {
+                val te = this@TileEntityChemicalEtchingChamber
+
+                var xOff = 10
+                var yOff = 20
+
+                val spacer = 5
+                val spacerSmall = 2
+
+                xOff += components.addElement(DefaultEnergyMeter(xOff, yOff, te.energyStorageComponent, gui).setSize(height = 64)).width
+                xOff += spacer
+
+                xOff += components.addElement(DefaultFluidMeter(xOff, 20, te.acidFluidInput, gui).setSize(height =  64)).width
+                xOff += spacer * 2
+
+                val space = (64) / 2
+                var slot = components.addElement(TCSlotIO(te.inputInventory.inventory, 0, xOff, 20 + space - 8, gui))
+                slot.type = te.inputInventory.inventoryType
+                xOff += slot.width + spacerSmall
+
+                slot = components.addElement(TCSlotIO(te.inputInventory.inventory, 1, xOff, 20 + space - 8, gui))
+                slot.type = te.inputInventory.inventoryType
+                xOff += slot.width + spacerSmall
+
+                slot = components.addElement(TCSlotIO(te.inputInventory.inventory, 2, xOff, 20 + space - 8, gui))
+                slot.type = te.inputInventory.inventoryType
+                xOff += slot.width + spacer
+
+                xOff += components.addElement(DefaultProgressBar(xOff, 20 + space - 8, Orientation.RIGHT, te.progressComponent, gui)).width
+                xOff += spacer
+
+                slot = components.addElement(TCSlotIO(te.outputInventoryComponent.inventory, 0, xOff, 20 + space - 8, gui))
+                slot.type = te.outputInventoryComponent.inventoryType
+
+                yOff += 64 + spacer
+                xOff = 10
+
+                if(hasCooling) {
+                    val compCoolIn = te.getComponents().find { it.first == CoolingUpgrade.COOLER_FLUID_INPUT_NAME }
+                    val compCoolOut = te.getComponents().find { it.first == CoolingUpgrade.COOLER_FLUID_OUTPUT_NAME }
+                    val compHeat = te.getComponents().find { it.first == CoolingUpgrade.COOLER_HEAT_STORAGE_COMPONENT_NAME }
+                    if(compCoolIn != null && compCoolOut != null && compHeat != null) {
+
+                        yOff += components.addElement(DefaultHeatMeter(xOff, yOff, compHeat.second as HeatStorageTileEntityComponent, gui).setSize(gui.guiWidth - 20, 10)).height
+                        yOff += spacerSmall
+
+                        val w = (gui.guiWidth - 22) / 2
+                        xOff += components.addElement(DefaultFluidMeter(xOff, yOff, compCoolIn.second as FluidTileEntityComponent, gui).setLineCount(4).setSize(height =  15, width = w)).width
+                        xOff += spacerSmall
+                        components.addElement(DefaultFluidMeter(xOff, yOff, compCoolOut.second as FluidTileEntityComponent, gui).setLineCount(4).setSize(height =  15, width = w))
+                    }
+                }
+
+                if (player != null)
+                    addPlayerInventorySlots(player, 8, gui.guiHeight - 58 - 16 - 5 - 12)
+            }
+        })
+
+        addDefaultTabs(gui, player)
+        initGui(gui, player)
+
+        return gui
     }
 
 

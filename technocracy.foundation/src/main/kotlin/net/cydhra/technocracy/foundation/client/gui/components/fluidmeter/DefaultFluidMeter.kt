@@ -30,6 +30,13 @@ class DefaultFluidMeter(posX: Int, posY: Int, val component: FluidTileEntityComp
 
     private var flowAnimation: Int = 0
 
+    private var linecount = 10
+
+    fun setLineCount(count: Int) : DefaultFluidMeter {
+        linecount = count
+        return this
+    }
+
     override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
         GlStateManager.color(1f, 1f, 1f, 1f)
         GlStateManager.enableBlend()
@@ -163,15 +170,15 @@ class DefaultFluidMeter(posX: Int, posY: Int, val component: FluidTileEntityComp
         val tessellator = Tessellator.getInstance()
         val bufferbuilder = tessellator.buffer
 
-        val lines = height / 10.0
-        for (i in 1..9) {
+        val lines = height / linecount.toDouble()
+        for (i in 1 until linecount) {
 
             val left = 2.0
             val top = lines * i
 
             var right = (width - 2) / 2.0
 
-            if (i == 5)
+            if (i == linecount / 2)
                 right = width - 3.0
 
             val bottom = top + 1.0

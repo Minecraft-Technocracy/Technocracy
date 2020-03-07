@@ -8,6 +8,7 @@ import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
+import net.minecraft.util.math.MathHelper
 import org.lwjgl.opengl.GL11
 import java.awt.Color
 import kotlin.math.roundToInt
@@ -68,7 +69,12 @@ class DefaultEnergyMeter(posX: Int, posY: Int, val component: EnergyStorageTileE
 
         val level = Interpolator.linearInterpolate(lastLevel, this.level, partialTicks)
 
-        drawGradientRect(posX + x + 1.0, posY + y + 1.0 + ((height - 1) * (1 - level)), posX + x + width - 1.0, posY + y + height - 1.0, Color(255, 35, 39).rgb, Color(107, 14, 19).rgb)
+
+        val interpolR = MathHelper.clamp(Interpolator.linearInterpolate(107.0, 255.0, level.toFloat()).toInt(), 0, 255)
+        val interpolG = MathHelper.clamp(Interpolator.linearInterpolate(14.0, 35.0, level.toFloat()).toInt(), 0, 255)
+        val interpolB = MathHelper.clamp(Interpolator.linearInterpolate(19.0, 39.0, level.toFloat()).toInt(), 0, 255)
+
+        drawGradientRect(posX + x + 1.0, posY + y + 1.0 + ((height - 1) * (1 - level)), posX + x + width - 1.0, posY + y + height - 1.0, Color(interpolR, interpolG, interpolB).rgb, Color(107, 14, 19).rgb)
         GlStateManager.disableBlend()
     }
 
