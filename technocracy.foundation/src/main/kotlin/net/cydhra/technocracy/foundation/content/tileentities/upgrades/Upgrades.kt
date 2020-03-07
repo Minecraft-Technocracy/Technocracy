@@ -102,7 +102,7 @@ class LubricantUpgrade : MachineUpgrade(MACHINE_UPGRADE_GENERIC) {
     }
 }
 
-class CoolerUpgrade : MachineUpgrade(MACHINE_UPGRADE_GENERIC) {
+class CoolingUpgrade : MachineUpgrade(MACHINE_UPGRADE_GENERIC) {
     companion object {
         const val COOLER_HEAT_STORAGE_COMPONENT_NAME = "special_cooler"
         const val COOLER_LOGIC = "special_cooler_logic"
@@ -114,7 +114,7 @@ class CoolerUpgrade : MachineUpgrade(MACHINE_UPGRADE_GENERIC) {
     override fun canInstallUpgrade(tile: TCMachineTileEntity, upgrades: MachineUpgradesTileEntityComponent): Boolean {
         return upgrades
                 .getInstalledUpgrades()
-                .filterIsInstance<CoolerUpgrade>()
+                .filterIsInstance<CoolingUpgrade>()
                 .isEmpty() &&
                 tile.getComponents()
                         .map { it.second }

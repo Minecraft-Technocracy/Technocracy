@@ -5,7 +5,10 @@ import net.cydhra.technocracy.foundation.model.tileentities.api.components.Abstr
 import net.cydhra.technocracy.foundation.util.compound
 import net.minecraft.nbt.NBTTagCompound
 
-
+/**
+ * Tile entity component that stores a singular boolean. Used by rocket controllers to save the ``isLinked`` state.
+ * Marks the tile entity dirty on change.
+ */
 class BooleanDataTileEntityComponent : AbstractTileEntityComponent() {
 
     var state: Boolean = false
