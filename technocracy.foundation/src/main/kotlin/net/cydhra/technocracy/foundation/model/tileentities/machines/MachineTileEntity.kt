@@ -144,18 +144,27 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
                     addPlayerInventorySlots(player, 8, gui.guiHeight - 58 - 16 - 5 - 12)
             }
         })
-        initGui(gui)
-        gui.registerTab(MachineSettingsTab(gui, this))
 
-        val upgradesComponent =
-                this.getComponents().firstOrNull { (_, c) -> c is MachineUpgradesTileEntityComponent }?.second
-        if (upgradesComponent != null) {
-            gui.registerTab(MachineUpgradesTab(gui, upgradesComponent as MachineUpgradesTileEntityComponent, player))
-        }
+        addDefaultTabs(gui, player)
+        initGui(gui, player)
+
         return gui
     }
 
-    open fun initGui(gui: TCGui) {}
+    /**
+     * addes default tabs
+     */
+    open fun addDefaultTabs(gui: TCGui, player: EntityPlayer?) {
+        gui.registerTab(MachineSettingsTab(gui, this))
+
+        val upgradesComponent = this.getComponents().firstOrNull { (_, c) -> c is MachineUpgradesTileEntityComponent }?.second
+        if (upgradesComponent != null) {
+            gui.registerTab(MachineUpgradesTab(gui, upgradesComponent as MachineUpgradesTileEntityComponent, player))
+        }
+    }
+
+    open fun initGui(gui: TCGui, player: EntityPlayer?) {
+    }
 
     override fun update() {
         // update ILogic strategies, but only server side

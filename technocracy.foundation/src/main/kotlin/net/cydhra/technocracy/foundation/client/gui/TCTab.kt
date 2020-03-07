@@ -21,6 +21,11 @@ abstract class TCTab(val name: String, val parent: TCGui, val tint: Int = -1,
      */
     open fun onResize() {}
 
+    fun <T : ITCComponent> ArrayList<ITCComponent>.addElement(element: T): T {
+        components.add(element)
+        return element
+    }
+
     open fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
         GlStateManager.color(1f, 1f, 1f, 1f)
         Minecraft.getMinecraft().fontRenderer.drawString(name, 8f + x, 8f + y, 4210752, false)

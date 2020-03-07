@@ -15,6 +15,7 @@ import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.model.tileentities.api.TEInventoryProvider
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeClass
 import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
+import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
 
@@ -76,7 +77,7 @@ class TileEntityAlloySmeltery : MachineTileEntity(), TEInventoryProvider {
     override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack, originalStack: ItemStack) {
     }
 
-    override fun initGui(gui: TCGui) {
+    override fun initGui(gui: TCGui, player: EntityPlayer?) {
         gui.registerTab(object : TCTab("Example", gui) {
             override fun init() {
                 addComponent(DefaultLabel(10, 20, "Hello World"))
