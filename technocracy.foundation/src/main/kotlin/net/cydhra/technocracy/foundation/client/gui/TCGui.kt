@@ -97,6 +97,8 @@ TCContainer)
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
 
+        val partialTicks = Minecraft.getMinecraft().renderPartialTicks
+
         drawDefaultBackground()
 
         xSize = this.tabs[this.activeTabIndex].getSizeX()
