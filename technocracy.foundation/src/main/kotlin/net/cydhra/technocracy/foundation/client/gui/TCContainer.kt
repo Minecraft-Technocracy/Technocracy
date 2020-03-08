@@ -9,12 +9,15 @@ import net.minecraft.inventory.Container
 import net.minecraft.inventory.Slot
 import net.minecraft.item.ItemStack
 import net.minecraft.tileentity.TileEntity
+import kotlin.streams.toList
 
 
 open class TCContainer : Container() {
 
 
     private val components = mutableListOf<TCComponent>()
+
+    lateinit var gui: TCGui
 
     /**
      * The tileentity this gui belongs to if there is one
@@ -26,52 +29,40 @@ open class TCContainer : Container() {
         val slot = this.inventorySlots[index]
         val tcSlot = slot as ITCSlot
 
-        val firstPlayerSlot = inventorySlots.stream().filter { (it as ITCSlot).isPlayerInventory }.mapToInt { it.slotNumber }.findFirst().orElseGet { -1 }
+        val tmp = inventorySlots.stream().filter { (it as ITCSlot).isPlayerInventory }.toList()
+        val playerHotbar = tmp.filter { it.slotIndex < 9 }.map { it.slotNumber }.toList()
+        val playerUpperInv = tmp.filter { it.slotIndex >= 9 }.map { it.slotNumber }.toList()
+        val playerInvWhole = tmp.map { it.slotNumber }.toList()
 
-        val playerInventorySize = firstPlayerSlot + 26
-        val playerHotBarStart = playerInventorySize + 1
-        val playerHotBarEnd = playerHotBarStart + 8
+        val guiSlots = inventorySlots.stream().filter { !(it as ITCSlot).isPlayerInventory }.filter { (it as ITCSlot).isEnabled() }.mapToInt { it.slotNumber }.toList()
 
         if (slot.hasStack) {
-            val oldStack = slot.stack
+            val oldStack = slot.stack.copy()
             newStack = oldStack.copy()
 
             if (!tcSlot.isPlayerInventory) { // take from machine
-                if (!this.mergeItemStack(oldStack, firstPlayerSlot, playerHotBarEnd + 1, true)) {
+                if (!this.mergeItemStack(oldStack, playerInvWhole, true)) {
                     return ItemStack.EMPTY
                 }
-
                 slot.onSlotChange(oldStack, newStack)
             } else { // place into machine (if possible; otherwise place elsewhere in inventory)
-                if (!this.mergeItemStack(oldStack, 0, firstPlayerSlot, false)) {
-
-                    if (index >= playerHotBarStart) {
-                        if (!this.mergeItemStack(oldStack, firstPlayerSlot, playerHotBarStart, false)) {
+                if (!this.mergeItemStack(oldStack, guiSlots, false)) {
+                    if (playerHotbar.contains(index)) {
+                        if (!this.mergeItemStack(oldStack, playerUpperInv, false)) {
                             return ItemStack.EMPTY
                         }
                     } else {
-                        if (!this.mergeItemStack(oldStack, playerHotBarStart, playerHotBarEnd + 1, false)) {
+                        if (!this.mergeItemStack(oldStack, playerHotbar, false)) {
                             return ItemStack.EMPTY
                         }
                     }
                 }
-
-
-                /*if (index in machineInputs until playerHotBarStart) {
-                    if (!this.mergeItemStack(oldStack, 0, machineInputs, false) && !this.mergeItemStack(oldStack, playerHotBarStart, playerHotBarEnd + 1, false)) {
-                        return ItemStack.EMPTY
-                    }
-                } else if (index >= playerHotBarStart && index < playerHotBarEnd + 1) {
-                    if (!this.mergeItemStack(oldStack, 0, machineInputs, false) && !this.mergeItemStack(oldStack, machineInputs + machineOutputs, playerInventorySize + 1, false)) {
-                        return ItemStack.EMPTY
-                    }
-                }*/
             }
 
             if (oldStack.count == 0) {
                 slot.putStack(ItemStack.EMPTY)
             } else {
-                slot.onSlotChanged()
+                slot.putStack(oldStack)
             }
 
             if (oldStack.count == newStack.count) {
@@ -90,21 +81,17 @@ open class TCContainer : Container() {
      * (included) and maxIndex (excluded). Args : stack, minIndex, maxIndex, negativDirection. /!\ the Container
      * implementation do not check if the item is valid for the slot
      */
-    override fun mergeItemStack(stack: ItemStack, startIndex: Int, endIndex: Int, reverseDirection: Boolean): Boolean {
+    fun mergeItemStack(stack: ItemStack, indices: List<Int>, reverseDirection: Boolean): Boolean {
+
+        val list = if (reverseDirection) indices.reversed() else indices
+
         var flag = false
-        var i = startIndex
-        if (reverseDirection) {
-            i = endIndex - 1
-        }
+
         if (stack.isStackable) {
-            while (!stack.isEmpty) {
-                if (reverseDirection) {
-                    if (i < startIndex) {
-                        break
-                    }
-                } else if (i >= endIndex) {
+            for (i in list) {
+                if (stack.isEmpty)
                     break
-                }
+
                 val slot = inventorySlots[i]
                 val itemstack = slot.stack
                 if (!itemstack.isEmpty && itemstack.item === stack.item && (!stack.hasSubtypes || stack.metadata == itemstack.metadata) && ItemStack.areItemStackTagsEqual(stack, itemstack) && (slot as ITCSlot).type != DynamicInventoryCapability.InventoryType.OUTPUT) {
@@ -123,27 +110,13 @@ open class TCContainer : Container() {
                         flag = true
                     }
                 }
-                if (reverseDirection) {
-                    --i
-                } else {
-                    ++i
-                }
             }
         }
         if (!stack.isEmpty) {
-            i = if (reverseDirection) {
-                endIndex - 1
-            } else {
-                startIndex
-            }
-            while (true) {
-                if (reverseDirection) {
-                    if (i < startIndex) {
-                        break
-                    }
-                } else if (i >= endIndex) {
+            for (i in list) {
+                if (stack.isEmpty)
                     break
-                }
+
                 val slot1 = inventorySlots[i]
                 val itemstack1 = slot1.stack
                 if (itemstack1.isEmpty && slot1.isItemValid(stack) && (slot1 as ITCSlot).type != DynamicInventoryCapability.InventoryType.OUTPUT) {
@@ -155,11 +128,6 @@ open class TCContainer : Container() {
                     slot1.onSlotChanged()
                     flag = true
                     break
-                }
-                if (reverseDirection) {
-                    --i
-                } else {
-                    ++i
                 }
             }
         }

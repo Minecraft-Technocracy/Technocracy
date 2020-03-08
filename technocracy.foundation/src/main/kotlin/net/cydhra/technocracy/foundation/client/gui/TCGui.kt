@@ -3,6 +3,7 @@ package net.cydhra.technocracy.foundation.client.gui
 import net.cydhra.technocracy.foundation.client.gui.components.slot.ITCSlot
 import net.cydhra.technocracy.foundation.network.PacketHandler
 import net.cydhra.technocracy.foundation.network.componentsync.ClientRequestSyncPacket
+import net.cydhra.technocracy.foundation.network.componentsync.ClientSwitchTabPacket
 import net.cydhra.technocracy.foundation.network.componentsync.ComponentUpdatePacket
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
@@ -88,6 +89,24 @@ TCContainer)
         this.ySize = guiHeight
         origWidth = guiWidth
         origHeight = guiHeight
+        this.container.gui = this
+    }
+
+    /**
+     * Used by the server to change the states of the slots, so different tabs can have different slots
+     */
+    fun setActiveTab(index: Int) {
+        if(index < 0 || index > tabs.size -1)
+            return
+
+        activeTabIndex = index
+
+        //update state of components
+        tabs.forEachIndexed { inner, tcTab ->
+            tcTab.components.filterIsInstance<ITCSlot>().forEach {
+                it.setEnabled(inner == index)
+            }
+        }
     }
 
     override fun initGui() {
@@ -188,6 +207,8 @@ TCContainer)
                             it.setEnabled(inner == index)
                         }
                     }
+
+                    PacketHandler.sendToServer(ClientSwitchTabPacket(index))
 
                     //update position of the components to new gui size
                     xSize = active.getSizeX()
@@ -318,7 +339,7 @@ TCContainer)
      * Get the width of the tab bar
      */
     fun getTabBarWidth(): Int {
-        return if(tabs.size > 1) TAB_SELECTED_WIDTH else 0
+        return if (tabs.size > 1) TAB_SELECTED_WIDTH else 0
     }
 
     /**

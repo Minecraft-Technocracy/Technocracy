@@ -52,10 +52,7 @@ import net.cydhra.technocracy.foundation.network.ComponentClickPacket
 import net.cydhra.technocracy.foundation.network.ItemKeyBindPacket
 import net.cydhra.technocracy.foundation.network.ItemScrollPacket
 import net.cydhra.technocracy.foundation.network.PacketHandler
-import net.cydhra.technocracy.foundation.network.componentsync.ClientRequestSyncPacket
-import net.cydhra.technocracy.foundation.network.componentsync.ComponentUpdatePacket
-import net.cydhra.technocracy.foundation.network.componentsync.GuiUpdateListener
-import net.cydhra.technocracy.foundation.network.componentsync.MachineInfoPacket
+import net.cydhra.technocracy.foundation.network.componentsync.*
 import net.minecraft.client.Minecraft
 import net.minecraft.item.crafting.FurnaceRecipes
 import net.minecraft.item.crafting.Ingredient
@@ -359,6 +356,7 @@ open class CommonProxy {
         PacketHandler.registerPacket(ComponentUpdatePacket::class.java, ComponentUpdatePacket::class.java, Side.SERVER)
         PacketHandler.registerPacket(ClientRequestSyncPacket::class.java, ClientRequestSyncPacket::class.java, Side.SERVER)
         PacketHandler.registerPacket(ComponentClickPacket::class.java, ComponentClickPacket::class.java, Side.SERVER)
+        PacketHandler.registerPacket(ClientSwitchTabPacket::class.java, ClientSwitchTabPacket::class.java, Side.SERVER)
     }
 
     open fun init() {
