@@ -10,7 +10,7 @@ abstract class HeatMeter(val posX: Int, val posY: Int) : TCComponent() {
     var level = 0.0
     var lastLevel = -1.0
 
-    override var width = 10
+    override var width = 8
     override var height = 50
 
     override fun update() {

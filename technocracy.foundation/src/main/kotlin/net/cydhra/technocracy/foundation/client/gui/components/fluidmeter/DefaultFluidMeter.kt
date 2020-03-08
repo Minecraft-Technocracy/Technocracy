@@ -26,13 +26,18 @@ import java.awt.Color
 import kotlin.math.*
 
 
-class DefaultFluidMeter(posX: Int, posY: Int, val component: FluidTileEntityComponent, val gui: TCGui) : FluidMeter(posX, posY) {
+class DefaultFluidMeter(posX: Int, posY: Int, val component: FluidTileEntityComponent, val gui: TCGui, val type: Int = 0) : FluidMeter(posX, posY) {
+
+    init {
+        if (type == 1)
+            width = 12
+    }
 
     private var flowAnimation: Int = 0
 
     private var linecount = 10
 
-    fun setLineCount(count: Int) : DefaultFluidMeter {
+    fun setLineCount(count: Int): DefaultFluidMeter {
         linecount = count
         return this
     }
@@ -44,9 +49,12 @@ class DefaultFluidMeter(posX: Int, posY: Int, val component: FluidTileEntityComp
         val col = if (component.fluid.capacity == 0) 0.5f else 1f
 
         GlStateManager.color(col, col, col, 1f)
-        Minecraft.getMinecraft().textureManager.bindTexture(TCGui.guiComponents)
+        Minecraft.getMinecraft().textureManager.bindTexture(tankTexture)
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
 
+        Gui.drawModalRectWithCustomSizedTexture(x + posX, y + posY, if (type == 1) 16f else 0f, 0f, 16, 50, 64f, 64f)
+
+        /*
         //edge top left
         Gui.drawModalRectWithCustomSizedTexture(posX + x, posY + y, slotCornerTopLeft.x.toFloat(), slotCornerTopLeft.y.toFloat(), slotCornerTopLeft.width, slotCornerTopLeft.height, 256f, 256f)
         //edge top right
@@ -89,7 +97,7 @@ class DefaultFluidMeter(posX: Int, posY: Int, val component: FluidTileEntityComp
                 slotContent.x.toFloat(), slotContent.y.toFloat(),
                 slotContent.width, slotContent.height,
                 width - slotCornerBottomLeft.width, height - slotCornerBottomRight.height,
-                256f, 256f)
+                256f, 256f)*/
 
         val tessellator = Tessellator.getInstance()
         val bufferbuilder = tessellator.buffer
@@ -136,30 +144,21 @@ class DefaultFluidMeter(posX: Int, posY: Int, val component: FluidTileEntityComp
             }
         }
 
+        Minecraft.getMinecraft().textureManager.bindTexture(tankTexture)
+        Gui.drawModalRectWithCustomSizedTexture(x + posX, y + posY, 32f + if (type == 1) 16f else 0f, 0f, 16, 50, 64f, 64f)
 
-        drawOverlay(x,y)
+        //drawOverlay(x,y)
 
 
     }
 
     override fun drawTooltip(mouseX: Int, mouseY: Int) {
-        if (component.fluid.capacity > 0) {
-
-            val text = mutableListOf<String>()
-            if (component.fluid.currentFluid != null)
-                text.add(component.fluid.currentFluid!!.localizedName + ": ")
-
-            text.add("${TextFormatting.GRAY}${(level * component.fluid.capacity).roundToInt()}mb / ${component.fluid.capacity}mb")
-            gui.drawHoveringText(text, mouseX, mouseY)
-        }
+        drawToolTip(component, mouseX, mouseY, gui)
     }
 
     override fun update() {
         level = if (component.fluid.currentFluid != null) component.fluid.currentFluid!!.amount.toFloat() / component.fluid.capacity.toFloat() else 0f
         this.level = MathHelper.clamp(this.level, 0F, 1F)
-        flowAnimation++
-        if (flowAnimation > 1024)
-            flowAnimation = 0
     }
 
     override fun drawOverlay(x: Int, y: Int) {
@@ -184,10 +183,10 @@ class DefaultFluidMeter(posX: Int, posY: Int, val component: FluidTileEntityComp
             val bottom = top + 1.0
 
             bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR)
-            bufferbuilder.pos(left + posX + x, bottom + posY + y, 0.0).color(86,0,0,255).endVertex()
-            bufferbuilder.pos(right + posX + x, bottom + posY + y, 0.0).color(86,0,0,255).endVertex()
-            bufferbuilder.pos(right + posX + x, top + posY + y, 0.0).color(86,0,0,255).endVertex()
-            bufferbuilder.pos(left + posX + x, top + posY + y, 0.0).color(86,0,0,255).endVertex()
+            bufferbuilder.pos(left + posX + x, bottom + posY + y, 0.0).color(86, 0, 0, 255).endVertex()
+            bufferbuilder.pos(right + posX + x, bottom + posY + y, 0.0).color(86, 0, 0, 255).endVertex()
+            bufferbuilder.pos(right + posX + x, top + posY + y, 0.0).color(86, 0, 0, 255).endVertex()
+            bufferbuilder.pos(left + posX + x, top + posY + y, 0.0).color(86, 0, 0, 255).endVertex()
             tessellator.draw()
         }
         GlStateManager.enableTexture2D()
