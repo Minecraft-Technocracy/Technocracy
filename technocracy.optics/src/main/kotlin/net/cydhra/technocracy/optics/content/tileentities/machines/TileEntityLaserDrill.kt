@@ -4,6 +4,7 @@ import net.cydhra.technocracy.foundation.client.gui.TCContainer
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.TCTab
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
+import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.HeatStorageTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.ProgressTileEntityComponent
@@ -13,6 +14,7 @@ import net.cydhra.technocracy.foundation.model.tileentities.api.logic.ILogicClie
 import net.cydhra.technocracy.foundation.model.tileentities.api.logic.LogicClientDelegate
 import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableTileEntity
 import net.cydhra.technocracy.optics.api.tileentities.components.LaserAbsorberComponent
+import net.cydhra.technocracy.optics.content.tileentities.logic.LaserDrillLogic
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
@@ -27,11 +29,27 @@ class TileEntityLaserDrill : AggregatableTileEntity(), TCMachineTileEntity, ILog
     private val laserAbsorberComponent = LaserAbsorberComponent(
             mutableSetOf(EnumFacing.NORTH, EnumFacing.EAST, EnumFacing.SOUTH, EnumFacing.WEST))
 
+    // this is just a temporary energy storage immidiatly emptied by LaserDrillLogic
+    private val energyComponent = EnergyStorageTileEntityComponent(mutableSetOf(EnumFacing.DOWN)).apply {
+        this.energyStorage.capacity = 100_000
+    }
+
     init {
         this.registerComponent(progressComponent, "progress")
         this.registerComponent(heatStorageComponent, "heat")
         this.registerComponent(outputInventory, "output")
         this.registerComponent(laserAbsorberComponent, "laser_input")
+        this.registerComponent(energyComponent, "energy")
+    }
+
+    override fun onLoad() {
+        this.addLogicStrategy(LaserDrillLogic(
+                progressComponent = progressComponent,
+                energyComponent = energyComponent,
+                outputInventory = outputInventory,
+                energyPerProgress = 20_000,
+                world = this.world
+        ), "drilling")
     }
 
     override fun isItemValid(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack): Boolean {
