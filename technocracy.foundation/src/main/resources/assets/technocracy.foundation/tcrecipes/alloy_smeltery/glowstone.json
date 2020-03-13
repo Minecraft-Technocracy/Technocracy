@@ -1,0 +1,21 @@
+{
+  "input": [
+    {
+      "type": "forge:ore_dict",
+      "ore": "blockGlass"
+    },
+    {
+      "type": "forge:ore_dict",
+      "ore": "crystalZirconium"
+    },
+    {
+      "type": "forge:ore_dict",
+      "ore": "dustRedstone"
+    }
+  ],
+  "output": {
+    "item": "minecraft:glowstone",
+    "count": 1
+  },
+  "cost": 180
+}
