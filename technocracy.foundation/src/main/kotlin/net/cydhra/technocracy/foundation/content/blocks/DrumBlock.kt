@@ -1,16 +1,16 @@
 package net.cydhra.technocracy.foundation.content.blocks
 
+import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
+import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicItemFluidStorage
+import net.cydhra.technocracy.foundation.content.tileentities.storage.TileEntityDrum
 import net.cydhra.technocracy.foundation.model.blocks.api.AbstractTileEntityBlock
 import net.cydhra.technocracy.foundation.model.blocks.color.IBlockColor
 import net.cydhra.technocracy.foundation.model.blocks.util.IDynamicBlockDisplayName
+import net.cydhra.technocracy.foundation.model.blocks.util.IDynamicBlockItemCapability
 import net.cydhra.technocracy.foundation.model.blocks.util.IDynamicBlockItemProperty
 import net.cydhra.technocracy.foundation.model.blocks.util.IDynamicBlockPlaceBehavior
-import net.cydhra.technocracy.foundation.model.blocks.util.IDynamicBlockItemCapabilitiy
-import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
-import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicItemFluidStorage
 import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWrapper
 import net.cydhra.technocracy.foundation.model.items.capability.ItemFluidTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.storage.TileEntityDrum
 import net.minecraft.block.material.Material
 import net.minecraft.block.properties.PropertyEnum
 import net.minecraft.block.state.BlockStateContainer
@@ -60,7 +60,7 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
         return stack.fluid
     }
 
-}), IDynamicBlockItemProperty, IDynamicBlockDisplayName, IDynamicBlockPlaceBehavior, IDynamicBlockItemCapabilitiy {
+}), IDynamicBlockItemProperty, IDynamicBlockDisplayName, IDynamicBlockPlaceBehavior, IDynamicBlockItemCapability {
 
     companion object {
         var DRUM_TYPE: PropertyEnum<DrumType> = PropertyEnum.create("drumtype", DrumType::class.java)

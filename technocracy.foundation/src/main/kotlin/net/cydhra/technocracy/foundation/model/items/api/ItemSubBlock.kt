@@ -14,7 +14,6 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.text.translation.I18n
 import net.minecraft.world.World
 import net.minecraftforge.common.capabilities.ICapabilityProvider
-import java.lang.StringBuilder
 
 
 class ItemSubBlock(block: Block) : ItemBlock(block) {
@@ -27,7 +26,7 @@ class ItemSubBlock(block: Block) : ItemBlock(block) {
     }
 
     override fun initCapabilities(stack: ItemStack, nbt: NBTTagCompound?): ICapabilityProvider? {
-        if (block is IDynamicBlockItemCapabilitiy) {
+        if (block is IDynamicBlockItemCapability) {
             return block.initCapabilities(stack, nbt)
         }
         return super.initCapabilities(stack, nbt)

@@ -3,10 +3,9 @@ package net.cydhra.technocracy.foundation.model.blocks.util
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.common.capabilities.ICapabilityProvider
-import javax.annotation.Nullable
 
 
-interface IDynamicBlockItemCapabilitiy {
+interface IDynamicBlockItemCapability {
     /**
      * Called from ItemStack.setItem, will hold extra data for the life of this ItemStack.
      * Can be retrieved from stack.getCapabilities()
