@@ -2,7 +2,7 @@ package net.cydhra.technocracy.foundation.content.tileentities.upgrades
 
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
-import net.cydhra.technocracy.foundation.content.fluids.heatTransferOilFluid
+import net.cydhra.technocracy.foundation.content.fluids.diphenyletherFluid
 import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.HeatStorageTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesTileEntityComponent
@@ -79,7 +79,7 @@ class LubricantUpgrade : MachineUpgrade(MACHINE_UPGRADE_GENERIC) {
 
     override fun onUpgradeLoad(tile: TCMachineTileEntity, upgrades: MachineUpgradesTileEntityComponent) {
         val lubricantTank = FluidTileEntityComponent(capacity = 8000,
-                allowedFluid = *arrayOf(heatTransferOilFluid.name),
+                allowedFluid = *arrayOf(diphenyletherFluid.name),
                 tanktype = DynamicFluidCapability.TankType.INPUT,
                 facing = mutableSetOf(EnumFacing.NORTH))
         val lubricantMultiplier = MultiplierTileEntityComponent(null)
