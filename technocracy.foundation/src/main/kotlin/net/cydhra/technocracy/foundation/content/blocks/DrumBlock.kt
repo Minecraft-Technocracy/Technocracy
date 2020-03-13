@@ -189,7 +189,7 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
 
     enum class DrumType(val typeName: String, val amount: Int) :
             IStringSerializable {
-        IRON("iron", 64000), STEEL("steel", 256000), BEDROCKIUM("bedrock", 2048000);
+        IRON("iron", 64000), STEEL("steel", 256000);
 
         override fun getName(): String {
             return this.typeName
