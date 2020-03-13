@@ -209,7 +209,7 @@ fluid.aqueous_sodium_acrylate=Hydrogel
 fluid.glue=Glue
 fluid.phenol=Phenol
 fluid.chloro_benzene=Chlorobenzene
-fluid.diphenyl_ether=Diphenyl Ether
+fluid.diphenyl_ether=Ether
 fluid.heat_transfer_oil=Heat Transfer Oil
 
 fluid.slag.aluminum=Aluminum Slag
