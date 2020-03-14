@@ -7,6 +7,8 @@ import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.content.blocks.OreBlock
 import net.cydhra.technocracy.foundation.content.fluids.drossFluid
 import net.cydhra.technocracy.foundation.content.fluids.hydrochloricAcidFluid
+import net.cydhra.technocracy.foundation.content.fluids.hydrogenFluid
+import net.cydhra.technocracy.foundation.content.fluids.lyeFluid
 import net.cydhra.technocracy.foundation.data.config.BooleanConfigurable
 import net.cydhra.technocracy.foundation.data.config.IntegerConfigurable
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
@@ -228,12 +230,17 @@ class OreSystemBuilder {
                             FTIRecipe(FluidStack(enrichedSlurry, 250), ItemStack(crystal), 200))
 
                     // add grit recipe
-                    RecipeManager.registerRecipe(RecipeManager.RecipeType.PULVERIZER,
-                            ITIRecipe(Ingredient.fromItem(crystal), ItemStack(grit, 2), 100))
+                    RecipeManager.registerRecipe(RecipeManager.RecipeType.INDUSTRIAL_REFINERY,
+                            MIMFTIRecipe(
+                                    listOf(Ingredient.fromItem(crystal),
+                                            Ingredient.fromItem(Item.getItemFromBlock(Blocks.GRAVEL))),
+                                    listOf(FluidStack(lyeFluid, 80), FluidStack(hydrogenFluid, 20)),
+                                    ItemStack(grit, 2), 160))
 
                     // add dust recipe
                     RecipeManager.registerRecipe(RecipeManager.RecipeType.CENTRIFUGE,
-                            ITMIRecipe(Ingredient.fromItem(grit), listOf(ItemStack(dust, 1)), 100))
+                            ITMIRecipe(Ingredient.fromItem(grit),
+                                    listOf(ItemStack(dust, 1), ItemStack(Blocks.GRAVEL, 1)), 100))
 
                     // add gear recipe
                     if (gear != null) GameRegistry.addShapedRecipe(ResourceLocation(TCFoundation.MODID,
