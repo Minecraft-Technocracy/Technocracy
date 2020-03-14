@@ -1,0 +1,17 @@
+{
+  "input": {
+    "fluid": "brine",
+    "amount": 100
+  },
+  "outputs": [
+    {
+      "fluid": "lye",
+      "amount": 50
+    },
+    {
+      "fluid": "chlorine",
+      "amount": 50
+    }
+  ],
+  "cost": 120
+}

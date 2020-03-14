@@ -1,16 +1,16 @@
 {
   "input": {
     "fluid": "water",
-    "amount": 1
+    "amount": 150
   },
   "outputs": [
     {
       "fluid": "oxygen",
-      "amount": 1
+      "amount": 50
     },
     {
       "fluid": "hydrogen",
-      "amount": 2
+      "amount": 100
     }
   ],
   "cost": 80
