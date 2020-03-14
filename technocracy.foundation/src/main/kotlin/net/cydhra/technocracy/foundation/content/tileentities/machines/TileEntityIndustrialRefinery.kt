@@ -76,10 +76,10 @@ class TileEntityIndustrialRefinery : MachineTileEntity(), TEInventoryProvider {
     }
 
     override fun getGui(player: EntityPlayer?): TCGui {
-        val gui = TCGui(guiHeight = 180, container = MachineContainer(this))
+        val gui = TCGui(container = MachineContainer(this))
         gui.registerTab(object : BaseMachineTab(this, gui) {
             override fun init() {
-
+                super.init()
                 val te = this@TileEntityIndustrialRefinery
 
                 var xOff = 10
@@ -88,12 +88,12 @@ class TileEntityIndustrialRefinery : MachineTileEntity(), TEInventoryProvider {
                 val spacer = 5
                 val spacerSmall = 2
 
-                xOff += components.addElement(DefaultEnergyMeter(xOff, yOff, te.energyStorageComponent, gui).setSize(height = 64)).width
+                xOff += components.addElement(DefaultEnergyMeter(xOff, yOff, te.energyStorageComponent, gui)).width
                 xOff += spacer
 
-                xOff += components.addElement(DefaultFluidMeter(xOff, 20, te.inputFluidComponent1, gui).setSize(12, 64)).width
+                xOff += components.addElement(DefaultFluidMeter(xOff, 20, te.inputFluidComponent1, gui, 1)).width
                 xOff += spacerSmall
-                xOff += components.addElement(DefaultFluidMeter(39, 20, te.inputFluidComponent2, gui).setSize(12, 64)).width
+                xOff += components.addElement(DefaultFluidMeter(39, 20, te.inputFluidComponent2, gui, 1)).width
                 xOff += spacer * 3
 
                 val space = (64) / 2

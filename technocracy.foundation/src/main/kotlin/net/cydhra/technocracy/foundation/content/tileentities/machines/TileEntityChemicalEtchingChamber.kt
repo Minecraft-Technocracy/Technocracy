@@ -2,7 +2,9 @@ package net.cydhra.technocracy.foundation.content.tileentities.machines
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.components.energymeter.DefaultEnergyMeter
+import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.CoolantMeter
 import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.DefaultFluidMeter
+import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.LubricantFluidMeter
 import net.cydhra.technocracy.foundation.client.gui.components.heatmeter.DefaultHeatMeter
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.DefaultProgressBar
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.Orientation
@@ -78,13 +80,12 @@ class TileEntityChemicalEtchingChamber : MachineTileEntity(), TEInventoryProvide
 
     override fun getGui(player: EntityPlayer?): TCGui {
 
-        val upgrades = upgradesComponent.getInstalledUpgrades()
-        val hasCooling = upgrades.find { it is CoolingUpgrade } != null
-
-        val gui = TCGui(guiHeight = 180 + if(hasCooling) 35 else 0, container = MachineContainer(this))
+        val gui = TCGui(container = MachineContainer(this))
         gui.registerTab(object : BaseMachineTab(this, gui) {
             override fun init() {
-                val te = this@TileEntityChemicalEtchingChamber
+                super.init()
+
+                val te = machine as TileEntityChemicalEtchingChamber
 
                 var xOff = 10
                 var yOff = 20
@@ -92,13 +93,13 @@ class TileEntityChemicalEtchingChamber : MachineTileEntity(), TEInventoryProvide
                 val spacer = 5
                 val spacerSmall = 2
 
-                xOff += components.addElement(DefaultEnergyMeter(xOff, yOff, te.energyStorageComponent, gui).setSize(height = 64)).width
+                xOff += components.addElement(DefaultEnergyMeter(xOff, yOff, te.energyStorageComponent, gui)).width
                 xOff += spacer
 
-                xOff += components.addElement(DefaultFluidMeter(xOff, 20, te.acidFluidInput, gui).setSize(height =  64)).width
+                xOff += components.addElement(DefaultFluidMeter(xOff, 20, te.acidFluidInput, gui)).width
                 xOff += spacer * 2
 
-                val space = (64) / 2
+                val space = (50) / 2
                 var slot = components.addElement(TCSlotIO(te.inputInventory.inventory, 0, xOff, 20 + space - 8, gui))
                 slot.type = te.inputInventory.inventoryType
                 xOff += slot.width + spacerSmall
@@ -117,25 +118,6 @@ class TileEntityChemicalEtchingChamber : MachineTileEntity(), TEInventoryProvide
                 slot = components.addElement(TCSlotIO(te.outputInventoryComponent.inventory, 0, xOff, 20 + space - 8, gui))
                 slot.type = te.outputInventoryComponent.inventoryType
 
-                yOff += 64 + spacer
-                xOff = 10
-
-                if(hasCooling) {
-                    val compCoolIn = te.getComponents().find { it.first == CoolingUpgrade.COOLER_FLUID_INPUT_NAME }
-                    val compCoolOut = te.getComponents().find { it.first == CoolingUpgrade.COOLER_FLUID_OUTPUT_NAME }
-                    val compHeat = te.getComponents().find { it.first == CoolingUpgrade.COOLER_HEAT_STORAGE_COMPONENT_NAME }
-                    if(compCoolIn != null && compCoolOut != null && compHeat != null) {
-
-                        yOff += components.addElement(DefaultHeatMeter(xOff, yOff, compHeat.second as HeatStorageTileEntityComponent, gui).setSize(gui.guiWidth - 20, 10)).height
-                        yOff += spacerSmall
-
-                        val w = (gui.guiWidth - 22) / 2
-                        xOff += components.addElement(DefaultFluidMeter(xOff, yOff, compCoolIn.second as FluidTileEntityComponent, gui).setLineCount(4).setSize(height =  15, width = w)).width
-                        xOff += spacerSmall
-                        components.addElement(DefaultFluidMeter(xOff, yOff, compCoolOut.second as FluidTileEntityComponent, gui).setLineCount(4).setSize(height =  15, width = w))
-                    }
-                }
-
                 if (player != null)
                     addPlayerInventorySlots(player, 8, gui.guiHeight - 58 - 16 - 5 - 12)
             }
@@ -146,7 +128,6 @@ class TileEntityChemicalEtchingChamber : MachineTileEntity(), TEInventoryProvide
 
         return gui
     }
-
 
     override fun isItemValid(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack): Boolean {
         return if (inventory == this.inputInventory.inventory) {

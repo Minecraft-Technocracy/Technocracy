@@ -2,7 +2,14 @@ package net.cydhra.technocracy.foundation.content.tileentities.machines
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.TCTab
+import net.cydhra.technocracy.foundation.client.gui.components.energymeter.DefaultEnergyMeter
+import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.DefaultFluidMeter
 import net.cydhra.technocracy.foundation.client.gui.components.label.DefaultLabel
+import net.cydhra.technocracy.foundation.client.gui.components.progressbar.DefaultProgressBar
+import net.cydhra.technocracy.foundation.client.gui.components.progressbar.Orientation
+import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
+import net.cydhra.technocracy.foundation.client.gui.machine.BaseMachineTab
+import net.cydhra.technocracy.foundation.client.gui.machine.MachineContainer
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesTileEntityComponent
@@ -75,6 +82,54 @@ class TileEntityAlloySmeltery : MachineTileEntity(), TEInventoryProvider {
     }
 
     override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack, originalStack: ItemStack) {
+    }
+
+    override fun getGui(player: EntityPlayer?): TCGui {
+
+        val gui = TCGui(container = MachineContainer(this))
+        gui.registerTab(object : BaseMachineTab(this, gui) {
+            override fun init() {
+                super.init()
+
+                val te = machine as TileEntityAlloySmeltery
+
+                var xOff = 10
+                var yOff = 20
+
+                val spacer = 5
+                val spacerSmall = 2
+
+                xOff += components.addElement(DefaultEnergyMeter(xOff, yOff, te.energyStorageComponent, gui)).width
+                xOff += spacer * 4
+
+                val space = (50) / 2
+                var slot = components.addElement(TCSlotIO(te.inputInventoryComponent.inventory, 0, xOff, 20 + space - 8, gui))
+                slot.type = te.inputInventoryComponent.inventoryType
+                xOff += slot.width + spacerSmall
+
+                slot = components.addElement(TCSlotIO(te.inputInventoryComponent.inventory, 1, xOff, 20 + space - 8, gui))
+                slot.type = te.inputInventoryComponent.inventoryType
+                xOff += slot.width + spacerSmall
+
+                slot = components.addElement(TCSlotIO(te.inputInventoryComponent.inventory, 2, xOff, 20 + space - 8, gui))
+                slot.type = te.inputInventoryComponent.inventoryType
+                xOff += slot.width + spacer
+
+                xOff += components.addElement(DefaultProgressBar(xOff, 20 + space - 8, Orientation.RIGHT, te.progressComponent, gui)).width
+                xOff += spacer
+
+                slot = components.addElement(TCSlotIO(te.outputInventoryComponent.inventory, 0, xOff, 20 + space - 8, gui))
+                slot.type = te.outputInventoryComponent.inventoryType
+
+                if (player != null)
+                    addPlayerInventorySlots(player, 8, gui.guiHeight - 58 - 16 - 5 - 12)
+            }
+        })
+
+        addDefaultTabs(gui, player)
+        initGui(gui, player)
+
+        return gui
     }
 
     override fun initGui(gui: TCGui, player: EntityPlayer?) {
