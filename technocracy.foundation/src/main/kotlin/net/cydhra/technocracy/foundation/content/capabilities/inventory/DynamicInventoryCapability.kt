@@ -59,10 +59,26 @@ class DynamicInventoryCapability(size: Int = 0, private val machine: TEInventory
         return this.stacks[slot]
     }
 
+    /**
+     * Try to insert an item into a given slot
+     *
+     * @param slot where to try to insert the item
+     * @param stack stack to insert
+     * @param simulate if true, only the result of this method is simulated, without modifying the actual inventory
+     */
     override fun insertItem(slot: Int, stack: ItemStack, simulate: Boolean): ItemStack {
         return insertItem(slot, stack, simulate, false)
     }
 
+    /**
+     * Try to insert an item into a given slot
+     *
+     * @param slot where to try to insert the item
+     * @param stack stack to insert
+     * @param simulate if true, only the result of this method is simulated, without modifying the actual inventory
+     * @param forced if true, slot type and checks for item validity are ignored. Used to insert items into output
+     * inventories
+     */
     fun insertItem(slot: Int, stack: ItemStack, simulate: Boolean, forced: Boolean): ItemStack {
         if (stack.isEmpty)
             return ItemStack.EMPTY
