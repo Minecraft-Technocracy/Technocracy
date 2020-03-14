@@ -37,9 +37,9 @@ class TileEntityLaserDrill : AggregatableTileEntity(), TCMachineTileEntity, ILog
     private val laserAbsorberComponent = LaserAbsorberComponent(
             mutableSetOf(EnumFacing.NORTH, EnumFacing.EAST, EnumFacing.SOUTH, EnumFacing.WEST))
 
-    // this is just a temporary energy storage immidiatly emptied by LaserDrillLogic
-    private val energyComponent = EnergyStorageTileEntityComponent(mutableSetOf(EnumFacing.DOWN)).apply {
-        this.energyStorage.capacity = 100_000
+    // this is just a temporary energy storage that gets immediately emptied by LaserDrillLogic
+    private val energyComponent = EnergyStorageTileEntityComponent(mutableSetOf()).apply {
+        this.energyStorage.capacity = 400_000
     }
 
     init {
@@ -55,7 +55,7 @@ class TileEntityLaserDrill : AggregatableTileEntity(), TCMachineTileEntity, ILog
                 progressComponent = progressComponent,
                 energyComponent = energyComponent,
                 outputInventory = outputInventory,
-                energyPerProgress = 20_000,
+                energyPerProgress = 40_000,
                 world = this.world
         ), "drilling")
     }
