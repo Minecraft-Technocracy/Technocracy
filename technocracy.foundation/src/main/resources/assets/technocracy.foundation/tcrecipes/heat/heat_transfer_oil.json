@@ -1,0 +1,5 @@
+{
+  "hot": "heat_transfer_oil_hot",
+  "cold": "heat_transfer_oil",
+  "heatCapacity": 12
+}
