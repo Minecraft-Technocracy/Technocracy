@@ -35,7 +35,7 @@ class MachineConnectorBakedModel(val baseBakedModel: IBakedModel, val connector:
         val energy = getModelWithTexture(clean, connector, TextureAtlasManager.connector_energy)
 
         //get the position of this model out of the invisible property
-        val pos = state.getValue(POSITION)
+        val pos = state.getValue(POSITION) ?: return quads
 
         //use direct call to world, as this is client side and thus can only be in the currently loaded world
         val tile = Minecraft.getMinecraft().world.getTileEntity(pos) as? MachineTileEntity
