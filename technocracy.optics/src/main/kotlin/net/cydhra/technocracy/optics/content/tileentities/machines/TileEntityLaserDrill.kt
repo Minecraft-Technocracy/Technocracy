@@ -3,6 +3,7 @@ package net.cydhra.technocracy.optics.content.tileentities.machines
 import net.cydhra.technocracy.foundation.client.gui.TCContainer
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.TCTab
+import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.HeatStorageTileEntityComponent
@@ -22,8 +23,15 @@ import net.minecraft.util.EnumFacing
 class TileEntityLaserDrill : AggregatableTileEntity(), TCMachineTileEntity, ILogicClient by LogicClientDelegate(),
         TEInventoryProvider {
 
+    companion object {
+        const val PADDING_LEFT = 8
+        const val PADDING_TOP = 20
+        const val SLOT_WIDTH_PLUS_PADDING = 18
+        const val SLOTS_PER_ROW = 9
+    }
+
     private val heatStorageComponent = HeatStorageTileEntityComponent(0, 8000)
-    private val outputInventory = InventoryTileEntityComponent(9, this, EnumFacing.UP,
+    private val outputInventory = InventoryTileEntityComponent(27, this, EnumFacing.UP,
             DynamicInventoryCapability.InventoryType.OUTPUT)
     private val progressComponent = ProgressTileEntityComponent()
     private val laserAbsorberComponent = LaserAbsorberComponent(
@@ -68,7 +76,14 @@ class TileEntityLaserDrill : AggregatableTileEntity(), TCMachineTileEntity, ILog
         val gui = TCGui(container = TCContainer())
         gui.registerTab(object : TCTab(this.blockType?.localizedName ?: "Laser Drill", gui) {
             override fun init() {
-                // TODO
+                for (i in 0 until outputInventory.inventory.size) {
+                    components.add(TCSlotIO(outputInventory.inventory, i,
+                            PADDING_LEFT + (i % SLOTS_PER_ROW) * SLOT_WIDTH_PLUS_PADDING,
+                            PADDING_TOP + (i / SLOTS_PER_ROW) * SLOT_WIDTH_PLUS_PADDING, parent))
+                }
+
+                if (player != null)
+                    addPlayerInventorySlots(player, 8, gui.guiHeight - 58 - 16 - 5 - 12)
             }
         })
         return gui
