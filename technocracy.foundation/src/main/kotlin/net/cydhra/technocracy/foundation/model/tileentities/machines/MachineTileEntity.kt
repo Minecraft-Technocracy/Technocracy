@@ -6,14 +6,13 @@ import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.Defaul
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.DefaultProgressBar
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.Orientation
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
-import net.cydhra.technocracy.foundation.client.gui.machine.BaseMachineTab
-import net.cydhra.technocracy.foundation.client.gui.machine.MachineContainer
-import net.cydhra.technocracy.foundation.client.gui.machine.MachineSettingsTab
-import net.cydhra.technocracy.foundation.client.gui.machine.MachineUpgradesTab
+import net.cydhra.technocracy.foundation.client.gui.machine.*
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.content.tileentities.components.*
 import net.cydhra.technocracy.foundation.content.tileentities.logic.RedstoneLogic
+import net.cydhra.technocracy.foundation.content.tileentities.upgrades.CoolingUpgrade
+import net.cydhra.technocracy.foundation.content.tileentities.upgrades.LubricantUpgrade
 import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_ENERGY
 import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_SPEED
 import net.cydhra.technocracy.foundation.model.tileentities.api.TCMachineTileEntity
@@ -67,6 +66,7 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
         val gui = TCGui(container = MachineContainer(this))
         gui.registerTab(object : BaseMachineTab(this, gui) {
             override fun init() {
+                super.init()
                 var nextOutput = 125
                 var nextInput = 10
                 var inputNearestToTheMiddle = 0
@@ -161,6 +161,8 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
         if (upgradesComponent != null) {
             gui.registerTab(MachineUpgradesTab(gui, upgradesComponent as MachineUpgradesTileEntityComponent, player))
         }
+
+        gui.registerTab(SideConfigTab(gui, this))
     }
 
     open fun initGui(gui: TCGui, player: EntityPlayer?) {
