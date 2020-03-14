@@ -38,7 +38,7 @@ class TileEntityLaserDrill : AggregatableTileEntity(), TCMachineTileEntity, ILog
             mutableSetOf(EnumFacing.NORTH, EnumFacing.EAST, EnumFacing.SOUTH, EnumFacing.WEST))
 
     // this is just a temporary energy storage that gets immediately emptied by LaserDrillLogic
-    private val energyComponent = EnergyStorageTileEntityComponent(mutableSetOf(EnumFacing.DOWN)).apply {
+    private val energyComponent = EnergyStorageTileEntityComponent(mutableSetOf()).apply {
         this.energyStorage.capacity = 400_000
     }
 
