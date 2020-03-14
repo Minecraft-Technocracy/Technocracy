@@ -43,3 +43,4 @@ val glue = BaseFluid("glue", Color(160, 110, 45), opaqueTexture = true).apply {
     viscosity = 2000
     density = 1200
 }
+val lyeFluid = BaseFluid("lye", Color(255, 250, 230), opaqueTexture = false)

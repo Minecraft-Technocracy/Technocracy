@@ -211,6 +211,7 @@ fluid.phenol=Phenol
 fluid.chloro_benzene=Chlorobenzene
 fluid.diphenyl_ether=Ether
 fluid.heat_transfer_oil=Heat Transfer Oil
+fluid.lye=Lye
 
 fluid.slag.aluminum=Aluminum Slag
 fluid.slag.copper=Copper Slag

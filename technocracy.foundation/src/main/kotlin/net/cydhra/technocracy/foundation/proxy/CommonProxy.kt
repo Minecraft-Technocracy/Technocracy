@@ -144,6 +144,7 @@ open class CommonProxy {
         fluidManager.registerFluid(chloroBenzeneFluid)
         fluidManager.registerFluid(diphenyletherFluid)
         fluidManager.registerFluid(heatTransferOilFluid)
+        fluidManager.registerFluid(lyeFluid)
 
         blockManager.prepareBlocksForRegistration(alloySmelteryBlock, MachineConnectorModel())
         blockManager.prepareBlocksForRegistration(centrifugeBlock, MachineConnectorModel())
