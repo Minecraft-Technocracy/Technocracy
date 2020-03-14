@@ -1,15 +1,15 @@
 package net.cydhra.technocracy.foundation.model.blocks.impl
 
 import net.cydhra.technocracy.foundation.TCFoundation
-import net.cydhra.technocracy.foundation.model.blocks.api.AbstractRotatableTileEntityBlock
 import net.cydhra.technocracy.foundation.client.gui.handler.TCGuiHandler
-import net.cydhra.technocracy.foundation.network.componentsync.guiInfoPacketSubscribers
+import net.cydhra.technocracy.foundation.model.blocks.api.AbstractRotatableTileEntityBlock
+import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatableTileEntity
 import net.cydhra.technocracy.foundation.util.propertys.POSITION
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.BlockStateContainer
 import net.minecraft.block.state.IBlockState
+import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.item.ItemStack
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
@@ -57,6 +57,31 @@ class MachineBlock(name: String, private val tileEntityConstructor: () -> TileEn
     }
 
     override fun getDropItem(state: IBlockState, world: IBlockAccess, pos: BlockPos, te: TileEntity?): ItemStack {
-        return ItemStack(this)
+        if (te == null)
+            throw AssertionError("machine block without tile entity")
+
+        val itemStack = ItemStack(this)
+        val machineCompound = itemStack.getOrCreateSubCompound("machinedata")
+
+        if (te is TCAggregatableTileEntity) {
+            te.getComponents().forEach { (id, component) ->
+                machineCompound.setTag(id, component.serializeNBT())
+            }
+        }
+
+        return itemStack
+    }
+
+    override fun onBlockPlacedBy(worldIn: World, pos: BlockPos, state: IBlockState, placer: EntityLivingBase, stack: ItemStack) {
+        val machineData = stack.getSubCompound("machinedata")
+        if (machineData != null) {
+            val tileEntity = worldIn.getTileEntity(pos)
+
+            if (tileEntity is TCAggregatableTileEntity) {
+                tileEntity.getComponents().forEach { (id, component) ->
+                    machineData.getCompoundTag(id).takeIf { it.size > 0 }?.let(component::deserializeNBT)
+                }
+            }
+        }
     }
 }
