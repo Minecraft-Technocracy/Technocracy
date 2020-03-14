@@ -13,7 +13,10 @@ import net.minecraftforge.fml.relauncher.SideOnly
  * Class for all ore type blocks of this modification
  */
 class OreBlock(unlocalizedName: String, oreType: String, colorMultiplier: Int)
-    : AbstractBaseBlock("$oreType.$unlocalizedName", colorMultiplier = ConstantBlockColor(colorMultiplier), material = Material.ROCK) {
+    : AbstractBaseBlock("$oreType.$unlocalizedName",
+        colorMultiplier = ConstantBlockColor(colorMultiplier),
+        material = Material.ROCK,
+        oreDictionaryName = "ore${unlocalizedName.capitalize()}") {
 
     override val modelLocation: String = "${TCFoundation.MODID}:$oreType"
 
