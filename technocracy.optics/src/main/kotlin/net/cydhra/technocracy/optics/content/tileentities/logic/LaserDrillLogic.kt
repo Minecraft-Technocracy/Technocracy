@@ -16,6 +16,8 @@ class LaserDrillLogic(
         private val world: World
 ) : ILogic {
 
+    private var nextResource: ItemStack = ItemStack.EMPTY
+
     companion object {
         val registeredOres by lazy {
             TCOptics.shadowOreDictionary.keys.toList()
@@ -23,7 +25,8 @@ class LaserDrillLogic(
     }
 
     override fun preProcessing(): Boolean {
-        return energyComponent.energyStorage.currentEnergy > energyPerProgress
+        return energyComponent.energyStorage.currentEnergy > energyPerProgress &&
+                (nextResource.isEmpty || outputInventory.inventory.stacks.any { it.isEmpty })
     }
 
     override fun processing() {
@@ -35,11 +38,14 @@ class LaserDrillLogic(
         }
 
         if (this.progressComponent.progress > 100) {
-            var resource = this.generateResource()
+            nextResource = this.generateResource()
+        }
+
+        if (!nextResource.isEmpty) {
             var i = 0
             while (i < this.outputInventory.inventory.size) {
-                resource = this.outputInventory.inventory.insertItem(i, resource, simulate = false, forced = true)
-                if (resource.isEmpty) {
+                nextResource = this.outputInventory.inventory.insertItem(i, nextResource, simulate = false, forced = true)
+                if (nextResource.isEmpty) {
                     this.progressComponent.progress -= 100
                     this.outputInventory.markDirty(true)
                     break
