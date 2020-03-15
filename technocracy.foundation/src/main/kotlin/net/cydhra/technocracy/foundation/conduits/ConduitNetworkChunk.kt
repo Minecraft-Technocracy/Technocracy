@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.conduits
 
 import net.cydhra.technocracy.foundation.conduits.transit.TransitChunkEdge
+import net.cydhra.technocracy.foundation.conduits.transit.TransitCrossSectionEdge
 import net.cydhra.technocracy.foundation.conduits.transit.TransitEdge
 import net.cydhra.technocracy.foundation.conduits.transit.TransitSink
 import net.cydhra.technocracy.foundation.conduits.types.PipeType
@@ -104,9 +105,12 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      */
     private val chunkCrossSections: MutableMap<BlockPos, MutableSet<PipeType>> = mutableMapOf()
 
-    private val crossSectionTransitEdges: MutableMap<BlockPos, MutableSet<TransitChunkEdge>> = mutableMapOf()
+    /**
+     * Transit edges added to cross sections to interrupt path finding
+     */
+    private val crossSectionTransitEdges: MutableMap<BlockPos, MutableSet<TransitCrossSectionEdge>> = mutableMapOf()
 
-    val debug_cross_transits: Map<BlockPos, Set<TransitChunkEdge>> = crossSectionTransitEdges
+    val debug_cross_transits: Map<BlockPos, Set<TransitCrossSectionEdge>> = crossSectionTransitEdges
 
     /**
      * Add a node to the conduit network. This method does only add this one node to the network: no additional nodes
@@ -321,11 +325,11 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
         this.crossSectionTransitEdges.putIfAbsent(pos, mutableSetOf())
 
         if (this.chunkCrossSections[pos]!!.contains(type)) {
-            this.crossSectionTransitEdges[pos]!!.add(TransitChunkEdge(transitEdgeCounter++, type, face, pos))
+            this.crossSectionTransitEdges[pos]!!.add(TransitCrossSectionEdge(transitEdgeCounter++, type, face, pos))
         } else {
             this.chunkCrossSections[pos]!!.add(type)
             this.edges[pos]!![type]!!.forEach { edgeFace ->
-                this.crossSectionTransitEdges[pos]!!.add(TransitChunkEdge(transitEdgeCounter++, type, edgeFace, pos))
+                this.crossSectionTransitEdges[pos]!!.add(TransitCrossSectionEdge(transitEdgeCounter++, type, edgeFace, pos))
             }
         }
     }
@@ -426,7 +430,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
             this.crossSectionTransitEdges[blockPos] = mutableSetOf()
 
             typeList.forEach { transitEdgeEntry ->
-                this.crossSectionTransitEdges[blockPos]!!.add(TransitChunkEdge(blockPos)
+                this.crossSectionTransitEdges[blockPos]!!.add(TransitCrossSectionEdge(blockPos)
                         .apply { deserializeNBT(transitEdgeEntry as NBTTagCompound) })
             }
         }
