@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.conduits
 
+import net.cydhra.technocracy.foundation.conduits.transit.TransitChunkEdge
 import net.cydhra.technocracy.foundation.conduits.transit.TransitEdge
 import net.cydhra.technocracy.foundation.conduits.transit.TransitSink
 import net.cydhra.technocracy.foundation.conduits.types.PipeContent
@@ -125,14 +126,21 @@ internal class ConduitNetworkDimension(private val dimensionId: Int) {
             usedFlows: Map<TransitEdge, Int>,
             multipleSinks: Boolean = true
     ): List<TransitSink> {
+        // nodes that were already visited
         val visited = mutableListOf<TransitEdge>()
-        // todo add chunks to nodes
-        val nodeQueue = PriorityQueue<Pair<TransitEdge, Int>>(kotlin.Comparator { path1, path2 ->
-            path1.second.compareTo(path2.second)
+
+        // priority queue offering the next lowest cost node to visit
+        val nodeQueue = PriorityQueue<Triple<ConduitNetworkChunk, TransitEdge, Int>>(kotlin.Comparator { path1, path2 ->
+            path1.third.compareTo(path2.third)
         })
+
+        // sinks available from starting point
         val availableSinks = mutableListOf<TransitSink>()
 
-        fun enqueuePath(start: TransitEdge, target: TransitEdge, cost: Int) {
+        /**
+         * Try to add a transit path into the algorithm, if it has not been used before and has capacity left
+         */
+        fun enqueuePath(start: TransitEdge, target: TransitEdge, targetChunk: ConduitNetworkChunk, cost: Int) {
             if (visited.contains(target))
                 return
 
@@ -140,19 +148,14 @@ internal class ConduitNetworkDimension(private val dimensionId: Int) {
 
             // TODO check whether the path has left capacity
 
-            nodeQueue.add(target to cost)
+            nodeQueue.add(Triple(targetChunk, target, cost))
         }
 
-        visited += start
-        start.paths.forEach { (targetId, cost) ->
-            val target = chunk.getTransitEdge(targetId)!!.second
-            enqueuePath(start, target, cost)
-        }
-
-        var currentChunk = chunk
+        // enqueue start node
+        nodeQueue.add(Triple(chunk, start, 0))
 
         while (nodeQueue.isNotEmpty()) {
-            val (currentEdge, currentCost) = nodeQueue.remove()
+            val (currentChunk, currentEdge, currentCost) = nodeQueue.remove()
             visited += currentEdge
 
             if (currentEdge is TransitSink) {
@@ -165,10 +168,19 @@ internal class ConduitNetworkDimension(private val dimensionId: Int) {
             } else {
                 currentEdge.paths.forEach { (targetId, cost) ->
                     val target = chunk.getTransitEdge(targetId)!!.second
-                    enqueuePath(start, target, currentCost + cost)
+                    enqueuePath(start, target, currentChunk, currentCost + cost)
                 }
 
-                // TODO insert edges of different chunks
+                if (currentEdge is TransitChunkEdge) {
+                    val targetPosition = currentEdge.pos.offset(currentEdge.facing)
+                    val targetChunk = getChunkAt(ChunkPos(targetPosition))
+
+                    if (targetChunk != null) {
+                        val targetEdge = targetChunk
+                                .getTransitChunkEdge(targetPosition, start.type, currentEdge.facing.opposite)
+                        enqueuePath(currentEdge, targetEdge!!, targetChunk, currentCost + 1)
+                    }
+                }
             }
         }
 
