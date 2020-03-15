@@ -87,6 +87,15 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
     val debug_transits: Map<BlockPos, Set<TransitChunkEdge>> = chunkTransitEdges
 
     /**
+     * Set of all cross sections within the chunk, where more than two pipes of the same type connect
+     */
+    private val chunkCrossSections: MutableMap<BlockPos, MutableSet<PipeType>> = mutableMapOf()
+
+    private val crossSectionTransitEdges: MutableMap<BlockPos, MutableSet<TransitChunkEdge>> = mutableMapOf()
+
+    val debug_cross_transits: Map<BlockPos, Set<TransitChunkEdge>> = crossSectionTransitEdges
+
+    /**
      * Add a node to the conduit network. This method does only add this one node to the network: no additional nodes
      * are discovered in the neighborhood of the block. If the node already exists, an [IllegalStateException] is
      * thrown. No edges are inserted into the network. It is asserted that [pos] is within the chunk modeled by this
@@ -154,6 +163,12 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
 
         this.edges[pos]!![type]!! += facing
 
+        // insert cross section if necessary
+        if (this.edges[pos]!![type]!!.size > 2) {
+            this.addCrossSection(pos, type, facing)
+        }
+
+        // insert chunk transit edge if necessary
         val pointsTowardsPos = pos.offset(facing)
         if (this.chunkPos.xStart > pointsTowardsPos.x || this.chunkPos.xEnd < pointsTowardsPos.x || this.chunkPos.zStart > pointsTowardsPos.z || this.chunkPos.zEnd < pointsTowardsPos.z) {
             if (!chunkTransitEdges.containsKey(pos)) {
@@ -185,6 +200,11 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
 
         // remove attached sinks if any
         this.removeTransitSink(pos, facing, type)
+
+        // remove cross section if necessary
+        if (this.chunkCrossSections[pos]?.contains(type) == true) {
+            this.removeFaceFromCrossSection(pos, type, facing)
+        }
 
         // remove transit edges if any
         if (!chunkTransitEdges[pos].isNullOrEmpty()) {
@@ -266,6 +286,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
     fun getTransitEdge(id: Int): Pair<BlockPos, TransitEdge>? {
         return this.chunkTransitEdges.entries
                 .union(this.attachedSinks.entries)
+                .union(this.crossSectionTransitEdges.entries)
                 .mapNotNull { (pos, set) ->
                     val target = set.find { it.id == id }
                     if (target != null) {
@@ -275,6 +296,47 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
                     }
                 }
                 .firstOrNull()
+    }
+
+    /**
+     * Adds a cross section at the given position for the given pipe type, if not already present, and adds all edges
+     * as transit edges, if they are not already. Asserts that the edge of the cross section, that triggered this
+     * event is already present in [edges].
+     */
+    private fun addCrossSection(pos: BlockPos, type: PipeType, face: EnumFacing) {
+        this.chunkCrossSections.putIfAbsent(pos, mutableSetOf())
+        this.crossSectionTransitEdges.putIfAbsent(pos, mutableSetOf())
+
+        if (this.chunkCrossSections[pos]!!.contains(type)) {
+            this.crossSectionTransitEdges[pos]!!.add(TransitChunkEdge(transitEdgeCounter++, type, face, pos))
+        } else {
+            this.chunkCrossSections[pos]!!.add(type)
+            this.edges[pos]!![type]!!.forEach { edgeFace ->
+                this.crossSectionTransitEdges[pos]!!.add(TransitChunkEdge(transitEdgeCounter++, type, edgeFace, pos))
+            }
+        }
+    }
+
+    /**
+     * Removes a face from a cross section. If the cross section is no longer a cross section, it will be removed, too.
+     * Asserts that a cross section exists at that point. It asserts that the edge
+     */
+    private fun removeFaceFromCrossSection(pos: BlockPos, type: PipeType, facing: EnumFacing) {
+        this.crossSectionTransitEdges[pos]!!.removeIf { it.facing == facing && it.type == type }
+
+        // remove the cross section if there is no intersection anymore
+        if (this.edges[pos]!![type]!!.size <= 2) {
+            this.chunkCrossSections[pos]!!.remove(type)
+            if (this.chunkCrossSections[pos]!!.isEmpty()) {
+                this.chunkCrossSections.remove(pos)
+            }
+
+            // remove remaining transit edges of the cross section
+            this.crossSectionTransitEdges[pos]!!.removeIf { it.type == type }
+            if (this.crossSectionTransitEdges[pos]!!.isEmpty()) {
+                this.crossSectionTransitEdges.remove(pos)
+            }
+        }
     }
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
@@ -423,6 +485,17 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
                 .forEach { (pipeType, list) ->
                     transitEndpoints[pipeType]!!.addAll(list)
                 }
+
+        // add cross section transit edges that are not already present as another edge
+        this.crossSectionTransitEdges.forEach { (pos, edges) ->
+            edges.forEach { edge ->
+                if (!transitEndpoints[edge.type]!!.any { (existingEdgePos, existingEdge) ->
+                            existingEdgePos == pos && existingEdge.facing == edge.facing
+                        }) {
+                    transitEndpoints[edge.type]!!.add(edge.pos to edge)
+                }
+            }
+        }
 
         for ((pipeType, transitQueue) in transitEndpoints) {
             val transitEdgeQueue = transitQueue.clone()
