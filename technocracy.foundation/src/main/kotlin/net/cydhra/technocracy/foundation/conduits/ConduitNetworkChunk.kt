@@ -316,6 +316,15 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
     }
 
     /**
+     * Get a transit chunk edge of this chunk by its position and facing.
+     *
+     * @return the transit chunk edge or null, if no such edge exists
+     */
+    fun getTransitChunkEdge(pos: BlockPos, type: PipeType, facing: EnumFacing): TransitChunkEdge? {
+        return this.chunkTransitEdges[pos]?.find { it.type == type && it.facing == facing }
+    }
+
+    /**
      * Adds a cross section at the given position for the given pipe type, if not already present, and adds all edges
      * as transit edges, if they are not already. Asserts that the edge of the cross section, that triggered this
      * event is already present in [edges].
