@@ -4,10 +4,7 @@ import net.cydhra.technocracy.foundation.conduits.transit.TransitChunkEdge
 import net.cydhra.technocracy.foundation.conduits.transit.TransitEdge
 import net.cydhra.technocracy.foundation.conduits.transit.TransitSink
 import net.cydhra.technocracy.foundation.conduits.types.PipeType
-import net.minecraft.nbt.NBTTagCompound
-import net.minecraft.nbt.NBTTagIntArray
-import net.minecraft.nbt.NBTTagList
-import net.minecraft.nbt.NBTUtil
+import net.minecraft.nbt.*
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ChunkPos
@@ -26,20 +23,36 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
 
     companion object {
         private const val NBT_KEY_TRANSIT_COUNTER_STATE = "transit_counter"
+
+        // node list
         private const val NBT_KEY_NODE_LIST = "nodes"
-        private const val NBT_KEY_EDGE_LIST = "edges"
         private const val NBT_KEY_NODE_POS = "pos"
         private const val NBT_KEY_NODE_TYPE_LIST = "types"
+
+        // edges list
+        private const val NBT_KEY_EDGE_LIST = "edges"
         private const val NBT_KEY_EDGE_POS = "pos"
         private const val NBT_KEY_EDGE_TYPE_LIST = "types"
         private const val NBT_KEY_EDGE_TYPE_LIST_ENTRY = "type"
         private const val NBT_KEY_EDGE_TYPE_LIST_DIRECTION_LIST = "directions"
+
+        // sinks and chunk transit
         private const val NBT_KEY_ATTACHMENTS_POS = "pos"
         private const val NBT_KEY_SINKS_LIST = "types"
         private const val NBT_KEY_ATTACHMENTS_LIST = "sinks"
         private const val NBT_KEY_TRANSIT_EDGE_POS = "pos"
         private const val NBT_KEY_TRANSIT_EDGES_TYPE_LIST = "transit_edges"
         private const val NBT_KEY_CHUNK_TRANSIT_EDGES_LIST = "transit_edges"
+
+        // list of cross sections
+        private const val NBT_KEY_CROSS_SECTIONS = "cross_sections"
+        private const val NBT_KEY_CROSS_SECTION_POS = "pos"
+        private const val NBT_KEY_CROSS_SECTION_TYPES = "types"
+
+        // list of cross section transit edges
+        private const val NBT_KEY_CROSS_SECTION_TRANSIT_MAP = "cross_transit"
+        private const val NBT_KEY_CROSS_SECTION_TRANSIT_POS = "pos"
+        private const val NBT_KEY_CROSS_SECTION_TRANSIT_EDGES_LIST = "transit_edges"
     }
 
     /**
@@ -346,6 +359,8 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
         val edgeList = nbt.getTagList(NBT_KEY_EDGE_LIST, Constants.NBT.TAG_COMPOUND)
         val attachmentList = nbt.getTagList(NBT_KEY_ATTACHMENTS_LIST, Constants.NBT.TAG_COMPOUND)
         val transitEdgesList = nbt.getTagList(NBT_KEY_CHUNK_TRANSIT_EDGES_LIST, Constants.NBT.TAG_COMPOUND)
+        val crossSectionList = nbt.getTagList(NBT_KEY_CROSS_SECTIONS, Constants.NBT.TAG_COMPOUND)
+        val crossSectionTransitList = nbt.getTagList(NBT_KEY_CROSS_SECTION_TRANSIT_MAP, Constants.NBT.TAG_COMPOUND)
 
         nodeList.forEach { nodeTag ->
             val blockPos = NBTUtil.getPosFromTag((nodeTag as NBTTagCompound).getCompoundTag(NBT_KEY_NODE_POS))
@@ -389,6 +404,29 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
 
             typeList.forEach { transitEdgeEntry ->
                 this.chunkTransitEdges[blockPos]!!.add(TransitChunkEdge(blockPos)
+                        .apply { deserializeNBT(transitEdgeEntry as NBTTagCompound) })
+            }
+        }
+
+        crossSectionList.forEach { crossSectionTag ->
+            val blockPos = NBTUtil.getPosFromTag((crossSectionTag as NBTTagCompound).getCompoundTag(NBT_KEY_CROSS_SECTION_POS))
+            val typeList = crossSectionTag.getTagList(NBT_KEY_CROSS_SECTION_TYPES, Constants.NBT.TAG_INT)
+            this.chunkCrossSections[blockPos] = mutableSetOf()
+
+            typeList.forEach { type ->
+                this.chunkCrossSections[blockPos]!!.add(PipeType.values()[(type as NBTTagInt).int])
+            }
+        }
+
+        crossSectionTransitList.forEach { transitEdgeTag ->
+            val blockPos =
+                    NBTUtil.getPosFromTag((transitEdgeTag as NBTTagCompound).getCompoundTag(NBT_KEY_CROSS_SECTION_TRANSIT_POS))
+            val typeList = transitEdgeTag.getTagList(NBT_KEY_CROSS_SECTION_TRANSIT_EDGES_LIST, Constants.NBT.TAG_COMPOUND)
+
+            this.crossSectionTransitEdges[blockPos] = mutableSetOf()
+
+            typeList.forEach { transitEdgeEntry ->
+                this.crossSectionTransitEdges[blockPos]!!.add(TransitChunkEdge(blockPos)
                         .apply { deserializeNBT(transitEdgeEntry as NBTTagCompound) })
             }
         }
@@ -453,10 +491,40 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
             transitEdgeList.appendTag(transitEdgeTag)
         }
 
+        val crossSectionList = NBTTagList()
+        for (crossSectionPos in this.chunkCrossSections.keys) {
+            val crossSectionTag = NBTTagCompound()
+            crossSectionTag.setTag(NBT_KEY_CROSS_SECTION_POS, NBTUtil.createPosTag(crossSectionPos))
+
+            val typeList = NBTTagList()
+            this.chunkCrossSections[crossSectionPos]!!.forEach { type ->
+                typeList.appendTag(NBTTagInt(type.ordinal))
+            }
+
+            crossSectionTag.setTag(NBT_KEY_CROSS_SECTION_TYPES, typeList)
+            crossSectionList.appendTag(crossSectionTag)
+        }
+
+        val crossSectionEdgeList = NBTTagList()
+        for (transitEdgePos in this.crossSectionTransitEdges.keys) {
+            val transitEdgeTag = NBTTagCompound()
+            transitEdgeTag.setTag(NBT_KEY_CROSS_SECTION_TRANSIT_POS, NBTUtil.createPosTag(transitEdgePos))
+
+            val crossSectionTransitEdgeList = NBTTagList()
+            for (edge in this.crossSectionTransitEdges[transitEdgePos]!!) {
+                crossSectionTransitEdgeList.appendTag(edge.serializeNBT())
+            }
+
+            transitEdgeTag.setTag(NBT_KEY_CROSS_SECTION_TRANSIT_EDGES_LIST, crossSectionTransitEdgeList)
+            crossSectionEdgeList.appendTag(transitEdgeTag)
+        }
+
         compound.setTag(NBT_KEY_NODE_LIST, nodeList)
         compound.setTag(NBT_KEY_EDGE_LIST, edgeList)
         compound.setTag(NBT_KEY_ATTACHMENTS_LIST, attachmentList)
         compound.setTag(NBT_KEY_CHUNK_TRANSIT_EDGES_LIST, transitEdgeList)
+        compound.setTag(NBT_KEY_CROSS_SECTIONS, crossSectionList)
+        compound.setTag(NBT_KEY_CROSS_SECTION_TRANSIT_MAP, crossSectionEdgeList)
 
         return compound
     }
