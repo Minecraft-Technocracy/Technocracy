@@ -1,10 +1,13 @@
 package net.cydhra.technocracy.foundation.conduits
 
+import net.cydhra.technocracy.foundation.conduits.transit.TransitEdge
 import net.cydhra.technocracy.foundation.conduits.transit.TransitSink
+import net.cydhra.technocracy.foundation.conduits.types.PipeContent
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.world.WorldServer
 import net.minecraft.world.chunk.Chunk
 import net.minecraftforge.event.world.ChunkDataEvent
+import java.util.*
 
 internal class ConduitNetworkDimension(private val dimensionId: Int) {
 
@@ -98,10 +101,77 @@ internal class ConduitNetworkDimension(private val dimensionId: Int) {
                     val content = source.getContent(world)
 
                     // find available sink using routing strategy
-                    val targets = source.routingStrategy.findSinks(source, content)
+
 
                     // transfer content
 
                 }
+    }
+
+    /**
+     * @param world the world this algorithm runs in
+     * @param start the starting transit edge
+     * @param chunk the starting chunk
+     * @param content the content to transfer
+     * @param usedFlows a map of transit edges that are already used by transfers. There might still be capacity left
+     * @param multipleSinks if false, only zero or one sink are returned, otherwise all sinks that accept the content
+     * are returned
+     */
+    fun dijkstra(
+            world: WorldServer,
+            start: TransitSink,
+            chunk: ConduitNetworkChunk,
+            content: PipeContent,
+            usedFlows: Map<TransitEdge, Int>,
+            multipleSinks: Boolean = true
+    ): List<TransitSink> {
+        val visited = mutableListOf<TransitEdge>()
+        // todo add chunks to nodes
+        val nodeQueue = PriorityQueue<Pair<TransitEdge, Int>>(kotlin.Comparator { path1, path2 ->
+            path1.second.compareTo(path2.second)
+        })
+        val availableSinks = mutableListOf<TransitSink>()
+
+        fun enqueuePath(start: TransitEdge, target: TransitEdge, cost: Int) {
+            if (visited.contains(target))
+                return
+
+            val pathRepresentation = minOf(start.id, target.id) to maxOf(start.id, target.id)
+
+            // TODO check whether the path has left capacity
+
+            nodeQueue.add(target to cost)
+        }
+
+        visited += start
+        start.paths.forEach { (targetId, cost) ->
+            val target = chunk.getTransitEdge(targetId)!!.second
+            enqueuePath(start, target, cost)
+        }
+
+        var currentChunk = chunk
+
+        while (nodeQueue.isNotEmpty()) {
+            val (currentEdge, currentCost) = nodeQueue.remove()
+            visited += currentEdge
+
+            if (currentEdge is TransitSink) {
+                if (currentEdge.acceptsContent(world, content)) {
+                    availableSinks += currentEdge
+
+                    if (!multipleSinks)
+                        return availableSinks
+                }
+            } else {
+                currentEdge.paths.forEach { (targetId, cost) ->
+                    val target = chunk.getTransitEdge(targetId)!!.second
+                    enqueuePath(start, target, currentCost + cost)
+                }
+
+                // TODO insert edges of different chunks
+            }
+        }
+
+        return availableSinks
     }
 }

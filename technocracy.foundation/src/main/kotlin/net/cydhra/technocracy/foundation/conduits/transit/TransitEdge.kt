@@ -36,6 +36,9 @@ abstract class TransitEdge(val pos: BlockPos) : INBTSerializable<NBTTagCompound>
     lateinit var facing: EnumFacing
         protected set
 
+    /**
+     * A map of target edge to edge costs
+     */
     val paths: MutableMap<Int, Int> = mutableMapOf()
 
     operator fun component1(): PipeType = type

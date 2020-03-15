@@ -17,9 +17,6 @@ class TransitSink(pos: BlockPos) : TransitEdge(pos) {
     // TODO delegate to the tile entity that is represented by this sink
     var transferLimit: Int = 4
 
-    // TODO: this is not assigned yet
-    lateinit var routingStrategy: RoutingStrategy
-
     constructor(id: Int, type: PipeType, facing: EnumFacing, pos: BlockPos) : this(pos) {
         this.id = id
         this.type = type
