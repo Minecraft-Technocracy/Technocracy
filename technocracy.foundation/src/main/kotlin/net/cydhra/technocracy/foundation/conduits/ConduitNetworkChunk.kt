@@ -582,6 +582,12 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
                 val positionQueue = ArrayDeque<BlockPos>()
                 positionQueue.add(currentTransitPosition)
 
+                // add the target of the transit edge also to the queue, so it is not skipped during discovery
+                val transitTarget = currentTransitPosition.offset(currentTransitEdge.facing)
+                if (this.nodes[transitTarget]?.contains(pipeType) == true) {
+                    positionQueue.add(transitTarget)
+                }
+
                 while (positionQueue.isNotEmpty()) {
                     currentPosition = positionQueue.pop()
 
@@ -597,23 +603,33 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
                                 }
                             } else {
                                 currentKnownComponent[neighbor] = currentKnownComponent[currentPosition]!! + 1
-                                positionQueue.add(neighbor)
-                            }
-                        } else {
-                            val transitEdge = transitEndpoints[pipeType]
-                                    ?.find { (pos, edge) -> pos == currentPosition && edge.facing == facing }
-                                    ?.second
 
-                            if (transitEdge != null) {
-                                if (currentConnectedTransitComponent.containsKey(transitEdge)) {
-                                    if (currentConnectedTransitComponent[transitEdge]!! > currentKnownComponent[currentPosition]!! + 1) {
-                                        currentConnectedTransitComponent[transitEdge] =
-                                                currentKnownComponent[currentPosition]!! + 1
-                                    }
-                                } else {
+                                val transitEdge = transitEndpoints[pipeType]
+                                        ?.find { (pos, edge) -> pos == currentPosition && edge.facing == facing }
+                                        ?.second ?: transitEndpoints[pipeType]
+                                        ?.find { (pos, edge) -> pos == neighbor && edge.facing.opposite == facing }
+                                        ?.second
+
+                                if (transitEdge == null)
+                                    positionQueue.add(neighbor)
+                            }
+                        }
+
+                        val transitEdge = transitEndpoints[pipeType]
+                                ?.find { (pos, edge) -> pos == currentPosition && edge.facing == facing }
+                                ?.second ?: transitEndpoints[pipeType]
+                                ?.find { (pos, edge) -> pos == neighbor && edge.facing.opposite == facing }
+                                ?.second
+
+                        if (transitEdge != null) {
+                            if (currentConnectedTransitComponent.containsKey(transitEdge)) {
+                                if (currentConnectedTransitComponent[transitEdge]!! > currentKnownComponent[currentPosition]!! + 1) {
                                     currentConnectedTransitComponent[transitEdge] =
                                             currentKnownComponent[currentPosition]!! + 1
                                 }
+                            } else {
+                                currentConnectedTransitComponent[transitEdge] =
+                                        currentKnownComponent[currentPosition]!! + 1
                             }
                         }
                     }
