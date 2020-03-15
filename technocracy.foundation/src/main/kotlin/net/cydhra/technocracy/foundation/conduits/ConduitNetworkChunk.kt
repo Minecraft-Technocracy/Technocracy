@@ -435,7 +435,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
     override fun serializeNBT(): NBTTagCompound {
         val compound = NBTTagCompound()
 
-        compound.setInteger(NBT_KEY_TRANSIT_COUNTER_STATE, 1)
+        compound.setInteger(NBT_KEY_TRANSIT_COUNTER_STATE, this.transitEdgeCounter)
 
         val nodeList = NBTTagList()
         for (blockPos in this.nodes.keys) {
