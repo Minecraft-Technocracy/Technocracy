@@ -42,7 +42,7 @@ enum class PipeType(val unlocalizedName: String,
                 world.getTileEntity(pos)
                         ?.getCapability(net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY!!, facing)
                         ?.let { itemCap ->
-                            (0..itemCap.slots).any { !itemCap.extractItem(it, 1, true).isEmpty }
+                            (0 until itemCap.slots).any { !itemCap.extractItem(it, 1, true).isEmpty }
                         } ?: false
             },
             { world, pos, facing, limit ->
