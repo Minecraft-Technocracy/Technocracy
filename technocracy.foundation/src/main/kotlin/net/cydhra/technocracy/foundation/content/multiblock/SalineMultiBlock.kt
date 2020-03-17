@@ -277,11 +277,10 @@ class SalineMultiBlock(world: World) : ILogicClient by LogicClientDelegate(), Ti
                     (if (heatValid)
                         boostConversion
                     else
-                        0)).coerceAtMost(outputFluid.capacity - (outputFluid.currentFluid?.amount ?: 0))
+                        0)).coerceAtMost(inputFluid.currentFluid!!.amount)
 
             //Make sure there's enough input and enough space in the output
             if ((outputFluid.currentFluid == null || outputFluid.currentFluid!!.fluid == recipe.output) &&
-                    inputFluid.currentFluid!!.amount >= totalConversion &&
                     outputFluid.capacity - (outputFluid.currentFluid?.amount ?: 0) > totalConversion) {
                 if (heatValid)
                     totalHeatLoss += boostConversion * recipe.heatPerMb

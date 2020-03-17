@@ -12,16 +12,16 @@ class TileEntitySalineController :
         ITileEntityMultiblockController {
 
     //Fluids
-    val fluidInputComponent = FluidTileEntityComponent(facing = mutableSetOf(),
+    val fluidInputComponent = FluidTileEntityComponent(capacity = 8000, facing = mutableSetOf(),
             tanktype = DynamicFluidCapability.TankType.INPUT)
-    val fluidOutputComponent = FluidTileEntityComponent(facing = mutableSetOf(),
+    val fluidOutputComponent = FluidTileEntityComponent(capacity = 8000, facing = mutableSetOf(),
             tanktype = DynamicFluidCapability.TankType.OUTPUT)
 
     //Heat
-    val heatComponent = HeatStorageTileEntityComponent(0, 200000)
-    val heatingFluidInputComponent = FluidTileEntityComponent(facing = mutableSetOf(),
+    val heatComponent = HeatStorageTileEntityComponent(0, 1000)
+    val heatingFluidInputComponent = FluidTileEntityComponent(capacity = 8000, facing = mutableSetOf(),
             tanktype = DynamicFluidCapability.TankType.INPUT)
-    val heatingFluidOutputComponent = FluidTileEntityComponent(facing = mutableSetOf(),
+    val heatingFluidOutputComponent = FluidTileEntityComponent(capacity = 8000, facing = mutableSetOf(),
             tanktype = DynamicFluidCapability.TankType.OUTPUT)
 
     init {
