@@ -10,6 +10,7 @@ import net.cydhra.technocracy.foundation.content.blocks.*
 import net.cydhra.technocracy.foundation.content.tileentities.machines.*
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager.RECIPE_ASSETS_FOLDER
 import net.cydhra.technocracy.foundation.data.crafting.special.HeatRecipeParser
+import net.cydhra.technocracy.foundation.data.crafting.special.SalineRecipeParser
 import net.cydhra.technocracy.foundation.data.crafting.types.*
 import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
 import net.minecraft.block.Block
@@ -71,8 +72,8 @@ object RecipeManager {
         parseMachineRecipes("polymerization", FTIRecipeParser, loadedMachineRecipes, RecipeType.POLYMERIZATION)
         parseMachineRecipes("pulverizer", ITIRecipeParser, loadedMachineRecipes, RecipeType.PULVERIZER)
         parseMachineRecipes("refinery", FTMFRecipeParser, loadedMachineRecipes, RecipeType.REFINERY)
-        parseMachineRecipes("saline", FTFRecipeParser, loadedMachineRecipes, RecipeType.SALINE)
 
+        parseMachineRecipes("saline", SalineRecipeParser, loadedSpecialRecipes, RecipeType.SALINE)
         parseMachineRecipes("heat", HeatRecipeParser, loadedSpecialRecipes, RecipeType.HEAT)
     }
 
