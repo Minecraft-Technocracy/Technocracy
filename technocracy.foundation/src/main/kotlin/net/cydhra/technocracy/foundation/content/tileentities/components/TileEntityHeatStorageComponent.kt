@@ -22,6 +22,16 @@ class TileEntityHeatStorageComponent(initialHeat: Int, var heatCapacity: Int = 1
 
     var heat: Int = initialHeat
 
+    fun drainHeat(heat: Int) {
+        this.heat -= heat
+        this.heat = this.heat.coerceAtLeast(0)
+    }
+
+    fun fillHeat(heat: Int) {
+        this.heat += heat
+        this.heat = this.heat.coerceAtMost(this.heatCapacity)
+    }
+
     override fun serializeNBT(): NBTTagCompound {
         val compound = NBTTagCompound()
 

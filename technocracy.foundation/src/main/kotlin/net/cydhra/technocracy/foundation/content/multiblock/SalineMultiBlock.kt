@@ -2,11 +2,18 @@ package net.cydhra.technocracy.foundation.content.multiblock
 
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import net.cydhra.technocracy.foundation.content.blocks.*
+import net.cydhra.technocracy.foundation.content.tileentities.logic.ConversionDirection
+import net.cydhra.technocracy.foundation.content.tileentities.logic.HeatTransferLogic
+import net.cydhra.technocracy.foundation.content.tileentities.logic.ItemProcessingLogic
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.saline.*
 import net.cydhra.technocracy.foundation.data.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
+import net.cydhra.technocracy.foundation.data.crafting.special.SalineRecipe
 import net.cydhra.technocracy.foundation.model.components.IComponent
 import net.cydhra.technocracy.foundation.model.multiblock.api.TiledBaseMultiBlock
+import net.cydhra.technocracy.foundation.model.tileentities.api.logic.ILogic
+import net.cydhra.technocracy.foundation.model.tileentities.api.logic.ILogicClient
+import net.cydhra.technocracy.foundation.model.tileentities.api.logic.LogicClientDelegate
 import net.cydhra.technocracy.foundation.util.getFluidStack
 import net.minecraft.block.BlockHorizontal
 import net.minecraft.init.Blocks
@@ -14,9 +21,14 @@ import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
+import net.minecraftforge.fluids.FluidStack
 import java.util.function.Predicate
+import kotlin.math.ceil
+import kotlin.math.exp
+import kotlin.math.floor
+import kotlin.math.pow
 
-class SalineMultiBlock(world: World) : TiledBaseMultiBlock(
+class SalineMultiBlock(world: World) : ILogicClient by LogicClientDelegate(), TiledBaseMultiBlock(
         frameBlockWhitelist = Predicate {
             it.block == salineWallBlock || it.block == salineFluidInputBlock || it.block == salineControllerBlock ||
                     it.block == salineHeatingAgentInputBlock || it.block == salineHeatingAgentOutputBlock
@@ -43,13 +55,15 @@ class SalineMultiBlock(world: World) : TiledBaseMultiBlock(
 
     var controllerTileEntity: TileEntitySalineController? = null
 
-    private val recipes: Collection<IMachineRecipe> by lazy {
-        (RecipeManager.getMachineRecipesByType(RecipeManager.RecipeType.SALINE) ?: emptyList())
-    }
-
     private var useHeat = false
 
+    private val recipes: Collection<SalineRecipe> by lazy {
+        (RecipeManager.getSpecialRecipesByType(RecipeManager.RecipeType.SALINE)
+                ?: emptyList()).filterIsInstance<SalineRecipe>()
+    }
+
     override fun isMachineWhole(validatorCallback: IMultiblockValidator): Boolean {
+        this.removeLogicStrategy("heat")
         if (!super.isMachineWhole(validatorCallback)) return false
 
         return assemble(validatorCallback) {
@@ -79,6 +93,8 @@ class SalineMultiBlock(world: World) : TiledBaseMultiBlock(
 
             finishUp {
                 this@SalineMultiBlock.controllerTileEntity = controllers.first()
+                this@SalineMultiBlock.controllerTileEntity!!.heatComponent.heatCapacity =
+                        tiles.size * MultiBlockPhysics.salineHeatCapacityPerTile
 
                 return@finishUp this@SalineMultiBlock.recalculatePhysics(validatorCallback, fluidInputs, fluidOutputs,
                         heatingAgentInputs, heatingAgentOutputs)
@@ -127,16 +143,17 @@ class SalineMultiBlock(world: World) : TiledBaseMultiBlock(
         }
 
         //Validate floor if heating is enabled
-        if(heatingAgents.isNotEmpty()) {
+        if (heatingAgents.isNotEmpty()) {
             tiles.forEach {
                 //Loop through 3x3 center of tile
-                for(x in (it.minPos.x + 1)..(it.minPos.x + 3)) {
-                    for(z in (it.minPos.z + 1)..(it.minPos.z + 3)) {
+                for (x in (it.minPos.x + 1)..(it.minPos.x + 3)) {
+                    for (z in (it.minPos.z + 1)..(it.minPos.z + 3)) {
                         //Ignore center
-                        if(x == it.minPos.x + 2 && z == it.minPos.z + 2)
+                        if (x == it.minPos.x + 2 && z == it.minPos.z + 2)
                             continue
-                        if(WORLD.getBlockState(BlockPos(x, it.minPos.y, z)).block != salineHeatedWallBlock) {
-                            validatorCallback.setLastError("multiblock.saline.error.missing_heated_wall", x, it.minPos.y, z)
+                        if (WORLD.getBlockState(BlockPos(x, it.minPos.y, z)).block != salineHeatedWallBlock) {
+                            validatorCallback.setLastError("multiblock.saline.error.missing_heated_wall", x,
+                                    it.minPos.y, z)
                             return false
                         }
                     }
@@ -191,8 +208,16 @@ class SalineMultiBlock(world: World) : TiledBaseMultiBlock(
         }
 
         //If this is true then everything regarding heat has been validated
-        if(heatingAgents.isNotEmpty())
+        if (heatingAgents.isNotEmpty()) {
             useHeat = true
+            this.addLogicStrategy(
+                    HeatTransferLogic(
+                            processFluidPerTick = MultiBlockPhysics.salineHeatingAgentConversionSpeed * tiles.size,
+                            hotFluidComponent = this.controllerTileEntity!!.heatingFluidInputComponent,
+                            coldFluidComponent = this.controllerTileEntity!!.heatingFluidOutputComponent,
+                            direction = ConversionDirection.HOT_TO_COLD,
+                            heatBuffer = this.controllerTileEntity!!.heatComponent), "heat")
+        }
 
         return true
     }
@@ -205,7 +230,71 @@ class SalineMultiBlock(world: World) : TiledBaseMultiBlock(
     }
 
     override fun updateServer(): Boolean {
-        return false
+        //Convert heating fluid
+        tick()
+
+        /*
+        https://github.com/Minecraft-Technocracy/Technocracy/issues/45#issuecomment-600246262
+
+        MultiBlock Physics-Constants (Config)
+        heat_drain = 0.02
+        heat_loss = 0.0001
+        agent_conversion_per_tile = 50
+        heat_storage_capacity_per_tile = 500_000
+
+        Example Recipe
+        input: Brine
+        output: Aquaeous Lithium
+        boost_heat: 900
+
+        Equations
+        max_agent_conversion_per_tick (mB) = agent_conversion_per_tile * tiles
+        max_heat_usage (mH) = stored_heat - (stored_heat * e^(-heat_drain)) * tiles
+        boost_conversion (mB) = Math.floor(max_heat_usage / boost_heat)
+
+        total_heat_loss = boost_conversion * boost_heat + stored_heat * heat_loss
+        total_conversion = base_conversion + boost_conversion
+
+        display_temperature = 300 + (100 * stored_heat) / (tiles * heat_storage_capacity_per_tile)
+         */
+
+        val inputFluid = this.controllerTileEntity!!.fluidInputComponent.fluid
+        val outputFluid = this.controllerTileEntity!!.fluidOutputComponent.fluid
+        var totalHeatLoss =
+                ceil(this.controllerTileEntity!!.heatComponent.heatCapacity * MultiBlockPhysics.salineHeatLoss)
+
+        if (inputFluid.currentFluid != null) {
+            val recipe =
+                    this.recipes.single { it.input.unlocalizedName == inputFluid.currentFluid!!.fluid.unlocalizedName }
+
+            val storedHeat = this.controllerTileEntity!!.heatComponent.heat
+            val maxHeatUsage =
+                    (storedHeat - (storedHeat * exp(-MultiBlockPhysics.salineHeatDrainPerTile))) * tiles.size
+            val boostConversion = floor(maxHeatUsage / recipe.heatPerMb).toInt()
+            val heatValid = useHeat && this.controllerTileEntity!!.heatComponent.heat - boostConversion > 0F
+            //Only add heat boost if heat is enabled and there's enough heat left
+            val totalConversion = (MultiBlockPhysics.salineBaseConversionPerTile * tiles.size +
+                    (if (heatValid)
+                        boostConversion
+                    else
+                        0)).coerceAtMost(outputFluid.capacity - (outputFluid.currentFluid?.amount ?: 0))
+
+            //Make sure there's enough input and enough space in the output
+            if ((outputFluid.currentFluid == null || outputFluid.currentFluid!!.fluid == recipe.output) &&
+                    inputFluid.currentFluid!!.amount >= totalConversion &&
+                    outputFluid.capacity - (outputFluid.currentFluid?.amount ?: 0) > totalConversion) {
+                if (heatValid)
+                    totalHeatLoss += boostConversion * recipe.heatPerMb
+
+                outputFluid.fill(FluidStack(recipe.output, totalConversion), true)
+                inputFluid.drain(totalConversion, true)
+            }
+        }
+
+        //Loose heat, no matter if anything is processed
+        this.controllerTileEntity!!.heatComponent.drainHeat(totalHeatLoss.toInt())
+
+        return true
     }
 
     override fun getMinimumNumberOfBlocksForAssembledMachine(): Int {

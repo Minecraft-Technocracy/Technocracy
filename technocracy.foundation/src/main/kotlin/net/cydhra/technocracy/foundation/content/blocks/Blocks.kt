@@ -89,9 +89,9 @@ val salineFluidInputBlock = MultiBlockRotatableActiveBlock("saline_fluid_input",
         renderLayer = BlockRenderLayer.CUTOUT)
 val salineFluidOutputBlock = MultiBlockActiveBlock("saline_fluid_output", ::TileEntitySalineFluidOutput,
         renderLayer = BlockRenderLayer.CUTOUT)
-val salineHeatingAgentInputBlock = MultiBlockRotatableActiveBlock("saline_heating_agent_input", ::TileEntitySalineHeatingAgentOutput,
+val salineHeatingAgentInputBlock = MultiBlockRotatableActiveBlock("saline_heating_agent_input", ::TileEntitySalineHeatingAgentInput,
         renderLayer = BlockRenderLayer.CUTOUT)
-val salineHeatingAgentOutputBlock = MultiBlockRotatableActiveBlock("saline_heating_agent_output", ::TileEntitySalineHeatingAgentInput,
+val salineHeatingAgentOutputBlock = MultiBlockRotatableActiveBlock("saline_heating_agent_output", ::TileEntitySalineHeatingAgentOutput,
         renderLayer = BlockRenderLayer.CUTOUT)
 
 val leadBlock = PlainBlock("lead_block", Material.IRON, oreDictionaryName = "blockLead")

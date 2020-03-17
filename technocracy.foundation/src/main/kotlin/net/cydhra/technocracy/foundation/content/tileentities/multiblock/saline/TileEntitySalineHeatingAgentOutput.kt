@@ -21,7 +21,7 @@ class TileEntitySalineHeatingAgentOutput : TileEntityMultiBlockPart<SalineMultiB
     override fun <T> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
         return if (hasCapability(capability, facing))
             CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast<T>(
-                    multiblockController?.controllerTileEntity?.fluidOutputComponent?.fluid)
+                    multiblockController?.controllerTileEntity?.heatingFluidOutputComponent?.fluid)
                     ?: DynamicFluidCapability(1) as T
         else
             null

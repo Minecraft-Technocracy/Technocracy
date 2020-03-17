@@ -18,7 +18,7 @@ class TileEntitySalineController :
             tanktype = DynamicFluidCapability.TankType.OUTPUT)
 
     //Heat
-    val heatComponent = HeatStorageTileEntityComponent(0, 2000)
+    val heatComponent = HeatStorageTileEntityComponent(0, 200000)
     val heatingFluidInputComponent = FluidTileEntityComponent(facing = mutableSetOf(),
             tanktype = DynamicFluidCapability.TankType.INPUT)
     val heatingFluidOutputComponent = FluidTileEntityComponent(facing = mutableSetOf(),
@@ -26,9 +26,9 @@ class TileEntitySalineController :
 
     init {
         registerComponent(fluidInputComponent, "input")
-        registerComponent(fluidOutputComponent, "output")
-        registerComponent(heatComponent, "heat")
         registerComponent(heatingFluidInputComponent, "heat_input")
+        registerComponent(heatComponent, "heat")
+        registerComponent(fluidOutputComponent, "output")
         registerComponent(heatingFluidOutputComponent, "heat_output")
     }
 }
