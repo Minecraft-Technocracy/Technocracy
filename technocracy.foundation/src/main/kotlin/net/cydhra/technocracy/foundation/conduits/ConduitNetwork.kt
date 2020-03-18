@@ -40,7 +40,7 @@ object ConduitNetwork {
      * @throws IllegalStateException if the respective chunk is not loaded
      */
     fun addConduitNode(transactionContext: NetworkTransactionContext, world: WorldServer, pos: BlockPos,
-            type: PipeType) {
+                       type: PipeType) {
         val dimension =
                 dimensions[world.provider.dimension] ?: throw IllegalStateException("the dimension is not loaded")
         val chunk = dimension.getChunkAt(ChunkPos(pos)) ?: throw IllegalStateException("the chunk is not loaded")
@@ -61,7 +61,7 @@ object ConduitNetwork {
      * @throws IllegalStateException if the respective chunk is not loaded
      */
     fun removeConduitNode(transactionContext: NetworkTransactionContext, world: WorldServer, pos: BlockPos,
-            type: PipeType) {
+                          type: PipeType) {
         val dimension =
                 dimensions[world.provider.dimension] ?: throw IllegalStateException("the dimension is not loaded")
         val chunk = dimension.getChunkAt(ChunkPos(pos)) ?: throw IllegalStateException("the chunk is not loaded")
@@ -89,7 +89,7 @@ object ConduitNetwork {
      * @throws [IllegalStateException] if one of the chunks is not loaded
      */
     fun insertConduitEdge(transactionContext: NetworkTransactionContext, world: WorldServer, nodeA: BlockPos,
-            nodeB: BlockPos, type: PipeType) {
+                          nodeB: BlockPos, type: PipeType) {
         val directionFromA = EnumFacing.values().firstOrNull { nodeA.add(it.directionVec) == nodeB }
                 ?: throw IllegalArgumentException("the positions are not adjacent")
 
@@ -120,7 +120,7 @@ object ConduitNetwork {
      * @throws [IllegalStateException] if the edge does not exist
      */
     fun removeConduitEdge(transactionContext: NetworkTransactionContext, world: WorldServer, nodeA: BlockPos,
-            nodeB: BlockPos, type: PipeType) {
+                          nodeB: BlockPos, type: PipeType) {
         val directionFromA = EnumFacing.values().firstOrNull { nodeA.add(it.directionVec) == nodeB }
                 ?: throw IllegalArgumentException("the positions are not adjacent")
 
@@ -139,7 +139,7 @@ object ConduitNetwork {
     }
 
     fun attachTransitSink(transactionContext: NetworkTransactionContext, world: WorldServer, pos: BlockPos,
-            facing: EnumFacing, type: PipeType) {
+                          facing: EnumFacing, type: PipeType) {
         val dimension =
                 dimensions[world.provider.dimension] ?: throw IllegalStateException("the dimension is not loaded")
 
@@ -156,7 +156,7 @@ object ConduitNetwork {
      * dangling edge left.
      */
     fun removeTransitSink(transactionContext: NetworkTransactionContext, world: WorldServer, pos: BlockPos,
-            facing: EnumFacing, type: PipeType) {
+                          facing: EnumFacing, type: PipeType) {
         val dimension =
                 dimensions[world.provider.dimension] ?: throw IllegalStateException("the dimension is not loaded")
 
@@ -176,7 +176,7 @@ object ConduitNetwork {
      *
      */
     fun removeAllAttachedSinks(transactionContext: NetworkTransactionContext, world: WorldServer, pos: BlockPos,
-            type: PipeType) {
+                               type: PipeType) {
         val dimension =
                 dimensions[world.provider.dimension] ?: throw IllegalStateException("the dimension is not loaded")
 
@@ -218,8 +218,10 @@ object ConduitNetwork {
      * Tick the conduit network. This will perform routing algorithms and actually transfer contents
      */
     fun tick(world: WorldServer) {
-        this.dimensions.values.forEach {
-            it.tick(world)
+        synchronized(dimensions) {
+            this.dimensions.values.forEach {
+                it.tick(world)
+            }
         }
     }
 
@@ -251,10 +253,10 @@ object ConduitNetwork {
         if (event.world.isRemote) return
 
         val dimensionId = event.world.provider.dimension
-        val dimension = dimensions[dimensionId] ?: ConduitNetworkDimension(dimensionId).apply {
-            dimensions[dimensionId] = this
-        }
 
+        val dimension = synchronized(this.dimensions) {
+            dimensions.getOrPut(dimensionId, { ConduitNetworkDimension(dimensionId) })
+        }
         dimension.loadChunkData(event)
     }
 
@@ -282,10 +284,9 @@ object ConduitNetwork {
         if (event.world.isRemote) return
 
         val dimensionId = event.world.provider.dimension
-        val dimension = dimensions[dimensionId] ?: ConduitNetworkDimension(dimensionId).apply {
-            dimensions[dimensionId] = this
+        val dimension = synchronized(this.dimensions) {
+            dimensions.getOrPut(dimensionId, { ConduitNetworkDimension(dimensionId) })
         }
-
         dimension.loadChunk(event.chunk)
     }
 
