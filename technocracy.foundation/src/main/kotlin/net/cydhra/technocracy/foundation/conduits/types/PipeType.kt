@@ -15,37 +15,37 @@ enum class PipeType(val unlocalizedName: String,
                     val offersContent: (world: WorldServer, pos: BlockPos, facing: EnumFacing) -> Boolean,
                     val getContent: (world: WorldServer, pos: BlockPos, facing: EnumFacing, limit: Int) -> PipeContent)
     : IStringSerializable {
-    ENERGY("energy",
-            EnergyCapabilityProvider.CAPABILITY_ENERGY!!,
-            { world, pos, facing ->
+    ENERGY(unlocalizedName = "energy",
+            capability = EnergyCapabilityProvider.CAPABILITY_ENERGY!!,
+            offersContent = { world, pos, facing ->
                 world.getTileEntity(pos)
                         ?.getCapability(EnergyCapabilityProvider.CAPABILITY_ENERGY!!, facing)
                         ?.let { it.canExtract() && it.energyStored > 0 } ?: false
             },
-            { world, pos, facing, limit ->
+            getContent = { world, pos, facing, limit ->
                 world.getTileEntity(pos)
                         ?.getCapability(EnergyCapabilityProvider.CAPABILITY_ENERGY!!, facing)!!
                         .let { PipeEnergyContent(it, it.extractEnergy(limit, true)) }
 
             }),
-    FLUID("fluid", CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
-            { world, pos, facing ->
+    FLUID(unlocalizedName = "fluid", capability = CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
+            offersContent = { world, pos, facing ->
                 world.getTileEntity(pos)
                         ?.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY!!, facing)
                         ?.drain(1, false)?.amount ?: 0 > 0
             },
-            { world, pos, facing, limit ->
+            getContent = { world, pos, facing, limit ->
                 TODO()
             }),
-    ITEM("item", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
-            { world, pos, facing ->
+    ITEM(unlocalizedName = "item", capability = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
+            offersContent = { world, pos, facing ->
                 world.getTileEntity(pos)
                         ?.getCapability(net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY!!, facing)
                         ?.let { itemCap ->
                             (0 until itemCap.slots).any { !itemCap.extractItem(it, 1, true).isEmpty }
                         } ?: false
             },
-            { world, pos, facing, limit ->
+            getContent = { world, pos, facing, limit ->
                 TODO()
             });
 
