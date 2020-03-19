@@ -309,27 +309,33 @@ object ConduitNetwork {
         GL11.glPushMatrix()
         GL11.glTranslated(-mc.renderManager.viewerPosX, -mc.renderManager.viewerPosY, -mc.renderManager.viewerPosZ)
 
-
         GL11.glDisable(GL11.GL_DEPTH_TEST)
         GL11.glEnable(GL11.GL_BLEND)
         GL11.glDisable(GL11.GL_TEXTURE_2D)
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
         GL11.glEnable(GL11.GL_LINE_SMOOTH)
         GL11.glDisable(GL11.GL_LIGHTING)
-
         GL11.glDepthMask(false)
-
-        GL11.glColor4d(0.0, 0.0, 1.0, 1.0)
         GL11.glLineWidth(2f)
 
         try {
             dimensions[0]!!.debug_getChunks().forEach { nChunk ->
                 nChunk.debug_transits.forEach { (pos, set) ->
-                    GL11.glPushMatrix()
                     GL11.glTranslated(pos.x.toDouble() + 0.5, pos.y.toDouble() + 0.5, pos.z.toDouble() + 0.5)
 
                     set.forEach { transitEdge ->
                         transitEdge.paths.forEach { (id, _) ->
+                            when (transitEdge.type) {
+                                PipeType.ENERGY -> GL11.glColor4d(1.0, 0.0, 0.0, 1.0)
+                                PipeType.FLUID -> GL11.glColor4d(0.0, 0.0, 1.0, 1.0)
+                                PipeType.ITEM -> GL11.glColor4d(0.0, 1.0, 0.0, 1.0)
+                            }
+
+                            when (transitEdge.type) {
+                                PipeType.FLUID -> GL11.glTranslated(0.025, 0.025, 0.025)
+                                PipeType.ITEM -> GL11.glTranslated(0.05, 0.05, 0.05)
+                            }
+
                             val (otherPos, otherEdge) = nChunk.getTransitEdge(id)!!
 
                             GL11.glBegin(GL11.GL_LINES)
@@ -341,19 +347,34 @@ object ConduitNetwork {
                                     otherPos.z.toDouble() - pos.z + otherEdge.facing.directionVec.z / 2.0)
 
                             GL11.glEnd()
+
+                            when (transitEdge.type) {
+                                PipeType.FLUID -> GL11.glTranslated(-0.025, -0.025, -0.025)
+                                PipeType.ITEM -> GL11.glTranslated(-0.05, -0.05, -0.05)
+                            }
                         }
                     }
 
-                    GL11.glPopMatrix()
+                    GL11.glTranslated(-pos.x.toDouble() - 0.5, -pos.y.toDouble() - 0.5, -pos.z.toDouble() - 0.5)
                 }
 
                 nChunk.debug_cross_transits.forEach { (pos, set) ->
-                    GL11.glPushMatrix()
                     GL11.glTranslated(pos.x.toDouble() + 0.5, pos.y.toDouble() + 0.5, pos.z.toDouble() + 0.5)
 
                     set.forEach { transitEdge ->
+                        when (transitEdge.type) {
+                            PipeType.ENERGY -> GL11.glColor4d(1.0, 0.0, 0.0, 1.0)
+                            PipeType.FLUID -> GL11.glColor4d(0.0, 0.0, 1.0, 1.0)
+                            PipeType.ITEM -> GL11.glColor4d(0.0, 1.0, 0.0, 1.0)
+                        }
+
                         transitEdge.paths.forEach { (id, _) ->
                             val (otherPos, otherEdge) = nChunk.getTransitEdge(id)!!
+
+                            when (transitEdge.type) {
+                                PipeType.FLUID -> GL11.glTranslated(0.025, 0.025, 0.025)
+                                PipeType.ITEM -> GL11.glTranslated(0.05, 0.05, 0.05)
+                            }
 
                             GL11.glBegin(GL11.GL_LINES)
                             GL11.glVertex3d(transitEdge.facing.directionVec.x / 2.0, transitEdge.facing.directionVec.y / 2.0,
@@ -364,10 +385,15 @@ object ConduitNetwork {
                                     otherPos.z.toDouble() - pos.z + otherEdge.facing.directionVec.z / 2.0)
 
                             GL11.glEnd()
+
+                            when (transitEdge.type) {
+                                PipeType.FLUID -> GL11.glTranslated(-0.025, -0.025, -0.025)
+                                PipeType.ITEM -> GL11.glTranslated(-0.05, -0.05, -0.05)
+                            }
                         }
                     }
 
-                    GL11.glPopMatrix()
+                    GL11.glTranslated(-pos.x.toDouble() - 0.5, -pos.y.toDouble() - 0.5, -pos.z.toDouble() - 0.5)
                 }
             }
         } catch (e: Exception) {
