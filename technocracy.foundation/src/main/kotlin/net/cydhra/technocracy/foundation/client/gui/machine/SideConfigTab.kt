@@ -3,16 +3,26 @@ package net.cydhra.technocracy.foundation.client.gui.machine
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.TCIcon
 import net.cydhra.technocracy.foundation.client.gui.TCTab
+import net.cydhra.technocracy.foundation.client.gui.components.button.DefaultButton
+import net.cydhra.technocracy.foundation.client.gui.components.energymeter.EnergyMeter
+import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.CoolantMeter
+import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.FluidMeter
+import net.cydhra.technocracy.foundation.client.gui.components.heatmeter.HeatMeter
 import net.cydhra.technocracy.foundation.client.gui.components.label.DefaultLabel
+import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotPlayer
+import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.content.items.wrenchItem
+import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
 import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
 import net.cydhra.technocracy.foundation.util.opengl.BasicShaderProgram
+import net.cydhra.technocracy.foundation.util.opengl.OpenGLBoundingBox
 import net.cydhra.technocracy.foundation.util.opengl.ScreenspaceUtil
 import net.cydhra.technocracy.foundation.util.structures.BlockInfo
 import net.cydhra.technocracy.foundation.util.structures.TemplateClientWorld
 import net.cydhra.technocracy.foundation.util.validateAndClear
 import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.Gui
 import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.RenderHelper
@@ -26,6 +36,7 @@ import net.minecraft.util.BlockRenderLayer
 import net.minecraft.util.EnumBlockRenderType
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.ResourceLocation
+import net.minecraft.util.math.AxisAlignedBB
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.RayTraceResult
 import net.minecraft.world.World
@@ -35,24 +46,20 @@ import org.apache.commons.lang3.text.WordUtils
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
 import org.lwjgl.util.glu.Project
+import java.awt.Color
 
 
 class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: TCTab) : TCTab("SideConfig", parent, icon = TCIcon(wrenchItem)) {
 
     companion object {
-        const val PADDING_LEFT = 8
-        const val PADDING_TOP = 20
-        const val PADDING_RIGHT = PADDING_LEFT
-        const val SLOT_WIDTH_PLUS_PADDING = 18
-        const val UPGRADE_SLOTS_PER_ROW = 3
-        const val INFO_LABEL_OFFSET = PADDING_LEFT + UPGRADE_SLOTS_PER_ROW * SLOT_WIDTH_PLUS_PADDING + PADDING_LEFT
+        var framebuffer: Framebuffer? = null
+        lateinit var shader: BasicShaderProgram
+        var isInit = false
     }
-
-    private val lableWidth = (parent.guiWidth - PADDING_RIGHT - INFO_LABEL_OFFSET) / 2
 
 
     lateinit var infoTitleLabel: DefaultLabel
-
+    lateinit var hideBlocks: DefaultButton
 
     override fun init() {
 
@@ -61,27 +68,93 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
 
         infoTitleLabel = DefaultLabel(10, offsetY + 2, "")
 
+        hideBlocks = DefaultButton(10, offsetY + height - 15 - 2, 15, 15, "H") { player, tile, button ->
+            if (button == 0)
+                hideNeighbors = !hideNeighbors
+            hideBlocks.text = if (hideNeighbors) "S" else "H"
+        }
+
         components.add(infoTitleLabel)
+        components.add(hideBlocks)
     }
 
-    var framebuffer: Framebuffer? = null
+    var hideNeighbors = false
 
-    lateinit var shader: BasicShaderProgram
+    var lastSideHit: EnumFacing? = null
+    var currentLockedSide = EnumFacing.NORTH
 
     var yaw = -180f
     var pitch = 0f
+
+    var checkMouse = false
+
+    override fun mouseClicked(x: Int, y: Int, mouseX: Int, mouseY: Int, mouseButton: Int) {
+        if (mouseButton == 0) {
+            checkMouse = true
+
+            mainTab.components.forEach {
+                if (it !is TCSlotPlayer) {
+                    var face = lastSideHit ?: currentLockedSide
+                    if (face.axis.isHorizontal)
+                        face = face.rotateY().rotateY()
+
+                    when (it) {
+                        is EnergyMeter -> {
+                            if (it.isMouseOnComponent(mouseX - x, mouseY - y)) {
+                                if (!it.component.facing.remove(face)) it.component.facing.add(face)
+                            }
+                        }
+                        is CoolantMeter -> {
+
+                            if (it.meterIn.isMouseOnComponent(mouseX - x - it.posX, mouseY - y - it.posY)) {
+                                if (!it.coolantIn.facing.remove(face)) it.coolantIn.facing.add(face)
+                            }
+                            if (it.meterOut.isMouseOnComponent(mouseX - x - it.posX, mouseY - y - it.posY)) {
+                                if (!it.coolantOut.facing.remove(face)) it.coolantOut.facing.add(face)
+                            }
+                        }
+                        is FluidMeter -> {
+                            if (it.isMouseOnComponent(mouseX - x, mouseY - y)) {
+                                if (!it.component.facing.remove(face)) it.component.facing.add(face)
+                            }
+                        }
+                        is TCSlotIO -> {
+                            val handler = it.itemHandler
+                            if (handler is DynamicInventoryCapability) {
+                                val comp = handler.componentParent
+                                if (comp is InventoryTileEntityComponent) {
+                                    if (it.isMouseOnComponent(mouseX - x, mouseY - y)) {
+                                        if (!comp.facing.remove(face)) comp.facing.add(face)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        super.mouseClicked(x, y, mouseX, mouseY, mouseButton)
+    }
 
     override fun update() {
     }
 
     override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
 
-        if (!::shader.isInitialized)
+        if (!isInit) {
+            isInit = true
             shader = BasicShaderProgram(ResourceLocation("technocracy.foundation", "shaders/fade.vsh"), ResourceLocation("technocracy.foundation", "shaders/fade.fsh"))
+        }
 
         if (Mouse.isButtonDown(0)) {
             yaw += Mouse.getDX()
             pitch -= Mouse.getDY()
+        } else {
+            if (checkMouse) {
+                checkMouse = false
+                currentLockedSide = lastSideHit ?: currentLockedSide
+            }
         }
 
         val scaledResolution = ScaledResolution(Minecraft.getMinecraft())
@@ -99,10 +172,9 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         GlStateManager.matrixMode(5888)
         GlStateManager.loadIdentity()
         GlStateManager.disableAlpha()
-        GlStateManager.disableTexture2D()
         GlStateManager.enableCull()
         GlStateManager.shadeModel(7425)
-        GlStateManager.glLineWidth(2f)
+        GlStateManager.enableTexture2D()
 
         val state = machine.world.getBlockState(machine.pos).getActualState(machine.world, machine.pos)
         val pos = machine.pos
@@ -112,8 +184,6 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         val tess = Tessellator.getInstance()
         val bufferBuilder = tess.buffer
 
-        GlStateManager.disableCull()
-        GlStateManager.enableTexture2D()
 
         GL11.glTranslated(0.0, 0.0, -3.0)
         GL11.glRotated((this.pitch).toDouble(), 1.0, 0.0, 0.0)
@@ -139,54 +209,80 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         mc.blockRendererDispatcher.blockModelRenderer.renderModelFlat(tcw, model, state.block.getExtendedState(state, machine.world, machine.pos), BlockPos(0, 0, 0), bufferBuilder, false, 0)
         tess.draw()
 
-
-        GlStateManager.enableCull()
-        RenderHelper.disableStandardItemLighting()
-        mc.entityRenderer.disableLightmap()
-        GlStateManager.disableLighting();
-        GlStateManager.enableBlend()
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE)
-        shader.start()
-
-        GlStateManager.disableAlpha()
-        ForgeHooksClient.setRenderLayer(BlockRenderLayer.SOLID)
-        renderBlocks(BlockRenderLayer.SOLID, pos, tess, tcw)
-
-        ForgeHooksClient.setRenderPass(1)
-        renderTileEntitys(pos, machine.world)
-        Minecraft.getMinecraft().textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE)
-
-        //GlStateManager.alphaFunc(516, 0.5f)
-        //GlStateManager.enableAlpha()
-
-        ForgeHooksClient.setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED)
-        renderBlocks(BlockRenderLayer.CUTOUT_MIPPED, pos, tess, tcw)
-        ForgeHooksClient.setRenderLayer(BlockRenderLayer.CUTOUT)
-        renderBlocks(BlockRenderLayer.CUTOUT, pos, tess, tcw)
-
-        GlStateManager.enableBlend()
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE)
-        //GlStateManager.alphaFunc(516, 0.1f)
-        GlStateManager.shadeModel(7425)
-
-        ForgeHooksClient.setRenderLayer(BlockRenderLayer.TRANSLUCENT)
-        renderBlocks(BlockRenderLayer.TRANSLUCENT, pos, tess, tcw)
-
-        ForgeHooksClient.setRenderPass(0)
-        renderTileEntitys(pos, machine.world)
-
-        ForgeHooksClient.setRenderPass(-1)
-
-        shader.stop()
-
-        ForgeHooksClient.setRenderLayer(null)
-
+        GlStateManager.enableAlpha()
+        GlStateManager.disableDepth()
 
         if (rayTrace != null && rayTrace.typeOfHit == RayTraceResult.Type.BLOCK) {
-            infoTitleLabel.text = WordUtils.capitalize(rayTrace.sideHit.toString())
+            lastSideHit = rayTrace.sideHit
+            infoTitleLabel.text = WordUtils.capitalize(lastSideHit.toString())
+
+            val opposite = rayTrace.sideHit.opposite
+            var bb = AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 1.0, 1.0)
+            bb = bb.contract(opposite.frontOffsetX.toDouble(), opposite.frontOffsetY.toDouble(), opposite.frontOffsetZ.toDouble())
+            Minecraft.getMinecraft().textureManager.bindTexture(ResourceLocation("technocracy.foundation", "textures/gui/sideconfig/selection.png"))
+            OpenGLBoundingBox.drawTexturedBoundingBox(bb)
+
         } else {
+            lastSideHit = null
             infoTitleLabel.text = "None"
         }
+
+        if (lastSideHit != currentLockedSide) {
+            val opposite = currentLockedSide.opposite
+            var bb = AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 1.0, 1.0)
+            bb = bb.contract(opposite.frontOffsetX.toDouble(), opposite.frontOffsetY.toDouble(), opposite.frontOffsetZ.toDouble())
+            Minecraft.getMinecraft().textureManager.bindTexture(ResourceLocation("technocracy.foundation", "textures/gui/sideconfig/selection.png"))
+            GlStateManager.color(0f, 0.2f, 0.4f)
+            OpenGLBoundingBox.drawTexturedBoundingBox(bb)
+        }
+        GlStateManager.enableDepth()
+
+
+        if (!hideNeighbors) {
+            Minecraft.getMinecraft().textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE)
+
+            GlStateManager.enableCull()
+            RenderHelper.disableStandardItemLighting()
+            mc.entityRenderer.disableLightmap()
+            GlStateManager.disableLighting();
+            GlStateManager.enableBlend()
+            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE)
+            shader.start()
+
+            GlStateManager.disableAlpha()
+            ForgeHooksClient.setRenderLayer(BlockRenderLayer.SOLID)
+            renderBlocks(BlockRenderLayer.SOLID, pos, tess, tcw)
+
+            ForgeHooksClient.setRenderPass(1)
+            renderTileEntitys(pos, machine.world)
+            Minecraft.getMinecraft().textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE)
+
+            //GlStateManager.alphaFunc(516, 0.5f)
+            //GlStateManager.enableAlpha()
+
+            ForgeHooksClient.setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED)
+            renderBlocks(BlockRenderLayer.CUTOUT_MIPPED, pos, tess, tcw)
+            ForgeHooksClient.setRenderLayer(BlockRenderLayer.CUTOUT)
+            renderBlocks(BlockRenderLayer.CUTOUT, pos, tess, tcw)
+
+            GlStateManager.enableBlend()
+            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE)
+            //GlStateManager.alphaFunc(516, 0.1f)
+            GlStateManager.shadeModel(7425)
+
+            ForgeHooksClient.setRenderLayer(BlockRenderLayer.TRANSLUCENT)
+            renderBlocks(BlockRenderLayer.TRANSLUCENT, pos, tess, tcw)
+
+            ForgeHooksClient.setRenderPass(0)
+            renderTileEntitys(pos, machine.world)
+
+            ForgeHooksClient.setRenderPass(-1)
+
+            shader.stop()
+
+            ForgeHooksClient.setRenderLayer(null)
+        }
+
 
 
         GlStateManager.color(1f, 1f, 1f, 1f)
@@ -220,11 +316,70 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         GlStateManager.color(1f, 1f, 1f, 1f)
         Minecraft.getMinecraft().fontRenderer.drawString(mainTab.name, 8f + x, 8f + y, 4210752, false)
 
+        GlStateManager.enableDepth()
+
         mainTab.components.forEach {
             if (it !is TCSlotPlayer) {
-                it.draw(x, y, mouseX, mouseY, partialTicks)
+
+                var face = lastSideHit ?: currentLockedSide
+                if (face.axis.isHorizontal)
+                    face = face.rotateY().rotateY()
+
+                var dontRender = false
+
+                when (it) {
+                    is EnergyMeter -> {
+                        if (it.component.facing.contains(face)) {
+                            Gui.drawRect(x + it.posX - 1, y + it.posY - 1, x + it.posX + it.width + 1, y + it.posY + it.height + 1, Color(255, 0, 0).rgb)
+                        }
+                    }
+                    is CoolantMeter -> {
+                        dontRender = true
+
+                        it.drawBackground(x, y)
+
+                        if (it.coolantIn.facing.contains(face)) {
+                            val pX = x + it.posX + it.meterIn.posX
+                            val pY = y + it.posY + it.meterIn.posY
+                            Gui.drawRect(pX - 1, pY - 1, pX + it.meterIn.width + 1, pY + it.meterIn.height + 1, Color(255, 0, 0).rgb)
+                        }
+                        if (it.coolantOut.facing.contains(face)) {
+                            Gui.drawRect(x + it.posX + it.meterOut.posX - 1, y + it.posY + it.meterOut.posY - 1, x + it.posX + it.meterOut.width + it.meterOut.posX + 1, y + it.posY + it.meterOut.height + it.meterOut.posY + 1, Color(255, 0, 0).rgb)
+                        }
+
+                        it.draw(x, y, mouseX, mouseY, -1f)
+                    }
+                    is FluidMeter -> {
+                        if (it.component.facing.contains(face)) {
+                            Gui.drawRect(x + it.posX - 1, y + it.posY - 1, x + it.posX + it.width + 1, y + it.posY + it.height + 1, Color(255, 0, 0).rgb)
+                        }
+                    }
+                    is TCSlotIO -> {
+                        val handler = it.itemHandler
+                        if (handler is DynamicInventoryCapability) {
+                            val comp = handler.componentParent
+                            if (comp is InventoryTileEntityComponent) {
+                                if (comp.facing.contains(face)) {
+                                    Gui.drawRect(x + it.xPos - 2, y + it.yPos - 2, x + it.xPos + it.width, y + it.yPos + it.height, Color(255, 0, 0).rgb)
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (!dontRender)
+                    it.draw(x, y, mouseX, mouseY, partialTicks)
             }
         }
+        mc.renderItem.zLevel = 100.0f
+        mainTab.components.forEach {
+            if (it is TCSlotIO) {
+                val slot = parent.container.inventorySlots[it.slotNumber]
+                mc.renderItem.renderItemAndEffectIntoGUI(mc.player, slot.stack, slot.xPos + parent.guiX, slot.yPos + parent.guiY)
+                mc.renderItem.renderItemOverlayIntoGUI(mc.fontRenderer, slot.stack, slot.xPos + parent.guiX, slot.yPos + parent.guiY, null)
+            }
+        }
+        mc.renderItem.zLevel = 0.0f
     }
 
     fun renderTileEntitys(pos: BlockPos, tcw: World) {

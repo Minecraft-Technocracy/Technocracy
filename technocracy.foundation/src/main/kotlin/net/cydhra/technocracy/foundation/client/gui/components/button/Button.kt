@@ -10,7 +10,7 @@ import org.apache.logging.log4j.util.TriConsumer
 import java.util.function.Consumer
 
 
-abstract class Button(val posX: Int, val posY: Int, override var width: Int, override var height: Int, val text: String, val fontRenderer: FontRenderer, val onClick: (player: EntityPlayer, tileEntity: TileEntity?, button: Int) -> Unit) : TCComponent() {
+abstract class Button(val posX: Int, val posY: Int, override var width: Int, override var height: Int, var text: String, val fontRenderer: FontRenderer, val onClick: (player: EntityPlayer, tileEntity: TileEntity?, button: Int) -> Unit) : TCComponent() {
 
     override fun drawTooltip(mouseX: Int, mouseY: Int) {}
 

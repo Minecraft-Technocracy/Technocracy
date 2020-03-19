@@ -14,7 +14,7 @@ import java.awt.Color
 import kotlin.math.roundToInt
 
 
-class DefaultHeatMeter(posX: Int, posY: Int, val component: HeatStorageTileEntityComponent, val gui: TCGui) : HeatMeter(posX, posY) {
+class DefaultHeatMeter(posX: Int, posY: Int,  component: HeatStorageTileEntityComponent, val gui: TCGui) : HeatMeter(posX, posY, component) {
     override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
         GlStateManager.color(1F, 1F, 1F, 1F)
 

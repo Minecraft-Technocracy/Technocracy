@@ -8,7 +8,7 @@ import net.minecraft.util.math.MathHelper
 import net.minecraft.util.text.TextFormatting
 import kotlin.math.roundToInt
 
-abstract class FluidMeter(val posX: Int, val posY: Int) : TCComponent() {
+abstract class FluidMeter(val posX: Int, val posY: Int, val component: FluidTileEntityComponent) : TCComponent() {
 
     /**
      * fluid level from 0.0 to 1.0

@@ -1,9 +1,10 @@
 package net.cydhra.technocracy.foundation.client.gui.components.energymeter
 
 import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageTileEntityComponent
 import net.minecraft.util.math.MathHelper
 
-abstract class EnergyMeter(val posX: Int, val posY: Int) : TCComponent() {
+abstract class EnergyMeter(val posX: Int, val posY: Int, val component: EnergyStorageTileEntityComponent) : TCComponent() {
 
     /**
      * energy level from 0.0 to 1.0

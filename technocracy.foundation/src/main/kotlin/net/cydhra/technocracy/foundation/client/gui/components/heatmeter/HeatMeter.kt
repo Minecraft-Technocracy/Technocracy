@@ -1,9 +1,10 @@
 package net.cydhra.technocracy.foundation.client.gui.components.heatmeter
 
 import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.HeatStorageTileEntityComponent
 
 
-abstract class HeatMeter(val posX: Int, val posY: Int) : TCComponent() {
+abstract class HeatMeter(val posX: Int, val posY: Int, val component: HeatStorageTileEntityComponent) : TCComponent() {
     /**
      * heat level from 0.0 to 1.0
      */

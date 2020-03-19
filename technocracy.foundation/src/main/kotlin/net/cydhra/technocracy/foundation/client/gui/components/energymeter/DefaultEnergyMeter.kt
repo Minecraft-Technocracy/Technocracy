@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import org.lwjgl.opengl.GL11
 import kotlin.math.roundToInt
 
-class DefaultEnergyMeter(posX: Int, posY: Int, val component: EnergyStorageTileEntityComponent, val gui: TCGui) : EnergyMeter(posX, posY) {
+class DefaultEnergyMeter(posX: Int, posY: Int, component: EnergyStorageTileEntityComponent, val gui: TCGui) : EnergyMeter(posX, posY, component) {
 
     override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
         GlStateManager.color(1F, 1F, 1F, 1F)
@@ -24,7 +24,7 @@ class DefaultEnergyMeter(posX: Int, posY: Int, val component: EnergyStorageTileE
 
         val level = Interpolator.linearInterpolate(lastLevel, this.level, partialTicks)
 
-        val h = height * (1-level)
+        val h = height * (1 - level)
 
         drawModalRectWithCustomSizedTexture(x + posX.toDouble(), y + posY + h, 75.0 + width, h, width.toDouble(), height - h, 256f, 256f)
     }

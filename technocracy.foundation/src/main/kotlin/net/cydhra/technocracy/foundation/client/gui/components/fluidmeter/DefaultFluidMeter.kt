@@ -26,7 +26,7 @@ import java.awt.Color
 import kotlin.math.*
 
 
-class DefaultFluidMeter(posX: Int, posY: Int, val component: FluidTileEntityComponent, val gui: TCGui, val type: Int = 0) : FluidMeter(posX, posY) {
+class DefaultFluidMeter(posX: Int, posY: Int,  component: FluidTileEntityComponent, val gui: TCGui, val type: Int = 0) : FluidMeter(posX, posY, component) {
 
     init {
         if (type == 1)
