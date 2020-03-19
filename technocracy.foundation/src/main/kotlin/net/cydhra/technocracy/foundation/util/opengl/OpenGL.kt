@@ -2,15 +2,19 @@ package net.cydhra.technocracy.foundation.util.opengl
 
 import net.cydhra.technocracy.foundation.client.textures.TextureAtlasManager
 import net.minecraft.client.Minecraft
-import net.minecraft.client.renderer.OpenGlHelper
+import net.minecraft.client.renderer.GLAllocation
+import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.client.renderer.texture.TextureMap
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.util.math.AxisAlignedBB
+import net.minecraft.util.math.Vec3d
 import net.minecraftforge.fluids.Fluid
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.*
+import org.lwjgl.util.vector.Matrix4f
+import org.lwjgl.util.vector.Vector4f
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 
@@ -28,6 +32,90 @@ object OpenGLFluidRenderer {
                 TextureAtlasManager.getTextureAtlasSprite(if (state == FluidState.STILL) fluid.still else fluid.flowing)
         Minecraft.getMinecraft().textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE)
         OpenGLBoundingBox.drawTexturedBoundingBox(boundingBox, texture)
+    }
+}
+
+object ScreenspaceUtil {
+    private val projectionMatrixBuffer = GLAllocation.createDirectFloatBuffer(16)
+    private val modelviewMatrixBuffer = GLAllocation.createDirectFloatBuffer(16)
+    val viewportMatrixBuffer = GLAllocation.createDirectIntBuffer(16)
+    private val positionsBuffer = GLAllocation.createDirectFloatBuffer(4)
+    private val invModelViewProjectionMatrtrix = Matrix4f()
+
+    /**
+     * Needs to be called once before calling the other methods
+     */
+    fun initMatrix() {
+        this.projectionMatrixBuffer.clear()
+        this.modelviewMatrixBuffer.clear()
+        this.viewportMatrixBuffer.clear()
+        this.positionsBuffer.clear()
+
+        GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, this.modelviewMatrixBuffer)
+        GlStateManager.getFloat(GL11.GL_PROJECTION_MATRIX, projectionMatrixBuffer)
+        GlStateManager.glGetInteger(GL11.GL_VIEWPORT, this.viewportMatrixBuffer)
+
+        projectionMatrixBuffer.flip().limit(16)
+        modelviewMatrixBuffer.flip().limit(16)
+        val projMat = Matrix4f().load(projectionMatrixBuffer).invert() as Matrix4f
+        val modelMat = Matrix4f().load(modelviewMatrixBuffer).invert() as Matrix4f
+        Matrix4f.mul(modelMat, projMat, invModelViewProjectionMatrtrix)
+    }
+
+    /**
+     * Gets the 3d positions of the mouse position on the near and far plane
+     *
+     * @param mouseX mouse posX
+     * @param mouseY mouse posY
+     *
+     * @return near plane pos and far plane pos
+     */
+    fun getPositonsOnFrustum(mouseX: Int, mouseY: Int): List<Vec3d> {
+        val near = getPositionFromScreen(mouseX, mouseY, -1f)
+        val far = getPositionFromScreen(mouseX, mouseY, 1f)
+        return listOf(near, far)
+    }
+
+    /**
+     * Gets the depth of a pixel from the depth buffer at the corresponding position
+     * @param mouseX mouse posX
+     * @param mouseY mouse posY
+     *
+     * @return the depth
+     */
+    fun getDepthOfPixel(mouseX: Int, mouseY: Int): Float {
+        GL11.glReadPixels(mouseX, mouseY, 1, 1, GL11.GL_DEPTH_COMPONENT, GL11.GL_FLOAT, positionsBuffer)
+        return positionsBuffer[0]
+    }
+
+    /**
+     * Gets the world position at the mouse position with the corresponding depth
+     * @param mouseX mouse posX
+     * @param mouseY mouse posY
+     * @param depth the depth of the pixel
+     *
+     * @return the 3d position
+     */
+    fun getPositionFromScreen(mouseX: Int, mouseY: Int, depth: Float): Vec3d {
+        val posX = viewportMatrixBuffer[0].toDouble()
+        val posY = viewportMatrixBuffer[1].toDouble()
+        val width = viewportMatrixBuffer[2].toDouble()
+        val height = viewportMatrixBuffer[3].toDouble()
+
+        var screenX: Double = (mouseX - posX) / width
+        var screenY: Double = (mouseY - posY) / height
+        screenX = screenX * 2.0 - 1.0
+        screenY = screenY * 2.0 - 1.0
+
+        var tmp = Vector4f()
+        tmp.x = screenX.toFloat()
+        tmp.y = screenY.toFloat()
+        tmp.z = depth
+        tmp.w = 1.0f
+        tmp = Matrix4f.transform(invModelViewProjectionMatrtrix, tmp, null)
+
+        val w = tmp.w.toDouble()
+        return Vec3d(tmp.x / w, tmp.y / w, tmp.z / w)
     }
 }
 

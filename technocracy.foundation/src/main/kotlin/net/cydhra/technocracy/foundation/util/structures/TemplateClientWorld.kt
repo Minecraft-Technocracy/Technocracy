@@ -5,6 +5,8 @@ import net.minecraft.block.state.IBlockState
 import net.minecraft.client.multiplayer.WorldClient
 import net.minecraft.init.Blocks
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.RayTraceResult
+import net.minecraft.util.math.Vec3d
 import net.minecraft.world.EnumSkyBlock
 import net.minecraft.world.World
 import net.minecraft.world.chunk.Chunk
@@ -38,7 +40,7 @@ class TemplateClientWorld(val client: WorldClient, val blocks: List<BlockInfo>, 
     override fun getBlockState(pos: BlockPos): IBlockState {
         for (info in blocks) {
             if (info.pos == pos)
-                return info.block.getStateFromMeta(info.meta)
+                return info.state
         }
         return Blocks.AIR.defaultState
     }

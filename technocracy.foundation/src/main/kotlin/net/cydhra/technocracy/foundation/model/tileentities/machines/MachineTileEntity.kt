@@ -162,7 +162,7 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
             gui.registerTab(MachineUpgradesTab(gui, upgradesComponent as MachineUpgradesTileEntityComponent, player))
         }
 
-        gui.registerTab(SideConfigTab(gui, this))
+        gui.registerTab(SideConfigTab(gui, this, gui.tabs[0]))
     }
 
     open fun initGui(gui: TCGui, player: EntityPlayer?) {

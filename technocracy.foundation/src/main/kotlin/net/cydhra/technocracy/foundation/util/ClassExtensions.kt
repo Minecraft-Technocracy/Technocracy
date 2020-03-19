@@ -13,10 +13,10 @@ fun Framebuffer?.validate(width: Int = Minecraft.getMinecraft().displayWidth, he
     return this
 }
 
-fun Framebuffer?.validateAndClear(width: Int = Minecraft.getMinecraft().displayWidth, height: Int = Minecraft.getMinecraft().displayHeight, depth: Boolean = true): Framebuffer {
+fun Framebuffer?.validateAndClear(width: Int = Minecraft.getMinecraft().displayWidth, height: Int = Minecraft.getMinecraft().displayHeight, depth: Boolean = true, viewport: Boolean = true): Framebuffer {
     return validate(width, height, depth).apply {
         framebufferClear()
-        bindFramebuffer(true)
+        bindFramebuffer(viewport)
     }
 }
 

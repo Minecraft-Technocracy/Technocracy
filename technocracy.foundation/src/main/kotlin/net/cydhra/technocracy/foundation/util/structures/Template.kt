@@ -197,8 +197,8 @@ class Template() : INBTSerializable<NBTTagCompound> {
                     list.add(pos.add(block.pos.rotate(rot)))
                 }
                 for (mods in modules) {
-                    for(block in mods.value)
-                    list.add(pos.add(block.rotate(rot)))
+                    for (block in mods.value)
+                        list.add(pos.add(block.rotate(rot)))
                 }
                 return rot to list
             }
@@ -263,4 +263,6 @@ class Template() : INBTSerializable<NBTTagCompound> {
     }
 }
 
-data class BlockInfo(val pos: BlockPos, val block: Block, val meta: Int, val nbt: NBTTagCompound?)
+data class BlockInfo(val pos: BlockPos, val block: Block, val meta: Int, val nbt: NBTTagCompound?, var state: IBlockState = block.getStateFromMeta(meta)) {
+    constructor(pos: BlockPos, state: IBlockState) : this(pos, state.block, state.block.getMetaFromState(state), null, state)
+}
