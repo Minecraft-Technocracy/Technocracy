@@ -11,8 +11,6 @@ import net.minecraftforge.event.world.ChunkDataEvent
 import net.minecraftforge.event.world.ChunkEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import org.lwjgl.opengl.GL11
-import org.lwjgl.util.glu.Disk
-import org.lwjgl.util.glu.Sphere
 
 /**
  * Global facade to the conduit network. All components that interact with the conduit network shall talk to this
@@ -218,7 +216,7 @@ object ConduitNetwork {
      * Tick the conduit network. This will perform routing algorithms and actually transfer contents
      */
     fun tick(world: WorldServer) {
-        synchronized(dimensions) {
+        synchronized(this.dimensions) {
             this.dimensions.values.forEach {
                 it.tick(world)
             }
@@ -321,8 +319,8 @@ object ConduitNetwork {
 
         GL11.glDepthMask(false)
 
-        GL11.glColor4d(1.0, 1.0, 1.0, 1.0)
-        GL11.glLineWidth(1f)
+        GL11.glColor4d(0.0, 0.0, 1.0, 1.0)
+        GL11.glLineWidth(2f)
 
         try {
             dimensions[0]!!.debug_getChunks().forEach { nChunk ->
@@ -330,36 +328,8 @@ object ConduitNetwork {
                     GL11.glPushMatrix()
                     GL11.glTranslated(pos.x.toDouble() + 0.5, pos.y.toDouble() + 0.5, pos.z.toDouble() + 0.5)
 
-                    set.forEach { (type, face) ->
-                        when (type) {
-                            PipeType.ENERGY -> GL11.glColor3d(1.0, 0.0, 0.0)
-                            PipeType.ITEM -> GL11.glColor3d(0.0, 1.0, 0.0)
-                            PipeType.FLUID -> GL11.glColor3d(0.0, 0.0, 1.0)
-                        }
-
-                        GL11.glPushMatrix()
-                        when (face) {
-                            EnumFacing.DOWN -> GL11.glRotated(90.0, -1.0, 0.0, 0.0)
-                            EnumFacing.UP -> GL11.glRotated(90.0, 1.0, 0.0, 0.0)
-                            EnumFacing.NORTH -> GL11.glRotated(0.0, 0.0, 1.0, 0.0)
-                            EnumFacing.SOUTH -> GL11.glRotated(180.0, 0.0, -1.0, 0.0)
-                            EnumFacing.WEST -> GL11.glRotated(90.0, 0.0, 1.0, 0.0)
-                            EnumFacing.EAST -> GL11.glRotated(90.0, 0.0, -1.0, 0.0)
-                        }
-                        Disk().draw(0.2f, 0.3f, 16, 4)
-                        GL11.glPopMatrix()
-                    }
-
-
                     set.forEach { transitEdge ->
-
-                        when (transitEdge.type) {
-                            PipeType.ENERGY -> GL11.glColor3d(1.0, .6, .6)
-                            PipeType.ITEM -> GL11.glColor3d(.6, 1.0, .6)
-                            PipeType.FLUID -> GL11.glColor3d(.6, .6, 1.0)
-                        }
-
-                        transitEdge.paths.forEach { (id, cost) ->
+                        transitEdge.paths.forEach { (id, _) ->
                             val (otherPos, otherEdge) = nChunk.getTransitEdge(id)!!
 
                             GL11.glBegin(GL11.GL_LINES)
@@ -381,37 +351,8 @@ object ConduitNetwork {
                     GL11.glPushMatrix()
                     GL11.glTranslated(pos.x.toDouble() + 0.5, pos.y.toDouble() + 0.5, pos.z.toDouble() + 0.5)
 
-
-                    set.forEach { (type, face) ->
-                        when (type) {
-                            PipeType.ENERGY -> GL11.glColor3d(1.0, 0.0, 0.0)
-                            PipeType.ITEM -> GL11.glColor3d(0.0, 1.0, 0.0)
-                            PipeType.FLUID -> GL11.glColor3d(0.0, 0.0, 1.0)
-                        }
-
-                        GL11.glPushMatrix()
-                        when (face) {
-                            EnumFacing.DOWN -> GL11.glRotated(90.0, -1.0, 0.0, 0.0)
-                            EnumFacing.UP -> GL11.glRotated(90.0, 1.0, 0.0, 0.0)
-                            EnumFacing.NORTH -> GL11.glRotated(0.0, 0.0, 1.0, 0.0)
-                            EnumFacing.SOUTH -> GL11.glRotated(180.0, 0.0, -1.0, 0.0)
-                            EnumFacing.WEST -> GL11.glRotated(90.0, 0.0, 1.0, 0.0)
-                            EnumFacing.EAST -> GL11.glRotated(90.0, 0.0, -1.0, 0.0)
-                        }
-                        Disk().draw(0.2f, 0.3f, 16, 4)
-                        GL11.glPopMatrix()
-                    }
-
-
                     set.forEach { transitEdge ->
-
-                        when (transitEdge.type) {
-                            PipeType.ENERGY -> GL11.glColor3d(1.0, .6, .6)
-                            PipeType.ITEM -> GL11.glColor3d(.6, 1.0, .6)
-                            PipeType.FLUID -> GL11.glColor3d(.6, .6, 1.0)
-                        }
-
-                        transitEdge.paths.forEach { (id, cost) ->
+                        transitEdge.paths.forEach { (id, _) ->
                             val (otherPos, otherEdge) = nChunk.getTransitEdge(id)!!
 
                             GL11.glBegin(GL11.GL_LINES)
@@ -429,7 +370,7 @@ object ConduitNetwork {
                     GL11.glPopMatrix()
                 }
             }
-        } catch (e: ConcurrentModificationException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
 
