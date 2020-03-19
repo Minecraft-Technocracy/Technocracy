@@ -96,7 +96,7 @@ class TabPlanetaryRendering(gui: TCGui) : TCTab("", gui, -1) {
         val tessBuff = tess.buffer
 
         if (depthShader == null) {
-            basicCrtShader = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shader/default.vsh"), ResourceLocation("technocracy.astronautics", "shader/crt.fsh"))
+            basicCrtShader = BasicShaderProgram(ResourceLocation("technocracy.foundation", "shaders/default.vsh"), ResourceLocation("technocracy.astronautics", "shaders/crt.fsh"))
             basicCrtShader.start()
             //UConvergeX = basicCrtShader.getUniform("ConvergeX", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_3).uploadUniform(-1.0f, 0.0f, 0.5f)
             //UConvergeY = basicCrtShader.getUniform("ConvergeY", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_3).uploadUniform(0.0f, -1.0f, 0.5f)
@@ -111,7 +111,7 @@ class TabPlanetaryRendering(gui: TCGui) : TCTab("", gui, -1) {
             basicCrtShader.updateUniforms()
             basicCrtShader.stop()
 
-            depthShader = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shader/logdepth.vsh"), ResourceLocation("technocracy.astronautics", "shader/logdepth.fsh"))
+            depthShader = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shaders/logdepth.vsh"), ResourceLocation("technocracy.astronautics", "shaders/logdepth.fsh"))
             depthShader!!.start()
             Ufarplane = depthShader!!.getUniform("farplane", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1)
         }

@@ -265,12 +265,12 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
 
             if (gaus == null) {
 
-                kawase = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shader/default.vsh"), ResourceLocation("technocracy.astronautics", "shader/kawase.fsh"))
+                kawase = BasicShaderProgram(ResourceLocation("technocracy.foundation", "shaders/default.vsh"), ResourceLocation("technocracy.astronautics", "shaders/kawase.fsh"))
                 kawase.start()
                 u_xyPixelSize_zIteration = kawase.getUniform("u_xyPixelSize_zIteration", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_3)
                 kawase.stop()
 
-                blend = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shader/default.vsh"), ResourceLocation("technocracy.astronautics", "shader/blend.fsh"))
+                blend = BasicShaderProgram(ResourceLocation("technocracy.foundation", "shaders/default.vsh"), ResourceLocation("technocracy.astronautics", "shaders/blend.fsh"))
                 blend.start()
                 combines = blend.getUniform("combines", BasicShaderProgram.ShaderUniform.UniformType.INT_1)
                 gamma = blend.getUniform("gamma", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1)
@@ -278,7 +278,7 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
                 blend.getUniform("bloomBlur", BasicShaderProgram.ShaderUniform.UniformType.SAMPLER).uploadUniform(2)
                 blend.stop()
 
-                val gaus = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shader/default.vsh"), ResourceLocation("technocracy.astronautics", "shader/gaus.fsh"))
+                val gaus = BasicShaderProgram(ResourceLocation("technocracy.foundation", "shaders/default.vsh"), ResourceLocation("technocracy.astronautics", "shaders/gaus.fsh"))
                 gaus.start()
                 horizontal = gaus.getUniform("horizontal", BasicShaderProgram.ShaderUniform.UniformType.INT_1)
                 expandFaktor = gaus.getUniform("expandFaktor", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1).uploadUniform(1f)
