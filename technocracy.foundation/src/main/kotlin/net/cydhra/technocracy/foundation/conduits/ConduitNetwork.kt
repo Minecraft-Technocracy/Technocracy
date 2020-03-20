@@ -216,10 +216,8 @@ object ConduitNetwork {
      * Tick the conduit network. This will perform routing algorithms and actually transfer contents
      */
     fun tick(world: WorldServer) {
-        synchronized(this.dimensions) {
-            this.dimensions.values.forEach {
-                it.tick(world)
-            }
+        if (this.dimensions.containsKey(world.provider.dimension)) {
+            this.dimensions[world.provider.dimension]!!.tick(world)
         }
     }
 
@@ -252,9 +250,7 @@ object ConduitNetwork {
 
         val dimensionId = event.world.provider.dimension
 
-        val dimension = synchronized(this.dimensions) {
-            dimensions.getOrPut(dimensionId, { ConduitNetworkDimension(dimensionId) })
-        }
+        val dimension = dimensions.getOrPut(dimensionId, { ConduitNetworkDimension(dimensionId) })
         dimension.loadChunkData(event)
     }
 
@@ -282,9 +278,7 @@ object ConduitNetwork {
         if (event.world.isRemote) return
 
         val dimensionId = event.world.provider.dimension
-        val dimension = synchronized(this.dimensions) {
-            dimensions.getOrPut(dimensionId, { ConduitNetworkDimension(dimensionId) })
-        }
+        val dimension = dimensions.getOrPut(dimensionId, { ConduitNetworkDimension(dimensionId) })
         dimension.loadChunk(event.chunk)
     }
 
