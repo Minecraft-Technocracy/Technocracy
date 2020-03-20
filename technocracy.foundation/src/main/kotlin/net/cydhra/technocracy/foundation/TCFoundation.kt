@@ -24,8 +24,13 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent
 import org.apache.logging.log4j.Logger
 
-@Mod(modid = TCFoundation.MODID, name = TCFoundation.NAME, version = TCFoundation.VERSION,
-        modLanguageAdapter = TCFoundation.LANGUAGE_ADAPTER, dependencies = TCFoundation.DEPENDENCIES)
+@Mod(
+        modid = TCFoundation.MODID,
+        name = TCFoundation.NAME,
+        version = TCFoundation.VERSION,
+        modLanguageAdapter = TCFoundation.LANGUAGE_ADAPTER,
+        dependencies = TCFoundation.DEPENDENCIES
+)
 object TCFoundation {
 
     init {
@@ -57,7 +62,8 @@ object TCFoundation {
      * All forge mod hard-dependencies that must be provided
      */
     internal const val DEPENDENCIES = "required-after:forgelin;" +
-            "required-after:zerocore"
+            "required-after:zerocore;" +
+            "before:mekanism;"
 
     /**
      * Mod logger
@@ -105,7 +111,7 @@ object TCFoundation {
     @EventHandler
     fun postInit(@Suppress("UNUSED_PARAMETER") event: FMLPostInitializationEvent) {
         proxy.postInit()
-        if(Loader.isModLoaded("theoneprobe"))
+        if (Loader.isModLoaded("theoneprobe"))
             TOPIntegration().init()
     }
 
