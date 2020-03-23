@@ -13,7 +13,7 @@ import net.minecraftforge.common.capabilities.Capability
  * capacity of 8000 and a receiving limit of 8000 FE. If a machine wants to change the defaults, it has to do so in
  * its constructor.
  */
-class EnergyStorageTileEntityComponent(val facing: MutableSet<EnumFacing>) : AbstractCapabilityTileEntityComponent() {
+class EnergyStorageTileEntityComponent(override val facing: MutableSet<EnumFacing>) : AbstractDirectionalCapabilityTileEntityComponent() {
 
     override val type: ComponentType = ComponentType.ENERGY
 
@@ -28,6 +28,16 @@ class EnergyStorageTileEntityComponent(val facing: MutableSet<EnumFacing>) : Abs
 
     init {
         energyStorage.componentParent = this
+    }
+
+    override fun getDirection(): Direction {
+        if (energyStorage.extractionLimit == 0 && energyStorage.receivingLimit == 0)
+            return Direction.NONE
+        if (energyStorage.extractionLimit != 0 && energyStorage.receivingLimit != 0)
+            return Direction.BOTH
+        if (energyStorage.extractionLimit != 0)
+            return Direction.OUTPUT
+        return Direction.INPUT
     }
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {

@@ -20,9 +20,9 @@ import net.minecraftforge.items.CapabilityItemHandler
 class InventoryTileEntityComponent(
         size: Int,
         provider: TEInventoryProvider,
-        val facing: MutableSet<EnumFacing>,
+        override val facing: MutableSet<EnumFacing>,
         val inventoryType: DynamicInventoryCapability.InventoryType = DynamicInventoryCapability.InventoryType.BOTH) :
-        AbstractCapabilityTileEntityComponent() {
+        AbstractDirectionalCapabilityTileEntityComponent() {
 
     /**
      * Secondary constructor that takes only one facing
@@ -46,6 +46,14 @@ class InventoryTileEntityComponent(
 
     init {
         inventory.componentParent = this
+    }
+
+    override fun getDirection(): Direction {
+        return when (inventoryType) {
+            DynamicInventoryCapability.InventoryType.INPUT -> Direction.INPUT
+            DynamicInventoryCapability.InventoryType.OUTPUT -> Direction.OUTPUT
+            else -> Direction.BOTH
+        }
     }
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {

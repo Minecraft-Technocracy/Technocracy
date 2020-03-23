@@ -11,8 +11,8 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler
 /**
  * A machine component that offers a fluid inventory for the machine. It also implements the fluid capability
  */
-class FluidTileEntityComponent(var fluid: DynamicFluidCapability, val facing: MutableSet<EnumFacing>) :
-        AbstractCapabilityTileEntityComponent() {
+class FluidTileEntityComponent(var fluid: DynamicFluidCapability, override val facing: MutableSet<EnumFacing>) :
+        AbstractDirectionalCapabilityTileEntityComponent() {
 
     constructor(fluid: DynamicFluidCapability, facing: EnumFacing) : this(fluid, mutableSetOf(facing))
 
@@ -21,6 +21,14 @@ class FluidTileEntityComponent(var fluid: DynamicFluidCapability, val facing: Mu
     }
 
     override val type: ComponentType = ComponentType.FLUID
+
+    override fun getDirection(): Direction {
+        return when (fluid.tanktype) {
+            DynamicFluidCapability.TankType.INPUT -> Direction.INPUT
+            DynamicFluidCapability.TankType.OUTPUT -> Direction.OUTPUT
+            else -> Direction.BOTH
+        }
+    }
 
     /**
      * @param size amount of fluid in millibucket
