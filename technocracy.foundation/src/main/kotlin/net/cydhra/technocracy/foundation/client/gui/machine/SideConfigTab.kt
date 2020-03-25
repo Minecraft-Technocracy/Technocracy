@@ -3,17 +3,22 @@ package net.cydhra.technocracy.foundation.client.gui.machine
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.TCIcon
 import net.cydhra.technocracy.foundation.client.gui.TCTab
+import net.cydhra.technocracy.foundation.client.gui.components.ITCComponent
+import net.cydhra.technocracy.foundation.client.gui.components.TCCapabilityComponent
+import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
 import net.cydhra.technocracy.foundation.client.gui.components.button.DefaultButton
 import net.cydhra.technocracy.foundation.client.gui.components.energymeter.EnergyMeter
 import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.CoolantMeter
 import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.FluidMeter
-import net.cydhra.technocracy.foundation.client.gui.components.heatmeter.HeatMeter
 import net.cydhra.technocracy.foundation.client.gui.components.label.DefaultLabel
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotPlayer
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.content.items.wrenchItem
+import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractCapabilityTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractDirectionalCapabilityTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
+import net.cydhra.technocracy.foundation.model.components.IComponent
 import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
 import net.cydhra.technocracy.foundation.util.opengl.BasicShaderProgram
 import net.cydhra.technocracy.foundation.util.opengl.OpenGLBoundingBox
@@ -38,6 +43,7 @@ import net.minecraft.util.EnumFacing
 import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.AxisAlignedBB
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.MathHelper
 import net.minecraft.util.math.RayTraceResult
 import net.minecraft.world.World
 import net.minecraftforge.client.ForgeHooksClient
@@ -46,7 +52,13 @@ import org.apache.commons.lang3.text.WordUtils
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
 import org.lwjgl.util.glu.Project
+import org.lwjgl.util.vector.Vector2f
+import org.lwjgl.util.vector.Vector3f
 import java.awt.Color
+import javax.vecmath.Vector2d
+import kotlin.math.cos
+import kotlin.math.min
+import kotlin.math.sin
 
 
 class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: TCTab) : TCTab("SideConfig", parent, icon = TCIcon(wrenchItem)) {
@@ -85,6 +97,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
 
     var yaw = -180f
     var pitch = 0f
+    var zoomLevel: Float = -3f
 
     var checkMouse = false
 
@@ -185,7 +198,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         val bufferBuilder = tess.buffer
 
 
-        GL11.glTranslated(0.0, 0.0, -3.0)
+        GL11.glTranslated(0.0, 0.0, zoomLevel.toDouble())
         GL11.glRotated((this.pitch).toDouble(), 1.0, 0.0, 0.0)
         GL11.glRotated((this.yaw).toDouble(), 0.0, 1.0, 0.0)
         GL11.glTranslated(-0.5, -0.5, -0.5)
@@ -229,14 +242,112 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
 
         if (lastSideHit != currentLockedSide) {
             val opposite = currentLockedSide.opposite
-            var bb = AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 1.0, 1.0)
+            var bb = AxisAlignedBB(-0.0, -0.0, -0.0, 1.0, 1.0, 1.0)
             bb = bb.contract(opposite.frontOffsetX.toDouble(), opposite.frontOffsetY.toDouble(), opposite.frontOffsetZ.toDouble())
             Minecraft.getMinecraft().textureManager.bindTexture(ResourceLocation("technocracy.foundation", "textures/gui/sideconfig/selection.png"))
-            GlStateManager.color(0f, 0.2f, 0.4f)
+            GlStateManager.color(0f, 0.6f, 0.8f)
             OpenGLBoundingBox.drawTexturedBoundingBox(bb)
         }
+
         GlStateManager.enableDepth()
 
+        val rotations = Vector3f(0f, 0f, 0f)
+        val colorMap = mutableMapOf<AbstractCapabilityTileEntityComponent, Int>()
+
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE)
+        for (f in EnumFacing.values()) {
+            rotations.y = 0f
+            rotations.z = 0f
+
+            var face = f
+            val opposite = face.opposite
+            val bb = AxisAlignedBB(-0.0, -0.0, -0.0, 1.0, 1.0, 1.0).contract(opposite.frontOffsetX.toDouble(), opposite.frontOffsetY.toDouble(), opposite.frontOffsetZ.toDouble()).offset(opposite.frontOffsetX.toDouble() * -0.01, opposite.frontOffsetY.toDouble() * -0.01, opposite.frontOffsetZ.toDouble() * -0.01)
+
+            if (face.axis.isHorizontal)
+                face = face.rotateY().rotateY()
+
+            val visited = mutableSetOf<AbstractCapabilityTileEntityComponent>()
+            val totalRotsOnSide = Vector2f(0f, 0f)
+            //calculate max elements on side
+            for (it in mainTab.components) {
+                if (it is TCCapabilityComponent<*>) {
+                    if (it.component is AbstractDirectionalCapabilityTileEntityComponent) {
+                        if (visited.add(it.component) && it.component.facing.contains(face)) {
+                            if (it.component.getDirection() == AbstractDirectionalCapabilityTileEntityComponent.Direction.OUTPUT) {
+                                totalRotsOnSide.y++
+                            } else {
+                                totalRotsOnSide.x++
+                            }
+                        }
+                    }
+                } else if (it !is TCSlotPlayer) {
+                    when (it) {
+                        is CoolantMeter -> {
+                            if (visited.add(it.coolantIn) && it.coolantIn.facing.contains(face)) {
+                                if (it.coolantIn.getDirection() == AbstractDirectionalCapabilityTileEntityComponent.Direction.OUTPUT) {
+                                    totalRotsOnSide.y++
+                                } else {
+                                    totalRotsOnSide.x++
+                                }
+                            }
+                            if (visited.add(it.coolantOut) && it.coolantOut.facing.contains(face)) {
+                                if (it.coolantOut.getDirection() == AbstractDirectionalCapabilityTileEntityComponent.Direction.OUTPUT) {
+                                    totalRotsOnSide.y++
+                                } else {
+                                    totalRotsOnSide.x++
+                                }
+                            }
+                        }
+
+                        is TCSlotIO -> {
+                            val handler = it.itemHandler
+                            if (handler is DynamicInventoryCapability) {
+                                val comp = handler.componentParent
+                                if (comp is InventoryTileEntityComponent) {
+                                    if (visited.add(comp) && comp.facing.contains(face)) {
+                                        if (comp.getDirection() == AbstractDirectionalCapabilityTileEntityComponent.Direction.OUTPUT) {
+                                            totalRotsOnSide.y++
+                                        } else {
+                                            totalRotsOnSide.x++
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            visited.clear()
+
+            for (it in mainTab.components) {
+                if (it is TCCapabilityComponent<*>) {
+                    if (it.component is AbstractDirectionalCapabilityTileEntityComponent) {
+                        if (visited.add(it.component))
+                            renderBlockOverlay(face, it.component, colorMap, bb, rotations, totalRotsOnSide)
+                    }
+                } else if (it !is TCSlotPlayer) {
+                    when (it) {
+                        is CoolantMeter -> {
+                            if (visited.add(it.coolantIn))
+                                renderBlockOverlay(face, it.coolantIn, colorMap, bb, rotations, totalRotsOnSide)
+                            if (visited.add(it.coolantOut))
+                                renderBlockOverlay(face, it.coolantOut, colorMap, bb, rotations, totalRotsOnSide)
+                        }
+
+                        is TCSlotIO -> {
+                            val handler = it.itemHandler
+                            if (handler is DynamicInventoryCapability) {
+                                val comp = handler.componentParent
+                                if (comp is InventoryTileEntityComponent && visited.add(comp)) {
+                                    renderBlockOverlay(face, comp, colorMap, bb, rotations, totalRotsOnSide)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         if (!hideNeighbors) {
             Minecraft.getMinecraft().textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE)
@@ -249,13 +360,14 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE)
             shader.start()
 
+            GlStateManager.pushMatrix()
             GlStateManager.disableAlpha()
             ForgeHooksClient.setRenderLayer(BlockRenderLayer.SOLID)
             renderBlocks(BlockRenderLayer.SOLID, pos, tess, tcw)
 
-            ForgeHooksClient.setRenderPass(1)
-            renderTileEntitys(pos, machine.world)
-            Minecraft.getMinecraft().textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE)
+            //ForgeHooksClient.setRenderPass(0)
+            //renderTileEntitys(pos, machine.world)
+            //Minecraft.getMinecraft().textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE)
 
             //GlStateManager.alphaFunc(516, 0.5f)
             //GlStateManager.enableAlpha()
@@ -265,6 +377,23 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
             ForgeHooksClient.setRenderLayer(BlockRenderLayer.CUTOUT)
             renderBlocks(BlockRenderLayer.CUTOUT, pos, tess, tcw)
 
+
+
+            GlStateManager.matrixMode(5888)
+            GlStateManager.popMatrix()
+            GlStateManager.pushMatrix()
+            RenderHelper.enableStandardItemLighting()
+            ForgeHooksClient.setRenderPass(0)
+            GlStateManager.depthMask(false)
+            renderTileEntitys(pos, machine.world)
+            GlStateManager.depthMask(true)
+            ForgeHooksClient.setRenderPass(0)
+            RenderHelper.disableStandardItemLighting()
+            Minecraft.getMinecraft().textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE)
+            GlStateManager.matrixMode(5888)
+            GlStateManager.popMatrix()
+
+            GlStateManager.depthMask(false)
             GlStateManager.enableBlend()
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE)
             //GlStateManager.alphaFunc(516, 0.1f)
@@ -273,10 +402,18 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
             ForgeHooksClient.setRenderLayer(BlockRenderLayer.TRANSLUCENT)
             renderBlocks(BlockRenderLayer.TRANSLUCENT, pos, tess, tcw)
 
-            ForgeHooksClient.setRenderPass(0)
+            RenderHelper.enableStandardItemLighting()
+            ForgeHooksClient.setRenderPass(1)
             renderTileEntitys(pos, machine.world)
-
+            GlStateManager.depthMask(true)
+            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
             ForgeHooksClient.setRenderPass(-1)
+            RenderHelper.disableStandardItemLighting()
+
+            //ForgeHooksClient.setRenderPass(1)
+            //renderTileEntitys(pos, machine.world)
+
+            //ForgeHooksClient.setRenderPass(-1)
 
             shader.stop()
 
@@ -317,60 +454,48 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         Minecraft.getMinecraft().fontRenderer.drawString(mainTab.name, 8f + x, 8f + y, 4210752, false)
 
         GlStateManager.enableDepth()
+        GlStateManager.enableBlend()
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE)
 
-        mainTab.components.forEach {
+        var face = lastSideHit ?: currentLockedSide
+        if (face.axis.isHorizontal)
+            face = face.rotateY().rotateY()
+
+        loop@ for (it in mainTab.components) {
             if (it !is TCSlotPlayer) {
+                if (it is CoolantMeter) {
+                    it.drawBackground(x, y)
 
-                var face = lastSideHit ?: currentLockedSide
-                if (face.axis.isHorizontal)
-                    face = face.rotateY().rotateY()
+                    val pX = x + it.posX
+                    val pY = y + it.posY
 
-                var dontRender = false
+                    renderSelectionOutline(pX, pY, face, it.meterIn, it.coolantIn, colorMap, rotations)
+                    renderSelectionOutline(pX, pY, face, it.meterOut, it.coolantOut, colorMap, rotations)
 
-                when (it) {
-                    is EnergyMeter -> {
-                        if (it.component.facing.contains(face)) {
-                            Gui.drawRect(x + it.posX - 1, y + it.posY - 1, x + it.posX + it.width + 1, y + it.posY + it.height + 1, Color(255, 0, 0).rgb)
-                        }
+                    it.draw(x, y, mouseX, mouseY, -1f)
+                    continue@loop
+                } else if (it is TCCapabilityComponent<*>) {
+                    if (it.component is AbstractDirectionalCapabilityTileEntityComponent) {
+                        @Suppress("UNCHECKED_CAST")
+                        renderSelectionOutline(x, y, face, it, it.component, colorMap, rotations)
                     }
-                    is CoolantMeter -> {
-                        dontRender = true
-
-                        it.drawBackground(x, y)
-
-                        if (it.coolantIn.facing.contains(face)) {
-                            val pX = x + it.posX + it.meterIn.posX
-                            val pY = y + it.posY + it.meterIn.posY
-                            Gui.drawRect(pX - 1, pY - 1, pX + it.meterIn.width + 1, pY + it.meterIn.height + 1, Color(255, 0, 0).rgb)
-                        }
-                        if (it.coolantOut.facing.contains(face)) {
-                            Gui.drawRect(x + it.posX + it.meterOut.posX - 1, y + it.posY + it.meterOut.posY - 1, x + it.posX + it.meterOut.width + it.meterOut.posX + 1, y + it.posY + it.meterOut.height + it.meterOut.posY + 1, Color(255, 0, 0).rgb)
-                        }
-
-                        it.draw(x, y, mouseX, mouseY, -1f)
-                    }
-                    is FluidMeter -> {
-                        if (it.component.facing.contains(face)) {
-                            Gui.drawRect(x + it.posX - 1, y + it.posY - 1, x + it.posX + it.width + 1, y + it.posY + it.height + 1, Color(255, 0, 0).rgb)
-                        }
-                    }
-                    is TCSlotIO -> {
-                        val handler = it.itemHandler
-                        if (handler is DynamicInventoryCapability) {
-                            val comp = handler.componentParent
-                            if (comp is InventoryTileEntityComponent) {
-                                if (comp.facing.contains(face)) {
-                                    Gui.drawRect(x + it.xPos - 2, y + it.yPos - 2, x + it.xPos + it.width, y + it.yPos + it.height, Color(255, 0, 0).rgb)
+                } else {
+                    when (it) {
+                        is TCSlotIO -> {
+                            val handler = it.itemHandler
+                            if (handler is DynamicInventoryCapability) {
+                                val comp = handler.componentParent
+                                if (comp is InventoryTileEntityComponent) {
+                                    renderSelectionOutline(x - 1, y - 1, face, it, comp, colorMap, rotations)
                                 }
                             }
                         }
                     }
                 }
-
-                if (!dontRender)
-                    it.draw(x, y, mouseX, mouseY, partialTicks)
+                it.draw(x, y, mouseX, mouseY, partialTicks)
             }
         }
+
         mc.renderItem.zLevel = 100.0f
         mainTab.components.forEach {
             if (it is TCSlotIO) {
@@ -380,6 +505,74 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
             }
         }
         mc.renderItem.zLevel = 0.0f
+    }
+
+    fun renderSelectionOutline(x: Int, y: Int, facing: EnumFacing, renderComponent: ITCComponent, component: AbstractDirectionalCapabilityTileEntityComponent, colorMap: MutableMap<AbstractCapabilityTileEntityComponent, Int>, rotation: Vector3f) {
+        val color = colorMap.getOrPut(component) {
+            val color = Color.getHSBColor(rotation.x / 360f, 1f, 1f).rgb
+            rotation.x += 36
+            color
+        }
+
+        GlStateManager.enableBlend()
+        if (component.facing.contains(facing)) {
+            Gui.drawRect(x + renderComponent.posX - 1, y + renderComponent.posY - 1, x + renderComponent.posX + renderComponent.width + 1, y + renderComponent.posY + renderComponent.height + 1, color)
+        } else {
+
+            val r = (color shr 16 and 255).toFloat() / 255.0f
+            val g = (color shr 8 and 255).toFloat() / 255.0f
+            val b = (color and 255).toFloat() / 255.0f
+
+            Gui.drawRect(x + renderComponent.posX - 1, y + renderComponent.posY - 1, x + renderComponent.posX + renderComponent.width + 1, y + renderComponent.posY + renderComponent.height + 1, MathHelper.rgb(r, g, b) or (80 shl 24))
+        }
+    }
+
+    fun renderBlockOverlay(facing: EnumFacing, component: AbstractDirectionalCapabilityTileEntityComponent, colorMap: MutableMap<AbstractCapabilityTileEntityComponent, Int>, bb: AxisAlignedBB, rotation: Vector3f, totalRotsOnSide: Vector2f): Vector3f {
+        val color = colorMap.getOrPut(component) {
+            val color = Color.getHSBColor(rotation.x / 360f, 1f, 1f).rgb
+            rotation.x += 36
+            color
+        }
+
+
+        if (component.facing.contains(facing)) {
+            var amount = 4
+
+            val image: String
+
+            var rot = if (component.getDirection() == AbstractDirectionalCapabilityTileEntityComponent.Direction.OUTPUT) {
+                image = "out"
+
+                if (totalRotsOnSide.y == 2f) {
+                    amount = 2
+                } else if (totalRotsOnSide.y >= 3f) {
+                    amount = 1
+                }
+
+                rotation.z++
+            } else {
+                image = "in"
+
+                if (totalRotsOnSide.x == 2f) {
+                    amount = 2
+                } else if (totalRotsOnSide.x >= 3f) {
+                    amount = 1
+                }
+
+                rotation.y++
+            }
+
+            for (i in 0 until amount) {
+                Minecraft.getMinecraft().textureManager.bindTexture(ResourceLocation("technocracy.foundation", "textures/gui/sideconfig/${image}_${(rot % 4).toInt()}.png"))
+                OpenGLBoundingBox.drawTexturedBoundingBox(bb, color = color)
+                if (amount == 2) {
+                    rot += 2
+                } else {
+                    rot++
+                }
+            }
+        }
+        return rotation
     }
 
     fun renderTileEntitys(pos: BlockPos, tcw: World) {
@@ -401,12 +594,24 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
                             offZ = -1
                         }
                     }
-                    TileEntityRendererDispatcher.instance.render(tile, face.frontOffsetX * 1.0 + offX, face.frontOffsetY * 1.0, face.frontOffsetZ * 1.0 + offZ, mc.renderPartialTicks)
+                    GlStateManager.pushMatrix()
+                    GlStateManager.translate((face.frontOffsetX + offX).toDouble(), face.frontOffsetY.toDouble(), (face.frontOffsetZ + offZ).toDouble())
+                    TileEntityRendererDispatcher.instance.render(tile, 0.0, 0.0, 0.0, mc.renderPartialTicks)
+                    GlStateManager.popMatrix()
                 }
             }
         }
     }
 
+    override fun handleMouseInput() {
+        val i = Mouse.getEventDWheel()
+        if (i > 0)
+            zoomLevel += 0.3f
+        else if (i < 0)
+            zoomLevel -= 0.3f
+
+        zoomLevel = min(-0.3f, zoomLevel)
+    }
 
     fun renderBlocks(layer: BlockRenderLayer, pos: BlockPos, tess: Tessellator, tcw: World) {
         val mc = Minecraft.getMinecraft()

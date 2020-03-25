@@ -16,6 +16,17 @@ import net.minecraftforge.items.SlotItemHandler
 class TCSlotIO(itemHandler: IItemHandler, override val index: Int, xPosition: Int, yPosition: Int, val gui: TCGui) :
         SlotItemHandler(itemHandler, index, xPosition, yPosition), ITCSlot {
 
+    override var posX: Int
+        get() = super.xPos
+        set(value) {
+            super.xPos = value
+        }
+    override var posY: Int
+        get() = super.yPos
+        set(value) {
+            super.yPos = value
+        }
+
     override var width = 18
     override var height = 18
 

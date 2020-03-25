@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.client.gui.components.fluidmeter
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
+import net.cydhra.technocracy.foundation.client.gui.components.TCCapabilityComponent
 import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
 import net.minecraft.util.ResourceLocation
@@ -8,7 +9,7 @@ import net.minecraft.util.math.MathHelper
 import net.minecraft.util.text.TextFormatting
 import kotlin.math.roundToInt
 
-abstract class FluidMeter(val posX: Int, val posY: Int, val component: FluidTileEntityComponent) : TCComponent() {
+abstract class FluidMeter(override var posX: Int, override var posY: Int, component: FluidTileEntityComponent) : TCCapabilityComponent<FluidTileEntityComponent>(component) {
 
     /**
      * fluid level from 0.0 to 1.0

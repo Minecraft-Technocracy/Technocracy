@@ -17,6 +17,17 @@ open class TCSlotPlayer(inventoryIn: IInventory, override val index: Int, xPosit
         Slot(inventoryIn, index,
                 xPosition, yPosition), ITCSlot {
 
+    override var posX: Int
+        get() = super.xPos
+        set(value) {
+            super.xPos = value
+        }
+    override var posY: Int
+        get() = super.yPos
+        set(value) {
+            super.yPos = value
+        }
+
     override var width = 18
     override var height = 18
 

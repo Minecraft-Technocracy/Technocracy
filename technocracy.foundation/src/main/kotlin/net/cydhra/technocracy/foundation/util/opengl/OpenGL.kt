@@ -17,6 +17,7 @@ import org.lwjgl.util.vector.Matrix4f
 import org.lwjgl.util.vector.Vector4f
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
+import javax.vecmath.Vector2d
 
 object OpenGLFluidRenderer {
 
@@ -189,14 +190,22 @@ object OpenGLBoundingBox {
     /**
      * Draws a textured axis aligned bounding box using the minecraft tesselator
      */
-    fun drawTexturedBoundingBox(boundingBox: AxisAlignedBB) {
+    fun drawTexturedBoundingBox(boundingBox: AxisAlignedBB, minUV: Vector2d = Vector2d(0.0, 0.0), maxUV: Vector2d = Vector2d(1.0, 1.0), color: Int = -1) {
         val tessellator = Tessellator.getInstance()
         val buffer = tessellator.buffer
 
-        val minU = 0.0
-        val maxU = 1.0
-        val minV = 0.0
-        val maxV = 1.0
+        val minU = minUV.x
+        val maxU = maxUV.x
+        val minV = minUV.y
+        val maxV = maxUV.y
+
+        if(color != -1) {
+            val f3 = (color shr 24 and 255).toFloat() / 255.0f
+            val f = (color shr 16 and 255).toFloat() / 255.0f
+            val f1 = (color shr 8 and 255).toFloat() / 255.0f
+            val f2 = (color and 255).toFloat() / 255.0f
+            GlStateManager.color(f, f1, f2, f3)
+        }
 
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX)
         //Front Quad (NORTH)
