@@ -358,6 +358,7 @@ open class CommonProxy {
         PacketHandler.registerPacket(ClientRequestSyncPacket::class.java, ClientRequestSyncPacket::class.java, Side.SERVER)
         PacketHandler.registerPacket(ComponentClickPacket::class.java, ComponentClickPacket::class.java, Side.SERVER)
         PacketHandler.registerPacket(ClientSwitchTabPacket::class.java, ClientSwitchTabPacket::class.java, Side.SERVER)
+        PacketHandler.registerPacket(ClientChangeSideConfigPacket::class.java, ClientChangeSideConfigPacket::class.java, Side.SERVER)
     }
 
     open fun init() {
@@ -388,7 +389,7 @@ open class CommonProxy {
      * @param parameters ASM parameter list
      */
     open fun loadAnimationStateMachine(location: ResourceLocation,
-            parameters: ImmutableMap<String, ITimeValue>): IAnimationStateMachine? {
+                                       parameters: ImmutableMap<String, ITimeValue>): IAnimationStateMachine? {
         return null
     }
 }

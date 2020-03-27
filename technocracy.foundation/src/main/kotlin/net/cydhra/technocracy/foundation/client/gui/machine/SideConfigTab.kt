@@ -5,7 +5,6 @@ import net.cydhra.technocracy.foundation.client.gui.TCIcon
 import net.cydhra.technocracy.foundation.client.gui.TCTab
 import net.cydhra.technocracy.foundation.client.gui.components.ITCComponent
 import net.cydhra.technocracy.foundation.client.gui.components.TCCapabilityComponent
-import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
 import net.cydhra.technocracy.foundation.client.gui.components.button.DefaultButton
 import net.cydhra.technocracy.foundation.client.gui.components.energymeter.EnergyMeter
 import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.CoolantMeter
@@ -20,6 +19,9 @@ import net.cydhra.technocracy.foundation.content.tileentities.components.Abstrac
 import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
 import net.cydhra.technocracy.foundation.model.components.IComponent
 import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
+import net.cydhra.technocracy.foundation.network.PacketHandler
+import net.cydhra.technocracy.foundation.network.componentsync.ClientChangeSideConfigPacket
+import net.cydhra.technocracy.foundation.network.componentsync.ClientRequestSyncPacket
 import net.cydhra.technocracy.foundation.util.opengl.BasicShaderProgram
 import net.cydhra.technocracy.foundation.util.opengl.OpenGLBoundingBox
 import net.cydhra.technocracy.foundation.util.opengl.ScreenspaceUtil
@@ -55,10 +57,7 @@ import org.lwjgl.util.glu.Project
 import org.lwjgl.util.vector.Vector2f
 import org.lwjgl.util.vector.Vector3f
 import java.awt.Color
-import javax.vecmath.Vector2d
-import kotlin.math.cos
 import kotlin.math.min
-import kotlin.math.sin
 
 
 class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: TCTab) : TCTab("SideConfig", parent, icon = TCIcon(wrenchItem)) {
@@ -97,7 +96,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
 
     var yaw = -180f
     var pitch = 0f
-    var zoomLevel: Float = -3f
+    var zoomLevel: Float = -2f
 
     var checkMouse = false
 
@@ -108,27 +107,46 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
             mainTab.components.forEach {
                 if (it !is TCSlotPlayer) {
                     var face = lastSideHit ?: currentLockedSide
-                    if (face.axis.isHorizontal)
-                        face = face.rotateY().rotateY()
+                    //if (face.axis.isHorizontal)
+                        //face = face.rotateY().rotateY()
+
+                    var added = false
+                    var changedComponent: IComponent? = null
 
                     when (it) {
                         is EnergyMeter -> {
                             if (it.isMouseOnComponent(mouseX - x, mouseY - y)) {
-                                if (!it.component.facing.remove(face)) it.component.facing.add(face)
+                                changedComponent = it.component
+                                if (!it.component.facing.remove(face)) {
+                                    it.component.facing.add(face)
+                                    added = true
+                                }
                             }
                         }
                         is CoolantMeter -> {
 
                             if (it.meterIn.isMouseOnComponent(mouseX - x - it.posX, mouseY - y - it.posY)) {
-                                if (!it.coolantIn.facing.remove(face)) it.coolantIn.facing.add(face)
+                                changedComponent = it.component
+                                if (!it.coolantIn.facing.remove(face)) {
+                                    it.coolantIn.facing.add(face)
+                                    added = true
+                                }
                             }
                             if (it.meterOut.isMouseOnComponent(mouseX - x - it.posX, mouseY - y - it.posY)) {
-                                if (!it.coolantOut.facing.remove(face)) it.coolantOut.facing.add(face)
+                                changedComponent = it.component
+                                if (!it.coolantOut.facing.remove(face)) {
+                                    it.coolantOut.facing.add(face)
+                                    added = true
+                                }
                             }
                         }
                         is FluidMeter -> {
                             if (it.isMouseOnComponent(mouseX - x, mouseY - y)) {
-                                if (!it.component.facing.remove(face)) it.component.facing.add(face)
+                                changedComponent = it.component
+                                if (!it.component.facing.remove(face)) {
+                                    it.component.facing.add(face)
+                                    added = true
+                                }
                             }
                         }
                         is TCSlotIO -> {
@@ -137,10 +155,21 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
                                 val comp = handler.componentParent
                                 if (comp is InventoryTileEntityComponent) {
                                     if (it.isMouseOnComponent(mouseX - x, mouseY - y)) {
-                                        if (!comp.facing.remove(face)) comp.facing.add(face)
+                                        changedComponent = comp
+                                        if (!comp.facing.remove(face)) {
+                                            comp.facing.add(face)
+                                            added = true
+                                        }
                                     }
                                 }
                             }
+                        }
+                    }
+
+                    if (changedComponent != null) {
+                        val search = machine.getComponents().find { it.second == changedComponent }
+                        if (search != null) {
+                            PacketHandler.sendToServer(ClientChangeSideConfigPacket(search.first, face, added))
                         }
                     }
                 }
@@ -148,9 +177,6 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         }
 
         super.mouseClicked(x, y, mouseX, mouseY, mouseButton)
-    }
-
-    override fun update() {
     }
 
     override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
@@ -263,40 +289,32 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
             val opposite = face.opposite
             val bb = AxisAlignedBB(-0.0, -0.0, -0.0, 1.0, 1.0, 1.0).contract(opposite.frontOffsetX.toDouble(), opposite.frontOffsetY.toDouble(), opposite.frontOffsetZ.toDouble()).offset(opposite.frontOffsetX.toDouble() * -0.01, opposite.frontOffsetY.toDouble() * -0.01, opposite.frontOffsetZ.toDouble() * -0.01)
 
-            if (face.axis.isHorizontal)
-                face = face.rotateY().rotateY()
 
             val visited = mutableSetOf<AbstractCapabilityTileEntityComponent>()
             val totalRotsOnSide = Vector2f(0f, 0f)
-            //calculate max elements on side
+
+            //increase rotation vector based on component type
+            val increaseRotation: (AbstractDirectionalCapabilityTileEntityComponent) -> Unit = { comp: AbstractDirectionalCapabilityTileEntityComponent ->
+                if (visited.add(comp) && comp.facing.contains(face)) {
+                    if (comp.getDirection() == AbstractDirectionalCapabilityTileEntityComponent.Direction.OUTPUT) {
+                        totalRotsOnSide.y++
+                    } else {
+                        totalRotsOnSide.x++
+                    }
+                }
+            }
+
+            //calculate max elements on side, used to color in the right amount of elements
             for (it in mainTab.components) {
                 if (it is TCCapabilityComponent<*>) {
                     if (it.component is AbstractDirectionalCapabilityTileEntityComponent) {
-                        if (visited.add(it.component) && it.component.facing.contains(face)) {
-                            if (it.component.getDirection() == AbstractDirectionalCapabilityTileEntityComponent.Direction.OUTPUT) {
-                                totalRotsOnSide.y++
-                            } else {
-                                totalRotsOnSide.x++
-                            }
-                        }
+                        increaseRotation(it.component)
                     }
                 } else if (it !is TCSlotPlayer) {
                     when (it) {
                         is CoolantMeter -> {
-                            if (visited.add(it.coolantIn) && it.coolantIn.facing.contains(face)) {
-                                if (it.coolantIn.getDirection() == AbstractDirectionalCapabilityTileEntityComponent.Direction.OUTPUT) {
-                                    totalRotsOnSide.y++
-                                } else {
-                                    totalRotsOnSide.x++
-                                }
-                            }
-                            if (visited.add(it.coolantOut) && it.coolantOut.facing.contains(face)) {
-                                if (it.coolantOut.getDirection() == AbstractDirectionalCapabilityTileEntityComponent.Direction.OUTPUT) {
-                                    totalRotsOnSide.y++
-                                } else {
-                                    totalRotsOnSide.x++
-                                }
-                            }
+                            increaseRotation(it.coolantIn)
+                            increaseRotation(it.coolantOut)
                         }
 
                         is TCSlotIO -> {
@@ -304,13 +322,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
                             if (handler is DynamicInventoryCapability) {
                                 val comp = handler.componentParent
                                 if (comp is InventoryTileEntityComponent) {
-                                    if (visited.add(comp) && comp.facing.contains(face)) {
-                                        if (comp.getDirection() == AbstractDirectionalCapabilityTileEntityComponent.Direction.OUTPUT) {
-                                            totalRotsOnSide.y++
-                                        } else {
-                                            totalRotsOnSide.x++
-                                        }
-                                    }
+                                    increaseRotation(comp)
                                 }
                             }
                         }
@@ -349,6 +361,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
             }
         }
 
+        //render the other blocks
         if (!hideNeighbors) {
             Minecraft.getMinecraft().textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE)
 
@@ -421,7 +434,6 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         }
 
 
-
         GlStateManager.color(1f, 1f, 1f, 1f)
 
         bufferBuilder.setTranslation(0.0, 0.0, 0.0)
@@ -446,6 +458,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         tess.draw()
         GlStateManager.translate(-offsetX.toDouble(), -offsetY.toDouble(), 0.0)
 
+        //render our components
         this.components.forEach {
             it.draw(x, y, mouseX, mouseY, partialTicks)
         }
@@ -458,9 +471,8 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE)
 
         var face = lastSideHit ?: currentLockedSide
-        if (face.axis.isHorizontal)
-            face = face.rotateY().rotateY()
 
+        //draw selection boxes and the components of the maintab
         loop@ for (it in mainTab.components) {
             if (it !is TCSlotPlayer) {
                 if (it is CoolantMeter) {
@@ -496,6 +508,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
             }
         }
 
+        //render the items in the slots
         mc.renderItem.zLevel = 100.0f
         mainTab.components.forEach {
             if (it is TCSlotIO) {
@@ -510,11 +523,10 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
     fun renderSelectionOutline(x: Int, y: Int, facing: EnumFacing, renderComponent: ITCComponent, component: AbstractDirectionalCapabilityTileEntityComponent, colorMap: MutableMap<AbstractCapabilityTileEntityComponent, Int>, rotation: Vector3f) {
         val color = colorMap.getOrPut(component) {
             val color = Color.getHSBColor(rotation.x / 360f, 1f, 1f).rgb
-            rotation.x += 36
+            rotation.x += 30
             color
         }
 
-        GlStateManager.enableBlend()
         if (component.facing.contains(facing)) {
             Gui.drawRect(x + renderComponent.posX - 1, y + renderComponent.posY - 1, x + renderComponent.posX + renderComponent.width + 1, y + renderComponent.posY + renderComponent.height + 1, color)
         } else {
@@ -530,7 +542,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
     fun renderBlockOverlay(facing: EnumFacing, component: AbstractDirectionalCapabilityTileEntityComponent, colorMap: MutableMap<AbstractCapabilityTileEntityComponent, Int>, bb: AxisAlignedBB, rotation: Vector3f, totalRotsOnSide: Vector2f): Vector3f {
         val color = colorMap.getOrPut(component) {
             val color = Color.getHSBColor(rotation.x / 360f, 1f, 1f).rgb
-            rotation.x += 36
+            rotation.x += 30
             color
         }
 
@@ -577,6 +589,8 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
 
     fun renderTileEntitys(pos: BlockPos, tcw: World) {
         val mc = Minecraft.getMinecraft()
+
+        //todo fix mekanism pipes beeing rendered at the wrong positions
 
         for (face in EnumFacing.values()) {
             val offset = pos.offset(face)

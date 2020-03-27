@@ -49,7 +49,9 @@ class MachineConnectorBakedModel(val baseBakedModel: IBakedModel, val connector:
         }.map { it.second as InventoryTileEntityComponent }.forEach {
             for ((i, quad) in inventory.getQuads(state, side, rand).withIndex()) {
                 //6 faces per cube
-                val facing = EnumFacing.values()[i / 6]
+                var facing = EnumFacing.values()[i / 6]
+                if(facing.axis == EnumFacing.Axis.Z)
+                    facing = facing.opposite
                 //TODO custom colored inventorys?
                 //render connector on the side it should be
                 if (facing == it.facing)
@@ -62,7 +64,9 @@ class MachineConnectorBakedModel(val baseBakedModel: IBakedModel, val connector:
         }.map { it.second as EnergyStorageTileEntityComponent }.forEach {
             for ((i, quad) in energy.getQuads(state, side, rand).withIndex()) {
                 //6 faces per cube
-                val facing = EnumFacing.values()[i / 6]
+                var facing = EnumFacing.values()[i / 6]
+                if(facing.axis == EnumFacing.Axis.Z)
+                    facing = facing.opposite
                 //render connector on the side it should be
                 if (it.facing.contains(facing))
                     quads.add(quad)
