@@ -26,7 +26,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent
 import net.minecraftforge.fml.relauncher.Side
 
 
-class WrenchItem : BaseItem("Wrench"), IWrench, IItemScrollEvent {
+class WrenchItem : BaseItem("wrench"), IWrench, IItemScrollEvent {
 
     init {
         for (type in PipeType.values()) {

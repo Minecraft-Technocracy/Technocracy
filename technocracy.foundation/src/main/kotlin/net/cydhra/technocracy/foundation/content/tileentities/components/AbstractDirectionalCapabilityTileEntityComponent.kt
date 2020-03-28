@@ -4,6 +4,7 @@ import net.cydhra.technocracy.foundation.util.append
 import net.cydhra.technocracy.foundation.util.get
 import net.cydhra.technocracy.foundation.util.tagList
 import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.nbt.NBTTagInt
 import net.minecraft.util.EnumFacing
 
 /**
@@ -29,7 +30,13 @@ abstract class AbstractDirectionalCapabilityTileEntityComponent : AbstractCapabi
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
         deserialize(nbt)
-        facing.addAll(nbt["facings"])
+        if (nbt.hasKey("facings")) {
+            facing.clear()
+            val list = nbt.getTagList("facings", 3)
+            for (i in list.iterator()) {
+                facing.add(EnumFacing.values()[(i as NBTTagInt).int])
+            }
+        }
     }
 
     enum class Direction {
