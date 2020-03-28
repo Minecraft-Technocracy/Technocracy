@@ -29,7 +29,12 @@ enum class PipeType(val unlocalizedName: String,
                         .let { PipeEnergyContent(it, it.extractEnergy(limit, true)) }
 
             },
-            acceptContent = { world, pos, facing, content, simulate -> content }),
+            acceptContent = { world, pos, facing, content, simulate ->
+                val cap = world.getTileEntity(pos)
+                        ?.getCapability(EnergyCapabilityProvider.CAPABILITY_ENERGY!!, facing)!!
+                val totalReceived = cap.receiveEnergy((content as PipeEnergyContent).amount, simulate)
+                PipeEnergyContent(content.source, content.amount - totalReceived)
+            }),
     FLUID(unlocalizedName = "fluid", capability = CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
             offersContent = { world, pos, facing ->
                 world.getTileEntity(pos)
@@ -41,7 +46,12 @@ enum class PipeType(val unlocalizedName: String,
                         .getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY!!, facing)!!
                 PipeFluidContent(cap, cap.drain(limit, false)!!)
             },
-            acceptContent = { world, pos, facing, content, simulate -> content }),
+            acceptContent = { world, pos, facing, content, simulate ->
+                val cap = world.getTileEntity(pos)!!
+                        .getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY!!, facing)!!
+                val fill = cap.fill((content as PipeFluidContent).simulatedStack, !simulate)
+                PipeFluidContent(content.source, content.simulatedStack.copy().apply { amount -= fill })
+            }),
     ITEM(unlocalizedName = "item", capability = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
             offersContent = { world, pos, facing ->
                 world.getTileEntity(pos)
