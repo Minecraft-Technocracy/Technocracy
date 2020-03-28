@@ -67,11 +67,11 @@ class InventoryTileEntityComponent(
             null
     }
 
-    override fun serializeNBT(): NBTTagCompound {
+    override fun serialize(): NBTTagCompound {
         return inventory.serializeNBT()
     }
 
-    override fun deserializeNBT(nbt: NBTTagCompound) {
+    override fun deserialize(nbt: NBTTagCompound) {
         inventory.deserializeNBT(nbt)
     }
 }

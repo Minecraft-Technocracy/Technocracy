@@ -48,11 +48,11 @@ class EnergyStorageTileEntityComponent(override val facing: MutableSet<EnumFacin
         return EnergyCapabilityProvider.CAPABILITY_ENERGY!!.cast(this.energyStorage)
     }
 
-    override fun serializeNBT(): NBTTagCompound {
+    override fun serialize(): NBTTagCompound {
         return DynamicEnergyStorageStrategy.writeNBT(this.energyStorage) as NBTTagCompound
     }
 
-    override fun deserializeNBT(nbt: NBTTagCompound) {
+    override fun deserialize(nbt: NBTTagCompound) {
         DynamicEnergyStorageStrategy.readNBT(this.energyStorage, nbt)
     }
 }

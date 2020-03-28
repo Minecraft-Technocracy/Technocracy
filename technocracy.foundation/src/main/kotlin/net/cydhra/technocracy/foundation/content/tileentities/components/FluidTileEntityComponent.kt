@@ -52,11 +52,11 @@ class FluidTileEntityComponent(var fluid: DynamicFluidCapability, override val f
             null
     }
 
-    override fun serializeNBT(): NBTTagCompound {
+    override fun serialize(): NBTTagCompound {
         return fluid.serializeNBT()
     }
 
-    override fun deserializeNBT(nbt: NBTTagCompound) {
+    override fun deserialize(nbt: NBTTagCompound) {
         fluid.deserializeNBT(nbt)
     }
 }
