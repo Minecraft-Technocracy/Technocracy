@@ -139,7 +139,13 @@ project('technocracy.foundation') {
         deobfCompile group: "mcp.mobius.waila", name: "Hwyla", version: project.waila_version, classifier: 'api'
         deobfCompile group: "mcjty.theoneprobe", name: "TheOneProbe-1.12", version: project.top_version
 
-        implementation group: 'com.github.Minecraft-Technocracy', name: 'technoblock', version: '533e16d272'
+        if (project.hasProperty('technoblock')) {
+            def override = project.getProperty('technoblock')
+            println "!> override technoblock with \"$override\""
+            implementation files(override)
+        } else {
+            implementation group: 'com.github.Minecraft-Technocracy', name: 'technoblock', version: '533e16d272'
+        }
     }
 
     jar {
