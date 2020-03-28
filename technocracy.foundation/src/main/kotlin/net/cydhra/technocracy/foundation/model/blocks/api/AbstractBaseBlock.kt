@@ -3,6 +3,10 @@ package net.cydhra.technocracy.foundation.model.blocks.api
 import net.cydhra.technocracy.foundation.model.blocks.color.IBlockColor
 import net.minecraft.block.Block
 import net.minecraft.block.material.Material
+import net.minecraft.block.state.IBlockState
+import net.minecraft.util.BlockRenderLayer
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 
 /**
  * Base class for simple blocks with no further requirements. It is a naive implementation of [IBaseBlock] and
@@ -17,7 +21,7 @@ abstract class AbstractBaseBlock(unlocalizedName: String,
                                  material: Material,
                                  registryName: String = unlocalizedName,
                                  override val colorMultiplier: IBlockColor? = null,
-                                 val oreDictionaryName: String? = null) : Block(material), IBaseBlock {
+                                 val oreDictionaryName: String? = null, renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID) : Block(material), IBaseBlock {
 
     override val modelLocation: String
         get() = this.registryName.toString()
@@ -25,8 +29,28 @@ abstract class AbstractBaseBlock(unlocalizedName: String,
     override val generateItem: Boolean
         get() = true
 
+    val renderLayers = mutableListOf<BlockRenderLayer>()
+
     init {
+        renderLayers.add(renderLayer)
         this.unlocalizedName = unlocalizedName
         this.setRegistryName(registryName)
+    }
+
+    override fun canRenderInLayer(state: IBlockState, layer: BlockRenderLayer): Boolean {
+        return this.renderLayers.contains(layer)
+    }
+
+    @SideOnly(Side.CLIENT)
+    override fun getBlockLayer(): BlockRenderLayer? {
+        return when {
+            renderLayers.size > 1 -> {
+                null
+            }
+            renderLayers.isNotEmpty() -> {
+                this.renderLayers[0]
+            }
+            else -> BlockRenderLayer.SOLID
+        }
     }
 }

@@ -7,6 +7,7 @@ import net.minecraft.block.material.Material
 import net.minecraft.block.state.BlockStateContainer
 import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.EntityLivingBase
+import net.minecraft.util.BlockRenderLayer
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.Rotation
 import net.minecraft.util.math.BlockPos
@@ -18,8 +19,8 @@ import net.minecraftforge.common.property.IExtendedBlockState
 abstract class AbstractRotatableTileEntityBlock(unlocalizedName: String,
                                                 registryName: String = unlocalizedName,
                                                 colorMultiplier: IBlockColor? = null,
-                                                material: Material)
-    : AbstractTileEntityBlock(unlocalizedName, registryName, colorMultiplier, material), IDynamicBlockStateContainer {
+                                                material: Material, renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID)
+    : AbstractTileEntityBlock(unlocalizedName, registryName, colorMultiplier, material, renderLayer = renderLayer), IDynamicBlockStateContainer {
 
     companion object {
         /**

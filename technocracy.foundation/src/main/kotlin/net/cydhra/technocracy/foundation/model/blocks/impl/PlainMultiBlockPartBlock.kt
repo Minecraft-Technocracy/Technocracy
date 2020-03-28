@@ -5,6 +5,7 @@ import net.cydhra.technocracy.foundation.model.blocks.api.MultiBlockBaseDelegate
 import net.cydhra.technocracy.foundation.model.blocks.api.TCMultiBlock
 import net.cydhra.technocracy.foundation.model.blocks.api.AbstractTileEntityBlock
 import net.cydhra.technocracy.foundation.model.tileentities.api.TCMultiBlockActiveTileEntity
+import net.minecraft.block.Block
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
 import net.minecraft.item.ItemStack
@@ -13,6 +14,7 @@ import net.minecraft.util.BlockRenderLayer
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockAccess
+import net.minecraft.world.World
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 
@@ -30,8 +32,8 @@ open class PlainMultiBlockPartBlock<T>(
         private val opaque: Boolean = true,
         private val isFullCube: Boolean = true,
         private val glassSides: Boolean = false,
-        private val renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID)
-    : AbstractTileEntityBlock(unlocalizedName, material = Material.IRON),
+        renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID)
+    : AbstractTileEntityBlock(unlocalizedName, material = Material.IRON, renderLayer = renderLayer),
         TCMultiBlock<T> by MultiBlockBaseDelegate<T>(tileEntityConstructor)
         where T : TileEntity, T : TCMultiBlockActiveTileEntity, T : IMultiblockPart {
 
@@ -41,10 +43,6 @@ open class PlainMultiBlockPartBlock<T>(
 
     override fun isFullCube(state: IBlockState): Boolean {
         return this.isFullCube
-    }
-
-    override fun getBlockLayer(): BlockRenderLayer {
-        return this.renderLayer
     }
 
     // for some (probably stupid) reason, forge uses deprecation to notify people about functions not to call, not

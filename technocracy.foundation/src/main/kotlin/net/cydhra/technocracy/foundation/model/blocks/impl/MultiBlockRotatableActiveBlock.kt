@@ -21,8 +21,8 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 
 class MultiBlockRotatableActiveBlock<out T>(name: String, tileEntityConstructor: () -> T,
-                                            private val renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID)
-    : AbstractRotatableTileEntityBlock(name, material = Material.ROCK),
+                                            renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID)
+    : AbstractRotatableTileEntityBlock(name, material = Material.ROCK, renderLayer = renderLayer),
         TCMultiBlock<T> by MultiBlockBaseDelegate<T>(tileEntityConstructor)
         where T : TileEntity, T : TCMultiBlockActiveTileEntity, T : IMultiblockPart {
 
@@ -47,10 +47,5 @@ class MultiBlockRotatableActiveBlock<out T>(name: String, tileEntityConstructor:
         }
 
         return super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ)
-    }
-
-    @SideOnly(Side.CLIENT)
-    override fun getBlockLayer(): BlockRenderLayer {
-        return this.renderLayer
     }
 }

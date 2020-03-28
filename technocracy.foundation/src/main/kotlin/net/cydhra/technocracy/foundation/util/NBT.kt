@@ -24,6 +24,24 @@ fun compound(block: CompoundBuilder.() -> Unit): NBTTagCompound {
 }
 
 /**
+ * DSL builder for an [NBTTagCompound]. It takes an [NBTTagCompound] and a block of code that can be used to easily add key-value-pairs to
+ * the compound.
+ * # Example:
+ * ```
+ * append(original) {
+ *     "key1" to 1
+ *     "key2" to compound {
+ *         "uuid" to UUID.randomUUID()
+ *         "value" to "some string"
+ *     }
+ * }
+ * ```
+ */
+fun append(parent: NBTTagCompound, block: CompoundBuilder.() -> Unit): NBTTagCompound {
+    return CompoundBuilder(parent).apply(block).compound
+}
+
+/**
  * DSL function to build an [NBTTagList] from an array of values. The type of the array must be homogeneous.
  * # Example
  * ```

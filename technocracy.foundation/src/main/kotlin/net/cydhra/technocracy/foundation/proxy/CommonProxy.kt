@@ -156,7 +156,7 @@ open class CommonProxy {
         blockManager.prepareBlocksForRegistration(crystallizationChamberBlock, MachineConnectorModel())
         blockManager.prepareBlocksForRegistration(dissolutionChamberBlock, MachineConnectorModel())
         blockManager.prepareBlocksForRegistration(electricFurnaceBlock, MachineConnectorModel())
-        blockManager.prepareBlocksForRegistration(electrolysisChamberBlock, MachineConnectorModel())
+        blockManager.prepareBlocksForRegistration(electrolysisChamberBlock)
         blockManager.prepareBlocksForRegistration(industrialRefineryBlock, MachineConnectorModel())
         blockManager.prepareBlocksForRegistration(kilnBlock, MachineConnectorModel())
         blockManager.prepareBlocksForRegistration(polymerizationChamberBlock, MachineConnectorModel())

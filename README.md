@@ -2,6 +2,9 @@
 Yet another absolutely excessive tech mod for minecraft.
 A better description shall be added soon...
 
+[![Build Status](https://jenkins.flaflo.xyz/view/all/job/Technocracy/badge/icon)](https://jenkins.flaflo.xyz/view/all/job/Technocracy/)
+[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
+
 # Development Setup
 - Clone the repository
 - Every module must be set up with [ForgeGradle](https://github.com/MinecraftForge/ForgeGradle).

@@ -15,16 +15,13 @@ import net.minecraft.util.BlockRenderLayer
 open class PlainBlock(unlocalizedName: String,
                       material: Material,
                       private val opaque: Boolean = true,
-                      private val renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID,
+                      renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID,
                       colorMultiplier: IBlockColor? = null,
                       oreDictionaryName: String? = null)
-    : AbstractBaseBlock(unlocalizedName, material, colorMultiplier = colorMultiplier, oreDictionaryName = oreDictionaryName) {
+    : AbstractBaseBlock(unlocalizedName, material, colorMultiplier = colorMultiplier, oreDictionaryName = oreDictionaryName, renderLayer = renderLayer) {
 
     override fun isOpaqueCube(state: IBlockState): Boolean {
         return this.opaque
     }
 
-    override fun getBlockLayer(): BlockRenderLayer {
-        return this.renderLayer
-    }
 }
