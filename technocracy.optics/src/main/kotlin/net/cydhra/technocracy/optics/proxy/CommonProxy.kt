@@ -1,6 +1,5 @@
 package net.cydhra.technocracy.optics.proxy
 
-import net.cydhra.technocracy.foundation.client.model.customModel.connector.MachineConnectorModel
 import net.cydhra.technocracy.foundation.model.blocks.manager.BlockManager
 import net.cydhra.technocracy.foundation.model.entities.manager.EntityManager
 import net.cydhra.technocracy.foundation.model.fluids.manager.FluidManager
@@ -43,8 +42,8 @@ open class CommonProxy {
         MinecraftForge.EVENT_BUS.register(tileEntityManager)
         MinecraftForge.EVENT_BUS.register(entityManager)
 
-        blockManager.prepareBlocksForRegistration(laserEmitterBlock, MachineConnectorModel())
-        blockManager.prepareBlocksForRegistration(laserDrillBlock, MachineConnectorModel())
+        blockManager.prepareBlocksForRegistration(laserEmitterBlock)
+        blockManager.prepareBlocksForRegistration(laserDrillBlock)
 
         tileEntityManager.prepareTileEntityForRegistration(TileEntityLaser::class)
         tileEntityManager.prepareTileEntityForRegistration(TileEntityLaserDrill::class)
