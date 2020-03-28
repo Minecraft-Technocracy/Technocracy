@@ -10,6 +10,7 @@ buildscript {
         forge_plugin_version = '2.3.2-SNAPSHOT'
         mappings_version = 'snapshot_20180609'
         grgit_version = '3.1.1'
+        dokka_version = '0.10.1'
 
         forgelin_version = '1.8.4'
         jei_version = '4.15.0.293'
@@ -36,17 +37,20 @@ buildscript {
         classpath group: 'org.jetbrains.kotlin', name: 'kotlin-gradle-plugin', version: kotlin_version
         classpath group: 'com.github.Minecraft-Technocracy', name: 'ForgeGradle', version: forge_plugin_version
         classpath group: 'org.ajoberstar.grgit', name: 'grgit-gradle', version: grgit_version
+        classpath group: 'org.jetbrains.dokka', name: 'dokka-gradle-plugin', version: dokka_version
     }
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'kotlin'
 apply plugin: 'idea'
+apply plugin: 'org.jetbrains.dokka'
 
 allprojects {
     apply plugin: 'net.minecraftforge.gradle.forge'
     apply plugin: 'kotlin'
     apply plugin: 'idea'
+    apply plugin: 'org.jetbrains.dokka'
 
     version = project.mod_version
     group = "net.cydhra.technocracy"
@@ -127,6 +131,11 @@ allprojects {
             inheritOutputDirs = false
             outputDir = file("out")
         }
+    }
+
+    dokka {
+        outputFormat = 'markdown'
+        outputDirectory = "$buildDir/dokka"
     }
 }
 
