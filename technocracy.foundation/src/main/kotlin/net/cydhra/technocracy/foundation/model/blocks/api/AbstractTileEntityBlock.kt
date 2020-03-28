@@ -10,6 +10,7 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.stats.StatList
 import net.minecraft.tileentity.TileEntity
+import net.minecraft.util.BlockRenderLayer
 import net.minecraft.util.NonNullList
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.RayTraceResult
@@ -31,8 +32,9 @@ import net.minecraft.world.World
 abstract class AbstractTileEntityBlock(unlocalizedName: String,
                                        registryName: String = unlocalizedName,
                                        colorMultiplier: IBlockColor? = null,
-                                       material: Material)
-    : AbstractBaseBlock(unlocalizedName, material, registryName, colorMultiplier), ITileEntityProvider {
+                                       material: Material,
+                                       renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID)
+    : AbstractBaseBlock(unlocalizedName, material, registryName, colorMultiplier, renderLayer = renderLayer), ITileEntityProvider {
 
     /**
      * Returns the ItemStack of the TileEntity if it gets destroyed

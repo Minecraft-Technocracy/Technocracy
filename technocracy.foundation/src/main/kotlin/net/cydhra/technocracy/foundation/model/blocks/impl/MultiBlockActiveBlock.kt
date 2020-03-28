@@ -20,9 +20,8 @@ import net.minecraft.world.World
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 
-class MultiBlockActiveBlock<out T>(name: String, tileEntityConstructor: () -> T,
-                                   private val renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID)
-    : AbstractTileEntityBlock(name, material = Material.ROCK),
+class MultiBlockActiveBlock<out T>(name: String, tileEntityConstructor: () -> T, renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID)
+    : AbstractTileEntityBlock(name, material = Material.ROCK, renderLayer = renderLayer),
         TCMultiBlock<T> by MultiBlockBaseDelegate<T>(tileEntityConstructor)
         where T : TileEntity, T : TCMultiBlockActiveTileEntity, T : IMultiblockPart {
 
@@ -47,10 +46,5 @@ class MultiBlockActiveBlock<out T>(name: String, tileEntityConstructor: () -> T,
 
     override fun getDropItem(state: IBlockState, world: IBlockAccess, pos: BlockPos, te: TileEntity?): ItemStack {
         return ItemStack(this)
-    }
-
-    @SideOnly(Side.CLIENT)
-    override fun getBlockLayer(): BlockRenderLayer {
-        return this.renderLayer
     }
 }
