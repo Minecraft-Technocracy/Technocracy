@@ -675,6 +675,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
     fun getTransitEdges(): List<TransitEdge> {
         return this.chunkTransitEdges.values
                 .union(this.attachedSinks.values)
+                .union(this.crossSectionTransitEdges.values)
                 .flatten()
     }
 }

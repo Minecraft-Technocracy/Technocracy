@@ -85,27 +85,34 @@ internal class ConduitNetworkDimension(private val dimensionId: Int) {
      */
     fun tick(world: WorldServer) {
         val transitGraph = this.loadedChunks
-                .map { (_, chunk) -> chunk.getTransitEdges() }
+                .map { (_, chunk) -> chunk.getTransitEdges().map { edge -> edge to chunk } }
                 .flatten()
-                .map { Pair(it.id, it) }
-                .toMap()
 
-        transitGraph.values
-                .filterIsInstance<TransitSink>()
-                .forEach(TransitSink::tick)
+        transitGraph
+                .filter { (edge, _) -> edge is TransitSink }
+                .forEach { (edge, _) -> (edge as TransitSink).tick() }
 
-        transitGraph.values
-                .filterIsInstance<TransitSink>()
-                .filter { it.offersContent(world) }
-                .forEach { source ->
+        transitGraph
+                .filter { (edge, _) -> edge is TransitSink }
+                .filter { (edge, _) -> (edge as TransitSink).offersContent(world) }
+                .forEach { (source, chunk) ->
                     // get offered content of source
-                    val content = source.getContent(world)
+                    val content = (source as TransitSink).getContent(world)
 
                     // find available sink using routing strategy
-
+                    val potentialTargets = dijkstra(world, source, chunk, content, emptyMap(), true)
 
                     // transfer content
+                    if (potentialTargets.isNotEmpty()) {
+                        var remainingContent = content
+                        var index = 0
 
+                        while (!remainingContent.isEmpty() && index < potentialTargets.size) {
+                            remainingContent = potentialTargets[index++].transferContent(world, remainingContent)
+                        }
+
+                        source.setCoolDown()
+                    }
                 }
     }
 
@@ -159,29 +166,30 @@ internal class ConduitNetworkDimension(private val dimensionId: Int) {
             visited += currentEdge
 
             if (currentEdge is TransitSink) {
-                if (currentEdge.acceptsContent(world, content)) {
+                if (currentEdge.acceptsContent(world, content) && currentEdge != start) {
                     availableSinks += currentEdge
 
                     if (!multipleSinks)
                         return availableSinks
                 }
-            } else {
-                currentEdge.paths.forEach { (targetId, cost) ->
-                    val target = chunk.getTransitEdge(targetId)!!.second
-                    enqueuePath(start, target, currentChunk, currentCost + cost)
-                }
+            }
 
-                if (currentEdge is TransitChunkEdge) {
-                    val targetPosition = currentEdge.pos.offset(currentEdge.facing)
-                    val targetChunk = getChunkAt(ChunkPos(targetPosition))
+            currentEdge.paths.forEach { (targetId, cost) ->
+                val target = currentChunk.getTransitEdge(targetId)!!.second
+                enqueuePath(start, target, currentChunk, currentCost + cost)
+            }
 
-                    if (targetChunk != null) {
-                        val targetEdge = targetChunk
-                                .getTransitChunkEdge(targetPosition, start.type, currentEdge.facing.opposite)
-                        enqueuePath(currentEdge, targetEdge!!, targetChunk, currentCost + 1)
-                    }
+            if (currentEdge is TransitChunkEdge) {
+                val targetPosition = currentEdge.pos.offset(currentEdge.facing)
+                val targetChunk = getChunkAt(ChunkPos(targetPosition))
+
+                if (targetChunk != null) {
+                    val targetEdge = targetChunk
+                            .getTransitChunkEdge(targetPosition, start.type, currentEdge.facing.opposite)
+                    enqueuePath(currentEdge, targetEdge!!, targetChunk, currentCost + 1)
                 }
             }
+
         }
 
         return availableSinks
