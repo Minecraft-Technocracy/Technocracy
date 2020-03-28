@@ -39,3 +39,7 @@ build
 # gradle dependency replacement
 libs/*
 !libs/.keep
+
+# server
+server/*
+!server/.keep
