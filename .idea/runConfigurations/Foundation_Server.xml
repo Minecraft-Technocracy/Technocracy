@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Foundation Server" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="GradleStartServer" />
+    <module name="technocracy.technocracy.foundation.main" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/server" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
