@@ -1,19 +1,32 @@
 {
+  "forge_marker": 1,
+  "defaults": {
+	"model": "forge:multi-layer",
+	"custom": {
+		"base": "technocracy.foundation:electrolysis_chamber#base",
+		"Solid": "technocracy.foundation:electrolysis_chamber#base",
+		"Translucent": "technocracy.foundation:electrolysis_chamber#transparent"
+	}
+  },
+
   "variants": {
     "facing=north": {
-      "model": "technocracy.foundation:electrolysis_chamber"
+	  "y": 0
     },
     "facing=east": {
-      "model": "technocracy.foundation:electrolysis_chamber",
       "y": 90
     },
     "facing=south": {
-      "model": "technocracy.foundation:electrolysis_chamber",
       "y": 180
     },
     "facing=west": {
-      "model": "technocracy.foundation:electrolysis_chamber",
       "y": 270
-    }
+    },
+	"base": [ {
+	  "model": "technocracy.foundation:electrolysis_chamber_base"
+	}],
+	"transparent": [ {
+	  "model": "technocracy.foundation:electrolysis_chamber_transparent"
+	}]
   }
 }
