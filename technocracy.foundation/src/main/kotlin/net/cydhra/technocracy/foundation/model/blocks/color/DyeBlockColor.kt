@@ -11,11 +11,11 @@ import net.minecraft.world.IBlockAccess
 object DyeBlockColor : IBlockColor {
     val COLOR = PropertyEnum.create("color", EnumDyeColor::class.java)
 
-    override fun colorMultiplier(state: IBlockState, worldIn: IBlockAccess?, pos: BlockPos?, tintIndex: Int): Int {
+     override fun colorMultiplier(state: IBlockState, worldIn: IBlockAccess?, pos: BlockPos?, tintIndex: Int): Int {
         return (state.properties[COLOR] as EnumDyeColor).colorValue
     }
 
-    override fun colorMultiplier(stack: ItemStack, tintIndex: Int): Int {
+     override fun colorMultiplier(stack: ItemStack, tintIndex: Int): Int {
         return EnumDyeColor.values()[stack.metadata].colorValue
     }
 }

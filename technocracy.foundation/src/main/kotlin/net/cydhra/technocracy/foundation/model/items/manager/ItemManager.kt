@@ -2,6 +2,7 @@ package net.cydhra.technocracy.foundation.model.items.manager
 
 import net.cydhra.technocracy.foundation.client.model.AbstractCustomModel
 import net.cydhra.technocracy.foundation.client.model.CustomModelProvider
+import net.cydhra.technocracy.foundation.model.blocks.color.BlockColorDelegator
 import net.cydhra.technocracy.foundation.model.items.api.BaseItem
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.block.model.ModelResourceLocation
@@ -22,7 +23,7 @@ import net.minecraftforge.oredict.OreDictionary
  *
  * @see ItemManager.prepareItemForRegistration
  */
-class ItemManager(val modName: String,val defaultCreativeTab: CreativeTabs) {
+class ItemManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
 
     /**
      * Items scheduled for registering
@@ -73,7 +74,7 @@ class ItemManager(val modName: String,val defaultCreativeTab: CreativeTabs) {
     fun registerItemColors() {
         itemsToRegister.forEach { item ->
             if (item.itemColor != null)
-                Minecraft.getMinecraft().itemColors.registerItemColorHandler(item.itemColor, item)
+                Minecraft.getMinecraft().itemColors.registerItemColorHandler(BlockColorDelegator(item.itemColor), item)
         }
     }
 

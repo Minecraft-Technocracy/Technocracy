@@ -4,6 +4,7 @@ import net.cydhra.technocracy.foundation.model.blocks.api.AbstractBaseBlock
 import net.cydhra.technocracy.foundation.model.blocks.api.IBaseBlock
 import net.cydhra.technocracy.foundation.client.model.AbstractCustomModel
 import net.cydhra.technocracy.foundation.client.model.CustomModelProvider
+import net.cydhra.technocracy.foundation.model.blocks.color.BlockColorDelegator
 import net.cydhra.technocracy.foundation.model.items.api.ItemSubBlock
 import net.cydhra.technocracy.foundation.model.blocks.impl.BaseLiquidBlock
 import net.cydhra.technocracy.foundation.util.StateMapper
@@ -121,8 +122,9 @@ class BlockManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
     fun registerBlockColors() {
         blocksToRegister.forEach { block ->
             if (block.colorMultiplier != null) {
-                Minecraft.getMinecraft().blockColors.registerBlockColorHandler(block.colorMultiplier!!, block as Block)
-                Minecraft.getMinecraft().itemColors.registerItemColorHandler(block.colorMultiplier!!, block)
+                val handler = BlockColorDelegator(block.colorMultiplier!!)
+                Minecraft.getMinecraft().blockColors.registerBlockColorHandler(handler, block as Block)
+                Minecraft.getMinecraft().itemColors.registerItemColorHandler(handler, block)
             }
         }
     }

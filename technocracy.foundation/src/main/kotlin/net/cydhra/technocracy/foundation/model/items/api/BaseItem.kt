@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.model.items.api
 
+import net.cydhra.technocracy.foundation.model.blocks.color.IBlockColor
 import net.minecraft.client.renderer.color.IItemColor
 import net.minecraft.item.Item
 
@@ -14,7 +15,7 @@ import net.minecraft.item.Item
 open class BaseItem(unlocalizedName: String,
                     registryName: String = unlocalizedName,
                     val oreDictName: String? = null,
-                    val itemColor: IItemColor? = null) : Item() {
+                    val itemColor: IBlockColor? = null) : Item() {
 
     /**
      * A convenience property used during item registration to set the model location to the default assets path and
