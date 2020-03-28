@@ -56,7 +56,7 @@ enum class PipeType(val unlocalizedName: String,
                 for (i in (0 until cap.slots)) {
                     val virtualStack = cap.extractItem(i, limit, true)
                     if (!virtualStack.isEmpty) {
-                        return@closure PipeItemContent(cap, virtualStack)
+                        return@closure PipeItemContent(cap, i, virtualStack)
                     }
                 }
 
@@ -70,11 +70,11 @@ enum class PipeType(val unlocalizedName: String,
                 for (i in (0 until cap.slots)) {
                     virtualStack = cap.insertItem(i, virtualStack, simulate)
                     if (virtualStack.isEmpty) {
-                        return@acceptContent PipeItemContent(content.source, virtualStack)
+                        return@acceptContent PipeItemContent(content.source, content.slot, virtualStack)
                     }
                 }
 
-                return@acceptContent PipeItemContent(content.source, virtualStack)
+                return@acceptContent PipeItemContent(content.source, content.slot, virtualStack)
             });
 
     override fun getName(): String {
