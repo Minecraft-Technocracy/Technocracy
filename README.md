@@ -27,3 +27,5 @@ Try the version by Amazon ([Corretto](https://docs.aws.amazon.com/corretto/lates
 If, while started from IntelliJ, a Minecraft instance complains about duplicate mods being present,
 make sure that in `Settings>Build, Execution, Deployment>Build Tools>Gradle` the setting `Build and run using` is set
  to `IntelliJ IDEA` instead of `Gradle`.
+- **Missing assets**:
+If, while started from IntelliJ, a Minecraft instance misses all its assets (including textures of added blocks/items, language file, etc), try the same thing as in **Duplicate Mods**
