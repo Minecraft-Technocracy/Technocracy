@@ -11,8 +11,8 @@ import net.minecraftforge.items.IItemHandler
  */
 abstract class PipeContent()
 
-class PipeItemContent(val source: IItemHandler, val simulatedStack: ItemStack) : PipeContent()
+data class PipeItemContent(val source: IItemHandler, val simulatedStack: ItemStack) : PipeContent()
 
-class PipeFluidContent(val source: IFluidHandler, val simulatedStack: FluidStack) : PipeContent()
+data class PipeFluidContent(val source: IFluidHandler, val simulatedStack: FluidStack) : PipeContent()
 
-class PipeEnergyContent(val source: IEnergyStorage, val amount: Int) : PipeContent()
+data class PipeEnergyContent(val source: IEnergyStorage, val amount: Int) : PipeContent()

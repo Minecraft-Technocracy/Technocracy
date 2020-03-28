@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.conduits.types
 
 import net.cydhra.technocracy.foundation.content.capabilities.energy.EnergyCapabilityProvider
+import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.IStringSerializable
 import net.minecraft.util.math.BlockPos
@@ -9,12 +10,11 @@ import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler
 import net.minecraftforge.items.CapabilityItemHandler
 
-
 enum class PipeType(val unlocalizedName: String,
                     val capability: Capability<*>,
                     val offersContent: (world: WorldServer, pos: BlockPos, facing: EnumFacing) -> Boolean,
                     val getContent: (world: WorldServer, pos: BlockPos, facing: EnumFacing, limit: Int) -> PipeContent,
-                    val acceptsContent: (world: WorldServer, pos: BlockPos, facing: EnumFacing, content: PipeContent) -> PipeContent)
+                    val acceptContent: (world: WorldServer, pos: BlockPos, facing: EnumFacing, content: PipeContent, simulate: Boolean) -> PipeContent)
     : IStringSerializable {
     ENERGY(unlocalizedName = "energy",
             capability = EnergyCapabilityProvider.CAPABILITY_ENERGY!!,
@@ -29,7 +29,7 @@ enum class PipeType(val unlocalizedName: String,
                         .let { PipeEnergyContent(it, it.extractEnergy(limit, true)) }
 
             },
-            acceptsContent = { world, pos, facing, content -> content }),
+            acceptContent = { world, pos, facing, content, simulate -> content }),
     FLUID(unlocalizedName = "fluid", capability = CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
             offersContent = { world, pos, facing ->
                 world.getTileEntity(pos)
@@ -41,7 +41,7 @@ enum class PipeType(val unlocalizedName: String,
                         .getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY!!, facing)!!
                 PipeFluidContent(cap, cap.drain(limit, false)!!)
             },
-            acceptsContent = { world, pos, facing, content -> content }),
+            acceptContent = { world, pos, facing, content, simulate -> content }),
     ITEM(unlocalizedName = "item", capability = CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
             offersContent = { world, pos, facing ->
                 world.getTileEntity(pos)
@@ -62,7 +62,20 @@ enum class PipeType(val unlocalizedName: String,
 
                 throw AssertionError("no content is available")
             },
-            acceptsContent = { world, pos, facing, content -> content });
+            acceptContent = acceptContent@{ world, pos, facing, content, simulate ->
+                val cap = world.getTileEntity(pos)!!
+                        .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY!!, facing)!!
+                var virtualStack: ItemStack = (content as PipeItemContent).simulatedStack
+
+                for (i in (0 until cap.slots)) {
+                    virtualStack = cap.insertItem(i, virtualStack, simulate)
+                    if (virtualStack.isEmpty) {
+                        return@acceptContent PipeItemContent(content.source, virtualStack)
+                    }
+                }
+
+                return@acceptContent PipeItemContent(content.source, virtualStack)
+            });
 
     override fun getName(): String {
         return this.unlocalizedName

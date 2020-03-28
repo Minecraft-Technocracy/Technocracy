@@ -31,12 +31,12 @@ class TransitSink(pos: BlockPos) : TransitEdge(pos) {
         return this.type.offersContent(world, this.pos.offset(facing), facing.opposite)
     }
 
-    fun acceptsContent(world: WorldServer, content: Any): Boolean {
+    fun acceptsContent(world: WorldServer, content: PipeContent): Boolean {
         if (transferCoolDown > 0) {
             return false
         }
 
-        return false
+        return this.type.acceptContent(world, this.pos.offset(facing), facing, content, true) != content
     }
 
     /**
