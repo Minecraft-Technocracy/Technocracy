@@ -165,23 +165,24 @@ internal class ConduitNetworkDimension(private val dimensionId: Int) {
                     if (!multipleSinks)
                         return availableSinks
                 }
-            } else {
-                currentEdge.paths.forEach { (targetId, cost) ->
-                    val target = chunk.getTransitEdge(targetId)!!.second
-                    enqueuePath(start, target, currentChunk, currentCost + cost)
-                }
+            }
 
-                if (currentEdge is TransitChunkEdge) {
-                    val targetPosition = currentEdge.pos.offset(currentEdge.facing)
-                    val targetChunk = getChunkAt(ChunkPos(targetPosition))
+            currentEdge.paths.forEach { (targetId, cost) ->
+                val target = currentChunk.getTransitEdge(targetId)!!.second
+                enqueuePath(start, target, currentChunk, currentCost + cost)
+            }
 
-                    if (targetChunk != null) {
-                        val targetEdge = targetChunk
-                                .getTransitChunkEdge(targetPosition, start.type, currentEdge.facing.opposite)
-                        enqueuePath(currentEdge, targetEdge!!, targetChunk, currentCost + 1)
-                    }
+            if (currentEdge is TransitChunkEdge) {
+                val targetPosition = currentEdge.pos.offset(currentEdge.facing)
+                val targetChunk = getChunkAt(ChunkPos(targetPosition))
+
+                if (targetChunk != null) {
+                    val targetEdge = targetChunk
+                            .getTransitChunkEdge(targetPosition, start.type, currentEdge.facing.opposite)
+                    enqueuePath(currentEdge, targetEdge!!, targetChunk, currentCost + 1)
                 }
             }
+
         }
 
         return availableSinks
