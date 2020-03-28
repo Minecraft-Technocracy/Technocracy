@@ -3,9 +3,6 @@ package net.cydhra.technocracy.foundation.util
 import javax.vecmath.Vector3d
 import kotlin.math.abs
 
-/**
- * Created by Flo on 06.02.2020
- */
 object Interpolator {
 
     fun easeCircIn(t: Float, b: Double, c: Double, d: Float): Double {
