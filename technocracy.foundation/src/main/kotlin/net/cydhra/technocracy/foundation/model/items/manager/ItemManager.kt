@@ -16,6 +16,8 @@ import net.minecraftforge.client.model.ModelLoader
 import net.minecraftforge.client.model.ModelLoaderRegistry
 import net.minecraftforge.event.RegistryEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import net.minecraftforge.oredict.OreDictionary
 
 /**
@@ -30,7 +32,13 @@ class ItemManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
      */
     private val itemsToRegister = mutableListOf<BaseItem>()
 
-    private val customModels = mutableMapOf<String, IModel>()
+    @SideOnly(Side.CLIENT)
+    private lateinit var customModels : MutableMap<String, IModel>
+
+    @SideOnly(Side.CLIENT)
+    fun initClient() {
+        customModels = mutableMapOf<String, IModel>()
+    }
 
     /**
      * Schedule an item for registration. Registration will be done, as soon as the registration event marks
@@ -44,8 +52,8 @@ class ItemManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
      * Schedule an item for registration. Registration will be done, as soon as the registration event marks
      * registration phase, with custom model
      */
-    fun prepareItemForRegistration(item: BaseItem, model: AbstractCustomModel) {
-        itemsToRegister += item
+    @SideOnly(Side.CLIENT)
+    fun linkItemToModel(item: BaseItem, model: AbstractCustomModel) {
         val name = item.registryName!!.resourcePath
         customModels["models/item/$name"] = model.initModel(modName, "item", name)
     }
@@ -57,6 +65,7 @@ class ItemManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
 
     }
 
+    @SideOnly(Side.CLIENT)
     @Suppress("unused")
     @SubscribeEvent
     fun registerRenders(@Suppress("UNUSED_PARAMETER") event: ModelRegistryEvent) {
@@ -71,6 +80,7 @@ class ItemManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
     /**
      * Must be called client side in initialization phase
      */
+    @SideOnly(Side.CLIENT)
     fun registerItemColors() {
         itemsToRegister.forEach { item ->
             if (item.itemColor != null)
@@ -83,6 +93,7 @@ class ItemManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
      *
      * @param item a [BaseItem] instance
      */
+    @SideOnly(Side.CLIENT)
     private fun registerItemRender(item: BaseItem) {
         val list = NonNullList.create<ItemStack>()
         item.getSubItems(item.creativeTab!!, list)
@@ -99,6 +110,7 @@ class ItemManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
      * @param item a [BaseItem] instance
      * @param metadata the item metadata which uses this model resource
      */
+    @SideOnly(Side.CLIENT)
     private fun registerItemRender(item: BaseItem, metadata: Int) {
         ModelLoader.setCustomModelResourceLocation(item, metadata,
                 ModelResourceLocation(item.modelLocation, "inventory"))

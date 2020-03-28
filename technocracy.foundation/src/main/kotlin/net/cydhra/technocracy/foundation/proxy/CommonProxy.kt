@@ -146,21 +146,21 @@ open class CommonProxy {
         fluidManager.registerFluid(heatTransferOilFluid)
         fluidManager.registerFluid(lyeFluid)
 
-        blockManager.prepareBlocksForRegistration(alloySmelteryBlock, MachineConnectorModel())
-        blockManager.prepareBlocksForRegistration(centrifugeBlock, MachineConnectorModel())
-        blockManager.prepareBlocksForRegistration(chemicalProcessingChamberBlock, MachineConnectorModel())
-        blockManager.prepareBlocksForRegistration(chemicalEtchingChamberBlock, MachineConnectorModel())
-        blockManager.prepareBlocksForRegistration(chemicalOxidizerBlock, MachineConnectorModel())
-        blockManager.prepareBlocksForRegistration(chemicalReactionChamberBlock, MachineConnectorModel())
-        blockManager.prepareBlocksForRegistration(compactorBlock, MachineConnectorModel())
-        blockManager.prepareBlocksForRegistration(crystallizationChamberBlock, MachineConnectorModel())
-        blockManager.prepareBlocksForRegistration(dissolutionChamberBlock, MachineConnectorModel())
-        blockManager.prepareBlocksForRegistration(electricFurnaceBlock, MachineConnectorModel())
+        blockManager.prepareBlocksForRegistration(alloySmelteryBlock)
+        blockManager.prepareBlocksForRegistration(centrifugeBlock)
+        blockManager.prepareBlocksForRegistration(chemicalProcessingChamberBlock)
+        blockManager.prepareBlocksForRegistration(chemicalEtchingChamberBlock)
+        blockManager.prepareBlocksForRegistration(chemicalOxidizerBlock)
+        blockManager.prepareBlocksForRegistration(chemicalReactionChamberBlock)
+        blockManager.prepareBlocksForRegistration(compactorBlock)
+        blockManager.prepareBlocksForRegistration(crystallizationChamberBlock)
+        blockManager.prepareBlocksForRegistration(dissolutionChamberBlock)
+        blockManager.prepareBlocksForRegistration(electricFurnaceBlock)
         blockManager.prepareBlocksForRegistration(electrolysisChamberBlock)
-        blockManager.prepareBlocksForRegistration(industrialRefineryBlock, MachineConnectorModel())
-        blockManager.prepareBlocksForRegistration(kilnBlock, MachineConnectorModel())
-        blockManager.prepareBlocksForRegistration(polymerizationChamberBlock, MachineConnectorModel())
-        blockManager.prepareBlocksForRegistration(pulverizerBlock, MachineConnectorModel())
+        blockManager.prepareBlocksForRegistration(industrialRefineryBlock)
+        blockManager.prepareBlocksForRegistration(kilnBlock)
+        blockManager.prepareBlocksForRegistration(polymerizationChamberBlock)
+        blockManager.prepareBlocksForRegistration(pulverizerBlock)
 
         blockManager.prepareBlocksForRegistration(boilerControllerBlock)
         blockManager.prepareBlocksForRegistration(boilerHeaterBlock)
@@ -191,9 +191,9 @@ open class CommonProxy {
         blockManager.prepareBlocksForRegistration(leadBlock)
         blockManager.prepareBlocksForRegistration(leadOxideBlock)
 
-        blockManager.prepareBlocksForRegistration(tankWallBlock, MutliBlockTankFluidModel())
-        blockManager.prepareBlocksForRegistration(tankIOBlock, MutliBlockTankFluidModel())
-        blockManager.prepareBlocksForRegistration(tankGlassBlock, MutliBlockTankFluidModel())
+        blockManager.prepareBlocksForRegistration(tankWallBlock)
+        blockManager.prepareBlocksForRegistration(tankIOBlock)
+        blockManager.prepareBlocksForRegistration(tankGlassBlock)
 
         blockManager.prepareBlocksForRegistration(oilSandBlock)
         blockManager.prepareBlocksForRegistration(oilStone)
@@ -203,7 +203,7 @@ open class CommonProxy {
 
         blockManager.prepareBlocksForRegistration(sulfuricAcidBlock)
 
-        blockManager.prepareBlocksForRegistration(pipe, PipeModel())
+        blockManager.prepareBlocksForRegistration(pipe)
         blockManager.prepareBlocksForRegistration(chrysotileBlock)
         blockManager.prepareBlocksForRegistration(asbestosBlock)
         blockManager.prepareBlocksForRegistration(saltBlock)
@@ -255,8 +255,8 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(steelSheetItem)
         itemManager.prepareItemForRegistration(steelGearItem)
 
-        itemManager.prepareItemForRegistration(pipeItem, PipeItemModel())
-        itemManager.prepareItemForRegistration(facadeItem, FacadeItemModel())
+        itemManager.prepareItemForRegistration(pipeItem)
+        itemManager.prepareItemForRegistration(facadeItem)
 
         itemManager.prepareItemForRegistration(upgradeFrameItem)
         itemManager.prepareItemForRegistration(mechSpeedUp1Item)
@@ -291,12 +291,6 @@ open class CommonProxy {
 
         itemManager.prepareItemForRegistration(mechLubricantUpItem)
         itemManager.prepareItemForRegistration(elecCoolerUpgradeItem)
-
-        if (!Minecraft.getMinecraft().isSingleplayer) {
-            //Dev tools
-            itemManager.prepareItemForRegistration(structureMarkerItem)
-            MinecraftForge.EVENT_BUS.register(structureMarkerItem)
-        }
 
         tileEntityManager.prepareTileEntityForRegistration(TileEntityAlloySmeltery::class)
         tileEntityManager.prepareTileEntityForRegistration(TileEntityCentrifuge::class)

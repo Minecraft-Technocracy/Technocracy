@@ -23,6 +23,8 @@ import net.minecraftforge.client.model.ModelLoader
 import net.minecraftforge.client.model.ModelLoaderRegistry
 import net.minecraftforge.event.RegistryEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import net.minecraftforge.oredict.OreDictionary
 
 
@@ -39,7 +41,13 @@ class BlockManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
      */
     private val blocksToRegister = mutableListOf<IBaseBlock>()
 
-    private val customModels = mutableMapOf<String, IModel>()
+    @SideOnly(Side.CLIENT)
+    private lateinit var customModels: MutableMap<String, IModel>
+
+    @SideOnly(Side.CLIENT)
+    fun initClient() {
+        customModels = mutableMapOf<String, IModel>()
+    }
 
     /**
      * Prepare a block for the registration happening per event later on.
@@ -49,14 +57,10 @@ class BlockManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
         return block
     }
 
-    /**
-     * Prepare a block for the registration happening per event later on, with custom Model.
-     */
-    fun prepareBlocksForRegistration(block: IBaseBlock, model: AbstractCustomModel): IBaseBlock {
-        blocksToRegister += block
+    @SideOnly(Side.CLIENT)
+    fun linkBlockToModel(block: IBaseBlock, model: AbstractCustomModel) {
         val name = (block as Block).registryName!!.resourcePath
         customModels["models/block/$name"] = model.initModel(modName, "block", name)
-        return block
     }
 
     /**
@@ -90,6 +94,7 @@ class BlockManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
     /**
      * Register block items' models using the block's [IBaseBlock.modelLocation].
      */
+    @SideOnly(Side.CLIENT)
     @Suppress("unused")
     @SubscribeEvent
     fun onRegisterRenders(@Suppress("UNUSED_PARAMETER") event: ModelRegistryEvent) {
@@ -129,6 +134,7 @@ class BlockManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
         }
     }
 
+    @SideOnly(Side.CLIENT)
     private fun registerCustomBlockModels() {
         ModelLoaderRegistry.registerLoader(CustomModelProvider(customModels, modName))
         blocksToRegister.filter { it is BaseLiquidBlock }

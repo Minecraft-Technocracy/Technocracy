@@ -10,6 +10,8 @@ import net.minecraftforge.client.event.RenderWorldLastEvent
 import net.minecraftforge.event.world.ChunkDataEvent
 import net.minecraftforge.event.world.ChunkEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import org.lwjgl.opengl.GL11
 
 /**
@@ -297,6 +299,7 @@ object ConduitNetwork {
     }
 
     @SubscribeEvent
+    @SideOnly(Side.CLIENT)
     fun renderDebugEvent(event: RenderWorldLastEvent) {
         val mc = Minecraft.getMinecraft()
 

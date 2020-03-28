@@ -4,10 +4,13 @@ import net.minecraft.block.Block
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.ResourceLocation
+import net.minecraftforge.client.model.IModel
 import net.minecraftforge.event.RegistryEvent
 import net.minecraftforge.fml.client.registry.ClientRegistry
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.registry.GameRegistry
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import kotlin.reflect.KClass
 
 /**
@@ -20,14 +23,22 @@ class TileEntityManager(val modName: String) {
      */
     private val preparedTileEntities = mutableListOf<KClass<out TileEntity>>()
 
-    private val associatedSpecialRenderers = mutableMapOf<KClass<out TileEntity>, TileEntitySpecialRenderer<*>>()
+    @SideOnly(Side.CLIENT)
+    private lateinit var associatedSpecialRenderers: MutableMap<KClass<out TileEntity>, TileEntitySpecialRenderer<*>>
 
-    fun <T : TileEntity> prepareTileEntityForRegistration(tileEntityClass: KClass<out T>,
-                                                          specialRenderer: TileEntitySpecialRenderer<T>? = null) {
+    @SideOnly(Side.CLIENT)
+    fun initClient() {
+        associatedSpecialRenderers = mutableMapOf()
+    }
+
+    fun <T : TileEntity> prepareTileEntityForRegistration(tileEntityClass: KClass<out T>) {
         this.preparedTileEntities += tileEntityClass
+    }
 
-        if (specialRenderer != null)
-            this.associatedSpecialRenderers[tileEntityClass] = specialRenderer
+    @SideOnly(Side.CLIENT)
+    fun <T : TileEntity> linkTileEntityWithRenderer(tileEntityClass: KClass<out T>,
+                                                    specialRenderer: TileEntitySpecialRenderer<T>) {
+        this.associatedSpecialRenderers[tileEntityClass] = specialRenderer
     }
 
     /**
@@ -46,6 +57,7 @@ class TileEntityManager(val modName: String) {
     /**
      * Called upon init phase by the client proxy. Initializes renderers.
      */
+    @SideOnly(Side.CLIENT)
     fun onClientInitialize() {
         associatedSpecialRenderers.forEach { tileEntityClass, specialRenderer ->
             @Suppress("UNCHECKED_CAST") // this class'es contract ensures that it works
