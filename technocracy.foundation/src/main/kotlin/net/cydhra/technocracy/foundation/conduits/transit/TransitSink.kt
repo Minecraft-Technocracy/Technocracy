@@ -36,7 +36,7 @@ class TransitSink(pos: BlockPos) : TransitEdge(pos) {
             return false
         }
 
-        return this.type.acceptContent(world, this.pos.offset(facing), facing, content, true) != content
+        return this.type.acceptContent(world, this.pos.offset(facing), facing.opposite, content, true) != content
     }
 
     /**
@@ -49,5 +49,36 @@ class TransitSink(pos: BlockPos) : TransitEdge(pos) {
 
     fun getContent(world: WorldServer): PipeContent {
         return this.type.getContent(world, this.pos.offset(facing), facing.opposite, this.transferLimit)
+    }
+
+    /**
+     * Transfer content to this sink and return the remaining content (may be empty). The content source will be
+     * drained by the amount actually transferred.
+     *
+     * @param world the world where this sink is located
+     * @param content the content to transfer into this sink
+     *
+     * @return the remaining content that could not be transferred into this sink
+     */
+    fun transferContent(world: WorldServer, content: PipeContent): PipeContent {
+        if (transferCoolDown > 0)
+            return content
+
+        // TODO: obey transfer limits
+        val remainingContent = this.type.acceptContent(world, this.pos.offset(facing), facing.opposite, content, false)
+        if (remainingContent != content) {
+            this.setCoolDown()
+            content.drainSourceUntil(remainingContent)
+        }
+
+        return remainingContent
+    }
+
+    /**
+     * Set this sink to cooldown. This is done when content is transferred from or to this sink.
+     */
+    fun setCoolDown() {
+        // TODO delegate the cooldown modifier to the sink
+        this.transferCoolDown = 20
     }
 }
