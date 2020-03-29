@@ -21,7 +21,6 @@ import net.cydhra.technocracy.foundation.model.components.IComponent
 import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
 import net.cydhra.technocracy.foundation.network.PacketHandler
 import net.cydhra.technocracy.foundation.network.componentsync.ClientChangeSideConfigPacket
-import net.cydhra.technocracy.foundation.network.componentsync.ClientRequestSyncPacket
 import net.cydhra.technocracy.foundation.util.opengl.BasicShaderProgram
 import net.cydhra.technocracy.foundation.util.opengl.OpenGLBoundingBox
 import net.cydhra.technocracy.foundation.util.opengl.ScreenspaceUtil
@@ -79,7 +78,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
 
         infoTitleLabel = DefaultLabel(10, offsetY + 2, "")
 
-        hideBlocks = DefaultButton(10, offsetY + height - 15 - 2, 15, 15, "H") { player, tile, button ->
+        hideBlocks = DefaultButton(10, offsetY + height - 15 - 2, 15, 15, "H") { _, _, button ->
             if (button == 0)
                 hideNeighbors = !hideNeighbors
             hideBlocks.text = if (hideNeighbors) "S" else "H"

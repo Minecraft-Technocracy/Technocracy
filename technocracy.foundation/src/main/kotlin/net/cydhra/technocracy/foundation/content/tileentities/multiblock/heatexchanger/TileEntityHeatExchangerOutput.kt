@@ -2,9 +2,9 @@ package net.cydhra.technocracy.foundation.content.tileentities.multiblock.heatex
 
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.multiblock.HeatExchangerMultiBlock
-import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableDelegate
-import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatable
 import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
+import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatable
+import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableDelegate
 import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.EnumFacing
@@ -39,6 +39,7 @@ class TileEntityHeatExchangerOutput : TileEntityMultiBlockPart<HeatExchangerMult
     }
 
     override fun <T> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
+        @Suppress("UNCHECKED_CAST")
         return (this.castCapability(capability, facing) ?: super.getCapability(capability, facing))
                 ?: DynamicFluidCapability(1, allowedFluid = mutableListOf()) as T
     }

@@ -9,6 +9,15 @@ import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.ResourceLocation
 
+/**
+ * A tab within a technocracy-style GUI. Each technocracy-style gui is composed of one or more tabs, that can be
+ * accessed via the right side of the gui, where all tabs are displayed with their respective icon and can be selected.
+ *
+ * @param name tab name (displayed at the top of the tab)
+ * @param parent the parent [TCGui] that owns the tab
+ * @param tint tint color of the tab at the right side. Defaults to white
+ * @param icon tab icon resource location. Defaults to a non-tinted gear. Should be an item texture.
+ */
 abstract class TCTab(val name: String, val parent: TCGui, val tint: Int = -1,
                      val icon: TCIcon = TCIcon(ResourceLocation("technocracy.foundation", "textures/item/gear.png"))) {
 
@@ -58,20 +67,19 @@ abstract class TCTab(val name: String, val parent: TCGui, val tint: Int = -1,
     open fun handleMouseInput() {}
 
     protected fun addPlayerInventorySlots(player: EntityPlayer, x: Int, y: Int) {
-
         this.components.add(DefaultLabel(x, y, player.inventory.displayName.unformattedText, 4210752, false))
 
-        val y = y + 12
+        val yOffset = y + 12
 
         for (row in 0..2) {
             for (slot in 0..8) {
                 this.components.add(TCSlotPlayer(player.inventory, slot + row * 9 + 9,
-                        x + slot * 18, y + row * 18, parent))
+                        x + slot * 18, yOffset + row * 18, parent))
             }
         }
 
         for (k in 0..8) {
-            this.components.add(TCSlotPlayer(player.inventory, k, x + k * 18, y + 58, parent))
+            this.components.add(TCSlotPlayer(player.inventory, k, x + k * 18, yOffset + 58, parent))
         }
     }
 

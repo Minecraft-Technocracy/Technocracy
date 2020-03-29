@@ -25,6 +25,10 @@ class OilBlock : BaseLiquidBlock(mineralOilFluid, "mineral_oil", Material.WATER)
         handleMaterialAcceleration(worldIn, entityIn.entityBoundingBox, this.blockMaterial, entityIn)
     }
 
+    // forge deprecates this because they don't want you to call it. This is not how you use
+    // deprecation but the folks at forge don't care for valid software design anyway, so I will just suppress this
+    // garbage.
+    @Suppress("DEPRECATION")
     override fun shouldSideBeRendered(state: IBlockState, world: IBlockAccess, pos: BlockPos, side: EnumFacing): Boolean {
         val neighbor = world.getBlockState(pos.offset(side))
         if ((neighbor.block is IFluidBlock || neighbor.block is BlockLiquid) && neighbor.block != this) {

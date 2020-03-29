@@ -37,16 +37,15 @@ class CoolantMeter(posX: Int, posY: Int, val coolantIn: FluidTileEntityComponent
     }
 
     override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
-
         if (partialTicks != -1f) {
             drawBackground(x, y)
         }
 
-        val partialTicks = Minecraft.getMinecraft().renderPartialTicks
+        val renderPartialTicks = Minecraft.getMinecraft().renderPartialTicks
 
-        meterIn.draw(x + posX, y + posY, mouseX, mouseY, partialTicks)
-        meterOut.draw(x + posX, y + posY, mouseX, mouseY, partialTicks)
-        heatBar.draw(x + posX, y + posY, mouseX, mouseY, partialTicks)
+        meterIn.draw(x + posX, y + posY, mouseX, mouseY, renderPartialTicks)
+        meterOut.draw(x + posX, y + posY, mouseX, mouseY, renderPartialTicks)
+        heatBar.draw(x + posX, y + posY, mouseX, mouseY, renderPartialTicks)
     }
 
     override fun drawTooltip(mouseX: Int, mouseY: Int) {
