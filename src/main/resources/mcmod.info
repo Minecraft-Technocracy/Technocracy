@@ -1,0 +1,41 @@
+[
+{
+    "modid": "technocracy.foundation",
+    "name": "Technocracy Foundation",
+    "description": "A mod that adds a large variety of industrial aspects and acts as a foundation for expansions.",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": ["Cydhra, Poke, Flaflo"],
+    "credits": "Based upon ideas of Mekanism and MineFactory",
+    "logoFile": "",
+    "screenshots": []
+},
+{
+    "modid": "technocracy.astronautics",
+    "name": "Technocracy Astronautics",
+    "description": "First expansion of the mod; adding space flight and interstellar industrial options.",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": ["Cydhra, Poke"],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": []
+},
+{
+    "modid": "technocracy.optics",
+    "name": "Technocracy Optics",
+    "description": "Second expansion of the mod; adding lasers and laser applications to the mod.",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": ["Cydhra, Poke"],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": []
+}
+]
