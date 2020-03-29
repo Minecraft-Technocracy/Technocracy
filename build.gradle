@@ -203,6 +203,10 @@ jar {
             exclude 'META-INF', 'META-INF/**', 'mcmod.info', 'pack.mcmeta'
         }
     }
+
+    manifest {
+        attributes 'FMLAT': 'monolith_at.cfg'
+    }
 }
 
 /*
