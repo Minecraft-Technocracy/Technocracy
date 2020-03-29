@@ -195,6 +195,10 @@ dependencies {
     shade(project('technocracy.foundation')) { transitive = false }
     shade(project('technocracy.astronautics')) { transitive = false }
     shade(project('technocracy.optics')) { transitive = false }
+
+    runtime(project('technocracy.foundation'))
+    runtime(project('technocracy.astronautics'))
+    runtime(project('technocracy.optics'))
 }
 
 jar {
