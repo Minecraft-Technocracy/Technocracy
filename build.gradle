@@ -186,10 +186,23 @@ project('technocracy.optics') {
 /*
  * MONOLITH CONFIGURATION
  */
+configurations {
+    shade
+    compile.extendsFrom shade
+}
+
 dependencies {
-    compile project('technocracy.foundation')
-    compile project('technocracy.astronautics')
-    compile project('technocracy.optics')
+    shade(project('technocracy.foundation')) { transitive = false }
+    shade(project('technocracy.astronautics')) { transitive = false }
+    shade(project('technocracy.optics')) { transitive = false }
+}
+
+jar {
+    configurations.shade.each { dep ->
+        from(project.zipTree(dep)){
+            exclude 'META-INF', 'META-INF/**', 'mcmod.info', 'pack.mcmeta'
+        }
+    }
 }
 
 /*
