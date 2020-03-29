@@ -5,9 +5,14 @@ import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.world.storage.WorldSavedData
 import net.minecraftforge.common.DimensionManager
 
-
+/**
+ * Manager for [WorldSavedData] instances used by technocracy. It stores them and saves them to NBT when necessary.
+ *
+ * @param name the NBT tag to identify the data managed by this particular instance
+ */
 class DataManager(name: String = "tc_data") : WorldSavedData(name) {
 
+    // TODO since most of the code is inside the companion anyways, maybe refactor the manager into an object
     companion object {
         var manager: DataManager? = null
         val modules = mutableListOf<AbstractSaveDataElement>(GroupManager)

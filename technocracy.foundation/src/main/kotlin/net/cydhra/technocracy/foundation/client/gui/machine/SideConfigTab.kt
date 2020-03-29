@@ -58,7 +58,13 @@ import org.lwjgl.util.vector.Vector3f
 import java.awt.Color
 import kotlin.math.min
 
-
+/**
+ * A tab within technocracy-style GUIs that displays the side-configuration of machines and offers a way to change it.
+ *
+ * @param parent parent [TCGui] that owns this tab
+ * @param machine the machine that is configured from this gui
+ * @param mainTab the main tab of the machine, that is partially rendered into this gui.
+ */
 class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: TCTab) : TCTab("SideConfig", parent, icon = TCIcon(wrenchItem)) {
 
     companion object {
@@ -107,7 +113,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
                 if (it !is TCSlotPlayer) {
                     var face = lastSideHit ?: currentLockedSide
                     //if (face.axis.isHorizontal)
-                        //face = face.rotateY().rotateY()
+                    //face = face.rotateY().rotateY()
 
                     var added = false
                     var changedComponent: IComponent? = null
@@ -397,7 +403,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
             RenderHelper.enableStandardItemLighting()
             ForgeHooksClient.setRenderPass(0)
             GlStateManager.depthMask(false)
-            renderTileEntitys(pos, machine.world)
+            renderTileEntity(pos, machine.world)
             GlStateManager.depthMask(true)
             ForgeHooksClient.setRenderPass(0)
             RenderHelper.disableStandardItemLighting()
@@ -416,7 +422,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
 
             RenderHelper.enableStandardItemLighting()
             ForgeHooksClient.setRenderPass(1)
-            renderTileEntitys(pos, machine.world)
+            renderTileEntity(pos, machine.world)
             GlStateManager.depthMask(true)
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
             ForgeHooksClient.setRenderPass(-1)
@@ -519,7 +525,17 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         mc.renderItem.zLevel = 0.0f
     }
 
-    fun renderSelectionOutline(x: Int, y: Int, facing: EnumFacing, renderComponent: ITCComponent, component: AbstractDirectionalCapabilityTileEntityComponent, colorMap: MutableMap<AbstractCapabilityTileEntityComponent, Int>, rotation: Vector3f) {
+    /**
+     * Helper function to render the selection outline onto the selected side within the side config
+     */
+    private fun renderSelectionOutline(x: Int,
+                                       y: Int,
+                                       facing: EnumFacing,
+                                       renderComponent: ITCComponent,
+                                       component: AbstractDirectionalCapabilityTileEntityComponent,
+                                       colorMap: MutableMap<AbstractCapabilityTileEntityComponent, Int>,
+                                       rotation: Vector3f
+    ) {
         val color = colorMap.getOrPut(component) {
             val color = Color.getHSBColor(rotation.x / 360f, 1f, 1f).rgb
             rotation.x += 30
@@ -538,7 +554,24 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         }
     }
 
-    fun renderBlockOverlay(facing: EnumFacing, component: AbstractDirectionalCapabilityTileEntityComponent, colorMap: MutableMap<AbstractCapabilityTileEntityComponent, Int>, bb: AxisAlignedBB, rotation: Vector3f, totalRotsOnSide: Vector2f): Vector3f {
+    /**
+     * A helper function that renders the side-config overlay onto a block
+     *
+     * @param facing the facing of the block where the overlay is applied
+     * @param component the sided component of the machine that is linked to the overlay
+     * @param colorMap a mapping of colors for different components
+     * @param bb the bounding box used for the 3D overlay renderer
+     * @param rotation the rotation of the block
+     * @param totalRotsOnSide
+     */
+    private fun renderBlockOverlay(
+            facing: EnumFacing,
+            component: AbstractDirectionalCapabilityTileEntityComponent,
+            colorMap: MutableMap<AbstractCapabilityTileEntityComponent, Int>,
+            bb: AxisAlignedBB,
+            rotation: Vector3f,
+            totalRotsOnSide: Vector2f
+    ): Vector3f {
         val color = colorMap.getOrPut(component) {
             val color = Color.getHSBColor(rotation.x / 360f, 1f, 1f).rgb
             rotation.x += 30
@@ -586,7 +619,13 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         return rotation
     }
 
-    fun renderTileEntitys(pos: BlockPos, tcw: World) {
+    /**
+     * A helper function render tile entities into the gui.
+     *
+     * @param pos the position of the tile entity
+     * @param tcw the world that provides the tile entity
+     */
+    private fun renderTileEntity(pos: BlockPos, tcw: World) {
         val mc = Minecraft.getMinecraft()
 
         //todo fix mekanism pipes beeing rendered at the wrong positions
@@ -626,7 +665,15 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         zoomLevel = min(-0.3f, zoomLevel)
     }
 
-    fun renderBlocks(layer: BlockRenderLayer, pos: BlockPos, tess: Tessellator, tcw: World) {
+    /**
+     * Helper function to render a block into the gui.
+     *
+     * @param layer the render layer that shall be used
+     * @param pos the position of the block to render
+     * @param tess the tessellator instance
+     * @param tcw the world that provides the block
+     */
+    private fun renderBlocks(layer: BlockRenderLayer, pos: BlockPos, tess: Tessellator, tcw: World) {
         val mc = Minecraft.getMinecraft()
         val dist = 1.0
         for (face in EnumFacing.values()) {
