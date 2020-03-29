@@ -11,6 +11,9 @@ class ClientProxy : CommonProxy() {
 
     override fun preInit() {
         super.preInit()
+        blockManager.initClient()
+        itemManager.initClient()
+        tileEntityManager.initClient()
         entityManager.registerRenderer()
     }
 }
