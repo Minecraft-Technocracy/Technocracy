@@ -103,6 +103,7 @@ internal class ConduitNetworkDimension(private val dimensionId: Int) {
                     val potentialTargets = dijkstra(world, source, chunk, content, emptyMap(), true)
 
                     // transfer content
+                    // TODO routing strategy
                     if (potentialTargets.isNotEmpty()) {
                         var remainingContent = content
                         var index = 0
