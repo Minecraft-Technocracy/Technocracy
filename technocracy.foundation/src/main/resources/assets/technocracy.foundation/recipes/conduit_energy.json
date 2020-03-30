@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "ccc",
+    "   "
+  ],
+  "key": {
+    "c": {
+      "type": "forge:ore_dict",
+      "ore": "ingotCopper"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:pipe_item",
+    "data": 0,
+    "count": 6
+  }
+}

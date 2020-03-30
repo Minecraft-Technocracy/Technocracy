@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "lll",
+    "   "
+  ],
+  "key": {
+    "l": {
+      "type": "forge:ore_dict",
+      "ore": "ingotLead"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:pipe_item",
+    "data": 1,
+    "count": 6
+  }
+}
