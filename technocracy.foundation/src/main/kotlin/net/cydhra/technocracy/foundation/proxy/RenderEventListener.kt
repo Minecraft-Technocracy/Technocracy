@@ -2,6 +2,7 @@ package net.cydhra.technocracy.foundation.proxy
 
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
@@ -9,9 +10,12 @@ import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
 import net.minecraftforge.client.event.RenderBlockOverlayEvent
+import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.fluids.BlockFluidBase
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 
 @Mod.EventBusSubscriber(modid = TCFoundation.MODID)
 class RenderEventListener {
@@ -108,6 +112,18 @@ class RenderEventListener {
 //    }
 
     @SubscribeEvent
+    @SideOnly(Side.CLIENT)
+    @Suppress("unused")
+    fun renderOverlay(event: RenderGameOverlayEvent.Post) {
+        if (event.type == RenderGameOverlayEvent.ElementType.ALL) {
+            val underwaterGrayscale = ResourceLocation("technocracy.foundation", "textures/extra/earlyalpha.png")
+            Minecraft.getMinecraft().renderEngine.bindTexture(underwaterGrayscale)
+            Gui.drawModalRectWithCustomSizedTexture(0, 0, 0f, 0f, 125, 125, 125f, 125f)
+        }
+    }
+
+    @SubscribeEvent
+    @SideOnly(Side.CLIENT)
     @Suppress("unused")
     fun handleFluidBlockOverlayEvent(event: RenderBlockOverlayEvent) {
         //Cofh copy pasta
