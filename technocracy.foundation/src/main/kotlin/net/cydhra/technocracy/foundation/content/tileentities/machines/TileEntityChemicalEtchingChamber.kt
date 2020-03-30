@@ -88,7 +88,9 @@ class TileEntityChemicalEtchingChamber : MachineTileEntity(), TEInventoryProvide
         for (i in 0 until this.inputInventory.inventory.size) {
             mainTab.components.add(SlotComponent(inputInventory.inventory, i, type = inputInventory.inventoryType))
         }
-        mainTab.components.add(SlotComponent(outputInventoryComponent.inventory, 0, type = outputInventoryComponent.inventoryType))
+        for (i in 0 until this.outputInventoryComponent.inventory.size) {
+            mainTab.components.add(SlotComponent(outputInventoryComponent.inventory, i, type = outputInventoryComponent.inventoryType))
+        }
 
         if (player != null)
             addPlayerContainerSlots(mainTab, player)
