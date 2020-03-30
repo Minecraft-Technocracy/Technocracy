@@ -8,14 +8,12 @@ import net.cydhra.technocracy.foundation.content.commands.PasteTemplateCommand
 import net.cydhra.technocracy.foundation.content.multiblock.MultiBlockPhysics
 import net.cydhra.technocracy.foundation.data.config.PhysicSystem
 import net.cydhra.technocracy.foundation.data.world.api.DataManager
-import net.cydhra.technocracy.foundation.integration.top.TOPIntegration
 import net.cydhra.technocracy.foundation.proxy.CommonProxy
 import net.minecraft.world.WorldServer
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.config.Configuration
 import net.minecraftforge.fluids.FluidRegistry
 import net.minecraftforge.fml.common.FMLLog
-import net.minecraftforge.fml.common.Loader
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.Mod.EventHandler
 import net.minecraftforge.fml.common.SidedProxy
@@ -99,6 +97,10 @@ object TCFoundation {
 
         proxy.initializeProxy()
         proxy.preInit()
+
+        // send inter-mod communication to register integrations
+        FMLInterModComms.sendRuntimeFunctionMessage(this, "theoneprobe", "getTheOneProbe",
+                "net.cydhra.technocracy.foundation.integration.top.TOPFunction")
     }
 
     @Suppress("unused")
@@ -111,8 +113,6 @@ object TCFoundation {
     @EventHandler
     fun postInit(@Suppress("UNUSED_PARAMETER") event: FMLPostInitializationEvent) {
         proxy.postInit()
-        if (Loader.isModLoaded("theoneprobe"))
-            TOPIntegration().init()
     }
 
     @Suppress("unused")
@@ -134,7 +134,7 @@ object TCFoundation {
 
     @Suppress("unused")
     @Mod.EventHandler
-    fun serverStarted(event: FMLServerStartedEvent) {
+    fun serverStarted(@Suppress("UNUSED_PARAMETER") event: FMLServerStartedEvent) {
         DataManager.init()
     }
 }
