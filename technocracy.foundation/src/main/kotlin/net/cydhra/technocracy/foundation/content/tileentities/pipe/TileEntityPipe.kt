@@ -23,21 +23,25 @@ class TileEntityPipe : AggregatableTileEntity() {
         const val size = 0.05
         const val nodeSize = 0.075
 
-        val node = AxisAlignedBB(Vec3d((0.5 - nodeSize), (0.5 - nodeSize), (0.5 - nodeSize)),
+        val node = getBB(Vec3d((0.5 - nodeSize), (0.5 - nodeSize), (0.5 - nodeSize)),
                 Vec3d((0.5 + nodeSize), (0.5 + nodeSize), (0.5 + nodeSize)))
 
-        val connections = mapOf(EnumFacing.NORTH to AxisAlignedBB(Vec3d((0.5 - size), (0.5 - size), 0.0),
+        val connections = mapOf(EnumFacing.NORTH to getBB(Vec3d((0.5 - size), (0.5 - size), 0.0),
                 Vec3d((0.5 + size), (0.5 + size), (0.5 - size))),
-                EnumFacing.SOUTH to AxisAlignedBB(Vec3d((0.5 - size), (0.5 - size), (0.5 + size)),
+                EnumFacing.SOUTH to getBB(Vec3d((0.5 - size), (0.5 - size), (0.5 + size)),
                         Vec3d((0.5 + size), (0.5 + size), 1.0)),
-                EnumFacing.EAST to AxisAlignedBB(Vec3d((0.5 + size), (0.5 - size), (0.5 - size)),
+                EnumFacing.EAST to getBB(Vec3d((0.5 + size), (0.5 - size), (0.5 - size)),
                         Vec3d(1.0, (0.5 + size), (0.5 + size))),
-                EnumFacing.WEST to AxisAlignedBB(Vec3d(0.0, (0.5 - size), (0.5 - size)),
+                EnumFacing.WEST to getBB(Vec3d(0.0, (0.5 - size), (0.5 - size)),
                         Vec3d((0.5 - size), (0.5 + size), (0.5 + size))),
-                EnumFacing.UP to AxisAlignedBB(Vec3d((0.5 - size), (0.5 + size), (0.5 - size)),
+                EnumFacing.UP to getBB(Vec3d((0.5 - size), (0.5 + size), (0.5 - size)),
                         Vec3d((0.5 + size), 1.0, (0.5 + size))),
-                EnumFacing.DOWN to AxisAlignedBB(Vec3d((0.5 - size), 0.0, (0.5 - size)),
+                EnumFacing.DOWN to getBB(Vec3d((0.5 - size), 0.0, (0.5 - size)),
                         Vec3d((0.5 + size), (0.5 - size), (0.5 + size))))
+
+        private fun getBB(min: Vec3d, max: Vec3d): AxisAlignedBB {
+            return AxisAlignedBB(min.x, min.y, min.z, max.x, max.y, max.z)
+        }
     }
 
     private val pipeTypes = PipeTypesTileEntityComponent()
