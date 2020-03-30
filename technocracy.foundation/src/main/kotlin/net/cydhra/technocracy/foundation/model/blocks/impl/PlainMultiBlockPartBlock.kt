@@ -32,7 +32,7 @@ open class PlainMultiBlockPartBlock<T>(
         private val opaque: Boolean = true,
         private val isFullCube: Boolean = true,
         private val glassSides: Boolean = false,
-        renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID)
+        renderLayer: BlockRenderLayer? = null)
     : AbstractTileEntityBlock(unlocalizedName, material = Material.IRON, renderLayer = renderLayer),
         TCMultiBlock<T> by MultiBlockBaseDelegate<T>(tileEntityConstructor)
         where T : TileEntity, T : TCMultiBlockActiveTileEntity, T : IMultiblockPart {

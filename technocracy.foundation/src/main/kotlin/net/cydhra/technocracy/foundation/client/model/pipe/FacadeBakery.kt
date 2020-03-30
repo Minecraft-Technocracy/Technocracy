@@ -54,7 +54,7 @@ object FacadeBakery {
             customState = customState.block.getExtendedState(customState, fakeWorld, pos)
 
             try {
-                quads.addAll(genQuads(coverModel, customState, coverFace, faces, fakeWorld, pos, customState.block.blockLayer == BlockRenderLayer.TRANSLUCENT))
+                quads.addAll(genQuads(coverModel, customState, coverFace, faces, fakeWorld, pos))
             } catch (e: Exception) {
                 e.printStackTrace()
                 TCFoundation.logger.error("Facade of block ${customState.block} has special renderer and references a tile entity that is not in the world")
@@ -93,7 +93,7 @@ object FacadeBakery {
         return quads
     }
 
-    fun genQuads(coverModel: IBakedModel, customState: IBlockState, coverFace: EnumFacing, faces: BooleanArray, access: IBlockAccess, pos: BlockPos, transparent: Boolean): List<BakedQuad> {
+    fun genQuads(coverModel: IBakedModel, customState: IBlockState, coverFace: EnumFacing, faces: BooleanArray, access: IBlockAccess, pos: BlockPos): List<BakedQuad> {
         val quads = mutableListOf<BakedQuad>()
         var origQuads = coverModel.getQuads(customState, null, 0)
 

@@ -19,7 +19,7 @@ import net.minecraftforge.common.property.IExtendedBlockState
 abstract class AbstractRotatableTileEntityBlock(unlocalizedName: String,
                                                 registryName: String = unlocalizedName,
                                                 colorMultiplier: IBlockColor? = null,
-                                                material: Material, renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID)
+                                                material: Material, renderLayer: BlockRenderLayer? = null)
     : AbstractTileEntityBlock(unlocalizedName, registryName, colorMultiplier, material, renderLayer = renderLayer), IDynamicBlockStateContainer {
 
     companion object {
