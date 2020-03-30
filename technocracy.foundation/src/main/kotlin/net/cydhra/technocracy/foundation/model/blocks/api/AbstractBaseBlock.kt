@@ -21,7 +21,7 @@ abstract class AbstractBaseBlock(unlocalizedName: String,
                                  material: Material,
                                  registryName: String = unlocalizedName,
                                  override val colorMultiplier: IBlockColor? = null,
-                                 val oreDictionaryName: String? = null, renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID) : Block(material), IBaseBlock {
+                                 val oreDictionaryName: String? = null, renderLayer: BlockRenderLayer? = null) : Block(material), IBaseBlock {
 
     override val modelLocation: String
         get() = this.registryName.toString()
@@ -32,25 +32,28 @@ abstract class AbstractBaseBlock(unlocalizedName: String,
     val renderLayers = mutableListOf<BlockRenderLayer>()
 
     init {
-        renderLayers.add(renderLayer)
+        if (renderLayer != null)
+            renderLayers.add(renderLayer)
+
         this.unlocalizedName = unlocalizedName
         this.setRegistryName(registryName)
     }
 
     override fun canRenderInLayer(state: IBlockState, layer: BlockRenderLayer): Boolean {
-        return this.renderLayers.contains(layer)
+        return if(renderLayers.isNotEmpty()) this.renderLayers.contains(layer) else layer == blockLayer
     }
 
     @SideOnly(Side.CLIENT)
+    /**
+     * Returns the BlockRenderLayer of this block, if 2 or more layers are active it returns the first one.
+     * If no layer is present it returns the super layer.
+     */
     override fun getBlockLayer(): BlockRenderLayer? {
         return when {
-            renderLayers.size > 1 -> {
-                null
-            }
             renderLayers.isNotEmpty() -> {
                 this.renderLayers[0]
             }
-            else -> BlockRenderLayer.SOLID
+            else -> super.getBlockLayer()
         }
     }
 }

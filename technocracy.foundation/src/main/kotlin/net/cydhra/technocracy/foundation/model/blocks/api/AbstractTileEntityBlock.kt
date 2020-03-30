@@ -33,7 +33,7 @@ abstract class AbstractTileEntityBlock(unlocalizedName: String,
                                        registryName: String = unlocalizedName,
                                        colorMultiplier: IBlockColor? = null,
                                        material: Material,
-                                       renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID)
+                                       renderLayer: BlockRenderLayer? = null)
     : AbstractBaseBlock(unlocalizedName, material, registryName, colorMultiplier, renderLayer = renderLayer), ITileEntityProvider {
 
     /**

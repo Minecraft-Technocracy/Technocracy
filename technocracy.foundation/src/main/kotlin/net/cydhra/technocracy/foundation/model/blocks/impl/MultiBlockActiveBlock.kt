@@ -20,7 +20,7 @@ import net.minecraft.world.World
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 
-class MultiBlockActiveBlock<out T>(name: String, tileEntityConstructor: () -> T, renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID)
+class MultiBlockActiveBlock<out T>(name: String, tileEntityConstructor: () -> T, renderLayer: BlockRenderLayer? = null)
     : AbstractTileEntityBlock(name, material = Material.ROCK, renderLayer = renderLayer),
         TCMultiBlock<T> by MultiBlockBaseDelegate<T>(tileEntityConstructor)
         where T : TileEntity, T : TCMultiBlockActiveTileEntity, T : IMultiblockPart {
