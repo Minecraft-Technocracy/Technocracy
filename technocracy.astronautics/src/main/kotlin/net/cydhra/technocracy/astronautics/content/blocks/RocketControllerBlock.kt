@@ -27,6 +27,11 @@ import net.minecraft.world.World
 
 class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controller", material = Material.ROCK), IDynamicBlockPlaceBehavior {
 
+    init {
+        this.setHardness(2f)
+        this.setResistance(4f)
+    }
+
     override fun placeBlockAt(place: Boolean, stack: ItemStack, player: EntityPlayer, world: World, pos: BlockPos, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float, newState: IBlockState): Boolean {
         val tile = world.getTileEntity(pos) as? TileEntityRocketController ?: return place
 

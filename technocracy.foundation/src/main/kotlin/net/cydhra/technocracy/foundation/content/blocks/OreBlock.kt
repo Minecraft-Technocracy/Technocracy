@@ -22,7 +22,7 @@ class OreBlock(unlocalizedName: String, oreType: String, colorMultiplier: Int)
 
     init {
         this.blockResistance = 3.5f
-        this.blockHardness = 2f
+        this.blockHardness = 3f
     }
 
     @SideOnly(Side.CLIENT)

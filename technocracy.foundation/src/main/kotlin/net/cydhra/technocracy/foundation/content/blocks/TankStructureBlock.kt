@@ -36,6 +36,10 @@ class TankStructureBlock<T>(unlocalizedName: String,
     : PlainMultiBlockPartBlock<T>(unlocalizedName, tileEntityConstructor, opaque, isFullCube, glassSides, renderLayer)
         where T : TileEntity, T : TCMultiBlockActiveTileEntity, T : IMultiblockPart {
 
+    init {
+        setHardness(3f)
+    }
+
     override fun onBlockActivated(worldIn: World, pos: BlockPos, state: IBlockState, playerIn: EntityPlayer, hand: EnumHand, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean {
         if (!playerIn.isSneaking) {
             val controllerTileEntity = getMultiBlockPartTileEntity(worldIn, pos)

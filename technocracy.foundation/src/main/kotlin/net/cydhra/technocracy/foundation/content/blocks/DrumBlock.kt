@@ -66,6 +66,10 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
         var DRUM_TYPE: PropertyEnum<DrumType> = PropertyEnum.create("drumtype", DrumType::class.java)
     }
 
+    init {
+        setHardness(1.5F)
+    }
+
     override fun placeBlockAt(place: Boolean, stack: ItemStack, player: EntityPlayer, world: World, pos: BlockPos, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float, newState: IBlockState): Boolean {
         //if (!stack.hasTagCompound()) return place
         val tile = world.getTileEntity(pos) as? TileEntityDrum

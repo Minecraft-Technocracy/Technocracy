@@ -17,6 +17,11 @@ import java.util.*
 
 
 class OilStoneBlock : AbstractBaseBlock("oil_stone", Material.ROCK, colorMultiplier = ConstantBlockColor(0x1C1004), renderLayer = BlockRenderLayer.CUTOUT) {
+
+    init {
+        setHardness(1.5F)
+    }
+
     @SideOnly(Side.CLIENT)
     override fun getBlockLayer(): BlockRenderLayer {
         return BlockRenderLayer.CUTOUT
