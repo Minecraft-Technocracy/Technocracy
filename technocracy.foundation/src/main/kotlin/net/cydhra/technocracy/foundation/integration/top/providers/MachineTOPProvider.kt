@@ -1,8 +1,6 @@
 package net.cydhra.technocracy.foundation.integration.top.providers
 
 import mcjty.theoneprobe.api.*
-import mcjty.theoneprobe.apiimpl.styles.ItemStyle
-import mcjty.theoneprobe.apiimpl.styles.ProgressStyle
 import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
@@ -21,25 +19,67 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler
 
 class MachineTOPProvider : IProbeInfoProvider {
 
-    private val energyStyle: ProgressStyle = ProgressStyle().suffix("RF").filledColor(0xffdd0000.toInt()).borderColor(0xff555555.toInt()).alternateFilledColor(0xff430000.toInt()).numberFormat(NumberFormat.COMPACT)
-    private val fluidStyle: ProgressStyle = ProgressStyle().suffix(" mB").filledColor(0xff0000dd.toInt()).borderColor(0xff555555.toInt()).alternateFilledColor(0xff000043.toInt()).numberFormat(NumberFormat.COMMAS)
+    /**
+     * Whether the progress styles have been implemented already
+     */
+    private var init = false
 
-    override fun addProbeInfo(mode: ProbeMode, probeInfo: IProbeInfo, player: EntityPlayer, world: World, blockState: IBlockState, data: IProbeHitData) {
-        val te = world.getTileEntity(data.pos) as? TCAggregatable
-                ?: return
+    /**
+     * The style for technocracy energy bars
+     */
+    private lateinit var energyStyle: IProgressStyle
+
+    /**
+     * The style for technocracy fluid bars
+     */
+    private lateinit var fluidStyle: IProgressStyle
+
+    /**
+     * Add info to the probe, if the [blockstate] is pointing to a tileentity of technocracy.
+     */
+    override fun addProbeInfo(
+            mode: ProbeMode,
+            probeInfo: IProbeInfo,
+            player: EntityPlayer,
+            world: World,
+            blockState: IBlockState,
+            data: IProbeHitData
+    ) {
+        if (!init) {
+            energyStyle = probeInfo.defaultProgressStyle()
+                    .suffix("RF")
+                    .filledColor(0xffdd0000.toInt())
+                    .borderColor(0xff555555.toInt())
+                    .alternateFilledColor(0xff430000.toInt())
+                    .numberFormat(NumberFormat.COMPACT)
+            fluidStyle = probeInfo.defaultProgressStyle()
+                    .suffix(" mB")
+                    .filledColor(0xff0000dd.toInt())
+                    .borderColor(0xff555555.toInt())
+                    .alternateFilledColor(0xff000043.toInt())
+                    .numberFormat(NumberFormat.COMMAS)
+
+            init = true
+        }
+
+        val te = world.getTileEntity(data.pos) as? TCAggregatable ?: return
         if (te !is ICapabilityProvider) return
+
         val components: Set<Pair<String, IComponent>>
+
         components = if (te is TileEntityMultiBlockPart<*>) {
-            if (te.multiblockController != null && te.multiblockController!!.isAssembled) (te.multiblockController as BaseMultiBlock).getComponents().toSet() else setOf()
+            if (te.multiblockController != null && te.multiblockController!!.isAssembled)
+                (te.multiblockController as BaseMultiBlock).getComponents().toSet() else setOf()
         } else {
             te.getComponents().toSet()
         }
+
         components.forEach { (_, component) ->
             fillInfo(component, te, probeInfo)
         }
     }
 
-    fun fillInfo(component: IComponent, te: TCAggregatable, probeInfo: IProbeInfo) {
+    private fun fillInfo(component: IComponent, te: TCAggregatable, probeInfo: IProbeInfo) {
         when (component) {
             is EnergyStorageTileEntityComponent ->
                 if (!(te as ICapabilityProvider).hasCapability(CapabilityEnergy.ENERGY, null))
@@ -48,6 +88,7 @@ class MachineTOPProvider : IProbeInfoProvider {
                             energyStyle)
             is FluidTileEntityComponent ->
                 if (!(te as ICapabilityProvider).hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
+
                     probeInfo.progress(component.fluid.currentFluid?.amount
                             ?: 0, component.fluid.capacity, fluidStyle).text(component.fluid.currentFluid?.localizedName
                             ?: "")
@@ -68,7 +109,7 @@ class MachineTOPProvider : IProbeInfoProvider {
                 }
             }
             is OptionalAttachedTileEntityComponent<*> -> {
-                if(component.isAttached)
+                if (component.isAttached)
                     fillInfo(component.innerComponent, te, probeInfo)
             }
         }
