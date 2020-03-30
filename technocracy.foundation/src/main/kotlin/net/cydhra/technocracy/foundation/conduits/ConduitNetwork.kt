@@ -301,6 +301,8 @@ object ConduitNetwork {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     fun renderDebugEvent(event: RenderWorldLastEvent) {
+        if(true)
+            return
         val mc = Minecraft.getMinecraft()
 
         GL11.glPushMatrix()

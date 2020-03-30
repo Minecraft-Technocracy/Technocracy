@@ -10,7 +10,7 @@ import net.minecraftforge.fml.relauncher.Side
 
 
 object PacketHandler {
-    private val simpleHandler = NetworkRegistry.INSTANCE.newSimpleChannel(TCFoundation.MODID)
+    private val simpleHandler = NetworkRegistry.INSTANCE.newSimpleChannel("technocracy")
     private var amount = 0
 
     /**

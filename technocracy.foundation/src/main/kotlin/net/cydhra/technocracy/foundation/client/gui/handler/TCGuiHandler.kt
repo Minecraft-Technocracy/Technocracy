@@ -20,12 +20,12 @@ class TCGuiHandler : IGuiHandler {
         val gui = when (ID) {
             machineGui -> {
                 if (te is TCTileEntityGuiProvider) {
-                    te.getGui(player).container
+                    te.getContainer(player)
                 } else null
             }
             multiblockGui -> {
                 if (te is TileEntityMultiBlockPart<*>) {
-                    te.getGui(player).container
+                    te.getContainer(player)
                 } else null
             }
             else -> null

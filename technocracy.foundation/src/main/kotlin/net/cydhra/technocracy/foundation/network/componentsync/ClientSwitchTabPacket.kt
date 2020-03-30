@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.network.componentsync
 
 import io.netty.buffer.ByteBuf
-import net.cydhra.technocracy.foundation.client.gui.TCContainer
+import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext
@@ -22,7 +22,7 @@ class ClientSwitchTabPacket(var tabId: Int = -1) : IMessage, IMessageHandler<Cli
         if (container !is TCContainer)
             return null
 
-        container.gui.setActiveTab(packet.tabId)
+        container.activeTab = packet.tabId
 
         return null
     }

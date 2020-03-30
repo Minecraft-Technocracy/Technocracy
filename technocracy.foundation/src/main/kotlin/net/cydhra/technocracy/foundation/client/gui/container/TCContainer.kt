@@ -1,8 +1,7 @@
-package net.cydhra.technocracy.foundation.client.gui
+package net.cydhra.technocracy.foundation.client.gui.container
 
-import net.cydhra.technocracy.foundation.client.gui.components.ITCComponent
-import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
-import net.cydhra.technocracy.foundation.client.gui.components.slot.ITCSlot
+import net.cydhra.technocracy.foundation.client.gui.container.components.ClickableComponent
+import net.cydhra.technocracy.foundation.client.gui.container.components.IContainerSlot
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.Container
@@ -14,27 +13,47 @@ import kotlin.streams.toList
 
 open class TCContainer : Container() {
 
+    //@SideOnly(Side.CLIENT)
+    //private val components = mutableListOf<TCComponent>()
 
-    private val components = mutableListOf<TCComponent>()
+    //@SideOnly(Side.CLIENT)
+    //lateinit var gui: TCGui
 
-    lateinit var gui: TCGui
-
-    /**
-     * The tileentity this gui belongs to if there is one
-     */
+            /**
+             * The tileentity this gui belongs to if there is one
+             */
     var tileEntity: TileEntity? = null
+
+    private val tabs = mutableListOf<TCContainerTab>()
+    var activeTab = 0
+        set(value) {
+            field = value
+            for (tab in tabs) {
+                for (component in tab.components) {
+                    if (component is IContainerSlot) {
+                        component.enabled = false
+                    }
+                }
+            }
+            if (value != -1)
+                for (component in tabs[value].components) {
+                    if (component is IContainerSlot) {
+                        component.enabled = true
+                    }
+                }
+        }
 
     override fun transferStackInSlot(player: EntityPlayer, index: Int): ItemStack? {
         var newStack = ItemStack.EMPTY
         val slot = this.inventorySlots[index]
-        val tcSlot = slot as ITCSlot
+        val tcSlot = slot as IContainerSlot
 
-        val tmp = inventorySlots.stream().filter { (it as ITCSlot).isPlayerInventory }.toList()
+        val tmp = inventorySlots.stream().filter { (it as IContainerSlot).isPlayerInventory }.toList()
         val playerHotbar = tmp.filter { it.slotIndex < 9 }.map { it.slotNumber }.toList()
         val playerUpperInv = tmp.filter { it.slotIndex >= 9 }.map { it.slotNumber }.toList()
         val playerInvWhole = tmp.map { it.slotNumber }.toList()
 
-        val guiSlots = inventorySlots.stream().filter { !(it as ITCSlot).isPlayerInventory }.filter { (it as ITCSlot).isEnabled() }.mapToInt { it.slotNumber }.toList()
+        val guiSlots = inventorySlots.stream().filter { !(it as IContainerSlot).isPlayerInventory }.filter { (it as IContainerSlot).isEnabled() }.mapToInt { it.slotNumber }.toList()
 
         if (slot.hasStack) {
             val oldStack = slot.stack.copy()
@@ -94,7 +113,7 @@ open class TCContainer : Container() {
 
                 val slot = inventorySlots[i]
                 val itemstack = slot.stack
-                if (!itemstack.isEmpty && itemstack.item === stack.item && (!stack.hasSubtypes || stack.metadata == itemstack.metadata) && ItemStack.areItemStackTagsEqual(stack, itemstack) && (slot as ITCSlot).type != DynamicInventoryCapability.InventoryType.OUTPUT) {
+                if (!itemstack.isEmpty && itemstack.item === stack.item && (!stack.hasSubtypes || stack.metadata == itemstack.metadata) && ItemStack.areItemStackTagsEqual(stack, itemstack) && (slot as IContainerSlot).type != DynamicInventoryCapability.InventoryType.OUTPUT) {
                     val j = itemstack.count + stack.count
                     val maxSize = slot.getItemStackLimit(stack).coerceAtMost(stack.maxStackSize)
 
@@ -119,7 +138,7 @@ open class TCContainer : Container() {
 
                 val slot1 = inventorySlots[i]
                 val itemstack1 = slot1.stack
-                if (itemstack1.isEmpty && slot1.isItemValid(stack) && (slot1 as ITCSlot).type != DynamicInventoryCapability.InventoryType.OUTPUT) {
+                if (itemstack1.isEmpty && slot1.isItemValid(stack) && (slot1 as IContainerSlot).type != DynamicInventoryCapability.InventoryType.OUTPUT) {
                     if (stack.count > slot1.getItemStackLimit(stack)) {
                         slot1.putStack(stack.splitStack(slot1.getItemStackLimit(stack)))
                     } else {
@@ -134,19 +153,29 @@ open class TCContainer : Container() {
         return flag
     }
 
-    fun registerComponent(component: ITCComponent) {
-        if (component is Slot) {
+    fun registerTab(tab: TCContainerTab) {
+        for (comp in tab.components) {
+            if (comp is Slot) {
+                this.addSlotToContainer(comp)
+            }
+        }
+        if (this.tabs.size > 1) {
+            tab.components.filterIsInstance<IContainerSlot>().forEach { it.enabled = false }
+        }
+        tabs.add(tab)
+
+        /*if (component is Slot) {
             this.addSlotToContainer(component)
         } else if (component is TCComponent) {
             component.componentId = components.size
             components.add(component)
-        }
+        }*/
     }
 
     fun clickComponent(player: EntityPlayer, componentId: Int, clickType: Int) {
-        for (comp in components) {
-            if (comp.componentId == componentId) {
-                comp.handleClientClick(player, clickType)
+        for (comp in tabs[activeTab].components) {
+            if (comp is ClickableComponent && comp.componentId == componentId) {
+                comp.onClick(player, tileEntity, clickType)
             }
         }
     }

@@ -1,8 +1,6 @@
 package net.cydhra.technocracy.foundation.client.gui.multiblock
 
-import net.cydhra.technocracy.foundation.client.gui.TCContainer
-import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
-import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
+import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
 import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
 
 open class MultiblockContainer(val machine: TileEntityMultiBlockPart<*>) : TCContainer(

@@ -11,10 +11,15 @@ import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.Defaul
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.DefaultProgressBar
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.Orientation
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
+import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
+import net.cydhra.technocracy.foundation.client.gui.container.TCContainerTab
+import net.cydhra.technocracy.foundation.client.gui.container.components.PlayerSlotComponent
+import net.cydhra.technocracy.foundation.client.gui.container.components.SlotComponent
 import net.cydhra.technocracy.foundation.client.gui.handler.TCGuiHandler
 import net.cydhra.technocracy.foundation.client.gui.multiblock.BaseMultiblockTab
 import net.cydhra.technocracy.foundation.client.gui.multiblock.MultiblockContainer
 import net.cydhra.technocracy.foundation.client.gui.multiblock.MultiblockSettingsTab
+import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.content.items.siliconItem
 import net.cydhra.technocracy.foundation.network.componentsync.guiInfoPacketSubscribers
 import net.cydhra.technocracy.foundation.model.tileentities.api.AbstractRectangularMultiBlockTileEntity
@@ -127,8 +132,46 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
         }
     }
 
+    override fun getContainer(player: EntityPlayer?): TCContainer {
+        val container = MultiblockContainer(this)
+        val mainTab = TCContainerTab()
+
+        getComponents().filter { it.second is InventoryTileEntityComponent }.forEach { (_, com) ->
+            val component = com as InventoryTileEntityComponent
+            if (component.inventoryType != DynamicInventoryCapability.InventoryType.OUTPUT) {
+                for (i in 0 until component.inventory.slots) {
+                    mainTab.components.add(SlotComponent(component.inventory, i, component.inventoryType))
+                }
+            } else {
+                for (i in component.inventory.slots - 1 downTo 0) {
+                    mainTab.components.add(SlotComponent(component.inventory, i, component.inventoryType))
+                }
+            }
+        }
+
+        if (player != null)
+            addPlayerContainerSlots(mainTab, player)
+
+        container.registerTab(mainTab)
+
+        return container
+    }
+
+    fun addPlayerContainerSlots(tab: TCContainerTab, player: EntityPlayer) {
+
+        for (row in 0..2) {
+            for (slot in 0..8) {
+                tab.components.add(PlayerSlotComponent(player.inventory, slot + row * 9 + 9))
+            }
+        }
+
+        for (k in 0..8) {
+            tab.components.add(PlayerSlotComponent(player.inventory, k))
+        }
+    }
+
     override fun getGui(player: EntityPlayer?): TCGui {
-        val gui = TCGui(container = MultiblockContainer(this))
+        val gui = TCGui(container = getContainer(player))
         gui.registerTab(object : BaseMultiblockTab(this, gui, TCIcon(siliconItem)) {
             override fun init() {
                 var nextOutput = 125

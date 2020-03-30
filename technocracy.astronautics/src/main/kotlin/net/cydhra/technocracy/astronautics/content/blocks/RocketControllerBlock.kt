@@ -30,7 +30,8 @@ class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controlle
     override fun placeBlockAt(place: Boolean, stack: ItemStack, player: EntityPlayer, world: World, pos: BlockPos, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float, newState: IBlockState): Boolean {
         val tile = world.getTileEntity(pos) as? TileEntityRocketController ?: return place
 
-        tile.ownerShip.setOwnerShip(GroupManager.getGroupFromUser(player.uniqueID))
+        if (!world.isRemote)
+            tile.ownerShip.setOwnerShip(GroupManager.getGroupFromUser(player.uniqueID))
 
         return place
     }

@@ -8,8 +8,8 @@ import net.minecraft.entity.player.EntityPlayer
 import kotlin.properties.Delegates
 
 abstract class TCComponent : ITCComponent {
-    var componentId by Delegates.notNull<Int>()
-    open fun handleClientClick(player: EntityPlayer, mouseButton: Int) {}
+    var componentId = -1
+    //open fun handleClientClick(player: EntityPlayer, mouseButton: Int) {}
 
     fun setSize(width: Int = this.width, height: Int = this.height): TCComponent {
         this.width = width
@@ -17,8 +17,13 @@ abstract class TCComponent : ITCComponent {
         return this
     }
 
+    fun setId(id: Int) {
+        componentId = id
+    }
+
     override fun mouseClicked(x: Int, y: Int, mouseX: Int, mouseY: Int, mouseButton: Int) {
-        PacketHandler.sendToServer(ComponentClickPacket(componentId, mouseButton))
+        if (componentId != -1)
+            PacketHandler.sendToServer(ComponentClickPacket(componentId, mouseButton))
     }
 
     fun drawModalRectWithCustomSizedTexture(x: Double, y: Double, u: Double, v: Double, width: Double, height: Double, textureWidth: Float, textureHeight: Float) {

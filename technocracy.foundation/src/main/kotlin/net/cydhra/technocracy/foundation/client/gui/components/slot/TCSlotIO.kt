@@ -1,12 +1,12 @@
 package net.cydhra.technocracy.foundation.client.gui.components.slot
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
+import net.cydhra.technocracy.foundation.client.gui.container.components.SlotComponent
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.init.Items
-import net.minecraft.item.ItemStack
 import net.minecraftforge.items.IItemHandler
 import net.minecraftforge.items.SlotItemHandler
 
@@ -15,6 +15,18 @@ import net.minecraftforge.items.SlotItemHandler
  */
 class TCSlotIO(itemHandler: IItemHandler, override val index: Int, xPosition: Int, yPosition: Int, val gui: TCGui) :
         SlotItemHandler(itemHandler, index, xPosition, yPosition), ITCSlot {
+
+    lateinit var containerSlot: SlotComponent
+
+    init {
+        for (slot in gui.container.inventorySlots) {
+            if (slot is SlotComponent && slot.handler == itemHandler && slot.slotIndex == index) {
+                slot.xPos = xPosition
+                slot.yPos = yPosition
+                containerSlot = slot
+            }
+        }
+    }
 
     override var posX: Int
         get() = super.xPos
@@ -30,9 +42,7 @@ class TCSlotIO(itemHandler: IItemHandler, override val index: Int, xPosition: In
     override var width = 18
     override var height = 18
 
-    private var enabledOverride = true
     override var type: DynamicInventoryCapability.InventoryType = DynamicInventoryCapability.InventoryType.BOTH
-
 
     override fun update() {
     }
@@ -57,14 +67,14 @@ class TCSlotIO(itemHandler: IItemHandler, override val index: Int, xPosition: In
     }
 
     override fun setEnabled(enabled: Boolean) {
-        this.enabledOverride = enabled
+        containerSlot.enabled = enabled
     }
 
     /**
      * This method overrides [net.minecraft.inventory.Slot.isEnabled] and allows that to be ignored by our own value.
      */
     override fun isEnabled(): Boolean {
-        return super.isEnabled() && this.enabledOverride
+        return containerSlot.enabled
     }
 
     override val isPlayerInventory = false

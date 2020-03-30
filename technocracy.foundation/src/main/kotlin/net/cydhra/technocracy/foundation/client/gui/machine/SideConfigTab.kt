@@ -184,6 +184,12 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         super.mouseClicked(x, y, mouseX, mouseY, mouseButton)
     }
 
+    override fun update() {
+        for (it in mainTab.components) {
+            it.update()
+        }
+    }
+
     override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
 
         if (!isInit) {
@@ -514,10 +520,11 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         }
 
         //render the items in the slots
+        RenderHelper.enableGUIStandardItemLighting()
         mc.renderItem.zLevel = 100.0f
         mainTab.components.forEach {
             if (it is TCSlotIO) {
-                val slot = parent.container.inventorySlots[it.slotNumber]
+                val slot = it.containerSlot
                 mc.renderItem.renderItemAndEffectIntoGUI(mc.player, slot.stack, slot.xPos + parent.guiX, slot.yPos + parent.guiY)
                 mc.renderItem.renderItemOverlayIntoGUI(mc.fontRenderer, slot.stack, slot.xPos + parent.guiX, slot.yPos + parent.guiY, null)
             }

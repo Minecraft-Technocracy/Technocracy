@@ -6,13 +6,19 @@ import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.Defaul
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.DefaultProgressBar
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.Orientation
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
-import net.cydhra.technocracy.foundation.client.gui.machine.*
+import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
+import net.cydhra.technocracy.foundation.client.gui.container.TCContainerTab
+import net.cydhra.technocracy.foundation.client.gui.container.components.ClickableComponent
+import net.cydhra.technocracy.foundation.client.gui.container.components.PlayerSlotComponent
+import net.cydhra.technocracy.foundation.client.gui.container.components.SlotComponent
+import net.cydhra.technocracy.foundation.client.gui.machine.BaseMachineTab
+import net.cydhra.technocracy.foundation.client.gui.machine.MachineSettingsTab
+import net.cydhra.technocracy.foundation.client.gui.machine.MachineUpgradesTab
+import net.cydhra.technocracy.foundation.client.gui.machine.SideConfigTab
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.content.tileentities.components.*
 import net.cydhra.technocracy.foundation.content.tileentities.logic.RedstoneLogic
-import net.cydhra.technocracy.foundation.content.tileentities.upgrades.CoolingUpgrade
-import net.cydhra.technocracy.foundation.content.tileentities.upgrades.LubricantUpgrade
 import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_ENERGY
 import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_SPEED
 import net.cydhra.technocracy.foundation.model.tileentities.api.TCMachineTileEntity
@@ -21,7 +27,6 @@ import net.cydhra.technocracy.foundation.model.tileentities.api.logic.LogicClien
 import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableTileEntity
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.EnumFacing
-import net.minecraft.util.ResourceLocation
 
 open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, ILogicClient by LogicClientDelegate() {
 
@@ -63,7 +68,7 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
     }
 
     override fun getGui(player: EntityPlayer?): TCGui {
-        val gui = TCGui(container = MachineContainer(this))
+        val gui = TCGui(container = getContainer(player))
         gui.registerTab(object : BaseMachineTab(this, gui) {
             override fun init() {
                 super.init()
@@ -149,6 +154,83 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
         initGui(gui, player)
 
         return gui
+    }
+
+
+    override fun getContainer(player: EntityPlayer?): TCContainer {
+        val container = TCContainer()
+        val mainTab = TCContainerTab()
+
+        getComponents().filter { it.second is InventoryTileEntityComponent }.forEach { (_, com) ->
+            val component = com as InventoryTileEntityComponent
+            if (component.inventoryType != DynamicInventoryCapability.InventoryType.OUTPUT) {
+                for (i in 0 until component.inventory.slots) {
+                    mainTab.components.add(SlotComponent(component.inventory, i, component.inventoryType))
+                }
+            } else {
+                for (i in component.inventory.slots - 1 downTo 0) {
+                    mainTab.components.add(SlotComponent(component.inventory, i, component.inventoryType))
+                }
+            }
+        }
+
+        if (player != null)
+            addPlayerContainerSlots(mainTab, player)
+
+        container.registerTab(mainTab)
+
+        addDefaultContainerTabs(container, player)
+        return container
+    }
+
+    open fun addDefaultContainerTabs(container: TCContainer, player: EntityPlayer?) {
+        //MachineSettingsTab
+        val redstoneSettings = TCContainerTab()
+        var index = 0
+        getComponents().forEach {
+            if (it.second is RedstoneModeTileEntityComponent) {
+
+                val click = ClickableComponent(index++) { player, tileEntity, button ->
+                    if (button == 0) {
+                        val component = it.second as RedstoneModeTileEntityComponent
+                        component.redstoneMode = RedstoneModeTileEntityComponent.RedstoneMode.values()[(component.redstoneMode.ordinal + 1) % RedstoneModeTileEntityComponent.RedstoneMode.values().size]
+                    }
+                }
+                redstoneSettings.components.add(click)
+            }
+        }
+        container.registerTab(redstoneSettings)
+
+        val upgradesComponent = this.getComponents().firstOrNull { (_, c) -> c is MachineUpgradesTileEntityComponent }?.second
+        if (upgradesComponent != null) {
+
+            val upgradeTab = TCContainerTab()
+            if (player != null)
+                addPlayerContainerSlots(upgradeTab, player)
+
+            val upgrades = upgradesComponent as MachineUpgradesTileEntityComponent
+
+            for (i in 0 until upgrades.numberOfUpgradeSlots) {
+                upgradeTab.components.add(SlotComponent(upgrades.inventory, i, type = upgrades.inventory.slotTypes[i]
+                        ?: DynamicInventoryCapability.InventoryType.BOTH))
+            }
+            container.registerTab(upgradeTab)
+        }
+
+        //sideconfig
+        container.registerTab(TCContainerTab())
+    }
+
+    fun addPlayerContainerSlots(tab: TCContainerTab, player: EntityPlayer) {
+        for (row in 0..2) {
+            for (slot in 0..8) {
+                tab.components.add(PlayerSlotComponent(player.inventory, slot + row * 9 + 9))
+            }
+        }
+
+        for (k in 0..8) {
+            tab.components.add(PlayerSlotComponent(player.inventory, k))
+        }
     }
 
     /**

@@ -5,6 +5,10 @@ import net.cydhra.technocracy.foundation.client.gui.components.energymeter.Defau
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.DefaultProgressBar
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.Orientation
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
+import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
+import net.cydhra.technocracy.foundation.client.gui.container.TCContainerTab
+import net.cydhra.technocracy.foundation.client.gui.container.components.PlayerSlotComponent
+import net.cydhra.technocracy.foundation.client.gui.container.components.SlotComponent
 import net.cydhra.technocracy.foundation.client.gui.machine.BaseMachineTab
 import net.cydhra.technocracy.foundation.client.gui.machine.MachineContainer
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
@@ -69,9 +73,29 @@ class TileEntityCentrifuge : MachineTileEntity(), TEInventoryProvider {
                 progress = this.progressComponent), MACHINE_PROCESSING_LOGIC_NAME)
     }
 
+    override fun getContainer(player: EntityPlayer?): TCContainer {
+        val container = MachineContainer(this)
+        val mainTab = TCContainerTab()
+
+        for (i in 0 until this.inputInventoryComponent.inventory.size) {
+            mainTab.components.add(SlotComponent(inputInventoryComponent.inventory, i, type = inputInventoryComponent.inventoryType))
+        }
+        mainTab.components.add(SlotComponent(outputInventoryComponent.inventory, 0, type = outputInventoryComponent.inventoryType))
+
+        if (player != null)
+            addPlayerContainerSlots(mainTab, player)
+
+        container.registerTab(mainTab)
+
+        addDefaultContainerTabs(container, player)
+
+        return container
+    }
+
+
     override fun getGui(player: EntityPlayer?): TCGui {
 
-        val gui = TCGui(container = MachineContainer(this))
+        val gui = TCGui(container = getContainer(player))
         gui.registerTab(object : BaseMachineTab(this, gui) {
             override fun init() {
                 super.init()

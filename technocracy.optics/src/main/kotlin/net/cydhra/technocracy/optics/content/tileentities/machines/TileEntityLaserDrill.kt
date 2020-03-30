@@ -1,9 +1,11 @@
 package net.cydhra.technocracy.optics.content.tileentities.machines
 
-import net.cydhra.technocracy.foundation.client.gui.TCContainer
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.TCTab
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
+import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
+import net.cydhra.technocracy.foundation.client.gui.container.TCContainerTab
+import net.cydhra.technocracy.foundation.client.gui.container.components.PlayerSlotComponent
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.HeatStorageTileEntityComponent
@@ -72,8 +74,30 @@ class TileEntityLaserDrill : AggregatableTileEntity(), TCMachineTileEntity, ILog
             this.tick()
     }
 
+    override fun getContainer(player: EntityPlayer?): TCContainer {
+        val container = TCContainer()
+        val mainTab = TCContainerTab()
+        if(player != null)
+            addPlayerContainerSlots(mainTab, player)
+        container.registerTab(mainTab)
+        return container
+    }
+
+    fun addPlayerContainerSlots(tab: TCContainerTab, player: EntityPlayer) {
+
+        for (row in 0..2) {
+            for (slot in 0..8) {
+                tab.components.add(PlayerSlotComponent(player.inventory, slot + row * 9 + 9))
+            }
+        }
+
+        for (k in 0..8) {
+            tab.components.add(PlayerSlotComponent(player.inventory, k))
+        }
+    }
+
     override fun getGui(player: EntityPlayer?): TCGui {
-        val gui = TCGui(container = TCContainer())
+        val gui = TCGui(container = getContainer(player))
         gui.registerTab(object : TCTab(this.blockType?.localizedName ?: "Laser Drill", gui) {
             override fun init() {
                 for (i in 0 until outputInventory.inventory.size) {

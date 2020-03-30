@@ -8,6 +8,11 @@ import net.cydhra.technocracy.foundation.client.gui.components.label.DefaultLabe
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.DefaultProgressBar
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.Orientation
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
+import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotPlayer
+import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
+import net.cydhra.technocracy.foundation.client.gui.container.TCContainerTab
+import net.cydhra.technocracy.foundation.client.gui.container.components.PlayerSlotComponent
+import net.cydhra.technocracy.foundation.client.gui.container.components.SlotComponent
 import net.cydhra.technocracy.foundation.client.gui.machine.BaseMachineTab
 import net.cydhra.technocracy.foundation.client.gui.machine.MachineContainer
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
@@ -22,9 +27,12 @@ import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.model.tileentities.api.TEInventoryProvider
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeClass
 import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
+import net.cydhra.technocracy.foundation.util.readCompoundTag
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 
 /**
  * A tile entity linked to a pulverizer block that can store up to two stacks of items and processes the first stack
@@ -84,9 +92,28 @@ class TileEntityAlloySmeltery : MachineTileEntity(), TEInventoryProvider {
     override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack, originalStack: ItemStack) {
     }
 
-    override fun getGui(player: EntityPlayer?): TCGui {
+    override fun getContainer(player: EntityPlayer?): TCContainer {
+        val container = MachineContainer(this)
+        val mainTab = TCContainerTab()
 
-        val gui = TCGui(container = MachineContainer(this))
+        for (i in 0 until this.inputInventoryComponent.inventory.size) {
+            mainTab.components.add(SlotComponent(inputInventoryComponent.inventory, i, type = inputInventoryComponent.inventoryType))
+        }
+        mainTab.components.add(SlotComponent(outputInventoryComponent.inventory, 0, type = outputInventoryComponent.inventoryType))
+
+        if (player != null)
+            addPlayerContainerSlots(mainTab, player)
+
+        container.registerTab(mainTab)
+
+        addDefaultContainerTabs(container, player)
+
+        return container
+    }
+
+    @SideOnly(Side.CLIENT)
+    override fun getGui(player: EntityPlayer?): TCGui {
+        val gui = TCGui(container = getContainer(player))
         gui.registerTab(object : BaseMachineTab(this, gui) {
             override fun init() {
                 super.init()

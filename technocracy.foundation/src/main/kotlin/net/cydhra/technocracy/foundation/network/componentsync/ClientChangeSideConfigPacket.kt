@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.network.componentsync
 
 import io.netty.buffer.ByteBuf
-import net.cydhra.technocracy.foundation.client.gui.TCContainer
+import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
 import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractDirectionalCapabilityTileEntityComponent
 import net.cydhra.technocracy.foundation.model.components.IAggregatable
 import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock

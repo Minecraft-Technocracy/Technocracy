@@ -1,21 +1,15 @@
 package net.cydhra.technocracy.foundation.client.gui
 
 import net.cydhra.technocracy.foundation.client.gui.components.slot.ITCSlot
+import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
 import net.cydhra.technocracy.foundation.network.PacketHandler
 import net.cydhra.technocracy.foundation.network.componentsync.ClientRequestSyncPacket
 import net.cydhra.technocracy.foundation.network.componentsync.ClientSwitchTabPacket
-import net.cydhra.technocracy.foundation.network.componentsync.ComponentUpdatePacket
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
-import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.client.renderer.GlStateManager
-import net.minecraft.client.renderer.RenderHelper
-import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.ResourceLocation
-import net.minecraftforge.fml.client.config.GuiUtils
-import org.lwjgl.opengl.GL11
-import kotlin.math.max
 
 open class TCGui(guiWidth: Int = 176, guiHeight: Int = 166, val container:
 TCContainer)
@@ -62,6 +56,7 @@ TCContainer)
     val tabs: ArrayList<TCTab> = ArrayList()
     var guiX: Int = 0
     var guiY: Int = 0
+    var slotIndex = 0
 
     var guiWidth: Int
         get() {
@@ -89,7 +84,7 @@ TCContainer)
         this.ySize = guiHeight
         origWidth = guiWidth
         origHeight = guiHeight
-        this.container.gui = this
+        //this.container.gui = this
     }
 
     /**
@@ -101,12 +96,12 @@ TCContainer)
 
         activeTabIndex = index
 
-        //update state of components
+        /*//update state of components
         tabs.forEachIndexed { inner, tcTab ->
             tcTab.components.filterIsInstance<ITCSlot>().forEach {
                 it.setEnabled(inner == index)
             }
-        }
+        }*/
     }
 
     override fun initGui() {
@@ -208,6 +203,8 @@ TCContainer)
                         }
                     }
 
+                    container.activeTab = activeTabIndex
+
                     PacketHandler.sendToServer(ClientSwitchTabPacket(index))
 
                     //update position of the components to new gui size
@@ -289,12 +286,12 @@ TCContainer)
         this.tabs.add(tab)
         tab.init()
 
-        tab.components.forEach { this.container.registerComponent(it) }
+        //tab.components.forEach { this.container.registerComponent(it) }
 
         // disable slots of tabs that aren't the first one (which is the active one by default)
-        if (this.tabs.size > 1) {
+        /*if (this.tabs.size > 1) {
             tab.components.filterIsInstance<ITCSlot>().forEach { it.setEnabled(false) }
-        }
+        }*/
 
     }
 

@@ -263,6 +263,6 @@ class Template() : INBTSerializable<NBTTagCompound> {
     }
 }
 
-data class BlockInfo(val pos: BlockPos, val block: Block, val meta: Int, val nbt: NBTTagCompound?, var state: IBlockState = block.getStateFromMeta(meta)) {
+data class BlockInfo(val pos: BlockPos, val block: Block, val meta: Int, val nbt: NBTTagCompound?, var state: IBlockState = if(meta != -1) block.getStateFromMeta(meta) else block.defaultState) {
     constructor(pos: BlockPos, state: IBlockState) : this(pos, state.block, state.block.getMetaFromState(state), null, state)
 }

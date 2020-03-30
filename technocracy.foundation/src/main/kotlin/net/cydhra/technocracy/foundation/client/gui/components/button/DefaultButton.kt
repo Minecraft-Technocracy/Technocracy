@@ -19,8 +19,8 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 
 
-open class DefaultButton(posX: Int, posY: Int, width: Int, height: Int, text: String, onClick: (player: EntityPlayer, tileEntity: TileEntity?, button: Int) -> Unit) :
-        Button(posX, posY, width, height, text, Minecraft.getMinecraft().fontRenderer, onClick) {
+open class DefaultButton(posX: Int, posY: Int, width: Int, height: Int, text: String, componentId: Int = -1, clientClick: ((player: EntityPlayer, tileEntity: TileEntity?, button: Int) -> Unit)? = null) :
+        Button(posX, posY, width, height, text, Minecraft.getMinecraft().fontRenderer, componentId, clientClick) {
 
     protected val BUTTON_TEXTURES = ResourceLocation("textures/gui/widgets.png")
 

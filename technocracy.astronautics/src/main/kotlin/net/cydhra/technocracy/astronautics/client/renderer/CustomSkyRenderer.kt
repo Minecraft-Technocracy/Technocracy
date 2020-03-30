@@ -1,14 +1,13 @@
 package net.cydhra.technocracy.astronautics.client.renderer
 
-import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.astronautics.client.util.FixedTexture
 import net.cydhra.technocracy.astronautics.dyson.DysonSphereController
+import net.cydhra.technocracy.foundation.TCFoundation
 import net.minecraft.client.Minecraft
 import net.minecraft.client.multiplayer.WorldClient
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.RenderHelper
 import net.minecraft.client.renderer.Tessellator
-import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.client.renderer.texture.TextureUtil
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.util.ResourceLocation
@@ -18,17 +17,19 @@ import net.minecraftforge.client.MinecraftForgeClient
 import net.minecraftforge.client.event.EntityViewRenderEvent
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
-import java.awt.Color
-import java.awt.image.BufferedImage
-import java.io.IOException
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import java.awt.AlphaComposite
 import java.awt.AlphaComposite.getInstance
+import java.awt.Color
 import java.awt.Image
 import java.awt.RenderingHints
+import java.awt.image.BufferedImage
+import java.io.IOException
 import kotlin.random.Random
 
 
-@Mod.EventBusSubscriber(modid = TCFoundation.MODID)
+@SideOnly(Side.CLIENT)
 object CustomSkyRenderer : IRenderHandler() {
 
     fun gen(world: WorldClient) {

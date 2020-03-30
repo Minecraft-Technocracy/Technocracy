@@ -15,6 +15,8 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import org.apache.logging.log4j.Logger
 
 
@@ -88,9 +90,15 @@ object TCAstronautics {
     }
 
     @Suppress("unused")
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    fun loadWorldClient(event: WorldEvent.Load) {
+        event.world.provider.skyRenderer = CustomSkyRenderer
+    }
+
+    @Suppress("unused")
     @SubscribeEvent
     fun loadWorld(event: WorldEvent.Load) {
-        event.world.provider.skyRenderer = CustomSkyRenderer
         event.world.provider = WrappedWorldProvider(event.world.provider)
     }
 

@@ -6,13 +6,17 @@ import net.cydhra.technocracy.astronautics.content.blocks.rocketHullBlock
 import net.cydhra.technocracy.astronautics.content.blocks.rocketStorageBlock
 import net.cydhra.technocracy.astronautics.content.entity.EntityRocket
 import net.cydhra.technocracy.foundation.TCFoundation
-import net.cydhra.technocracy.foundation.client.gui.TCContainer
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.TCIcon
 import net.cydhra.technocracy.foundation.client.gui.TCTab
 import net.cydhra.technocracy.foundation.client.gui.components.button.DefaultButton
 import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.DefaultFluidMeter
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
+import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
+import net.cydhra.technocracy.foundation.client.gui.container.TCContainerTab
+import net.cydhra.technocracy.foundation.client.gui.container.components.ClickableComponent
+import net.cydhra.technocracy.foundation.client.gui.container.components.PlayerSlotComponent
+import net.cydhra.technocracy.foundation.client.gui.container.components.SlotComponent
 import net.cydhra.technocracy.foundation.client.gui.handler.TCGuiHandler
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
@@ -83,16 +87,68 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
         return false
     }
 
+    override fun getContainer(player: EntityPlayer?): TCContainer {
+
+        val container = TCContainer()
+
+        val mainTab = TCContainerTab()
+        if (linked.state) {
+
+            val maxSlotsPerRow = 7
+            var maxSlots = inventoryBuffer.inventory.size
+            val rows = ceil(maxSlots / maxSlotsPerRow.toDouble()).toInt()
+
+            for (row in 0 until rows) {
+                val currSlots = min(maxSlotsPerRow, maxSlots)
+                for (slot in 0 until currSlots) {
+                    mainTab.components.add(SlotComponent(inventoryBuffer.inventory, slot + row * maxSlotsPerRow))
+                }
+                maxSlots -= maxSlotsPerRow
+            }
+
+            val click = ClickableComponent(0) { player, tileEntity, button ->
+                if (button == 0) {
+                    (tileEntity as TileEntityRocketController).currentRocket!!.liftOff = true
+                }
+            }
+            mainTab.components.add(click)
+        } else {
+            val click = ClickableComponent(0) { player, tileEntity, button ->
+                if (button == 0) {
+                    constructRocket(player, player.world)
+                }
+            }
+            mainTab.components.add(click)
+        }
+        if(player != null)
+            addPlayerContainerSlots(mainTab, player)
+
+        container.registerTab(mainTab)
+        //render tab
+        container.registerTab(TCContainerTab())
+        return container
+    }
+
+    fun addPlayerContainerSlots(tab: TCContainerTab, player: EntityPlayer) {
+        for (row in 0..2) {
+            for (slot in 0..8) {
+                tab.components.add(PlayerSlotComponent(player.inventory, slot + row * 9 + 9))
+            }
+        }
+
+        for (k in 0..8) {
+            tab.components.add(PlayerSlotComponent(player.inventory, k))
+        }
+    }
 
     override fun getGui(player: EntityPlayer?): TCGui {
 
-        val gui = TCGui(guiHeight = 230, container = TCContainer())
+        val gui = TCGui(guiHeight = 230, container = this.getContainer(player))
         gui.registerTab(object : TCTab("${getBlockType().localizedName} linked: ${currentRocket != null}", gui, -1, TCIcon(this.blockType)) {
 
             override fun init() {
 
                 if (linked.state) {
-
                     val fm = DefaultFluidMeter(10, 25, fluidBuffer, gui)
                     fm.width = 20
                     fm.height = 105
@@ -112,7 +168,7 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
 
                     components.add(fm)
 
-                    components.add(DefaultButton(35, 25 + 105 - 20, gui.origWidth - 5 - 35, 20, "Remove Rocket") { player, tileEntity, button ->
+                    components.add(DefaultButton(35, 25 + 105 - 20, gui.origWidth - 5 - 35, 20, "Remove Rocket", componentId = 0) { player, tileEntity, button ->
                         if (!player.isUser) {
                             (tileEntity as TileEntityRocketController).currentRocket!!.liftOff = true
                             /*
@@ -134,7 +190,7 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
                         }
                     })*/
 
-                    components.add(DefaultButton(5, 9, gui.origWidth - 8, 20, "Build Rocket") { player, tileEntity, button ->
+                    components.add(DefaultButton(5, 9, gui.origWidth - 8, 20, "Build Rocket", componentId = 0) { player, tileEntity, button ->
                         //on server only
                         if (!player.isUser) {
                             constructRocket(player, player.world)

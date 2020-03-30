@@ -2,7 +2,6 @@ package net.cydhra.technocracy.astronautics.proxy
 
 import net.cydhra.technocracy.astronautics.TCAstronautics
 import net.cydhra.technocracy.astronautics.client.astronauticsCreativeTabs
-import net.cydhra.technocracy.astronautics.client.model.concreteSprayer.ConcreteSprayerItemModel
 import net.cydhra.technocracy.astronautics.content.blocks.*
 import net.cydhra.technocracy.astronautics.content.capabilities.satellites.DefaultSatelliteOrbit
 import net.cydhra.technocracy.astronautics.content.capabilities.satellites.ISatelliteOrbit
