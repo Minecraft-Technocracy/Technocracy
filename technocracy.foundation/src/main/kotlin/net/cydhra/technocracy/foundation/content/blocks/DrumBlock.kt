@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.content.blocks
 
+import net.cydhra.technocracy.foundation.api.IWrench
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicItemFluidStorage
 import net.cydhra.technocracy.foundation.content.tileentities.storage.TileEntityDrum
@@ -11,6 +12,7 @@ import net.cydhra.technocracy.foundation.model.blocks.util.IDynamicBlockItemProp
 import net.cydhra.technocracy.foundation.model.blocks.util.IDynamicBlockPlaceBehavior
 import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWrapper
 import net.cydhra.technocracy.foundation.model.items.capability.ItemFluidTileEntityComponent
+import net.cydhra.technocracy.foundation.util.ColorUtil
 import net.minecraft.block.material.Material
 import net.minecraft.block.properties.PropertyEnum
 import net.minecraft.block.state.BlockStateContainer
@@ -40,7 +42,8 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
     override fun colorMultiplier(state: IBlockState, worldIn: IBlockAccess?, pos: BlockPos?, tintIndex: Int): Int {
         val tile = (worldIn!!.getTileEntity(pos!!) ?: return -1) as? TileEntityDrum
                 ?: return -1
-        return (tile.fluidCapability.currentFluid ?: return -1).fluid!!.color
+        val fluid = tile.fluidCapability.currentFluid
+        return ColorUtil.getColor(fluid)
     }
 
     override fun colorMultiplier(stack: ItemStack, tintIndex: Int): Int {
@@ -49,7 +52,7 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
 
         if (cap != null) {
             val fluid = (cap as DynamicItemFluidStorage).currentFluid
-            return fluid?.fluid?.color ?: -1
+            return ColorUtil.getColor(fluid)
         }
 
         return -1
@@ -170,7 +173,17 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
         return boundingBox.offset(pos)
     }
 
+    override fun onBlockWrenched(worldIn: World, player: EntityPlayer, pos: BlockPos, state: IBlockState, te: TileEntity?, stack: ItemStack): Boolean {
+        if (player.isSneaking) {
+            harvestBlock(worldIn, player, pos, state, te, stack)
+            return true
+        }
+        return false
+    }
+
     override fun onBlockActivated(worldIn: World, pos: BlockPos, state: IBlockState, playerIn: EntityPlayer, hand: EnumHand, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean {
+        if (super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ))
+            return true
 
         val stack = playerIn.getHeldItem(hand)
 

@@ -40,7 +40,7 @@ abstract class AbstractBaseBlock(unlocalizedName: String,
     }
 
     override fun canRenderInLayer(state: IBlockState, layer: BlockRenderLayer): Boolean {
-        return if(renderLayers.isNotEmpty()) this.renderLayers.contains(layer) else layer == blockLayer
+        return this.renderLayers.contains(layer) || super.canRenderInLayer(state, layer)
     }
 
     @SideOnly(Side.CLIENT)

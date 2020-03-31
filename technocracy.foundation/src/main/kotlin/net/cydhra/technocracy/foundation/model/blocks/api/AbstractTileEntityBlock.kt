@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.model.blocks.api
 
+import net.cydhra.technocracy.foundation.api.IWrench
 import net.cydhra.technocracy.foundation.model.blocks.color.IBlockColor
 import net.minecraft.block.Block
 import net.minecraft.block.BlockFlowerPot
@@ -11,6 +12,8 @@ import net.minecraft.item.ItemStack
 import net.minecraft.stats.StatList
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.BlockRenderLayer
+import net.minecraft.util.EnumFacing
+import net.minecraft.util.EnumHand
 import net.minecraft.util.NonNullList
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.RayTraceResult
@@ -40,6 +43,20 @@ abstract class AbstractTileEntityBlock(unlocalizedName: String,
      * Returns the ItemStack of the TileEntity if it gets destroyed
      */
     protected abstract fun getDropItem(state: IBlockState, world: IBlockAccess, pos: BlockPos, te: TileEntity?): ItemStack
+
+    open fun onBlockWrenched(worldIn: World, player: EntityPlayer, pos: BlockPos, state: IBlockState, te: TileEntity?, stack: ItemStack): Boolean {
+        return false
+    }
+
+    override fun onBlockActivated(worldIn: World, pos: BlockPos, state: IBlockState, playerIn: EntityPlayer, hand: EnumHand, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean {
+        val stack = playerIn.getHeldItem(hand)
+
+        if (!stack.isEmpty && stack.item is IWrench) {
+            return this.onBlockWrenched(worldIn, playerIn, pos, state, worldIn.getTileEntity(pos), stack)
+        }
+
+        return super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ)
+    }
 
     /**
      * Used together with [Block.removedByPlayer].

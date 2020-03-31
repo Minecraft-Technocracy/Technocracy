@@ -26,6 +26,10 @@ class ConcreteSprayerItem : BaseItem("concrete_sprayer", itemColor = ConcreteSpr
         maxStackSize = 1
     }
 
+    override fun isBookEnchantable(stack: ItemStack, book: ItemStack): Boolean {
+        return false
+    }
+
     override fun isDamaged(stack: ItemStack): Boolean {
         return getConcreteType(stack) != null
     }
