@@ -11,6 +11,7 @@ import net.cydhra.technocracy.foundation.model.blocks.util.IDynamicBlockItemProp
 import net.cydhra.technocracy.foundation.model.blocks.util.IDynamicBlockPlaceBehavior
 import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWrapper
 import net.cydhra.technocracy.foundation.model.items.capability.ItemFluidTileEntityComponent
+import net.cydhra.technocracy.foundation.util.ColorUtil
 import net.minecraft.block.material.Material
 import net.minecraft.block.properties.PropertyEnum
 import net.minecraft.block.state.BlockStateContainer
@@ -40,7 +41,8 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
     override fun colorMultiplier(state: IBlockState, worldIn: IBlockAccess?, pos: BlockPos?, tintIndex: Int): Int {
         val tile = (worldIn!!.getTileEntity(pos!!) ?: return -1) as? TileEntityDrum
                 ?: return -1
-        return (tile.fluidCapability.currentFluid ?: return -1).fluid!!.color
+        val fluid = tile.fluidCapability.currentFluid
+        return ColorUtil.getColor(fluid)
     }
 
     override fun colorMultiplier(stack: ItemStack, tintIndex: Int): Int {
@@ -49,7 +51,7 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
 
         if (cap != null) {
             val fluid = (cap as DynamicItemFluidStorage).currentFluid
-            return fluid?.fluid?.color ?: -1
+            return ColorUtil.getColor(fluid)
         }
 
         return -1
