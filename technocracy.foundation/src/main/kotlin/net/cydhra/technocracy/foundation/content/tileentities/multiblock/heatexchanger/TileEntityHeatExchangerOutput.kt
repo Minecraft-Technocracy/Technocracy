@@ -3,8 +3,6 @@ package net.cydhra.technocracy.foundation.content.tileentities.multiblock.heatex
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.multiblock.HeatExchangerMultiBlock
 import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
-import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatable
-import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableDelegate
 import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.EnumFacing
@@ -14,9 +12,8 @@ import net.minecraft.world.World
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler
 
-@Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 class TileEntityHeatExchangerOutput : TileEntityMultiBlockPart<HeatExchangerMultiBlock>(HeatExchangerMultiBlock::class,
-        ::HeatExchangerMultiBlock), TCAggregatable by AggregatableDelegate() {
+        ::HeatExchangerMultiBlock) {
 
     private val internalFluidHandler = DynamicFluidCapability(4000, allowedFluid = mutableListOf(),
             tanktype = DynamicFluidCapability.TankType.OUTPUT)
