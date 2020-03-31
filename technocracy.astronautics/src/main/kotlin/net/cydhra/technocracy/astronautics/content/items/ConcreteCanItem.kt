@@ -3,7 +3,9 @@ package net.cydhra.technocracy.astronautics.content.items
 import net.cydhra.technocracy.astronautics.model.items.color.ConcreteSprayerColor
 import net.cydhra.technocracy.foundation.model.items.api.BaseItem
 import net.minecraft.creativetab.CreativeTabs
+import net.minecraft.enchantment.Enchantment
 import net.minecraft.item.EnumDyeColor
+import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.NonNullList
@@ -14,6 +16,10 @@ class ConcreteCanItem : BaseItem("concrete_can", itemColor = ConcreteSprayerColo
     init {
         maxDamage = 100
         maxStackSize = 1
+    }
+
+    override fun isBookEnchantable(stack: ItemStack, book: ItemStack): Boolean {
+        return false
     }
 
     override fun getItemStackDisplayName(stack: ItemStack): String {
