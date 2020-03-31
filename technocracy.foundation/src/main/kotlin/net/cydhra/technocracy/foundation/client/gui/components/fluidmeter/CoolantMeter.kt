@@ -48,6 +48,12 @@ class CoolantMeter(posX: Int, posY: Int, val coolantIn: FluidTileEntityComponent
         heatBar.draw(x + posX, y + posY, mouseX, mouseY, renderPartialTicks)
     }
 
+    override fun update() {
+        meterIn.update()
+        meterOut.update()
+        heatBar.update()
+    }
+
     override fun drawTooltip(mouseX: Int, mouseY: Int) {
         when {
             meterIn.isMouseOnComponent(mouseX - posX, mouseY - posY) -> {

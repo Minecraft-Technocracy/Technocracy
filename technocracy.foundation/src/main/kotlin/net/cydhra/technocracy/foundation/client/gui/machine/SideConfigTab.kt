@@ -129,16 +129,15 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
                             }
                         }
                         is CoolantMeter -> {
-
                             if (it.meterIn.isMouseOnComponent(mouseX - x - it.posX, mouseY - y - it.posY)) {
-                                changedComponent = it.component
+                                changedComponent = it.coolantIn
                                 if (!it.coolantIn.facing.remove(face)) {
                                     it.coolantIn.facing.add(face)
                                     added = true
                                 }
                             }
                             if (it.meterOut.isMouseOnComponent(mouseX - x - it.posX, mouseY - y - it.posY)) {
-                                changedComponent = it.component
+                                changedComponent = it.coolantOut
                                 if (!it.coolantOut.facing.remove(face)) {
                                     it.coolantOut.facing.add(face)
                                     added = true
