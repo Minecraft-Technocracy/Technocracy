@@ -66,13 +66,8 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
     override fun syncDataFrom(data: NBTTagCompound?, syncReason: SyncReason?) {
         super.syncDataFrom(data, syncReason)
         this.deserializeNBT(data!!)
-        markRenderUpdate()
-    }
-
-    fun markRenderUpdate() {
-        //only update if the world is fully loaded
-        if (Minecraft.getMinecraft().player != null)
-            world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 0)
+        if (tile.hasWorld())
+            tile.world.notifyBlockUpdate(tile.pos, getBlockState(), getBlockState(), 0)
     }
 
     override fun createNewMultiblock(): T {
@@ -215,7 +210,7 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
                             when {
                                 name.contains("input") -> {
                                     for (i in 0 until component.inventory.slots) {
-                                        if(nextInput == 25)
+                                        if (nextInput == 25)
                                             nextInput = 30
                                         components.add(TCSlotIO(component.inventory, i, nextInput, 40, gui))
                                         if (inputNearestToTheMiddle < nextInput)
