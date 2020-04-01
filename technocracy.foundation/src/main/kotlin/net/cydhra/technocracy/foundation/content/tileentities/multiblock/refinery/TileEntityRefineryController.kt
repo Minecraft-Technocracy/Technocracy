@@ -40,11 +40,4 @@ class TileEntityRefineryController : TileEntityMultiBlockPart<RefineryMultiBlock
         this.registerComponent(progressComponent, "progress")
     }
 
-    override fun initGui(gui: TCGui) {
-        gui.registerTab(object: TCTab("Example", gui) {
-            override fun init() {
-                addComponent(DefaultLabel(10, 20, "Hello World"))
-            }
-        })
-    }
 }

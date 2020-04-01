@@ -74,8 +74,8 @@ class CoolingLogic(
                         (this.currentRecipe!!.hotFluid.temperature - this.currentRecipe!!.coldFluid.temperature)))
 
 
-        this.coldFluidComponent.fluid.drain(maximumConversionMb, true)
-        this.hotFluidComponent.fluid.fill(FluidStack(currentRecipe!!.hotFluid, maximumConversionMb), true)
+        this.coldFluidComponent.fluid.drain(maximumConversionMb, true, forced = true)
+        this.hotFluidComponent.fluid.fill(FluidStack(currentRecipe!!.hotFluid, maximumConversionMb), doFill = true, forced = true)
         this.heatBuffer.heat -= maximumConversionMb * this.currentRecipe!!.milliHeatPerDegree *
                 (this.currentRecipe!!.hotFluid.temperature - this.currentRecipe!!.coldFluid.temperature)
     }

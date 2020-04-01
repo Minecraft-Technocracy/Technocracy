@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 
 
-class TemplateClientWorld(val client: WorldClient, val blocks: List<BlockInfo>, val currentPosForLight: BlockPos) : World(client.saveHandler, client.worldInfo, client.provider, client.profiler, client.isRemote) {
+class TemplateClientWorld(val client: WorldClient, val blocks: MutableList<BlockInfo>, val currentPosForLight: BlockPos) : World(client.saveHandler, client.worldInfo, client.provider, client.profiler, client.isRemote) {
     override fun createChunkProvider(): IChunkProvider {
         return client.chunkProvider
     }

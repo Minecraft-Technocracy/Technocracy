@@ -71,9 +71,9 @@ class TileEntityBoilerController
                     return
 
                 if (heater.tryHeating(multiblockController!!.energyPerHeaterPerTick)) {
-                    internalFluidHandler.drain(multiblockController!!.steamPerHeaterPerTick, true)
+                    internalFluidHandler.drain(multiblockController!!.steamPerHeaterPerTick, doDrain = true, forced = true)
                     internalSteamHandler
-                            .fill(FluidStack(steamFluid, multiblockController!!.steamPerHeaterPerTick), true)
+                            .fill(FluidStack(steamFluid, multiblockController!!.steamPerHeaterPerTick), doFill = true, forced = true)
                 }
             }
         }
@@ -87,7 +87,7 @@ class TileEntityBoilerController
             it.capacity = capacity
 
             if (it.currentFluid?.amount ?: -1 > capacity) {
-                it.drain(it.currentFluid!!.amount - capacity, true)
+                it.drain(it.currentFluid!!.amount - capacity, doDrain = true, forced = true)
             }
         }
     }

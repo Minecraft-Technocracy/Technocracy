@@ -148,6 +148,7 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
             addPlayerContainerSlots(mainTab, player)
 
         container.registerTab(mainTab)
+        container.registerTab(TCContainerTab())
 
         return container
     }

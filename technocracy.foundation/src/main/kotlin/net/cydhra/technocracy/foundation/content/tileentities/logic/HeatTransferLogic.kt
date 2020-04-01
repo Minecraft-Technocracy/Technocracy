@@ -97,13 +97,13 @@ class HeatTransferLogic(
                             (currentRecipe!!.hotFluid.temperature - currentRecipe!!.coldFluid.temperature)))
         }
 
-        this.inputFluidComponent.fluid.drain(maximumConversionMb, true)
+        this.inputFluidComponent.fluid.drain(maximumConversionMb, true, forced = true)
         if (this.direction == COLD_TO_HOT) {
-            this.outputFluidComponent.fluid.fill(FluidStack(currentRecipe!!.hotFluid, maximumConversionMb), true)
+            this.outputFluidComponent.fluid.fill(FluidStack(currentRecipe!!.hotFluid, maximumConversionMb), doFill = true, forced = true)
             this.heatBuffer.heat -= maximumConversionMb * this.currentRecipe!!.milliHeatPerDegree *
                     (currentRecipe!!.hotFluid.temperature - currentRecipe!!.coldFluid.temperature)
         } else {
-            this.outputFluidComponent.fluid.fill(FluidStack(currentRecipe!!.coldFluid, maximumConversionMb), true)
+            this.outputFluidComponent.fluid.fill(FluidStack(currentRecipe!!.coldFluid, maximumConversionMb), doFill = true, forced = true)
             this.heatBuffer.heat += maximumConversionMb * this.currentRecipe!!.milliHeatPerDegree *
                     (currentRecipe!!.hotFluid.temperature - currentRecipe!!.coldFluid.temperature)
         }
