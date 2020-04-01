@@ -125,13 +125,13 @@ class RefineryMultiBlock(world: World) : BaseMultiBlock(
                             .topTank.capacity &&
                     this.controllerTileEntity!!.bottomTank.currentFluid?.amount ?: 0 < this.controllerTileEntity!!
                             .bottomTank.capacity) {
-                this.controllerTileEntity!!.inputComponent.fluid.drain(this.effectiveHeight, true)
+                this.controllerTileEntity!!.inputComponent.fluid.drain(this.effectiveHeight, doDrain = true, forced = true)
                 this.heater!!.energyStorageComponent.energyStorage.consumeEnergy(energyConsumption)
 
                 this.controllerTileEntity!!.topTank
-                        .fill(FluidStack(recipe.getFluidOutput()[0].fluid, oilProduced), true)
+                        .fill(FluidStack(recipe.getFluidOutput()[0].fluid, oilProduced), doFill = true, forced = true)
                 this.controllerTileEntity!!.bottomTank
-                        .fill(FluidStack(recipe.getFluidOutput()[1].fluid, oilProduced), true)
+                        .fill(FluidStack(recipe.getFluidOutput()[1].fluid, oilProduced), doFill = true, forced = true)
             }
         }
         return true

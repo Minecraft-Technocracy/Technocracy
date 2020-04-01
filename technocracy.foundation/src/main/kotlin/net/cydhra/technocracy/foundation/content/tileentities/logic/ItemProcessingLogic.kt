@@ -86,7 +86,7 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
                             }
                     && recipeFluidOutput.zip(this.outputFluidSlots.indices)
                             .all { (fluidStack, fluidSlot) ->
-                                this.outputFluidSlots[fluidSlot].fill(fluidStack, doFill = false) == fluidStack.amount
+                                this.outputFluidSlots[fluidSlot].fill(fluidStack, doFill = false, forced = true) == fluidStack.amount
                             }) {
                 return energyStorage.consumeEnergy(this.getTickEnergyCost(), simulate = true)
             }
@@ -128,7 +128,7 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
                 recipeFluidRequirements.forEach { ingredient ->
                     for (slot in this.inputFluidSlots.indices) {
                         if (ingredient.isFluidEqual(this.inputFluidSlots[slot].currentFluid)) {
-                            inputFluidSlots[slot].drain(ingredient, true)
+                            inputFluidSlots[slot].drain(ingredient, doDrain = true, forced = true)
                         }
                     }
                 }
@@ -140,7 +140,7 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
 
                 // insert output fluids
                 recipeFluidOutput.zip(this.outputFluidSlots.indices).forEach { (fluidStack, outputSlot) ->
-                    this.outputFluidSlots[outputSlot].fill(fluidStack, true)
+                    this.outputFluidSlots[outputSlot].fill(fluidStack, doFill = true, forced = true)
                 }
 
                 // reset progress and the machine is good to go
