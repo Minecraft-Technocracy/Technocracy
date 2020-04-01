@@ -62,7 +62,9 @@ class ItemManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
     @SubscribeEvent
     fun registerItems(event: RegistryEvent.Register<Item>) {
         event.registry.registerAll(*itemsToRegister.map { it.apply { if (it.creativeTab == null) it.creativeTab = defaultCreativeTab } }.toTypedArray())
-
+        itemsToRegister
+                .filter { it.oreDictName != null }
+                .forEach { OreDictionary.registerOre(it.oreDictName, it) }
     }
 
     @SideOnly(Side.CLIENT)
@@ -72,9 +74,6 @@ class ItemManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
         ModelLoaderRegistry.registerLoader(CustomModelProvider(customModels, modName))
 
         itemsToRegister.forEach(this::registerItemRender)
-        itemsToRegister
-                .filter { it.oreDictName != null }
-                .forEach { OreDictionary.registerOre(it.oreDictName, it) }
     }
 
     /**
