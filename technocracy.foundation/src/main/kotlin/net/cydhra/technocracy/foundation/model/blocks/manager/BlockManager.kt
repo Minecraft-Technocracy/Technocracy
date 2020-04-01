@@ -1,12 +1,12 @@
 package net.cydhra.technocracy.foundation.model.blocks.manager
 
-import net.cydhra.technocracy.foundation.model.blocks.api.AbstractBaseBlock
-import net.cydhra.technocracy.foundation.model.blocks.api.IBaseBlock
 import net.cydhra.technocracy.foundation.client.model.AbstractCustomModel
 import net.cydhra.technocracy.foundation.client.model.CustomModelProvider
+import net.cydhra.technocracy.foundation.model.blocks.api.AbstractBaseBlock
+import net.cydhra.technocracy.foundation.model.blocks.api.IBaseBlock
 import net.cydhra.technocracy.foundation.model.blocks.color.BlockColorDelegator
-import net.cydhra.technocracy.foundation.model.items.api.ItemSubBlock
 import net.cydhra.technocracy.foundation.model.blocks.impl.BaseLiquidBlock
+import net.cydhra.technocracy.foundation.model.items.api.ItemSubBlock
 import net.cydhra.technocracy.foundation.util.StateMapper
 import net.minecraft.block.Block
 import net.minecraft.client.Minecraft
@@ -75,6 +75,13 @@ class BlockManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
                 if (it.creativeTabToDisplayOn == null) it.setCreativeTab(defaultCreativeTab)
             }
         }.toTypedArray())
+
+        blocksToRegister
+                .filterIsInstance<AbstractBaseBlock>()
+                .filter { it.oreDictionaryName != null }
+                .forEach {
+                    OreDictionary.registerOre(it.oreDictionaryName, it)
+                }
     }
 
     /**
@@ -112,13 +119,6 @@ class BlockManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
                     }
                 }
         registerCustomBlockModels()
-
-        blocksToRegister
-                .filterIsInstance<AbstractBaseBlock>()
-                .filter { it.oreDictionaryName != null }
-                .forEach {
-                    OreDictionary.registerOre(it.oreDictionaryName, it)
-                }
     }
 
     /**
