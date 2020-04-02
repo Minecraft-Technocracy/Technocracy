@@ -17,6 +17,8 @@ import net.cydhra.technocracy.foundation.content.items.wrenchItem
 import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractCapabilityTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractDirectionalCapabilityTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
+import net.cydhra.technocracy.foundation.model.blocks.api.AbstractRotatableTileEntityBlock
+import net.cydhra.technocracy.foundation.model.blocks.api.AbstractRotatableTileEntityBlock.Companion.facingProperty
 import net.cydhra.technocracy.foundation.model.components.IComponent
 import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
 import net.cydhra.technocracy.foundation.network.PacketHandler
@@ -38,6 +40,7 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.client.shader.Framebuffer
 import net.minecraft.tileentity.TileEntity
+import net.minecraft.tileentity.TileEntityChest
 import net.minecraft.util.BlockRenderLayer
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.ResourceLocation
@@ -90,6 +93,8 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
             hideBlocks.text = if (hideNeighbors) "S" else "H"
         }
 
+        yaw = currentLockedSide.horizontalAngle
+
         components.add(infoTitleLabel)
         components.add(hideBlocks)
     }
@@ -97,7 +102,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
     var hideNeighbors = false
 
     var lastSideHit: EnumFacing? = null
-    var currentLockedSide = EnumFacing.NORTH
+    var currentLockedSide = if(machine.blockType is AbstractRotatableTileEntityBlock) machine.getBlockState().getValue(facingProperty) else EnumFacing.NORTH
 
     var yaw = -180f
     var pitch = 0f
@@ -111,7 +116,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
 
             mainTab.components.forEach {
                 if (it !is TCSlotPlayer) {
-                    var face = lastSideHit ?: currentLockedSide
+                    val face = lastSideHit ?: currentLockedSide
                     //if (face.axis.isHorizontal)
                     //face = face.rotateY().rotateY()
 
@@ -208,22 +213,23 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         }
 
         val scaledResolution = ScaledResolution(Minecraft.getMinecraft())
-
-
-        GlStateManager.pushAttrib()
         GlStateManager.pushMatrix()
         framebuffer?.setFramebufferColor(0f, 0f, 0f, 1f)
         framebuffer = framebuffer.validateAndClear((parent.guiWidth - 7 - 7) * scaledResolution.scaleFactor, (58 + 18) * scaledResolution.scaleFactor)
 
         val mc = Minecraft.getMinecraft()
-        GlStateManager.matrixMode(5889)
+        //reset projection
+        GlStateManager.matrixMode(GL11.GL_PROJECTION)
         GlStateManager.loadIdentity()
         Project.gluPerspective(70f, (parent.guiWidth - 7 - 7) / (58 + 18f), 0.01f, 100f)
-        GlStateManager.matrixMode(5888)
+
+        //reset projection
+        GlStateManager.matrixMode(GL11.GL_MODELVIEW)
         GlStateManager.loadIdentity()
+
         GlStateManager.disableAlpha()
         GlStateManager.enableCull()
-        GlStateManager.shadeModel(7425)
+        GlStateManager.shadeModel(GL11.GL_SMOOTH)
         GlStateManager.enableTexture2D()
 
         val state = machine.world.getBlockState(machine.pos).getActualState(machine.world, machine.pos)
@@ -297,7 +303,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         GlStateManager.enableBlend()
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE)
         GlStateManager.disableAlpha()
-        GlStateManager.shadeModel(7425)
+        GlStateManager.shadeModel(GL11.GL_SMOOTH)
 
         if (state.block.canRenderInLayer(state, BlockRenderLayer.TRANSLUCENT)) {
             ForgeHooksClient.setRenderLayer(BlockRenderLayer.TRANSLUCENT)
@@ -326,7 +332,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         }*/
 
         GlStateManager.enableAlpha()
-        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1f)
+        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.5f)
         GlStateManager.disableDepth()
 
         if (rayTrace != null && rayTrace.typeOfHit == RayTraceResult.Type.BLOCK) {
@@ -444,17 +450,15 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         //render the other blocks
         if (!hideNeighbors) {
             Minecraft.getMinecraft().textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE)
-
             GlStateManager.enableCull()
             RenderHelper.disableStandardItemLighting()
             mc.entityRenderer.disableLightmap()
-            GlStateManager.disableLighting();
             GlStateManager.enableBlend()
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE)
-            shader.start()
-
-            GlStateManager.pushMatrix()
             GlStateManager.disableAlpha()
+
+            shader.start()
+            GlStateManager.depthMask(false)
             ForgeHooksClient.setRenderLayer(BlockRenderLayer.SOLID)
             renderBlocks(BlockRenderLayer.SOLID, pos, tess, tcw)
 
@@ -466,60 +470,40 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
             renderBlocks(BlockRenderLayer.CUTOUT, pos, tess, tcw)
             alphaClip.uploadUniform(false)
             shader.updateUniforms()
-            GlStateManager.matrixMode(5888)
-            GlStateManager.popMatrix()
 
             GlStateManager.pushMatrix()
-            RenderHelper.enableStandardItemLighting()
             ForgeHooksClient.setRenderPass(0)
-            GlStateManager.depthMask(false)
-            renderSouroundingTiles(pos, machine.world)
-            RenderHelper.disableStandardItemLighting()
+            renderSurroundingTiles(pos, machine.world)
             Minecraft.getMinecraft().textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE)
-            GlStateManager.matrixMode(5888)
             GlStateManager.popMatrix()
 
-            GlStateManager.depthMask(false)
             GlStateManager.enableBlend()
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE)
-            //GlStateManager.alphaFunc(516, 0.1f)
-            GlStateManager.shadeModel(7425)
+            GlStateManager.shadeModel(GL11.GL_SMOOTH)
 
             ForgeHooksClient.setRenderLayer(BlockRenderLayer.TRANSLUCENT)
             renderBlocks(BlockRenderLayer.TRANSLUCENT, pos, tess, tcw)
 
-            RenderHelper.enableStandardItemLighting()
             ForgeHooksClient.setRenderPass(1)
-            renderSouroundingTiles(pos, machine.world)
+            renderSurroundingTiles(pos, machine.world)
             GlStateManager.depthMask(true)
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
-            ForgeHooksClient.setRenderPass(-1)
-            RenderHelper.disableStandardItemLighting()
-
-            //ForgeHooksClient.setRenderPass(1)
-            //renderTileEntitys(pos, machine.world)
-
-            //ForgeHooksClient.setRenderPass(-1)
-
             shader.stop()
-
-            ForgeHooksClient.setRenderLayer(null)
         }
 
+        ForgeHooksClient.setRenderLayer(null)
+        ForgeHooksClient.setRenderPass(-1)
 
         GlStateManager.color(1f, 1f, 1f, 1f)
 
         bufferBuilder.setTranslation(0.0, 0.0, 0.0)
 
         GlStateManager.popMatrix()
-        GlStateManager.popAttrib()
-
 
         mc.entityRenderer.setupOverlayRendering()
 
         framebuffer?.bindFramebufferTexture()
         mc.framebuffer.bindFramebuffer(true)
-
 
         GlStateManager.translate(offsetX.toDouble(), offsetY.toDouble(), 0.0)
         GlStateManager.enableTexture2D()
@@ -543,7 +527,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         GlStateManager.enableBlend()
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE)
 
-        var face = lastSideHit ?: currentLockedSide
+        val face = lastSideHit ?: currentLockedSide
 
         //draw selection boxes and the components of the maintab
         loop@ for (it in mainTab.components) {
@@ -694,12 +678,18 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
      * @param pos the position of the tile entity
      * @param tcw the world that provides the tile entity
      */
-    private fun renderSouroundingTiles(pos: BlockPos, tcw: World) {
+    private fun renderSurroundingTiles(pos: BlockPos, tcw: World) {
         for (face in EnumFacing.values()) {
-            val offset = pos.offset(face)
-            val tile = tcw.getTileEntity(offset);
+            var tile = tcw.getTileEntity(pos.offset(face))
+            var offset = BlockPos.ORIGIN.offset(face)
+
+            if (tile is TileEntityChest) {
+                tile = tile.adjacentChestXNeg?.apply { offset = offset.offset(EnumFacing.WEST) }
+                        ?: tile.adjacentChestZNeg?.apply { offset = offset.offset(EnumFacing.NORTH) } ?: tile
+            }
+
             if (tile != null) {
-                renderTileEntity(tile, BlockPos.ORIGIN.offset(face))
+                renderTileEntity(tile, offset)
             }
         }
     }
