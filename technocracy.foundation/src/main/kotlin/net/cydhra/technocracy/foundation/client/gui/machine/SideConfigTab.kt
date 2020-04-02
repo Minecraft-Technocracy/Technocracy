@@ -24,6 +24,7 @@ import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTile
 import net.cydhra.technocracy.foundation.network.PacketHandler
 import net.cydhra.technocracy.foundation.network.componentsync.ClientChangeSideConfigPacket
 import net.cydhra.technocracy.foundation.util.opengl.BasicShaderProgram
+import net.cydhra.technocracy.foundation.util.opengl.MultiTargetFBO
 import net.cydhra.technocracy.foundation.util.opengl.OpenGLBoundingBox
 import net.cydhra.technocracy.foundation.util.opengl.ScreenspaceUtil
 import net.cydhra.technocracy.foundation.util.structures.BlockInfo
@@ -33,6 +34,7 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.client.renderer.OpenGlHelper
 import net.minecraft.client.renderer.RenderHelper
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.texture.TextureMap
@@ -54,6 +56,7 @@ import net.minecraftforge.client.MinecraftForgeClient
 import org.apache.commons.lang3.text.WordUtils
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL30
 import org.lwjgl.util.glu.Project
 import org.lwjgl.util.vector.Vector2f
 import org.lwjgl.util.vector.Vector3f
@@ -102,13 +105,18 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
     var hideNeighbors = false
 
     var lastSideHit: EnumFacing? = null
-    var currentLockedSide = if(machine.blockType is AbstractRotatableTileEntityBlock) machine.getBlockState().getValue(facingProperty) else EnumFacing.NORTH
+    var currentLockedSide = if (machine.blockType is AbstractRotatableTileEntityBlock) machine.getBlockState().getValue(facingProperty) else EnumFacing.NORTH
 
     var yaw = -180f
     var pitch = 0f
-    var zoomLevel: Float = -2f
+    var zoomLevel: Float = -2.6f
 
     var checkMouse = false
+    var sharedFBO: MultiTargetFBO? = null
+
+    override fun onClose() {
+        sharedFBO?.deleteFramebuffer()
+    }
 
     override fun mouseClicked(x: Int, y: Int, mouseX: Int, mouseY: Int, mouseButton: Int) {
         if (mouseButton == 0) {
@@ -196,11 +204,15 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
 
     override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
 
+        val mc = Minecraft.getMinecraft()
+
         if (!isInit) {
             isInit = true
             shader = BasicShaderProgram(ResourceLocation("technocracy.foundation", "shaders/fade.vsh"), ResourceLocation("technocracy.foundation", "shaders/fade.fsh"))
             alphaClip = shader.getUniform("alphaClip", BasicShaderProgram.ShaderUniform.UniformType.INT_1).uploadUniform(false)
         }
+
+        val tmp = sharedFBO
 
         if (Mouse.isButtonDown(0)) {
             yaw += Mouse.getDX()
@@ -214,10 +226,14 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
 
         val scaledResolution = ScaledResolution(Minecraft.getMinecraft())
         GlStateManager.pushMatrix()
-        framebuffer?.setFramebufferColor(0f, 0f, 0f, 1f)
+        framebuffer?.setFramebufferColor(0f, 0f, 0f, 0f)
         framebuffer = framebuffer.validateAndClear((parent.guiWidth - 7 - 7) * scaledResolution.scaleFactor, (58 + 18) * scaledResolution.scaleFactor)
+        val framebuffer = framebuffer!!
+        sharedFBO = sharedFBO?.validate(framebuffer) ?: MultiTargetFBO(framebuffer, ownDepth = true).createFramebuffer()
+        val sharedFBO = sharedFBO!!
+        sharedFBO.framebufferClear()
+        framebuffer.bindFramebuffer(true)
 
-        val mc = Minecraft.getMinecraft()
         //reset projection
         GlStateManager.matrixMode(GL11.GL_PROJECTION)
         GlStateManager.loadIdentity()
@@ -257,7 +273,6 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         val offsetX = x + 7
         val offsetY = y + parent.guiHeight - height - 4
 
-
         val vecs = ScreenspaceUtil.getPositonsOnFrustum(Mouse.getX() - offsetX * scaledResolution.scaleFactor, Mouse.getY() - (parent.height - y - parent.guiHeight + 4) * scaledResolution.scaleFactor)
         val rayTrace = tcw.rayTraceBlocks(vecs[0], vecs[1], false, false, false)
 
@@ -273,7 +288,6 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
             mc.blockRendererDispatcher.blockModelRenderer.renderModelFlat(tcw, model, state.block.getExtendedState(state, machine.world, machine.pos), BlockPos(0, 0, 0), bufferBuilder, false, 0)
             tess.draw()
         }
-
 
         if (state.block.canRenderInLayer(state, BlockRenderLayer.CUTOUT_MIPPED)) {
             GlStateManager.enableAlpha()
@@ -301,7 +315,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
 
         GlStateManager.depthMask(false)
         GlStateManager.enableBlend()
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE)
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
         GlStateManager.disableAlpha()
         GlStateManager.shadeModel(GL11.GL_SMOOTH)
 
@@ -364,7 +378,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         val rotations = Vector3f(0f, 0f, 0f)
         val colorMap = mutableMapOf<AbstractCapabilityTileEntityComponent, Int>()
 
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE)
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
         for (f in EnumFacing.values()) {
             rotations.y = 0f
             rotations.z = 0f
@@ -446,6 +460,9 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         }
 
         GlStateManager.color(1f, 1f, 1f, 1f)
+        GlStateManager.enableBlend()
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
+        GlStateManager.disableAlpha()
 
         //render the other blocks
         if (!hideNeighbors) {
@@ -453,32 +470,77 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
             GlStateManager.enableCull()
             RenderHelper.disableStandardItemLighting()
             mc.entityRenderer.disableLightmap()
-            GlStateManager.enableBlend()
-            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE)
-            GlStateManager.disableAlpha()
 
             shader.start()
             GlStateManager.depthMask(false)
             ForgeHooksClient.setRenderLayer(BlockRenderLayer.SOLID)
             renderBlocks(BlockRenderLayer.SOLID, pos, tess, tcw)
 
-            alphaClip.uploadUniform(true)
-            shader.updateUniforms()
-            ForgeHooksClient.setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED)
-            renderBlocks(BlockRenderLayer.CUTOUT_MIPPED, pos, tess, tcw)
-            ForgeHooksClient.setRenderLayer(BlockRenderLayer.CUTOUT)
-            renderBlocks(BlockRenderLayer.CUTOUT, pos, tess, tcw)
+            GlStateManager.depthMask(true)
+            OpenGlHelper.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, sharedFBO.framebufferObject)
+            OpenGlHelper.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, framebuffer.framebufferObject)
+            GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1f)
+
+            /*
+            we need to render cutout blocks and tile entitys with depth so they clip properly.
+            Because of that we need to use a second framebuffer that only stores the current depth information
+            but also renders to the original texture
+             */
+            for (face in EnumFacing.values()) {
+                //clone the depth information so the machine block does look solid
+                GL30.glBlitFramebuffer(0, 0, framebuffer.framebufferWidth, framebuffer.framebufferHeight, 0, 0, sharedFBO.width, sharedFBO.height, GL11.GL_DEPTH_BUFFER_BIT, GL11.GL_NEAREST)
+
+                val offset = pos.offset(face)
+                val state = mc.world.getBlockState(offset)
+                var render = false
+                if (state.block.canRenderInLayer(state, BlockRenderLayer.CUTOUT_MIPPED)) {
+                    ForgeHooksClient.setRenderLayer(BlockRenderLayer.CUTOUT_MIPPED)
+                    render = true
+                }
+                if (state.block.canRenderInLayer(state, BlockRenderLayer.CUTOUT)) {
+                    ForgeHooksClient.setRenderLayer(BlockRenderLayer.CUTOUT)
+                    render = true
+                }
+                if (render) {
+                    alphaClip.uploadUniform(true)
+                    shader.updateUniforms()
+                    tess.buffer.begin(7, DefaultVertexFormats.BLOCK)
+                    tess.buffer.setTranslation((-pos.x).toDouble(), (-pos.y).toDouble(), (-pos.z).toDouble())
+                    mc.blockRendererDispatcher.renderBlock(state, offset, tcw, tess.buffer)
+                    tess.buffer.setTranslation(0.0, 0.0, 0.0)
+                    tess.draw()
+                }
+
+                GlStateManager.pushMatrix()
+                ForgeHooksClient.setRenderPass(0)
+                var tile = tcw.getTileEntity(pos.offset(face))
+                var tileOffset = BlockPos.ORIGIN.offset(face)
+
+                if (tile is TileEntityChest) {
+                    tile = tile.adjacentChestXNeg?.apply { tileOffset = tileOffset.offset(EnumFacing.WEST) }
+                            ?: tile.adjacentChestZNeg?.apply { tileOffset = tileOffset.offset(EnumFacing.NORTH) }
+                                    ?: tile
+                }
+
+                if (tile != null) {
+                    renderTileEntity(tile, tileOffset)
+                }
+                Minecraft.getMinecraft().textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE)
+                GlStateManager.popMatrix()
+            }
+
             alphaClip.uploadUniform(false)
             shader.updateUniforms()
 
-            GlStateManager.pushMatrix()
-            ForgeHooksClient.setRenderPass(0)
-            renderSurroundingTiles(pos, machine.world)
-            Minecraft.getMinecraft().textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE)
-            GlStateManager.popMatrix()
+            OpenGlHelper.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0)
+            OpenGlHelper.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, 0)
+
+            framebuffer.bindFramebuffer(true)
+
+            GlStateManager.depthMask(false)
 
             GlStateManager.enableBlend()
-            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE)
+            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
             GlStateManager.shadeModel(GL11.GL_SMOOTH)
 
             ForgeHooksClient.setRenderLayer(BlockRenderLayer.TRANSLUCENT)
@@ -486,11 +548,10 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
 
             ForgeHooksClient.setRenderPass(1)
             renderSurroundingTiles(pos, machine.world)
-            GlStateManager.depthMask(true)
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
             shader.stop()
         }
-
+        GlStateManager.depthMask(true)
         ForgeHooksClient.setRenderLayer(null)
         ForgeHooksClient.setRenderPass(-1)
 
@@ -502,10 +563,21 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
 
         mc.entityRenderer.setupOverlayRendering()
 
-        framebuffer?.bindFramebufferTexture()
+        framebuffer.bindFramebufferTexture()
         mc.framebuffer.bindFramebuffer(true)
 
         GlStateManager.translate(offsetX.toDouble(), offsetY.toDouble(), 0.0)
+        GlStateManager.disableTexture2D()
+
+        bufferBuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR)
+        bufferBuilder.pos(0.0, 0.0, 0.0).color(0.05f, 0.05f, 0.05f, 1.0f).endVertex()
+        bufferBuilder.pos(0.0, height.toDouble(), 0.0).color(0.05f, 0.05f, 0.05f, 1.0f).endVertex()
+        bufferBuilder.pos(width.toDouble(), height.toDouble(), 0.0).color(0.05f, 0.05f, 0.05f, 1.0f).endVertex()
+        bufferBuilder.pos(width.toDouble(), 0.0, 0.0).color(0.05f, 0.05f, 0.05f, 1.0f).endVertex()
+        tess.draw()
+
+        GlStateManager.enableBlend()
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
         GlStateManager.enableTexture2D()
         bufferBuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX)
         bufferBuilder.pos(0.0, 0.0, 0.0).tex(0.0, 1.0).endVertex()
@@ -525,7 +597,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
 
         GlStateManager.enableDepth()
         GlStateManager.enableBlend()
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE)
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
 
         val face = lastSideHit ?: currentLockedSide
 
@@ -700,9 +772,11 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         val renderer = TileEntityRendererDispatcher.instance.getRenderer<TileEntity>(tile) ?: return
 
         if (tile.shouldRenderInPass(MinecraftForgeClient.getRenderPass())) {
-            GlStateManager.pushMatrix()
+            //push and pop attribute is slow but some modders dont revert to the right state
+            GL11.glPushAttrib(GL11.GL_DEPTH_BUFFER_BIT or GL11.GL_COLOR_BUFFER_BIT)
             renderer.render(tile, pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(), mc.renderPartialTicks, -1, 1f)
-            GlStateManager.popMatrix()
+            GlStateManager.popAttrib()
+            RenderHelper.disableStandardItemLighting()
         }
     }
 

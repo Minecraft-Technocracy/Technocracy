@@ -19,7 +19,7 @@ void main()
 
     //float alpha = max(0.0, min(distance, result.a));
     //float blendFactor = step(3.0f, dot(gl_Color.rgb, gl_Color.rgb));
-    fragColor = vec4(result.r, result.g, result.b, result.a * min(0.4, distance));
+    fragColor = vec4(result.r, result.g, result.b, result.a * min(0.7, distance));
 
     //float blendFactor = saturate(1.0f - sharpness * (dot(gl_Color.rgb, gl_Color.rgb) - 3.0f));
     //fragColor = vec4(lerp(result.rgb, gl_Color.rgb, blendFactor) , alpha);
