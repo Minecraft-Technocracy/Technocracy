@@ -1,20 +1,15 @@
 package net.cydhra.technocracy.foundation.content.tileentities.machines
 
+import net.cydhra.technocracy.foundation.client.gui.SimpleGui
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.TCTab
 import net.cydhra.technocracy.foundation.client.gui.components.energymeter.DefaultEnergyMeter
-import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.DefaultFluidMeter
 import net.cydhra.technocracy.foundation.client.gui.components.label.DefaultLabel
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.DefaultProgressBar
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.Orientation
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
-import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotPlayer
 import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
-import net.cydhra.technocracy.foundation.client.gui.container.TCContainerTab
-import net.cydhra.technocracy.foundation.client.gui.container.components.PlayerSlotComponent
-import net.cydhra.technocracy.foundation.client.gui.container.components.SlotComponent
 import net.cydhra.technocracy.foundation.client.gui.machine.BaseMachineTab
-import net.cydhra.technocracy.foundation.client.gui.machine.MachineContainer
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesTileEntityComponent
@@ -27,7 +22,6 @@ import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.model.tileentities.api.TEInventoryProvider
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeClass
 import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
-import net.cydhra.technocracy.foundation.util.readCompoundTag
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
@@ -92,30 +86,10 @@ class TileEntityAlloySmeltery : MachineTileEntity(), TEInventoryProvider {
     override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack, originalStack: ItemStack) {
     }
 
-    override fun getContainer(player: EntityPlayer?): TCContainer {
-        val container = MachineContainer(this)
-        val mainTab = TCContainerTab()
-
-        for (i in 0 until this.inputInventoryComponent.inventory.size) {
-            mainTab.components.add(SlotComponent(inputInventoryComponent.inventory, i, type = inputInventoryComponent.inventoryType))
-        }
-        for (i in 0 until this.outputInventoryComponent.inventory.size) {
-            mainTab.components.add(SlotComponent(outputInventoryComponent.inventory, i, type = outputInventoryComponent.inventoryType))
-        }
-
-        if (player != null)
-            addPlayerContainerSlots(mainTab, player)
-
-        container.registerTab(mainTab)
-
-        addDefaultContainerTabs(container, player)
-
-        return container
-    }
 
     @SideOnly(Side.CLIENT)
     override fun getGui(player: EntityPlayer?): TCGui {
-        val gui = TCGui(container = getContainer(player))
+        val gui = SimpleGui(container = TCContainer(this))
         gui.registerTab(object : BaseMachineTab(this, gui) {
             override fun init() {
                 super.init()
@@ -164,7 +138,7 @@ class TileEntityAlloySmeltery : MachineTileEntity(), TEInventoryProvider {
     override fun initGui(gui: TCGui, player: EntityPlayer?) {
         gui.registerTab(object : TCTab("Example", gui) {
             override fun init() {
-                addComponent(DefaultLabel(10, 20, "Hello World"))
+                addComponent(DefaultLabel(10, 20, "Hello World", gui = gui))
             }
         })
     }

@@ -30,25 +30,38 @@ import kotlin.random.Random
 
 class TabPlanetaryRendering(gui: TCGui) : TCTab("", gui, -1) {
 
-    @SideOnly(Side.CLIENT)
+
     @Suppress("unused", "PropertyName", "SpellCheckingInspection")
     companion object {
+        @SideOnly(Side.CLIENT)
         lateinit var vboStars: VBO
         var generatedStars = false
-
+        @SideOnly(Side.CLIENT)
         var buffer: Framebuffer? = null
+        @SideOnly(Side.CLIENT)
         var depthShader: BasicShaderProgram? = null
+        @SideOnly(Side.CLIENT)
         lateinit var Ufarplane: BasicShaderProgram.ShaderUniform
 
+        @SideOnly(Side.CLIENT)
         lateinit var basicCrtShader: BasicShaderProgram
+        @SideOnly(Side.CLIENT)
         lateinit var Uscalar: BasicShaderProgram.ShaderUniform
+        @SideOnly(Side.CLIENT)
         lateinit var UConvergeX: BasicShaderProgram.ShaderUniform
+        @SideOnly(Side.CLIENT)
         lateinit var UConvergeY: BasicShaderProgram.ShaderUniform
+        @SideOnly(Side.CLIENT)
         lateinit var UhardScan: BasicShaderProgram.ShaderUniform
+        @SideOnly(Side.CLIENT)
         lateinit var Uwarp: BasicShaderProgram.ShaderUniform
+        @SideOnly(Side.CLIENT)
         lateinit var UmaskDark: BasicShaderProgram.ShaderUniform
+        @SideOnly(Side.CLIENT)
         lateinit var UmaskLight: BasicShaderProgram.ShaderUniform
+        @SideOnly(Side.CLIENT)
         lateinit var Usaturation: BasicShaderProgram.ShaderUniform
+        @SideOnly(Side.CLIENT)
         lateinit var UpixelScaler: BasicShaderProgram.ShaderUniform
     }
 

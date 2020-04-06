@@ -67,7 +67,7 @@ abstract class TCTab(val name: String, val parent: TCGui, val tint: Int = -1,
     open fun handleMouseInput() {}
 
     protected fun addPlayerInventorySlots(player: EntityPlayer, x: Int, y: Int) {
-        this.components.add(DefaultLabel(x, y, player.inventory.displayName.unformattedText, 4210752, false))
+        this.components.add(DefaultLabel(x, y, player.inventory.displayName.unformattedText, 4210752, false, parent))
 
         val yOffset = y + 12
 

@@ -33,10 +33,7 @@ import net.cydhra.technocracy.foundation.util.validateAndClear
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.gui.ScaledResolution
-import net.minecraft.client.renderer.GlStateManager
-import net.minecraft.client.renderer.OpenGlHelper
-import net.minecraft.client.renderer.RenderHelper
-import net.minecraft.client.renderer.Tessellator
+import net.minecraft.client.renderer.*
 import net.minecraft.client.renderer.texture.TextureMap
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
@@ -88,9 +85,9 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         val height = 58 + 18
         val offsetY = parent.guiHeight - height - 4
 
-        infoTitleLabel = DefaultLabel(10, offsetY + 2, "")
+        infoTitleLabel = DefaultLabel(10, offsetY + 2, "", gui = parent)
 
-        hideBlocks = DefaultButton(10, offsetY + height - 15 - 2, 15, 15, "H") { _, _, button ->
+        hideBlocks = DefaultButton(10, offsetY + height - 15 - 2, 15, 15, "H", parent) { _, _, _, button ->
             if (button == 0)
                 hideNeighbors = !hideNeighbors
             hideBlocks.text = if (hideNeighbors) "S" else "H"
@@ -204,15 +201,17 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
 
     override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
 
+
         val mc = Minecraft.getMinecraft()
+
+        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_COLOR, GlStateManager.DestFactor.ONE)
+        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA)
 
         if (!isInit) {
             isInit = true
             shader = BasicShaderProgram(ResourceLocation("technocracy.foundation", "shaders/fade.vsh"), ResourceLocation("technocracy.foundation", "shaders/fade.fsh"))
             alphaClip = shader.getUniform("alphaClip", BasicShaderProgram.ShaderUniform.UniformType.INT_1).uploadUniform(false)
         }
-
-        val tmp = sharedFBO
 
         if (Mouse.isButtonDown(0)) {
             yaw += Mouse.getDX()
@@ -237,7 +236,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         //reset projection
         GlStateManager.matrixMode(GL11.GL_PROJECTION)
         GlStateManager.loadIdentity()
-        Project.gluPerspective(70f, (parent.guiWidth - 7 - 7) / (58 + 18f), 0.01f, 100f)
+        Project.gluPerspective(70f, ((parent.guiWidth - 7 - 7) * scaledResolution.scaleFactor) / ((58 + 18f) * scaledResolution.scaleFactor), 0.01f, 100f)
 
         //reset projection
         GlStateManager.matrixMode(GL11.GL_MODELVIEW)
@@ -273,7 +272,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         val offsetX = x + 7
         val offsetY = y + parent.guiHeight - height - 4
 
-        val vecs = ScreenspaceUtil.getPositonsOnFrustum(Mouse.getX() - offsetX * scaledResolution.scaleFactor, Mouse.getY() - (parent.height - y - parent.guiHeight + 4) * scaledResolution.scaleFactor)
+        val vecs = ScreenspaceUtil.getPositonsOnFrustum(Mouse.getX() - offsetX * scaledResolution.scaleFactor, Mouse.getY() - (scaledResolution.scaledHeight - y - parent.guiHeight + 4) * scaledResolution.scaleFactor)
         val rayTrace = tcw.rayTraceBlocks(vecs[0], vecs[1], false, false, false)
 
         Minecraft.getMinecraft().textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE)
@@ -642,7 +641,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         mc.renderItem.zLevel = 100.0f
         mainTab.components.forEach {
             if (it is TCSlotIO) {
-                val slot = it.containerSlot
+                val slot = it
                 mc.renderItem.renderItemAndEffectIntoGUI(mc.player, slot.stack, slot.xPos + parent.guiX, slot.yPos + parent.guiY)
                 mc.renderItem.renderItemOverlayIntoGUI(mc.fontRenderer, slot.stack, slot.xPos + parent.guiX, slot.yPos + parent.guiY, null)
             }

@@ -14,8 +14,5 @@ interface TCTileEntityGuiProvider {
     /**
      * @return the gui to display to all players
      */
-    @SideOnly(Side.CLIENT)
     fun getGui(player: EntityPlayer?): TCGui
-
-    fun getContainer(player: EntityPlayer?): TCContainer
 }

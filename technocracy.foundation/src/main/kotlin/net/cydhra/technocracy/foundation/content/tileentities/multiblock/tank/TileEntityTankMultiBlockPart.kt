@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.content.tileentities.multiblock.tank
 
+import net.cydhra.technocracy.foundation.client.gui.SimpleGui
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.TCTab
 import net.cydhra.technocracy.foundation.client.gui.components.energymeter.DefaultEnergyMeter
@@ -7,6 +8,7 @@ import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.Defaul
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.DefaultProgressBar
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.Orientation
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
+import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
 import net.cydhra.technocracy.foundation.client.gui.multiblock.BaseMultiblockTab
 import net.cydhra.technocracy.foundation.client.gui.multiblock.MultiblockContainer
 import net.cydhra.technocracy.foundation.client.gui.multiblock.MultiblockSettingsTab
@@ -33,7 +35,7 @@ open class TileEntityTankMultiBlockPart : TileEntityMultiBlockPart<TankMultiBloc
 
     override fun getGui(player: EntityPlayer?): TCGui {
 
-        val gui = TCGui(guiWidth = 176,  guiHeight = 200, container = getContainer(player))
+        val gui = SimpleGui(guiWidth = 176,  guiHeight = 200, container = TCContainer(this))
 
         //176, val guiHeight: Int = 166
 

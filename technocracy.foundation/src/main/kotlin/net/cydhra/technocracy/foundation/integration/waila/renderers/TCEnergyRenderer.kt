@@ -2,7 +2,7 @@ package net.cydhra.technocracy.foundation.integration.waila.renderers
 
 import mcp.mobius.waila.api.IWailaCommonAccessor
 import mcp.mobius.waila.api.IWailaTooltipRenderer
-import net.cydhra.technocracy.foundation.client.gui.TCGui
+import net.cydhra.technocracy.foundation.client.gui.TCClientGuiImpl
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.Tessellator
@@ -21,7 +21,7 @@ class TCEnergyRenderer : IWailaTooltipRenderer {
         val level = currentEnergy.toFloat() / maxEnergy.toFloat()
 
         GlStateManager.color(1F, 1F, 1F, 1F)
-        Minecraft.getMinecraft().textureManager.bindTexture(TCGui.guiComponents)
+        Minecraft.getMinecraft().textureManager.bindTexture(TCClientGuiImpl.guiComponents)
         GlStateManager.enableBlend()
         GlStateManager.rotate(90f, 0f, 0f, 1f)
         GlStateManager.color(0.4f, 0.4f, 0.4f, 1f)

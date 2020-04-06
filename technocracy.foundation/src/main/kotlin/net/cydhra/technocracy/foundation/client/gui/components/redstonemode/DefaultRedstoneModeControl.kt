@@ -1,26 +1,33 @@
 package net.cydhra.technocracy.foundation.client.gui.components.redstonemode
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
+import net.cydhra.technocracy.foundation.client.gui.TCClientGuiImpl
 import net.cydhra.technocracy.foundation.content.tileentities.components.RedstoneModeTileEntityComponent
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.tileentity.TileEntity
+import net.minecraftforge.fml.relauncher.Side
 
-class DefaultRedstoneModeControl(posX: Int, posY: Int, val component: RedstoneModeTileEntityComponent, val gui: TCGui) : RedstoneModeControl(posX, posY) {
+class DefaultRedstoneModeControl(posX: Int, posY: Int, val component: RedstoneModeTileEntityComponent, override var gui: TCGui) : RedstoneModeControl(posX, posY) {
 
     override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
         super.draw(x, y, mouseX, mouseY, partialTicks)
         val clr = if (hovered) 0.7f else 1f
         GlStateManager.color(clr, clr, clr, 1f)
 
-        Minecraft.getMinecraft().textureManager.bindTexture(TCGui.guiComponents)
+        Minecraft.getMinecraft().textureManager.bindTexture(TCClientGuiImpl.guiComponents)
         Gui.drawModalRectWithCustomSizedTexture(posX + x, posY + y, component.redstoneMode.ordinal * 16f, 59f, width, height, 256f, 256f)
     }
 
     override fun drawTooltip(mouseX: Int, mouseY: Int) {
         val str = "Redstone Mode: ${component.redstoneMode.name}"
-        gui.drawHoveringText(mutableListOf(str), mouseX, mouseY)
+        (gui as TCClientGuiImpl).drawHoveringText(mutableListOf(str), mouseX, mouseY)
+    }
+
+    override var onClick: ((Side, EntityPlayer, TileEntity?, Int) -> Unit)? = { side, player, tileEntity, button ->
+        component.redstoneMode = RedstoneModeTileEntityComponent.RedstoneMode.values()[(component.redstoneMode.ordinal + 1) % RedstoneModeTileEntityComponent.RedstoneMode.values().size]
     }
 
     /*override fun handleClientClick(player: EntityPlayer, mouseButton: Int) {
@@ -30,7 +37,6 @@ class DefaultRedstoneModeControl(posX: Int, posY: Int, val component: RedstoneMo
     }*/
 
     override fun mouseClicked(x: Int, y: Int, mouseX: Int, mouseY: Int, mouseButton: Int) {
-        component.redstoneMode = RedstoneModeTileEntityComponent.RedstoneMode.values()[(component.redstoneMode.ordinal + 1) % RedstoneModeTileEntityComponent.RedstoneMode.values().size]
         super.mouseClicked(x, y, mouseX, mouseY, mouseButton)
     }
 }

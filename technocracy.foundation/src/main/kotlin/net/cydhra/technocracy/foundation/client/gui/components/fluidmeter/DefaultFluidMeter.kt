@@ -1,32 +1,31 @@
 package net.cydhra.technocracy.foundation.client.gui.components.fluidmeter
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
-import net.cydhra.technocracy.foundation.client.gui.TCGui.Companion.slotContent
-import net.cydhra.technocracy.foundation.client.gui.TCGui.Companion.slotCornerBottomLeft
-import net.cydhra.technocracy.foundation.client.gui.TCGui.Companion.slotCornerBottomRight
-import net.cydhra.technocracy.foundation.client.gui.TCGui.Companion.slotCornerTopLeft
-import net.cydhra.technocracy.foundation.client.gui.TCGui.Companion.slotCornerTopRight
-import net.cydhra.technocracy.foundation.client.gui.TCGui.Companion.slotLineBottom
-import net.cydhra.technocracy.foundation.client.gui.TCGui.Companion.slotLineLeft
-import net.cydhra.technocracy.foundation.client.gui.TCGui.Companion.slotLineRight
-import net.cydhra.technocracy.foundation.client.gui.TCGui.Companion.slotLineTop
+import net.cydhra.technocracy.foundation.client.gui.TCClientGuiImpl
+import net.cydhra.technocracy.foundation.client.gui.TCClientGuiImpl.Companion.slotContent
+import net.cydhra.technocracy.foundation.client.gui.TCClientGuiImpl.Companion.slotCornerBottomLeft
+import net.cydhra.technocracy.foundation.client.gui.TCClientGuiImpl.Companion.slotCornerBottomRight
+import net.cydhra.technocracy.foundation.client.gui.TCClientGuiImpl.Companion.slotCornerTopLeft
+import net.cydhra.technocracy.foundation.client.gui.TCClientGuiImpl.Companion.slotCornerTopRight
+import net.cydhra.technocracy.foundation.client.gui.TCClientGuiImpl.Companion.slotLineBottom
+import net.cydhra.technocracy.foundation.client.gui.TCClientGuiImpl.Companion.slotLineLeft
+import net.cydhra.technocracy.foundation.client.gui.TCClientGuiImpl.Companion.slotLineRight
+import net.cydhra.technocracy.foundation.client.gui.TCClientGuiImpl.Companion.slotLineTop
 import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
-import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.texture.TextureMap
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.util.math.MathHelper
-import net.minecraft.util.text.TextFormatting
 import net.minecraftforge.fluids.Fluid
 import org.lwjgl.opengl.GL11
 import java.awt.Color
 import kotlin.math.*
 
 
-class DefaultFluidMeter(posX: Int, posY: Int,  component: FluidTileEntityComponent, val gui: TCGui, val type: Int = 0) : FluidMeter(posX, posY, component) {
+class DefaultFluidMeter(posX: Int, posY: Int,  component: FluidTileEntityComponent, override var gui: TCGui, val type: Int = 0) : FluidMeter(posX, posY, component) {
 
     init {
         if (type == 1)
@@ -197,7 +196,7 @@ class DefaultFluidMeter(posX: Int, posY: Int,  component: FluidTileEntityCompone
         val col = if (component.fluid.capacity == 0) 0.5f else 1f
 
         GlStateManager.color(col, col, col, 1f)
-        Minecraft.getMinecraft().textureManager.bindTexture(TCGui.guiComponents)
+        Minecraft.getMinecraft().textureManager.bindTexture(TCClientGuiImpl.guiComponents)
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
 
         //edge top left

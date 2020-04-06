@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.client.gui.handler
 
+import net.cydhra.technocracy.foundation.client.gui.TCClientGuiImpl
 import net.cydhra.technocracy.foundation.model.tileentities.api.TCTileEntityGuiProvider
 import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
 import net.minecraft.entity.player.EntityPlayer
@@ -20,18 +21,18 @@ class TCGuiHandler : IGuiHandler {
         val gui = when (ID) {
             machineGui -> {
                 if (te is TCTileEntityGuiProvider) {
-                    te.getContainer(player)
+                    te.getGui(player).container
                 } else null
             }
             multiblockGui -> {
                 if (te is TileEntityMultiBlockPart<*>) {
-                    te.getContainer(player)
+                    te.getGui(player).container
                 } else null
             }
             else -> null
         }
 
-        gui?.tileEntity = te
+        //gui?.tileEntity = te
 
         return gui
     }
@@ -41,18 +42,18 @@ class TCGuiHandler : IGuiHandler {
         val gui = when (ID) {
             machineGui -> {
                 if (te is TCTileEntityGuiProvider) {
-                    te.getGui(player)
+                    TCClientGuiImpl(te.getGui(player))
                 } else null
             }
             multiblockGui -> {
                 if (te is TileEntityMultiBlockPart<*>) {
-                    te.getGui(player)
+                    TCClientGuiImpl(te.getGui(player))
                 } else null
             }
             else -> null
         }
 
-        gui?.container?.tileEntity = te
+        //gui?.container?.tileEntity = te
 
         return gui
     }

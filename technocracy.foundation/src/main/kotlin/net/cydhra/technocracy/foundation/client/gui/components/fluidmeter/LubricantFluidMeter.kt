@@ -17,7 +17,7 @@ import java.awt.Color
 import kotlin.math.*
 
 
-class LubricantFluidMeter(posX: Int, posY: Int, component: FluidTileEntityComponent, val gui: TCGui) : FluidMeter(posX, posY, component) {
+class LubricantFluidMeter(posX: Int, posY: Int, component: FluidTileEntityComponent, override var gui: TCGui) : FluidMeter(posX, posY, component) {
     companion object {
         val lubTexture: ResourceLocation = ResourceLocation("technocracy.foundation", "textures/gui/lubricant_addon.png")
     }
