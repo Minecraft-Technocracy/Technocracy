@@ -348,7 +348,6 @@ open class CommonProxy {
         PacketHandler.registerPacket(ItemScrollPacket::class.java, ItemScrollPacket::class.java, Side.SERVER)
         PacketHandler.registerPacket(ItemKeyBindPacket::class.java, ItemKeyBindPacket::class.java, Side.SERVER)
         PacketHandler.registerPacket(MachineInfoPacket::class.java, MachineInfoPacket::class.java, Side.CLIENT)
-        PacketHandler.registerPacket(ComponentUpdatePacket::class.java, ComponentUpdatePacket::class.java, Side.SERVER)
         PacketHandler.registerPacket(ClientRequestSyncPacket::class.java, ClientRequestSyncPacket::class.java, Side.SERVER)
         PacketHandler.registerPacket(ComponentClickPacket::class.java, ComponentClickPacket::class.java, Side.SERVER)
         PacketHandler.registerPacket(ClientSwitchTabPacket::class.java, ClientSwitchTabPacket::class.java, Side.SERVER)
