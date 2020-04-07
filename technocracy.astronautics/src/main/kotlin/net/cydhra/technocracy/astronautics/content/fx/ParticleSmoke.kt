@@ -113,7 +113,7 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
             if (vao == null) {
                 generateVAO()
 
-                smokeShader = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shaders/smoke.vsh"), ResourceLocation("technocracy.astronautics", "shaders/smoke.fsh"), ResourceLocation("technocracy.astronautics", "shader/smoke.gsh"), attributeBinder = Consumer {
+                smokeShader = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shaders/smoke.vsh"), ResourceLocation("technocracy.astronautics", "shaders/smoke.fsh"), ResourceLocation("technocracy.astronautics", "shaders/smoke.gsh"), attributeBinder = Consumer {
                     GL20.glBindAttribLocation(it, 0, "position")
                     GL20.glBindAttribLocation(it, 1, "maxtime_currenttime_rendertime_rotation")
                     GL20.glBindAttribLocation(it, 2, "scale")
