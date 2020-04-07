@@ -21,8 +21,6 @@ class ClientRequestSyncPacket: IMessage, IMessageHandler<ClientRequestSyncPacket
         if (container !is TCContainer)
             return null
 
-        PacketHandler.sendToClient(MachineInfoPacket(container.tileEntity), ctx.serverHandler.player)
-
-        return null
+        return MachineInfoPacket(container.tileEntity)
     }
 }

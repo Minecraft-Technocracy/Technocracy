@@ -1,8 +1,8 @@
 package net.cydhra.technocracy.optics.content.tileentities.machines
 
+import net.cydhra.technocracy.foundation.client.gui.SimpleGui
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
-import net.cydhra.technocracy.foundation.client.gui.container.TCContainerTab
 import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageTileEntityComponent
 import net.cydhra.technocracy.foundation.model.tileentities.api.TCMachineTileEntity
 import net.cydhra.technocracy.foundation.model.tileentities.api.logic.ILogicClient
@@ -33,15 +33,8 @@ class TileEntityLaser : AggregatableTileEntity(), TCMachineTileEntity, ILogicCli
             this.tick()
     }
 
-    override fun getContainer(player: EntityPlayer?): TCContainer {
-        val container = TCContainer()
-        val mainTab = TCContainerTab()
-        container.registerTab(mainTab)
-        return container
-    }
-
     override fun getGui(player: EntityPlayer?): TCGui {
-        val gui = TCGui(container = getContainer(player))
+        val gui = SimpleGui(container = TCContainer(this))
 
         // TODO
 

@@ -3,6 +3,7 @@ package net.cydhra.technocracy.foundation.client.gui.components.progressbar
 import mezz.jei.api.IGuiHelper
 import mezz.jei.api.gui.IDrawable
 import net.cydhra.technocracy.foundation.client.gui.TCGui
+import net.cydhra.technocracy.foundation.client.gui.TCClientGuiImpl
 import net.cydhra.technocracy.foundation.content.tileentities.components.ProgressTileEntityComponent
 import net.cydhra.technocracy.foundation.util.Interpolator
 import net.minecraft.client.Minecraft
@@ -12,9 +13,9 @@ import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import kotlin.math.roundToInt
 
-class DefaultProgressBar(posX: Int, posY: Int, orientation: Orientation, val component: ProgressTileEntityComponent?, val gui: TCGui?) : ProgressBar(posX, posY, orientation) {
+class DefaultProgressBar(posX: Int, posY: Int, orientation: Orientation, val component: ProgressTileEntityComponent?, override var gui: TCGui) : ProgressBar(posX, posY, orientation) {
     override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
-        Minecraft.getMinecraft().textureManager.bindTexture(TCGui.guiComponents)
+        Minecraft.getMinecraft().textureManager.bindTexture(TCClientGuiImpl.guiComponents)
 
         GlStateManager.color(1F, 1F, 1F, 1F)
 
@@ -103,9 +104,9 @@ class DefaultProgressBar(posX: Int, posY: Int, orientation: Orientation, val com
     }
 
     override fun drawTooltip(mouseX: Int, mouseY: Int) {
-        if (gui != null) {
+        if (gui is TCClientGuiImpl) {
             val str = "${(progress * 100).roundToInt()}%"
-            gui.drawHoveringText(mutableListOf(str), mouseX, mouseY)
+            (gui as TCClientGuiImpl).drawHoveringText(mutableListOf(str), mouseX, mouseY)
         }
     }
 

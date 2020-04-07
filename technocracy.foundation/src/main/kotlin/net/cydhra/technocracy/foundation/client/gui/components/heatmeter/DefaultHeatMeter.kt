@@ -1,26 +1,22 @@
 package net.cydhra.technocracy.foundation.client.gui.components.heatmeter
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
+import net.cydhra.technocracy.foundation.client.gui.TCClientGuiImpl
 import net.cydhra.technocracy.foundation.content.tileentities.components.HeatStorageTileEntityComponent
 import net.cydhra.technocracy.foundation.util.Interpolator
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
-import net.minecraft.client.renderer.Tessellator
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats
-import net.minecraft.util.math.MathHelper
 import org.lwjgl.opengl.GL11
-import java.awt.Color
 import kotlin.math.roundToInt
 
 
-class DefaultHeatMeter(posX: Int, posY: Int,  component: HeatStorageTileEntityComponent, val gui: TCGui) : HeatMeter(posX, posY, component) {
+class DefaultHeatMeter(posX: Int, posY: Int,  component: HeatStorageTileEntityComponent, override var gui: TCGui) : HeatMeter(posX, posY, component) {
     override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
         GlStateManager.color(1F, 1F, 1F, 1F)
 
         GlStateManager.color(1F, 1F, 1F, 1F)
 
-        Minecraft.getMinecraft().textureManager.bindTexture(TCGui.guiComponents)
+        Minecraft.getMinecraft().textureManager.bindTexture(TCClientGuiImpl.guiComponents)
         GlStateManager.enableBlend()
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
 
@@ -40,6 +36,6 @@ class DefaultHeatMeter(posX: Int, posY: Int,  component: HeatStorageTileEntityCo
 
     override fun drawTooltip(mouseX: Int, mouseY: Int) {
         val str = "${(level * component.heatCapacity).roundToInt()}mH/${component.heatCapacity}mH"
-        gui.drawHoveringText(mutableListOf(str), mouseX, mouseY)
+        (gui as TCClientGuiImpl).drawHoveringText(mutableListOf(str), mouseX, mouseY)
     }
 }

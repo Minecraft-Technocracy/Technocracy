@@ -1,15 +1,18 @@
 package net.cydhra.technocracy.foundation.client.gui.components
 
+import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.network.ComponentClickPacket
 import net.cydhra.technocracy.foundation.network.PacketHandler
+import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.tileentity.TileEntity
+import net.minecraftforge.fml.relauncher.Side
 import kotlin.properties.Delegates
 
 abstract class TCComponent : ITCComponent {
-    var componentId = -1
-    //open fun handleClientClick(player: EntityPlayer, mouseButton: Int) {}
+    override var componentId = -1
 
     fun setSize(width: Int = this.width, height: Int = this.height): TCComponent {
         this.width = width
@@ -21,9 +24,13 @@ abstract class TCComponent : ITCComponent {
         componentId = id
     }
 
+    override var onClick: ((side: Side, player: EntityPlayer, tileEntity: TileEntity?, button: Int) -> Unit)? = null
+
     override fun mouseClicked(x: Int, y: Int, mouseX: Int, mouseY: Int, mouseButton: Int) {
-        if (componentId != -1)
+        onClick?.let {
+            it(Side.CLIENT, Minecraft.getMinecraft().player, gui.container.tileEntity, mouseButton)
             PacketHandler.sendToServer(ComponentClickPacket(componentId, mouseButton))
+        }
     }
 
     fun drawModalRectWithCustomSizedTexture(x: Double, y: Double, u: Double, v: Double, width: Double, height: Double, textureWidth: Float, textureHeight: Float) {
@@ -46,10 +53,17 @@ interface ITCComponent {
     var posX: Int
     var posY: Int
 
+    var componentId: Int
+    var gui: TCGui
+
     fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float)
     fun drawTooltip(mouseX: Int, mouseY: Int)
 
     fun update()
+
+    var onClick: ((side: Side, player: EntityPlayer, tileEntity: TileEntity?, button: Int) -> Unit)?
+
+    //fun handleClientClick(player: EntityPlayer?, tile: TileEntity?, mouseButton: Int) {}
 
     fun mouseClicked(x: Int, y: Int, mouseX: Int, mouseY: Int, mouseButton: Int)
     fun isMouseOnComponent(mouseX: Int, mouseY: Int): Boolean

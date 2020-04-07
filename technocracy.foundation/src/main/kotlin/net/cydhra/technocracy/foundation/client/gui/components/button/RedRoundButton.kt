@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.client.gui.components.button
 
+import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.FontRenderer
 import net.minecraft.client.gui.Gui
@@ -9,6 +10,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.ResourceLocation
+import net.minecraftforge.fml.relauncher.Side
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
 import kotlin.math.cos
@@ -17,8 +19,8 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 
 
-open class RedRoundButton(posX: Int, posY: Int, width: Int, height: Int, text: String, componentId: Int = -1, clientClick: ((player: EntityPlayer, tileEntity: TileEntity?, button: Int) -> Unit)? = null) :
-        Button(posX, posY, width, height, text, Minecraft.getMinecraft().fontRenderer, componentId, clientClick) {
+open class RedRoundButton(posX: Int, posY: Int, width: Int, height: Int, text: String, override var gui: TCGui, clientClick: ((side: Side, player: EntityPlayer, tileEntity: TileEntity?, button: Int) -> Unit)? = null) :
+        Button(posX, posY, width, height, text, clientClick) {
 
     protected val BUTTON_TEXTURES = ResourceLocation("textures/gui/widgets.png")
 
@@ -110,7 +112,7 @@ open class RedRoundButton(posX: Int, posY: Int, width: Int, height: Int, text: S
             j = 16777120
         }
 
-        drawCenteredString(fontRenderer, text, posX + width / 2, posY2.toInt() - (if (down) 2 else 10) - fontRenderer.FONT_HEIGHT / 2, -1)
+        drawCenteredString(Minecraft.getMinecraft().fontRenderer, text, posX + width / 2, posY2.toInt() - (if (down) 2 else 10) - Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT / 2, -1)
 
     }
 }

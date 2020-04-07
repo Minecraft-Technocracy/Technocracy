@@ -1,22 +1,20 @@
 package net.cydhra.technocracy.foundation.client.gui.components.energymeter
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
+import net.cydhra.technocracy.foundation.client.gui.TCClientGuiImpl
 import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageTileEntityComponent
 import net.cydhra.technocracy.foundation.util.Interpolator
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
-import net.minecraft.client.renderer.Tessellator
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import org.lwjgl.opengl.GL11
 import kotlin.math.roundToInt
 
-class DefaultEnergyMeter(posX: Int, posY: Int, component: EnergyStorageTileEntityComponent, val gui: TCGui) : EnergyMeter(posX, posY, component) {
+class DefaultEnergyMeter(posX: Int, posY: Int, component: EnergyStorageTileEntityComponent, override var gui: TCGui) : EnergyMeter(posX, posY, component) {
 
     override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
         GlStateManager.color(1F, 1F, 1F, 1F)
 
-        Minecraft.getMinecraft().textureManager.bindTexture(TCGui.guiComponents)
+        Minecraft.getMinecraft().textureManager.bindTexture(TCClientGuiImpl.guiComponents)
         GlStateManager.enableBlend()
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
 
@@ -36,6 +34,6 @@ class DefaultEnergyMeter(posX: Int, posY: Int, component: EnergyStorageTileEntit
 
     override fun drawTooltip(mouseX: Int, mouseY: Int) {
         val str = "${(level * component.energyStorage.capacity).roundToInt()}RF / ${component.energyStorage.capacity}RF"
-        gui.drawHoveringText(mutableListOf(str), mouseX, mouseY)
+        (gui as TCClientGuiImpl).drawHoveringText(mutableListOf(str), mouseX, mouseY)
     }
 }

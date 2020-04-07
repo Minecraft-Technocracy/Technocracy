@@ -1,8 +1,8 @@
 package net.cydhra.technocracy.foundation.client.gui.components.fluidmeter
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
+import net.cydhra.technocracy.foundation.client.gui.TCClientGuiImpl
 import net.cydhra.technocracy.foundation.client.gui.components.TCCapabilityComponent
-import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
 import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.MathHelper
@@ -51,7 +51,7 @@ abstract class FluidMeter(override var posX: Int, override var posY: Int, compon
                 text.add(component.fluid.currentFluid!!.localizedName + ": ")
 
             text.add("$color${(level * component.fluid.capacity).roundToInt()}mb / ${component.fluid.capacity}mb")
-            gui.drawHoveringText(text, mouseX, mouseY)
+            (gui as TCClientGuiImpl).drawHoveringText(text, mouseX, mouseY)
         }
     }
 

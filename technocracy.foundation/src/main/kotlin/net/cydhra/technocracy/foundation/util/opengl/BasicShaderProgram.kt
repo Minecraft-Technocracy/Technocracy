@@ -9,6 +9,8 @@ import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.resource.IResourceType
 import net.minecraftforge.client.resource.ISelectiveResourceReloadListener
 import net.minecraftforge.client.resource.VanillaResourceType
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import org.apache.commons.io.IOUtils
 import org.apache.commons.lang3.StringUtils
 import org.lwjgl.BufferUtils
@@ -23,7 +25,7 @@ import java.util.function.BiConsumer
 import java.util.function.Consumer
 import java.util.function.Predicate
 
-
+@SideOnly(Side.CLIENT)
 class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: ResourceLocation, val geometryIn: ResourceLocation? = null, val attributeBinder: Consumer<Int>? = null, val resourceReloader: BiConsumer<IResourceManager, Predicate<IResourceType>>? = null) : ISelectiveResourceReloadListener {
     private var programID: Int = 0
     private var vertexShaderID: Int = 0
@@ -126,6 +128,7 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
         }
     }
 
+    @SideOnly(Side.CLIENT)
     class ShaderUniform(val type: UniformType, var uniformId: Int, var uniformName: String, var shader: BasicShaderProgram) {
         enum class UniformType(val type: GenericType, val amount: Int) {
             SAMPLER(GenericType.SAMPLER, 1),

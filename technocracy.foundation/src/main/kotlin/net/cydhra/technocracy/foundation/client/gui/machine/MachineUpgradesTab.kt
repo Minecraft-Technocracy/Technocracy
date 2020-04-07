@@ -29,7 +29,8 @@ class MachineUpgradesTab(parent: TCGui,
             posY = PADDING_TOP,
             maxWidth = lableWidth,
             scaling = 0.7,
-            text = ""
+            text = "",
+            gui = parent
     )
 
     private val infoContentLabel = WrappingLabel(
@@ -37,7 +38,8 @@ class MachineUpgradesTab(parent: TCGui,
             posY = PADDING_TOP,
             maxWidth = lableWidth,
             scaling = 0.7,
-            text = ""
+            text = "",
+            gui = parent
     )
 
     override fun init() {

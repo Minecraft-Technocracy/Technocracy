@@ -26,7 +26,7 @@ class TileEntityCapacitorController : TileEntityMultiBlockPart<CapacitorMultiBlo
     }
 
     override fun initGui(gui: TCGui) {
-        gui.tabs.clear() // remove main menu
+        //gui.tabs.clear() // remove main menu
         gui.registerTab(object : BaseMultiblockTab(this, gui, TCIcon(siliconItem)) {
             override fun init() {
                 (this@TileEntityCapacitorController.multiblockController as BaseMultiBlock).getComponents().forEach { (_, guiComponent) ->
@@ -36,7 +36,7 @@ class TileEntityCapacitorController : TileEntityMultiBlockPart<CapacitorMultiBlo
                         }
                     }
                 }
-                components.add(DefaultLabel(25, 25, "Transfer Limit:"))
+                components.add(DefaultLabel(25, 25, "Transfer Limit:", gui = gui))
 
                 addPlayerInventorySlots(Minecraft.getMinecraft().player, 8, gui.guiHeight - 58 - 16 - 5 - 12)
             }

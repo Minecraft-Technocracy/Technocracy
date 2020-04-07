@@ -3,7 +3,7 @@ package net.cydhra.technocracy.foundation.model.tileentities.multiblock
 import it.zerono.mods.zerocore.api.multiblock.MultiblockControllerBase
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import net.cydhra.technocracy.foundation.TCFoundation
-import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
+import net.cydhra.technocracy.foundation.client.gui.SimpleGui
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.TCIcon
 import net.cydhra.technocracy.foundation.client.gui.components.energymeter.DefaultEnergyMeter
@@ -12,33 +12,25 @@ import net.cydhra.technocracy.foundation.client.gui.components.progressbar.Defau
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.Orientation
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
 import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
-import net.cydhra.technocracy.foundation.client.gui.container.TCContainerTab
-import net.cydhra.technocracy.foundation.client.gui.container.components.PlayerSlotComponent
-import net.cydhra.technocracy.foundation.client.gui.container.components.SlotComponent
 import net.cydhra.technocracy.foundation.client.gui.handler.TCGuiHandler
 import net.cydhra.technocracy.foundation.client.gui.multiblock.BaseMultiblockTab
-import net.cydhra.technocracy.foundation.client.gui.multiblock.MultiblockContainer
 import net.cydhra.technocracy.foundation.client.gui.multiblock.MultiblockSettingsTab
-import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
+import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.items.siliconItem
-import net.cydhra.technocracy.foundation.network.componentsync.guiInfoPacketSubscribers
-import net.cydhra.technocracy.foundation.model.tileentities.api.AbstractRectangularMultiBlockTileEntity
-import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableDelegate
-import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatable
-import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatableTileEntity
-import net.cydhra.technocracy.foundation.model.tileentities.api.TCTileEntityGuiProvider
 import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.ProgressTileEntityComponent
 import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
-import net.minecraft.client.Minecraft
+import net.cydhra.technocracy.foundation.model.tileentities.api.AbstractRectangularMultiBlockTileEntity
+import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatable
+import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatableTileEntity
+import net.cydhra.technocracy.foundation.model.tileentities.api.TCTileEntityGuiProvider
+import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableDelegate
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumHand
-import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import net.minecraftforge.common.capabilities.Capability
@@ -127,47 +119,8 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
         }
     }
 
-    override fun getContainer(player: EntityPlayer?): TCContainer {
-        val container = MultiblockContainer(this)
-        val mainTab = TCContainerTab()
-
-        getComponents().filter { it.second is InventoryTileEntityComponent }.forEach { (_, com) ->
-            val component = com as InventoryTileEntityComponent
-            if (component.inventoryType != DynamicInventoryCapability.InventoryType.OUTPUT) {
-                for (i in 0 until component.inventory.slots) {
-                    mainTab.components.add(SlotComponent(component.inventory, i, component.inventoryType))
-                }
-            } else {
-                for (i in component.inventory.slots - 1 downTo 0) {
-                    mainTab.components.add(SlotComponent(component.inventory, i, component.inventoryType))
-                }
-            }
-        }
-
-        if (player != null)
-            addPlayerContainerSlots(mainTab, player)
-
-        container.registerTab(mainTab)
-        container.registerTab(TCContainerTab())
-
-        return container
-    }
-
-    fun addPlayerContainerSlots(tab: TCContainerTab, player: EntityPlayer) {
-
-        for (row in 0..2) {
-            for (slot in 0..8) {
-                tab.components.add(PlayerSlotComponent(player.inventory, slot + row * 9 + 9))
-            }
-        }
-
-        for (k in 0..8) {
-            tab.components.add(PlayerSlotComponent(player.inventory, k))
-        }
-    }
-
     override fun getGui(player: EntityPlayer?): TCGui {
-        val gui = TCGui(container = getContainer(player))
+        val gui = SimpleGui(container = TCContainer(this))
         gui.registerTab(object : BaseMultiblockTab(this, gui, TCIcon(siliconItem)) {
             override fun init() {
                 var nextOutput = 125

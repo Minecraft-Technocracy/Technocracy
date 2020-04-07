@@ -14,11 +14,9 @@ class MachineSettingsTab(parent: TCGui, val machine: MachineTileEntity) : TCTab(
         icon = TCIcon(Items.REDSTONE)) {
 
     override fun init() {
-        var index = 0
         machine.getComponents().forEach {
             if (it.second is RedstoneModeTileEntityComponent) {
                 val control = DefaultRedstoneModeControl(97, 20, it.second as RedstoneModeTileEntityComponent, parent)
-                control.componentId = index++
                 components.add(control)
             }
         }

@@ -1,28 +1,27 @@
 package net.cydhra.technocracy.foundation.content.tileentities.machines
 
+import net.cydhra.technocracy.foundation.client.gui.SimpleGui
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.components.energymeter.DefaultEnergyMeter
-import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.CoolantMeter
 import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.DefaultFluidMeter
-import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.LubricantFluidMeter
-import net.cydhra.technocracy.foundation.client.gui.components.heatmeter.DefaultHeatMeter
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.DefaultProgressBar
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.Orientation
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
 import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
-import net.cydhra.technocracy.foundation.client.gui.container.TCContainerTab
-import net.cydhra.technocracy.foundation.client.gui.container.components.SlotComponent
 import net.cydhra.technocracy.foundation.client.gui.machine.BaseMachineTab
-import net.cydhra.technocracy.foundation.client.gui.machine.MachineContainer
-import net.cydhra.technocracy.foundation.client.gui.machine.MachineSettingsTab
-import net.cydhra.technocracy.foundation.client.gui.machine.MachineUpgradesTab
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.content.fluids.hydrochloricAcidFluid
-import net.cydhra.technocracy.foundation.content.tileentities.components.*
+import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.MultiplierTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.logic.AdditiveConsumptionLogic
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ItemProcessingLogic
-import net.cydhra.technocracy.foundation.content.tileentities.upgrades.*
+import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_ADDITIVE_CONSUMPTION
+import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_ENERGY
+import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_GENERIC
+import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_SPEED
 import net.cydhra.technocracy.foundation.data.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.model.tileentities.api.TEInventoryProvider
@@ -81,30 +80,9 @@ class TileEntityChemicalEtchingChamber : MachineTileEntity(), TEInventoryProvide
         ), MACHINE_PROCESSING_LOGIC_NAME)
     }
 
-    override fun getContainer(player: EntityPlayer?): TCContainer {
-        val container = MachineContainer(this)
-        val mainTab = TCContainerTab()
-
-        for (i in 0 until this.inputInventory.inventory.size) {
-            mainTab.components.add(SlotComponent(inputInventory.inventory, i, type = inputInventory.inventoryType))
-        }
-        for (i in 0 until this.outputInventoryComponent.inventory.size) {
-            mainTab.components.add(SlotComponent(outputInventoryComponent.inventory, i, type = outputInventoryComponent.inventoryType))
-        }
-
-        if (player != null)
-            addPlayerContainerSlots(mainTab, player)
-
-        container.registerTab(mainTab)
-
-        addDefaultContainerTabs(container, player)
-
-        return container
-    }
-
     override fun getGui(player: EntityPlayer?): TCGui {
 
-        val gui = TCGui(container = getContainer(player))
+        val gui = SimpleGui(container = TCContainer(this))
         gui.registerTab(object : BaseMachineTab(this, gui) {
             override fun init() {
                 super.init()

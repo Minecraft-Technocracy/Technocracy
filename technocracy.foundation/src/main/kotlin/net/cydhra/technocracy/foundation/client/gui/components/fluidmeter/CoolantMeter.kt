@@ -11,7 +11,7 @@ import net.minecraft.util.ResourceLocation
 import org.lwjgl.opengl.GL11
 
 
-class CoolantMeter(posX: Int, posY: Int, val coolantIn: FluidTileEntityComponent, val coolantOut: FluidTileEntityComponent, val heat: HeatStorageTileEntityComponent, val gui: TCGui) : FluidMeter(posX, posY, coolantIn) {
+class CoolantMeter(posX: Int, posY: Int, val coolantIn: FluidTileEntityComponent, val coolantOut: FluidTileEntityComponent, val heat: HeatStorageTileEntityComponent, gui: TCGui) : FluidMeter(posX, posY, coolantIn) {
 
     val meterIn = DefaultFluidMeter(6, 7, coolantIn, gui)
     val meterOut = DefaultFluidMeter(6 + 16 + 8 + 4, 7, coolantOut, gui)
@@ -20,6 +20,13 @@ class CoolantMeter(posX: Int, posY: Int, val coolantIn: FluidTileEntityComponent
     override var width = 64
     override var height = 64
 
+    override var gui = gui
+    set(value) {
+        field = value
+        meterIn.gui = value
+        meterOut.gui = value
+        heatBar.gui = value
+    }
 
     companion object {
         val coolantTexture: ResourceLocation = ResourceLocation("technocracy.foundation", "textures/gui/coolant_addon.png")

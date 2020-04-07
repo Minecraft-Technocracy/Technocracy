@@ -13,7 +13,7 @@ class TabDrawable(val tileEntity: MachineTileEntity) : IDrawable {
     var deltaTime: Double = 0.0
 
     init {
-        val tabs = tileEntity.getGui(null).tabs // Minecraft.getMinecraft().player is at this point null
+        val tabs = tileEntity.getGui(null).getTabs() // Minecraft.getMinecraft().player is at this point null
         tab = if (tabs.isNotEmpty()) tabs[0] else null
     }
 
