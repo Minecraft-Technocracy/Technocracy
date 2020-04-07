@@ -3,11 +3,6 @@ package net.cydhra.technocracy.foundation.proxy
 import com.google.common.collect.ImmutableMap
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.client.gui.handler.TCGuiHandler
-import net.cydhra.technocracy.foundation.client.model.customModel.connector.MachineConnectorModel
-import net.cydhra.technocracy.foundation.client.model.facade.FacadeItemModel
-import net.cydhra.technocracy.foundation.client.model.pipe.PipeItemModel
-import net.cydhra.technocracy.foundation.client.model.pipe.PipeModel
-import net.cydhra.technocracy.foundation.client.model.tank.MutliBlockTankFluidModel
 import net.cydhra.technocracy.foundation.client.technocracyCreativeTabs
 import net.cydhra.technocracy.foundation.conduits.ConduitNetwork
 import net.cydhra.technocracy.foundation.content.blocks.*
@@ -53,7 +48,6 @@ import net.cydhra.technocracy.foundation.network.ItemKeyBindPacket
 import net.cydhra.technocracy.foundation.network.ItemScrollPacket
 import net.cydhra.technocracy.foundation.network.PacketHandler
 import net.cydhra.technocracy.foundation.network.componentsync.*
-import net.minecraft.client.Minecraft
 import net.minecraft.item.crafting.FurnaceRecipes
 import net.minecraft.item.crafting.Ingredient
 import net.minecraft.util.ResourceLocation
@@ -368,7 +362,8 @@ open class CommonProxy {
                             outputItem = recipe.value,
                             // the processing cost is derived from EXP output, as more valuable items give more exp
                             // and thus should be expected to be more late game.
-                            processingCost = (200 * FurnaceRecipes.instance().getSmeltingExperience(recipe.value)).toInt()
+                            processingCost = 60 +
+                                    (100 * FurnaceRecipes.instance().getSmeltingExperience(recipe.value)).toInt()
                     ))
         }
 
