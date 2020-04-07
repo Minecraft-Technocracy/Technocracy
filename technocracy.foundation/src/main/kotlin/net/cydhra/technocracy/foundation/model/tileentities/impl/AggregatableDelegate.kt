@@ -33,8 +33,8 @@ class AggregatableDelegate : TCAggregatable {
     /**
      * @return all registered components
      */
-    override fun getComponents(): MutableList<Pair<String, IComponent>> {
-        return this.components.toMutableList()
+    override fun getComponents(): List<Pair<String, IComponent>> {
+        return this.components
     }
 
     /**

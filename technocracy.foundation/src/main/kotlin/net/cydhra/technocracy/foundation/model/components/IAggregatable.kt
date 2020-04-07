@@ -9,7 +9,7 @@ interface IAggregatable {
     /**
      * Get a list of all registered components and their nbt keys.
      */
-    fun getComponents(): MutableList<Pair<String, IComponent>>
+    fun getComponents(): List<Pair<String, IComponent>>
 
     /**
      * Register a new component within the system

@@ -34,7 +34,7 @@ class MachineInfoPacket() : IMessage, IMessageHandler<MachineInfoPacket, IMessag
         this.tag = tag
     }
 
-    fun getTagForMachine(components: MutableList<Pair<String, IComponent>>): NBTTagCompound {
+    fun getTagForMachine(components: List<Pair<String, IComponent>>): NBTTagCompound {
         val tag = NBTTagCompound()
         components.forEach { (name, component) ->
             tag.setTag(name, component.serializeNBT())
