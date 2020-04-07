@@ -48,8 +48,11 @@ class PipeModelBakery : IBakedModel {
 
     override fun getQuads(state: IBlockState?, side: EnumFacing?, rand: Long): MutableList<BakedQuad> {
 
-        val currentLayer = MinecraftForgeClient.getRenderLayer()
+        val currentLayer: BlockRenderLayer? = MinecraftForgeClient.getRenderLayer()
         val quads = mutableListOf<BakedQuad>()
+        if (currentLayer == null)
+            return quads
+
         val pos = (state as IExtendedBlockState).getValue(POSITION)
         val tileEntityPipe = Minecraft.getMinecraft().world.getTileEntity(pos) as TileEntityPipe
 
