@@ -29,3 +29,7 @@ make sure that in `Settings>Build, Execution, Deployment>Build Tools>Gradle` the
  to `IntelliJ IDEA` instead of `Gradle`.
 - **Missing assets**:
 If, while started from IntelliJ, a Minecraft instance misses all its assets (including textures of added blocks/items, language file, etc), try the same thing as in **Duplicate Mods**
+
+# Dependencies
+- [ZeroCore](https://www.curseforge.com/minecraft/mc-mods/zerocore)
+- [Forgelin](https://www.curseforge.com/minecraft/mc-mods/forgelin)
