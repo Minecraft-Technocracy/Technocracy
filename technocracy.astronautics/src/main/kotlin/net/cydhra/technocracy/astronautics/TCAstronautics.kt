@@ -106,7 +106,7 @@ object TCAstronautics {
     @SubscribeEvent
     fun render(event: TickEvent.WorldTickEvent) {
         if (event.phase == TickEvent.Phase.END) {
-            event.world.skylightSubtracted = 10
+            //event.world.skylightSubtracted = 10
         }
     }
 }
