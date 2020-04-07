@@ -58,6 +58,7 @@ class ClientChangeSideConfigPacket() : IMessage, IMessageHandler<ClientChangeSid
                 comp.facing.remove(packet.facing)
             }
             comp.markDirty(true)
+            comp.notifyBlockUpdate()
         }
 
         return null

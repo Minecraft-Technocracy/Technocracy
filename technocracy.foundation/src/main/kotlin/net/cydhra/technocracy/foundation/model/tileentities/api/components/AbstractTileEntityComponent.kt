@@ -25,7 +25,7 @@ abstract class AbstractTileEntityComponent : IComponent {
 
     fun notifyBlockUpdate() {
         val state = tile.world.getBlockState(tile.pos)
-        tile.world.notifyBlockUpdate(tile.pos, state, state, 0)
+        tile.world.markAndNotifyBlock(tile.pos, tile.world.getChunkFromBlockCoords(tile.pos), state, state, 3)
     }
 
     override fun onRegister() {
