@@ -32,4 +32,4 @@ If, while started from IntelliJ, a Minecraft instance misses all its assets (inc
 
 # Dependencies
 - [ZeroCore](https://www.curseforge.com/minecraft/mc-mods/zerocore)
-- [Forgelin](https://www.curseforge.com/minecraft/mc-mods/forgelin)
+- [Forgelin](https://www.curseforge.com/minecraft/mc-mods/shadowfacts-forgelin)
