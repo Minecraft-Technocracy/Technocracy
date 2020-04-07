@@ -8,11 +8,7 @@ import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicI
  * and capability-inventories are not compatible, common behaviour is collected here.
  */
 interface ITCSlot : ITCComponent {
-
-    fun setEnabled(enabled: Boolean)
-
-    fun isEnabled(): Boolean
-
+    var internal_enabled: Boolean
     val isPlayerInventory: Boolean
     val index: Int
     var type: DynamicInventoryCapability.InventoryType

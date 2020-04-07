@@ -19,18 +19,6 @@ import net.minecraftforge.items.SlotItemHandler
 class TCSlotIO(itemHandler: IItemHandler, override val index: Int, xPosition: Int, yPosition: Int, override var gui: TCGui) :
         SlotItemHandler(itemHandler, index, xPosition, yPosition), ITCSlot {
 
-    //lateinit var containerSlot: SlotComponent
-
-    init {
-        /*for (slot in gui.container.inventorySlots) {
-            if (slot is SlotComponent && slot.handler == itemHandler && slot.slotIndex == index) {
-                slot.xPos = xPosition
-                slot.yPos = yPosition
-                containerSlot = slot
-            }
-        }*/
-    }
-
     override var posX: Int
         get() = super.xPos
         set(value) {
@@ -73,19 +61,13 @@ class TCSlotIO(itemHandler: IItemHandler, override val index: Int, xPosition: In
         return mouseX > xPos && mouseX < xPos + height && mouseY > yPos && mouseY < yPos + height
     }
 
-    var mmmmm = true
-
-    override fun setEnabled(enabled: Boolean) {
-        mmmmm = enabled
-        //containerSlot.enabled = enabled
-    }
+    override var internal_enabled = true
 
     /**
      * This method overrides [net.minecraft.inventory.Slot.isEnabled] and allows that to be ignored by our own value.
      */
     override fun isEnabled(): Boolean {
-        return mmmmm
-        //return containerSlot.enabled
+        return internal_enabled
     }
 
     override val isPlayerInventory = false

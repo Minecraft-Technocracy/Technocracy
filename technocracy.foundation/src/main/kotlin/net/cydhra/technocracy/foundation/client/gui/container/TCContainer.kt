@@ -31,14 +31,14 @@ open class TCContainer(var tileEntity: TileEntity) : Container() {
             for (tab in tabs) {
                 for (component in tab.components) {
                     if (component is ITCSlot) {
-                        component.setEnabled(false)
+                        component.internal_enabled = false
                     }
                 }
             }
             if (value != -1)
                 for (component in tabs[value].components) {
                     if (component is ITCSlot) {
-                        component.setEnabled(true)
+                        component.internal_enabled = true
                     }
                 }
         }
@@ -53,7 +53,7 @@ open class TCContainer(var tileEntity: TileEntity) : Container() {
         val playerUpperInv = tmp.filter { it.slotIndex >= 9 }.map { it.slotNumber }.toList()
         val playerInvWhole = tmp.map { it.slotNumber }.toList()
 
-        val guiSlots = inventorySlots.stream().filter { !(it as ITCSlot).isPlayerInventory }.filter { (it as ITCSlot).isEnabled() }.mapToInt { it.slotNumber }.toList()
+        val guiSlots = inventorySlots.stream().filter { !(it as ITCSlot).isPlayerInventory }.filter { (it as ITCSlot).internal_enabled }.mapToInt { it.slotNumber }.toList()
 
         if (slot.hasStack) {
             val oldStack = slot.stack.copy()
@@ -162,7 +162,7 @@ open class TCContainer(var tileEntity: TileEntity) : Container() {
             }
         }
         if (this.tabs.size > 1) {
-            tab.components.filterIsInstance<ITCSlot>().forEach { it.setEnabled(false) }
+            tab.components.filterIsInstance<ITCSlot>().forEach { it.internal_enabled = false }
         }
         tabs.add(tab)
     }

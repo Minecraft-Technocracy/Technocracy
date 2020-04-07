@@ -21,18 +21,6 @@ class TCSlotPlayer(inventoryIn: IInventory, override val index: Int, xPosition: 
         Slot(inventoryIn, index,
                 xPosition, yPosition), ITCSlot {
 
-    //lateinit var containerSlot: PlayerSlotComponent
-
-    /*init {
-        for (slot in gui.container.inventorySlots) {
-            if (slot is PlayerSlotComponent && slot.inventory == inventory && slot.slotIndex == index) {
-                slot.xPos = xPosition
-                slot.yPos = yPosition
-                containerSlot = slot
-            }
-        }
-    }*/
-
     override var onClick: ((side: Side, player: EntityPlayer, tileEntity: TileEntity?, button: Int) -> Unit)? = null
 
     override var posX: Int
@@ -77,20 +65,13 @@ class TCSlotPlayer(inventoryIn: IInventory, override val index: Int, xPosition: 
         return mouseX > xPos && mouseX < xPos + width && mouseY > yPos && mouseY < yPos + height
     }
 
-    var mmmmm = true
-
-
-    override fun setEnabled(enabled: Boolean) {
-        mmmmm = enabled
-        //containerSlot.enabled = enabled
-    }
+    override var internal_enabled = true
 
     /**
      * This method overrides [net.minecraft.inventory.Slot.isEnabled] and allows that to be ignored by our own value.
      */
     override fun isEnabled(): Boolean {
-        return mmmmm
-        //return containerSlot.enabled
+        return internal_enabled
     }
 
     override val isPlayerInventory = true
