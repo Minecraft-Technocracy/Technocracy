@@ -1,0 +1,11 @@
+{
+  "input": {
+    "type": "forge:ore_dict",
+    "ore": "ingotInvar"
+  },
+  "output": {
+    "item": "technocracy.foundation:sheet.invar",
+    "count": 1
+  },
+  "cost": 80
+}
