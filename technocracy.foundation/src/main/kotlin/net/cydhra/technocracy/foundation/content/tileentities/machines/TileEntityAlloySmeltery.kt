@@ -2,9 +2,7 @@ package net.cydhra.technocracy.foundation.content.tileentities.machines
 
 import net.cydhra.technocracy.foundation.client.gui.SimpleGui
 import net.cydhra.technocracy.foundation.client.gui.TCGui
-import net.cydhra.technocracy.foundation.client.gui.TCTab
 import net.cydhra.technocracy.foundation.client.gui.components.energymeter.DefaultEnergyMeter
-import net.cydhra.technocracy.foundation.client.gui.components.label.DefaultLabel
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.DefaultProgressBar
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.Orientation
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
@@ -133,13 +131,5 @@ class TileEntityAlloySmeltery : MachineTileEntity(), TEInventoryProvider {
         initGui(gui, player)
 
         return gui
-    }
-
-    override fun initGui(gui: TCGui, player: EntityPlayer?) {
-        gui.registerTab(object : TCTab("Example", gui) {
-            override fun init() {
-                addComponent(DefaultLabel(10, 20, "Hello World", gui = gui))
-            }
-        })
     }
 }
