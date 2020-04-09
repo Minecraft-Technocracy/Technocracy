@@ -19,7 +19,7 @@ buildscript {
         waila_version = '1.8.26-B41_1.12.2'
         top_version = '1.12-1.4.28-17'
 
-        mod_version = '0.1-alpha4'
+        mod_version = '0.1-alpha5'
 
         root_build_dir = project.buildDir
     }
