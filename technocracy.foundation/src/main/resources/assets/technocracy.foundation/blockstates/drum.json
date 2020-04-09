@@ -8,6 +8,9 @@
     },
     "drumtype=bedrock": {
       "model": "technocracy.foundation:drum/drum_bedrock"
+    },
+	"drumtype=invar": {
+      "model": "technocracy.foundation:drum/drum_invar"
     }
   }
 }

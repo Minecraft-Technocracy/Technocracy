@@ -1,6 +1,5 @@
 package net.cydhra.technocracy.foundation.content.blocks
 
-import net.cydhra.technocracy.foundation.api.IWrench
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicItemFluidStorage
 import net.cydhra.technocracy.foundation.content.tileentities.storage.TileEntityDrum
@@ -182,6 +181,9 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
     }
 
     override fun onBlockActivated(worldIn: World, pos: BlockPos, state: IBlockState, playerIn: EntityPlayer, hand: EnumHand, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean {
+        if (worldIn.isRemote)
+            return true
+
         if (super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ))
             return true
 
@@ -206,7 +208,7 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
 
     enum class DrumType(val typeName: String, val amount: Int) :
             IStringSerializable {
-        IRON("iron", 64000), STEEL("steel", 256000);
+        IRON("iron", 16000), STEEL("steel", 32000), INVAR("invar", 64000);
 
         override fun getName(): String {
             return this.typeName
