@@ -249,6 +249,7 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(steelSheetItem)
         itemManager.prepareItemForRegistration(bronzeSheetItem)
         itemManager.prepareItemForRegistration(steelGearItem)
+        itemManager.prepareItemForRegistration(steelGritItem)
 
         itemManager.prepareItemForRegistration(pipeItem)
         itemManager.prepareItemForRegistration(facadeItem)

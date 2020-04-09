@@ -2,7 +2,7 @@
   "input": [
     {
       "type": "forge:ore_dict",
-      "ore": "ingotIron"
+      "ore": "gritSteel"
     },
     {
       "item": "minecraft:coal",
@@ -10,7 +10,7 @@
     }
   ],
   "output": {
-    "item": "technocracy.foundation:grit.steel",
+    "item": "technocracy.foundation:ingot.steel",
     "count": 1
   },
   "cost": 160

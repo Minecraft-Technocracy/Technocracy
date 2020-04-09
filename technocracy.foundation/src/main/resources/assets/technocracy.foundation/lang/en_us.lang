@@ -64,6 +64,7 @@ item.sheet.invar.name=Invar Sheet
 item.sheet.steel.name=Steel Sheet
 item.sheet.bronze.name=Bronze Sheet
 item.gear.steel.name=Steel Gear
+item.grit.steel.name=Steel Grit
 
 item.pipe_item.item.name=Item Pipe
 item.pipe_item.fluid.name=Fluid Pipe
