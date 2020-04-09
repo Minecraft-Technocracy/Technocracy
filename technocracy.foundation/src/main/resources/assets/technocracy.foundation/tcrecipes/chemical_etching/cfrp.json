@@ -1,0 +1,20 @@
+{
+  "input": [
+    {
+      "type": "forge:ore_dict",
+      "ore": "sheetPlastic"
+    },
+    {
+      "item": "technocracy.foundation:polyfibre"
+    },
+    {
+      "type": "forge:ore_dict",
+      "ore": "itemRubber"
+    }
+  ],
+  "output": {
+    "item": "technocracy.foundation:cfrp",
+    "count": 1
+  },
+  "cost": 250
+}

@@ -48,6 +48,7 @@ item.polyfibre.name=Polyfibre
 item.pump.name=Pump
 item.fan.name=Fan
 item.spandex.name=Spandex
+item.cfrp.name=Carbon Fibre Reinforced Polymer
 item.upgrade_frame.name=Upgrade Frame
 
 item.ingot.invar.name=Invar Ingot

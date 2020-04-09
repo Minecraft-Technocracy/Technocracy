@@ -234,6 +234,7 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(pumpItem)
         itemManager.prepareItemForRegistration(fanItem)
         itemManager.prepareItemForRegistration(spandexItem)
+        itemManager.prepareItemForRegistration(cfrpItem)
 
         itemManager.prepareItemForRegistration(invarItem)
         itemManager.prepareItemForRegistration(siliconBronzeItem)
