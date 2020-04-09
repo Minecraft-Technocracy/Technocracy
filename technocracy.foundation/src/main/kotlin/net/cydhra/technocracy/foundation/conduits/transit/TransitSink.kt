@@ -15,7 +15,12 @@ class TransitSink(pos: BlockPos) : TransitEdge(pos) {
     private var transferCoolDown = 0
 
     // TODO delegate to the tile entity that is represented by this sink
-    var transferLimit: Int = 4
+    val transferLimit: Int
+        get() = when (this.type) {
+            PipeType.ENERGY -> 1000
+            PipeType.FLUID -> 1000
+            PipeType.ITEM -> 16
+        }
 
     constructor(id: Int, type: PipeType, facing: EnumFacing, pos: BlockPos) : this(pos) {
         this.id = id
