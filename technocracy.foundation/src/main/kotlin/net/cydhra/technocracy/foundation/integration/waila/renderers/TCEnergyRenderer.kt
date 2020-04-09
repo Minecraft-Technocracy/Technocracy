@@ -28,12 +28,12 @@ class TCEnergyRenderer : IWailaTooltipRenderer {
         val posX = 0
         val posY = -50
         for(i in 0 until 10) {
-            drawModalRectWithCustomSizedTexture(posX, posY + (9 - i) * 5, posX + 50, posY + (9 - i) * 5 + 5, 45f, 0f, 256f, 256f)
+            drawModalRectWithCustomSizedTexture(posX, posY + (9 - i) * 5, posX + 10, posY + (9 - i) * 5 + 5, 45f, 0f, 256f, 256f)
         }
         if (level > 0f) {
             GlStateManager.color(1f, 1f, 1f, 1f)
             for (i in 0 until (level * 10).toInt()) {
-                drawModalRectWithCustomSizedTexture(posX, posY + (9 - i) * 5, posX + 50, posY + (9 - i) * 5 + 5, 45f, 0f, 256f, 256f)
+                drawModalRectWithCustomSizedTexture(posX, posY + (9 - i) * 5, posX + 10, posY + (9 - i) * 5 + 5, 45f, 0f, 256f, 256f)
             }
             GlStateManager.disableBlend()
         }

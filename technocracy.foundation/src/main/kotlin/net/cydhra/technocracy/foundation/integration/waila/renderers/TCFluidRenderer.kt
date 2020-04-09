@@ -29,8 +29,10 @@ class TCFluidRenderer: IWailaTooltipRenderer {
             Gui.drawRect(0, 0, (50 * level).toInt(), 10, Color.blue.rgb)
         }
 
-        Minecraft.getMinecraft().fontRenderer.drawString("${amount}mb", 3, 1, 0xa0a0a0)
+        GlStateManager.translate(0f,0.5f,0f)
+        Minecraft.getMinecraft().fontRenderer.drawString("${amount}mb", 3, 1, 0xffffff)
         Minecraft.getMinecraft().fontRenderer.drawString(getBarSuffix(params), 55, 1, 0xa0a0a0)
+        GlStateManager.translate(0f,-0.5f,0f)
     }
 
     fun getBarSuffix(params: Array<String>): String {
