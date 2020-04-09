@@ -17,7 +17,13 @@
       "predicate": {
         "type": 0.125
       },
-      "model": "technocracy.foundation:block/drum/drum_bedrock"
+      "model": "technocracy.foundation:block/drum/drum_invar"
+    },
+	{
+      "predicate": {
+        "type": 0.1875
+      },
+      "model": "technocracy.foundation:block/drum/drum_carbon"
     }
   ]
 }

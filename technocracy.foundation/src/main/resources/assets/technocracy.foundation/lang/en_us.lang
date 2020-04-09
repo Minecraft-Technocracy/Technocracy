@@ -178,6 +178,8 @@ tile.tank_io.name=Tank IO Port
 tile.drum.iron.name=Iron Drum
 tile.drum.steel.name=Steel Drum
 tile.drum.bedrock.name=Bedrockium Drum
+tile.drum.invar.name=Invar Drum
+tile.drum.carbon.name=Carbon Drum
 
 fluid.mineral_oil=Mineral Oil
 fluid.mineral_oil_hot=Heated Mineral Oil

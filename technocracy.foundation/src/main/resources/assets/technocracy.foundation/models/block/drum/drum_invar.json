@@ -1,0 +1,8 @@
+{
+  "parent": "technocracy.foundation:block/drum/drum",
+  "textures": {
+    "texture": "technocracy.foundation:block/drum/drum_invar",
+    "particle": "technocracy.foundation:block/drum/drum_invar",
+    "drum_top": "technocracy.foundation:block/drum/drum_invar_top"
+  }
+}
