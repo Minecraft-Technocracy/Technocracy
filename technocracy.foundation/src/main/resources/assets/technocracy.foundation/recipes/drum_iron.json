@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "rsr",
+    "scs",
+    "rsr"
+  ],
+  "key": {
+    "r": {
+      "type": "forge:ore_dict",
+      "ore": "rodIron"
+    },
+    "c": {
+      "item": "minecraft:cauldron"
+    },
+    "s": {
+      "type": "forge:ore_dict",
+      "ore": "sheetIron"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:drum",
+    "data": 0
+  }
+}

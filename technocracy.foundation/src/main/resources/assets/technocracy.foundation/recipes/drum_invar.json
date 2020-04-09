@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "rsr",
+    "scs",
+    "rsr"
+  ],
+  "key": {
+    "r": {
+      "type": "forge:ore_dict",
+      "ore": "itemRubber"
+    },
+    "c": {
+      "item": "technocracy.foundation:drum",
+      "data": 1
+    },
+    "s": {
+      "type": "forge:ore_dict",
+      "ore": "sheetInvar"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:drum",
+    "data": 2
+  }
+}
