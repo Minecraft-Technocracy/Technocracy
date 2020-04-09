@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ss",
+    "ss"
+  ],
+  "key": {
+    "s": {
+      "type": "forge:ore_dict",
+      "ore": "dustSalt"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:salt_block",
+    "count": 1
+  }
+}
