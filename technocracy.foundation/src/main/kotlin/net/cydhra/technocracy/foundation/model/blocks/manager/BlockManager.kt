@@ -75,13 +75,6 @@ class BlockManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
                 if (it.creativeTabToDisplayOn == null) it.setCreativeTab(defaultCreativeTab)
             }
         }.toTypedArray())
-
-        blocksToRegister
-                .filterIsInstance<AbstractBaseBlock>()
-                .filter { it.oreDictionaryName != null }
-                .forEach {
-                    OreDictionary.registerOre(it.oreDictionaryName, it)
-                }
     }
 
     /**
@@ -96,6 +89,13 @@ class BlockManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
                 .map(::ItemSubBlock)
                 .map { it.apply { it.registryName = it.block.registryName } }
                 .toTypedArray())
+
+        blocksToRegister
+                .filterIsInstance<AbstractBaseBlock>()
+                .filter { it.oreDictionaryName != null }
+                .forEach {
+                    OreDictionary.registerOre(it.oreDictionaryName, it)
+                }
     }
 
     /**
