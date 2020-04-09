@@ -16,6 +16,7 @@ import net.minecraft.block.material.Material
 import net.minecraft.block.properties.PropertyEnum
 import net.minecraft.block.state.BlockStateContainer
 import net.minecraft.block.state.IBlockState
+import net.minecraft.client.util.ITooltipFlag
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.Entity
 import net.minecraft.entity.player.EntityPlayer
@@ -28,6 +29,7 @@ import net.minecraft.util.math.AxisAlignedBB
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.MathHelper
 import net.minecraft.util.text.TextComponentString
+import net.minecraft.util.text.TextFormatting
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 import net.minecraftforge.common.capabilities.ICapabilityProvider
@@ -70,6 +72,24 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
 
     init {
         setHardness(1.5F)
+    }
+
+    override fun addInformation(stack: ItemStack, worldIn: World?, tooltip: MutableList<String>, flagIn: ITooltipFlag) {
+
+        val cap = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)
+
+        if (cap != null) {
+            val capability = cap as DynamicFluidCapability
+            val fluid = capability.currentFluid
+            if (fluid != null) {
+                tooltip.add("${TextFormatting.GREEN}Contains: ${TextFormatting.WHITE}${fluid.amount}mB/${capability.capacity}mB ${TextFormatting.GRAY}${fluid.localizedName}")
+                return
+            }
+        }
+
+        tooltip.add("${TextFormatting.GREEN}Empty drum")
+
+        super.addInformation(stack, worldIn, tooltip, flagIn)
     }
 
     override fun placeBlockAt(place: Boolean, stack: ItemStack, player: EntityPlayer, world: World, pos: BlockPos, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float, newState: IBlockState): Boolean {
@@ -196,7 +216,7 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
                     ?: return true
             val fluid = tile.fluidCapability.currentFluid
             //TODO translate
-            playerIn.sendStatusMessage(TextComponentString("Drum content: " + if (fluid == null) "Empty" else "${fluid.amount}mB"), true)
+            playerIn.sendStatusMessage(TextComponentString("Drum content: " + if (fluid == null) "Empty" else "${fluid.amount}mB ${fluid.localizedName}"), true)
         }
 
         return true
