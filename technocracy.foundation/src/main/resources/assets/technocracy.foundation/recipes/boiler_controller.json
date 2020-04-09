@@ -14,7 +14,7 @@
     },
     "s": {
       "type": "forge:ore_dict",
-      "ore": "sheetAluminum"
+      "ore": "sheetBronze"
     },
     "r": {
       "type": "forge:ore_dict",

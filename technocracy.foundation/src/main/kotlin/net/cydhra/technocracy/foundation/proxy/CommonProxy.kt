@@ -247,6 +247,7 @@ open class CommonProxy {
 
         itemManager.prepareItemForRegistration(invarSheetItem)
         itemManager.prepareItemForRegistration(steelSheetItem)
+        itemManager.prepareItemForRegistration(bronzeSheetItem)
         itemManager.prepareItemForRegistration(steelGearItem)
 
         itemManager.prepareItemForRegistration(pipeItem)
