@@ -1,9 +1,11 @@
 package net.cydhra.technocracy.foundation.model.fx.api
 
-import java.lang.IllegalStateException
 import java.util.stream.Stream
 
-
+/**
+ * Technocracy style particles. Those are not rendered and managed by Minecraft, as Minecraft's particle system
+ * cannot handle as many particles as this system and is incapable of shader pipelines and other hardware support.
+ */
 interface IParticleType {
     /**
      * name of the Particle
@@ -27,14 +29,14 @@ interface IParticleType {
     fun preRenderType()
 
     /**
-     * called once if [IParticleType.maxParticles] is set to true
+     * called once if [IParticleType.perParticleRender] is set to true
      * @param particles all particles for rendering in batch
      * @param partialTicks current partialTicks
      *
      * @return the amount of rendered particles used for display in [net.cydhra.technocracy.foundation.model.fx.manager.TCParticleManager.addDebugInfo]
      */
     fun render(particles: Stream<AbstractParticle>, partialTicks: Float): Int {
-        throw IllegalStateException("Not Implemented")
+        throw UnsupportedOperationException("This particle cannot be rendered per particle")
     }
 
     /**
