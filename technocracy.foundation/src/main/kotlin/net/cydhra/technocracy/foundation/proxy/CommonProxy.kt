@@ -264,6 +264,10 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(machineEnergyUp2Item)
         itemManager.prepareItemForRegistration(machineEnergyUp3Item)
         itemManager.prepareItemForRegistration(machineEnergyUp4Item)
+        itemManager.prepareItemForRegistration(machineAdditiveEnergy1Item)
+        itemManager.prepareItemForRegistration(machineAdditiveEnergy2Item)
+        itemManager.prepareItemForRegistration(machineAdditiveSpeed1Item)
+        itemManager.prepareItemForRegistration(machineAdditiveSpeed2Item)
 
         itemManager.prepareItemForRegistration(machineLubricantUpItem)
         itemManager.prepareItemForRegistration(machineCoolerUpgradeItem)

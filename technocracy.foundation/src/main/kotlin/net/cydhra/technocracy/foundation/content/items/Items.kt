@@ -5,10 +5,7 @@ package net.cydhra.technocracy.foundation.content.items
 import net.cydhra.technocracy.foundation.api.upgrades.Upgradable
 import net.cydhra.technocracy.foundation.api.upgrades.Upgrade
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeClass
-import net.cydhra.technocracy.foundation.content.tileentities.upgrades.CoolingUpgrade
-import net.cydhra.technocracy.foundation.content.tileentities.upgrades.EnergyMultiplier
-import net.cydhra.technocracy.foundation.content.tileentities.upgrades.LubricantUpgrade
-import net.cydhra.technocracy.foundation.content.tileentities.upgrades.SpeedMultiplier
+import net.cydhra.technocracy.foundation.content.tileentities.upgrades.*
 import net.cydhra.technocracy.foundation.model.items.api.AlloyItem
 import net.cydhra.technocracy.foundation.model.items.api.BaseItem
 import net.cydhra.technocracy.foundation.model.items.api.ColoredPrefixedItem
@@ -88,6 +85,15 @@ val machineEnergyUp3Item = UpgradeItem("machine_energy_up_3", UpgradeClass.MACHI
         SpeedMultiplier(-2.0), EnergyMultiplier(-1.8))
 val machineEnergyUp4Item = UpgradeItem("machine_energy_up_4", UpgradeClass.MACHINE,
         SpeedMultiplier(-4.0), EnergyMultiplier(-3.5))
+
+val machineAdditiveEnergy1Item = UpgradeItem("machine_add_energy_up_1", UpgradeClass.MACHINE,
+        AdditiveConsumptionMultiplier(1.0), EnergyMultiplier(-0.5))
+val machineAdditiveEnergy2Item = UpgradeItem("machine_add_energy_up_2", UpgradeClass.MACHINE,
+        AdditiveConsumptionMultiplier(3.0), EnergyMultiplier(-1.5))
+val machineAdditiveSpeed1Item = UpgradeItem("machine_add_speed_up_1", UpgradeClass.MACHINE,
+        AdditiveConsumptionMultiplier(1.0), SpeedMultiplier(1.0))
+val machineAdditiveSpeed2Item = UpgradeItem("machine_add_speed_up_2", UpgradeClass.MACHINE,
+        AdditiveConsumptionMultiplier(3.0), SpeedMultiplier(3.0))
 
 val machineLubricantUpItem = UpgradeItem("machine_lubricant_up", UpgradeClass.MACHINE,
         SpeedMultiplier(4.0), LubricantUpgrade() as Upgrade<Upgradable>)

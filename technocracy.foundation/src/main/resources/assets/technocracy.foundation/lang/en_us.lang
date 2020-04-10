@@ -86,6 +86,11 @@ item.machine_energy_up_2.name=Catalyst
 item.machine_energy_up_3.name=Dense Matrix
 item.machine_energy_up_4.name=Nanocomposite Isolation
 
+item.machine_add_energy_up_1.name=Filter
+item.machine_add_energy_up_2.name=Compressor
+item.machine_add_speed_up_1.name=Peristaltic Pump
+item.machine_add_speed_up_2.name=Arc Vaporizer
+
 item.machine_lubricant_up.name=Lubricant Injection
 item.machine_cooler_up.name=Liquid Cooling
 
