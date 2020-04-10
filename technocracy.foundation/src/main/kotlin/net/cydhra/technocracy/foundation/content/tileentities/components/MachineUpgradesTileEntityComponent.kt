@@ -96,7 +96,7 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int) : Abstra
         this.updateDescription()
     }
 
-    fun getInstalledUpgrades(): List<Upgrade<TCMachineTileEntity>> {
+    fun getInstalledUpgrades(): List<Upgrade<in TCMachineTileEntity>> {
         return this.inventory.stacks
                 .asSequence()
                 .filter { !it.isEmpty }

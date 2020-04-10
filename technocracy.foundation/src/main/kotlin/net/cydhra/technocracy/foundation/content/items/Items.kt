@@ -1,5 +1,9 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package net.cydhra.technocracy.foundation.content.items
 
+import net.cydhra.technocracy.foundation.api.upgrades.Upgradable
+import net.cydhra.technocracy.foundation.api.upgrades.Upgrade
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeClass
 import net.cydhra.technocracy.foundation.content.tileentities.upgrades.CoolingUpgrade
 import net.cydhra.technocracy.foundation.content.tileentities.upgrades.EnergyMultiplier
@@ -80,6 +84,6 @@ val mechEnergyUp2Item = UpgradeItem("mech_energy_up_2", UpgradeClass.MACHINE,
         SpeedMultiplier(-0.7), EnergyMultiplier(-0.7))
 
 val mechLubricantUpItem = UpgradeItem("mech_lubricant_up", UpgradeClass.MACHINE,
-        SpeedMultiplier(2.0), LubricantUpgrade())
+        SpeedMultiplier(2.0), LubricantUpgrade() as Upgrade<Upgradable>)
 val elecCoolerUpgradeItem = UpgradeItem("elec_cooler_up", UpgradeClass.MACHINE,
-        SpeedMultiplier(2.5), EnergyMultiplier(2.5), CoolingUpgrade())
+        SpeedMultiplier(2.5), EnergyMultiplier(2.5), CoolingUpgrade() as Upgrade<Upgradable>)
