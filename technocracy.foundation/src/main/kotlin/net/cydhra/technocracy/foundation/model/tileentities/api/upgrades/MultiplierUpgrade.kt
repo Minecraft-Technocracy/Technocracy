@@ -19,13 +19,15 @@ abstract class MultiplierUpgrade(
 
     override fun canInstallUpgrade(upgradable: TCMachineTileEntity,
                                    upgrades: MachineUpgradesTileEntityComponent): Boolean {
-        return true
+        return upgradable.supportsParameter(this.upgradeParameter)
     }
 
     override fun onInstallUpgrade(upgradable: TCMachineTileEntity, upgrades: MachineUpgradesTileEntityComponent) {
+        upgradable.upgradeParameter(this.upgradeParameter, this.multiplier)
     }
 
     override fun onUninstallUpgrade(upgradable: TCMachineTileEntity, upgrades: MachineUpgradesTileEntityComponent) {
+        upgradable.upgradeParameter(this.upgradeParameter, -this.multiplier)
     }
 
     override fun onUpgradeLoad(upgradable: TCMachineTileEntity, upgrades: MachineUpgradesTileEntityComponent) {

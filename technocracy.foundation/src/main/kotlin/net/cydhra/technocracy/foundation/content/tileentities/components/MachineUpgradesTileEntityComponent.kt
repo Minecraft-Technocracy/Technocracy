@@ -76,14 +76,9 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int) : Abstra
                 throw IllegalStateException("Non-upgrade item was installed in upgrade slot.")
             }
 
-//            upgradeItem.upgrades.forEach { upgrade ->
-//                if (upgrade is MultiplierUpgrade) {
-//                    val componentToUpgrade = this.multipliers.single { it.upgradeParameter == upgrade.upgradeParameter }
-//                    componentToUpgrade.multiplier -= upgrade.multiplier
-//                } else {
-//                    upgrade.onUninstallUpgrade(this.tile as TCMachineTileEntity, this)
-//                }
-//            }
+            upgradeItem.upgrades.forEach { upgrade ->
+                upgrade.onUninstallUpgrade(this.tile as TCMachineTileEntity, this)
+            }
         } else {
             val upgradeItem = stack.item
 
@@ -91,14 +86,9 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int) : Abstra
                 throw IllegalStateException("Non-upgrade item installed in upgrade slot.")
             }
 
-//            upgradeItem.upgrades.forEach { upgrade ->
-//                if (upgrade is MultiplierUpgrade) {
-//                    val componentToUpgrade = this.multipliers.single { it.upgradeParameter == upgrade.upgradeParameter }
-//                    componentToUpgrade.multiplier += upgrade.multiplier
-//                } else {
-//                    upgrade.onInstallUpgrade(this.tile as TCMachineTileEntity, this)
-//                }
-//            }
+            upgradeItem.upgrades.forEach { upgrade ->
+                upgrade.onInstallUpgrade(this.tile as TCMachineTileEntity, this)
+            }
         }
 
         this.tile.markDirty()
