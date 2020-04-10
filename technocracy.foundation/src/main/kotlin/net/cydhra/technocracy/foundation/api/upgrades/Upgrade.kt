@@ -8,9 +8,9 @@ import java.util.*
  * An upgrade that performs a specific upgrade at its holder. This can be as simple as the modification of a specific
  * parameter, or complex behavior like additive consumption. An instance of this interface will always only upgrade a
  * singular functionality. It is the responsibility of upgrade items, to combine positive and negative upgrade effects.
- * @param U upgradable entity type (like TileEntity, or ItemStack)
+ * @param U [Upgradable] entity type (like TileEntity, or ItemStack)
  */
-interface Upgrade<U> {
+interface Upgrade<U : Upgradable> {
 
     val upgradeParameter: UpgradeParameter
 

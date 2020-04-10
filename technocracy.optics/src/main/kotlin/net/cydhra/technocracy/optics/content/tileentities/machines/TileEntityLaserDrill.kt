@@ -2,7 +2,7 @@ package net.cydhra.technocracy.optics.content.tileentities.machines
 
 import net.cydhra.technocracy.foundation.api.ecs.logic.ILogicClient
 import net.cydhra.technocracy.foundation.api.ecs.logic.LogicClientDelegate
-import net.cydhra.technocracy.foundation.api.tileentities.TCMachineTileEntity
+import net.cydhra.technocracy.foundation.api.tileentities.TCTileEntityGuiProvider
 import net.cydhra.technocracy.foundation.api.tileentities.TEInventoryProvider
 import net.cydhra.technocracy.foundation.client.gui.SimpleGui
 import net.cydhra.technocracy.foundation.client.gui.TCGui
@@ -20,8 +20,12 @@ import net.cydhra.technocracy.optics.content.tileentities.logic.LaserDrillLogic
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
+import net.minecraft.util.ITickable
 
-class TileEntityLaserDrill : AggregatableTileEntity(), TCMachineTileEntity, ILogicClient by LogicClientDelegate(),
+class TileEntityLaserDrill : AggregatableTileEntity(),
+        ITickable,
+        TCTileEntityGuiProvider,
+        ILogicClient by LogicClientDelegate(),
         TEInventoryProvider {
 
     companion object {

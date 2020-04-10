@@ -5,6 +5,7 @@ import net.cydhra.technocracy.foundation.api.ecs.logic.LogicClientDelegate
 import net.cydhra.technocracy.foundation.api.tileentities.TCMachineTileEntity
 import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_ENERGY
 import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_SPEED
+import net.cydhra.technocracy.foundation.api.upgrades.UpgradeParameter
 import net.cydhra.technocracy.foundation.client.gui.SimpleGui
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.components.energymeter.DefaultEnergyMeter
@@ -139,7 +140,7 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
                             }
                         }
                     }
-            }
+                }
                 if (foundProgressComponent != null)
                     components.add(DefaultProgressBar((outputNearestToTheMiddle - inputNearestToTheMiddle) / 2 + inputNearestToTheMiddle,
                             40,
@@ -179,5 +180,13 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
         // update ILogic strategies, but only server side
         if (!world.isRemote)
             this.tick()
+    }
+
+    override fun supportsParameter(parameter: UpgradeParameter): Boolean {
+        TODO("not implemented")
+    }
+
+    override fun upgradeParameter(parameter: UpgradeParameter, modification: Double) {
+        TODO("not implemented")
     }
 }

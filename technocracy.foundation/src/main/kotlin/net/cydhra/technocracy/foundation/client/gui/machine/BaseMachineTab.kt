@@ -12,7 +12,6 @@ import net.cydhra.technocracy.foundation.content.tileentities.upgrades.CoolingUp
 import net.cydhra.technocracy.foundation.content.tileentities.upgrades.LubricantUpgrade
 import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
 import net.minecraft.init.Blocks
-import net.minecraft.util.ResourceLocation
 
 // nullable platform type: its null if the te is not placed in the world (required for jei)
 @Suppress("UNNECESSARY_SAFE_CALL")
