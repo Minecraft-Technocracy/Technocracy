@@ -3,6 +3,8 @@ package net.cydhra.technocracy.foundation.model.tileentities.machines
 import net.cydhra.technocracy.foundation.api.ecs.logic.ILogicClient
 import net.cydhra.technocracy.foundation.api.ecs.logic.LogicClientDelegate
 import net.cydhra.technocracy.foundation.api.tileentities.TCMachineTileEntity
+import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_ENERGY
+import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_SPEED
 import net.cydhra.technocracy.foundation.client.gui.SimpleGui
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.components.energymeter.DefaultEnergyMeter
@@ -21,8 +23,6 @@ import net.cydhra.technocracy.foundation.content.tileentities.components.*
 import net.cydhra.technocracy.foundation.content.tileentities.logic.RedstoneLogic
 import net.cydhra.technocracy.foundation.content.tileentities.upgrades.CoolingUpgrade
 import net.cydhra.technocracy.foundation.content.tileentities.upgrades.LubricantUpgrade
-import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_ENERGY
-import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_SPEED
 import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableTileEntity
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.EnumFacing
@@ -47,9 +47,9 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
 
     protected val progressComponent = ProgressTileEntityComponent()
 
-    protected val processingSpeedComponent = MultiplierTileEntityComponent(MACHINE_UPGRADE_SPEED)
+    protected val processingSpeedComponent = MultiplierTileEntityComponent(UPGRADE_SPEED)
 
-    protected val energyCostComponent = MultiplierTileEntityComponent(MACHINE_UPGRADE_ENERGY)
+    protected val energyCostComponent = MultiplierTileEntityComponent(UPGRADE_ENERGY)
 
     init {
         this.registerComponent(redstoneModeComponent, "redstone_mode")

@@ -4,11 +4,11 @@ import net.cydhra.technocracy.foundation.api.ecs.ComponentType
 import net.cydhra.technocracy.foundation.api.ecs.tileentities.AbstractTileEntityComponent
 import net.cydhra.technocracy.foundation.api.tileentities.TCMachineTileEntity
 import net.cydhra.technocracy.foundation.api.tileentities.TEInventoryProvider
+import net.cydhra.technocracy.foundation.api.upgrades.Upgrade
+import net.cydhra.technocracy.foundation.api.upgrades.UpgradeParameter
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.model.items.api.UpgradeItem
-import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgrade
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeClass
-import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeParameter
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MultiplierUpgrade
 import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
 import net.minecraft.init.Items
@@ -30,8 +30,8 @@ import kotlin.math.roundToInt
  * that is supported by this component, a respective [MultiplierTileEntityComponent] must be added to this set
  */
 class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int,
-        val supportedUpgradeTypes: Set<MachineUpgradeParameter>,
-        val supportedUpgradeClasses: Set<MachineUpgradeClass>, val multipliers: Set<MultiplierTileEntityComponent>) :
+                                         val supportedUpgradeTypes: Set<UpgradeParameter>,
+                                         val supportedUpgradeClasses: Set<MachineUpgradeClass>, val multipliers: Set<MultiplierTileEntityComponent>) :
         AbstractTileEntityComponent(), TEInventoryProvider {
 
     /**
@@ -71,7 +71,7 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int,
         if (!this.supportedUpgradeClasses.contains(item.upgradeClass)) return false
 
         // check whether the upgrade item's parameters are all supported
-        if (!item.upgrades.all { upgrade -> this.supportedUpgradeTypes.contains(upgrade.upgradeType) }) return false
+        if (!item.upgrades.all { upgrade -> this.supportedUpgradeTypes.contains(upgrade.upgradeParameter) }) return false
 
         // ask the item whether it can be installed
         if (!item.upgrades.all { upgrade -> upgrade.canInstallUpgrade(this.tile as TCMachineTileEntity, this) })
@@ -93,7 +93,7 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int,
 
             upgradeItem.upgrades.forEach { upgrade ->
                 if (upgrade is MultiplierUpgrade) {
-                    val componentToUpgrade = this.multipliers.single { it.upgradeParameter == upgrade.upgradeType }
+                    val componentToUpgrade = this.multipliers.single { it.upgradeParameter == upgrade.upgradeParameter }
                     componentToUpgrade.multiplier -= upgrade.multiplier
                 } else {
                     upgrade.onUninstallUpgrade(this.tile as TCMachineTileEntity, this)
@@ -108,7 +108,7 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int,
 
             upgradeItem.upgrades.forEach { upgrade ->
                 if (upgrade is MultiplierUpgrade) {
-                    val componentToUpgrade = this.multipliers.single { it.upgradeParameter == upgrade.upgradeType }
+                    val componentToUpgrade = this.multipliers.single { it.upgradeParameter == upgrade.upgradeParameter }
                     componentToUpgrade.multiplier += upgrade.multiplier
                 } else {
                     upgrade.onInstallUpgrade(this.tile as TCMachineTileEntity, this)
@@ -121,7 +121,7 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int,
         this.updateDescription()
     }
 
-    fun getInstalledUpgrades(): List<MachineUpgrade> {
+    fun getInstalledUpgrades(): List<Upgrade<TCMachineTileEntity>> {
         return this.inventory.stacks
                 .asSequence()
                 .filter { !it.isEmpty }

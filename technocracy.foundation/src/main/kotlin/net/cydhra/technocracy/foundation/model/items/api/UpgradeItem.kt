@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.model.items.api
 
-import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgrade
+import net.cydhra.technocracy.foundation.api.tileentities.TCMachineTileEntity
+import net.cydhra.technocracy.foundation.api.upgrades.Upgrade
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeClass
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MultiplierUpgrade
 import net.minecraft.client.util.ITooltipFlag
@@ -20,7 +21,7 @@ import java.util.*
  */
 class UpgradeItem(unlocalizedName: String,
                   val upgradeClass: MachineUpgradeClass,
-                  vararg val upgrades: MachineUpgrade) : BaseItem(unlocalizedName) {
+                  vararg val upgrades: Upgrade<TCMachineTileEntity>) : BaseItem(unlocalizedName) {
     init {
         maxStackSize = 1
     }
@@ -43,7 +44,7 @@ class UpgradeItem(unlocalizedName: String,
                 .filterIsInstance<MultiplierUpgrade>()
                 .forEach { upgrade ->
                     tooltip.add(
-                            TextComponentTranslation("tooltips.upgrades.parameter.${upgrade.upgradeType}")
+                            TextComponentTranslation("tooltips.upgrades.parameter.${upgrade.upgradeParameter}")
                                     .setStyle(Style()
                                             .setColor(TextFormatting.AQUA))
                                     .appendSibling(TextComponentString(": ")
@@ -61,7 +62,7 @@ class UpgradeItem(unlocalizedName: String,
 
         // append custom tooltips of special upgrades
         this.upgrades
-                .map(MachineUpgrade::getUpgradeDescription)
+                .map(Upgrade<TCMachineTileEntity>::getUpgradeDescription)
                 .filter(Optional<ITextComponent>::isPresent)
                 .map(Optional<ITextComponent>::get)
                 .forEach { tooltip.add(it.formattedText) }

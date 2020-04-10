@@ -1,6 +1,9 @@
 package net.cydhra.technocracy.foundation.content.tileentities.machines
 
 import net.cydhra.technocracy.foundation.api.tileentities.TEInventoryProvider
+import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_ENERGY
+import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_GENERIC
+import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_SPEED
 import net.cydhra.technocracy.foundation.client.gui.SimpleGui
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.components.energymeter.DefaultEnergyMeter
@@ -13,9 +16,6 @@ import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicI
 import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ItemProcessingLogic
-import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_ENERGY
-import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_GENERIC
-import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_SPEED
 import net.cydhra.technocracy.foundation.data.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeClass
@@ -42,7 +42,7 @@ class TileEntityCentrifuge : MachineTileEntity(), TEInventoryProvider {
             DynamicInventoryCapability.InventoryType.OUTPUT)
 
     private val upgradesComponent = MachineUpgradesTileEntityComponent(3,
-            setOf(MACHINE_UPGRADE_ENERGY, MACHINE_UPGRADE_SPEED, MACHINE_UPGRADE_GENERIC),
+            setOf(UPGRADE_ENERGY, UPGRADE_SPEED, UPGRADE_GENERIC),
             setOf(MachineUpgradeClass.MECHANICAL, MachineUpgradeClass.ELECTRICAL, MachineUpgradeClass.ALIEN),
             setOf(this.processingSpeedComponent, this.energyCostComponent))
 
