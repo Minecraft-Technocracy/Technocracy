@@ -18,6 +18,8 @@ buildscript {
         ctm_version = 'MC1.12.2-0.3.3.22'
         waila_version = '1.8.26-B41_1.12.2'
         top_version = '1.12-1.4.28-17'
+        cofhcore_version = '1.12.2-4.6.3.27'
+        buildcraft_version = '7.99.8.2'
 
         mod_version = '0.1-alpha5'
 
@@ -84,9 +86,13 @@ allprojects {
             name "waila Repository"
             url "http://tehnut.info/maven"
         }
-        maven { // TOP
-            name 'tterrag maven'
-            url "https://maven.tterrag.com/"
+        maven { // CoFH
+            name 'CoFH maven'
+            url "https://maven.covers1624.net/"
+        }
+        maven {
+            name 'buildcraft Repository'
+            url "https://mod-buildcraft.com/maven/"
         }
         maven {
             name 'jitpack'
@@ -146,6 +152,13 @@ project('technocracy.foundation') {
         deobfCompile group: "it.zerono.mods.zerocore", name: "zerocore", version: project.zerocore_version
         deobfCompile group: "team.chisel.ctm", name: "CTM", version: project.ctm_version
         deobfCompile group: "mcp.mobius.waila", name: "Hwyla", version: project.waila_version, classifier: 'api'
+        deobfCompile group: "com.mod-buildcraft", name: "buildcraft-api", version: project.buildcraft_version
+
+        deobfCompile("cofh:CoFHCore:${cofhcore_version}:universal") {
+            transitive = false // We don't need RF nor JEI, thank you very much
+        }
+        deobfCompile group: 'cofh', name: 'RedstoneFlux', version: '1.12-+', classifier: 'universal'
+
         deobfCompile group: "mcjty.theoneprobe", name: "TheOneProbe-1.12", version: project.top_version,
                 classifier: 'api'
 

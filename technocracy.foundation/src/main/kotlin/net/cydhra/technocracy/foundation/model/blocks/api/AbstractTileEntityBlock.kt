@@ -45,6 +45,10 @@ abstract class AbstractTileEntityBlock(unlocalizedName: String,
     protected abstract fun getDropItem(state: IBlockState, world: IBlockAccess, pos: BlockPos, te: TileEntity?): ItemStack
 
     open fun onBlockWrenched(worldIn: World, player: EntityPlayer, pos: BlockPos, state: IBlockState, te: TileEntity?, stack: ItemStack): Boolean {
+        if (player.isSneaking) {
+            harvestBlock(worldIn, player, pos, state, te, stack)
+            return true
+        }
         return false
     }
 
