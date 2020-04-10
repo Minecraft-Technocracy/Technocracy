@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.content.capabilities.inventory
 
+import net.cydhra.technocracy.foundation.api.tileentities.TEInventoryProvider
 import net.cydhra.technocracy.foundation.content.capabilities.AbstractMutableCapabilityHandler
-import net.cydhra.technocracy.foundation.model.tileentities.api.TEInventoryProvider
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTTagList

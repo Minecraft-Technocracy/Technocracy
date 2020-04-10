@@ -1,9 +1,9 @@
 package net.cydhra.technocracy.optics.content.tileentities.logic
 
+import net.cydhra.technocracy.foundation.api.ecs.logic.ILogic
 import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.ProgressTileEntityComponent
-import net.cydhra.technocracy.foundation.model.tileentities.api.logic.ILogic
 import net.cydhra.technocracy.optics.TCOptics
 import net.minecraft.item.ItemStack
 import net.minecraft.world.World

@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.content.tileentities.logic
 
+import net.cydhra.technocracy.foundation.api.ecs.logic.ILogic
 import net.cydhra.technocracy.foundation.content.capabilities.energy.DynamicEnergyCapability
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
@@ -7,7 +8,6 @@ import net.cydhra.technocracy.foundation.content.tileentities.components.Multipl
 import net.cydhra.technocracy.foundation.content.tileentities.components.ProgressTileEntityComponent
 import net.cydhra.technocracy.foundation.data.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
-import net.cydhra.technocracy.foundation.model.tileentities.api.logic.ILogic
 import net.minecraft.item.ItemStack
 
 class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,

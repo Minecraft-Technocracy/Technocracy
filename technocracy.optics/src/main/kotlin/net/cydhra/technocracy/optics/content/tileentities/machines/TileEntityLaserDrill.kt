@@ -1,5 +1,9 @@
 package net.cydhra.technocracy.optics.content.tileentities.machines
 
+import net.cydhra.technocracy.foundation.api.ecs.logic.ILogicClient
+import net.cydhra.technocracy.foundation.api.ecs.logic.LogicClientDelegate
+import net.cydhra.technocracy.foundation.api.tileentities.TCMachineTileEntity
+import net.cydhra.technocracy.foundation.api.tileentities.TEInventoryProvider
 import net.cydhra.technocracy.foundation.client.gui.SimpleGui
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.TCTab
@@ -10,10 +14,6 @@ import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyS
 import net.cydhra.technocracy.foundation.content.tileentities.components.HeatStorageTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.ProgressTileEntityComponent
-import net.cydhra.technocracy.foundation.model.tileentities.api.TCMachineTileEntity
-import net.cydhra.technocracy.foundation.model.tileentities.api.TEInventoryProvider
-import net.cydhra.technocracy.foundation.model.tileentities.api.logic.ILogicClient
-import net.cydhra.technocracy.foundation.model.tileentities.api.logic.LogicClientDelegate
 import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableTileEntity
 import net.cydhra.technocracy.optics.api.tileentities.components.LaserAbsorberComponent
 import net.cydhra.technocracy.optics.content.tileentities.logic.LaserDrillLogic

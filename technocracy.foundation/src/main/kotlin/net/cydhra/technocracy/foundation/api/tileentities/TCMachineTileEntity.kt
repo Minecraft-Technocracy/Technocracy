@@ -1,7 +1,7 @@
-package net.cydhra.technocracy.foundation.model.tileentities.api
+package net.cydhra.technocracy.foundation.api.tileentities
 
+import net.cydhra.technocracy.foundation.api.ecs.logic.ILogicClient
 import net.cydhra.technocracy.foundation.api.ecs.tileentities.TCAggregatableTileEntity
-import net.cydhra.technocracy.foundation.model.tileentities.api.logic.ILogicClient
 import net.minecraft.util.ITickable
 
 /**

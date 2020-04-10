@@ -1,12 +1,12 @@
 package net.cydhra.technocracy.optics.content.tileentities.machines
 
+import net.cydhra.technocracy.foundation.api.ecs.logic.ILogicClient
+import net.cydhra.technocracy.foundation.api.ecs.logic.LogicClientDelegate
+import net.cydhra.technocracy.foundation.api.tileentities.TCMachineTileEntity
 import net.cydhra.technocracy.foundation.client.gui.SimpleGui
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
 import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageTileEntityComponent
-import net.cydhra.technocracy.foundation.model.tileentities.api.TCMachineTileEntity
-import net.cydhra.technocracy.foundation.model.tileentities.api.logic.ILogicClient
-import net.cydhra.technocracy.foundation.model.tileentities.api.logic.LogicClientDelegate
 import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableTileEntity
 import net.cydhra.technocracy.optics.api.tileentities.components.LaserEmitterTileEntityComponent
 import net.cydhra.technocracy.optics.api.tileentities.logic.LaserLogic

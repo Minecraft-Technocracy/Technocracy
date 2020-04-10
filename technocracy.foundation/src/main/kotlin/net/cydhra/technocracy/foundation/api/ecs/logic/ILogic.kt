@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.foundation.model.tileentities.api.logic
+package net.cydhra.technocracy.foundation.api.ecs.logic
 
 /**
  * Interface used by tile entities to implement recurring aspects of behaviour such as transforming items using recipes.

@@ -1,11 +1,11 @@
 package net.cydhra.technocracy.foundation.content.tileentities.components
 
 import net.cydhra.technocracy.foundation.api.ecs.ComponentType
+import net.cydhra.technocracy.foundation.api.ecs.tileentities.AbstractTileEntityComponent
+import net.cydhra.technocracy.foundation.api.tileentities.TCMachineTileEntity
+import net.cydhra.technocracy.foundation.api.tileentities.TEInventoryProvider
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.model.items.api.UpgradeItem
-import net.cydhra.technocracy.foundation.model.tileentities.api.TCMachineTileEntity
-import net.cydhra.technocracy.foundation.model.tileentities.api.TEInventoryProvider
-import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractTileEntityComponent
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgrade
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeClass
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeParameter

@@ -1,8 +1,8 @@
 package net.cydhra.technocracy.foundation.content.tileentities.logic
 
+import net.cydhra.technocracy.foundation.api.ecs.logic.ILogic
 import net.cydhra.technocracy.foundation.content.tileentities.components.HeatStorageTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.MultiplierTileEntityComponent
-import net.cydhra.technocracy.foundation.model.tileentities.api.logic.ILogic
 
 /**
  * A logic that generates heat whenever the machine is doing work. How much heat is generated depends on the energy

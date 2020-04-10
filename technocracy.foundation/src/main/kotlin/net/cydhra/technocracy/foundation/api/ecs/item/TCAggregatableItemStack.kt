@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.api.ecs.item
 
 import net.cydhra.technocracy.foundation.api.ecs.IAggregatable
-import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractTileEntityComponent
+import net.cydhra.technocracy.foundation.api.ecs.tileentities.AbstractTileEntityComponent
 
 /**
  * Aggregation of [AbstractTileEntityComponent] implementations used for itemstacks. Note, that this interface is not

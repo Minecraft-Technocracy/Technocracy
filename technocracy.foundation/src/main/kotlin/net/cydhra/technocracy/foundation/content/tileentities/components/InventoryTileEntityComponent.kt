@@ -1,8 +1,8 @@
 package net.cydhra.technocracy.foundation.content.tileentities.components
 
 import net.cydhra.technocracy.foundation.api.ecs.ComponentType
+import net.cydhra.technocracy.foundation.api.tileentities.TEInventoryProvider
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
-import net.cydhra.technocracy.foundation.model.tileentities.api.TEInventoryProvider
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability

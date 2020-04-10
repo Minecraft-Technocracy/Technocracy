@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.model.tileentities.api
 
 import it.zerono.mods.zerocore.api.multiblock.rectangular.RectangularMultiblockTileEntityBase
-import net.cydhra.technocracy.foundation.model.tileentities.api.TCMultiBlockActiveTileEntity
+import net.cydhra.technocracy.foundation.api.tileentities.TCMultiBlockActiveTileEntity
 import net.minecraft.block.state.IBlockState
 
 abstract class AbstractRectangularMultiBlockTileEntity : RectangularMultiblockTileEntityBase(), TCMultiBlockActiveTileEntity {

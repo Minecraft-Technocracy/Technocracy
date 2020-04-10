@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.content.tileentities.upgrades
 
 import net.cydhra.technocracy.foundation.TCFoundation
+import net.cydhra.technocracy.foundation.api.tileentities.TCMachineTileEntity
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.fluids.diphenyletherFluid
 import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
@@ -10,7 +11,6 @@ import net.cydhra.technocracy.foundation.content.tileentities.components.Multipl
 import net.cydhra.technocracy.foundation.content.tileentities.logic.AdditiveConsumptionLogic
 import net.cydhra.technocracy.foundation.content.tileentities.logic.CoolingLogic
 import net.cydhra.technocracy.foundation.content.tileentities.logic.GenerateHeatLogic
-import net.cydhra.technocracy.foundation.model.tileentities.api.TCMachineTileEntity
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgrade
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeParameter
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MultiplierUpgrade

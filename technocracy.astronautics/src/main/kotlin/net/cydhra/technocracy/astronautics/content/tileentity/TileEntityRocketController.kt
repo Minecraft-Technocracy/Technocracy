@@ -6,6 +6,8 @@ import net.cydhra.technocracy.astronautics.content.blocks.rocketHullBlock
 import net.cydhra.technocracy.astronautics.content.blocks.rocketStorageBlock
 import net.cydhra.technocracy.astronautics.content.entity.EntityRocket
 import net.cydhra.technocracy.foundation.TCFoundation
+import net.cydhra.technocracy.foundation.api.tileentities.TCTileEntityGuiProvider
+import net.cydhra.technocracy.foundation.api.tileentities.TEInventoryProvider
 import net.cydhra.technocracy.foundation.client.gui.SimpleGui
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.TCIcon
@@ -19,8 +21,6 @@ import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluid
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.content.tileentities.components.*
 import net.cydhra.technocracy.foundation.data.world.groups.GroupManager
-import net.cydhra.technocracy.foundation.model.tileentities.api.TCTileEntityGuiProvider
-import net.cydhra.technocracy.foundation.model.tileentities.api.TEInventoryProvider
 import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableTileEntity
 import net.cydhra.technocracy.foundation.network.componentsync.GuiUpdateListener
 import net.cydhra.technocracy.foundation.util.structures.Template

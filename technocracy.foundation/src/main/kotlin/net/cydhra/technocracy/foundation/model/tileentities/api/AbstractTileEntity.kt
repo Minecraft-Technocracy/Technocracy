@@ -1,12 +1,11 @@
 package net.cydhra.technocracy.foundation.model.tileentities.api
 
-import net.cydhra.technocracy.foundation.model.tileentities.api.TCTileEntity
+import net.cydhra.technocracy.foundation.api.tileentities.TCTileEntity
 import net.minecraft.block.state.IBlockState
-import net.minecraft.tileentity.TileEntity
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.network.NetworkManager
 import net.minecraft.network.play.server.SPacketUpdateTileEntity
-
+import net.minecraft.tileentity.TileEntity
 
 
 abstract class AbstractTileEntity : TileEntity(), TCTileEntity {

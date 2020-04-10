@@ -1,12 +1,12 @@
 package net.cydhra.technocracy.foundation.content.tileentities.logic
 
+import net.cydhra.technocracy.foundation.api.ecs.logic.ILogic
 import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.HeatStorageTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ConversionDirection.COLD_TO_HOT
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ConversionDirection.HOT_TO_COLD
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.data.crafting.special.HeatRecipe
-import net.cydhra.technocracy.foundation.model.tileentities.api.logic.ILogic
 import net.minecraftforge.fluids.FluidStack
 
 /**

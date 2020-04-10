@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.foundation.model.tileentities.api.logic
+package net.cydhra.technocracy.foundation.api.ecs.logic
 
 /**
  * Entities that can adopt an [ILogic] strategy must implement this interface. Since the implementation is trivial,

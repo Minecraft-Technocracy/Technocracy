@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.content.tileentities.logic
 
+import net.cydhra.technocracy.foundation.api.ecs.logic.ILogic
 import net.cydhra.technocracy.foundation.content.tileentities.components.RedstoneModeTileEntityComponent
-import net.cydhra.technocracy.foundation.model.tileentities.api.logic.ILogic
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 

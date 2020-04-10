@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.model.tileentities.api.upgrades
 
+import net.cydhra.technocracy.foundation.api.tileentities.TCMachineTileEntity
 import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesTileEntityComponent
-import net.cydhra.technocracy.foundation.model.tileentities.api.TCMachineTileEntity
 import net.minecraft.util.text.ITextComponent
 import java.util.*
 
@@ -16,7 +16,7 @@ abstract class MachineUpgrade(val upgradeType: MachineUpgradeParameter) {
      * @return true, iff the upgrade can be installed in the given tile entity.
      */
     abstract fun canInstallUpgrade(tile: TCMachineTileEntity,
-            upgrades: MachineUpgradesTileEntityComponent): Boolean
+                                   upgrades: MachineUpgradesTileEntityComponent): Boolean
 
     /**
      * Called when the upgrade is installed in the given tile entity.
@@ -25,7 +25,7 @@ abstract class MachineUpgrade(val upgradeType: MachineUpgradeParameter) {
      * @param upgrades the upgrade component this upgrade is installed in
      */
     abstract fun onInstallUpgrade(tile: TCMachineTileEntity,
-            upgrades: MachineUpgradesTileEntityComponent)
+                                  upgrades: MachineUpgradesTileEntityComponent)
 
     /**
      * Called when the upgrade is uninstalled from the given tile entity
@@ -56,7 +56,7 @@ abstract class MachineUpgrade(val upgradeType: MachineUpgradeParameter) {
 abstract class MultiplierUpgrade(val multiplier: Double, parameterName: MachineUpgradeParameter)
     : MachineUpgrade(parameterName) {
     override fun canInstallUpgrade(tile: TCMachineTileEntity,
-            upgrades: MachineUpgradesTileEntityComponent): Boolean {
+                                   upgrades: MachineUpgradesTileEntityComponent): Boolean {
         return true
     }
 

@@ -1,9 +1,9 @@
 package net.cydhra.technocracy.optics.api.tileentities.logic
 
 import net.cydhra.technocracy.foundation.TCFoundation
+import net.cydhra.technocracy.foundation.api.ecs.logic.ILogic
 import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageTileEntityComponent
 import net.cydhra.technocracy.foundation.data.config.IntegerConfigurable
-import net.cydhra.technocracy.foundation.model.tileentities.api.logic.ILogic
 import net.cydhra.technocracy.optics.api.tileentities.components.LaserAbsorberComponent
 import net.cydhra.technocracy.optics.api.tileentities.components.LaserEmitterTileEntityComponent
 import net.minecraft.util.math.BlockPos

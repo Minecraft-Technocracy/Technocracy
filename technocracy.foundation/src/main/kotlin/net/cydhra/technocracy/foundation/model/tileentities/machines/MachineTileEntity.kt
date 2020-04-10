@@ -1,5 +1,8 @@
 package net.cydhra.technocracy.foundation.model.tileentities.machines
 
+import net.cydhra.technocracy.foundation.api.ecs.logic.ILogicClient
+import net.cydhra.technocracy.foundation.api.ecs.logic.LogicClientDelegate
+import net.cydhra.technocracy.foundation.api.tileentities.TCMachineTileEntity
 import net.cydhra.technocracy.foundation.client.gui.SimpleGui
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.components.energymeter.DefaultEnergyMeter
@@ -20,9 +23,6 @@ import net.cydhra.technocracy.foundation.content.tileentities.upgrades.CoolingUp
 import net.cydhra.technocracy.foundation.content.tileentities.upgrades.LubricantUpgrade
 import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_ENERGY
 import net.cydhra.technocracy.foundation.content.tileentities.upgrades.MACHINE_UPGRADE_SPEED
-import net.cydhra.technocracy.foundation.model.tileentities.api.TCMachineTileEntity
-import net.cydhra.technocracy.foundation.model.tileentities.api.logic.ILogicClient
-import net.cydhra.technocracy.foundation.model.tileentities.api.logic.LogicClientDelegate
 import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableTileEntity
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.EnumFacing

@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.foundation.model.tileentities.api.logic
+package net.cydhra.technocracy.foundation.api.ecs.logic
 
 /**
  * Default implementation of an [ILogicClient] that just accepts registered [ILogic] implementations and updates them

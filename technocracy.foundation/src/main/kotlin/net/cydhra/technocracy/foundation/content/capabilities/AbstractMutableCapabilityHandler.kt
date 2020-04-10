@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.content.capabilities
 
-import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractTileEntityComponent
+import net.cydhra.technocracy.foundation.api.ecs.tileentities.AbstractTileEntityComponent
 
 /**
  * Superclass to capability handlers that can mark a [parent][AbstractTileEntityComponent] dirty upon mutation. To

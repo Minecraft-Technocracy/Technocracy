@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.foundation.model.tileentities.api.components
+package net.cydhra.technocracy.foundation.api.ecs.tileentities
 
 import net.cydhra.technocracy.foundation.api.ecs.IComponent
 import net.minecraft.tileentity.TileEntity

@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.foundation.model.tileentities.api
+package net.cydhra.technocracy.foundation.api.tileentities
 
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.EnumFacing

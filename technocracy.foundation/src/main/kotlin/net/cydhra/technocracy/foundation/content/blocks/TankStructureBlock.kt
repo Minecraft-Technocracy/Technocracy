@@ -1,14 +1,13 @@
 package net.cydhra.technocracy.foundation.content.blocks
 
 import it.zerono.mods.zerocore.api.multiblock.IMultiblockPart
-import net.cydhra.technocracy.foundation.model.blocks.impl.PlainMultiBlockPartBlock
-import net.cydhra.technocracy.foundation.model.tileentities.api.TCMultiBlockActiveTileEntity
+import net.cydhra.technocracy.foundation.api.tileentities.TCMultiBlockActiveTileEntity
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.tank.TileEntityTankMultiBlockPart
+import net.cydhra.technocracy.foundation.model.blocks.impl.PlainMultiBlockPartBlock
 import net.cydhra.technocracy.foundation.util.propertys.DIMENSIONS
 import net.cydhra.technocracy.foundation.util.propertys.FLUIDSTACK
 import net.cydhra.technocracy.foundation.util.propertys.POSITION
 import net.cydhra.technocracy.foundation.util.propertys.TANKSIZE
-import net.minecraft.block.Block
 import net.minecraft.block.state.BlockStateContainer
 import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.player.EntityPlayer
@@ -17,7 +16,6 @@ import net.minecraft.util.BlockRenderLayer
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumHand
 import net.minecraft.util.math.BlockPos
-import net.minecraft.util.text.TextComponentTranslation
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 import net.minecraftforge.common.property.IExtendedBlockState

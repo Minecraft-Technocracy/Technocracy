@@ -1,8 +1,8 @@
 package net.cydhra.technocracy.foundation.content.tileentities.components
 
 import net.cydhra.technocracy.foundation.api.ecs.ComponentType
+import net.cydhra.technocracy.foundation.api.ecs.tileentities.AbstractTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.RedstoneModeTileEntityComponent.RedstoneMode
-import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractTileEntityComponent
 import net.minecraft.nbt.NBTTagCompound
 
 /**

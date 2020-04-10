@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.foundation.model.tileentities.api
+package net.cydhra.technocracy.foundation.api.tileentities
 
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.minecraft.item.ItemStack

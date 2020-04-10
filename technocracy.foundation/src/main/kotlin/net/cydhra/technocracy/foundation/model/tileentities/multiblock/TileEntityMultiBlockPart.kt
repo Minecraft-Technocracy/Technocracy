@@ -4,6 +4,7 @@ import it.zerono.mods.zerocore.api.multiblock.MultiblockControllerBase
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.api.ecs.tileentities.TCAggregatableTileEntity
+import net.cydhra.technocracy.foundation.api.tileentities.TCTileEntityGuiProvider
 import net.cydhra.technocracy.foundation.client.gui.SimpleGui
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.TCIcon
@@ -24,7 +25,6 @@ import net.cydhra.technocracy.foundation.content.tileentities.components.Invento
 import net.cydhra.technocracy.foundation.content.tileentities.components.ProgressTileEntityComponent
 import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
 import net.cydhra.technocracy.foundation.model.tileentities.api.AbstractRectangularMultiBlockTileEntity
-import net.cydhra.technocracy.foundation.model.tileentities.api.TCTileEntityGuiProvider
 import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableTileEntityDelegate
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.nbt.NBTTagCompound
