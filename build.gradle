@@ -240,7 +240,12 @@ jar {
  */
 task setup() {
     setGroup("setup")
-    dependsOn(':setupDecompWorkspace')
+    dependsOn(
+            ':technocracy.foundation:setupDecompWorkspace',
+            ':technocracy.astronautics:setupDecompWorkspace',
+            ':technocracy.optics:setupDecompWorkspace',
+            ':technocracy.powertools:setupDecompWorkspace'
+    )
 }
 
 task cloneTechnoblock() {
