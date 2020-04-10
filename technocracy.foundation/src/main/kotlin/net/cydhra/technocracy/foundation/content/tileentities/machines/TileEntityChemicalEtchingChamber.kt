@@ -2,9 +2,6 @@ package net.cydhra.technocracy.foundation.content.tileentities.machines
 
 import net.cydhra.technocracy.foundation.api.tileentities.TEInventoryProvider
 import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_ADDITIVE
-import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_ENERGY
-import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_GENERIC
-import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_SPEED
 import net.cydhra.technocracy.foundation.client.gui.SimpleGui
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.components.energymeter.DefaultEnergyMeter
@@ -19,7 +16,6 @@ import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicI
 import net.cydhra.technocracy.foundation.content.fluids.hydrochloricAcidFluid
 import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.MultiplierTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.logic.AdditiveConsumptionLogic
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ItemProcessingLogic
@@ -43,10 +39,6 @@ class TileEntityChemicalEtchingChamber : MachineTileEntity(), TEInventoryProvide
     private val acidFluidInput = FluidTileEntityComponent(4000, hydrochloricAcidFluid.name,
             tanktype = DynamicFluidCapability.TankType.INPUT, facing = mutableSetOf(EnumFacing.NORTH))
 
-    private val upgradesComponent = MachineUpgradesTileEntityComponent(3,
-            setOf(UPGRADE_ENERGY, UPGRADE_SPEED, UPGRADE_ADDITIVE, UPGRADE_GENERIC),
-            setOf(this.processingSpeedComponent, this.energyCostComponent, this.additiveMultiplierComponent))
-
     /**
      * All recipes of the etching chamber; loaded lazily so they are not loaded before game loop, as they might not have
      * been registered yet.
@@ -60,7 +52,7 @@ class TileEntityChemicalEtchingChamber : MachineTileEntity(), TEInventoryProvide
         registerComponent(outputInventoryComponent, "output")
         registerComponent(acidFluidInput, "acid")
         registerComponent(additiveMultiplierComponent, "additive_speed")
-        registerComponent(upgradesComponent, "upgrades")
+        this.registerUpgradeParameter(UPGRADE_ADDITIVE, additiveMultiplierComponent)
 
         this.addLogicStrategy(AdditiveConsumptionLogic(acidFluidInput, 5, additiveMultiplierComponent),
                 MACHINE_DEFAULT_CONSUMPTION_LOGIC_NAME)

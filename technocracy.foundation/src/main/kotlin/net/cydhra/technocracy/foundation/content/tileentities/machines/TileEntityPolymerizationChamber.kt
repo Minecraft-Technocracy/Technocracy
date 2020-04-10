@@ -2,14 +2,10 @@ package net.cydhra.technocracy.foundation.content.tileentities.machines
 
 import net.cydhra.technocracy.foundation.api.tileentities.TEInventoryProvider
 import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_ADDITIVE
-import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_ENERGY
-import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_GENERIC
-import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_SPEED
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.MultiplierTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.logic.AdditiveConsumptionLogic
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ItemProcessingLogic
@@ -33,16 +29,12 @@ class TileEntityPolymerizationChamber : MachineTileEntity(), TEInventoryProvider
     private val outputInventoryComponent = InventoryTileEntityComponent(1, this, EnumFacing.EAST,
             DynamicInventoryCapability.InventoryType.OUTPUT)
 
-    private val upgradesComponent = MachineUpgradesTileEntityComponent(3,
-            setOf(UPGRADE_ENERGY, UPGRADE_SPEED, UPGRADE_ADDITIVE, UPGRADE_GENERIC),
-            setOf(this.processingSpeedComponent, this.energyCostComponent, this.additiveMultiplierComponent))
-
     init {
         this.registerComponent(inputFluidComponent, "input")
         this.registerComponent(outputInventoryComponent, "output")
         this.registerComponent(additiveFluidComponent, "additive")
         this.registerComponent(additiveMultiplierComponent, "additive_usage")
-        this.registerComponent(upgradesComponent, "upgrades")
+        this.registerUpgradeParameter(UPGRADE_ADDITIVE, additiveMultiplierComponent)
 
         this.addLogicStrategy(AdditiveConsumptionLogic(additiveFluidComponent, 5, additiveMultiplierComponent),
                 MACHINE_DEFAULT_CONSUMPTION_LOGIC_NAME)

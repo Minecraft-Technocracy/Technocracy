@@ -6,31 +6,21 @@ import net.cydhra.technocracy.foundation.api.tileentities.TCMachineTileEntity
 import net.cydhra.technocracy.foundation.api.tileentities.TEInventoryProvider
 import net.cydhra.technocracy.foundation.api.upgrades.Upgrade
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeClass
-import net.cydhra.technocracy.foundation.api.upgrades.UpgradeParameter
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.model.items.api.UpgradeItem
-import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MultiplierUpgrade
 import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
 import net.minecraft.init.Items
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.text.*
 import java.util.concurrent.CopyOnWriteArrayList
-import kotlin.math.roundToInt
 
 /**
  * A machine component that handles all machine upgrades.
  *
- * @param supportedUpgradeTypes a set of supported upgrade types. If a player tries to install an upgrade into the
- * machine, all of its upgrade types must be supported for installation to work.
  * @param numberOfUpgradeSlots how many upgrade slots the machine has.
- * @param multipliers the multiplier components of the machine that can be upgraded. For each [MultiplierUpgrade]
- * that is supported by this component, a respective [MultiplierTileEntityComponent] must be added to this set
  */
-class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int,
-                                         val supportedUpgradeTypes: Set<UpgradeParameter>,
-                                         val multipliers: Set<MultiplierTileEntityComponent>) :
-        AbstractTileEntityComponent(), TEInventoryProvider {
+class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int) : AbstractTileEntityComponent(), TEInventoryProvider {
 
     /**
      * A set of descriptive lines about installed upgrades
@@ -68,9 +58,6 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int,
         // check whether the upgrade is a machine-type upgrade
         if (item.upgradeClass != UpgradeClass.MACHINE) return false
 
-        // check whether the upgrade item's parameters are all supported
-        if (!item.upgrades.all { upgrade -> this.supportedUpgradeTypes.contains(upgrade.upgradeParameter) }) return false
-
         // ask the item whether it can be installed
         if (!item.upgrades.all { upgrade -> upgrade.canInstallUpgrade(this.tile as TCMachineTileEntity, this) })
             return false
@@ -89,14 +76,14 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int,
                 throw IllegalStateException("Non-upgrade item was installed in upgrade slot.")
             }
 
-            upgradeItem.upgrades.forEach { upgrade ->
-                if (upgrade is MultiplierUpgrade) {
-                    val componentToUpgrade = this.multipliers.single { it.upgradeParameter == upgrade.upgradeParameter }
-                    componentToUpgrade.multiplier -= upgrade.multiplier
-                } else {
-                    upgrade.onUninstallUpgrade(this.tile as TCMachineTileEntity, this)
-                }
-            }
+//            upgradeItem.upgrades.forEach { upgrade ->
+//                if (upgrade is MultiplierUpgrade) {
+//                    val componentToUpgrade = this.multipliers.single { it.upgradeParameter == upgrade.upgradeParameter }
+//                    componentToUpgrade.multiplier -= upgrade.multiplier
+//                } else {
+//                    upgrade.onUninstallUpgrade(this.tile as TCMachineTileEntity, this)
+//                }
+//            }
         } else {
             val upgradeItem = stack.item
 
@@ -104,14 +91,14 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int,
                 throw IllegalStateException("Non-upgrade item installed in upgrade slot.")
             }
 
-            upgradeItem.upgrades.forEach { upgrade ->
-                if (upgrade is MultiplierUpgrade) {
-                    val componentToUpgrade = this.multipliers.single { it.upgradeParameter == upgrade.upgradeParameter }
-                    componentToUpgrade.multiplier += upgrade.multiplier
-                } else {
-                    upgrade.onInstallUpgrade(this.tile as TCMachineTileEntity, this)
-                }
-            }
+//            upgradeItem.upgrades.forEach { upgrade ->
+//                if (upgrade is MultiplierUpgrade) {
+//                    val componentToUpgrade = this.multipliers.single { it.upgradeParameter == upgrade.upgradeParameter }
+//                    componentToUpgrade.multiplier += upgrade.multiplier
+//                } else {
+//                    upgrade.onInstallUpgrade(this.tile as TCMachineTileEntity, this)
+//                }
+//            }
         }
 
         this.tile.markDirty()
@@ -146,12 +133,12 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int,
                 "${this.inventory.stacks.filter { !it.isEmpty }.count()}/${this.numberOfUpgradeSlots}")
                 .setStyle(Style().setColor(TextFormatting.DARK_GREEN)))
 
-        this.multipliers.forEach { multiplier ->
-            this.description.add(TextComponentTranslation("tooltips.upgrades.parameter.${multiplier.upgradeParameter}")
-                    .appendSibling(TextComponentString(":")) to TextComponentString(
-                    "${(multiplier.getCappedMultiplier() * 100).roundToInt()}%")
-                    .setStyle(Style().setColor(TextFormatting.DARK_GREEN)))
-        }
+//        this.multipliers.forEach { multiplier ->
+//            this.description.add(TextComponentTranslation("tooltips.upgrades.parameter.${multiplier.upgradeParameter}")
+//                    .appendSibling(TextComponentString(":")) to TextComponentString(
+//                    "${(multiplier.getCappedMultiplier() * 100).roundToInt()}%")
+//                    .setStyle(Style().setColor(TextFormatting.DARK_GREEN)))
+//        }
 
         this.description.add(TextComponentString("\n") to TextComponentString("\n"))
     }

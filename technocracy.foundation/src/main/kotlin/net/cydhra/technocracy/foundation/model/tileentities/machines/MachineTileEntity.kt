@@ -4,6 +4,7 @@ import net.cydhra.technocracy.foundation.api.ecs.logic.ILogicClient
 import net.cydhra.technocracy.foundation.api.ecs.logic.LogicClientDelegate
 import net.cydhra.technocracy.foundation.api.tileentities.TCMachineTileEntity
 import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_ENERGY
+import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_GENERIC
 import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_SPEED
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeParameter
 import net.cydhra.technocracy.foundation.client.gui.SimpleGui
@@ -28,7 +29,9 @@ import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableTil
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.EnumFacing
 
-open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, ILogicClient by LogicClientDelegate() {
+open class MachineTileEntity(
+        upgradeSlots: Int = 3
+) : AggregatableTileEntity(), TCMachineTileEntity, ILogicClient by LogicClientDelegate() {
 
     companion object {
         const val MACHINE_PROCESSING_LOGIC_NAME = "default_processing"
@@ -52,12 +55,24 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
 
     protected val energyCostComponent = MultiplierTileEntityComponent(UPGRADE_ENERGY)
 
+    private val upgradesComponent = MachineUpgradesTileEntityComponent(upgradeSlots)
+
+    /**
+     * A map of all upgradable parameters within the machine. This is important because an
+     * [net.cydhra.technocracy.foundation.api.upgrades.Upgradable] must expose all parameters it supports.
+     */
+    private val upgradeParameters = mutableMapOf(
+            UPGRADE_SPEED to processingSpeedComponent,
+            UPGRADE_ENERGY to energyCostComponent
+    )
+
     init {
         this.registerComponent(redstoneModeComponent, "redstone_mode")
         this.registerComponent(energyStorageComponent, "energy")
         this.registerComponent(progressComponent, "progress")
         this.registerComponent(processingSpeedComponent, "processing_speed")
         this.registerComponent(energyCostComponent, "processing_cost")
+        this.registerComponent(upgradesComponent, "upgrades")
     }
 
     override fun onLoad() {
@@ -182,11 +197,27 @@ open class MachineTileEntity : AggregatableTileEntity(), TCMachineTileEntity, IL
             this.tick()
     }
 
-    override fun supportsParameter(parameter: UpgradeParameter): Boolean {
-        TODO("not implemented")
+    /**
+     * Register a new upgradable parameter at the machine
+     *
+     * @param parameter the [UpgradeParameter] that shall be registered as supported
+     * @param multiplierComponent the multiplier affected by the parameter
+     */
+    protected fun registerUpgradeParameter(
+            parameter: UpgradeParameter,
+            multiplierComponent: MultiplierTileEntityComponent) {
+        this.upgradeParameters[parameter] = multiplierComponent
     }
 
+    override fun supportsParameter(parameter: UpgradeParameter): Boolean {
+        return parameter == UPGRADE_GENERIC || this.upgradeParameters.keys.contains(parameter)
+    }
+
+    /**
+     * Apply a modification to a parameter. If this machine does not support the parameter or the parameter is
+     * [UPGRADE_GENERIC], a [NullPointerException] will be thrown
+     */
     override fun upgradeParameter(parameter: UpgradeParameter, modification: Double) {
-        TODO("not implemented")
+        this.upgradeParameters[parameter]!!.multiplier += modification
     }
 }

@@ -1,14 +1,10 @@
 package net.cydhra.technocracy.foundation.content.tileentities.machines
 
 import net.cydhra.technocracy.foundation.api.tileentities.TEInventoryProvider
-import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_ENERGY
-import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_GENERIC
-import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_SPEED
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ItemProcessingLogic
 import net.cydhra.technocracy.foundation.data.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
@@ -31,15 +27,10 @@ class TileEntityDissolutionChamber : MachineTileEntity(), TEInventoryProvider {
         (RecipeManager.getMachineRecipesByType(RecipeManager.RecipeType.DISSOLUTION) ?: emptyList())
     }
 
-    private val upgradesComponent = MachineUpgradesTileEntityComponent(3,
-            setOf(UPGRADE_ENERGY, UPGRADE_SPEED, UPGRADE_GENERIC),
-            setOf(this.processingSpeedComponent, this.energyCostComponent))
-
     init {
         this.registerComponent(inputInventoryComponent, "input_inventory")
         this.registerComponent(inputFluidComponent, "input_fluid")
         this.registerComponent(outputFluidComponent, "output_fluid")
-        this.registerComponent(upgradesComponent, "upgrades")
 
         this.addLogicStrategy(ItemProcessingLogic(
                 recipeType = RecipeManager.RecipeType.DISSOLUTION,
