@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.astronautics.content.fx
 
+import net.cydhra.technocracy.foundation.api.fx.IParticleType
 import net.cydhra.technocracy.foundation.model.fx.api.AbstractParticle
-import net.cydhra.technocracy.foundation.model.fx.api.IParticleType
 import net.cydhra.technocracy.foundation.util.opengl.BasicShaderProgram
 import net.cydhra.technocracy.foundation.util.opengl.MultiTargetFBO
 import net.cydhra.technocracy.foundation.util.opengl.TCOpenGlHelper
@@ -11,7 +11,8 @@ import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.OpenGlHelper
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats.*
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_TEX
 import net.minecraft.util.ResourceLocation
 import net.minecraft.world.World
 import net.minecraftforge.client.event.RenderGameOverlayEvent

@@ -1,10 +1,10 @@
 package net.cydhra.technocracy.foundation.model.fx.api
 
+import net.cydhra.technocracy.foundation.api.fx.IParticleType
 import net.minecraft.client.Minecraft
 import net.minecraft.client.particle.Particle
 import net.minecraft.client.renderer.BufferBuilder
 import net.minecraft.entity.Entity
-import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.world.World
 import org.lwjgl.util.vector.Vector3f
 import kotlin.math.absoluteValue

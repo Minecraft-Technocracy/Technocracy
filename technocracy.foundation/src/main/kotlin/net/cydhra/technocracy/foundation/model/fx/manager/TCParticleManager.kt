@@ -1,10 +1,9 @@
 package net.cydhra.technocracy.foundation.model.fx.manager
 
+import net.cydhra.technocracy.foundation.api.fx.IParticleType
 import net.cydhra.technocracy.foundation.model.fx.api.AbstractParticle
-import net.cydhra.technocracy.foundation.model.fx.api.IParticleType
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.culling.Frustum
-import net.minecraftforge.client.event.EntityViewRenderEvent
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.client.event.RenderWorldLastEvent
 import net.minecraftforge.event.world.WorldEvent

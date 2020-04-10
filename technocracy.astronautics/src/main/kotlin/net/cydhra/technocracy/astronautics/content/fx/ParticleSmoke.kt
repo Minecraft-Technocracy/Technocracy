@@ -1,25 +1,28 @@
 package net.cydhra.technocracy.astronautics.content.fx
 
+import net.cydhra.technocracy.foundation.api.fx.IParticleType
 import net.cydhra.technocracy.foundation.model.fx.api.AbstractParticle
-import net.cydhra.technocracy.foundation.model.fx.api.IParticleType
 import net.cydhra.technocracy.foundation.util.opengl.BasicShaderProgram
+import net.cydhra.technocracy.foundation.util.opengl.BasicShaderProgram.ShaderUniform.UniformType.MATRIX_4x4
+import net.cydhra.technocracy.foundation.util.opengl.BasicShaderProgram.ShaderUniform.UniformType.SAMPLER
+import net.cydhra.technocracy.foundation.util.opengl.VAO
+import net.cydhra.technocracy.foundation.util.opengl.VBO
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.ActiveRenderInfo
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.OpenGlHelper
 import net.minecraft.util.ResourceLocation
 import net.minecraft.world.World
+import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL20
+import org.lwjgl.opengl.GL31
 import org.lwjgl.util.vector.Matrix4f
 import org.lwjgl.util.vector.Vector3f
+import java.nio.ByteBuffer
 import java.util.function.Consumer
+import java.util.stream.Stream
 import kotlin.math.cos
 import kotlin.math.sin
-import net.cydhra.technocracy.foundation.util.opengl.BasicShaderProgram.ShaderUniform.UniformType.*
-import net.cydhra.technocracy.foundation.util.opengl.VAO
-import net.cydhra.technocracy.foundation.util.opengl.VBO
-import org.lwjgl.opengl.*
-import java.nio.ByteBuffer
-import java.util.stream.Stream
 
 
 class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) : AbstractParticle(worldIn, posXIn, posYIn, posZIn) {

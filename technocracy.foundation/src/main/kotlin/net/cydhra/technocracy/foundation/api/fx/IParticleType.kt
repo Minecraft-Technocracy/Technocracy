@@ -1,5 +1,6 @@
-package net.cydhra.technocracy.foundation.model.fx.api
+package net.cydhra.technocracy.foundation.api.fx
 
+import net.cydhra.technocracy.foundation.model.fx.api.AbstractParticle
 import java.util.stream.Stream
 
 /**
