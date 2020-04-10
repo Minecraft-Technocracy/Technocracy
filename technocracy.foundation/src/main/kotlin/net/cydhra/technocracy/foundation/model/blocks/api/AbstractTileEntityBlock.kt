@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.model.blocks.api
 
-import net.cydhra.technocracy.foundation.api.IWrench
+import net.cydhra.technocracy.foundation.api.wrench.IWrench
 import net.cydhra.technocracy.foundation.model.blocks.color.IBlockColor
 import net.minecraft.block.Block
 import net.minecraft.block.BlockFlowerPot

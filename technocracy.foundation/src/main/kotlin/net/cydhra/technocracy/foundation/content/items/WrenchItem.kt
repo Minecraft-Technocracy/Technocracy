@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.content.items
 
-import net.cydhra.technocracy.foundation.api.IWrench
+import net.cydhra.technocracy.foundation.api.wrench.IWrench
 import net.cydhra.technocracy.foundation.client.textures.TextureAtlasManager
 import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.cydhra.technocracy.foundation.model.items.api.BaseItem
@@ -23,7 +23,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent
 import net.minecraftforge.fml.common.eventhandler.Event
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent
-import net.minecraftforge.fml.relauncher.Side
 
 
 class WrenchItem : BaseItem("wrench"), IWrench, IItemScrollEvent {
