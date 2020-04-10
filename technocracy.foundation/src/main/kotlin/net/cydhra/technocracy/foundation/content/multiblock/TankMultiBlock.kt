@@ -1,12 +1,12 @@
 package net.cydhra.technocracy.foundation.content.multiblock
 
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
+import net.cydhra.technocracy.foundation.api.ecs.IComponent
 import net.cydhra.technocracy.foundation.content.blocks.tankGlassBlock
 import net.cydhra.technocracy.foundation.content.blocks.tankIOBlock
 import net.cydhra.technocracy.foundation.content.blocks.tankWallBlock
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.tank.TileEntityTankMultiBlockPart
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.tank.TileEntityTankPort
-import net.cydhra.technocracy.foundation.model.components.IComponent
 import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
 import net.minecraft.init.Blocks
 import net.minecraft.world.World

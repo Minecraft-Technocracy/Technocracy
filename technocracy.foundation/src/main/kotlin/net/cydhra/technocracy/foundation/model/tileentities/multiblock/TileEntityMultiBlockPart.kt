@@ -23,10 +23,9 @@ import net.cydhra.technocracy.foundation.content.tileentities.components.Invento
 import net.cydhra.technocracy.foundation.content.tileentities.components.ProgressTileEntityComponent
 import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
 import net.cydhra.technocracy.foundation.model.tileentities.api.AbstractRectangularMultiBlockTileEntity
-import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatable
 import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatableTileEntity
 import net.cydhra.technocracy.foundation.model.tileentities.api.TCTileEntityGuiProvider
-import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableDelegate
+import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableTileEntityDelegate
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
@@ -44,7 +43,7 @@ import kotlin.reflect.KClass
  */
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private val constructController: (World) -> T)
-    : TCAggregatableTileEntity, TCAggregatable by AggregatableDelegate(), TCTileEntityGuiProvider, AbstractRectangularMultiBlockTileEntity()
+    : TCAggregatableTileEntity, TCAggregatableTileEntity by AggregatableTileEntityDelegate(), TCTileEntityGuiProvider, AbstractRectangularMultiBlockTileEntity()
         where T : MultiblockControllerBase {
 
     init {

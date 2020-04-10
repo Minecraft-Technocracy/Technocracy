@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.content.multiblock
 
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
+import net.cydhra.technocracy.foundation.api.ecs.IComponent
 import net.cydhra.technocracy.foundation.content.blocks.*
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refinery.TileEntityRefineryController
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refinery.TileEntityRefineryHeater
@@ -8,7 +9,6 @@ import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refiner
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refinery.TileEntityRefineryOutput
 import net.cydhra.technocracy.foundation.data.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
-import net.cydhra.technocracy.foundation.model.components.IComponent
 import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
 import net.minecraft.init.Blocks
 import net.minecraft.world.World

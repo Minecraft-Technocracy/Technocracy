@@ -1,14 +1,13 @@
 package net.cydhra.technocracy.foundation.model.tileentities.impl
 
 import net.cydhra.technocracy.foundation.model.tileentities.api.AbstractTileEntity
-import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatable
 import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatableTileEntity
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
-open class AggregatableTileEntity : AbstractTileEntity(), TCAggregatableTileEntity, TCAggregatable by AggregatableDelegate() {
+open class AggregatableTileEntity : AbstractTileEntity(), TCAggregatableTileEntity, TCAggregatableTileEntity by AggregatableTileEntityDelegate() {
 
     init {
         this.tile = this

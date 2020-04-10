@@ -1,9 +1,9 @@
 package net.cydhra.technocracy.foundation.model.tileentities.impl
 
 import net.cydhra.technocracy.foundation.TCFoundation
+import net.cydhra.technocracy.foundation.api.ecs.IComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractCapabilityTileEntityComponent
-import net.cydhra.technocracy.foundation.model.components.IComponent
-import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatable
+import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatableTileEntity
 import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractTileEntityComponent
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.nbt.NBTTagCompound
@@ -13,9 +13,9 @@ import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
 
 /**
- * Delegate implementation of [TCAggregatable] that can be used by tile entities to reduce code duplication
+ * Delegate implementation of [TCAggregatableTileEntity] that can be used by tile entities to reduce code duplication
  */
-class AggregatableDelegate : TCAggregatable {
+class AggregatableTileEntityDelegate : TCAggregatableTileEntity {
 
     override lateinit var tile: TileEntity
 

@@ -1,8 +1,8 @@
 package net.cydhra.technocracy.foundation.network.componentsync
 
+import net.cydhra.technocracy.foundation.api.ecs.IAggregatable
+import net.cydhra.technocracy.foundation.api.ecs.IComponent
 import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
-import net.cydhra.technocracy.foundation.model.components.IAggregatable
-import net.cydhra.technocracy.foundation.model.components.IComponent
 import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
 import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
 import net.cydhra.technocracy.foundation.network.PacketHandler

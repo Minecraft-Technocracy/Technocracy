@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.model.items.capability
 
+import net.cydhra.technocracy.foundation.api.ecs.ComponentType
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicItemFluidStorage
-import net.cydhra.technocracy.foundation.model.components.ComponentType
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability

@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.client.gui.machine
 
+import net.cydhra.technocracy.foundation.api.ecs.IComponent
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.TCIcon
 import net.cydhra.technocracy.foundation.client.gui.TCTab
@@ -19,7 +20,6 @@ import net.cydhra.technocracy.foundation.content.tileentities.components.Abstrac
 import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
 import net.cydhra.technocracy.foundation.model.blocks.api.AbstractRotatableTileEntityBlock
 import net.cydhra.technocracy.foundation.model.blocks.api.AbstractRotatableTileEntityBlock.Companion.facingProperty
-import net.cydhra.technocracy.foundation.model.components.IComponent
 import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
 import net.cydhra.technocracy.foundation.network.PacketHandler
 import net.cydhra.technocracy.foundation.network.componentsync.ClientChangeSideConfigPacket
@@ -33,7 +33,10 @@ import net.cydhra.technocracy.foundation.util.validateAndClear
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.gui.ScaledResolution
-import net.minecraft.client.renderer.*
+import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.client.renderer.OpenGlHelper
+import net.minecraft.client.renderer.RenderHelper
+import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.texture.TextureMap
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats

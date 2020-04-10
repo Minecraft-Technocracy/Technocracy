@@ -1,10 +1,10 @@
 package net.cydhra.technocracy.foundation.content.multiblock
 
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
+import net.cydhra.technocracy.foundation.api.ecs.IComponent
 import net.cydhra.technocracy.foundation.content.blocks.*
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.boiler.TileEntityBoilerController
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.boiler.TileEntityBoilerHeater
-import net.cydhra.technocracy.foundation.model.components.IComponent
 import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
 import net.minecraft.block.BlockAir
 import net.minecraft.init.Blocks

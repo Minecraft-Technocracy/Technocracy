@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.foundation.model.components
+package net.cydhra.technocracy.foundation.api.ecs
 
 import net.minecraft.nbt.NBTTagCompound
 

@@ -1,13 +1,13 @@
 package net.cydhra.technocracy.foundation.integration.top.providers
 
 import mcjty.theoneprobe.api.*
+import net.cydhra.technocracy.foundation.api.ecs.IComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.OptionalAttachedTileEntityComponent
-import net.cydhra.technocracy.foundation.model.components.IComponent
 import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
-import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatable
+import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatableTileEntity
 import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
 import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.player.EntityPlayer
@@ -62,7 +62,7 @@ class MachineTOPProvider : IProbeInfoProvider {
             init = true
         }
 
-        val te = world.getTileEntity(data.pos) as? TCAggregatable ?: return
+        val te = world.getTileEntity(data.pos) as? TCAggregatableTileEntity ?: return
         if (te !is ICapabilityProvider) return
 
         val components: Set<Pair<String, IComponent>>
@@ -79,7 +79,7 @@ class MachineTOPProvider : IProbeInfoProvider {
         }
     }
 
-    private fun fillInfo(component: IComponent, te: TCAggregatable, probeInfo: IProbeInfo) {
+    private fun fillInfo(component: IComponent, te: TCAggregatableTileEntity, probeInfo: IProbeInfo) {
         when (component) {
             is EnergyStorageTileEntityComponent ->
                 if (!(te as ICapabilityProvider).hasCapability(CapabilityEnergy.ENERGY, null))

@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.content.tileentities.components
 
+import net.cydhra.technocracy.foundation.api.ecs.ComponentType
 import net.cydhra.technocracy.foundation.content.items.facadeItem
-import net.cydhra.technocracy.foundation.model.components.ComponentType
 import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractTileEntityComponent
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound

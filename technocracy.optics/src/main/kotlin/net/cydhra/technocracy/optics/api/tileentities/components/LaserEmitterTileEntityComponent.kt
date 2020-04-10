@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.optics.api.tileentities.components
 
+import net.cydhra.technocracy.foundation.api.ecs.ComponentType
 import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractCapabilityTileEntityComponent
-import net.cydhra.technocracy.foundation.model.components.ComponentType
 import net.cydhra.technocracy.foundation.util.compound
 import net.cydhra.technocracy.optics.api.capabilities.laser.ILaserAbsorber
 import net.cydhra.technocracy.optics.api.capabilities.laser.ILaserEmitter

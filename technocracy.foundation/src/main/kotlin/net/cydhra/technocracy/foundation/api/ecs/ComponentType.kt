@@ -1,5 +1,6 @@
-package net.cydhra.technocracy.foundation.model.components
+package net.cydhra.technocracy.foundation.api.ecs
 
+// TODO this is rather specific for an API, maybe find a more concise way of expressing this behavior
 /**
  * Type of component. Those types are important to decide rendering of component contents in GUI and whether
  * meta-information should be made available through modifications like "Waila" or "TOP". Every system outside of the

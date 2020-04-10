@@ -6,8 +6,8 @@ import it.zerono.mods.zerocore.api.multiblock.rectangular.RectangularMultiblockC
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import it.zerono.mods.zerocore.api.multiblock.validation.ValidationError
 import it.zerono.mods.zerocore.lib.block.ModTileEntity
+import net.cydhra.technocracy.foundation.api.ecs.IComponent
 import net.cydhra.technocracy.foundation.model.blocks.impl.PlainMultiBlockPartBlock
-import net.cydhra.technocracy.foundation.model.components.IComponent
 import net.minecraft.block.state.IBlockState
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.math.BlockPos
