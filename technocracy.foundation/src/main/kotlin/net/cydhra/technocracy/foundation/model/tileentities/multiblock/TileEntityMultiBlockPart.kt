@@ -43,7 +43,7 @@ import kotlin.reflect.KClass
  */
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private val constructController: (World) -> T)
-    : TCAggregatableTileEntity, TCAggregatableTileEntity by AggregatableTileEntityDelegate(), TCTileEntityGuiProvider, AbstractRectangularMultiBlockTileEntity()
+    : TCAggregatableTileEntity by AggregatableTileEntityDelegate(), TCTileEntityGuiProvider, AbstractRectangularMultiBlockTileEntity()
         where T : MultiblockControllerBase {
 
     init {

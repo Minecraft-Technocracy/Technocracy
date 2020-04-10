@@ -7,7 +7,7 @@ import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
-open class AggregatableTileEntity : AbstractTileEntity(), TCAggregatableTileEntity, TCAggregatableTileEntity by AggregatableTileEntityDelegate() {
+open class AggregatableTileEntity : AbstractTileEntity(), TCAggregatableTileEntity by AggregatableTileEntityDelegate() {
 
     init {
         this.tile = this
