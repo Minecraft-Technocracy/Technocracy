@@ -256,17 +256,15 @@ multiblock.capacitor.error.uncompleted_connection=The connection at %d, %d, %d i
 multiblock.capacitor.error.connection_of_same_electrode_types=Can't complete connection at %d, %d, %d because the two connected electrodes have the same type.
 multiblock.capacitor.error.adjacent_electrode_types=Electrode at %d, %d, %d is invalid because electrodes of the same type can't be adjacent in a row or column.
 
-tooltips.upgrades.title.class=Upgrade Classification
+tooltips.upgrades.title.class=Upgrade Type
 tooltips.upgrades.title.description=Upgrades
 
-tooltips.upgrades.class.mechanical=Mechanical
-tooltips.upgrades.class.electrical=Electrical
-tooltips.upgrades.class.computer=Computer
-tooltips.upgrades.class.optical=Optical
-tooltips.upgrades.class.thermal=Thermal
-tooltips.upgrades.class.chemical=Chemical
-tooltips.upgrades.class.nuclear=Nuclear
-tooltips.upgrades.class.alien=Alien
+tooltips.upgrades.class.machine=Machine
+tooltips.upgrades.class.helmet=Helmet
+tooltips.upgrades.class.plate=Plate
+tooltips.upgrades.class.leggings=Leggings
+tooltips.upgrades.class.boots=Boots
+tooltips.upgrades.class.tool=Tool
 
 tooltips.upgrades.parameter.energy=Energy
 tooltips.upgrades.parameter.speed=Speed
