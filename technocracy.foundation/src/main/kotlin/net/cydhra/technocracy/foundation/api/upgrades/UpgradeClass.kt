@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.foundation.model.tileentities.api.upgrades
+package net.cydhra.technocracy.foundation.api.upgrades
 
 /**
  * Every upgrade item has a class assigned and certain machines may only accept certain upgrade classes (so a

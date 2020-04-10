@@ -5,11 +5,11 @@ import net.cydhra.technocracy.foundation.api.ecs.tileentities.AbstractTileEntity
 import net.cydhra.technocracy.foundation.api.tileentities.TCMachineTileEntity
 import net.cydhra.technocracy.foundation.api.tileentities.TEInventoryProvider
 import net.cydhra.technocracy.foundation.api.upgrades.Upgrade
+import net.cydhra.technocracy.foundation.api.upgrades.UpgradeClass
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeParameter
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.model.items.api.UpgradeItem
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MultiplierUpgrade
-import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.UpgradeClass
 import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
 import net.minecraft.init.Items
 import net.minecraft.item.ItemStack
