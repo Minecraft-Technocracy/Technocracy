@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Monolithic Server" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="GradleStartServer" />
+    <module name="technocracy.main" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/server" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
