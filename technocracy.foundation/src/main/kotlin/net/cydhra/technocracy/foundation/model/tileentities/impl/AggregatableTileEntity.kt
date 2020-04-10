@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.model.tileentities.impl
 
+import net.cydhra.technocracy.foundation.api.ecs.tileentities.TCAggregatableTileEntity
 import net.cydhra.technocracy.foundation.model.tileentities.api.AbstractTileEntity
-import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatableTileEntity
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability

@@ -1,9 +1,9 @@
 package net.cydhra.technocracy.foundation.model.blocks.impl
 
 import net.cydhra.technocracy.foundation.TCFoundation
+import net.cydhra.technocracy.foundation.api.ecs.tileentities.TCAggregatableTileEntity
 import net.cydhra.technocracy.foundation.client.gui.handler.TCGuiHandler
 import net.cydhra.technocracy.foundation.model.blocks.api.AbstractRotatableTileEntityBlock
-import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatableTileEntity
 import net.cydhra.technocracy.foundation.util.propertys.POSITION
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.BlockStateContainer

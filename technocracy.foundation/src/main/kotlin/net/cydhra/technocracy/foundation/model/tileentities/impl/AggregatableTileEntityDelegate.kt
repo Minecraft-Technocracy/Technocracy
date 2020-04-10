@@ -2,8 +2,8 @@ package net.cydhra.technocracy.foundation.model.tileentities.impl
 
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.api.ecs.IComponent
+import net.cydhra.technocracy.foundation.api.ecs.tileentities.TCAggregatableTileEntity
 import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractCapabilityTileEntityComponent
-import net.cydhra.technocracy.foundation.model.tileentities.api.TCAggregatableTileEntity
 import net.cydhra.technocracy.foundation.model.tileentities.api.components.AbstractTileEntityComponent
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.nbt.NBTTagCompound
