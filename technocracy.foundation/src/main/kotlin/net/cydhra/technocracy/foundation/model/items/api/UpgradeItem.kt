@@ -2,8 +2,8 @@ package net.cydhra.technocracy.foundation.model.items.api
 
 import net.cydhra.technocracy.foundation.api.tileentities.TCMachineTileEntity
 import net.cydhra.technocracy.foundation.api.upgrades.Upgrade
-import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeClass
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MultiplierUpgrade
+import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.UpgradeClass
 import net.minecraft.client.util.ITooltipFlag
 import net.minecraft.item.ItemStack
 import net.minecraft.util.text.*
@@ -16,11 +16,11 @@ import java.util.*
  * stackable within the upgrade slots either. (Stacking upgrades by placing them in multiple slots can work,
  * depending on what the upgrade actually does)
  *
- * @param upgradeClass the [MachineUpgradeClass] this item belongs to
+ * @param upgradeClass the [UpgradeClass] this item belongs to
  * @param upgrades a list of upgrades that are applied to the machine this item is installed in
  */
 class UpgradeItem(unlocalizedName: String,
-                  val upgradeClass: MachineUpgradeClass,
+                  val upgradeClass: UpgradeClass,
                   vararg val upgrades: Upgrade<TCMachineTileEntity>) : BaseItem(unlocalizedName) {
     init {
         maxStackSize = 1

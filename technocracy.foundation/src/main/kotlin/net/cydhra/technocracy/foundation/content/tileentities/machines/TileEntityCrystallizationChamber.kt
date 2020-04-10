@@ -12,7 +12,6 @@ import net.cydhra.technocracy.foundation.content.tileentities.components.Machine
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ItemProcessingLogic
 import net.cydhra.technocracy.foundation.data.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
-import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeClass
 import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
@@ -38,7 +37,6 @@ class TileEntityCrystallizationChamber : MachineTileEntity(), TEInventoryProvide
 
     private val upgradesComponent = MachineUpgradesTileEntityComponent(3,
             setOf(UPGRADE_ENERGY, UPGRADE_SPEED, UPGRADE_GENERIC),
-            setOf(MachineUpgradeClass.CHEMICAL, MachineUpgradeClass.ELECTRICAL, MachineUpgradeClass.ALIEN),
             setOf(this.processingSpeedComponent, this.energyCostComponent))
 
     /**

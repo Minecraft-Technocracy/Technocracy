@@ -8,8 +8,8 @@ import net.cydhra.technocracy.foundation.api.upgrades.Upgrade
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeParameter
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.model.items.api.UpgradeItem
-import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeClass
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MultiplierUpgrade
+import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.UpgradeClass
 import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
 import net.minecraft.init.Items
 import net.minecraft.item.ItemStack
@@ -24,14 +24,14 @@ import kotlin.math.roundToInt
  * @param supportedUpgradeTypes a set of supported upgrade types. If a player tries to install an upgrade into the
  * machine, all of its upgrade types must be supported for installation to work.
  * @param numberOfUpgradeSlots how many upgrade slots the machine has.
- * @param supportedUpgradeClasses the [MachineUpgradeClass]es that are supported by this component's machine.
+ * @param supportedUpgradeClasses the [UpgradeClass]es that are supported by this component's machine.
  * Upgrades must be of one of these classes
  * @param multipliers the multiplier components of the machine that can be upgraded. For each [MultiplierUpgrade]
  * that is supported by this component, a respective [MultiplierTileEntityComponent] must be added to this set
  */
 class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int,
                                          val supportedUpgradeTypes: Set<UpgradeParameter>,
-                                         val supportedUpgradeClasses: Set<MachineUpgradeClass>, val multipliers: Set<MultiplierTileEntityComponent>) :
+                                         val multipliers: Set<MultiplierTileEntityComponent>) :
         AbstractTileEntityComponent(), TEInventoryProvider {
 
     /**
@@ -68,7 +68,8 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int,
         if (item !is UpgradeItem) return false
 
         // check whether this component accepts upgrades of the given item's upgrade class
-        if (!this.supportedUpgradeClasses.contains(item.upgradeClass)) return false
+        // TODO check this
+//        if (!this.supportedUpgradeClasses.contains(item.upgradeClass)) return false
 
         // check whether the upgrade item's parameters are all supported
         if (!item.upgrades.all { upgrade -> this.supportedUpgradeTypes.contains(upgrade.upgradeParameter) }) return false
@@ -154,16 +155,6 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int,
                     "${(multiplier.getCappedMultiplier() * 100).roundToInt()}%")
                     .setStyle(Style().setColor(TextFormatting.DARK_GREEN)))
         }
-
-        val textClasses = this.supportedUpgradeClasses.map { TextComponentTranslation(it.unlocalizedName) }
-        val classDescription = textClasses[0]
-        for (i in (1 until textClasses.size)) {
-            classDescription.appendSibling(TextComponentString(", ")).appendSibling(textClasses[i])
-        }
-        classDescription.style = Style().setColor(TextFormatting.DARK_GREEN)
-        this.description.add(TextComponentTranslation("tooltips.upgrades.title.class").setStyle(Style()
-                        .setColor(TextFormatting.DARK_PURPLE))
-                .appendSibling(TextComponentString(":")) to classDescription)
 
         this.description.add(TextComponentString("\n") to TextComponentString("\n"))
     }
