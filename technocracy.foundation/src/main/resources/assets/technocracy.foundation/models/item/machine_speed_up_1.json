@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "technocracy.foundation:item/upgrade_machine_speed_1"
+  }
+}

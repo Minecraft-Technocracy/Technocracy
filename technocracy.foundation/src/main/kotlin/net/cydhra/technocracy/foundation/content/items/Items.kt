@@ -71,19 +71,25 @@ val emptyCanItem = EmptyCanItem()
 val wrenchItem = WrenchItem()
 val upgradeFrameItem = BaseItem("upgrade_frame")
 
-val mechSpeedUp1Item = UpgradeItem("mech_speed_up_1", UpgradeClass.MACHINE,
-        SpeedMultiplier(0.25), EnergyMultiplier(0.3))
-val mechSpeedUp2Item = UpgradeItem("mech_speed_up_2", UpgradeClass.MACHINE,
-        SpeedMultiplier(0.5), EnergyMultiplier(0.75))
-val mechSpeedUp3Item = UpgradeItem("mech_speed_up_3", UpgradeClass.MACHINE,
-        SpeedMultiplier(1.0), EnergyMultiplier(1.5))
+val machineSpeedUp1Item = UpgradeItem("machine_speed_up_1", UpgradeClass.MACHINE,
+        SpeedMultiplier(0.25), EnergyMultiplier(0.25))
+val machineSpeedUp2Item = UpgradeItem("machine_speed_up_2", UpgradeClass.MACHINE,
+        SpeedMultiplier(0.6), EnergyMultiplier(0.9))
+val machineSpeedUp3Item = UpgradeItem("machine_speed_up_3", UpgradeClass.MACHINE,
+        SpeedMultiplier(2.0), EnergyMultiplier(3.5))
+val machineSpeedUp4Item = UpgradeItem("machine_speed_up_4", UpgradeClass.MACHINE,
+        SpeedMultiplier(3.0), EnergyMultiplier(6.0))
 
-val mechEnergyUp1Item = UpgradeItem("mech_energy_up_1", UpgradeClass.MACHINE,
+val machineEnergyUp1Item = UpgradeItem("machine_energy_up_1", UpgradeClass.MACHINE,
         SpeedMultiplier(-0.4), EnergyMultiplier(-0.35))
-val mechEnergyUp2Item = UpgradeItem("mech_energy_up_2", UpgradeClass.MACHINE,
-        SpeedMultiplier(-0.7), EnergyMultiplier(-0.7))
+val machineEnergyUp2Item = UpgradeItem("machine_energy_up_2", UpgradeClass.MACHINE,
+        SpeedMultiplier(-0.7), EnergyMultiplier(-0.6))
+val machineEnergyUp3Item = UpgradeItem("machine_energy_up_3", UpgradeClass.MACHINE,
+        SpeedMultiplier(-2.0), EnergyMultiplier(-1.8))
+val machineEnergyUp4Item = UpgradeItem("machine_energy_up_4", UpgradeClass.MACHINE,
+        SpeedMultiplier(-4.0), EnergyMultiplier(-3.5))
 
-val mechLubricantUpItem = UpgradeItem("mech_lubricant_up", UpgradeClass.MACHINE,
-        SpeedMultiplier(2.0), LubricantUpgrade() as Upgrade<Upgradable>)
-val elecCoolerUpgradeItem = UpgradeItem("elec_cooler_up", UpgradeClass.MACHINE,
-        SpeedMultiplier(2.5), EnergyMultiplier(2.5), CoolingUpgrade() as Upgrade<Upgradable>)
+val machineLubricantUpItem = UpgradeItem("machine_lubricant_up", UpgradeClass.MACHINE,
+        SpeedMultiplier(4.0), LubricantUpgrade() as Upgrade<Upgradable>)
+val machineCoolerUpgradeItem = UpgradeItem("machine_cooler_up", UpgradeClass.MACHINE,
+        SpeedMultiplier(4.5), EnergyMultiplier(2.5), CoolingUpgrade() as Upgrade<Upgradable>)

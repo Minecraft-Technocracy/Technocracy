@@ -76,14 +76,18 @@ item.facade.name=Facade
 item.structure_marker.name=Structure Marker
 item.wrench.name=Technocratic Wrench
 
-item.mech_speed_up_1.name=Gear Translation
-item.mech_speed_up_2.name=Torque Motor
-item.mech_speed_up_3.name=Software-Guided Torque Motor
-item.mech_energy_up_1.name=Recuperation Accumulator
-item.mech_energy_up_2.name=Hydraulic Cylinder
+item.machine_speed_up_1.name=Hardened Gears
+item.machine_speed_up_2.name=Protective Coating
+item.machine_speed_up_3.name=Superconductive Coprocessors
+item.machine_speed_up_4.name=Efficient Cryostat
 
-item.mech_lubricant_up.name=Lubricant Injection
-item.elec_cooler_up.name=Liquid Cooling
+item.machine_energy_up_1.name=Recuperation
+item.machine_energy_up_2.name=Catalyst
+item.machine_energy_up_3.name=Dense Matrix
+item.machine_energy_up_4.name=Nanocomposite Isolation
+
+item.machine_lubricant_up.name=Lubricant Injection
+item.machine_cooler_up.name=Liquid Cooling
 
 tile.oil_sand.name=Oily Sand
 tile.oil_stone.name=Oily Stone
