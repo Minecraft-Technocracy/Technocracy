@@ -24,8 +24,6 @@ import kotlin.math.roundToInt
  * @param supportedUpgradeTypes a set of supported upgrade types. If a player tries to install an upgrade into the
  * machine, all of its upgrade types must be supported for installation to work.
  * @param numberOfUpgradeSlots how many upgrade slots the machine has.
- * @param supportedUpgradeClasses the [UpgradeClass]es that are supported by this component's machine.
- * Upgrades must be of one of these classes
  * @param multipliers the multiplier components of the machine that can be upgraded. For each [MultiplierUpgrade]
  * that is supported by this component, a respective [MultiplierTileEntityComponent] must be added to this set
  */
@@ -67,9 +65,8 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int,
         // only accept upgrade items
         if (item !is UpgradeItem) return false
 
-        // check whether this component accepts upgrades of the given item's upgrade class
-        // TODO check this
-//        if (!this.supportedUpgradeClasses.contains(item.upgradeClass)) return false
+        // check whether the upgrade is a machine-type upgrade
+        if (item.upgradeClass != UpgradeClass.MACHINE) return false
 
         // check whether the upgrade item's parameters are all supported
         if (!item.upgrades.all { upgrade -> this.supportedUpgradeTypes.contains(upgrade.upgradeParameter) }) return false
@@ -82,7 +79,7 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int,
     }
 
     override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack,
-            originalStack: ItemStack) {
+                              originalStack: ItemStack) {
         if (stack.item == originalStack.item) return
 
         if (stack.item == Items.AIR) {
