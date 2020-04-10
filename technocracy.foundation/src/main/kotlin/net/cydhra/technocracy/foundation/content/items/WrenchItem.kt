@@ -1,11 +1,18 @@
 package net.cydhra.technocracy.foundation.content.items
 
+import buildcraft.api.core.BuildCraftAPI
+import buildcraft.api.tools.IToolWrench
+import cofh.api.item.IToolHammer
+import net.cydhra.technocracy.foundation.api.ecs.item.TCAggregatableItemStack
 import net.cydhra.technocracy.foundation.api.wrench.IWrench
 import net.cydhra.technocracy.foundation.client.textures.TextureAtlasManager
 import net.cydhra.technocracy.foundation.conduits.types.PipeType
+import net.cydhra.technocracy.foundation.model.blocks.api.IBaseBlock
 import net.cydhra.technocracy.foundation.model.items.api.BaseItem
 import net.cydhra.technocracy.foundation.model.items.util.IItemScrollEvent
 import net.minecraft.client.Minecraft
+import net.minecraft.entity.Entity
+import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
@@ -13,6 +20,7 @@ import net.minecraft.util.EnumActionResult
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumHand
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.RayTraceResult
 import net.minecraft.util.math.Vec3d
 import net.minecraft.util.text.translation.I18n
 import net.minecraft.world.IBlockAccess
@@ -20,12 +28,15 @@ import net.minecraft.world.World
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.util.EnumHelper
 import net.minecraftforge.event.entity.player.PlayerInteractEvent
+import net.minecraftforge.fml.common.Optional
 import net.minecraftforge.fml.common.eventhandler.Event
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent
 
-
-class WrenchItem : BaseItem("wrench"), IWrench, IItemScrollEvent {
+@Optional.InterfaceList(
+        Optional.Interface(iface = "cofh.api.item.IToolHammer", modid = "cofhcore"),
+        Optional.Interface(iface = "buildcraft.api.tools.IToolWrench", modid = "buildcraftcore"))
+class WrenchItem : BaseItem("wrench"), IWrench, IItemScrollEvent, IToolHammer, IToolWrench {
 
     init {
         for (type in PipeType.values()) {
@@ -68,7 +79,8 @@ class WrenchItem : BaseItem("wrench"), IWrench, IItemScrollEvent {
         if (!world.isRemote) {
             val block = world.getBlockState(pos).block
 
-            if (getWrenchMode(stack) == WrenchMode.DEFAULT) { //Rotate and disassemble
+            if (block is IBaseBlock) {
+                //if (getWrenchMode(stack) == WrenchMode.DEFAULT) { //Rotate and disassemble
                 if (!player.isSneaking && block.rotateBlock(world, pos, side)) {
                     player.swingArm(hand)
                     return EnumActionResult.FAIL
@@ -79,6 +91,7 @@ class WrenchItem : BaseItem("wrench"), IWrench, IItemScrollEvent {
                     }
                 }
                 return EnumActionResult.SUCCESS
+                //}
             }
         }
         return EnumActionResult.PASS
@@ -122,5 +135,27 @@ class WrenchItem : BaseItem("wrench"), IWrench, IItemScrollEvent {
         fun getUnlocalizedName(): String {
             return "wrenchmode.$displayName.name"
         }
+    }
+
+    override fun isUsable(p0: ItemStack, p1: EntityLivingBase, p2: BlockPos): Boolean {
+        return true
+    }
+
+    override fun isUsable(p0: ItemStack, p1: EntityLivingBase, p2: Entity): Boolean {
+        return true
+    }
+
+    override fun toolUsed(p0: ItemStack, p1: EntityLivingBase, p2: BlockPos) {
+    }
+
+    override fun toolUsed(p0: ItemStack, p1: EntityLivingBase, p2: Entity) {
+    }
+
+    override fun wrenchUsed(p0: EntityPlayer, p1: EnumHand, p2: ItemStack, p3: RayTraceResult) {
+        p0.swingArm(p1)
+    }
+
+    override fun canWrench(p0: EntityPlayer, p1: EnumHand, p2: ItemStack, p3: RayTraceResult): Boolean {
+        return true
     }
 }
