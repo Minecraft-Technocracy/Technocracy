@@ -184,6 +184,12 @@ project('technocracy.optics') {
     }
 }
 
+project('technocracy.powertools') {
+    dependencies {
+        compile project(':technocracy.foundation')
+    }
+}
+
 /*
  * MONOLITH CONFIGURATION
  */
@@ -196,10 +202,12 @@ dependencies {
     shade(project('technocracy.foundation')) { transitive = false }
     shade(project('technocracy.astronautics')) { transitive = false }
     shade(project('technocracy.optics')) { transitive = false }
+    shade(project('technocracy.powertools')) { transitive = false }
 
     runtime(project('technocracy.foundation'))
     runtime(project('technocracy.astronautics'))
     runtime(project('technocracy.optics'))
+    runtime(project('technocracy.powertools'))
 }
 
 jar {
@@ -219,12 +227,7 @@ jar {
  */
 task setup() {
     setGroup("setup")
-
-    dependsOn('technocracy.foundation:setupDecompWorkspace',
-            'technocracy.foundation:setupDevWorkspace',
-            'technocracy.astronautics:setupDecompWorkspace',
-            'technocracy.astronautics:setupDevWorkspace',
-            ':setupDecompWorkspace')
+    dependsOn(':setupDecompWorkspace')
 }
 
 task cloneTechnoblock() {

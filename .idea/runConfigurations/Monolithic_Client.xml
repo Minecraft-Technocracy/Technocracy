@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Monolithic Build" type="Application" factoryName="Application">
+  <configuration default="false" name="Monolithic Client" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="GradleStart" />
     <module name="technocracy.main" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run" />
