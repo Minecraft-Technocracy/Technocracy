@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.content.items
 
+import buildcraft.api.core.BuildCraftAPI
 import buildcraft.api.tools.IToolWrench
 import cofh.api.item.IToolHammer
 import net.cydhra.technocracy.foundation.api.ecs.item.TCAggregatableItemStack
@@ -27,11 +28,14 @@ import net.minecraft.world.World
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.util.EnumHelper
 import net.minecraftforge.event.entity.player.PlayerInteractEvent
+import net.minecraftforge.fml.common.Optional
 import net.minecraftforge.fml.common.eventhandler.Event
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent
 
-
+@Optional.InterfaceList(
+        Optional.Interface(iface = "cofh.api.item.IToolHammer", modid = "cofhcore"),
+        Optional.Interface(iface = "buildcraft.api.tools.IToolWrench", modid = "buildcraftcore"))
 class WrenchItem : BaseItem("wrench"), IWrench, IItemScrollEvent, IToolHammer, IToolWrench {
 
     init {
@@ -75,18 +79,18 @@ class WrenchItem : BaseItem("wrench"), IWrench, IItemScrollEvent, IToolHammer, I
         if (!world.isRemote) {
             val block = world.getBlockState(pos).block
 
-            if(block is IBaseBlock) {
+            if (block is IBaseBlock) {
                 //if (getWrenchMode(stack) == WrenchMode.DEFAULT) { //Rotate and disassemble
-                    if (!player.isSneaking && block.rotateBlock(world, pos, side)) {
-                        player.swingArm(hand)
-                        return EnumActionResult.FAIL
-                    } else {
-                        val event = PlayerInteractEvent.RightClickBlock(player, hand, pos, side, Vec3d(hitX.toDouble(), hitY.toDouble(), hitZ.toDouble()))
-                        if (MinecraftForge.EVENT_BUS.post(event) || event.result == Event.Result.DEFAULT || event.useBlock == Event.Result.DENY || event.useItem == Event.Result.DENY) {
-                            return EnumActionResult.PASS
-                        }
+                if (!player.isSneaking && block.rotateBlock(world, pos, side)) {
+                    player.swingArm(hand)
+                    return EnumActionResult.FAIL
+                } else {
+                    val event = PlayerInteractEvent.RightClickBlock(player, hand, pos, side, Vec3d(hitX.toDouble(), hitY.toDouble(), hitZ.toDouble()))
+                    if (MinecraftForge.EVENT_BUS.post(event) || event.result == Event.Result.DEFAULT || event.useBlock == Event.Result.DENY || event.useItem == Event.Result.DENY) {
+                        return EnumActionResult.PASS
                     }
-                    return EnumActionResult.SUCCESS
+                }
+                return EnumActionResult.SUCCESS
                 //}
             }
         }
