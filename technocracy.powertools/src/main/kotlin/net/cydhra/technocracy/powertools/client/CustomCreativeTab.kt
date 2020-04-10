@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.optics.client
+package net.cydhra.technocracy.powertools.client
 
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.init.Items

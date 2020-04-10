@@ -5,8 +5,8 @@ import net.cydhra.technocracy.foundation.model.entities.manager.EntityManager
 import net.cydhra.technocracy.foundation.model.fluids.manager.FluidManager
 import net.cydhra.technocracy.foundation.model.items.manager.ItemManager
 import net.cydhra.technocracy.foundation.model.tileentities.manager.TileEntityManager
-import net.cydhra.technocracy.optics.client.powertoolsCreativeTab
 import net.cydhra.technocracy.powertools.TCPowertools
+import net.cydhra.technocracy.powertools.client.powertoolsCreativeTab
 import net.minecraftforge.common.MinecraftForge
 
 open class CommonProxy {
