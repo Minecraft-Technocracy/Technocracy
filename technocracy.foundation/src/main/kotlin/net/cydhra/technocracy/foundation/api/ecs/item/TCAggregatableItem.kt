@@ -7,4 +7,4 @@ import net.cydhra.technocracy.foundation.api.ecs.tileentities.AbstractTileEntity
  * Aggregation of [AbstractTileEntityComponent] implementations used for itemstacks. Note, that this interface is not
  * necessarily implemented by an itemstack, but can be implemented as a delegate instead.
  */
-interface TCAggregatableItemStack : IAggregatable
+interface TCAggregatableItem : IAggregatable
