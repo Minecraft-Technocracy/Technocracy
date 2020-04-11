@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "rrr",
+    "psp",
+    "aaa"
+  ],
+  "key": {
+    "r": {
+      "type": "forge:ore_dict",
+      "ore": "itemRubber"
+    },
+    "a": {
+      "type": "forge:ore_dict",
+      "ore": "sheetSteel"
+    },
+    "p": {
+      "item": "technocracy.foundation:pump"
+    },
+    "s": {
+      "item": "technocracy.foundation:upgrade_slot"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:machine_add_speed_up_1",
+    "count": 1
+  }
+}

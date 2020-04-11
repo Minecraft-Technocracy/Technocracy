@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "mrm",
+    "bsb",
+    "iii"
+  ],
+  "key": {
+    "r": {
+      "type": "forge:ore_dict",
+      "ore": "rodIron"
+    },
+    "i": {
+      "type": "forge:ore_dict",
+      "ore": "ingotBronze"
+    },
+    "m": {
+      "item": "technocracy.foundation:servo"
+    },
+    "b": {
+      "item": "technocracy.foundation:battery"
+    },
+    "s": {
+      "item": "technocracy.foundation:upgrade_slot"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:machine_energy_up_1",
+    "count": 1
+  }
+}

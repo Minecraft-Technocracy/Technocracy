@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ada",
+    "asa",
+    "aaa"
+  ],
+  "key": {
+    "a": {
+      "type": "forge:ore_dict",
+      "ore": "itemAsbestos"
+    },
+    "d": {
+      "type": "forge:ore_dict",
+      "ore": "gemDiamond"
+    },
+    "s": {
+      "item": "technocracy.foundation:upgrade_slot"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:machine_speed_up_2",
+    "count": 1
+  }
+}

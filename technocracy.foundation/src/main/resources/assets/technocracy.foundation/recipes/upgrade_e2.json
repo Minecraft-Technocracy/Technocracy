@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "eee",
+    "csc",
+    "opo"
+  ],
+  "key": {
+    "e": {
+      "type": "forge:ore_dict",
+      "ore": "ingotElectrum"
+    },
+    "c": {
+      "type": "forge:ore_dict",
+      "ore": "ingotSuperconductor"
+    },
+    "o": {
+      "item": "minecraft:obsidian"
+    },
+    "p": {
+      "item": "technocracy.foundation:pump"
+    },
+    "s": {
+      "item": "technocracy.foundation:upgrade_slot"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:machine_energy_up_2",
+    "count": 1
+  }
+}
