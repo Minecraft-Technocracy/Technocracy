@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.api.upgrades
 
+import net.cydhra.technocracy.foundation.api.ecs.IComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesTileEntityComponent
 import net.minecraft.util.text.ITextComponent
 import java.util.*
@@ -10,14 +11,14 @@ import java.util.*
  * singular functionality. It is the responsibility of upgrade items, to combine positive and negative upgrade effects.
  * @param U [Upgradable] entity type (like TileEntity, or ItemStack)
  */
-interface Upgrade<U : Upgradable> {
+interface Upgrade<U : Upgradable, C: IComponent> {
 
     val upgradeParameter: UpgradeParameter
 
     /**
      * @return true, iff the upgrade can be installed in the given tile entity.
      */
-    fun canInstallUpgrade(upgradable: U, upgrades: MachineUpgradesTileEntityComponent): Boolean
+    fun canInstallUpgrade(upgradable: U, upgrades: C): Boolean
 
     /**
      * Called when the upgrade is installed in the given tile entity.
@@ -25,7 +26,7 @@ interface Upgrade<U : Upgradable> {
      * @param upgradable the entity that this upgrade is installed in
      * @param upgrades the upgrade component this upgrade is installed in
      */
-    fun onInstallUpgrade(upgradable: U, upgrades: MachineUpgradesTileEntityComponent)
+    fun onInstallUpgrade(upgradable: U, upgrades: C)
 
     /**
      * Called when the upgrade is uninstalled from the given tile entity
@@ -33,12 +34,12 @@ interface Upgrade<U : Upgradable> {
      * @param upgradable the entity that this upgrade was installed in
      * @param upgrades the upgrade component this upgrade is installed in
      */
-    fun onUninstallUpgrade(upgradable: U, upgrades: MachineUpgradesTileEntityComponent)
+    fun onUninstallUpgrade(upgradable: U, upgrades: C)
 
     /**
      * Called when the machine that holds the upgrade is loaded from NBT
      */
-    fun onUpgradeLoad(upgradable: U, upgrades: MachineUpgradesTileEntityComponent)
+    fun onUpgradeLoad(upgradable: U, upgrades: C)
 
     /**
      * Get an optional upgrade description text for items for special upgrades that need explanation

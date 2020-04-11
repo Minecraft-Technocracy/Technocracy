@@ -1,5 +1,7 @@
 package net.cydhra.technocracy.foundation.model.tileentities.api.upgrades
 
+import net.cydhra.technocracy.foundation.api.tileentities.TCMachineTileEntity
+import net.cydhra.technocracy.foundation.api.upgrades.MachineUpgrade
 import net.cydhra.technocracy.foundation.api.upgrades.Upgradable
 import net.cydhra.technocracy.foundation.api.upgrades.Upgrade
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeParameter
@@ -15,22 +17,22 @@ import java.util.*
 abstract class MultiplierUpgrade(
         val multiplier: Double,
         override val upgradeParameter: UpgradeParameter
-) : Upgrade<Upgradable> {
+) : MachineUpgrade() {
 
-    override fun canInstallUpgrade(upgradable: Upgradable,
+    override fun canInstallUpgrade(upgradable: TCMachineTileEntity,
                                    upgrades: MachineUpgradesTileEntityComponent): Boolean {
         return upgradable.supportsParameter(this.upgradeParameter)
     }
 
-    override fun onInstallUpgrade(upgradable: Upgradable, upgrades: MachineUpgradesTileEntityComponent) {
+    override fun onInstallUpgrade(upgradable: TCMachineTileEntity, upgrades: MachineUpgradesTileEntityComponent) {
         upgradable.upgradeParameter(this.upgradeParameter, this.multiplier)
     }
 
-    override fun onUninstallUpgrade(upgradable: Upgradable, upgrades: MachineUpgradesTileEntityComponent) {
+    override fun onUninstallUpgrade(upgradable: TCMachineTileEntity, upgrades: MachineUpgradesTileEntityComponent) {
         upgradable.upgradeParameter(this.upgradeParameter, -this.multiplier)
     }
 
-    override fun onUpgradeLoad(upgradable: Upgradable, upgrades: MachineUpgradesTileEntityComponent) {
+    override fun onUpgradeLoad(upgradable: TCMachineTileEntity, upgrades: MachineUpgradesTileEntityComponent) {
     }
 
     override fun getUpgradeDescription(): Optional<ITextComponent> {

@@ -14,7 +14,7 @@ abstract class AbstractTileEntityComponent : IComponent {
     var syncToClient = false
     var allowAutoSave = true
 
-    open fun markDirty(needsClientRerender: Boolean = false) {
+    override fun markDirty(needsClientRerender: Boolean) {
         if (allowAutoSave) {
             if (syncToClient && needsClientRerender) {
                 notifyBlockUpdate()

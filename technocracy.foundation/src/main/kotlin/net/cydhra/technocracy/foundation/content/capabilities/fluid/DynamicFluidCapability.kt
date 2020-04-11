@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.content.capabilities.fluid
 
-import net.cydhra.technocracy.foundation.content.capabilities.AbstractMutableCapabilityHandler
+import net.cydhra.technocracy.foundation.content.capabilities.AbstractComponentCapabilityBridge
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.common.util.INBTSerializable
 import net.minecraftforge.fluids.FluidRegistry
@@ -17,7 +17,7 @@ import kotlin.math.min
  */
 open class DynamicFluidCapability(var capacity: Int = 1000, val allowedFluid: MutableList<String> = mutableListOf(),
                                   var tanktype: TankType = TankType.BOTH) :
-        IFluidHandler, INBTSerializable<NBTTagCompound>, AbstractMutableCapabilityHandler() {
+        IFluidHandler, INBTSerializable<NBTTagCompound>, AbstractComponentCapabilityBridge() {
 
     var currentFluid: FluidStack? = null
         private set

@@ -1,5 +1,9 @@
 package net.cydhra.technocracy.foundation.model.items.capability
 
+import net.cydhra.technocracy.foundation.api.upgrades.Upgradable
+import net.cydhra.technocracy.foundation.api.upgrades.UpgradeParameter
+import net.cydhra.technocracy.foundation.content.items.components.AbstractItemComponent
+import net.cydhra.technocracy.foundation.util.get
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
@@ -7,10 +11,17 @@ import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.common.capabilities.ICapabilitySerializable
 
 
-class ItemCapabilityWrapper(var stack: ItemStack, val capabilities: Map<String, AbstractItemCapabilityTileEntityComponent>) : ICapabilitySerializable<NBTTagCompound> {
+class ItemCapabilityWrapper(var stack: ItemStack, val components: Map<String, AbstractItemComponent>) : ICapabilitySerializable<NBTTagCompound>, Upgradable {
+    val capabilities = mutableMapOf<String, AbstractItemCapabilityComponent>()
+
+    val upgradeableTypes = mutableListOf<UpgradeParameter>()
+
     init {
-        capabilities.forEach {
+        components.forEach {
             it.value.wrapper = this
+            if (it.value is AbstractItemCapabilityComponent) {
+                capabilities[it.key] = it.value as AbstractItemCapabilityComponent
+            }
         }
     }
 
@@ -32,7 +43,7 @@ class ItemCapabilityWrapper(var stack: ItemStack, val capabilities: Map<String, 
 
     fun getCombinedNBT(): NBTTagCompound {
         val wrapped = NBTTagCompound()
-        for ((k, v) in capabilities) {
+        for ((k, v) in components) {
             wrapped.setTag(k, v.serializeNBT())
         }
         return wrapped
@@ -41,20 +52,46 @@ class ItemCapabilityWrapper(var stack: ItemStack, val capabilities: Map<String, 
     fun updateItemStack() {
         if (stack.tagCompound == null)
             stack.tagCompound = NBTTagCompound()
-        //Used to sync the item to the client
-        //TODO find a better way to do this, as this data gets ignored anyway and is duplicated
-        stack.tagCompound!!.setInteger("TC_UPDATE_TAG", getCombinedNBT().hashCode())
+
+        val nbtComponents = NBTTagCompound()
+
+        for (comp in components) {
+            if (comp.value.needsClientSyncing) {
+                nbtComponents.setTag(comp.key, comp.value.serializeNBT())
+            }
+        }
+
+        stack.tagCompound?.setTag("TC_Components", nbtComponents)
     }
 
-    override fun deserializeNBT(nbt: NBTTagCompound?) {
-        if (nbt != null) {
-            capabilities.forEach {
-                it.value.deserializeNBT(nbt.getCompoundTag(it.key))
+    fun loadFromItemStack(stack: ItemStack) {
+        val nbt = stack.tagCompound ?: return
+        val nbtComponents = nbt.getCompoundTag("TC_Components")
+        for (comp in components) {
+            if (comp.value.needsClientSyncing) {
+                comp.value.deserializeNBT(nbtComponents[comp.key])
             }
         }
     }
 
+    override fun deserializeNBT(nbt: NBTTagCompound?) {
+        if (nbt != null) {
+            components.forEach {
+                it.value.deserializeNBT(nbt.getCompoundTag(it.key))
+            }
+        }
+        loadFromItemStack(stack)
+    }
+
     override fun serializeNBT(): NBTTagCompound {
         return getCombinedNBT()
+    }
+
+    override fun supportsParameter(parameter: UpgradeParameter): Boolean {
+        return upgradeableTypes.contains(parameter)
+    }
+
+    override fun upgradeParameter(parameter: UpgradeParameter, modification: Double) {
+        TODO("Not yet implemented")
     }
 }
