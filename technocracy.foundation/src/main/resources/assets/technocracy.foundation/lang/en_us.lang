@@ -65,6 +65,7 @@ item.ingot.zircalloy.name=Zircalloy
 item.sheet.invar.name=Invar Sheet
 item.sheet.steel.name=Steel Sheet
 item.sheet.bronze.name=Bronze Sheet
+item.gear.invar.name=Invar Gear
 item.gear.steel.name=Steel Gear
 item.grit.steel.name=Steel Grit
 

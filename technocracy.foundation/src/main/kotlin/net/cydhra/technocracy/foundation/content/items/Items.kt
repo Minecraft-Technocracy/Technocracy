@@ -48,6 +48,7 @@ val toughAlloyItem = AlloyItem("zircalloy", ConstantItemColor(0x003030))
 val invarSheetItem = ColoredPrefixedItem("sheet", "invar", ConstantItemColor(0xDDC2BE), false)
 val steelSheetItem = ColoredPrefixedItem("sheet", "steel", ConstantItemColor(0x707680), false)
 val bronzeSheetItem = ColoredPrefixedItem("sheet", "bronze", ConstantItemColor(0xFFAA35), false)
+val invarGearItem = ColoredPrefixedItem("gear", "invar", ConstantItemColor(0xDDC2BE), false)
 val steelGearItem = ColoredPrefixedItem("gear", "steel", ConstantItemColor(0x707680), false)
 val steelGritItem = ColoredPrefixedItem("grit", "steel", ConstantItemColor(0x707680), false)
 
