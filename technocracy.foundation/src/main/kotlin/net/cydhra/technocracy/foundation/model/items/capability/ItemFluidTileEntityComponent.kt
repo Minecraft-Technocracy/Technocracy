@@ -8,7 +8,7 @@ import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler
 
 
-class ItemFluidTileEntityComponent(val fluid: DynamicItemFluidStorage) : AbstractItemCapabilityTileEntityComponent() {
+class ItemFluidTileEntityComponent(val fluid: DynamicItemFluidStorage) : AbstractItemCapabilityComponent() {
     override val type: ComponentType = ComponentType.FLUID
 
     init {
@@ -32,5 +32,11 @@ class ItemFluidTileEntityComponent(val fluid: DynamicItemFluidStorage) : Abstrac
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
         fluid.deserializeNBT(nbt)
+    }
+
+    override fun onRegister() {
+    }
+
+    override fun onLoadAggregate() {
     }
 }

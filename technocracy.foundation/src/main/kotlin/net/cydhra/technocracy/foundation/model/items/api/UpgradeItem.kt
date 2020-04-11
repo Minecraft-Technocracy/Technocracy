@@ -1,8 +1,9 @@
 package net.cydhra.technocracy.foundation.model.items.api
 
-import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgrade
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeClass
-import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MultiplierUpgrade
+import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.TileEntityMultiplierUpgrade
+import net.cydhra.technocracy.foundation.model.upgrades.BaseUpgrade
+import net.cydhra.technocracy.foundation.model.upgrades.IUpgradeClass
 import net.minecraft.client.util.ITooltipFlag
 import net.minecraft.item.ItemStack
 import net.minecraft.util.text.*
@@ -18,9 +19,9 @@ import java.util.*
  * @param upgradeClass the [MachineUpgradeClass] this item belongs to
  * @param upgrades a list of upgrades that are applied to the machine this item is installed in
  */
-class UpgradeItem(unlocalizedName: String,
-                  val upgradeClass: MachineUpgradeClass,
-                  vararg val upgrades: MachineUpgrade) : BaseItem(unlocalizedName) {
+class UpgradeItem<T>(unlocalizedName: String,
+                     val upgradeClass: IUpgradeClass,
+                     vararg val upgrades: T) : BaseItem(unlocalizedName) where T : BaseUpgrade<*, *, *> {
     init {
         maxStackSize = 1
     }
@@ -34,13 +35,13 @@ class UpgradeItem(unlocalizedName: String,
                                 .setStyle(Style()
                                         .setColor(TextFormatting.GREEN)))
                         .appendSibling(
-                                TextComponentTranslation("tooltips.upgrades.class.${upgradeClass.unlocalizedName}")
+                                TextComponentTranslation("tooltips.upgrades.class.${upgradeClass.getUnlocalizedName()}")
                                         .setStyle(Style()
                                                 .setColor(TextFormatting.GOLD)))
                         .formattedText)
 
         this.upgrades
-                .filterIsInstance<MultiplierUpgrade>()
+                .filterIsInstance<TileEntityMultiplierUpgrade>()
                 .forEach { upgrade ->
                     tooltip.add(
                             TextComponentTranslation("tooltips.upgrades.parameter.${upgrade.upgradeType}")
@@ -61,7 +62,7 @@ class UpgradeItem(unlocalizedName: String,
 
         // append custom tooltips of special upgrades
         this.upgrades
-                .map(MachineUpgrade::getUpgradeDescription)
+                .map(BaseUpgrade<*, *, *>::getUpgradeDescription)
                 .filter(Optional<ITextComponent>::isPresent)
                 .map(Optional<ITextComponent>::get)
                 .forEach { tooltip.add(it.formattedText) }

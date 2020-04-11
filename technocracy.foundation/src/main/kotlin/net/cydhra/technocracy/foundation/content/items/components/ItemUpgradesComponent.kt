@@ -1,38 +1,26 @@
-package net.cydhra.technocracy.foundation.content.tileentities.components
+package net.cydhra.technocracy.foundation.content.items.components
 
 import net.cydhra.technocracy.foundation.api.ecs.ComponentType
-import net.cydhra.technocracy.foundation.api.ecs.tileentities.AbstractTileEntityComponent
-import net.cydhra.technocracy.foundation.api.tileentities.TCMachineTileEntity
 import net.cydhra.technocracy.foundation.api.tileentities.TEInventoryProvider
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.model.items.api.UpgradeItem
-import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgrade
-import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MachineUpgradeClass
+import net.cydhra.technocracy.foundation.model.items.api.upgrades.ItemUpgrade
+import net.cydhra.technocracy.foundation.model.items.api.upgrades.ItemUpgradeClass
+import net.cydhra.technocracy.foundation.model.items.capability.AbstractItemCapabilityComponent
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.TileEntityMultiplierUpgrade
-import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
 import net.cydhra.technocracy.foundation.model.upgrades.UpgradeParameter
 import net.minecraft.init.Items
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.util.EnumFacing
 import net.minecraft.util.text.*
+import net.minecraftforge.common.capabilities.Capability
 import java.util.concurrent.CopyOnWriteArrayList
-import kotlin.math.roundToInt
 
-/**
- * A machine component that handles all machine upgrades.
- *
- * @param supportedUpgradeTypes a set of supported upgrade types. If a player tries to install an upgrade into the
- * machine, all of its upgrade types must be supported for installation to work.
- * @param numberOfUpgradeSlots how many upgrade slots the machine has.
- * @param supportedUpgradeClasses the [MachineUpgradeClass]es that are supported by this component's machine.
- * Upgrades must be of one of these classes
- * @param multipliers the multiplier components of the machine that can be upgraded. For each [TileEntityMultiplierUpgrade]
- * that is supported by this component, a respective [MultiplierTileEntityComponent] must be added to this set
- */
-class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int,
-                                         val supportedUpgradeTypes: Set<UpgradeParameter>,
-                                         val supportedUpgradeClasses: Set<MachineUpgradeClass>, val multipliers: Set<MultiplierTileEntityComponent>) :
-        AbstractTileEntityComponent(), TEInventoryProvider {
+class ItemUpgradesComponent(val numberOfUpgradeSlots: Int,
+                            val supportedUpgradeTypes: Set<UpgradeParameter>,
+                            val supportedUpgradeClasses: Set<ItemUpgradeClass>, val multipliers: Set<MultiplierItemComponent>) :
+        AbstractItemCapabilityComponent(), TEInventoryProvider {
 
     /**
      * A set of descriptive lines about installed upgrades
@@ -60,6 +48,10 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int,
         this.updateDescription()
     }
 
+    override fun onRegister() {
+        TODO("Not yet implemented")
+    }
+
     override fun isItemValid(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack): Boolean {
         assert(inventory == this.inventory)
         val item = stack.item
@@ -67,7 +59,7 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int,
         // only accept upgrade items
         if (item !is UpgradeItem<*>) return false
 
-        val upgrades = item.upgrades.filterIsInstance<MachineUpgrade>()
+        val upgrades = item.upgrades.filterIsInstance<ItemUpgrade>()
 
         // check whether this component accepts upgrades of the given item's upgrade class
         if (!this.supportedUpgradeClasses.contains(item.upgradeClass)) return false
@@ -76,7 +68,7 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int,
         if (!upgrades.all { upgrade -> this.supportedUpgradeTypes.contains(upgrade.upgradeType) }) return false
 
         // ask the item whether it can be installed
-        if (!upgrades.all { upgrade -> upgrade.canInstallUpgrade(this.tile as TCMachineTileEntity, this) })
+        if (!upgrades.all { upgrade -> upgrade.canInstallUpgrade(wrapper.stack, this) })
             return false
 
         return true
@@ -93,14 +85,14 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int,
                 throw IllegalStateException("Non-upgrade item was installed in upgrade slot.")
             }
 
-            val upgrades = upgradeItem.upgrades.filterIsInstance<MachineUpgrade>()
+            val upgrades = upgradeItem.upgrades.filterIsInstance<ItemUpgrade>()
 
             upgrades.forEach { upgrade ->
                 if (upgrade is TileEntityMultiplierUpgrade) {
                     val componentToUpgrade = this.multipliers.single { it.upgradeParameter == upgrade.upgradeType }
                     componentToUpgrade.multiplier -= upgrade.multiplier
                 } else {
-                    upgrade.onUninstallUpgrade(this.tile as TCMachineTileEntity, this)
+                    upgrade.onUninstallUpgrade(wrapper.stack, this)
                 }
             }
         } else {
@@ -109,24 +101,23 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int,
             if (upgradeItem !is UpgradeItem<*>) {
                 throw IllegalStateException("Non-upgrade item installed in upgrade slot.")
             }
-            val upgrades = upgradeItem.upgrades.filterIsInstance<MachineUpgrade>()
+            val upgrades = upgradeItem.upgrades.filterIsInstance<ItemUpgrade>()
 
             upgrades.forEach { upgrade ->
                 if (upgrade is TileEntityMultiplierUpgrade) {
                     val componentToUpgrade = this.multipliers.single { it.upgradeParameter == upgrade.upgradeType }
                     componentToUpgrade.multiplier += upgrade.multiplier
                 } else {
-                    upgrade.onInstallUpgrade(this.tile as TCMachineTileEntity, this)
+                    upgrade.onInstallUpgrade(wrapper.stack, this)
                 }
             }
         }
 
-        this.tile.markDirty()
-        this.notifyBlockUpdate()
+        wrapper.updateItemStack()
         this.updateDescription()
     }
 
-    fun getInstalledUpgrades(): List<MachineUpgrade> {
+    fun getInstalledUpgrades(): List<ItemUpgrade> {
         return this.inventory.stacks
                 .asSequence()
                 .filter { !it.isEmpty }
@@ -134,13 +125,20 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int,
                 .filterIsInstance<UpgradeItem<*>>()
                 .map { it.upgrades.toList() }
                 .flatten()
-                .filterIsInstance<MachineUpgrade>()
+                .filterIsInstance<ItemUpgrade>()
                 .toList()
     }
 
     override fun onLoadAggregate() {
-        super.onLoadAggregate()
-        this.getInstalledUpgrades().forEach { it.onUpgradeLoad(this.tile as MachineTileEntity, this) }
+        this.getInstalledUpgrades().forEach { it.onUpgradeLoad(wrapper.stack, this) }
+    }
+
+    override fun <T : Any?> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
+        TODO("Not yet implemented")
+    }
+
+    override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
+        TODO("Not yet implemented")
     }
 
     /**
@@ -153,13 +151,6 @@ class MachineUpgradesTileEntityComponent(val numberOfUpgradeSlots: Int,
                 .appendSibling(TextComponentString(":")) to TextComponentString(
                 "${this.inventory.stacks.filter { !it.isEmpty }.count()}/${this.numberOfUpgradeSlots}")
                 .setStyle(Style().setColor(TextFormatting.DARK_GREEN)))
-
-        this.multipliers.forEach { multiplier ->
-            this.description.add(TextComponentTranslation("tooltips.upgrades.parameter.${multiplier.upgradeParameter}")
-                    .appendSibling(TextComponentString(":")) to TextComponentString(
-                    "${(multiplier.getCappedMultiplier() * 100).roundToInt()}%")
-                    .setStyle(Style().setColor(TextFormatting.DARK_GREEN)))
-        }
 
         val textClasses = this.supportedUpgradeClasses.map { TextComponentTranslation(it.getUnlocalizedName()) }
         val classDescription = textClasses[0]

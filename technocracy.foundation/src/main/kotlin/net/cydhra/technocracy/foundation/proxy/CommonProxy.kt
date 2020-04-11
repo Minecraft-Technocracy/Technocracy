@@ -289,6 +289,8 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(mechLubricantUpItem)
         itemManager.prepareItemForRegistration(elecCoolerUpgradeItem)
 
+        itemManager.prepareItemForRegistration(testItem)
+
         tileEntityManager.prepareTileEntityForRegistration(TileEntityAlloySmeltery::class)
         tileEntityManager.prepareTileEntityForRegistration(TileEntityCentrifuge::class)
         tileEntityManager.prepareTileEntityForRegistration(TileEntityChemicalProcessingChamber::class)

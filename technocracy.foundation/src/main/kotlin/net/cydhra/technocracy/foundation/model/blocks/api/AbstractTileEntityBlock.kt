@@ -55,6 +55,7 @@ abstract class AbstractTileEntityBlock(unlocalizedName: String,
     override fun onBlockActivated(worldIn: World, pos: BlockPos, state: IBlockState, playerIn: EntityPlayer, hand: EnumHand, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean {
         val stack = playerIn.getHeldItem(hand)
 
+        //todo itentify other wrenches or do they all call harvestBlock?
         if (!stack.isEmpty && stack.item is IWrench) {
             return this.onBlockWrenched(worldIn, playerIn, pos, state, worldIn.getTileEntity(pos), stack)
         }
@@ -72,7 +73,8 @@ abstract class AbstractTileEntityBlock(unlocalizedName: String,
      */
     override fun harvestBlock(worldIn: World, player: EntityPlayer, pos: BlockPos, state: IBlockState, te: TileEntity?, stack: ItemStack) {
 
-        player.addStat(StatList.getBlockStats(this)!!)
+        @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+        player.addStat(StatList.getBlockStats(this))
         player.addExhaustion(0.005f)
         if (!worldIn.isRemote) {
             val dropItem = getDropItem(state, worldIn, pos, te)

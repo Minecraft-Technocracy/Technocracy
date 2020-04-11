@@ -3,7 +3,11 @@ package net.cydhra.technocracy.powertools.content.item
 import net.cydhra.technocracy.foundation.api.ecs.IComponent
 import net.cydhra.technocracy.foundation.api.ecs.item.TCAggregatableItem
 import net.cydhra.technocracy.foundation.model.items.api.BaseItem
+import net.minecraft.entity.Entity
+import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.world.World
+import net.minecraftforge.common.capabilities.ICapabilityProvider
 
 /**
  * An item that is an aggregation of multiple [IComponent] instances that define state associated with stacks of this
@@ -26,6 +30,14 @@ class AggregatableItem(registryName: String, unlocalizedName: String = registryN
                 ?: throw IllegalArgumentException("a component with this name has already been registered")
 
         component.onRegister()
+    }
+
+    override fun initCapabilities(stack: ItemStack, nbt: NBTTagCompound?): ICapabilityProvider? {
+        return super.initCapabilities(stack, nbt)
+    }
+
+    override fun onUpdate(stack: ItemStack, worldIn: World, entityIn: Entity, itemSlot: Int, isSelected: Boolean) {
+        super.onUpdate(stack, worldIn, entityIn, itemSlot, isSelected)
     }
 
     override fun removeComponent(name: String) {

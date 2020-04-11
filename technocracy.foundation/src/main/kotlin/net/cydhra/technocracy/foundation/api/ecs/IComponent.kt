@@ -30,4 +30,9 @@ interface IComponent {
      * further components may be registered at the aggregate
      */
     fun onLoadAggregate()
+
+    /**
+     * Called to mark this component dirty.
+     */
+    fun markDirty(needsClientRerender: Boolean)
 }

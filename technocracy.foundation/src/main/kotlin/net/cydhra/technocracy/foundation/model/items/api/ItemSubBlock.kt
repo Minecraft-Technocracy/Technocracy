@@ -32,6 +32,10 @@ class ItemSubBlock(block: Block) : ItemBlock(block) {
         return super.initCapabilities(stack, nbt)
     }
 
+    override fun updateItemStackNBT(nbt: NBTTagCompound): Boolean {
+        return super.updateItemStackNBT(nbt)
+    }
+
     override fun getHasSubtypes(): Boolean {
         val list = NonNullList.create<ItemStack>()
         getSubItems(CreativeTabs.SEARCH, list)
