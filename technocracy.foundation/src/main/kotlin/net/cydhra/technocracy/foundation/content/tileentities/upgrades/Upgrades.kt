@@ -38,7 +38,7 @@ class AdditiveConsumptionMultiplier(multiplier: Double) : MultiplierUpgrade(mult
 /**
  * An upgrade that enables the machine to use lubricant additives for speed increase.
  */
-class LubricantUpgrade : Upgrade<TCMachineTileEntity> {
+class LubricantUpgrade : MachineUpgrade() {
 
     companion object {
         const val LUBRICANT_FLUID_COMPONENT_NAME = "special_lubricant"
@@ -92,7 +92,7 @@ class LubricantUpgrade : Upgrade<TCMachineTileEntity> {
     }
 }
 
-class CoolingUpgrade : Upgrade<TCMachineTileEntity> {
+class CoolingUpgrade : MachineUpgrade() {
     companion object {
         const val COOLER_HEAT_STORAGE_COMPONENT_NAME = "special_cooler"
         const val COOLER_LOGIC = "special_cooler_logic"

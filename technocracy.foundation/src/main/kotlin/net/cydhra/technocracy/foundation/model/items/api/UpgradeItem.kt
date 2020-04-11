@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.model.items.api
 
+import net.cydhra.technocracy.foundation.api.ecs.IComponent
 import net.cydhra.technocracy.foundation.api.upgrades.Upgradable
 import net.cydhra.technocracy.foundation.api.upgrades.Upgrade
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeClass
@@ -19,9 +20,9 @@ import java.util.*
  * @param upgradeClass the [UpgradeClass] this item belongs to
  * @param upgrades a list of upgrades that are applied to the machine this item is installed in
  */
-class UpgradeItem(unlocalizedName: String,
-                  val upgradeClass: UpgradeClass,
-                  vararg val upgrades: Upgrade<Upgradable>) : BaseItem(unlocalizedName) {
+class UpgradeItem<U>(unlocalizedName: String,
+                        val upgradeClass: UpgradeClass,
+                        vararg val upgrades: U) : BaseItem(unlocalizedName) where U : Upgrade<*, *> {
     init {
         maxStackSize = 1
     }
@@ -62,7 +63,7 @@ class UpgradeItem(unlocalizedName: String,
 
         // append custom tooltips of special upgrades
         this.upgrades
-                .map(Upgrade<Upgradable>::getUpgradeDescription)
+                .map(Upgrade<*, *>::getUpgradeDescription)
                 .filter(Optional<ITextComponent>::isPresent)
                 .map(Optional<ITextComponent>::get)
                 .forEach { tooltip.add(it.formattedText) }

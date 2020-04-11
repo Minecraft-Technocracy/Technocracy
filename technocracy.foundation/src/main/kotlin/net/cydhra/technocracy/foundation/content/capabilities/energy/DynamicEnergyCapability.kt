@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.content.capabilities.energy
 
-import net.cydhra.technocracy.foundation.content.capabilities.AbstractMutableCapabilityHandler
+import net.cydhra.technocracy.foundation.content.capabilities.AbstractComponentCapabilityBridge
 import net.minecraftforge.energy.IEnergyStorage
 import kotlin.math.min
 
@@ -16,7 +16,7 @@ import kotlin.math.min
  * @see DynamicEnergyStorageStrategy
  */
 class DynamicEnergyCapability(currentEnergy: Int = 0, capacity: Int,
-                              var extractionLimit: Int, var receivingLimit: Int = -1) : IEnergyStorage, AbstractMutableCapabilityHandler() {
+                              var extractionLimit: Int, var receivingLimit: Int = -1) : IEnergyStorage, AbstractComponentCapabilityBridge() {
 
     /**
      * Current amount of energy in the storage

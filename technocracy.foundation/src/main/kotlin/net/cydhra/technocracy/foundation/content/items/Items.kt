@@ -2,6 +2,7 @@
 
 package net.cydhra.technocracy.foundation.content.items
 
+import net.cydhra.technocracy.foundation.api.ecs.IComponent
 import net.cydhra.technocracy.foundation.api.upgrades.Upgradable
 import net.cydhra.technocracy.foundation.api.upgrades.Upgrade
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeClass
@@ -98,6 +99,6 @@ val machineAdditiveSpeed2Item = UpgradeItem("machine_add_speed_up_2", UpgradeCla
         AdditiveConsumptionMultiplier(3.0), SpeedMultiplier(3.0))
 
 val machineLubricantUpItem = UpgradeItem("machine_lubricant_up", UpgradeClass.MACHINE,
-        SpeedMultiplier(4.0), LubricantUpgrade() as Upgrade<Upgradable>)
+        SpeedMultiplier(4.0), LubricantUpgrade() as Upgrade<Upgradable, IComponent>)
 val machineCoolerUpgradeItem = UpgradeItem("machine_cooler_up", UpgradeClass.MACHINE,
-        SpeedMultiplier(4.5), EnergyMultiplier(2.5), CoolingUpgrade() as Upgrade<Upgradable>)
+        SpeedMultiplier(4.5), EnergyMultiplier(2.5), CoolingUpgrade() as Upgrade<Upgradable, IComponent>)
