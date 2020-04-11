@@ -255,6 +255,7 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(pipeItem)
         itemManager.prepareItemForRegistration(facadeItem)
 
+        itemManager.prepareItemForRegistration(upgradeSlotItem)
         itemManager.prepareItemForRegistration(upgradeFrameItem)
         itemManager.prepareItemForRegistration(machineSpeedUp1Item)
         itemManager.prepareItemForRegistration(machineSpeedUp2Item)

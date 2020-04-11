@@ -2,27 +2,29 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "rrr",
-    "gug",
-    "ppp"
+    "pgp",
+    "nnn"
   ],
   "key": {
+    "n": {
+      "type": "forge:ore_dict",
+      "ore": "ingotNiobium"
+    },
     "r": {
       "type": "forge:ore_dict",
       "ore": "dustRedstone"
     },
     "p": {
       "type": "forge:ore_dict",
-      "ore": "sheetPlastic"
+      "ore": "gemQuartz"
     },
     "g": {
-      "item": "technocracy.foundation:glue_ball"
-    },
-    "u": {
-      "item": "technocracy.foundation:upgrade_slot"
+      "type": "forge:ore_dict",
+      "ore": "ingotGold"
     }
   },
   "result": {
-    "item": "technocracy.foundation:upgrade_frame",
+    "item": "technocracy.foundation:upgrade_slot",
     "count": 1
   }
 }

@@ -66,6 +66,7 @@ val facadeItem = FacadeItem()
 val structureMarkerItem = StructureMarkerItem()
 val emptyCanItem = EmptyCanItem()
 val wrenchItem = WrenchItem()
+val upgradeSlotItem = BaseItem("upgrade_slot")
 val upgradeFrameItem = BaseItem("upgrade_frame")
 
 val machineSpeedUp1Item = UpgradeItem("machine_speed_up_1", UpgradeClass.MACHINE,
