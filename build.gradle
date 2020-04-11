@@ -21,7 +21,7 @@ buildscript {
         cofhcore_version = '1.12.2-4.6.3.27'
         buildcraft_version = '7.99.8.2'
 
-        mod_version = '0.1-alpha5'
+        mod_version = '0.1-alpha6'
 
         root_build_dir = project.buildDir
     }
