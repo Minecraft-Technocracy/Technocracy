@@ -4,22 +4,16 @@ import net.cydhra.technocracy.foundation.client.gui.SimpleGui
 import net.cydhra.technocracy.foundation.client.gui.TCClientGuiImpl
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.TCIcon
-import net.cydhra.technocracy.foundation.client.gui.components.energymeter.DefaultEnergyMeter
 import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.DefaultFluidMeter
 import net.cydhra.technocracy.foundation.client.gui.components.heatmeter.DefaultHeatMeter
-import net.cydhra.technocracy.foundation.client.gui.components.label.DefaultLabel
 import net.cydhra.technocracy.foundation.client.gui.components.label.WrappingLabel
 import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
-import net.cydhra.technocracy.foundation.client.gui.machine.MachineContainer
 import net.cydhra.technocracy.foundation.client.gui.multiblock.BaseMultiblockTab
-import net.cydhra.technocracy.foundation.client.gui.multiblock.MultiblockContainer
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.items.siliconItem
 import net.cydhra.technocracy.foundation.content.multiblock.SalineMultiBlock
-import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.HeatStorageTileEntityComponent
-import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityHeatStorageComponent
 import net.cydhra.technocracy.foundation.model.tileentities.multiblock.ITileEntityMultiblockController
 import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
 import net.minecraft.client.Minecraft
@@ -33,16 +27,16 @@ class TileEntitySalineController :
         ITileEntityMultiblockController {
 
     //Fluids
-    val fluidInputComponent = FluidTileEntityComponent(capacity = 8000, facing = mutableSetOf(),
+    val fluidInputComponent = TileEntityFluidComponent(capacity = 8000, facing = mutableSetOf(),
             tanktype = DynamicFluidCapability.TankType.INPUT)
-    val fluidOutputComponent = FluidTileEntityComponent(capacity = 8000, facing = mutableSetOf(),
+    val fluidOutputComponent = TileEntityFluidComponent(capacity = 8000, facing = mutableSetOf(),
             tanktype = DynamicFluidCapability.TankType.OUTPUT)
 
     //Heat
-    val heatComponent = HeatStorageTileEntityComponent(0, 1000)
-    val heatingFluidInputComponent = FluidTileEntityComponent(capacity = 8000, facing = mutableSetOf(),
+    val heatComponent = TileEntityHeatStorageComponent(0, 1000)
+    val heatingFluidInputComponent = TileEntityFluidComponent(capacity = 8000, facing = mutableSetOf(),
             tanktype = DynamicFluidCapability.TankType.INPUT)
-    val heatingFluidOutputComponent = FluidTileEntityComponent(capacity = 8000, facing = mutableSetOf(),
+    val heatingFluidOutputComponent = TileEntityFluidComponent(capacity = 8000, facing = mutableSetOf(),
             tanktype = DynamicFluidCapability.TankType.OUTPUT)
 
     init {
@@ -74,7 +68,7 @@ class TileEntitySalineController :
                 components.add(DefaultHeatMeter(gui.guiWidth - 10 - 30, fluidMeterY, heatComponent, gui))
                 components.add(DefaultFluidMeter(gui.guiWidth - 10 - 20, fluidMeterY, heatingFluidOutputComponent, gui))
 
-                addPlayerInventorySlots(Minecraft.getMinecraft().player, 8, gui.guiHeight - 58 - 16 - 5 - 12)
+                addPlayerInventorySlots(player!!, 8, gui.guiHeight - 58 - 16 - 5 - 12)
             }
 
             override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
