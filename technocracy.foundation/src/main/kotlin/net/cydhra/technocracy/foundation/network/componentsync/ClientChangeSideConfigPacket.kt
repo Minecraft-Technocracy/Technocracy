@@ -42,7 +42,7 @@ class ClientChangeSideConfigPacket() : IMessage, IMessageHandler<ClientChangeSid
         if (container !is TCContainer)
             return null
 
-        val te = container.tileEntity
+        val te = container.provider
 
         val components = if (te is IAggregatable) {
             te.getComponents()

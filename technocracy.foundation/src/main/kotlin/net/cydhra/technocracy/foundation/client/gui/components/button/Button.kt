@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.client.gui.components.button
 
+import net.cydhra.technocracy.foundation.api.ecs.IAggregatable
 import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
 import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
 import net.minecraft.client.Minecraft
@@ -8,7 +9,7 @@ import net.minecraft.tileentity.TileEntity
 import net.minecraftforge.fml.relauncher.Side
 
 
-abstract class Button(override var posX: Int, override var posY: Int, override var width: Int, override var height: Int, var text: String, override var onClick: ((side: Side, player: EntityPlayer, tileEntity: TileEntity?, button: Int) -> Unit)? = null) : TCComponent() {
+abstract class Button(override var posX: Int, override var posY: Int, override var width: Int, override var height: Int, var text: String, override var onClick: ((side: Side, player: EntityPlayer, tileEntity: IAggregatable?, button: Int) -> Unit)? = null) : TCComponent() {
 
     override fun drawTooltip(mouseX: Int, mouseY: Int) {}
 

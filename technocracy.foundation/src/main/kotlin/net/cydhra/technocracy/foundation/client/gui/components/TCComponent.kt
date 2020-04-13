@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.client.gui.components
 
+import net.cydhra.technocracy.foundation.api.ecs.IAggregatable
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.network.ComponentClickPacket
 import net.cydhra.technocracy.foundation.network.PacketHandler
@@ -7,9 +8,7 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.tileentity.TileEntity
 import net.minecraftforge.fml.relauncher.Side
-import kotlin.properties.Delegates
 
 abstract class TCComponent : ITCComponent {
     override var componentId = -1
@@ -24,11 +23,11 @@ abstract class TCComponent : ITCComponent {
         componentId = id
     }
 
-    override var onClick: ((side: Side, player: EntityPlayer, tileEntity: TileEntity?, button: Int) -> Unit)? = null
+    override var onClick: ((side: Side, player: EntityPlayer, tileEntity: IAggregatable?, button: Int) -> Unit)? = null
 
     override fun mouseClicked(x: Int, y: Int, mouseX: Int, mouseY: Int, mouseButton: Int) {
         onClick?.let {
-            it(Side.CLIENT, Minecraft.getMinecraft().player, gui.container.tileEntity, mouseButton)
+            it(Side.CLIENT, Minecraft.getMinecraft().player, gui.container.provider, mouseButton)
             PacketHandler.sendToServer(ComponentClickPacket(componentId, mouseButton))
         }
     }
@@ -61,7 +60,7 @@ interface ITCComponent {
 
     fun update()
 
-    var onClick: ((side: Side, player: EntityPlayer, tileEntity: TileEntity?, button: Int) -> Unit)?
+    var onClick: ((side: Side, player: EntityPlayer, tileEntity: IAggregatable?, button: Int) -> Unit)?
 
     //fun handleClientClick(player: EntityPlayer?, tile: TileEntity?, mouseButton: Int) {}
 

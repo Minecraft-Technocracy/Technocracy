@@ -1,21 +1,29 @@
 package net.cydhra.technocracy.foundation.model.items.capability
 
-import net.cydhra.technocracy.foundation.api.ecs.IAggregatable
 import net.cydhra.technocracy.foundation.api.ecs.IComponent
 import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_GENERIC
 import net.cydhra.technocracy.foundation.api.upgrades.Upgradable
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeParameter
+import net.cydhra.technocracy.foundation.content.items.components.AbstractItemCapabilityComponent
 import net.cydhra.technocracy.foundation.content.items.components.AbstractItemComponent
 import net.cydhra.technocracy.foundation.content.items.components.ItemMultiplierComponent
 import net.cydhra.technocracy.foundation.util.get
+import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
+import net.minecraftforge.common.capabilities.CapabilityInject
 import net.minecraftforge.common.capabilities.ICapabilitySerializable
 
 
-open class ItemCapabilityWrapper(var stack: ItemStack, val components: MutableMap<String, AbstractItemComponent>) : ICapabilitySerializable<NBTTagCompound>, IAggregatable, Upgradable {
+open class ItemCapabilityWrapper(var stack: ItemStack, val components: MutableMap<String, AbstractItemComponent>) : ICapabilitySerializable<NBTTagCompound>, Upgradable, ICapabilityWrapperCapability {
+    companion object {
+        @JvmStatic
+        @CapabilityInject(ICapabilityWrapperCapability::class)
+        lateinit var CAPABILITY_WRAPPER: Capability<ICapabilityWrapperCapability>
+    }
+
     val capabilities = mutableMapOf<String, AbstractItemCapabilityComponent>()
     val upgradeableTypes = mutableListOf<UpgradeParameter>()
 
@@ -29,6 +37,9 @@ open class ItemCapabilityWrapper(var stack: ItemStack, val components: MutableMa
     }
 
     override fun <T : Any?> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
+        if (capability == CAPABILITY_WRAPPER) {
+            return CAPABILITY_WRAPPER.cast(this)
+        }
         val option = capabilities.values.stream().filter { it.hasCapability(capability, facing) }.findFirst()
         if (option.isPresent)
             return option.get().getCapability(capability, facing)
@@ -37,6 +48,7 @@ open class ItemCapabilityWrapper(var stack: ItemStack, val components: MutableMa
     }
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
+        if (capability == CAPABILITY_WRAPPER) return true
         for (cap in capabilities.values) {
             if (cap.hasCapability(capability, facing))
                 return true
@@ -90,14 +102,18 @@ open class ItemCapabilityWrapper(var stack: ItemStack, val components: MutableMa
         return getCombinedNBT()
     }
 
+    override fun canInteractWith(player: EntityPlayer?): Boolean {
+        return player?.isEntityAlive ?: true
+    }
+
     override fun getComponents(): List<Pair<String, IComponent>> {
         return components.toList()
     }
 
     override fun registerComponent(component: IComponent, name: String) {
-        if(component is AbstractItemComponent) {
+        if (component is AbstractItemComponent) {
             components[name] = component
-            if(component is AbstractItemCapabilityComponent) {
+            if (component is AbstractItemCapabilityComponent) {
                 capabilities[name] = component
             }
         }

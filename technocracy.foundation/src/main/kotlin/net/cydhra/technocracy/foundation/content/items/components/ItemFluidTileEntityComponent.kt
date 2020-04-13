@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.foundation.model.items.capability
+package net.cydhra.technocracy.foundation.content.items.components
 
 import net.cydhra.technocracy.foundation.api.ecs.ComponentType
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicItemFluidStorage

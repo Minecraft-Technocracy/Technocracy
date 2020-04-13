@@ -2,7 +2,6 @@ package net.cydhra.technocracy.foundation.network.componentsync
 
 import io.netty.buffer.ByteBuf
 import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
-import net.cydhra.technocracy.foundation.network.PacketHandler
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext
@@ -21,6 +20,6 @@ class ClientRequestSyncPacket: IMessage, IMessageHandler<ClientRequestSyncPacket
         if (container !is TCContainer)
             return null
 
-        return MachineInfoPacket(container.tileEntity)
+        return MachineInfoPacket(container.provider)
     }
 }

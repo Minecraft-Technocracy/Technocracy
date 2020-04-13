@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.client.gui.components.button
 
+import net.cydhra.technocracy.foundation.api.ecs.IAggregatable
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.FontRenderer
@@ -21,7 +22,7 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 
 
-open class DefaultButton(posX: Int, posY: Int, width: Int, height: Int, text: String, override var gui: TCGui, clientClick: ((side: Side, player: EntityPlayer, tileEntity: TileEntity?, button: Int) -> Unit)? = null) :
+open class DefaultButton(posX: Int, posY: Int, width: Int, height: Int, text: String, override var gui: TCGui, clientClick: ((side: Side, player: EntityPlayer, tileEntity: IAggregatable?, button: Int) -> Unit)? = null) :
         Button(posX, posY, width, height, text, clientClick) {
 
     protected val BUTTON_TEXTURES = ResourceLocation("textures/gui/widgets.png")

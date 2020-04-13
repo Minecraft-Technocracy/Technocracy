@@ -39,6 +39,9 @@ import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.data.crafting.types.ITIRecipe
 import net.cydhra.technocracy.foundation.model.blocks.manager.BlockManager
 import net.cydhra.technocracy.foundation.model.fluids.manager.FluidManager
+import net.cydhra.technocracy.foundation.model.items.capability.DefaultItemCapability
+import net.cydhra.technocracy.foundation.model.items.capability.ICapabilityWrapperCapability
+import net.cydhra.technocracy.foundation.model.items.capability.ICapabilityWrapperStorage
 import net.cydhra.technocracy.foundation.model.items.manager.ItemManager
 import net.cydhra.technocracy.foundation.model.oresystems.api.OreSystem
 import net.cydhra.technocracy.foundation.model.potions.manager.PotionManager
@@ -53,6 +56,7 @@ import net.minecraft.item.crafting.Ingredient
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.animation.ITimeValue
+import net.minecraftforge.common.capabilities.CapabilityManager
 import net.minecraftforge.common.model.animation.IAnimationStateMachine
 import net.minecraftforge.fml.common.network.NetworkRegistry
 import net.minecraftforge.fml.common.registry.GameRegistry
@@ -338,6 +342,7 @@ open class CommonProxy {
 
     open fun init() {
         materialSystems.forEach { it.init(it) }
+        CapabilityManager.INSTANCE.register(ICapabilityWrapperCapability::class.java, ICapabilityWrapperStorage(), ::DefaultItemCapability)
     }
 
     open fun postInit() {

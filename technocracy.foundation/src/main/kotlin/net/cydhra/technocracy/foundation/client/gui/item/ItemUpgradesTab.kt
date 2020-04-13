@@ -1,18 +1,18 @@
-package net.cydhra.technocracy.foundation.client.gui.machine
+package net.cydhra.technocracy.foundation.client.gui.item
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.TCIcon
 import net.cydhra.technocracy.foundation.client.gui.TCTab
 import net.cydhra.technocracy.foundation.client.gui.components.label.WrappingLabel
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
+import net.cydhra.technocracy.foundation.content.items.components.ItemUpgradesComponent
 import net.cydhra.technocracy.foundation.content.items.wrenchItem
-import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityMachineUpgradesComponent
 import net.minecraft.entity.player.EntityPlayer
 
-//todo remove and make one class with ItemUpgradesTab
-class MachineUpgradesTab(parent: TCGui,
-                         private val upgrades: TileEntityMachineUpgradesComponent,
-                         private val player: EntityPlayer?) :
+//todo remove and make one class with MachineUpgradesTab
+class ItemUpgradesTab(parent: TCGui,
+                      private val upgrades: ItemUpgradesComponent,
+                      private val player: EntityPlayer?) :
         TCTab("Upgrades", parent, icon = TCIcon(wrenchItem)) {
 
     companion object {

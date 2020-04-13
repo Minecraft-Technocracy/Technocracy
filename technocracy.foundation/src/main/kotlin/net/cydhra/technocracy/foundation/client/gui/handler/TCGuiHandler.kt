@@ -13,6 +13,7 @@ class TCGuiHandler : IGuiHandler {
     companion object {
         const val machineGui: Int = 0
         const val multiblockGui: Int = 1
+        const val itemGui: Int = 2
     }
 
     override fun getServerGuiElement(ID: Int, player: EntityPlayer, world: World, x: Int, y: Int, z: Int): Any? {
@@ -27,6 +28,12 @@ class TCGuiHandler : IGuiHandler {
             multiblockGui -> {
                 if (te is TileEntityMultiBlockPart<*>) {
                     te.getGui(player).container
+                } else null
+            }
+            itemGui -> {
+                val item = player.heldItemMainhand.item
+                if (item is TCTileEntityGuiProvider) {
+                    item.getGui(player).container
                 } else null
             }
             else -> null
@@ -48,6 +55,12 @@ class TCGuiHandler : IGuiHandler {
             multiblockGui -> {
                 if (te is TileEntityMultiBlockPart<*>) {
                     TCClientGuiImpl(te.getGui(player))
+                } else null
+            }
+            itemGui -> {
+                val item = player.heldItemMainhand.item
+                if (item is TCTileEntityGuiProvider) {
+                    TCClientGuiImpl(item.getGui(player))
                 } else null
             }
             else -> null

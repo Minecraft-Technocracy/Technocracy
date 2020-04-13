@@ -3,6 +3,7 @@ package net.cydhra.technocracy.foundation.model.tileentities.multiblock
 import it.zerono.mods.zerocore.api.multiblock.MultiblockControllerBase
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import net.cydhra.technocracy.foundation.TCFoundation
+import net.cydhra.technocracy.foundation.api.ecs.IAggregatableGuiProvider
 import net.cydhra.technocracy.foundation.api.ecs.tileentities.TCAggregatableTileEntity
 import net.cydhra.technocracy.foundation.api.tileentities.TCTileEntityGuiProvider
 import net.cydhra.technocracy.foundation.client.gui.SimpleGui
@@ -43,7 +44,7 @@ import kotlin.reflect.KClass
  */
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private val constructController: (World) -> T)
-    : TCAggregatableTileEntity by AggregatableTileEntityDelegate(), TCTileEntityGuiProvider, AbstractRectangularMultiBlockTileEntity()
+    : TCAggregatableTileEntity by AggregatableTileEntityDelegate(), TCTileEntityGuiProvider, AbstractRectangularMultiBlockTileEntity(), IAggregatableGuiProvider
         where T : MultiblockControllerBase {
 
     init {
@@ -210,5 +211,10 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
             this.castCapability(capability, facing)
         else
             null
+    }
+
+    override fun canInteractWith(player: EntityPlayer?): Boolean {
+        if (player == null) return true
+        return player.isEntityAlive && !tile.isInvalid && player.getDistanceSq(tile.pos) <= 16
     }
 }
