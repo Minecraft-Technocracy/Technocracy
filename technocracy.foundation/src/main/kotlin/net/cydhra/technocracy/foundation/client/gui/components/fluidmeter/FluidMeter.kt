@@ -3,13 +3,13 @@ package net.cydhra.technocracy.foundation.client.gui.components.fluidmeter
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.TCClientGuiImpl
 import net.cydhra.technocracy.foundation.client.gui.components.TCCapabilityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
 import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.MathHelper
 import net.minecraft.util.text.TextFormatting
 import kotlin.math.roundToInt
 
-abstract class FluidMeter(override var posX: Int, override var posY: Int, component: FluidTileEntityComponent) : TCCapabilityComponent<FluidTileEntityComponent>(component) {
+abstract class FluidMeter(override var posX: Int, override var posY: Int, component: TileEntityFluidComponent) : TCCapabilityComponent<TileEntityFluidComponent>(component) {
 
     /**
      * fluid level from 0.0 to 1.0
@@ -40,7 +40,7 @@ abstract class FluidMeter(override var posX: Int, override var posY: Int, compon
 
     }
 
-    fun drawToolTip(component: FluidTileEntityComponent, mouseX: Int, mouseY: Int, gui: TCGui) {
+    fun drawToolTip(component: TileEntityFluidComponent, mouseX: Int, mouseY: Int, gui: TCGui) {
         if (component.fluid.capacity > 0) {
             val text = mutableListOf<String>()
 

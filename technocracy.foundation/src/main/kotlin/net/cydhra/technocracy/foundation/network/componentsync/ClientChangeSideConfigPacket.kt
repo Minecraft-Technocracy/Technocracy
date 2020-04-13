@@ -3,7 +3,7 @@ package net.cydhra.technocracy.foundation.network.componentsync
 import io.netty.buffer.ByteBuf
 import net.cydhra.technocracy.foundation.api.ecs.IAggregatable
 import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
-import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractDirectionalCapabilityTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractTileEntityDirectionalCapabilityComponent
 import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
 import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
 import net.minecraft.util.EnumFacing
@@ -50,8 +50,8 @@ class ClientChangeSideConfigPacket() : IMessage, IMessageHandler<ClientChangeSid
             (te.multiblockController as BaseMultiBlock).getComponents()
         } else return null
 
-        components.filter { it.second is AbstractDirectionalCapabilityTileEntityComponent && it.first == packet.componentName }.forEach { (_, component) ->
-            val comp = (component as AbstractDirectionalCapabilityTileEntityComponent)
+        components.filter { it.second is AbstractTileEntityDirectionalCapabilityComponent && it.first == packet.componentName }.forEach { (_, component) ->
+            val comp = (component as AbstractTileEntityDirectionalCapabilityComponent)
             if (packet.addFace) {
                 comp.facing.add(packet.facing)
             } else {

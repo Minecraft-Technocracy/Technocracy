@@ -3,10 +3,10 @@ package net.cydhra.technocracy.foundation.integration.top.providers
 import mcjty.theoneprobe.api.*
 import net.cydhra.technocracy.foundation.api.ecs.IComponent
 import net.cydhra.technocracy.foundation.api.ecs.tileentities.TCAggregatableTileEntity
-import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.OptionalAttachedTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityEnergyStorageComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityInventoryComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityOptionalAttachedComponent
 import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
 import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
 import net.minecraft.block.state.IBlockState
@@ -82,18 +82,18 @@ class MachineTOPProvider : IProbeInfoProvider {
 
     private fun fillInfo(component: IComponent, te: TCAggregatableTileEntity, probeInfo: IProbeInfo) {
         when (component) {
-            is EnergyStorageTileEntityComponent ->
+            is TileEntityEnergyStorageComponent ->
                 if (!(te as ICapabilityProvider).hasCapability(CapabilityEnergy.ENERGY, null))
                     probeInfo.progress(component.energyStorage.currentEnergy,
                             component.energyStorage.capacity,
                             energyStyle)
-            is FluidTileEntityComponent ->
+            is TileEntityFluidComponent ->
                 if (!(te as ICapabilityProvider).hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
 
                     probeInfo.progress(component.fluid.currentFluid?.amount
                             ?: 0, component.fluid.capacity, fluidStyle).text(component.fluid.currentFluid?.localizedName
                             ?: "")
-            is InventoryTileEntityComponent -> {
+            is TileEntityInventoryComponent -> {
                 val horizontalStyleElement = probeInfo.horizontal(
                         probeInfo.defaultLayoutStyle()
                                 .alignment(ElementAlignment.ALIGN_CENTER)
@@ -109,7 +109,7 @@ class MachineTOPProvider : IProbeInfoProvider {
                     }
                 }
             }
-            is OptionalAttachedTileEntityComponent<*> -> {
+            is TileEntityOptionalAttachedComponent<*> -> {
                 if (component.isAttached)
                     fillInfo(component.innerComponent, te, probeInfo)
             }

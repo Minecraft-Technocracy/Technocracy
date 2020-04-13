@@ -14,9 +14,9 @@ import net.cydhra.technocracy.foundation.client.gui.machine.BaseMachineTab
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.content.fluids.hydrochloricAcidFluid
-import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.MultiplierTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityInventoryComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityMultiplierComponent
 import net.cydhra.technocracy.foundation.content.tileentities.logic.AdditiveConsumptionLogic
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ItemProcessingLogic
 import net.cydhra.technocracy.foundation.data.crafting.IMachineRecipe
@@ -30,13 +30,13 @@ import net.minecraft.util.EnumFacing
  *
  */
 class TileEntityChemicalEtchingChamber : MachineTileEntity(), TEInventoryProvider {
-    private val inputInventory = InventoryTileEntityComponent(3, this, EnumFacing.EAST)
-    private val outputInventoryComponent = InventoryTileEntityComponent(1, this, EnumFacing.WEST,
+    private val inputInventory = TileEntityInventoryComponent(3, this, EnumFacing.EAST)
+    private val outputInventoryComponent = TileEntityInventoryComponent(1, this, EnumFacing.WEST,
             DynamicInventoryCapability.InventoryType.OUTPUT)
 
-    private val additiveMultiplierComponent = MultiplierTileEntityComponent(UPGRADE_ADDITIVE)
+    private val additiveMultiplierComponent = TileEntityMultiplierComponent(UPGRADE_ADDITIVE)
 
-    private val acidFluidInput = FluidTileEntityComponent(4000, hydrochloricAcidFluid.name,
+    private val acidFluidInput = TileEntityFluidComponent(4000, hydrochloricAcidFluid.name,
             tanktype = DynamicFluidCapability.TankType.INPUT, facing = mutableSetOf(EnumFacing.NORTH))
 
     /**

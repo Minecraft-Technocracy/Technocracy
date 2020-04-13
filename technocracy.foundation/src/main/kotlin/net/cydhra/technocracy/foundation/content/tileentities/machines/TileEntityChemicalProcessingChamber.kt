@@ -12,8 +12,8 @@ import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
 import net.cydhra.technocracy.foundation.client.gui.machine.BaseMachineTab
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
-import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityInventoryComponent
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ItemProcessingLogic
 import net.cydhra.technocracy.foundation.data.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
@@ -27,10 +27,10 @@ import net.minecraft.util.EnumFacing
  */
 class TileEntityChemicalProcessingChamber : MachineTileEntity(), TEInventoryProvider {
 
-    private val inputInventoryComponent = InventoryTileEntityComponent(1, this, EnumFacing.WEST)
-    private val inputFluidComponent = FluidTileEntityComponent(4000,
+    private val inputInventoryComponent = TileEntityInventoryComponent(1, this, EnumFacing.WEST)
+    private val inputFluidComponent = TileEntityFluidComponent(4000,
             tanktype = DynamicFluidCapability.TankType.INPUT, facing = mutableSetOf(EnumFacing.UP))
-    private val outputInventoryComponent = InventoryTileEntityComponent(1, this, EnumFacing.EAST,
+    private val outputInventoryComponent = TileEntityInventoryComponent(1, this, EnumFacing.EAST,
             DynamicInventoryCapability.InventoryType.OUTPUT)
 
     private val recipes: Collection<IMachineRecipe> by lazy {

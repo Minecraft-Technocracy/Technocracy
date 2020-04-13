@@ -2,8 +2,8 @@ package net.cydhra.technocracy.foundation.client.model.customModel.connector
 
 import net.cydhra.technocracy.foundation.client.textures.TextureAtlasManager
 import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
-import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityEnergyStorageComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityInventoryComponent
 import net.cydhra.technocracy.foundation.util.propertys.POSITION
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.Minecraft
@@ -45,8 +45,8 @@ class MachineConnectorBakedModel(val baseBakedModel: IBakedModel, val connector:
         val comp = tile.getComponents()
 
         comp.stream().filter {
-            it.second is InventoryTileEntityComponent
-        }.map { it.second as InventoryTileEntityComponent }.forEach {
+            it.second is TileEntityInventoryComponent
+        }.map { it.second as TileEntityInventoryComponent }.forEach {
             for ((i, quad) in inventory.getQuads(state, side, rand).withIndex()) {
                 //6 faces per cube
                 var facing = EnumFacing.values()[i / 6]
@@ -60,8 +60,8 @@ class MachineConnectorBakedModel(val baseBakedModel: IBakedModel, val connector:
         }
 
         comp.stream().filter {
-            it.second is EnergyStorageTileEntityComponent
-        }.map { it.second as EnergyStorageTileEntityComponent }.forEach {
+            it.second is TileEntityEnergyStorageComponent
+        }.map { it.second as TileEntityEnergyStorageComponent }.forEach {
             for ((i, quad) in energy.getQuads(state, side, rand).withIndex()) {
                 //6 faces per cube
                 var facing = EnumFacing.values()[i / 6]

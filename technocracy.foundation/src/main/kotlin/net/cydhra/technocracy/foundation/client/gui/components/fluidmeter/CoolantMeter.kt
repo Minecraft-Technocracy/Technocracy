@@ -2,8 +2,8 @@ package net.cydhra.technocracy.foundation.client.gui.components.fluidmeter
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.components.heatmeter.DefaultHeatMeter
-import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.HeatStorageTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityHeatStorageComponent
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
@@ -11,7 +11,7 @@ import net.minecraft.util.ResourceLocation
 import org.lwjgl.opengl.GL11
 
 
-class CoolantMeter(posX: Int, posY: Int, val coolantIn: FluidTileEntityComponent, val coolantOut: FluidTileEntityComponent, val heat: HeatStorageTileEntityComponent, gui: TCGui) : FluidMeter(posX, posY, coolantIn) {
+class CoolantMeter(posX: Int, posY: Int, val coolantIn: TileEntityFluidComponent, val coolantOut: TileEntityFluidComponent, val heat: TileEntityHeatStorageComponent, gui: TCGui) : FluidMeter(posX, posY, coolantIn) {
 
     val meterIn = DefaultFluidMeter(6, 7, coolantIn, gui)
     val meterOut = DefaultFluidMeter(6 + 16 + 8 + 4, 7, coolantOut, gui)

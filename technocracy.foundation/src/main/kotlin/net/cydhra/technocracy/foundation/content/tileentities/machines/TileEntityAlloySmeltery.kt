@@ -10,7 +10,7 @@ import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
 import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
 import net.cydhra.technocracy.foundation.client.gui.machine.BaseMachineTab
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
-import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityInventoryComponent
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ItemProcessingLogic
 import net.cydhra.technocracy.foundation.data.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
@@ -30,12 +30,12 @@ class TileEntityAlloySmeltery : MachineTileEntity(), TEInventoryProvider {
     /**
      * Input inventory for the pulverizer with one slot
      */
-    private val inputInventoryComponent = InventoryTileEntityComponent(3, this, EnumFacing.WEST)
+    private val inputInventoryComponent = TileEntityInventoryComponent(3, this, EnumFacing.WEST)
 
     /**
      * Output inventory for the pulverizer with one slot
      */
-    private val outputInventoryComponent = InventoryTileEntityComponent(1, this, EnumFacing.EAST,
+    private val outputInventoryComponent = TileEntityInventoryComponent(1, this, EnumFacing.EAST,
             DynamicInventoryCapability.InventoryType.OUTPUT)
 
     /**

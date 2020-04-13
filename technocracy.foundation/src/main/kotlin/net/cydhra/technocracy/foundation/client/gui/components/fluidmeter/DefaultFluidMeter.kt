@@ -11,7 +11,7 @@ import net.cydhra.technocracy.foundation.client.gui.TCClientGuiImpl.Companion.sl
 import net.cydhra.technocracy.foundation.client.gui.TCClientGuiImpl.Companion.slotLineLeft
 import net.cydhra.technocracy.foundation.client.gui.TCClientGuiImpl.Companion.slotLineRight
 import net.cydhra.technocracy.foundation.client.gui.TCClientGuiImpl.Companion.slotLineTop
-import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
@@ -25,7 +25,7 @@ import java.awt.Color
 import kotlin.math.*
 
 
-class DefaultFluidMeter(posX: Int, posY: Int,  component: FluidTileEntityComponent, override var gui: TCGui, val type: Int = 0) : FluidMeter(posX, posY, component) {
+class DefaultFluidMeter(posX: Int, posY: Int, component: TileEntityFluidComponent, override var gui: TCGui, val type: Int = 0) : FluidMeter(posX, posY, component) {
 
     init {
         if (type == 1)

@@ -2,20 +2,18 @@ package net.cydhra.technocracy.foundation.content.items.components
 
 import net.cydhra.technocracy.foundation.api.ecs.ComponentType
 import net.cydhra.technocracy.foundation.api.tileentities.TEInventoryProvider
-import net.cydhra.technocracy.foundation.api.upgrades.*
+import net.cydhra.technocracy.foundation.api.upgrades.ItemUpgrade
+import net.cydhra.technocracy.foundation.api.upgrades.UpgradeClass
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.model.items.api.UpgradeItem
-import net.cydhra.technocracy.foundation.model.items.capability.AbstractItemCapabilityComponent
 import net.minecraft.init.Items
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
-import net.minecraft.util.EnumFacing
 import net.minecraft.util.text.*
-import net.minecraftforge.common.capabilities.Capability
 import java.util.concurrent.CopyOnWriteArrayList
 
 
-class ItemUpgradesComponent(val numberOfUpgradeSlots: Int, val upgradeType: UpgradeClass) : AbstractItemCapabilityComponent(), TEInventoryProvider {
+class ItemUpgradesComponent(val numberOfUpgradeSlots: Int, val upgradeType: UpgradeClass) : AbstractItemComponent(), TEInventoryProvider {
 
     /**
      * A set of descriptive lines about installed upgrades
@@ -41,14 +39,6 @@ class ItemUpgradesComponent(val numberOfUpgradeSlots: Int, val upgradeType: Upgr
     override fun deserializeNBT(nbt: NBTTagCompound) {
         inventory.deserializeNBT(nbt)
         this.updateDescription()
-    }
-
-    override fun <T : Any?> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
-        TODO("Not yet implemented")
-    }
-
-    override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
-        TODO("Not yet implemented")
     }
 
     override fun isItemValid(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack): Boolean {

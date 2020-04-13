@@ -1,8 +1,8 @@
 package net.cydhra.technocracy.foundation.content.tileentities.logic
 
 import net.cydhra.technocracy.foundation.api.ecs.logic.ILogic
-import net.cydhra.technocracy.foundation.content.tileentities.components.HeatStorageTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.MultiplierTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityHeatStorageComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityMultiplierComponent
 
 /**
  * A logic that generates heat whenever the machine is doing work. How much heat is generated depends on the energy
@@ -14,8 +14,8 @@ import net.cydhra.technocracy.foundation.content.tileentities.components.Multipl
  */
 class GenerateHeatLogic(
         private val baseHeatGeneration: Int,
-        private val energyMultiplierComponent: MultiplierTileEntityComponent,
-        private val heatBuffer: HeatStorageTileEntityComponent
+        private val energyMultiplierComponent: TileEntityMultiplierComponent,
+        private val heatBuffer: TileEntityHeatStorageComponent
 ) : ILogic {
 
     override fun preProcessing(): Boolean {

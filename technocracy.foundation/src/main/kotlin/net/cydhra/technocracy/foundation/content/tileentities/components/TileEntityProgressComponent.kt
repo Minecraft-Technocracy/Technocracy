@@ -4,7 +4,7 @@ import net.cydhra.technocracy.foundation.api.ecs.ComponentType
 import net.cydhra.technocracy.foundation.api.ecs.tileentities.AbstractTileEntityComponent
 import net.minecraft.nbt.NBTTagCompound
 
-class ProgressTileEntityComponent: AbstractTileEntityComponent() {
+class TileEntityProgressComponent: AbstractTileEntityComponent() {
 
     override val type: ComponentType = ComponentType.OTHER
 

@@ -47,7 +47,7 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
 
     override fun getStackLimit(slot: Int, stack: ItemStack, default: Int): Int {
 
-        return maxStackSize.value
+        return maxStackSize.getValue()
         /*
         if (currentRocket != null) {
             if (!currentRocket!!.dysonCargo)
@@ -59,12 +59,12 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
         return 16//default*/
     }
 
-    val ownerShip = OwnerShipTileEntityComponent()
-    val linked = BooleanDataTileEntityComponent()
-    val maxStackSize = IntegerDataTileEntityComponent()
+    val ownerShip = TileEntityOwnerShipComponent()
+    val linked = TileEntityDataComponent(false)
+    val maxStackSize = TileEntityDataComponent(0)// TileEntityIntegerDataComponent()
     val dynCapability = DynamicFluidCapability(0, mutableListOf("rocket_fuel"))
-    val fluidBuffer = FluidTileEntityComponent(dynCapability, EnumFacing.values().toMutableSet())
-    val inventoryBuffer = InventoryTileEntityComponent(0, this, EnumFacing.values().toMutableSet())
+    val fluidBuffer = TileEntityFluidComponent(dynCapability, EnumFacing.values().toMutableSet())
+    val inventoryBuffer = TileEntityInventoryComponent(0, this, EnumFacing.values().toMutableSet())
 
     var currentRocket: EntityRocket? = null
 
@@ -91,7 +91,7 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
 
             override fun init() {
 
-                if (linked.state) {
+                if (linked.getValue()) {
                     val fm = DefaultFluidMeter(10, 25, fluidBuffer, gui)
                     fm.width = 20
                     fm.height = 105
@@ -300,7 +300,7 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
                     }
 
                     playerIn.sendMessage(TextComponentString("rocket build: $totalStorageElements storage modules with $dysonCargo elements and $tank tank modules"))
-                    linked.setState(true)
+                    linked.setValue(true)
 
                     //force update to be send
                     GuiUpdateListener.syncComponentsToClients()
@@ -317,7 +317,7 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
     }
 
     fun unlinkRocket() {
-        linked.setState(false)
+        linked.setValue(false)
         currentRocket = null
         fluidBuffer.fluid = dynCapability
         inventoryBuffer.inventory.stacks = NonNullList.withSize(0, ItemStack.EMPTY)

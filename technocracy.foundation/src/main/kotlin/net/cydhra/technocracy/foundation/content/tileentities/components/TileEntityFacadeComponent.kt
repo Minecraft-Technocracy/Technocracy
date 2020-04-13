@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 
-class FacadeTileEntityComponent : AbstractTileEntityComponent() {
+class TileEntityFacadeComponent : AbstractTileEntityComponent() {
     var facades = mutableMapOf<EnumFacing, ItemStack>()
 
     override val type: ComponentType = ComponentType.OTHER

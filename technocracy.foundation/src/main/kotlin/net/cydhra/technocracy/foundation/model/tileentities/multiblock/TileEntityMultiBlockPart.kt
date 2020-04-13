@@ -19,10 +19,10 @@ import net.cydhra.technocracy.foundation.client.gui.multiblock.BaseMultiblockTab
 import net.cydhra.technocracy.foundation.client.gui.multiblock.MultiblockSettingsTab
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.items.siliconItem
-import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.ProgressTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityEnergyStorageComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityInventoryComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityProgressComponent
 import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
 import net.cydhra.technocracy.foundation.model.tileentities.api.AbstractRectangularMultiBlockTileEntity
 import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableTileEntityDelegate
@@ -126,20 +126,20 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
                 var nextInput = 10
                 var inputNearestToTheMiddle = 0
                 var outputNearestToTheMiddle = parent.guiWidth
-                var foundProgressComponent: ProgressTileEntityComponent? = null
+                var foundProgressComponent: TileEntityProgressComponent? = null
                 val sortedComponents = listOf(*(this@TileEntityMultiBlockPart.multiblockController as BaseMultiBlock).getComponents().toTypedArray())
-                        .sortedBy { (_, component) -> component !is FluidTileEntityComponent }
-                        .sortedBy { (_, component) -> component !is EnergyStorageTileEntityComponent }
+                        .sortedBy { (_, component) -> component !is TileEntityFluidComponent }
+                        .sortedBy { (_, component) -> component !is TileEntityEnergyStorageComponent }
                 sortedComponents.forEach { (name, component) ->
                     when (component) {
-                        is EnergyStorageTileEntityComponent -> {
+                        is TileEntityEnergyStorageComponent -> {
                             components.add(DefaultEnergyMeter(nextInput, 20, component, gui))
                             if (inputNearestToTheMiddle < 20) {
                                 inputNearestToTheMiddle = 20
                                 nextInput = 25
                             }
                         }
-                        is FluidTileEntityComponent -> {
+                        is TileEntityFluidComponent -> {
                             when {
                                 component.fluid.tanktype == DynamicFluidCapability.TankType.INPUT -> {
                                     components.add(DefaultFluidMeter(nextInput, 20, component, gui))
@@ -159,7 +159,7 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
                                 }
                             }
                         }
-                        is InventoryTileEntityComponent -> {
+                        is TileEntityInventoryComponent -> {
                             when {
                                 name.contains("input") -> {
                                     for (i in 0 until component.inventory.slots) {
@@ -182,13 +182,13 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
                                 }
                             }
                         }
-                        is ProgressTileEntityComponent -> {
+                        is TileEntityProgressComponent -> {
                             foundProgressComponent = component
                         }
                     }
                 }
                 if (foundProgressComponent != null)
-                    components.add(DefaultProgressBar((outputNearestToTheMiddle - inputNearestToTheMiddle) / 2 + inputNearestToTheMiddle, 40, Orientation.RIGHT, foundProgressComponent as ProgressTileEntityComponent, gui))
+                    components.add(DefaultProgressBar((outputNearestToTheMiddle - inputNearestToTheMiddle) / 2 + inputNearestToTheMiddle, 40, Orientation.RIGHT, foundProgressComponent as TileEntityProgressComponent, gui))
 
                 if (player != null)
                     addPlayerInventorySlots(player, 8, gui.guiHeight - 58 - 16 - 5 - 12)

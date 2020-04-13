@@ -39,13 +39,14 @@ class AggregatableItem(registryName: String, unlocalizedName: String = registryN
         return compound
     }
 
-    override fun deserializeNBT(compound: NBTTagCompound) {
-        for (key in registeredComponents.keys) {
-            val component = registeredComponents[key]!!
-            if (compound.hasKey(key))
-                component.deserializeNBT(compound.getCompoundTag(key))
-            component.onLoadAggregate()
-        }
+    override fun deserializeNBT(compound: NBTTagCompound?) {
+        if (compound != null)
+            for (key in registeredComponents.keys) {
+                val component = registeredComponents[key]!!
+                if (compound.hasKey(key))
+                    component.deserializeNBT(compound.getCompoundTag(key))
+                component.onLoadAggregate()
+            }
     }
 
 }

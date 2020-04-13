@@ -3,34 +3,23 @@ package net.cydhra.technocracy.foundation.content.tileentities.multiblock.tank
 import net.cydhra.technocracy.foundation.client.gui.SimpleGui
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.TCTab
-import net.cydhra.technocracy.foundation.client.gui.components.energymeter.DefaultEnergyMeter
 import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.DefaultFluidMeter
-import net.cydhra.technocracy.foundation.client.gui.components.progressbar.DefaultProgressBar
-import net.cydhra.technocracy.foundation.client.gui.components.progressbar.Orientation
-import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
 import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
-import net.cydhra.technocracy.foundation.client.gui.multiblock.BaseMultiblockTab
-import net.cydhra.technocracy.foundation.client.gui.multiblock.MultiblockContainer
-import net.cydhra.technocracy.foundation.client.gui.multiblock.MultiblockSettingsTab
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
-import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.content.multiblock.TankMultiBlock
 import net.cydhra.technocracy.foundation.content.tileentities.components.*
-import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
 import net.cydhra.technocracy.foundation.model.tileentities.multiblock.ITileEntityMultiblockController
 import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.EnumFacing
-import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.capabilities.Capability
-import net.minecraftforge.items.IItemHandler
 
 
 open class TileEntityTankMultiBlockPart : TileEntityMultiBlockPart<TankMultiBlock>(TankMultiBlock::class,
         ::TankMultiBlock), ITileEntityMultiblockController {
 
 
-    val fluidComp = OptionalAttachedTileEntityComponent(FluidTileEntityComponent(DynamicFluidCapability(), EnumFacing.values().toMutableSet()))
+    val fluidComp = TileEntityOptionalAttachedComponent(TileEntityFluidComponent(DynamicFluidCapability(), EnumFacing.values().toMutableSet()))
 
 
     override fun getGui(player: EntityPlayer?): TCGui {

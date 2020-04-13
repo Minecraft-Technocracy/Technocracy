@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.client.gui.components.fluidmeter
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
-import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
@@ -10,14 +10,13 @@ import net.minecraft.client.renderer.texture.TextureMap
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.MathHelper
-import net.minecraft.util.text.TextFormatting
 import net.minecraftforge.fluids.Fluid
 import org.lwjgl.opengl.GL11
 import java.awt.Color
 import kotlin.math.*
 
 
-class LubricantFluidMeter(posX: Int, posY: Int, component: FluidTileEntityComponent, override var gui: TCGui) : FluidMeter(posX, posY, component) {
+class LubricantFluidMeter(posX: Int, posY: Int, component: TileEntityFluidComponent, override var gui: TCGui) : FluidMeter(posX, posY, component) {
     companion object {
         val lubTexture: ResourceLocation = ResourceLocation("technocracy.foundation", "textures/gui/lubricant_addon.png")
     }

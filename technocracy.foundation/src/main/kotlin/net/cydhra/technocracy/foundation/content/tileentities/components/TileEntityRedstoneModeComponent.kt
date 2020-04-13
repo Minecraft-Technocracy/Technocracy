@@ -2,7 +2,7 @@ package net.cydhra.technocracy.foundation.content.tileentities.components
 
 import net.cydhra.technocracy.foundation.api.ecs.ComponentType
 import net.cydhra.technocracy.foundation.api.ecs.tileentities.AbstractTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.RedstoneModeTileEntityComponent.RedstoneMode
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityRedstoneModeComponent.RedstoneMode
 import net.minecraft.nbt.NBTTagCompound
 
 /**
@@ -10,7 +10,7 @@ import net.minecraft.nbt.NBTTagCompound
  *
  * @see RedstoneMode
  */
-class RedstoneModeTileEntityComponent : AbstractTileEntityComponent() {
+class TileEntityRedstoneModeComponent : AbstractTileEntityComponent() {
 
     override val type: ComponentType = ComponentType.OTHER
 

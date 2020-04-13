@@ -2,7 +2,7 @@ package net.cydhra.technocracy.foundation.client.gui.components.heatmeter
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.TCClientGuiImpl
-import net.cydhra.technocracy.foundation.content.tileentities.components.HeatStorageTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityHeatStorageComponent
 import net.cydhra.technocracy.foundation.util.Interpolator
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.GlStateManager
@@ -10,7 +10,7 @@ import org.lwjgl.opengl.GL11
 import kotlin.math.roundToInt
 
 
-class DefaultHeatMeter(posX: Int, posY: Int,  component: HeatStorageTileEntityComponent, override var gui: TCGui) : HeatMeter(posX, posY, component) {
+class DefaultHeatMeter(posX: Int, posY: Int, component: TileEntityHeatStorageComponent, override var gui: TCGui) : HeatMeter(posX, posY, component) {
     override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
         GlStateManager.color(1F, 1F, 1F, 1F)
 

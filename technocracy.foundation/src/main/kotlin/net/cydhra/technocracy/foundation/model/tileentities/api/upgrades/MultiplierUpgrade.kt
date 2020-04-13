@@ -2,10 +2,8 @@ package net.cydhra.technocracy.foundation.model.tileentities.api.upgrades
 
 import net.cydhra.technocracy.foundation.api.tileentities.TCMachineTileEntity
 import net.cydhra.technocracy.foundation.api.upgrades.MachineUpgrade
-import net.cydhra.technocracy.foundation.api.upgrades.Upgradable
-import net.cydhra.technocracy.foundation.api.upgrades.Upgrade
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeParameter
-import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityMachineUpgradesComponent
 import net.minecraft.util.text.ITextComponent
 import java.util.*
 
@@ -20,19 +18,19 @@ abstract class MultiplierUpgrade(
 ) : MachineUpgrade() {
 
     override fun canInstallUpgrade(upgradable: TCMachineTileEntity,
-                                   upgrades: MachineUpgradesTileEntityComponent): Boolean {
+                                   upgrades: TileEntityMachineUpgradesComponent): Boolean {
         return upgradable.supportsParameter(this.upgradeParameter)
     }
 
-    override fun onInstallUpgrade(upgradable: TCMachineTileEntity, upgrades: MachineUpgradesTileEntityComponent) {
+    override fun onInstallUpgrade(upgradable: TCMachineTileEntity, upgrades: TileEntityMachineUpgradesComponent) {
         upgradable.upgradeParameter(this.upgradeParameter, this.multiplier)
     }
 
-    override fun onUninstallUpgrade(upgradable: TCMachineTileEntity, upgrades: MachineUpgradesTileEntityComponent) {
+    override fun onUninstallUpgrade(upgradable: TCMachineTileEntity, upgrades: TileEntityMachineUpgradesComponent) {
         upgradable.upgradeParameter(this.upgradeParameter, -this.multiplier)
     }
 
-    override fun onUpgradeLoad(upgradable: TCMachineTileEntity, upgrades: MachineUpgradesTileEntityComponent) {
+    override fun onUpgradeLoad(upgradable: TCMachineTileEntity, upgrades: TileEntityMachineUpgradesComponent) {
     }
 
     override fun getUpgradeDescription(): Optional<ITextComponent> {

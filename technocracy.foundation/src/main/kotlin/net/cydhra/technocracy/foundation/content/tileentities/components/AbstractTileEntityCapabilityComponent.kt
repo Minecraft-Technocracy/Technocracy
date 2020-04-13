@@ -6,6 +6,6 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider
 /**
  * Defines structure for capabilities that also implement a capability.
  */
-abstract class AbstractCapabilityTileEntityComponent : AbstractTileEntityComponent(), ICapabilityProvider {
+abstract class AbstractTileEntityCapabilityComponent : AbstractTileEntityComponent(), ICapabilityProvider {
 
 }

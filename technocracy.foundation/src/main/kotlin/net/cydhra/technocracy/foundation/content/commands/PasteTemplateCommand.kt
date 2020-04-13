@@ -16,9 +16,10 @@ class PasteTemplateCommand : CommandBase() {
         tmp.loadFromAssets(args[0])
 
         val player = sender.commandSenderEntity!!
-        val length = 5.0
+        val length = 10.0
 
-        val pos = player.getPositionEyes(0f).addVector(player.lookVec.x * length, player.lookVec.y * length, player.lookVec.z * length)
+        val trace = player.rayTrace(10.0, 0f)
+        val pos = trace?.blockPos ?: player.position//player.getPositionEyes(0f).addVector(player.lookVec.x * length, player.lookVec.y * length, player.lookVec.z * length)
 
         for(info in tmp.blocks) {
             val state = if(info.meta != -1) info.block.getStateFromMeta(info.meta) else info.block.defaultState

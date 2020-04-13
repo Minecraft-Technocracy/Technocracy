@@ -7,7 +7,7 @@ import net.cydhra.technocracy.foundation.util.compound
 import net.minecraft.nbt.NBTTagCompound
 
 
-class OwnerShipTileEntityComponent : AbstractTileEntityComponent() {
+class TileEntityOwnerShipComponent : AbstractTileEntityComponent() {
 
     var currentOwner: GroupManager.PlayerGroup? = null
         private set

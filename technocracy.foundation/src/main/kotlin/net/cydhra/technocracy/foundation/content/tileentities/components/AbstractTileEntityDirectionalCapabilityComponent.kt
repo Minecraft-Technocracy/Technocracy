@@ -1,7 +1,6 @@
 package net.cydhra.technocracy.foundation.content.tileentities.components
 
 import net.cydhra.technocracy.foundation.util.append
-import net.cydhra.technocracy.foundation.util.get
 import net.cydhra.technocracy.foundation.util.tagList
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTTagInt
@@ -10,7 +9,7 @@ import net.minecraft.util.EnumFacing
 /**
  * Defines structure for capabilities with a facing that also implement a capability.
  */
-abstract class AbstractDirectionalCapabilityTileEntityComponent : AbstractCapabilityTileEntityComponent() {
+abstract class AbstractTileEntityDirectionalCapabilityComponent : AbstractTileEntityCapabilityComponent() {
     abstract val facing: MutableSet<EnumFacing>
 
     abstract fun getDirection(): Direction
