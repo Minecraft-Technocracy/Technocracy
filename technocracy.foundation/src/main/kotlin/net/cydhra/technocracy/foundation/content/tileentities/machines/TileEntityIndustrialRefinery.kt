@@ -12,8 +12,8 @@ import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
 import net.cydhra.technocracy.foundation.client.gui.machine.BaseMachineTab
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
-import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityInventoryComponent
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ItemProcessingLogic
 import net.cydhra.technocracy.foundation.data.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
@@ -26,16 +26,16 @@ import net.minecraft.util.EnumFacing
  *
  */
 class TileEntityIndustrialRefinery : MachineTileEntity(), TEInventoryProvider {
-    private val inputFluidComponent1 = FluidTileEntityComponent(4000,
+    private val inputFluidComponent1 = TileEntityFluidComponent(4000,
             tanktype = DynamicFluidCapability.TankType.INPUT, facing = mutableSetOf(EnumFacing.WEST))
 
-    private val inputFluidComponent2 = FluidTileEntityComponent(4000,
+    private val inputFluidComponent2 = TileEntityFluidComponent(4000,
             tanktype = DynamicFluidCapability.TankType.INPUT, facing = mutableSetOf(EnumFacing.SOUTH))
 
-    private val inputItemComponent = InventoryTileEntityComponent(2, this, EnumFacing.NORTH,
+    private val inputItemComponent = TileEntityInventoryComponent(2, this, EnumFacing.NORTH,
             DynamicInventoryCapability.InventoryType.BOTH)
 
-    private val outputInventoryComponent = InventoryTileEntityComponent(1, this, EnumFacing.EAST,
+    private val outputInventoryComponent = TileEntityInventoryComponent(1, this, EnumFacing.EAST,
             DynamicInventoryCapability.InventoryType.OUTPUT)
 
     /**

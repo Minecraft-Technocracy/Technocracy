@@ -4,7 +4,7 @@ import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.api.ecs.IComponent
 import net.cydhra.technocracy.foundation.api.ecs.tileentities.AbstractTileEntityComponent
 import net.cydhra.technocracy.foundation.api.ecs.tileentities.TCAggregatableTileEntity
-import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractCapabilityTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractTileEntityCapabilityComponent
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTTagList
@@ -28,7 +28,7 @@ class AggregatableTileEntityDelegate : TCAggregatableTileEntity {
      * All components that also offer a capability. They must also be added to [components] but for speed they are
      * also collected in this list for quick query times in [supportsCapability]
      */
-    private val capabilityComponents: MutableMap<String, AbstractCapabilityTileEntityComponent> = mutableMapOf()
+    private val capabilityComponents: MutableMap<String, AbstractTileEntityCapabilityComponent> = mutableMapOf()
 
     /**
      * @return all registered components
@@ -58,7 +58,7 @@ class AggregatableTileEntityDelegate : TCAggregatableTileEntity {
 
         component.onRegister()
 
-        if (component is AbstractCapabilityTileEntityComponent) {
+        if (component is AbstractTileEntityCapabilityComponent) {
             capabilityComponents[name] = component
         }
     }

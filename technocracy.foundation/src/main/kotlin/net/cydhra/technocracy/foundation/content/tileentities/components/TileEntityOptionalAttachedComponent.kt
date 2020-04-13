@@ -12,7 +12,7 @@ import net.minecraftforge.common.capabilities.Capability
  * This means that capabilities are exposed if present. This does however not mean, that logic can handle
  * this component instead of the wrapped one: The type is still opaque.
  */
-class OptionalAttachedTileEntityComponent<T : AbstractTileEntityComponent>(val innerComponent: T) : AbstractCapabilityTileEntityComponent() {
+class TileEntityOptionalAttachedComponent<T : AbstractTileEntityComponent>(val innerComponent: T) : AbstractTileEntityCapabilityComponent() {
 
     var isAttached = false
     override val type: ComponentType = ComponentType.OPTIONAL
@@ -33,12 +33,12 @@ class OptionalAttachedTileEntityComponent<T : AbstractTileEntityComponent>(val i
     }
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
-        return isAttached && innerComponent is AbstractCapabilityTileEntityComponent &&
+        return isAttached && innerComponent is AbstractTileEntityCapabilityComponent &&
                 innerComponent.hasCapability(capability, facing)
     }
 
     override fun <T> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
-        if (!isAttached || innerComponent !is AbstractCapabilityTileEntityComponent) {
+        if (!isAttached || innerComponent !is AbstractTileEntityCapabilityComponent) {
             return null
         }
 

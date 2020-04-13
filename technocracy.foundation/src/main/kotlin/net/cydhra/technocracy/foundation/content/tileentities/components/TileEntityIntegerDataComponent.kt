@@ -5,29 +5,26 @@ import net.cydhra.technocracy.foundation.api.ecs.tileentities.AbstractTileEntity
 import net.cydhra.technocracy.foundation.util.compound
 import net.minecraft.nbt.NBTTagCompound
 
-/**
- * Tile entity component that stores a singular boolean. Used by rocket controllers to save the ``isLinked`` state.
- * Marks the tile entity dirty on change.
- */
-class BooleanDataTileEntityComponent : AbstractTileEntityComponent() {
 
-    var state: Boolean = false
+class TileEntityIntegerDataComponent : AbstractTileEntityComponent() {
+
+    var value: Int = 0
         private set
 
-    fun setState(newState: Boolean) {
-        state = newState
+    fun setValue(newValue: Int) {
+        value = newValue
         markDirty(false)
     }
 
     override fun serializeNBT(): NBTTagCompound {
         return compound {
-            "state" to state
+            "value" to value
         }
     }
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
-        if (nbt.hasKey("state"))
-            state = nbt.getBoolean("state")
+        if (nbt.hasKey("value"))
+            value = nbt.getInteger("value")
     }
 
     override val type: ComponentType = ComponentType.OTHER

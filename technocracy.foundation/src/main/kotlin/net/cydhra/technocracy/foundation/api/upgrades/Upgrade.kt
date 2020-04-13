@@ -1,7 +1,6 @@
 package net.cydhra.technocracy.foundation.api.upgrades
 
 import net.cydhra.technocracy.foundation.api.ecs.IComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesTileEntityComponent
 import net.minecraft.util.text.ITextComponent
 import java.util.*
 

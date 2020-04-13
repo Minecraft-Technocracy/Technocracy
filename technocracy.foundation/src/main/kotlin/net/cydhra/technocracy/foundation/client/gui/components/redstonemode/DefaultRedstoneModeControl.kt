@@ -2,7 +2,7 @@ package net.cydhra.technocracy.foundation.client.gui.components.redstonemode
 
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.TCClientGuiImpl
-import net.cydhra.technocracy.foundation.content.tileentities.components.RedstoneModeTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityRedstoneModeComponent
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
@@ -10,7 +10,7 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.tileentity.TileEntity
 import net.minecraftforge.fml.relauncher.Side
 
-class DefaultRedstoneModeControl(posX: Int, posY: Int, val component: RedstoneModeTileEntityComponent, override var gui: TCGui) : RedstoneModeControl(posX, posY) {
+class DefaultRedstoneModeControl(posX: Int, posY: Int, val component: TileEntityRedstoneModeComponent, override var gui: TCGui) : RedstoneModeControl(posX, posY) {
 
     override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
         super.draw(x, y, mouseX, mouseY, partialTicks)
@@ -27,7 +27,7 @@ class DefaultRedstoneModeControl(posX: Int, posY: Int, val component: RedstoneMo
     }
 
     override var onClick: ((Side, EntityPlayer, TileEntity?, Int) -> Unit)? = { side, player, tileEntity, button ->
-        component.redstoneMode = RedstoneModeTileEntityComponent.RedstoneMode.values()[(component.redstoneMode.ordinal + 1) % RedstoneModeTileEntityComponent.RedstoneMode.values().size]
+        component.redstoneMode = TileEntityRedstoneModeComponent.RedstoneMode.values()[(component.redstoneMode.ordinal + 1) % TileEntityRedstoneModeComponent.RedstoneMode.values().size]
     }
 
     /*override fun handleClientClick(player: EntityPlayer, mouseButton: Int) {

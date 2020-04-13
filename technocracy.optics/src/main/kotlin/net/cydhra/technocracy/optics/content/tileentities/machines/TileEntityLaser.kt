@@ -6,7 +6,7 @@ import net.cydhra.technocracy.foundation.api.tileentities.TCTileEntityGuiProvide
 import net.cydhra.technocracy.foundation.client.gui.SimpleGui
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
-import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityEnergyStorageComponent
 import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableTileEntity
 import net.cydhra.technocracy.optics.api.tileentities.components.LaserEmitterTileEntityComponent
 import net.cydhra.technocracy.optics.api.tileentities.logic.LaserLogic
@@ -16,7 +16,7 @@ import net.minecraft.util.ITickable
 
 class TileEntityLaser : AggregatableTileEntity(), ITickable, TCTileEntityGuiProvider, ILogicClient by LogicClientDelegate() {
 
-    private val energyStorage = EnergyStorageTileEntityComponent(facing = mutableSetOf(EnumFacing.DOWN))
+    private val energyStorage = TileEntityEnergyStorageComponent(facing = mutableSetOf(EnumFacing.DOWN))
     private val laserEmitter = LaserEmitterTileEntityComponent(setOf(EnumFacing.NORTH), limit = -1)
 
     init {

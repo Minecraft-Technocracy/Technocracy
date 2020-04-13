@@ -7,18 +7,17 @@ import net.cydhra.technocracy.foundation.client.gui.components.label.DefaultLabe
 import net.cydhra.technocracy.foundation.client.gui.multiblock.BaseMultiblockTab
 import net.cydhra.technocracy.foundation.content.items.siliconItem
 import net.cydhra.technocracy.foundation.content.multiblock.CapacitorMultiBlock
-import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityEnergyStorageComponent
 import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
 import net.cydhra.technocracy.foundation.model.tileentities.multiblock.ITileEntityMultiblockController
 import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
 import net.minecraft.client.Minecraft
 import net.minecraft.util.EnumFacing
-import net.minecraft.util.ResourceLocation
 
 class TileEntityCapacitorController : TileEntityMultiBlockPart<CapacitorMultiBlock>(CapacitorMultiBlock::class,
         ::CapacitorMultiBlock), ITileEntityMultiblockController {
 
-    val energyStorageComponent = EnergyStorageTileEntityComponent(EnumFacing.values().toMutableSet())
+    val energyStorageComponent = TileEntityEnergyStorageComponent(EnumFacing.values().toMutableSet())
 
     init {
         energyStorageComponent.energyStorage.capacity = 100000
@@ -31,7 +30,7 @@ class TileEntityCapacitorController : TileEntityMultiBlockPart<CapacitorMultiBlo
             override fun init() {
                 (this@TileEntityCapacitorController.multiblockController as BaseMultiBlock).getComponents().forEach { (_, guiComponent) ->
                     when (guiComponent) {
-                        is EnergyStorageTileEntityComponent -> {
+                        is TileEntityEnergyStorageComponent -> {
                             components.add(DefaultEnergyMeter(10, 20, guiComponent, gui))
                         }
                     }

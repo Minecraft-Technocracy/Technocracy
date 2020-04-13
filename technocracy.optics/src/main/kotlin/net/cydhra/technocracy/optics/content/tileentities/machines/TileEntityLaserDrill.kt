@@ -10,10 +10,10 @@ import net.cydhra.technocracy.foundation.client.gui.TCTab
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
 import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
-import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.HeatStorageTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.ProgressTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityEnergyStorageComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityHeatStorageComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityInventoryComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityProgressComponent
 import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableTileEntity
 import net.cydhra.technocracy.optics.api.tileentities.components.LaserAbsorberComponent
 import net.cydhra.technocracy.optics.content.tileentities.logic.LaserDrillLogic
@@ -35,15 +35,15 @@ class TileEntityLaserDrill : AggregatableTileEntity(),
         const val SLOTS_PER_ROW = 9
     }
 
-    private val heatStorageComponent = HeatStorageTileEntityComponent(0, 8000)
-    private val outputInventory = InventoryTileEntityComponent(27, this, EnumFacing.UP,
+    private val heatStorageComponent = TileEntityHeatStorageComponent(0, 8000)
+    private val outputInventory = TileEntityInventoryComponent(27, this, EnumFacing.UP,
             DynamicInventoryCapability.InventoryType.OUTPUT)
-    private val progressComponent = ProgressTileEntityComponent()
+    private val progressComponent = TileEntityProgressComponent()
     private val laserAbsorberComponent = LaserAbsorberComponent(
             mutableSetOf(EnumFacing.NORTH, EnumFacing.EAST, EnumFacing.SOUTH, EnumFacing.WEST))
 
     // this is just a temporary energy storage that gets immediately emptied by LaserDrillLogic
-    private val energyComponent = EnergyStorageTileEntityComponent(mutableSetOf()).apply {
+    private val energyComponent = TileEntityEnergyStorageComponent(mutableSetOf()).apply {
         this.energyStorage.capacity = 400_000
     }
 

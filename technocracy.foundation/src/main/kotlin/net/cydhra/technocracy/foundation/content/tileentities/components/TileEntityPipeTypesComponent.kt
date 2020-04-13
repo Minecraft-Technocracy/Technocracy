@@ -7,7 +7,7 @@ import net.minecraft.nbt.NBTTagCompound
 import java.util.*
 
 
-class PipeTypesTileEntityComponent : AbstractTileEntityComponent() {
+class TileEntityPipeTypesComponent : AbstractTileEntityComponent() {
 
     override val type: ComponentType = ComponentType.OTHER
 

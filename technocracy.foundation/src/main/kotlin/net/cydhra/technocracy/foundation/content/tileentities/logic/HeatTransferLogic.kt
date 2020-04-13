@@ -1,8 +1,8 @@
 package net.cydhra.technocracy.foundation.content.tileentities.logic
 
 import net.cydhra.technocracy.foundation.api.ecs.logic.ILogic
-import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.HeatStorageTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityHeatStorageComponent
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ConversionDirection.COLD_TO_HOT
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ConversionDirection.HOT_TO_COLD
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
@@ -17,15 +17,15 @@ import net.minecraftforge.fluids.FluidStack
  */
 class HeatTransferLogic(
         var processFluidPerTick: Int = 10,
-        private val hotFluidComponent: FluidTileEntityComponent,
-        private val coldFluidComponent: FluidTileEntityComponent,
+        private val hotFluidComponent: TileEntityFluidComponent,
+        private val coldFluidComponent: TileEntityFluidComponent,
         private val direction: ConversionDirection,
-        private val heatBuffer: HeatStorageTileEntityComponent
+        private val heatBuffer: TileEntityHeatStorageComponent
 ) : ILogic {
 
-    private val inputFluidComponent: FluidTileEntityComponent = if (this.direction == COLD_TO_HOT) coldFluidComponent else hotFluidComponent
+    private val inputFluidComponent: TileEntityFluidComponent = if (this.direction == COLD_TO_HOT) coldFluidComponent else hotFluidComponent
 
-    private val outputFluidComponent: FluidTileEntityComponent = if (this.direction == COLD_TO_HOT) hotFluidComponent else coldFluidComponent
+    private val outputFluidComponent: TileEntityFluidComponent = if (this.direction == COLD_TO_HOT) hotFluidComponent else coldFluidComponent
 
     private val recipes by lazy {
         RecipeManager.getSpecialRecipesByType(RecipeManager.RecipeType.HEAT)!!.filterIsInstance<HeatRecipe>()

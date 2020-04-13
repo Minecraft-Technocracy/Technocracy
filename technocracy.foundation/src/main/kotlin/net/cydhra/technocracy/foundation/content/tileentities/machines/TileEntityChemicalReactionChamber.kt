@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.content.tileentities.machines
 
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
-import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ItemProcessingLogic
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
@@ -11,12 +11,12 @@ import net.minecraft.util.EnumFacing
  *
  */
 class TileEntityChemicalReactionChamber : MachineTileEntity() {
-    private val inputInventoryComponent = FluidTileEntityComponent(4000,
+    private val inputInventoryComponent = TileEntityFluidComponent(4000,
             tanktype = DynamicFluidCapability.TankType.INPUT, facing = mutableSetOf(EnumFacing.WEST))
-    private val inputInventoryComponent2 = FluidTileEntityComponent(4000,
+    private val inputInventoryComponent2 = TileEntityFluidComponent(4000,
             tanktype = DynamicFluidCapability.TankType.INPUT, facing = mutableSetOf(EnumFacing.UP))
 
-    private val outputInventoryComponent = FluidTileEntityComponent(4000,
+    private val outputInventoryComponent = TileEntityFluidComponent(4000,
             tanktype = DynamicFluidCapability.TankType.OUTPUT, facing = mutableSetOf(EnumFacing.EAST))
 
     init {

@@ -3,8 +3,8 @@ package net.cydhra.technocracy.foundation.content.tileentities.multiblock.boiler
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.fluids.steamFluid
 import net.cydhra.technocracy.foundation.content.multiblock.BoilerMultiBlock
-import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.ProgressTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityProgressComponent
 import net.cydhra.technocracy.foundation.model.tileentities.multiblock.ITileEntityMultiblockController
 import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
 import net.minecraft.util.EnumFacing
@@ -30,9 +30,9 @@ class TileEntityBoilerController
     private val internalSteamHandler = DynamicFluidCapability(0, mutableListOf(steamFluid.name),
             DynamicFluidCapability.TankType.OUTPUT)
 
-    private val waterComponent = FluidTileEntityComponent(internalFluidHandler, mutableSetOf())
-    private val steamComponent = FluidTileEntityComponent(internalSteamHandler, mutableSetOf())
-    private val progressComponent = ProgressTileEntityComponent()
+    private val waterComponent = TileEntityFluidComponent(internalFluidHandler, mutableSetOf())
+    private val steamComponent = TileEntityFluidComponent(internalSteamHandler, mutableSetOf())
+    private val progressComponent = TileEntityProgressComponent()
 
     /**
      * The fluid storage of this boiler structure. If the structure isn't fully assembled, it is null

@@ -5,9 +5,9 @@ import net.cydhra.technocracy.foundation.client.gui.TCIcon
 import net.cydhra.technocracy.foundation.client.gui.TCTab
 import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.CoolantMeter
 import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.LubricantFluidMeter
-import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.HeatStorageTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityHeatStorageComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityMachineUpgradesComponent
 import net.cydhra.technocracy.foundation.content.tileentities.upgrades.CoolingUpgrade
 import net.cydhra.technocracy.foundation.content.tileentities.upgrades.LubricantUpgrade
 import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
@@ -20,9 +20,9 @@ abstract class BaseMachineTab(val machine: MachineTileEntity, parent: TCGui, ico
         TCTab(name = machine.blockType?.localizedName ?: "", parent = parent, icon = icon) {
 
     override fun init() {
-        val upgardeComp = machine.getComponents().stream().filter { it.second is MachineUpgradesTileEntityComponent }.findFirst()
+        val upgardeComp = machine.getComponents().stream().filter { it.second is TileEntityMachineUpgradesComponent }.findFirst()
         if (upgardeComp.isPresent) {
-            val upgrades = (upgardeComp.get().second as MachineUpgradesTileEntityComponent).getInstalledUpgrades()
+            val upgrades = (upgardeComp.get().second as TileEntityMachineUpgradesComponent).getInstalledUpgrades()
             val hasCooling = upgrades.find { it is CoolingUpgrade } != null
             val hasLubricant = upgrades.find { it is LubricantUpgrade } != null
 
@@ -30,7 +30,7 @@ abstract class BaseMachineTab(val machine: MachineTileEntity, parent: TCGui, ico
             if (hasLubricant) {
                 val compLubricant = machine.getComponents().find { it.first == LubricantUpgrade.LUBRICANT_FLUID_COMPONENT_NAME }
                 if(compLubricant != null) {
-                    yOff += components.addElement(LubricantFluidMeter(-36, yOff , compLubricant.second as FluidTileEntityComponent, parent)).height
+                    yOff += components.addElement(LubricantFluidMeter(-36, yOff , compLubricant.second as TileEntityFluidComponent, parent)).height
                     yOff += 5
                 }
             }
@@ -40,7 +40,7 @@ abstract class BaseMachineTab(val machine: MachineTileEntity, parent: TCGui, ico
                 val compCoolOut = machine.getComponents().find { it.first == CoolingUpgrade.COOLER_FLUID_OUTPUT_NAME }
                 val compHeat = machine.getComponents().find { it.first == CoolingUpgrade.COOLER_HEAT_STORAGE_COMPONENT_NAME }
                 if (compCoolIn != null && compCoolOut != null && compHeat != null) {
-                    components.add(CoolantMeter(-64, yOff , compCoolIn.second as FluidTileEntityComponent, compCoolOut.second as FluidTileEntityComponent, compHeat.second as HeatStorageTileEntityComponent, parent))
+                    components.add(CoolantMeter(-64, yOff , compCoolIn.second as TileEntityFluidComponent, compCoolOut.second as TileEntityFluidComponent, compHeat.second as TileEntityHeatStorageComponent, parent))
                 }
             }
         }

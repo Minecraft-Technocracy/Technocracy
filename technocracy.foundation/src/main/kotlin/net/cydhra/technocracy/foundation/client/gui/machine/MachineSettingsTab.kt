@@ -4,19 +4,18 @@ import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.TCIcon
 import net.cydhra.technocracy.foundation.client.gui.TCTab
 import net.cydhra.technocracy.foundation.client.gui.components.redstonemode.DefaultRedstoneModeControl
-import net.cydhra.technocracy.foundation.content.tileentities.components.RedstoneModeTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityRedstoneModeComponent
 import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
 import net.minecraft.client.Minecraft
 import net.minecraft.init.Items
-import net.minecraft.util.ResourceLocation
 
 class MachineSettingsTab(parent: TCGui, val machine: MachineTileEntity) : TCTab("Settings", parent,
         icon = TCIcon(Items.REDSTONE)) {
 
     override fun init() {
         machine.getComponents().forEach {
-            if (it.second is RedstoneModeTileEntityComponent) {
-                val control = DefaultRedstoneModeControl(97, 20, it.second as RedstoneModeTileEntityComponent, parent)
+            if (it.second is TileEntityRedstoneModeComponent) {
+                val control = DefaultRedstoneModeControl(97, 20, it.second as TileEntityRedstoneModeComponent, parent)
                 components.add(control)
             }
         }

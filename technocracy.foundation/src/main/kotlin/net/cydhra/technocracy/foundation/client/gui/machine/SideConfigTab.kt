@@ -15,9 +15,9 @@ import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotPlayer
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.content.items.wrenchItem
-import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractCapabilityTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractDirectionalCapabilityTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractTileEntityCapabilityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractTileEntityDirectionalCapabilityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityInventoryComponent
 import net.cydhra.technocracy.foundation.model.blocks.api.AbstractRotatableTileEntityBlock
 import net.cydhra.technocracy.foundation.model.blocks.api.AbstractRotatableTileEntityBlock.Companion.facingProperty
 import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
@@ -170,7 +170,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
                             val handler = it.itemHandler
                             if (handler is DynamicInventoryCapability) {
                                 val comp = handler.componentParent
-                                if (comp is InventoryTileEntityComponent) {
+                                if (comp is TileEntityInventoryComponent) {
                                     if (it.isMouseOnComponent(mouseX - x, mouseY - y)) {
                                         changedComponent = comp
                                         if (!comp.facing.remove(face)) {
@@ -378,7 +378,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         GlStateManager.enableDepth()
 
         val rotations = Vector3f(0f, 0f, 0f)
-        val colorMap = mutableMapOf<AbstractCapabilityTileEntityComponent, Int>()
+        val colorMap = mutableMapOf<AbstractTileEntityCapabilityComponent, Int>()
 
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
         for (f in EnumFacing.values()) {
@@ -390,13 +390,13 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
             val bb = AxisAlignedBB(-0.0, -0.0, -0.0, 1.0, 1.0, 1.0).contract(opposite.frontOffsetX.toDouble(), opposite.frontOffsetY.toDouble(), opposite.frontOffsetZ.toDouble()).offset(opposite.frontOffsetX.toDouble() * -0.01, opposite.frontOffsetY.toDouble() * -0.01, opposite.frontOffsetZ.toDouble() * -0.01)
 
 
-            val visited = mutableSetOf<AbstractCapabilityTileEntityComponent>()
+            val visited = mutableSetOf<AbstractTileEntityCapabilityComponent>()
             val totalRotsOnSide = Vector2f(0f, 0f)
 
             //increase rotation vector based on component type
-            val increaseRotation: (AbstractDirectionalCapabilityTileEntityComponent) -> Unit = { comp: AbstractDirectionalCapabilityTileEntityComponent ->
+            val increaseRotation: (AbstractTileEntityDirectionalCapabilityComponent) -> Unit = { comp: AbstractTileEntityDirectionalCapabilityComponent ->
                 if (visited.add(comp) && comp.facing.contains(face)) {
-                    if (comp.getDirection() == AbstractDirectionalCapabilityTileEntityComponent.Direction.OUTPUT) {
+                    if (comp.getDirection() == AbstractTileEntityDirectionalCapabilityComponent.Direction.OUTPUT) {
                         totalRotsOnSide.y++
                     } else {
                         totalRotsOnSide.x++
@@ -407,7 +407,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
             //calculate max elements on side, used to color in the right amount of elements
             for (it in mainTab.components) {
                 if (it is TCCapabilityComponent<*>) {
-                    if (it.component is AbstractDirectionalCapabilityTileEntityComponent) {
+                    if (it.component is AbstractTileEntityDirectionalCapabilityComponent) {
                         increaseRotation(it.component)
                     }
                 } else if (it !is TCSlotPlayer) {
@@ -421,7 +421,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
                             val handler = it.itemHandler
                             if (handler is DynamicInventoryCapability) {
                                 val comp = handler.componentParent
-                                if (comp is InventoryTileEntityComponent) {
+                                if (comp is TileEntityInventoryComponent) {
                                     increaseRotation(comp)
                                 }
                             }
@@ -434,7 +434,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
 
             for (it in mainTab.components) {
                 if (it is TCCapabilityComponent<*>) {
-                    if (it.component is AbstractDirectionalCapabilityTileEntityComponent) {
+                    if (it.component is AbstractTileEntityDirectionalCapabilityComponent) {
                         if (visited.add(it.component))
                             renderBlockOverlay(face, it.component, colorMap, bb, rotations, totalRotsOnSide)
                     }
@@ -451,7 +451,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
                             val handler = it.itemHandler
                             if (handler is DynamicInventoryCapability) {
                                 val comp = handler.componentParent
-                                if (comp is InventoryTileEntityComponent && visited.add(comp)) {
+                                if (comp is TileEntityInventoryComponent && visited.add(comp)) {
                                     renderBlockOverlay(face, comp, colorMap, bb, rotations, totalRotsOnSide)
                                 }
                             }
@@ -618,7 +618,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
                     it.draw(x, y, mouseX, mouseY, -1f)
                     continue@loop
                 } else if (it is TCCapabilityComponent<*>) {
-                    if (it.component is AbstractDirectionalCapabilityTileEntityComponent) {
+                    if (it.component is AbstractTileEntityDirectionalCapabilityComponent) {
                         @Suppress("UNCHECKED_CAST")
                         renderSelectionOutline(x, y, face, it, it.component, colorMap, rotations)
                     }
@@ -628,7 +628,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
                             val handler = it.itemHandler
                             if (handler is DynamicInventoryCapability) {
                                 val comp = handler.componentParent
-                                if (comp is InventoryTileEntityComponent) {
+                                if (comp is TileEntityInventoryComponent) {
                                     renderSelectionOutline(x - 1, y - 1, face, it, comp, colorMap, rotations)
                                 }
                             }
@@ -659,8 +659,8 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
                                        y: Int,
                                        facing: EnumFacing,
                                        renderComponent: ITCComponent,
-                                       component: AbstractDirectionalCapabilityTileEntityComponent,
-                                       colorMap: MutableMap<AbstractCapabilityTileEntityComponent, Int>,
+                                       component: AbstractTileEntityDirectionalCapabilityComponent,
+                                       colorMap: MutableMap<AbstractTileEntityCapabilityComponent, Int>,
                                        rotation: Vector3f
     ) {
         val color = colorMap.getOrPut(component) {
@@ -693,8 +693,8 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
      */
     private fun renderBlockOverlay(
             facing: EnumFacing,
-            component: AbstractDirectionalCapabilityTileEntityComponent,
-            colorMap: MutableMap<AbstractCapabilityTileEntityComponent, Int>,
+            component: AbstractTileEntityDirectionalCapabilityComponent,
+            colorMap: MutableMap<AbstractTileEntityCapabilityComponent, Int>,
             bb: AxisAlignedBB,
             rotation: Vector3f,
             totalRotsOnSide: Vector2f
@@ -711,7 +711,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
 
             val image: String
 
-            var rot = if (component.getDirection() == AbstractDirectionalCapabilityTileEntityComponent.Direction.OUTPUT) {
+            var rot = if (component.getDirection() == AbstractTileEntityDirectionalCapabilityComponent.Direction.OUTPUT) {
                 image = "out"
 
                 if (totalRotsOnSide.y == 2f) {

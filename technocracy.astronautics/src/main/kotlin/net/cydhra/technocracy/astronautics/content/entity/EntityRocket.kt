@@ -6,19 +6,17 @@ import net.cydhra.technocracy.astronautics.content.blocks.rocketDriveBlock
 import net.cydhra.technocracy.astronautics.content.fx.ParticleSmoke
 import net.cydhra.technocracy.astronautics.content.tileentity.TileEntityRocketController
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
-import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.OwnerShipTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityOwnerShipComponent
 import net.cydhra.technocracy.foundation.data.world.groups.GroupManager
 import net.cydhra.technocracy.foundation.model.fx.manager.TCParticleManager
 import net.cydhra.technocracy.foundation.util.readCompoundTag
 import net.cydhra.technocracy.foundation.util.structures.Template
 import net.cydhra.technocracy.foundation.util.writeCompoundTag
-import net.minecraft.block.material.Material
 import net.minecraft.client.renderer.vertex.VertexBuffer
 import net.minecraft.entity.Entity
 import net.minecraft.entity.MoverType
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.init.SoundEvents
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTTagList
@@ -31,13 +29,11 @@ import net.minecraft.util.EnumFacing
 import net.minecraft.util.NonNullList
 import net.minecraft.util.math.AxisAlignedBB
 import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.MathHelper
 import net.minecraft.world.World
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.util.Constants
 import net.minecraftforge.event.entity.EntityEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
-import net.minecraftforge.fml.common.gameevent.TickEvent
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
@@ -70,9 +66,9 @@ open class EntityRocket(world: World) : Entity(world), IEntityAdditionalSpawnDat
         private val LIFTOFF = EntityDataManager.createKey(EntityRocket::class.java, DataSerializers.BOOLEAN)
     }
 
-    val owner = OwnerShipTileEntityComponent()
+    val owner = TileEntityOwnerShipComponent()
     //TODO config
-    val tank = FluidTileEntityComponent(DynamicFluidCapability(0, mutableListOf("rocket_fuel")), EnumFacing.values().toMutableSet())
+    val tank = TileEntityFluidComponent(DynamicFluidCapability(0, mutableListOf("rocket_fuel")), EnumFacing.values().toMutableSet())
     var cargoSlots: NonNullList<ItemStack>? = null
     var dysonCargo = false
 

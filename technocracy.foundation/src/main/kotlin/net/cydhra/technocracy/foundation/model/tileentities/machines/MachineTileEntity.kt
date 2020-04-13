@@ -42,20 +42,20 @@ open class MachineTileEntity(
     /**
      * The machine's redstone mode
      */
-    protected val redstoneModeComponent = RedstoneModeTileEntityComponent()
+    protected val redstoneModeComponent = TileEntityRedstoneModeComponent()
 
     /**
      * The machines internal energy storage and transfer limit state
      */
-    protected val energyStorageComponent = EnergyStorageTileEntityComponent(mutableSetOf(EnumFacing.DOWN))
+    protected val energyStorageComponent = TileEntityEnergyStorageComponent(mutableSetOf(EnumFacing.DOWN))
 
-    protected val progressComponent = ProgressTileEntityComponent()
+    protected val progressComponent = TileEntityProgressComponent()
 
-    protected val processingSpeedComponent = MultiplierTileEntityComponent(UPGRADE_SPEED)
+    protected val processingSpeedComponent = TileEntityMultiplierComponent(UPGRADE_SPEED)
 
-    protected val energyCostComponent = MultiplierTileEntityComponent(UPGRADE_ENERGY)
+    protected val energyCostComponent = TileEntityMultiplierComponent(UPGRADE_ENERGY)
 
-    private val upgradesComponent = MachineUpgradesTileEntityComponent(upgradeSlots)
+    private val upgradesComponent = TileEntityMachineUpgradesComponent(upgradeSlots)
 
     /**
      * A map of all upgradable parameters within the machine. This is important because an
@@ -91,22 +91,22 @@ open class MachineTileEntity(
                 var nextInput = 10
                 var inputNearestToTheMiddle = 0
                 var outputNearestToTheMiddle = parent.guiWidth
-                var foundProgressComponent: ProgressTileEntityComponent? = null
+                var foundProgressComponent: TileEntityProgressComponent? = null
 
                 val sortedComponents = listOf(*this@MachineTileEntity.getComponents().toTypedArray())
-                        .sortedBy { (_, component) -> component !is FluidTileEntityComponent }
-                        .sortedBy { (_, component) -> component !is EnergyStorageTileEntityComponent }
+                        .sortedBy { (_, component) -> component !is TileEntityFluidComponent }
+                        .sortedBy { (_, component) -> component !is TileEntityEnergyStorageComponent }
                 sortedComponents.forEach { (name, component) ->
                     if (name != CoolingUpgrade.COOLER_FLUID_INPUT_NAME && name != CoolingUpgrade.COOLER_FLUID_OUTPUT_NAME && name != LubricantUpgrade.LUBRICANT_FLUID_COMPONENT_NAME) {
                         when (component) {
-                            is EnergyStorageTileEntityComponent -> {
+                            is TileEntityEnergyStorageComponent -> {
                                 components.add(DefaultEnergyMeter(nextInput, 20, component, gui))
                                 if (inputNearestToTheMiddle < 20) {
                                     inputNearestToTheMiddle = 20
                                     nextInput = 25
                                 }
                             }
-                            is FluidTileEntityComponent -> {
+                            is TileEntityFluidComponent -> {
                                 when {
                                     component.fluid.tanktype == DynamicFluidCapability.TankType.INPUT -> {
                                         components.add(DefaultFluidMeter(nextInput, 20, component, gui))
@@ -126,7 +126,7 @@ open class MachineTileEntity(
                                     }
                                 }
                             }
-                            is InventoryTileEntityComponent -> {
+                            is TileEntityInventoryComponent -> {
                                 if (component.inventoryType != DynamicInventoryCapability.InventoryType.OUTPUT) {
                                     for (i in 0 until component.inventory.slots) {
                                         if (nextInput == 25)
@@ -150,7 +150,7 @@ open class MachineTileEntity(
                                     }
                                 }
                             }
-                            is ProgressTileEntityComponent -> {
+                            is TileEntityProgressComponent -> {
                                 foundProgressComponent = component
                             }
                         }
@@ -160,7 +160,7 @@ open class MachineTileEntity(
                     components.add(DefaultProgressBar((outputNearestToTheMiddle - inputNearestToTheMiddle) / 2 + inputNearestToTheMiddle,
                             40,
                             Orientation.RIGHT,
-                            foundProgressComponent as ProgressTileEntityComponent,
+                            foundProgressComponent as TileEntityProgressComponent,
                             gui))
 
                 if (player != null)
@@ -180,9 +180,9 @@ open class MachineTileEntity(
     open fun addDefaultTabs(gui: TCGui, player: EntityPlayer?) {
         gui.registerTab(MachineSettingsTab(gui, this))
 
-        val upgradesComponent = this.getComponents().firstOrNull { (_, c) -> c is MachineUpgradesTileEntityComponent }?.second
+        val upgradesComponent = this.getComponents().firstOrNull { (_, c) -> c is TileEntityMachineUpgradesComponent }?.second
         if (upgradesComponent != null) {
-            gui.registerTab(MachineUpgradesTab(gui, upgradesComponent as MachineUpgradesTileEntityComponent, player))
+            gui.registerTab(MachineUpgradesTab(gui, upgradesComponent as TileEntityMachineUpgradesComponent, player))
         }
 
         gui.registerTab(SideConfigTab(gui, this, gui.getTab(0)))
@@ -205,7 +205,7 @@ open class MachineTileEntity(
      */
     protected fun registerUpgradeParameter(
             parameter: UpgradeParameter,
-            multiplierComponent: MultiplierTileEntityComponent) {
+            multiplierComponent: TileEntityMultiplierComponent) {
         this.upgradeParameters[parameter] = multiplierComponent
     }
 

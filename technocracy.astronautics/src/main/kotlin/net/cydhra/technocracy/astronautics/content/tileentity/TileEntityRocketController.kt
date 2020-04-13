@@ -59,12 +59,12 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
         return 16//default*/
     }
 
-    val ownerShip = OwnerShipTileEntityComponent()
-    val linked = BooleanDataTileEntityComponent()
-    val maxStackSize = IntegerDataTileEntityComponent()
+    val ownerShip = TileEntityOwnerShipComponent()
+    val linked = TileEntityBooleanDataComponent()
+    val maxStackSize = TileEntityIntegerDataComponent()
     val dynCapability = DynamicFluidCapability(0, mutableListOf("rocket_fuel"))
-    val fluidBuffer = FluidTileEntityComponent(dynCapability, EnumFacing.values().toMutableSet())
-    val inventoryBuffer = InventoryTileEntityComponent(0, this, EnumFacing.values().toMutableSet())
+    val fluidBuffer = TileEntityFluidComponent(dynCapability, EnumFacing.values().toMutableSet())
+    val inventoryBuffer = TileEntityInventoryComponent(0, this, EnumFacing.values().toMutableSet())
 
     var currentRocket: EntityRocket? = null
 

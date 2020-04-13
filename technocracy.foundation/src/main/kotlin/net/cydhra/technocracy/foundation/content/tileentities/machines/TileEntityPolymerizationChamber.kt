@@ -4,9 +4,9 @@ import net.cydhra.technocracy.foundation.api.tileentities.TEInventoryProvider
 import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_ADDITIVE
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
-import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.MultiplierTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityInventoryComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityMultiplierComponent
 import net.cydhra.technocracy.foundation.content.tileentities.logic.AdditiveConsumptionLogic
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ItemProcessingLogic
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
@@ -18,15 +18,15 @@ import net.minecraft.util.EnumFacing
  *
  */
 class TileEntityPolymerizationChamber : MachineTileEntity(), TEInventoryProvider {
-    private val inputFluidComponent = FluidTileEntityComponent(4000,
+    private val inputFluidComponent = TileEntityFluidComponent(4000,
             tanktype = DynamicFluidCapability.TankType.INPUT, facing = mutableSetOf(EnumFacing.WEST))
 
-    private val additiveFluidComponent = FluidTileEntityComponent(4000,
+    private val additiveFluidComponent = TileEntityFluidComponent(4000,
             tanktype = DynamicFluidCapability.TankType.INPUT, facing = mutableSetOf(EnumFacing.UP))
 
-    private val additiveMultiplierComponent = MultiplierTileEntityComponent(UPGRADE_ADDITIVE)
+    private val additiveMultiplierComponent = TileEntityMultiplierComponent(UPGRADE_ADDITIVE)
 
-    private val outputInventoryComponent = InventoryTileEntityComponent(1, this, EnumFacing.EAST,
+    private val outputInventoryComponent = TileEntityInventoryComponent(1, this, EnumFacing.EAST,
             DynamicInventoryCapability.InventoryType.OUTPUT)
 
     init {

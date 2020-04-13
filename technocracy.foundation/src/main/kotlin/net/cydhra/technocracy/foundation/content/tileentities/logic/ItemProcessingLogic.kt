@@ -4,22 +4,22 @@ import net.cydhra.technocracy.foundation.api.ecs.logic.ILogic
 import net.cydhra.technocracy.foundation.content.capabilities.energy.DynamicEnergyCapability
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
-import net.cydhra.technocracy.foundation.content.tileentities.components.MultiplierTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.ProgressTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityMultiplierComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityProgressComponent
 import net.cydhra.technocracy.foundation.data.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
 import net.minecraft.item.ItemStack
 
 class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
-        private val inputInventory: DynamicInventoryCapability? = null,
-        private val outputInventory: DynamicInventoryCapability? = null,
-        private val inputFluidSlots: Array<DynamicFluidCapability> = emptyArray(),
-        private val outputFluidSlots: Array<DynamicFluidCapability> = emptyArray(),
-        private val energyStorage: DynamicEnergyCapability,
-        private val processSpeedComponent: MultiplierTileEntityComponent,
-        private val energyCostComponent: MultiplierTileEntityComponent,
-        private val baseTickEnergyCost: Int,
-        private val progress: ProgressTileEntityComponent) : ILogic {
+                          private val inputInventory: DynamicInventoryCapability? = null,
+                          private val outputInventory: DynamicInventoryCapability? = null,
+                          private val inputFluidSlots: Array<DynamicFluidCapability> = emptyArray(),
+                          private val outputFluidSlots: Array<DynamicFluidCapability> = emptyArray(),
+                          private val energyStorage: DynamicEnergyCapability,
+                          private val processSpeedComponent: TileEntityMultiplierComponent,
+                          private val energyCostComponent: TileEntityMultiplierComponent,
+                          private val baseTickEnergyCost: Int,
+                          private val progress: TileEntityProgressComponent) : ILogic {
 
     companion object {
         // TODO this could be a value obtained from config

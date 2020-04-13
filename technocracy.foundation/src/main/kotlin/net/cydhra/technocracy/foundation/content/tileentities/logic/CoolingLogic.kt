@@ -1,8 +1,8 @@
 package net.cydhra.technocracy.foundation.content.tileentities.logic
 
 import net.cydhra.technocracy.foundation.api.ecs.logic.ILogic
-import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.HeatStorageTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityHeatStorageComponent
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.data.crafting.special.HeatRecipe
 import net.minecraftforge.fluids.FluidStack
@@ -15,9 +15,9 @@ import net.minecraftforge.fluids.FluidStack
  */
 class CoolingLogic(
         var processFluidPerTick: Int = 10,
-        private val hotFluidComponent: FluidTileEntityComponent,
-        private val coldFluidComponent: FluidTileEntityComponent,
-        private val heatBuffer: HeatStorageTileEntityComponent
+        private val hotFluidComponent: TileEntityFluidComponent,
+        private val coldFluidComponent: TileEntityFluidComponent,
+        private val heatBuffer: TileEntityHeatStorageComponent
 ) : ILogic {
 
     private val recipes by lazy {

@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.optics.api.tileentities.components
 
 import net.cydhra.technocracy.foundation.api.ecs.ComponentType
-import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractCapabilityTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractTileEntityCapabilityComponent
 import net.cydhra.technocracy.foundation.util.compound
 import net.cydhra.technocracy.optics.api.capabilities.laser.ILaserAbsorber
 import net.cydhra.technocracy.optics.api.capabilities.laser.ILaserEmitter
@@ -13,7 +13,7 @@ import net.minecraftforge.common.capabilities.CapabilityInject
 class LaserEmitterTileEntityComponent(
         var canEmitAt: Set<EnumFacing>,
         var limit: Int)
-    : AbstractCapabilityTileEntityComponent(), ILaserEmitter {
+    : AbstractTileEntityCapabilityComponent(), ILaserEmitter {
 
     // this is not serialized, because reestablishing laser link is a lot easier and less error-prone, while not
     // really disturbing connectivity by more than a few ticks.

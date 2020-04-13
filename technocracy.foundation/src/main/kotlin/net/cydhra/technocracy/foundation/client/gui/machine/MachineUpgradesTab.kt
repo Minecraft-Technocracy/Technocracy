@@ -6,11 +6,11 @@ import net.cydhra.technocracy.foundation.client.gui.TCTab
 import net.cydhra.technocracy.foundation.client.gui.components.label.WrappingLabel
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
 import net.cydhra.technocracy.foundation.content.items.wrenchItem
-import net.cydhra.technocracy.foundation.content.tileentities.components.MachineUpgradesTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityMachineUpgradesComponent
 import net.minecraft.entity.player.EntityPlayer
 
 class MachineUpgradesTab(parent: TCGui,
-                         private val upgrades: MachineUpgradesTileEntityComponent,
+                         private val upgrades: TileEntityMachineUpgradesComponent,
                          private val player: EntityPlayer?) :
         TCTab("Upgrades", parent, icon = TCIcon(wrenchItem)) {
 

@@ -1,17 +1,17 @@
 package net.cydhra.technocracy.optics.content.tileentities.logic
 
 import net.cydhra.technocracy.foundation.api.ecs.logic.ILogic
-import net.cydhra.technocracy.foundation.content.tileentities.components.EnergyStorageTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.ProgressTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityEnergyStorageComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityInventoryComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityProgressComponent
 import net.cydhra.technocracy.optics.TCOptics
 import net.minecraft.item.ItemStack
 import net.minecraft.world.World
 
 class LaserDrillLogic(
-        private val progressComponent: ProgressTileEntityComponent,
-        private val energyComponent: EnergyStorageTileEntityComponent,
-        private val outputInventory: InventoryTileEntityComponent,
+        private val progressComponent: TileEntityProgressComponent,
+        private val energyComponent: TileEntityEnergyStorageComponent,
+        private val outputInventory: TileEntityInventoryComponent,
         private val energyPerProgress: Int,
         private val world: World
 ) : ILogic {

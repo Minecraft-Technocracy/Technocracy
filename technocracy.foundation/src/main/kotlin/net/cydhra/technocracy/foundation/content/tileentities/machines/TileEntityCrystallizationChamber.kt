@@ -3,8 +3,8 @@ package net.cydhra.technocracy.foundation.content.tileentities.machines
 import net.cydhra.technocracy.foundation.api.tileentities.TEInventoryProvider
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
-import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.InventoryTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityInventoryComponent
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ItemProcessingLogic
 import net.cydhra.technocracy.foundation.data.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
@@ -20,7 +20,7 @@ class TileEntityCrystallizationChamber : MachineTileEntity(), TEInventoryProvide
     /**
      * Input inventory for the furnace with one slot
      */
-    private val inputFluidComponent = FluidTileEntityComponent(capacity = 4000,
+    private val inputFluidComponent = TileEntityFluidComponent(capacity = 4000,
             allowedFluid = *arrayOf(),
             tanktype = DynamicFluidCapability.TankType.INPUT,
             facing = mutableSetOf(EnumFacing.WEST))
@@ -28,7 +28,7 @@ class TileEntityCrystallizationChamber : MachineTileEntity(), TEInventoryProvide
     /**
      * Output inventory for the furnace with one slot
      */
-    private val outputInventoryComponent = InventoryTileEntityComponent(1, this, EnumFacing.EAST,
+    private val outputInventoryComponent = TileEntityInventoryComponent(1, this, EnumFacing.EAST,
             DynamicInventoryCapability.InventoryType.OUTPUT)
 
     /**

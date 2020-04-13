@@ -16,7 +16,7 @@ import net.minecraft.nbt.NBTTagCompound
  * @param upgradeParameter the upgrade parameter that affects this multiplier. If set to null, this multiplier cannot
  * be modified by upgrades.
  */
-class MultiplierTileEntityComponent(val upgradeParameter: UpgradeParameter?) : AbstractTileEntityComponent() {
+class TileEntityMultiplierComponent(val upgradeParameter: UpgradeParameter?) : AbstractTileEntityComponent() {
     companion object {
         private const val NBT_KEY_ENERGY = "multiplier"
     }
@@ -30,7 +30,7 @@ class MultiplierTileEntityComponent(val upgradeParameter: UpgradeParameter?) : A
 
     override fun serializeNBT(): NBTTagCompound {
         return NBTTagCompound().apply {
-            setDouble(NBT_KEY_ENERGY, this@MultiplierTileEntityComponent.multiplier)
+            setDouble(NBT_KEY_ENERGY, this@TileEntityMultiplierComponent.multiplier)
         }
     }
 

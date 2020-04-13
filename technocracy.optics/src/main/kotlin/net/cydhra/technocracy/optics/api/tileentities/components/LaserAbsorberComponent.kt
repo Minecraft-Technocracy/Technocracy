@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.optics.api.tileentities.components
 
 import net.cydhra.technocracy.foundation.api.ecs.ComponentType
-import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractCapabilityTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractTileEntityCapabilityComponent
 import net.cydhra.technocracy.optics.api.capabilities.laser.ILaserAbsorber
 import net.cydhra.technocracy.optics.api.capabilities.laser.ILaserEmitter
 import net.minecraft.nbt.NBTTagCompound
@@ -9,7 +9,7 @@ import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.common.capabilities.CapabilityInject
 
-class LaserAbsorberComponent(private val canAbsorbAt: MutableSet<EnumFacing>) : AbstractCapabilityTileEntityComponent(),
+class LaserAbsorberComponent(private val canAbsorbAt: MutableSet<EnumFacing>) : AbstractTileEntityCapabilityComponent(),
         ILaserAbsorber {
 
     companion object {

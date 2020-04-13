@@ -2,7 +2,7 @@ package net.cydhra.technocracy.foundation.content.tileentities.multiblock.heatex
 
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.multiblock.HeatExchangerMultiBlock
-import net.cydhra.technocracy.foundation.content.tileentities.components.FluidTileEntityComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
 import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.EnumFacing
@@ -21,7 +21,7 @@ class TileEntityHeatExchangerInput : TileEntityMultiBlockPart<HeatExchangerMulti
     private val internalFluidHandler = DynamicFluidCapability(4000, allowedFluid = mutableListOf(),
             tanktype = DynamicFluidCapability.TankType.INPUT)
 
-    val fluidComponent = FluidTileEntityComponent(internalFluidHandler, mutableSetOf(EnumFacing.NORTH, EnumFacing.EAST,
+    val fluidComponent = TileEntityFluidComponent(internalFluidHandler, mutableSetOf(EnumFacing.NORTH, EnumFacing.EAST,
             EnumFacing.SOUTH, EnumFacing.WEST))
 
     init {

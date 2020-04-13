@@ -10,7 +10,7 @@ import net.minecraft.nbt.NBTTagCompound
  * @param initialHeat the initial heat of the component
  * @param heatCapacity the maximum heat of the component
  */
-class HeatStorageTileEntityComponent(initialHeat: Int, var heatCapacity: Int = 1000) :
+class TileEntityHeatStorageComponent(initialHeat: Int, var heatCapacity: Int = 1000) :
         AbstractTileEntityComponent() {
 
     override val type: ComponentType = ComponentType.OTHER

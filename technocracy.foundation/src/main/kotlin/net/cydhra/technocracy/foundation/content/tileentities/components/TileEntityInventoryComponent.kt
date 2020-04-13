@@ -17,17 +17,17 @@ import net.minecraftforge.items.CapabilityItemHandler
  * @param inventoryType the IO-type of inventory. For automation purposes, input and output slots are in different
  * inventories (so they can be accessed from different faces of a machine block).
  */
-class InventoryTileEntityComponent(
+class TileEntityInventoryComponent(
         size: Int,
         provider: TEInventoryProvider,
         override val facing: MutableSet<EnumFacing>,
         val inventoryType: DynamicInventoryCapability.InventoryType = DynamicInventoryCapability.InventoryType.BOTH) :
-        AbstractDirectionalCapabilityTileEntityComponent() {
+        AbstractTileEntityDirectionalCapabilityComponent() {
 
     /**
      * Secondary constructor that takes only one facing
      *
-     * @see [InventoryTileEntityComponent]
+     * @see [TileEntityInventoryComponent]
      */
     constructor(
             size: Int,
