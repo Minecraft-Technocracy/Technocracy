@@ -13,7 +13,7 @@ class TileEntitySalineFluidInput : TileEntityMultiBlockPart<SalineMultiBlock>(Sa
 
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
-        val blockFacing = this.world.getBlockState(pos).getValue(BlockHorizontal.FACING)
+        val blockFacing = this.getBlockState().getValue(BlockHorizontal.FACING)
         return if (multiblockController != null && multiblockController!!.isAssembled &&
                 (facing == blockFacing || facing == blockFacing.opposite)) {
             capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY

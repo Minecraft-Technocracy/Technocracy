@@ -1,32 +1,28 @@
 package net.cydhra.technocracy.foundation.content.multiblock
 
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
+import net.cydhra.technocracy.foundation.api.ecs.IComponent
+import net.cydhra.technocracy.foundation.api.ecs.logic.ILogicClient
+import net.cydhra.technocracy.foundation.api.ecs.logic.LogicClientDelegate
 import net.cydhra.technocracy.foundation.content.blocks.*
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ConversionDirection
 import net.cydhra.technocracy.foundation.content.tileentities.logic.HeatTransferLogic
-import net.cydhra.technocracy.foundation.content.tileentities.logic.ItemProcessingLogic
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.saline.*
-import net.cydhra.technocracy.foundation.data.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.data.crafting.special.SalineRecipe
-import net.cydhra.technocracy.foundation.model.components.IComponent
 import net.cydhra.technocracy.foundation.model.multiblock.api.TiledBaseMultiBlock
-import net.cydhra.technocracy.foundation.model.tileentities.api.logic.ILogic
-import net.cydhra.technocracy.foundation.model.tileentities.api.logic.ILogicClient
-import net.cydhra.technocracy.foundation.model.tileentities.api.logic.LogicClientDelegate
-import net.cydhra.technocracy.foundation.util.getFluidStack
 import net.minecraft.block.BlockHorizontal
 import net.minecraft.init.Blocks
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
+import net.minecraft.world.EnumSkyBlock
 import net.minecraft.world.World
 import net.minecraftforge.fluids.FluidStack
 import java.util.function.Predicate
 import kotlin.math.ceil
 import kotlin.math.exp
 import kotlin.math.floor
-import kotlin.math.pow
 
 class SalineMultiBlock(world: World) : ILogicClient by LogicClientDelegate(), TiledBaseMultiBlock(
         frameBlockWhitelist = Predicate {
@@ -54,8 +50,19 @@ class SalineMultiBlock(world: World) : ILogicClient by LogicClientDelegate(), Ti
 ) {
 
     var controllerTileEntity: TileEntitySalineController? = null
+        private set
 
     private var useHeat = false
+
+    //Average sky light level
+    var skyLightLevel = 0
+        private set
+
+    //Index of the tile which should be used in the next sky light calculation
+    private var skyLightCalculationIndex = 0
+
+    //Sky light levels of all tiles
+    private var tileSkyLightLevels: IntArray? = null
 
     private val recipes: Collection<SalineRecipe> by lazy {
         (RecipeManager.getSpecialRecipesByType(RecipeManager.RecipeType.SALINE)
@@ -95,6 +102,8 @@ class SalineMultiBlock(world: World) : ILogicClient by LogicClientDelegate(), Ti
                 this@SalineMultiBlock.controllerTileEntity = controllers.first()
                 this@SalineMultiBlock.controllerTileEntity!!.heatComponent.heatCapacity =
                         tiles.size * MultiBlockPhysics.salineHeatCapacityPerTile
+                this@SalineMultiBlock.tileSkyLightLevels = IntArray(tiles.size)
+                skyLightCalculationIndex = 0
 
                 return@finishUp this@SalineMultiBlock.recalculatePhysics(validatorCallback, fluidInputs, fluidOutputs,
                         heatingAgentInputs, heatingAgentOutputs)
@@ -142,24 +151,30 @@ class SalineMultiBlock(world: World) : ILogicClient by LogicClientDelegate(), Ti
             return false
         }
 
-        //Validate floor if heating is enabled
-        if (heatingAgents.isNotEmpty()) {
-            tiles.forEach {
-                //Loop through 3x3 center of tile
-                for (x in (it.minPos.x + 1)..(it.minPos.x + 3)) {
-                    for (z in (it.minPos.z + 1)..(it.minPos.z + 3)) {
-                        //Ignore center
-                        if (x == it.minPos.x + 2 && z == it.minPos.z + 2)
-                            continue
-                        if (WORLD.getBlockState(BlockPos(x, it.minPos.y, z)).block != salineHeatedWallBlock) {
-                            validatorCallback.setLastError("multiblock.saline.error.missing_heated_wall", x,
-                                    it.minPos.y, z)
-                            return false
-                        }
+        tiles.forEach {
+            var tileSkyLightLevel = 0
+            //Loop through 3x3 center of tile
+            for (x in (it.minPos.x + 1) until it.maxPos.x) {
+                for (z in (it.minPos.z + 1) until it.maxPos.z) {
+                    //Calculate skylight for each tile
+                    tileSkyLightLevel += this.WORLD.getLightFromNeighborsFor(EnumSkyBlock.SKY,
+                            BlockPos(x, it.minPos.y, z))
+
+                    //Check for heated floor blocks
+                    if (!(x == it.minPos.x + 2 && z == it.minPos.z + 2) && //Ignore center
+                            heatingAgents.isNotEmpty() && //Make sure heating is enabled
+                            WORLD.getBlockState(BlockPos(x, it.minPos.y, z)).block != salineHeatedWallBlock) {
+                        validatorCallback.setLastError("multiblock.saline.error.missing_heated_wall", x,
+                                it.minPos.y, z)
+                        return false
                     }
                 }
             }
+            tileSkyLightLevels!![skyLightCalculationIndex] = tileSkyLightLevel / 9
+            skyLightCalculationIndex++
         }
+        skyLightCalculationIndex = 0
+        skyLightLevel = tileSkyLightLevels!!.sum() / tiles.size
 
         //Bad try to shorten the code
         fun invalidFluidInput(tile: TileEntitySalineFluidInput): Boolean {
@@ -229,34 +244,21 @@ class SalineMultiBlock(world: World) : ILogicClient by LogicClientDelegate(), Ti
         return components
     }
 
+    private var count = 0
     override fun updateServer(): Boolean {
+        //Recalculate sky light for a tile
+        if (count % 3 == 0) {
+            //TODO: Fix sky light and use it in the formulas below
+//            updateSkyLightLevel()
+            count = 0
+        } else {
+            count++
+        }
+
         //Convert heating fluid
         tick()
 
-        /*
-        https://github.com/Minecraft-Technocracy/Technocracy/issues/45#issuecomment-600246262
-
-        MultiBlock Physics-Constants (Config)
-        heat_drain = 0.02
-        heat_loss = 0.0001
-        agent_conversion_per_tile = 50
-        heat_storage_capacity_per_tile = 500_000
-
-        Example Recipe
-        input: Brine
-        output: Aquaeous Lithium
-        boost_heat: 900
-
-        Equations
-        max_agent_conversion_per_tick (mB) = agent_conversion_per_tile * tiles
-        max_heat_usage (mH) = stored_heat - (stored_heat * e^(-heat_drain)) * tiles
-        boost_conversion (mB) = Math.floor(max_heat_usage / boost_heat)
-
-        total_heat_loss = boost_conversion * boost_heat + stored_heat * heat_loss
-        total_conversion = base_conversion + boost_conversion
-
-        display_temperature = 300 + (100 * stored_heat) / (tiles * heat_storage_capacity_per_tile)
-         */
+        //https://github.com/Minecraft-Technocracy/Technocracy/issues/45#issuecomment-600246262
 
         val inputFluid = this.controllerTileEntity!!.fluidInputComponent.fluid
         val outputFluid = this.controllerTileEntity!!.fluidOutputComponent.fluid
@@ -294,6 +296,28 @@ class SalineMultiBlock(world: World) : ILogicClient by LogicClientDelegate(), Ti
         this.controllerTileEntity!!.heatComponent.drainHeat(totalHeatLoss.toInt())
 
         return true
+    }
+
+    private fun updateSkyLightLevel() {
+        if (tileSkyLightLevels == null)
+            return
+
+        val tile = tiles[skyLightCalculationIndex]
+        var tileSkyLightLevel = 0
+        for (x in (tile.minPos.x + 1) until tile.maxPos.x) {
+            for (z in (tile.minPos.z + 1) until tile.maxPos.z) {
+                tileSkyLightLevel += this.WORLD.getLightFor(EnumSkyBlock.SKY,
+                        BlockPos(x, tile.minPos.y + 1, z))
+            }
+        }
+        tileSkyLightLevels!![skyLightCalculationIndex] = tileSkyLightLevel / 9
+
+        skyLightLevel = tileSkyLightLevels!!.sum() / tiles.size
+
+        if (skyLightCalculationIndex == tiles.size - 1)
+            skyLightCalculationIndex = 0
+        else
+            skyLightCalculationIndex++
     }
 
     override fun getMinimumNumberOfBlocksForAssembledMachine(): Int {

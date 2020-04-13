@@ -83,8 +83,8 @@ val tankGlassBlock = TankStructureBlock("tank_glass", ::TileEntityTankMultiBlock
 val tankIOBlock = TankStructureBlock("tank_io", ::TileEntityTankPort)
 
 val salineControllerBlock = MultiBlockRotatableActiveBlock("saline_controller", ::TileEntitySalineController)
-val salineWallBlock = PlainMultiBlockPartBlock("saline_wall", ::TileEntityMultiBlockPartSaline)
-val salineHeatedWallBlock = PlainMultiBlockPartBlock("saline_heated_wall", ::TileEntityMultiBlockPartSaline)
+val salineWallBlock = PlainMultiBlockPartBlock("saline_wall", ::TileEntityMultiBlockPartSaline, opaque = false)
+val salineHeatedWallBlock = PlainMultiBlockPartBlock("saline_heated_wall", ::TileEntityMultiBlockPartSaline, opaque = false)
 val salineFluidInputBlock = MultiBlockRotatableActiveBlock("saline_fluid_input", ::TileEntitySalineFluidInput,
         renderLayer = BlockRenderLayer.CUTOUT)
 val salineFluidOutputBlock = MultiBlockActiveBlock("saline_fluid_output", ::TileEntitySalineFluidOutput,

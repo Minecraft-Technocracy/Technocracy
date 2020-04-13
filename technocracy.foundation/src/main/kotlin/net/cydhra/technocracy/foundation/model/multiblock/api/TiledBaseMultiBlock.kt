@@ -37,7 +37,7 @@ abstract class TiledBaseMultiBlock(
     /**
      * Contains all tiles belonging to this multi block in row-major order
      */
-    protected val tiles = mutableSetOf<Tile>()
+    protected val tiles = mutableListOf<Tile>()
 
     init {
         if (tileSizeX < 3 || tileSizeZ < 3) {

@@ -13,7 +13,7 @@ class TileEntitySalineHeatingAgentInput : TileEntityMultiBlockPart<SalineMultiBl
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
         return if (multiblockController != null && multiblockController!!.isAssembled &&
-                facing == this.world.getBlockState(pos).getValue(BlockHorizontal.FACING)) {
+                facing == this.getBlockState().getValue(BlockHorizontal.FACING)) {
             capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
         } else false
     }
