@@ -1,11 +1,11 @@
 {
   "input": {
     "fluid": "light_oil",
-    "amount": 1
+    "amount": 100
   },
   "output": {
     "fluid": "kerosene",
-    "amount": 1
+    "amount": 100
   },
   "cost": 100
 }
