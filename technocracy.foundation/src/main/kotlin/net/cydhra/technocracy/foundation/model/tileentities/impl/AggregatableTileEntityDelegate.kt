@@ -75,14 +75,15 @@ class AggregatableTileEntityDelegate : TCAggregatableTileEntity {
         return compound
     }
 
-    override fun deserializeNBT(compound: NBTTagCompound) {
+    override fun deserializeNBT(compound: NBTTagCompound?) {
         var i = 0
-        while (i < components.size) {
-            val (name, component) = components[i++]
-            if (compound.hasKey(name))
-                component.deserializeNBT(compound.getCompoundTag(name))
-            component.onLoadAggregate()
-        }
+        if (compound != null)
+            while (i < components.size) {
+                val (name, component) = components[i++]
+                if (compound.hasKey(name))
+                    component.deserializeNBT(compound.getCompoundTag(name))
+                component.onLoadAggregate()
+            }
     }
 
     override fun supportsCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {

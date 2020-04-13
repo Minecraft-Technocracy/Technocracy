@@ -15,7 +15,7 @@ import kotlin.math.min
  *
  * @see DynamicEnergyStorageStrategy
  */
-class DynamicEnergyCapability(currentEnergy: Int = 0, capacity: Int,
+open class DynamicEnergyCapability(currentEnergy: Int = 0, capacity: Int,
                               var extractionLimit: Int, var receivingLimit: Int = -1) : IEnergyStorage, AbstractComponentCapabilityBridge() {
 
     /**

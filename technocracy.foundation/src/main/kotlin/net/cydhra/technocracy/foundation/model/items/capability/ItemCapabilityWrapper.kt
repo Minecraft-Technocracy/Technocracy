@@ -1,7 +1,10 @@
 package net.cydhra.technocracy.foundation.model.items.capability
 
+import net.cydhra.technocracy.foundation.api.ecs.IAggregatable
+import net.cydhra.technocracy.foundation.api.ecs.IComponent
 import net.cydhra.technocracy.foundation.api.upgrades.Upgradable
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeParameter
+import net.cydhra.technocracy.foundation.content.blocks.capacitorControllerBlock
 import net.cydhra.technocracy.foundation.content.items.components.AbstractItemComponent
 import net.cydhra.technocracy.foundation.util.get
 import net.minecraft.item.ItemStack
@@ -11,7 +14,7 @@ import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.common.capabilities.ICapabilitySerializable
 
 
-class ItemCapabilityWrapper(var stack: ItemStack, val components: Map<String, AbstractItemComponent>) : ICapabilitySerializable<NBTTagCompound>, Upgradable {
+class ItemCapabilityWrapper(var stack: ItemStack, val components: MutableMap<String, AbstractItemComponent>) : ICapabilitySerializable<NBTTagCompound>, Upgradable, IAggregatable {
     val capabilities = mutableMapOf<String, AbstractItemCapabilityComponent>()
 
     val upgradeableTypes = mutableListOf<UpgradeParameter>()
@@ -94,4 +97,27 @@ class ItemCapabilityWrapper(var stack: ItemStack, val components: Map<String, Ab
     override fun upgradeParameter(parameter: UpgradeParameter, modification: Double) {
         TODO("Not yet implemented")
     }
+
+    override fun getComponents(): List<Pair<String, IComponent>> {
+        return components.toList()
+    }
+
+    override fun registerComponent(component: IComponent, name: String) {
+        if(component is AbstractItemComponent) {
+            components[name] = component
+            if(component is AbstractItemCapabilityComponent) {
+                capabilities[name] = component
+            }
+        }
+    }
+
+    override fun removeComponent(name: String) {
+        components.remove(name)
+    }
+
+    //not used but needs to be implemented
+    override fun serializeNBT(compound: NBTTagCompound): NBTTagCompound {
+        return getCombinedNBT()
+    }
+
 }

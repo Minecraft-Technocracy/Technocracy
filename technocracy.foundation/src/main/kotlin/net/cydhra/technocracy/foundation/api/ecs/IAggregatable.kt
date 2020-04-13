@@ -33,5 +33,5 @@ interface IAggregatable {
     /**
      * Deserialize the given NBT compound and load the values into this aggregatable.
      */
-    fun deserializeNBT(compound: NBTTagCompound)
+    fun deserializeNBT(compound: NBTTagCompound?)
 }

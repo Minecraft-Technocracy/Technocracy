@@ -1,7 +1,5 @@
 package net.cydhra.technocracy.foundation.model.items.api
 
-import net.cydhra.technocracy.foundation.api.ecs.IComponent
-import net.cydhra.technocracy.foundation.api.upgrades.Upgradable
 import net.cydhra.technocracy.foundation.api.upgrades.Upgrade
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeClass
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MultiplierUpgrade
