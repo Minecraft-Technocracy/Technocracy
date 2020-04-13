@@ -2,10 +2,11 @@ package net.cydhra.technocracy.foundation.model.items.capability
 
 import net.cydhra.technocracy.foundation.api.ecs.IAggregatable
 import net.cydhra.technocracy.foundation.api.ecs.IComponent
+import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_GENERIC
 import net.cydhra.technocracy.foundation.api.upgrades.Upgradable
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeParameter
-import net.cydhra.technocracy.foundation.content.blocks.capacitorControllerBlock
 import net.cydhra.technocracy.foundation.content.items.components.AbstractItemComponent
+import net.cydhra.technocracy.foundation.content.items.components.ItemMultiplierComponent
 import net.cydhra.technocracy.foundation.util.get
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
@@ -14,9 +15,8 @@ import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.common.capabilities.ICapabilitySerializable
 
 
-class ItemCapabilityWrapper(var stack: ItemStack, val components: MutableMap<String, AbstractItemComponent>) : ICapabilitySerializable<NBTTagCompound>, Upgradable, IAggregatable {
+open class ItemCapabilityWrapper(var stack: ItemStack, val components: MutableMap<String, AbstractItemComponent>) : ICapabilitySerializable<NBTTagCompound>, IAggregatable, Upgradable {
     val capabilities = mutableMapOf<String, AbstractItemCapabilityComponent>()
-
     val upgradeableTypes = mutableListOf<UpgradeParameter>()
 
     init {
@@ -90,14 +90,6 @@ class ItemCapabilityWrapper(var stack: ItemStack, val components: MutableMap<Str
         return getCombinedNBT()
     }
 
-    override fun supportsParameter(parameter: UpgradeParameter): Boolean {
-        return upgradeableTypes.contains(parameter)
-    }
-
-    override fun upgradeParameter(parameter: UpgradeParameter, modification: Double) {
-        TODO("Not yet implemented")
-    }
-
     override fun getComponents(): List<Pair<String, IComponent>> {
         return components.toList()
     }
@@ -118,6 +110,32 @@ class ItemCapabilityWrapper(var stack: ItemStack, val components: MutableMap<Str
     //not used but needs to be implemented
     override fun serializeNBT(compound: NBTTagCompound): NBTTagCompound {
         return getCombinedNBT()
+    }
+
+    private val upgradeParameters = mutableMapOf<UpgradeParameter, ItemMultiplierComponent>()
+
+    /**
+     * Register a new upgradable parameter at the machine
+     *
+     * @param parameter the [UpgradeParameter] that shall be registered as supported
+     * @param multiplierComponent the multiplier affected by the parameter
+     */
+    protected fun registerUpgradeParameter(
+            parameter: UpgradeParameter,
+            multiplierComponent: ItemMultiplierComponent) {
+        this.upgradeParameters[parameter] = multiplierComponent
+    }
+
+    /**
+     * Apply a modification to a parameter. If this machine does not support the parameter or the parameter is
+     * [UPGRADE_GENERIC], a [NullPointerException] will be thrown
+     */
+    override fun upgradeParameter(parameter: UpgradeParameter, modification: Double) {
+        this.upgradeParameters[parameter]!!.multiplier += modification
+    }
+
+    override fun supportsParameter(parameter: UpgradeParameter): Boolean {
+        return upgradeableTypes.contains(parameter)
     }
 
 }
