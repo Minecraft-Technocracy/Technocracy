@@ -2,7 +2,6 @@ package net.cydhra.technocracy.foundation.model.items.api
 
 import net.cydhra.technocracy.foundation.api.upgrades.Upgrade
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeClass
-import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MultiplierUpgrade
 import net.minecraft.client.util.ITooltipFlag
 import net.minecraft.item.ItemStack
 import net.minecraft.util.text.*
@@ -38,26 +37,6 @@ class UpgradeItem<U>(unlocalizedName: String,
                                         .setStyle(Style()
                                                 .setColor(TextFormatting.GOLD)))
                         .formattedText)
-
-        this.upgrades
-                .filterIsInstance<MultiplierUpgrade>()
-                .forEach { upgrade ->
-                    tooltip.add(
-                            TextComponentTranslation("tooltips.upgrades.parameter.${upgrade.upgradeParameter}")
-                                    .setStyle(Style()
-                                            .setColor(TextFormatting.AQUA))
-                                    .appendSibling(TextComponentString(": ")
-                                            .setStyle(Style()
-                                                    .setColor(TextFormatting.AQUA)))
-                                    .appendSibling(
-                                            TextComponentString("${if (upgrade.multiplier > 0)
-                                                "+"
-                                            else
-                                                ""}${(upgrade.multiplier * 100).toInt()}%")
-                                                    .setStyle(Style()
-                                                            .setColor(TextFormatting.WHITE)))
-                                    .formattedText)
-                }
 
         // append custom tooltips of special upgrades
         this.upgrades

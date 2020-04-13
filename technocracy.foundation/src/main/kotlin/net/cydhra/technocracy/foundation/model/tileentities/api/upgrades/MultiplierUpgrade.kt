@@ -4,7 +4,7 @@ import net.cydhra.technocracy.foundation.api.tileentities.TCMachineTileEntity
 import net.cydhra.technocracy.foundation.api.upgrades.MachineUpgrade
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeParameter
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityMachineUpgradesComponent
-import net.minecraft.util.text.ITextComponent
+import net.minecraft.util.text.*
 import java.util.*
 
 /**
@@ -34,6 +34,15 @@ abstract class MultiplierUpgrade(
     }
 
     override fun getUpgradeDescription(): Optional<ITextComponent> {
-        return Optional.empty()
+        return Optional.of(TextComponentTranslation("tooltips.upgrades.parameter.$upgradeParameter")
+                .setStyle(Style()
+                        .setColor(TextFormatting.AQUA))
+                .appendSibling(TextComponentString(": ")
+                        .setStyle(Style()
+                                .setColor(TextFormatting.AQUA)))
+                .appendSibling(
+                        TextComponentString("${if (this.multiplier > 0) "+" else ""}${(multiplier * 100).toInt()}%")
+                                .setStyle(Style()
+                                        .setColor(TextFormatting.WHITE))))
     }
 }
