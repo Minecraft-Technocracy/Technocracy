@@ -3,6 +3,7 @@ package net.cydhra.technocracy.foundation.util
 import net.minecraft.nbt.*
 import net.minecraft.util.math.BlockPos
 import java.lang.AssertionError
+import java.lang.reflect.Array.get
 import java.util.*
 
 /**
@@ -175,7 +176,7 @@ inline fun <reified T> tagToValue(tag: NBTBase): T = when (tag) {
         if (T::class === Integer::class) {
             tag.int as T
         } else { // if T is an enum
-            T::class.java.getMethod("values").invoke(null).apply { javaClass.getMethod("get").invoke(this, tag.int) } as T
+            get(T::class.java.getMethod("values").invoke(null), tag.int) as T
         }
     }
     is NBTTagLong -> tag.long as T
