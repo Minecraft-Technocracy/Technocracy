@@ -17,7 +17,7 @@ class FTFRecipe(
         override val processingCost: Int) : IMachineRecipe {
 
     override fun conforms(stacks: List<ItemStack>, fluids: List<FluidStack>): Boolean {
-        return fluids.size == 1 && this.inputFluid.isFluidEqual(inputFluid)
+        return fluids.size == 1 && this.inputFluid.isFluidEqual(fluids[0])
     }
 
     override fun getFluidInput(): List<FluidStack> {
