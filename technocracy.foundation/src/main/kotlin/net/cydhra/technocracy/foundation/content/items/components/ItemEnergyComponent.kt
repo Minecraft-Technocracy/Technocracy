@@ -3,23 +3,24 @@ package net.cydhra.technocracy.foundation.content.items.components
 import net.cydhra.technocracy.foundation.api.ecs.ComponentType
 import net.cydhra.technocracy.foundation.content.capabilities.energy.DynamicEnergyCapability
 import net.cydhra.technocracy.foundation.content.capabilities.energy.DynamicEnergyStorageStrategy
+import net.cydhra.technocracy.foundation.content.capabilities.energy.DynamicItemEnergyCapability
 import net.cydhra.technocracy.foundation.content.capabilities.energy.EnergyCapabilityProvider
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
 
 
-class ItemEnergyComponent(var capacity: Int = 8000) : AbstractItemCapabilityComponent() {
+class ItemEnergyComponent(var energyStorage: DynamicItemEnergyCapability) : AbstractItemCapabilityComponent() {
     override val type = ComponentType.ENERGY
 
     /**
      * The energy storage capability instance containing energy storage state
      */
-    val energyStorage: DynamicEnergyCapability = DynamicEnergyCapability(
+    /*val energyStorage: DynamicItemEnergyCapability = DynamicItemEnergyCapability(
             capacity = capacity,
             currentEnergy = 0,
             extractionLimit = 0,
-            receivingLimit = capacity)
+            receivingLimit = capacity)*/
 
     init {
         energyStorage.componentParent = this

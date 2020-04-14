@@ -18,6 +18,8 @@ import kotlin.math.min
 open class DynamicEnergyCapability(currentEnergy: Int = 0, capacity: Int,
                               var extractionLimit: Int, var receivingLimit: Int = -1) : IEnergyStorage, AbstractComponentCapabilityBridge() {
 
+    var needsClientSyncing = false
+
     /**
      * Current amount of energy in the storage
      */
@@ -48,8 +50,10 @@ open class DynamicEnergyCapability(currentEnergy: Int = 0, capacity: Int,
     override fun extractEnergy(maxExtract: Int, simulate: Boolean): Int {
         val totalExtracted = Math.min(Math.min(this.currentEnergy, maxExtract), this.extractionLimit)
 
-        if (!simulate)
+        if (!simulate) {
             this.currentEnergy -= totalExtracted
+            markDirty(needsClientSyncing)
+        }
 
         return totalExtracted
     }
@@ -58,8 +62,10 @@ open class DynamicEnergyCapability(currentEnergy: Int = 0, capacity: Int,
         val totalReceived = min(min(this.capacity - this.currentEnergy, maxReceive),
                 if (this.receivingLimit != -1) this.receivingLimit else Integer.MAX_VALUE)
 
-        if (!simulate)
+        if (!simulate && totalReceived != 0) {
             this.currentEnergy += totalReceived
+            markDirty(needsClientSyncing)
+        }
 
         return totalReceived
     }
@@ -76,8 +82,10 @@ open class DynamicEnergyCapability(currentEnergy: Int = 0, capacity: Int,
      */
     fun consumeEnergy(amount: Int, simulate: Boolean = false): Boolean {
         if (this.currentEnergy >= amount) {
-            if (!simulate)
+            if (!simulate) {
                 this.currentEnergy -= amount
+                markDirty(needsClientSyncing)
+            }
             return true
         }
 
@@ -90,5 +98,6 @@ open class DynamicEnergyCapability(currentEnergy: Int = 0, capacity: Int,
      */
     fun forceUpdateOfCurrentEnergy(currentEnergy: Int) {
         this.currentEnergy = currentEnergy
+        markDirty(needsClientSyncing)
     }
 }

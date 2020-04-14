@@ -2,6 +2,7 @@ package net.cydhra.technocracy.foundation.content.items.upgrades
 
 import net.cydhra.technocracy.foundation.api.upgrades.ItemUpgrade
 import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_GENERIC
+import net.cydhra.technocracy.foundation.content.capabilities.energy.DynamicItemEnergyCapability
 import net.cydhra.technocracy.foundation.content.items.components.ItemEnergyComponent
 import net.cydhra.technocracy.foundation.content.items.components.ItemUpgradesComponent
 import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWrapper
@@ -37,7 +38,9 @@ class EnergyUpgrade(val capacity: Int) : ItemUpgrade() {
     }
 
     override fun onUpgradeLoad(upgradable: ItemCapabilityWrapper, upgrades: ItemUpgradesComponent) {
-        val energyUpgrade = ItemEnergyComponent(capacity)
+        val energyUpgrade = ItemEnergyComponent(DynamicItemEnergyCapability(0, capacity, capacity, capacity))
+        energyUpgrade.needsClientSyncing = true
+        energyUpgrade.energyStorage.needsClientSyncing = true
 
         // since loads are not only triggered when loading the chunk, but also upon packages from server, check
         // whether the component is already present

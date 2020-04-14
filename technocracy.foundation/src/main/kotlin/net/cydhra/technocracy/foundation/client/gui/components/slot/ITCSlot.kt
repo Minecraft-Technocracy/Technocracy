@@ -12,4 +12,5 @@ interface ITCSlot : ITCComponent {
     val isPlayerInventory: Boolean
     val index: Int
     var type: DynamicInventoryCapability.InventoryType
+    var permaLocked: Boolean
 }

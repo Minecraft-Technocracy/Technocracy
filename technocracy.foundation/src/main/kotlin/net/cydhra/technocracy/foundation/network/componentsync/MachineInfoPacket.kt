@@ -63,11 +63,13 @@ class MachineInfoPacket() : IMessage, IMessageHandler<MachineInfoPacket, IMessag
             (te.multiblockController as BaseMultiBlock).getComponents().forEach { (name, component) ->
                 val tag = packet.tag.getCompoundTag(name)
                 component.deserializeNBT(tag)
+                component.onLoadAggregate()
             }
         } else {
             te.getComponents().forEach { (name, component) ->
                 val tag = packet.tag.getCompoundTag(name)
                 component.deserializeNBT(tag)
+                component.onLoadAggregate()
             }
         }
         return null

@@ -10,7 +10,7 @@ import net.cydhra.technocracy.foundation.model.blocks.util.IDynamicBlockItemCapa
 import net.cydhra.technocracy.foundation.model.blocks.util.IDynamicBlockItemProperty
 import net.cydhra.technocracy.foundation.model.blocks.util.IDynamicBlockPlaceBehavior
 import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWrapper
-import net.cydhra.technocracy.foundation.content.items.components.ItemFluidTileEntityComponent
+import net.cydhra.technocracy.foundation.content.items.components.ItemFluidComponent
 import net.cydhra.technocracy.foundation.util.ColorUtil
 import net.minecraft.block.material.Material
 import net.minecraft.block.properties.PropertyEnum
@@ -223,12 +223,20 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
     }
 
     override fun initCapabilities(stack: ItemStack, nbt: NBTTagCompound?): ICapabilityProvider? {
-        return ItemCapabilityWrapper(stack, mutableMapOf("fluid" to ItemFluidTileEntityComponent(DynamicItemFluidStorage(stack, DrumType.values()[MathHelper.clamp(stack.metadata, 0, DrumType.values().size - 1)].amount, mutableListOf(), DynamicFluidCapability.TankType.BOTH))))
+        val wrapper = ItemCapabilityWrapper(stack)
+        wrapper.registerComponent(ItemFluidComponent(DynamicItemFluidStorage(stack, DrumType.fromId(stack.metadata).amount)), "fluid")
+        return wrapper
     }
 
     enum class DrumType(val typeName: String, val amount: Int) :
             IStringSerializable {
         IRON("iron", 16000), STEEL("steel", 32000), INVAR("invar", 64000), CARBON("carbon", 128000);
+
+        companion object {
+            fun fromId(id: Int): DrumType {
+                return values()[MathHelper.clamp(id, 0, values().size - 1)]
+            }
+        }
 
         override fun getName(): String {
             return this.typeName

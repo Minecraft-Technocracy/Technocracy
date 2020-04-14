@@ -108,6 +108,8 @@ open class CommonProxy {
         MinecraftForge.EVENT_BUS.register(PotionManager)
         MinecraftForge.EVENT_BUS.register(ConduitNetwork)
 
+        CapabilityManager.INSTANCE.register(ICapabilityWrapperCapability::class.java, ICapabilityWrapperStorage(), ::DefaultItemCapability)
+
         materialSystems.forEach { it.preInit(it, blockManager, itemManager, fluidManager) }
 
         fluidManager.registerFluid(mineralOilFluid)
@@ -342,7 +344,6 @@ open class CommonProxy {
 
     open fun init() {
         materialSystems.forEach { it.init(it) }
-        CapabilityManager.INSTANCE.register(ICapabilityWrapperCapability::class.java, ICapabilityWrapperStorage(), ::DefaultItemCapability)
     }
 
     open fun postInit() {

@@ -27,7 +27,7 @@ object GuiUpdateListener {
     @SubscribeEvent
     fun onInventoryOpen(event: PlayerContainerEvent.Open) {
         val cont = event.container
-        if(cont is TCContainer) {
+        if (cont is TCContainer) {
             guiInfoPacketSubscribers[event.entityPlayer as EntityPlayerMP] = cont
         }
     }
@@ -35,21 +35,19 @@ object GuiUpdateListener {
     fun syncComponentsToClients() {
         guiInfoPacketSubscribers.forEach { (player, container) ->
             val te = container.provider
-            if(te != null) {
+            var tag: NBTTagCompound? = null
 
-                var tag: NBTTagCompound? = null
-                if (te is IAggregatable) {
-                    tag = getTagForMachine(te.getComponents())
-                } else if (te is TileEntityMultiBlockPart<*>) {
-                    if(te.multiblockController != null)
-                        tag = getTagForMachine((te.multiblockController as BaseMultiBlock).getComponents())
-                }
+            if (te is TileEntityMultiBlockPart<*>) {
+                if (te.multiblockController != null)
+                    tag = getTagForMachine((te.multiblockController as BaseMultiBlock).getComponents())
+            } else {
+                tag = getTagForMachine(te.getComponents())
+            }
 
-                //val tag = te.updateTag
-                if(tag != null && tileEntityData[container] != tag) {
-                    tileEntityData[container] = tag
-                    PacketHandler.sendToClient(MachineInfoPacket(tag), player)
-                }
+            //val tag = te.updateTag
+            if (tag != null && tileEntityData[container] != tag) {
+                tileEntityData[container] = tag
+                PacketHandler.sendToClient(MachineInfoPacket(tag), player)
             }
         }
     }

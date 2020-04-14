@@ -7,7 +7,6 @@ import net.cydhra.technocracy.foundation.api.upgrades.UpgradeParameter
 import net.cydhra.technocracy.foundation.content.items.components.AbstractItemCapabilityComponent
 import net.cydhra.technocracy.foundation.content.items.components.AbstractItemComponent
 import net.cydhra.technocracy.foundation.content.items.components.ItemMultiplierComponent
-import net.cydhra.technocracy.foundation.util.get
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
@@ -17,89 +16,88 @@ import net.minecraftforge.common.capabilities.CapabilityInject
 import net.minecraftforge.common.capabilities.ICapabilitySerializable
 
 
-open class ItemCapabilityWrapper(var stack: ItemStack, val components: MutableMap<String, AbstractItemComponent>) : ICapabilitySerializable<NBTTagCompound>, Upgradable, ICapabilityWrapperCapability {
+open class ItemCapabilityWrapper(var stack: ItemStack) : ICapabilitySerializable<NBTTagCompound>, Upgradable, ICapabilityWrapperCapability {
     companion object {
         @JvmStatic
         @CapabilityInject(ICapabilityWrapperCapability::class)
         lateinit var CAPABILITY_WRAPPER: Capability<ICapabilityWrapperCapability>
     }
 
-    val capabilities = mutableMapOf<String, AbstractItemCapabilityComponent>()
+    /**
+     * All machine components that are saved to NBT and possibly accessible from GUI
+     */
+    private val components: MutableList<Pair<String, AbstractItemComponent>> = mutableListOf()
+
+    /**
+     * All components that also offer a capability. They must also be added to [components] but for speed they are
+     * also collected in this list for quick query times in [supportsCapability]
+     */
+    private val capabilityComponents: MutableMap<String, AbstractItemCapabilityComponent> = mutableMapOf()
+
     val upgradeableTypes = mutableListOf<UpgradeParameter>()
 
-    init {
+    /*init {
         components.forEach {
             it.value.wrapper = this
             if (it.value is AbstractItemCapabilityComponent) {
                 capabilities[it.key] = it.value as AbstractItemCapabilityComponent
             }
         }
-    }
+    }*/
 
     override fun <T : Any?> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
         if (capability == CAPABILITY_WRAPPER) {
             return CAPABILITY_WRAPPER.cast(this)
         }
-        val option = capabilities.values.stream().filter { it.hasCapability(capability, facing) }.findFirst()
-        if (option.isPresent)
-            return option.get().getCapability(capability, facing)
-
-        return null
+        return capabilityComponents.values
+                .firstOrNull { it.hasCapability(capability, facing) }
+                ?.getCapability(capability, facing)
     }
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
         if (capability == CAPABILITY_WRAPPER) return true
-        for (cap in capabilities.values) {
-            if (cap.hasCapability(capability, facing))
-                return true
-        }
-        return false
-    }
-
-    fun getCombinedNBT(): NBTTagCompound {
-        val wrapped = NBTTagCompound()
-        for ((k, v) in components) {
-            wrapped.setTag(k, v.serializeNBT())
-        }
-        return wrapped
+        return capabilityComponents.values.any { it.hasCapability(capability, facing) }
     }
 
     fun updateItemStack() {
-        if (stack.tagCompound == null)
-            stack.tagCompound = NBTTagCompound()
-
-        val nbtComponents = NBTTagCompound()
+        val compound = NBTTagCompound()
 
         for (comp in components) {
-            if (comp.value.needsClientSyncing) {
-                nbtComponents.setTag(comp.key, comp.value.serializeNBT())
+            if (comp.second.needsClientSyncing) {
+                compound.setTag(comp.first, comp.second.serializeNBT())
             }
         }
 
-        stack.tagCompound?.setTag("TC_Components", nbtComponents)
+        stack.setTagInfo("TC_Components", compound)
     }
 
     fun loadFromItemStack(stack: ItemStack) {
-        val nbt = stack.tagCompound ?: return
-        val nbtComponents = nbt.getCompoundTag("TC_Components")
+        val nbtComponents = stack.getOrCreateSubCompound("TC_Components")
         for (comp in components) {
-            if (comp.value.needsClientSyncing) {
-                comp.value.deserializeNBT(nbtComponents[comp.key])
+            if (comp.second.needsClientSyncing && nbtComponents.hasKey(comp.first)) {
+                comp.second.deserializeNBT(nbtComponents.getCompoundTag(comp.first))
+                comp.second.onLoadAggregate()
             }
         }
     }
 
     override fun deserializeNBT(nbt: NBTTagCompound?) {
-        if (nbt != null) {
-            components.forEach {
-                it.value.deserializeNBT(nbt.getCompoundTag(it.key))
+        var i = 0
+        if (nbt != null)
+            while (i < components.size) {
+                val (name, component) = components[i++]
+                if (nbt.hasKey(name))
+                    component.deserializeNBT(nbt.getCompoundTag(name))
+                component.onLoadAggregate()
             }
-        }
         loadFromItemStack(stack)
     }
 
+    /**
+     * Called from forge
+     */
     override fun serializeNBT(): NBTTagCompound {
-        return getCombinedNBT()
+        return serializeNBT(NBTTagCompound())
     }
 
     override fun canInteractWith(player: EntityPlayer?): Boolean {
@@ -112,20 +110,30 @@ open class ItemCapabilityWrapper(var stack: ItemStack, val components: MutableMa
 
     override fun registerComponent(component: IComponent, name: String) {
         if (component is AbstractItemComponent) {
-            components[name] = component
+            component.wrapper = this
+
+            components += name to component
             if (component is AbstractItemCapabilityComponent) {
-                capabilities[name] = component
+                capabilityComponents[name] = component
             }
+
+            component.onRegister()
         }
+        updateItemStack()
     }
 
     override fun removeComponent(name: String) {
-        components.remove(name)
+        this.components.removeIf { (componentName, _) -> componentName == name }
+        this.capabilityComponents.remove(name)
+        updateItemStack()
     }
 
     //not used but needs to be implemented
     override fun serializeNBT(compound: NBTTagCompound): NBTTagCompound {
-        return getCombinedNBT()
+        for ((name, component) in components) {
+            compound.setTag(name, component.serializeNBT())
+        }
+        return compound
     }
 
     private val upgradeParameters = mutableMapOf<UpgradeParameter, ItemMultiplierComponent>()

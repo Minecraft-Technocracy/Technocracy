@@ -22,6 +22,8 @@ class TCSlotPlayer(inventoryIn: IInventory, override val index: Int, xPosition: 
         Slot(inventoryIn, index,
                 xPosition, yPosition), ITCSlot {
 
+    override var permaLocked = false
+
     override var onClick: ((side: Side, player: EntityPlayer, tileEntity: IAggregatable?, button: Int) -> Unit)? = null
 
     override var posX: Int
@@ -47,7 +49,10 @@ class TCSlotPlayer(inventoryIn: IInventory, override val index: Int, xPosition: 
 
     override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
         Minecraft.getMinecraft().textureManager.bindTexture(TCClientGuiImpl.guiComponents)
-        GlStateManager.color(1F, 1F, 1F, 1F)
+        if (permaLocked)
+            GlStateManager.color(0.8F, 0.8F, 0.8F, 1F)
+        else
+            GlStateManager.color(1F, 1F, 1F, 1F)
         GuiContainer.drawModalRectWithCustomSizedTexture(xPos - 1 + x, yPos - 1 + y, 0F, 10F, width, height, 256F,
                 256F)
     }

@@ -1,6 +1,5 @@
 package net.cydhra.technocracy.foundation.content.items.components
 
-import net.cydhra.technocracy.foundation.content.items.components.AbstractItemComponent
 import net.minecraftforge.common.capabilities.ICapabilityProvider
 
 

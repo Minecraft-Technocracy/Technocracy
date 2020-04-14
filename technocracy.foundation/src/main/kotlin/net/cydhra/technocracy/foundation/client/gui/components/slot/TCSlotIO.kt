@@ -20,6 +20,8 @@ import net.minecraftforge.items.SlotItemHandler
 class TCSlotIO(itemHandler: IItemHandler, override val index: Int, xPosition: Int, yPosition: Int, override var gui: TCGui) :
         SlotItemHandler(itemHandler, index, xPosition, yPosition), ITCSlot {
 
+    override var permaLocked = false
+
     override var posX: Int
         get() = super.xPos
         set(value) {
@@ -45,7 +47,10 @@ class TCSlotIO(itemHandler: IItemHandler, override val index: Int, xPosition: In
 
     override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
         Minecraft.getMinecraft().textureManager.bindTexture(TCClientGuiImpl.guiComponents)
-        GlStateManager.color(1F, 1F, 1F, 1F)
+        if (permaLocked)
+            GlStateManager.color(0.8F, 0.8F, 0.8F, 1F)
+        else
+            GlStateManager.color(1F, 1F, 1F, 1F)
         GuiContainer.drawModalRectWithCustomSizedTexture(xPos - 1 + x, yPos - 1 + y, 0F, 10F, width, height, 256F,
                 256F)
     }

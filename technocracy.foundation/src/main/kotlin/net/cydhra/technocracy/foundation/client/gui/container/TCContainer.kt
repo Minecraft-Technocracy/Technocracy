@@ -7,6 +7,7 @@ import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicI
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.ClickType
 import net.minecraft.inventory.Container
+import net.minecraft.inventory.IContainerListener
 import net.minecraft.inventory.Slot
 import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.relauncher.Side
@@ -24,6 +25,20 @@ open class TCContainer(var provider: IAggregatableGuiProvider) : Container() {
     /**
      * The tileentity this gui belongs to if there is one
      */
+
+    fun lockItem(stack: ItemStack) {
+        lockedStacks.add(stack)
+        lockSlots()
+    }
+
+    private fun lockSlots() {
+        for (stack in lockedStacks)
+            for (slot in inventorySlots) {
+                if (slot is ITCSlot && slot.stack == stack) {
+                    slot.permaLocked = true
+                }
+            }
+    }
 
     val lockedStacks = mutableListOf<ItemStack>()
 
@@ -48,10 +63,17 @@ open class TCContainer(var provider: IAggregatableGuiProvider) : Container() {
 
     override fun slotClick(slotId: Int, dragType: Int, clickTypeIn: ClickType, player: EntityPlayer): ItemStack {
         val slot = if (slotId < 0 || slotId >= inventorySlots.size) null else inventorySlots[slotId]
-        if(slot != null) {
-            val stack = slot.stack
-            if (lockedStacks.any { it.isItemEqual(stack) }) {
+        if (slot != null && slot is ITCSlot) {
+            if (slot.permaLocked) {
                 return ItemStack.EMPTY
+            }
+        }
+        if (clickTypeIn == ClickType.SWAP) {
+            val stack = player.inventory.getStackInSlot(dragType)
+            for (slots in inventorySlots) {
+                if (slots is ITCSlot && slots.permaLocked && slots.stack == stack) {
+                    return ItemStack.EMPTY
+                }
             }
         }
         return super.slotClick(slotId, dragType, clickTypeIn, player)
@@ -178,6 +200,7 @@ open class TCContainer(var provider: IAggregatableGuiProvider) : Container() {
         if (this.tabs.size > 1) {
             tab.components.filterIsInstance<ITCSlot>().forEach { it.internal_enabled = false }
         }
+        lockSlots()
         tabs.add(tab)
     }
 
