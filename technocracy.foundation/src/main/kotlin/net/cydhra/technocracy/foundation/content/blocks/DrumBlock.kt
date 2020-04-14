@@ -10,7 +10,7 @@ import net.cydhra.technocracy.foundation.model.blocks.util.IDynamicBlockItemCapa
 import net.cydhra.technocracy.foundation.model.blocks.util.IDynamicBlockItemProperty
 import net.cydhra.technocracy.foundation.model.blocks.util.IDynamicBlockPlaceBehavior
 import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWrapper
-import net.cydhra.technocracy.foundation.model.items.capability.ItemFluidTileEntityComponent
+import net.cydhra.technocracy.foundation.content.items.components.ItemFluidTileEntityComponent
 import net.cydhra.technocracy.foundation.util.ColorUtil
 import net.minecraft.block.material.Material
 import net.minecraft.block.properties.PropertyEnum

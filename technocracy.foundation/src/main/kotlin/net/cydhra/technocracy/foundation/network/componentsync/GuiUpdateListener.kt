@@ -34,7 +34,7 @@ object GuiUpdateListener {
 
     fun syncComponentsToClients() {
         guiInfoPacketSubscribers.forEach { (player, container) ->
-            val te = container.tileEntity
+            val te = container.provider
             if(te != null) {
 
                 var tag: NBTTagCompound? = null

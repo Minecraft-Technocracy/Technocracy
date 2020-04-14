@@ -2,6 +2,7 @@ package net.cydhra.technocracy.foundation.model.tileentities.machines
 
 import net.cydhra.technocracy.foundation.api.ecs.logic.ILogicClient
 import net.cydhra.technocracy.foundation.api.ecs.logic.LogicClientDelegate
+import net.cydhra.technocracy.foundation.api.ecs.tileentities.TCAggregatableTileEntity
 import net.cydhra.technocracy.foundation.api.tileentities.TCMachineTileEntity
 import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_ENERGY
 import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_GENERIC
@@ -172,6 +173,11 @@ open class MachineTileEntity(
         initGui(gui, player)
 
         return gui
+    }
+
+    override fun canInteractWith(player: EntityPlayer?): Boolean {
+        if (player == null) return true
+        return player.isEntityAlive && !tile.isInvalid && player.getDistanceSq(tile.pos) <= 16
     }
 
     /**

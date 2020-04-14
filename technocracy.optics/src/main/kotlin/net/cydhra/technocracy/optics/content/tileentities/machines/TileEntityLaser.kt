@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.optics.content.tileentities.machines
 
+import net.cydhra.technocracy.foundation.api.ecs.IAggregatableGuiProvider
 import net.cydhra.technocracy.foundation.api.ecs.logic.ILogicClient
 import net.cydhra.technocracy.foundation.api.ecs.logic.LogicClientDelegate
 import net.cydhra.technocracy.foundation.api.tileentities.TCTileEntityGuiProvider
@@ -14,7 +15,7 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.ITickable
 
-class TileEntityLaser : AggregatableTileEntity(), ITickable, TCTileEntityGuiProvider, ILogicClient by LogicClientDelegate() {
+class TileEntityLaser : AggregatableTileEntity(), IAggregatableGuiProvider, ITickable, TCTileEntityGuiProvider, ILogicClient by LogicClientDelegate() {
 
     private val energyStorage = TileEntityEnergyStorageComponent(facing = mutableSetOf(EnumFacing.DOWN))
     private val laserEmitter = LaserEmitterTileEntityComponent(setOf(EnumFacing.NORTH), limit = -1)
@@ -40,5 +41,10 @@ class TileEntityLaser : AggregatableTileEntity(), ITickable, TCTileEntityGuiProv
         // TODO
 
         return gui
+    }
+
+    override fun canInteractWith(player: EntityPlayer?): Boolean {
+        if (player == null) return true
+        return player.isEntityAlive && !tile.isInvalid && player.getDistanceSq(tile.pos) <= 16
     }
 }

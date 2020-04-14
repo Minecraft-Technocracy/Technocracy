@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.client.gui.components.slot
 
 
+import net.cydhra.technocracy.foundation.api.ecs.IAggregatable
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.TCClientGuiImpl
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
@@ -21,7 +22,7 @@ class TCSlotPlayer(inventoryIn: IInventory, override val index: Int, xPosition: 
         Slot(inventoryIn, index,
                 xPosition, yPosition), ITCSlot {
 
-    override var onClick: ((side: Side, player: EntityPlayer, tileEntity: TileEntity?, button: Int) -> Unit)? = null
+    override var onClick: ((side: Side, player: EntityPlayer, tileEntity: IAggregatable?, button: Int) -> Unit)? = null
 
     override var posX: Int
         get() = super.xPos

@@ -1,18 +1,19 @@
 package net.cydhra.technocracy.foundation.client.gui.container
 
+import net.cydhra.technocracy.foundation.api.ecs.IAggregatableGuiProvider
 import net.cydhra.technocracy.foundation.client.gui.TCTab
 import net.cydhra.technocracy.foundation.client.gui.components.slot.ITCSlot
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.inventory.ClickType
 import net.minecraft.inventory.Container
 import net.minecraft.inventory.Slot
 import net.minecraft.item.ItemStack
-import net.minecraft.tileentity.TileEntity
 import net.minecraftforge.fml.relauncher.Side
 import kotlin.streams.toList
 
 
-open class TCContainer(var tileEntity: TileEntity) : Container() {
+open class TCContainer(var provider: IAggregatableGuiProvider) : Container() {
 
     //@SideOnly(Side.CLIENT)
     //private val components = mutableListOf<TCComponent>()
@@ -23,6 +24,8 @@ open class TCContainer(var tileEntity: TileEntity) : Container() {
     /**
      * The tileentity this gui belongs to if there is one
      */
+
+    val lockedStacks = mutableListOf<ItemStack>()
 
     val tabs = mutableListOf<TCTab>()
     var activeTab = 0
@@ -42,6 +45,17 @@ open class TCContainer(var tileEntity: TileEntity) : Container() {
                     }
                 }
         }
+
+    override fun slotClick(slotId: Int, dragType: Int, clickTypeIn: ClickType, player: EntityPlayer): ItemStack {
+        val slot = if (slotId < 0 || slotId >= inventorySlots.size) null else inventorySlots[slotId]
+        if(slot != null) {
+            val stack = slot.stack
+            if (lockedStacks.any { it.isItemEqual(stack) }) {
+                return ItemStack.EMPTY
+            }
+        }
+        return super.slotClick(slotId, dragType, clickTypeIn, player)
+    }
 
     override fun transferStackInSlot(player: EntityPlayer, index: Int): ItemStack? {
         var newStack = ItemStack.EMPTY
@@ -170,12 +184,12 @@ open class TCContainer(var tileEntity: TileEntity) : Container() {
     fun clickComponent(player: EntityPlayer, componentId: Int, clickType: Int) {
         for (comp in tabs[activeTab].components) {
             if (comp.componentId == componentId) {
-                comp.onClick?.let { it(Side.SERVER, player, tileEntity, clickType) }
+                comp.onClick?.let { it(Side.SERVER, player, provider, clickType) }
             }
         }
     }
 
     override fun canInteractWith(playerIn: EntityPlayer): Boolean {
-        return true
+        return provider.canInteractWith(playerIn)
     }
 }

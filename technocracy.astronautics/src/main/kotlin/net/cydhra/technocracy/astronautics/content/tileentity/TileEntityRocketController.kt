@@ -6,6 +6,7 @@ import net.cydhra.technocracy.astronautics.content.blocks.rocketHullBlock
 import net.cydhra.technocracy.astronautics.content.blocks.rocketStorageBlock
 import net.cydhra.technocracy.astronautics.content.entity.EntityRocket
 import net.cydhra.technocracy.foundation.TCFoundation
+import net.cydhra.technocracy.foundation.api.ecs.IAggregatableGuiProvider
 import net.cydhra.technocracy.foundation.api.tileentities.TCTileEntityGuiProvider
 import net.cydhra.technocracy.foundation.api.tileentities.TEInventoryProvider
 import net.cydhra.technocracy.foundation.client.gui.SimpleGui
@@ -36,7 +37,7 @@ import kotlin.math.ceil
 import kotlin.math.min
 
 
-class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider, TCTileEntityGuiProvider, DynamicInventoryCapability.CustomItemStackStackLimit {
+class TileEntityRocketController : AggregatableTileEntity(), IAggregatableGuiProvider, TEInventoryProvider, TCTileEntityGuiProvider, DynamicInventoryCapability.CustomItemStackStackLimit {
 
     override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack, originalStack: ItemStack) {
     }
@@ -334,5 +335,10 @@ class TileEntityRocketController : AggregatableTileEntity(), TEInventoryProvider
         linked.allowAutoSave = false
         fluidBuffer.allowAutoSave = false
         inventoryBuffer.allowAutoSave = false
+    }
+
+    override fun canInteractWith(player: EntityPlayer?): Boolean {
+        if (player == null) return true
+        return player.isEntityAlive && !tile.isInvalid && player.getDistanceSq(tile.pos) <= 16
     }
 }

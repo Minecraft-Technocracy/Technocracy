@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.client.gui.components.redstonemode
 
+import net.cydhra.technocracy.foundation.api.ecs.IAggregatable
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.TCClientGuiImpl
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityRedstoneModeComponent
@@ -26,7 +27,7 @@ class DefaultRedstoneModeControl(posX: Int, posY: Int, val component: TileEntity
         (gui as TCClientGuiImpl).drawHoveringText(mutableListOf(str), mouseX, mouseY)
     }
 
-    override var onClick: ((Side, EntityPlayer, TileEntity?, Int) -> Unit)? = { side, player, tileEntity, button ->
+    override var onClick: ((Side, EntityPlayer, IAggregatable?, Int) -> Unit)? = { side, player, tileEntity, button ->
         component.redstoneMode = TileEntityRedstoneModeComponent.RedstoneMode.values()[(component.redstoneMode.ordinal + 1) % TileEntityRedstoneModeComponent.RedstoneMode.values().size]
     }
 
