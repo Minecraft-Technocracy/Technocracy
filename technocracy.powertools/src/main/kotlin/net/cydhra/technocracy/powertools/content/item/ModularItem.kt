@@ -24,19 +24,14 @@ import net.minecraft.util.EnumHand
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import net.minecraftforge.common.capabilities.ICapabilityProvider
-import net.minecraftforge.fml.common.thread.SidedThreadGroups
 import kotlin.math.min
 
 
 class ModularItem : BaseItem("modularitem"), TCTileEntityGuiProvider {
 
     override fun initCapabilities(stack: ItemStack, nbt: NBTTagCompound?): ICapabilityProvider? {
-        if (Thread.currentThread().getThreadGroup() == SidedThreadGroups.CLIENT) {
-            val i = 0
-        }
         val wrapper = ItemCapabilityWrapper(stack)
         wrapper.registerComponent(ItemUpgradesComponent(3, UpgradeClass.TOOL), "upgradeable")
-        //wrapper.deserializeNBT(nbt)
         return wrapper
     }
 
@@ -99,10 +94,12 @@ class ModularItem : BaseItem("modularitem"), TCTileEntityGuiProvider {
     }
 
     override fun isDamaged(stack: ItemStack): Boolean {
+        // if false, the tooltip information about damage won't be shown
         return false
     }
 
     override fun addInformation(stack: ItemStack, worldIn: World?, tooltip: MutableList<String>, flagIn: ITooltipFlag) {
+        // TODO localize, don't call it "damage" and don't print as double
         tooltip.add("Current Damage: " + getDamage(stack))
         super.addInformation(stack, worldIn, tooltip, flagIn)
     }
@@ -115,11 +112,6 @@ class ModularItem : BaseItem("modularitem"), TCTileEntityGuiProvider {
                 return energy.energyStorage.maxEnergyStored - energy.energyStorage.energyStored
         }
         return super.getDamage(stack)
-    }
-
-    override fun readNBTShareTag(stack: ItemStack, nbt: NBTTagCompound?) {
-        stack.tagCompound = nbt
-        //stack.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, null)?.deserializeNBT(stack.serializeNBT().getCompoundTag("ForgeCaps"))
     }
 
     override fun getMaxDamage(stack: ItemStack): Int {
@@ -137,7 +129,6 @@ class ModularItem : BaseItem("modularitem"), TCTileEntityGuiProvider {
     }
 
     override fun onItemRightClick(worldIn: World, playerIn: EntityPlayer, handIn: EnumHand): ActionResult<ItemStack> {
-
         if (!playerIn.isSneaking) {
             if (!worldIn.isRemote && handIn == EnumHand.MAIN_HAND) {
                 playerIn.openGui(TCFoundation, TCGuiHandler.itemGui, worldIn, playerIn.posX.toInt(), playerIn.posY.toInt(), playerIn.posY.toInt())
@@ -147,7 +138,7 @@ class ModularItem : BaseItem("modularitem"), TCTileEntityGuiProvider {
     }
 
     override fun getGui(player: EntityPlayer?): TCGui {
-        val stack = player?.heldItemMainhand!!
+        val stack = player!!.heldItemMainhand
         val wrapped = stack.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, null)!!
         val gui = SimpleGui(container = TCContainer(wrapped))
 
