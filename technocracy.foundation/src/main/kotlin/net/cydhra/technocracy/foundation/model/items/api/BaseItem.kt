@@ -14,14 +14,14 @@ import net.minecraft.item.Item
  */
 open class BaseItem(unlocalizedName: String,
                     registryName: String = unlocalizedName,
-                    val oreDictName: String? = null,
-                    val itemColor: IBlockColor? = null) : Item() {
+                    override val oreDictName: String? = null,
+                    override val itemColor: IBlockColor? = null) : TCItem, Item() {
 
     /**
      * A convenience property used during item registration to set the model location to the default assets path and
      * the registry name as file name. Can be overridden to use a different model
      */
-    open val modelLocation: String
+    override val modelLocation: String
         get() = this.registryName.toString()
 
     init {

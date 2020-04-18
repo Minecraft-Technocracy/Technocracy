@@ -4,6 +4,7 @@ import net.cydhra.technocracy.foundation.client.model.AbstractCustomModel
 import net.cydhra.technocracy.foundation.client.model.CustomModelProvider
 import net.cydhra.technocracy.foundation.model.blocks.color.BlockColorDelegator
 import net.cydhra.technocracy.foundation.model.items.api.BaseItem
+import net.cydhra.technocracy.foundation.model.items.api.TCItem
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.block.model.ModelResourceLocation
 import net.minecraft.creativetab.CreativeTabs
@@ -30,10 +31,10 @@ class ItemManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
     /**
      * Items scheduled for registering
      */
-    private val itemsToRegister = mutableListOf<BaseItem>()
+    private val itemsToRegister = mutableListOf<TCItem>()
 
     @SideOnly(Side.CLIENT)
-    private lateinit var customModels : MutableMap<String, IModel>
+    private lateinit var customModels: MutableMap<String, IModel>
 
     @SideOnly(Side.CLIENT)
     fun initClient() {
@@ -44,7 +45,7 @@ class ItemManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
      * Schedule an item for registration. Registration will be done, as soon as the registration event marks
      * registration phase.
      */
-    fun prepareItemForRegistration(item: BaseItem) {
+    fun <T> prepareItemForRegistration(item: T) where T : TCItem, T : Item {
         itemsToRegister += item
     }
 
@@ -61,10 +62,12 @@ class ItemManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
     @Suppress("unused")
     @SubscribeEvent
     fun registerItems(event: RegistryEvent.Register<Item>) {
-        event.registry.registerAll(*itemsToRegister.map { it.apply { if (it.creativeTab == null) it.creativeTab = defaultCreativeTab } }.toTypedArray())
+        event.registry.registerAll(*itemsToRegister.map {
+            (it as Item).apply { if (it.creativeTab == null) it.creativeTab = defaultCreativeTab }
+        }.toTypedArray())
         itemsToRegister
                 .filter { it.oreDictName != null }
-                .forEach { OreDictionary.registerOre(it.oreDictName, it) }
+                .forEach { OreDictionary.registerOre(it.oreDictName, it as Item) }
     }
 
     @SideOnly(Side.CLIENT)
@@ -83,7 +86,8 @@ class ItemManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
     fun registerItemColors() {
         itemsToRegister.forEach { item ->
             if (item.itemColor != null)
-                Minecraft.getMinecraft().itemColors.registerItemColorHandler(BlockColorDelegator(item.itemColor), item)
+                Minecraft.getMinecraft()
+                        .itemColors.registerItemColorHandler(BlockColorDelegator(item.itemColor!!), item as Item)
         }
     }
 
@@ -93,9 +97,9 @@ class ItemManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
      * @param item a [BaseItem] instance
      */
     @SideOnly(Side.CLIENT)
-    private fun registerItemRender(item: BaseItem) {
+    private fun registerItemRender(item: TCItem) {
         val list = NonNullList.create<ItemStack>()
-        item.getSubItems(item.creativeTab!!, list)
+        (item as Item).getSubItems(item.creativeTab!!, list)
         //need to get all item variants
         item.getSubItems(CreativeTabs.SEARCH, list)
         for (subs in list) {
@@ -110,8 +114,8 @@ class ItemManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
      * @param metadata the item metadata which uses this model resource
      */
     @SideOnly(Side.CLIENT)
-    private fun registerItemRender(item: BaseItem, metadata: Int) {
-        ModelLoader.setCustomModelResourceLocation(item, metadata,
+    private fun registerItemRender(item: TCItem, metadata: Int) {
+        ModelLoader.setCustomModelResourceLocation(item as Item, metadata,
                 ModelResourceLocation(item.modelLocation, "inventory"))
     }
 }
