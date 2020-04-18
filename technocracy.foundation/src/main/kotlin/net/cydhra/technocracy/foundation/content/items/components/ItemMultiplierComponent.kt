@@ -11,8 +11,12 @@ import net.minecraft.nbt.NBTTagCompound
  *
  * @param upgradeParameter the upgrade parameter that affects this multiplier. If set to null, this multiplier cannot
  * be modified by upgrades.
+ * @param callback a callback triggered when the multiplier is changed. Can be null
  */
-class ItemMultiplierComponent(val upgradeParameter: UpgradeParameter?) : AbstractItemComponent() {
+class ItemMultiplierComponent(
+        val upgradeParameter: UpgradeParameter?,
+        val callback: ((Double) -> Unit)?
+) : AbstractItemComponent() {
     companion object {
         private const val NBT_KEY_ENERGY = "multiplier"
     }
@@ -23,6 +27,10 @@ class ItemMultiplierComponent(val upgradeParameter: UpgradeParameter?) : Abstrac
      * Current multiplier progress per tick of the machine
      */
     var multiplier: Double = 1.0
+        set(v) {
+            field = v
+            callback?.invoke(v)
+        }
 
     override fun serializeNBT(): NBTTagCompound {
         return NBTTagCompound().apply {
