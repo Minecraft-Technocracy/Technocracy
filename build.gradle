@@ -173,7 +173,9 @@ project('technocracy.foundation') {
 
     jar {
         manifest {
-            attributes 'FMLAT': 'technocracy_at.cfg'
+            attributes 'FMLAT': 'technocracy_at.cfg',
+             'FMLCorePluginContainsFMLMod': 'true',
+             'FMLCorePlugin': 'net.cydhra.technocracy.coremod.TCCorePlugin'
         }
     }
 }
