@@ -1,0 +1,12 @@
+{
+  "parent": "block/orientable",
+  "textures": {
+    "particle": "technocracy.foundation:block/saline_wall",
+    "up": "technocracy.foundation:block/saline_wall",
+    "down": "technocracy.foundation:block/saline_wall",
+    "north": "technocracy.foundation:block/saline_controller",
+    "east": "technocracy.foundation:block/saline_wall",
+    "south": "technocracy.foundation:block/saline_wall",
+    "west": "technocracy.foundation:block/saline_wall"
+  }
+}

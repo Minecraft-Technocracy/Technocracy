@@ -168,6 +168,14 @@ tile.drum.bedrock.name=Bedrockium Drum
 tile.drum.invar.name=Invar Drum
 tile.drum.carbon.name=Carbon Drum
 
+tile.saline_wall.name=Saline Wall
+tile.saline_heated_wall.name=Heated Saline Wall
+tile.saline_controller.name=Saline Controller
+tile.saline_fluid_input.name=Saline Fluid Input
+tile.saline_fluid_output.name=Saline Fluid Output
+tile.saline_heating_agent_input.name=Saline Heating Agent Input
+tile.saline_heating_agent_output.name=Saline Heating Agent Output
+
 fluid.mineral_oil=Mineral Oil
 fluid.mineral_oil_hot=Heated Mineral Oil
 fluid.sulfur_dioxide=Sulfur Dioxide
@@ -250,6 +258,9 @@ itemGroup.technocracy.facades=Facades
 multiblock.error.number_of_blocks=%s: Expected %d but found %d.
 multiblock.error.too_few_blocks=%s: Expected at least %d but found %d.
 multiblock.error.too_many_blocks=%s: Expected at most %d but found %d.
+multiblock.error.inconsistent_tile_size=All tiles of this machine must be of equal size (%dx%dx%d).
+multiblock.error.invalid_block=The block at %d, %d, %d is not allowed at this location.
+multiblock.error.no_tile_found=Unable to recognize any tile belonging to the multi-block. Make sure there are no misplaced blocks on the outside of the structure.
 multiblock.boiler.error.wider_than_high=The machine must be at least as high as the average side length (%d blocks) but is only %d blocks high.
 multiblock.heat_exchanger.error.unused_input_port=An ingress port is unused.
 multiblock.heat_exchanger.error.tube_flow_diverges=A tube diverges its coolant flow.
@@ -266,6 +277,11 @@ multiblock.capacitor.error.too_many_connections=The block at %d, %d, %d has too 
 multiblock.capacitor.error.uncompleted_connection=The connection at %d, %d, %d is a dead end and must be properly connected.
 multiblock.capacitor.error.connection_of_same_electrode_types=Can't complete connection at %d, %d, %d because the two connected electrodes have the same type.
 multiblock.capacitor.error.adjacent_electrode_types=Electrode at %d, %d, %d is invalid because electrodes of the same type can't be adjacent in a row or column.
+multiblock.saline.error.invalid_fluid_input_position=Fluid inputs need to be placed in the upper center of each edge on all four sides of a tile and facing towards the center. (%d, %d, %d)
+multiblock.saline.error.invalid_fluid_output_position=Fluid outputs need to be placed in the bottom center of each tile. (%d, %d, %d)
+multiblock.saline.error.insufficient_heating_ports=The machine needs at least one heating agent output/input or neither of both.
+multiblock.saline.error.invalid_heating_agent_position=Heating agents need to be placed in the bottom center on the outside of a tile. (%d, %d, %d)
+multiblock.saline.error.missing_heated_wall=The machine requires a floor with integrated heat pipes to be able to use heat correctly. (%d, %d, %d)
 
 tooltips.upgrades.title.class=Upgrade Type
 tooltips.upgrades.title.description=Upgrades

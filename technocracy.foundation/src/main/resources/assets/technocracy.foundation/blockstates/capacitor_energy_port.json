@@ -1,19 +1,9 @@
 {
   "variants": {
-    "facing=north": {
-      "model": "technocracy.foundation:capacitor_energy_port"
-    },
-    "facing=east": {
-      "model": "technocracy.foundation:capacitor_energy_port",
-      "y": 90
-    },
-    "facing=south": {
-      "model": "technocracy.foundation:capacitor_energy_port",
-      "y": 180
-    },
-    "facing=west": {
-      "model": "technocracy.foundation:capacitor_energy_port",
-      "y": 270
-    }
+    "normal": [
+      {
+        "model": "technocracy.foundation:capacitor_energy_port"
+      }
+    ]
   }
 }
