@@ -6,3 +6,4 @@ import net.cydhra.technocracy.foundation.model.items.api.UpgradeItem
 
 val batteryUpgrade_One = UpgradeItem("battery_upgrade_one", UpgradeClass.TOOL, EnergyUpgrade(400))
 val modularItem = ModularItem()
+val energyShield = EnergyShieldItem()

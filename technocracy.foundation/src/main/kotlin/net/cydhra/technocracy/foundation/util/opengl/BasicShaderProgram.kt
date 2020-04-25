@@ -41,11 +41,24 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
 
     override fun onResourceManagerReload(resourceManager: IResourceManager, resourcePredicate: Predicate<IResourceType>) {
         if (resourcePredicate.test(VanillaResourceType.SHADERS)) {
-            cleanUp()
-            loadShader()
+            reloadShader()
         }
 
         resourceReloader?.accept(resourceManager, resourcePredicate)
+    }
+
+    fun reloadShader() {
+        cleanUp()
+        loadShader()
+        addUniforms()
+    }
+
+    private fun addUniforms() {
+        for(u in uniform) {
+            u.uniformId = OpenGlHelper.glGetUniformLocation(this.programID, u.uniformName)
+            u.markDirty()
+        }
+        updateUniforms()
     }
 
     private fun loadShader() {
@@ -69,6 +82,15 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
         attributeBinder?.accept(programID)
 
         OpenGlHelper.glLinkProgram(programID)
+
+        GL20.glDetachShader(programID, vertexShaderID)
+        GL20.glDetachShader(programID, fragmentShaderID)
+        OpenGlHelper.glDeleteShader(vertexShaderID)
+        OpenGlHelper.glDeleteShader(fragmentShaderID)
+
+        if (geometryShaderID != 0)
+            OpenGlHelper.glDeleteShader(geometryShaderID)
+
         val i = OpenGlHelper.glGetProgrami(programID, OpenGlHelper.GL_LINK_STATUS)
 
         if (i == 0)
@@ -97,11 +119,7 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
     }
 
     fun cleanUp() {
-        OpenGlHelper.glDeleteShader(vertexShaderID)
-        OpenGlHelper.glDeleteShader(fragmentShaderID)
-        if (geometryShaderID != 0)
-            OpenGlHelper.glDeleteShader(geometryShaderID)
-        OpenGlHelper.glDeleteShader(programID)
+        OpenGlHelper.glDeleteProgram(programID)
     }
 
     private fun loadShader(shader: ResourceLocation, type: Int): Int {
@@ -112,6 +130,7 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
             val buffer = BufferUtils.createByteBuffer(bytes.size)
             buffer.put(bytes)
             buffer.position(0)
+            val string = String(bytes)
             val i = OpenGlHelper.glCreateShader(type)
             OpenGlHelper.glShaderSource(i, buffer)
             OpenGlHelper.glCompileShader(i)
@@ -150,6 +169,10 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
         private val notifyWrongType = "Wrong uniform type"
         private val notifyShaderNotRunning = "The shader is not running"
 
+        internal fun markDirty() {
+            dirty = true
+        }
+
         private fun notify(msg: String) {
             if (!notified) {
                 IllegalStateException(msg).printStackTrace()
@@ -166,7 +189,7 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
 
         fun uploadUniforms() {
             if (!shader.running) {
-                notifyShaderNotRunning; return
+                notify(notifyShaderNotRunning); return
             }
 
             if (dirty) {
@@ -215,7 +238,7 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
             OpenGlHelper.glUniform1i(uniformId, tmp[0])
         }
 
-        fun uploadUniform(vararg ints: Int) : ShaderUniform {
+        fun uploadUniform(vararg ints: Int): ShaderUniform {
             if (type.type == UniformType.GenericType.FLOAT) {
                 uploadUniform(*ints.asSequence().map { it.toFloat() }.toList().toFloatArray())
                 return this
@@ -233,6 +256,11 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
                     dirty = true
                 }
             }
+            return this
+        }
+
+        fun uploadUniform(vararg doubles: Double): ShaderUniform {
+            uploadUniform(*doubles.asSequence().map { it.toFloat() }.toList().toFloatArray())
             return this
         }
 
@@ -257,13 +285,13 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
             return this
         }
 
-        fun uploadUniform(x: Boolean) : ShaderUniform {
+        fun uploadUniform(x: Boolean): ShaderUniform {
             val value = if (x) 1 else 0
             uploadUniform(value)
             return this
         }
 
-        fun uploadUniform(matrix4f: Matrix4f) : ShaderUniform {
+        fun uploadUniform(matrix4f: Matrix4f): ShaderUniform {
             val buffer = buffer_float
                     ?: run { notify(notifyWrongType); return this }
             if (type.amount != 4 * 4) {
@@ -276,7 +304,7 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
             return this
         }
 
-        fun uploadUniform(bufferIn: FloatBuffer) : ShaderUniform {
+        fun uploadUniform(bufferIn: FloatBuffer): ShaderUniform {
             val buffer = buffer_float
                     ?: run { notify(notifyWrongType); return this }
 

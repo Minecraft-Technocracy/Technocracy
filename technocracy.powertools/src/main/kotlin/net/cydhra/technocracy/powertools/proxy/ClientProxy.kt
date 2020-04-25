@@ -1,5 +1,8 @@
 package net.cydhra.technocracy.powertools.proxy
 
+import net.cydhra.technocracy.powertools.client.ShieldRenderer
+import net.cydhra.technocracy.powertools.content.item.energyShield
+
 
 class ClientProxy : CommonProxy() {
     override fun init() {
@@ -7,6 +10,7 @@ class ClientProxy : CommonProxy() {
         itemManager.registerItemColors()
         blockManager.registerBlockColors()
         tileEntityManager.onClientInitialize()
+
     }
 
     override fun preInit() {
@@ -15,5 +19,6 @@ class ClientProxy : CommonProxy() {
         itemManager.initClient()
         tileEntityManager.initClient()
         entityManager.registerRenderer()
+        energyShield.tileEntityItemStackRenderer = ShieldRenderer
     }
 }

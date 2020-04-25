@@ -8,6 +8,7 @@ import net.cydhra.technocracy.foundation.model.tileentities.manager.TileEntityMa
 import net.cydhra.technocracy.powertools.TCPowertools
 import net.cydhra.technocracy.powertools.client.powertoolsCreativeTab
 import net.cydhra.technocracy.powertools.content.item.batteryUpgrade_One
+import net.cydhra.technocracy.powertools.content.item.energyShield
 import net.cydhra.technocracy.powertools.content.item.modularItem
 import net.minecraftforge.common.MinecraftForge
 
@@ -40,6 +41,7 @@ open class CommonProxy {
 
         itemManager.prepareItemForRegistration(batteryUpgrade_One)
         itemManager.prepareItemForRegistration(modularItem)
+        itemManager.prepareItemForRegistration(energyShield)
     }
 
     open fun init() {
