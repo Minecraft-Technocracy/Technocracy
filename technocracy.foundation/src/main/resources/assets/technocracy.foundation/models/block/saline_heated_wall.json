@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "technocracy.foundation:block/saline_wall",
+    "up": "technocracy.foundation:block/saline_heated_wall_top",
+    "down": "technocracy.foundation:block/saline_wall",
+    "north": "technocracy.foundation:block/saline_wall",
+    "east": "technocracy.foundation:block/saline_wall",
+    "south": "technocracy.foundation:block/saline_wall",
+    "west": "technocracy.foundation:block/saline_wall"
+  }
+}

@@ -54,13 +54,13 @@ class HeatTransferLogic(
         when (this.direction) {
             COLD_TO_HOT -> {
                 if (this.hotFluidComponent.fluid.currentFluid != null && this.currentRecipe!!.hotFluid != this
-                                .hotFluidComponent.fluid.currentFluid) {
+                                .hotFluidComponent.fluid.currentFluid!!.fluid) {
                     return false
                 }
             }
             HOT_TO_COLD -> {
                 if (this.coldFluidComponent.fluid.currentFluid != null && this.currentRecipe!!.coldFluid != this
-                                .coldFluidComponent.fluid.currentFluid) {
+                                .coldFluidComponent.fluid.currentFluid!!.fluid) {
                     return false
                 }
             }
@@ -99,13 +99,13 @@ class HeatTransferLogic(
 
         this.inputFluidComponent.fluid.drain(maximumConversionMb, true, forced = true)
         if (this.direction == COLD_TO_HOT) {
-            this.outputFluidComponent.fluid.fill(FluidStack(currentRecipe!!.hotFluid, maximumConversionMb), doFill = true, forced = true)
-            this.heatBuffer.heat -= maximumConversionMb * this.currentRecipe!!.milliHeatPerDegree *
-                    (currentRecipe!!.hotFluid.temperature - currentRecipe!!.coldFluid.temperature)
+            this.outputFluidComponent.fluid.fill(FluidStack(currentRecipe!!.hotFluid, maximumConversionMb), true)
+            this.heatBuffer.drainHeat(maximumConversionMb * this.currentRecipe!!.milliHeatPerDegree *
+                    (currentRecipe!!.hotFluid.temperature - currentRecipe!!.coldFluid.temperature))
         } else {
-            this.outputFluidComponent.fluid.fill(FluidStack(currentRecipe!!.coldFluid, maximumConversionMb), doFill = true, forced = true)
-            this.heatBuffer.heat += maximumConversionMb * this.currentRecipe!!.milliHeatPerDegree *
-                    (currentRecipe!!.hotFluid.temperature - currentRecipe!!.coldFluid.temperature)
+            this.outputFluidComponent.fluid.fill(FluidStack(currentRecipe!!.coldFluid, maximumConversionMb), true)
+            this.heatBuffer.fillHeat(maximumConversionMb * this.currentRecipe!!.milliHeatPerDegree *
+                    (currentRecipe!!.hotFluid.temperature - currentRecipe!!.coldFluid.temperature))
         }
     }
 

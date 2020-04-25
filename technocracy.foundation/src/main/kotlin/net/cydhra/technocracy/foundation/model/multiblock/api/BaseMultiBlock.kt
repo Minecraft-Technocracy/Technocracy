@@ -63,15 +63,15 @@ abstract class BaseMultiBlock(
     }
 
     override fun onMachineAssembled() {
-        forceStructureUpdate(WORLD)
+        forceStructureUpdate(this.WORLD)
     }
 
     override fun onMachineRestored() {
-        forceStructureUpdate(WORLD)
+        forceStructureUpdate(this.WORLD)
     }
 
     override fun onMachineDisassembled() {
-        forceStructureUpdate(WORLD)
+        forceStructureUpdate(this.WORLD)
     }
 
     override fun onBlockAdded(p0: IMultiblockPart?) {

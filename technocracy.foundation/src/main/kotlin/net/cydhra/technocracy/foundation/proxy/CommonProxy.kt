@@ -11,10 +11,7 @@ import net.cydhra.technocracy.foundation.content.items.*
 import net.cydhra.technocracy.foundation.content.oresystems.*
 import net.cydhra.technocracy.foundation.content.potions.oilyEffect
 import net.cydhra.technocracy.foundation.content.tileentities.machines.*
-import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartBoiler
-import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartCapacitor
-import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartHeatExchanger
-import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartRefinery
+import net.cydhra.technocracy.foundation.content.tileentities.multiblock.*
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.boiler.TileEntityBoilerController
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.boiler.TileEntityBoilerHeater
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.boiler.TileEntityBoilerInput
@@ -28,6 +25,7 @@ import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refiner
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refinery.TileEntityRefineryHeater
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refinery.TileEntityRefineryInput
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refinery.TileEntityRefineryOutput
+import net.cydhra.technocracy.foundation.content.tileentities.multiblock.saline.*
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.tank.TileEntityTankMultiBlockPart
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.tank.TileEntityTankPort
 import net.cydhra.technocracy.foundation.content.tileentities.pipe.TileEntityPipe
@@ -195,6 +193,14 @@ open class CommonProxy {
         blockManager.prepareBlocksForRegistration(tankIOBlock)
         blockManager.prepareBlocksForRegistration(tankGlassBlock)
 
+        blockManager.prepareBlocksForRegistration(salineWallBlock)
+        blockManager.prepareBlocksForRegistration(salineHeatedWallBlock)
+        blockManager.prepareBlocksForRegistration(salineControllerBlock)
+        blockManager.prepareBlocksForRegistration(salineFluidInputBlock)
+        blockManager.prepareBlocksForRegistration(salineFluidOutputBlock)
+        blockManager.prepareBlocksForRegistration(salineHeatingAgentInputBlock)
+        blockManager.prepareBlocksForRegistration(salineHeatingAgentOutputBlock)
+
         blockManager.prepareBlocksForRegistration(oilSandBlock)
         blockManager.prepareBlocksForRegistration(oilStone)
         blockManager.prepareBlocksForRegistration(oilBlock)
@@ -321,8 +327,14 @@ open class CommonProxy {
         tileEntityManager.prepareTileEntityForRegistration(TileEntityTankMultiBlockPart::class)
         tileEntityManager.prepareTileEntityForRegistration(TileEntityTankPort::class)
 
-        tileEntityManager.prepareTileEntityForRegistration(TileEntityDrum::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityMultiBlockPartSaline::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntitySalineController::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntitySalineFluidInput::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntitySalineFluidOutput::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntitySalineHeatingAgentInput::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntitySalineHeatingAgentOutput::class)
 
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityDrum::class)
         //ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPipe::class.java, PipeRenderer())
 
         PotionManager.preparePotionForRegistration(oilyEffect)
