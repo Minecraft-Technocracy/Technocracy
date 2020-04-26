@@ -5,8 +5,6 @@ import net.cydhra.technocracy.foundation.client.shader.RefractionEffect
 import net.minecraft.client.Minecraft
 import net.minecraft.client.model.ModelBase
 import net.minecraft.client.model.ModelRenderer
-import net.minecraft.client.model.ModelShield
-import net.minecraft.client.renderer.BannerTextures
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.block.model.IBakedModel
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer

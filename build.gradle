@@ -173,9 +173,7 @@ project('technocracy.foundation') {
 
     jar {
         manifest {
-            attributes 'FMLAT': 'technocracy_at.cfg',
-             'FMLCorePluginContainsFMLMod': 'true',
-             'FMLCorePlugin': 'net.cydhra.technocracy.coremod.TCCorePlugin'
+            attributes 'FMLAT': 'technocracy_at.cfg'
         }
     }
 }
@@ -193,6 +191,19 @@ project('technocracy.astronautics') {
     }
 }
 
+project('technocracy.core') {
+    dependencies {
+
+    }
+
+    jar {
+        manifest {
+            attributes 'FMLCorePluginContainsFMLMod': 'true',
+                    'FMLCorePlugin': 'net.cydhra.technocracy.coremod.TCCorePlugin'
+        }
+    }
+}
+
 project('technocracy.optics') {
     dependencies {
         compile project(':technocracy.foundation')
@@ -202,6 +213,7 @@ project('technocracy.optics') {
 project('technocracy.powertools') {
     dependencies {
         compile project(':technocracy.foundation')
+        compile project(':technocracy.core')
     }
 }
 

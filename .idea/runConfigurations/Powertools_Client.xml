@@ -2,6 +2,7 @@
   <configuration default="false" name="Powertools Client" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="GradleStart" />
     <module name="technocracy.technocracy.powertools.main" />
+    <option name="VM_PARAMETERS" value="-Dfml.coreMods.load=net.cydhra.technocracy.coremod.TCCorePlugin" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run" />
     <method v="2">
       <option name="Make" enabled="true" />
