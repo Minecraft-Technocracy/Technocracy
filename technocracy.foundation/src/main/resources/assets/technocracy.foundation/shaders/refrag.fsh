@@ -39,6 +39,7 @@ void main()
     vec4 dif1 = texture(image_diffuse, scaledCoord + scaledOffset.xy);
     vec4 dif2 = texture(image_diffuse, scaledCoord - scaledOffset.yx);
 
+
     vec4 nt = mix(nt1, nt2, 0.5);
     vec4 dif = mix(dif1, dif2, 0.5);
 
@@ -48,6 +49,8 @@ void main()
 
     vec4 pickedColor = texture(image, screenCoord + ((nt.xy - vec2(0.5))) * texel * 15.0);
     pickedColor.rgb += dif.rgb * dif.aaa;
+    pickedColor.a = 1.0;
+    //dif2.rgb = hueShift(dif2.rgb, 150 / 180.0 * 3.14);
 
 
     FragColor = pickedColor;
