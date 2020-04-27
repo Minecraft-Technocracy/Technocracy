@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext
 
-class MachineInfoPacket() : IMessage, IMessageHandler<MachineInfoPacket, IMessage> {
+class ServerMachineInfoPacket() : IMessage, IMessageHandler<ServerMachineInfoPacket, IMessage> {
     var tag: NBTTagCompound = NBTTagCompound()
 
     constructor(te: IAggregatable?) : this() {
@@ -49,7 +49,7 @@ class MachineInfoPacket() : IMessage, IMessageHandler<MachineInfoPacket, IMessag
         ByteBufUtils.writeTag(buf, tag)
     }
 
-    override fun onMessage(packet: MachineInfoPacket, context: MessageContext): IMessage? {
+    override fun onMessage(packet: ServerMachineInfoPacket, context: MessageContext): IMessage? {
 
         val container = if (context.side.isClient) Minecraft.getMinecraft().player.openContainer else context.serverHandler.player.openContainer
 

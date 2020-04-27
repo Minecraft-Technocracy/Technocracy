@@ -2,7 +2,7 @@ package net.cydhra.technocracy.foundation.client.gui.components
 
 import net.cydhra.technocracy.foundation.api.ecs.IAggregatable
 import net.cydhra.technocracy.foundation.client.gui.TCGui
-import net.cydhra.technocracy.foundation.network.ComponentClickPacket
+import net.cydhra.technocracy.foundation.network.ClientComponentClickPacket
 import net.cydhra.technocracy.foundation.network.PacketHandler
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.Tessellator
@@ -28,7 +28,7 @@ abstract class TCComponent : ITCComponent {
     override fun mouseClicked(x: Int, y: Int, mouseX: Int, mouseY: Int, mouseButton: Int) {
         onClick?.let {
             it(Side.CLIENT, Minecraft.getMinecraft().player, gui.container.provider, mouseButton)
-            PacketHandler.sendToServer(ComponentClickPacket(componentId, mouseButton))
+            PacketHandler.sendToServer(ClientComponentClickPacket(componentId, mouseButton))
         }
     }
 

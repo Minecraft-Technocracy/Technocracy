@@ -2,9 +2,9 @@ package net.cydhra.technocracy.foundation.client.events
 
 import net.cydhra.technocracy.foundation.model.items.util.IItemKeyBindEvent
 import net.cydhra.technocracy.foundation.model.items.util.IItemScrollEvent
-import net.cydhra.technocracy.foundation.network.ItemKeyBindPacket
+import net.cydhra.technocracy.foundation.network.ClientItemKeyBindPacket
 import net.cydhra.technocracy.foundation.network.PacketHandler
-import net.cydhra.technocracy.foundation.network.ItemScrollPacket
+import net.cydhra.technocracy.foundation.network.ClientItemScrollPacket
 import net.minecraft.client.Minecraft
 import net.minecraftforge.client.event.MouseEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -21,7 +21,7 @@ object KeyEventHandler {
             val scrollDir = if (event.dwheel < 0) -1 else 1
 
             if (player.world.isRemote) {
-                PacketHandler.sendToServer(ItemScrollPacket(scrollDir))
+                PacketHandler.sendToServer(ClientItemScrollPacket(scrollDir))
             } else {
                 (stack.item as IItemScrollEvent).mouseScroll(player, stack, scrollDir)
             }
@@ -37,7 +37,7 @@ object KeyEventHandler {
         if (!stack.isEmpty && stack.item is IItemKeyBindEvent && Minecraft.getMinecraft().inGameHasFocus) {
 
             if (player.world.isRemote) {
-                PacketHandler.sendToServer(ItemKeyBindPacket())
+                PacketHandler.sendToServer(ClientItemKeyBindPacket())
             } else {
                 (stack.item as IItemKeyBindEvent).keyPress(player, stack)
             }

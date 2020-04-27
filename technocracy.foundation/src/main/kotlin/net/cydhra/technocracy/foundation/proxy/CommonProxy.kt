@@ -44,10 +44,7 @@ import net.cydhra.technocracy.foundation.model.items.manager.ItemManager
 import net.cydhra.technocracy.foundation.model.oresystems.api.OreSystem
 import net.cydhra.technocracy.foundation.model.potions.manager.PotionManager
 import net.cydhra.technocracy.foundation.model.tileentities.manager.TileEntityManager
-import net.cydhra.technocracy.foundation.network.ComponentClickPacket
-import net.cydhra.technocracy.foundation.network.ItemKeyBindPacket
-import net.cydhra.technocracy.foundation.network.ItemScrollPacket
-import net.cydhra.technocracy.foundation.network.PacketHandler
+import net.cydhra.technocracy.foundation.network.*
 import net.cydhra.technocracy.foundation.network.componentsync.*
 import net.minecraft.item.crafting.FurnaceRecipes
 import net.minecraft.item.crafting.Ingredient
@@ -345,13 +342,14 @@ open class CommonProxy {
 
         NetworkRegistry.INSTANCE.registerGuiHandler(TCFoundation, TCGuiHandler())
 
-        PacketHandler.registerPacket(ItemScrollPacket::class.java, ItemScrollPacket::class.java, Side.SERVER)
-        PacketHandler.registerPacket(ItemKeyBindPacket::class.java, ItemKeyBindPacket::class.java, Side.SERVER)
-        PacketHandler.registerPacket(MachineInfoPacket::class.java, MachineInfoPacket::class.java, Side.CLIENT)
+        PacketHandler.registerPacket(ClientItemScrollPacket::class.java, ClientItemScrollPacket::class.java, Side.SERVER)
+        PacketHandler.registerPacket(ClientItemKeyBindPacket::class.java, ClientItemKeyBindPacket::class.java, Side.SERVER)
+        PacketHandler.registerPacket(ServerMachineInfoPacket::class.java, ServerMachineInfoPacket::class.java, Side.CLIENT)
         PacketHandler.registerPacket(ClientRequestSyncPacket::class.java, ClientRequestSyncPacket::class.java, Side.SERVER)
-        PacketHandler.registerPacket(ComponentClickPacket::class.java, ComponentClickPacket::class.java, Side.SERVER)
+        PacketHandler.registerPacket(ClientComponentClickPacket::class.java, ClientComponentClickPacket::class.java, Side.SERVER)
         PacketHandler.registerPacket(ClientSwitchTabPacket::class.java, ClientSwitchTabPacket::class.java, Side.SERVER)
         PacketHandler.registerPacket(ClientChangeSideConfigPacket::class.java, ClientChangeSideConfigPacket::class.java, Side.SERVER)
+        PacketHandler.registerPacket(ServerItemCooldownPacket::class.java, ServerItemCooldownPacket::class.java, Side.CLIENT)
     }
 
     open fun init() {

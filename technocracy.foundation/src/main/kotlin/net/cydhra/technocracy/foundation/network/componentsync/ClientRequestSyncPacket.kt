@@ -20,6 +20,6 @@ class ClientRequestSyncPacket: IMessage, IMessageHandler<ClientRequestSyncPacket
         if (container !is TCContainer)
             return null
 
-        return MachineInfoPacket(container.provider)
+        return ServerMachineInfoPacket(container.provider)
     }
 }

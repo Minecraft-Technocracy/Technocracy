@@ -7,7 +7,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext
 
 
-class ComponentClickPacket(var componentId: Int = -1, var clickType: Int = -1) : IMessage, IMessageHandler<ComponentClickPacket, IMessage> {
+class ClientComponentClickPacket(var componentId: Int = -1, var clickType: Int = -1) : IMessage, IMessageHandler<ClientComponentClickPacket, IMessage> {
     override fun fromBytes(buf: ByteBuf?) {
         componentId = buf?.readInt()!!
         clickType = buf.readInt()
@@ -18,7 +18,7 @@ class ComponentClickPacket(var componentId: Int = -1, var clickType: Int = -1) :
         buf?.writeInt(clickType)
     }
 
-    override fun onMessage(message: ComponentClickPacket, ctx: MessageContext): IMessage? {
+    override fun onMessage(message: ClientComponentClickPacket, ctx: MessageContext): IMessage? {
         val container = ctx.serverHandler.player.openContainer
         if (container !is TCContainer)
             return null

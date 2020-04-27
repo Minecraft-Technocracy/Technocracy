@@ -1,6 +1,5 @@
 package net.cydhra.technocracy.foundation.network.componentsync
 
-import net.cydhra.technocracy.foundation.api.ecs.IAggregatable
 import net.cydhra.technocracy.foundation.api.ecs.IComponent
 import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
 import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
@@ -47,7 +46,7 @@ object GuiUpdateListener {
             //val tag = te.updateTag
             if (tag != null && tileEntityData[container] != tag) {
                 tileEntityData[container] = tag
-                PacketHandler.sendToClient(MachineInfoPacket(tag), player)
+                PacketHandler.sendToClient(ServerMachineInfoPacket(tag), player)
             }
         }
     }
