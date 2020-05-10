@@ -8,6 +8,7 @@ import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
 import net.cydhra.technocracy.foundation.client.gui.handler.TCGuiHandler
 import net.cydhra.technocracy.foundation.client.gui.item.ItemUpgradesTab
+import net.cydhra.technocracy.foundation.content.items.components.ItemBatteryAddonComponent
 import net.cydhra.technocracy.foundation.content.items.components.ItemEnergyComponent
 import net.cydhra.technocracy.foundation.content.items.components.ItemUpgradesComponent
 import net.cydhra.technocracy.foundation.model.items.api.BaseItem
@@ -31,6 +32,8 @@ class ModularItem : BaseItem("modularitem"), TCTileEntityGuiProvider {
 
     override fun initCapabilities(stack: ItemStack, nbt: NBTTagCompound?): ICapabilityProvider? {
         val wrapper = ItemCapabilityWrapper(stack)
+        val battery = ItemBatteryAddonComponent()
+        wrapper.registerComponent(battery, "battery")
         wrapper.registerComponent(ItemUpgradesComponent(3, UpgradeClass.TOOL), "upgradeable")
         return wrapper
     }

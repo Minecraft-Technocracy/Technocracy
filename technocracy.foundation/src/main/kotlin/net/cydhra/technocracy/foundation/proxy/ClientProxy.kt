@@ -16,13 +16,17 @@ import net.cydhra.technocracy.foundation.content.items.facadeItem
 import net.cydhra.technocracy.foundation.content.items.pipeItem
 import net.cydhra.technocracy.foundation.content.items.structureMarkerItem
 import net.cydhra.technocracy.foundation.model.fx.manager.TCParticleManager
-import net.minecraft.client.Minecraft
+import net.minecraft.client.settings.KeyBinding
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.model.ModelLoaderRegistry
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.animation.ITimeValue
 import net.minecraftforge.common.model.animation.IAnimationStateMachine
+import net.minecraftforge.fml.client.registry.ClientRegistry
 import net.minecraftforge.fml.common.Mod
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
+import org.lwjgl.input.Keyboard
 
 
 /**
@@ -31,6 +35,10 @@ import net.minecraftforge.fml.common.Mod
  */
 @Mod.EventBusSubscriber(modid = TCFoundation.MODID)
 class ClientProxy : CommonProxy() {
+
+    companion object {
+        val itemUpgradeGui = KeyBinding("key.item.upgradegui", Keyboard.KEY_H, "key.technocracy.category")
+    }
 
     /**
      * Loads an [IAnimationStateMachine] from a model file at [location] on client side.
@@ -69,6 +77,8 @@ class ClientProxy : CommonProxy() {
         itemManager.registerItemColors()
         blockManager.registerBlockColors()
         tileEntityManager.onClientInitialize()
+
+        ClientRegistry.registerKeyBinding(itemUpgradeGui)
     }
 
     override fun postInit() {

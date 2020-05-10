@@ -86,12 +86,13 @@ object ShieldRenderer : TileEntityItemStackRenderer() {
             modelShield.handle.render(0.0625f)
             if (event.stack == event.entitylivingbase.activeItemStack || usedShield) {
                 GlStateManager.depthMask(false)
+                RefractionEffect.preRenderType(ResourceLocation("technocracy.foundation", "textures/fx/hex_diffuse.png"), ResourceLocation("technocracy.foundation", "textures/fx/hex_normal.png"))
+
                 RefractionEffect.colorShift.uploadUniform(usedShield)
                 //shift to a more red
                 RefractionEffect.colorShiftAmount.uploadUniform(Math.toRadians(150.0))
                 RefractionEffect.time.uploadUniform(time.x + Minecraft.getMinecraft().renderPartialTicks, time.y + Minecraft.getMinecraft().renderPartialTicks)
 
-                RefractionEffect.preRenderType(ResourceLocation("technocracy.foundation", "textures/fx/hex_diffuse.png"), ResourceLocation("technocracy.foundation", "textures/fx/hex_normal.png"))
                 RefractionEffect.updateBackBuffer()
                 RefractionEffect.beginRendering()
 

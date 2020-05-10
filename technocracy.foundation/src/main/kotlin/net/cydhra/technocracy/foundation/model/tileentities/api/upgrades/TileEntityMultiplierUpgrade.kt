@@ -12,7 +12,7 @@ import java.util.*
  *
  * @param multiplier the multiplier that is added onto the machine multiplier, as long as the update is installed
  */
-abstract class MultiplierUpgrade(
+abstract class TileEntityMultiplierUpgrade(
         val multiplier: Double,
         override val upgradeParameter: UpgradeParameter
 ) : MachineUpgrade() {

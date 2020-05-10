@@ -241,6 +241,7 @@ open class TCClientGuiImpl(simpleGui: TCGui)
 
     override fun updateScreen() {
         getActiveTab().update()
+        super.updateScreen()
     }
 
     override fun doesGuiPauseGame(): Boolean {
@@ -285,6 +286,7 @@ open class TCClientGuiImpl(simpleGui: TCGui)
 
     override fun onGuiClosed() {
         getActiveTab().onClose()
+        super.onGuiClosed()
     }
 
     /**

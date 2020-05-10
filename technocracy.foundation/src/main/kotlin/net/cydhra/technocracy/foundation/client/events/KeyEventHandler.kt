@@ -5,6 +5,7 @@ import net.cydhra.technocracy.foundation.model.items.util.IItemScrollEvent
 import net.cydhra.technocracy.foundation.network.ClientItemKeyBindPacket
 import net.cydhra.technocracy.foundation.network.PacketHandler
 import net.cydhra.technocracy.foundation.network.ClientItemScrollPacket
+import net.cydhra.technocracy.foundation.proxy.ClientProxy.Companion.itemUpgradeGui
 import net.minecraft.client.Minecraft
 import net.minecraftforge.client.event.MouseEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -34,15 +35,12 @@ object KeyEventHandler {
     fun handleKeyInput(event: InputEvent.KeyInputEvent) {
         val player = Minecraft.getMinecraft().player
         val stack = player.heldItemMainhand
-        if (!stack.isEmpty && stack.item is IItemKeyBindEvent && Minecraft.getMinecraft().inGameHasFocus) {
-
-            if (player.world.isRemote) {
-                PacketHandler.sendToServer(ClientItemKeyBindPacket())
-            } else {
+        val item = stack.item
+        if (!stack.isEmpty && item is IItemKeyBindEvent && Minecraft.getMinecraft().inGameHasFocus) {
+            if (item.getKeyBind().isPressed) {
                 (stack.item as IItemKeyBindEvent).keyPress(player, stack)
+                PacketHandler.sendToServer(ClientItemKeyBindPacket())
             }
-
-            event.isCanceled = true
         }
     }
 }

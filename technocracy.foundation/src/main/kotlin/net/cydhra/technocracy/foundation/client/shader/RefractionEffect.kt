@@ -60,7 +60,7 @@ object RefractionEffect {
         if (Keyboard.isKeyDown(Keyboard.KEY_K)) {
             if (rebuild) {
                 rebuild = false
-                refracShader.reloadShader()
+                refracShader.reloadShader(Minecraft.getMinecraft().resourceManager)
             }
         } else {
             rebuild = true

@@ -2,9 +2,11 @@ package net.cydhra.technocracy.foundation.util.opengl
 
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.OpenGlHelper
+import net.minecraft.client.resources.IReloadableResourceManager
 import net.minecraft.client.resources.IResourceManager
 import net.minecraft.client.resources.SimpleReloadableResourceManager
 import net.minecraft.client.util.JsonException
+import net.minecraft.command.CommandReload
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.resource.IResourceType
 import net.minecraftforge.client.resource.ISelectiveResourceReloadListener
@@ -35,37 +37,36 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
     private val uniform = mutableListOf<ShaderUniform>()
 
     init {
-        (Minecraft.getMinecraft().resourceManager as SimpleReloadableResourceManager).registerReloadListener(this)
-        loadShader()
+        (Minecraft.getMinecraft().resourceManager as IReloadableResourceManager).registerReloadListener(this)
     }
 
     override fun onResourceManagerReload(resourceManager: IResourceManager, resourcePredicate: Predicate<IResourceType>) {
         if (resourcePredicate.test(VanillaResourceType.SHADERS)) {
-            reloadShader()
+            reloadShader(resourceManager)
         }
 
         resourceReloader?.accept(resourceManager, resourcePredicate)
     }
 
-    fun reloadShader() {
+    fun reloadShader(resourceManager: IResourceManager) {
         cleanUp()
-        loadShader()
+        loadShader(resourceManager)
         addUniforms()
     }
 
     private fun addUniforms() {
-        for(u in uniform) {
+        for (u in uniform) {
             u.uniformId = OpenGlHelper.glGetUniformLocation(this.programID, u.uniformName)
             u.markDirty()
         }
         updateUniforms()
     }
 
-    private fun loadShader() {
-        vertexShaderID = loadShader(vertexIn, OpenGlHelper.GL_VERTEX_SHADER)
-        fragmentShaderID = loadShader(fragmentIn, OpenGlHelper.GL_FRAGMENT_SHADER)
+    private fun loadShader(resourceManager: IResourceManager) {
+        vertexShaderID = loadShader(resourceManager, vertexIn, OpenGlHelper.GL_VERTEX_SHADER)
+        fragmentShaderID = loadShader(resourceManager, fragmentIn, OpenGlHelper.GL_FRAGMENT_SHADER)
         if (geometryIn != null) {
-            geometryShaderID = loadShader(geometryIn, GL32.GL_GEOMETRY_SHADER)
+            geometryShaderID = loadShader(resourceManager, geometryIn, GL32.GL_GEOMETRY_SHADER)
         }
 
         programID = OpenGlHelper.glCreateProgram()
@@ -122,8 +123,8 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
         OpenGlHelper.glDeleteProgram(programID)
     }
 
-    private fun loadShader(shader: ResourceLocation, type: Int): Int {
-        val resource = Minecraft.getMinecraft().resourceManager.getResource(shader)
+    private fun loadShader(resourceManager: IResourceManager, shader: ResourceLocation, type: Int): Int {
+        val resource = resourceManager.getResource(shader)
 
         try {
             val bytes = IOUtils.toByteArray(BufferedInputStream(resource.inputStream))

@@ -83,14 +83,18 @@ open class ItemCapabilityWrapper(var stack: ItemStack) : ICapabilitySerializable
 
     override fun deserializeNBT(nbt: NBTTagCompound?) {
         var i = 0
-        if (nbt != null)
+        if (nbt != null) {
+            //we are probably on the server side and have the capability data
             while (i < components.size) {
                 val (name, component) = components[i++]
                 if (nbt.hasKey(name))
                     component.deserializeNBT(nbt.getCompoundTag(name))
                 component.onLoadAggregate()
             }
-        loadFromItemStack(stack)
+        } else {
+            //on the client side we need to load the data from the stack data
+            loadFromItemStack(stack)
+        }
     }
 
     /**
@@ -119,13 +123,13 @@ open class ItemCapabilityWrapper(var stack: ItemStack) : ICapabilitySerializable
 
             component.onRegister()
         }
-        updateItemStack()
+        //updateItemStack()
     }
 
     override fun removeComponent(name: String) {
         this.components.removeIf { (componentName, _) -> componentName == name }
         this.capabilityComponents.remove(name)
-        updateItemStack()
+        //updateItemStack()
     }
 
     //not used but needs to be implemented
@@ -144,7 +148,7 @@ open class ItemCapabilityWrapper(var stack: ItemStack) : ICapabilitySerializable
      * @param parameter the [UpgradeParameter] that shall be registered as supported
      * @param multiplierComponent the multiplier affected by the parameter
      */
-    protected fun registerUpgradeParameter(
+    fun registerUpgradeParameter(
             parameter: UpgradeParameter,
             multiplierComponent: ItemMultiplierComponent) {
         this.upgradeParameters[parameter] = multiplierComponent
@@ -159,7 +163,7 @@ open class ItemCapabilityWrapper(var stack: ItemStack) : ICapabilitySerializable
     }
 
     override fun supportsParameter(parameter: UpgradeParameter): Boolean {
-        return upgradeableTypes.contains(parameter)
+        return upgradeParameters.contains(parameter)
     }
 
 }

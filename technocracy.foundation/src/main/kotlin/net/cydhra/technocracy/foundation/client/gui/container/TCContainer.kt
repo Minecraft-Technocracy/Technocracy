@@ -5,6 +5,7 @@ import net.cydhra.technocracy.foundation.client.gui.TCTab
 import net.cydhra.technocracy.foundation.client.gui.components.slot.ITCSlot
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.inventory.ClickType
 import net.minecraft.inventory.Container
 import net.minecraft.inventory.IContainerListener
@@ -214,5 +215,29 @@ open class TCContainer(var provider: IAggregatableGuiProvider) : Container() {
 
     override fun canInteractWith(playerIn: EntityPlayer): Boolean {
         return provider.canInteractWith(playerIn)
+    }
+
+    var fixItemsNotSyncingBecauseOfShittyNetworkDesign = false
+
+    override fun detectAndSendChanges() {
+        for (i in inventorySlots.indices) {
+            val itemstack = (inventorySlots[i] as Slot).stack
+            var itemstack1: ItemStack = inventoryItemStacks[i]
+            if (!ItemStack.areItemStacksEqual(itemstack1, itemstack)) {
+                val clientStackChanged = !ItemStack.areItemStacksEqualUsingNBTShareTag(itemstack1, itemstack)
+                itemstack1 = if (itemstack.isEmpty) ItemStack.EMPTY else itemstack.copy()
+                inventoryItemStacks[i] = itemstack1
+
+                if (clientStackChanged) {
+                    for (listener in listeners) {
+                        if (fixItemsNotSyncingBecauseOfShittyNetworkDesign && listener is EntityPlayerMP) {
+                            //trust us its not only quantity thats gonna change
+                            listener.isChangingQuantityOnly = false
+                        }
+                        listener.sendSlotContents(this, i, itemstack1)
+                    }
+                }
+            }
+        }
     }
 }

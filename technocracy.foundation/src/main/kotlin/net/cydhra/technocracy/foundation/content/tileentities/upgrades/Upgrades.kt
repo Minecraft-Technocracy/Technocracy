@@ -9,7 +9,7 @@ import net.cydhra.technocracy.foundation.content.tileentities.components.*
 import net.cydhra.technocracy.foundation.content.tileentities.logic.AdditiveConsumptionLogic
 import net.cydhra.technocracy.foundation.content.tileentities.logic.CoolingLogic
 import net.cydhra.technocracy.foundation.content.tileentities.logic.GenerateHeatLogic
-import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.MultiplierUpgrade
+import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.TileEntityMultiplierUpgrade
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.text.ITextComponent
 import net.minecraft.util.text.Style
@@ -20,17 +20,17 @@ import java.util.*
 /**
  * A multiplier on machine energy consumption
  */
-class EnergyMultiplier(multiplier: Double) : MultiplierUpgrade(multiplier, UPGRADE_ENERGY)
+class EnergyMultiplier(multiplier: Double) : TileEntityMultiplierUpgrade(multiplier, UPGRADE_ENERGY)
 
 /**
  * A multiplier on machine processing speed
  */
-class SpeedMultiplier(multiplier: Double) : MultiplierUpgrade(multiplier, UPGRADE_SPEED)
+class SpeedMultiplier(multiplier: Double) : TileEntityMultiplierUpgrade(multiplier, UPGRADE_SPEED)
 
 /**
  * A multiplier on how much of a machine's additive is consumed per tick of work.
  */
-class AdditiveConsumptionMultiplier(multiplier: Double) : MultiplierUpgrade(multiplier, UPGRADE_ADDITIVE)
+class AdditiveConsumptionMultiplier(multiplier: Double) : TileEntityMultiplierUpgrade(multiplier, UPGRADE_ADDITIVE)
 
 /**
  * An upgrade that enables the machine to use lubricant additives for speed increase.
