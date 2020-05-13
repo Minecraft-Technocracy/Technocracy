@@ -37,5 +37,18 @@
     "credits": "",
     "logoFile": "",
     "screenshots": []
+},
+{
+    "modid": "technocracy.powertools",
+    "name": "Technocracy Powertools",
+    "description": "Expansion of technocracy that adds high tier modular tools and armor.",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": ["Cydhra, Poke"],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": []
 }
 ]
