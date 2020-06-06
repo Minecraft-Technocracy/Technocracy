@@ -181,6 +181,7 @@ project('technocracy.foundation') {
 project('technocracy.astronautics') {
     dependencies {
         compile project(':technocracy.foundation')
+        compile project(':technocracy.core')
     }
 
     // jar configuration

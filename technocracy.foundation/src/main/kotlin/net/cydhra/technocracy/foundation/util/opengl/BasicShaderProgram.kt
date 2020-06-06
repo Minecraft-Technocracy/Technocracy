@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.util.opengl
 
+import net.cydhra.technocracy.foundation.util.CompoundBuilder
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.OpenGlHelper
 import net.minecraft.client.resources.IReloadableResourceManager
@@ -7,6 +8,7 @@ import net.minecraft.client.resources.IResourceManager
 import net.minecraft.client.resources.SimpleReloadableResourceManager
 import net.minecraft.client.util.JsonException
 import net.minecraft.command.CommandReload
+import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.resource.IResourceType
 import net.minecraftforge.client.resource.ISelectiveResourceReloadListener
@@ -28,7 +30,8 @@ import java.util.function.Consumer
 import java.util.function.Predicate
 
 @SideOnly(Side.CLIENT)
-class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: ResourceLocation, val geometryIn: ResourceLocation? = null, val attributeBinder: Consumer<Int>? = null, val resourceReloader: BiConsumer<IResourceManager, Predicate<IResourceType>>? = null) : ISelectiveResourceReloadListener {
+class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: ResourceLocation, val geometryIn: ResourceLocation? = null, val attributeBinder: Consumer<Int>? = null, val resourceReloader: BiConsumer<IResourceManager, Predicate<IResourceType>>? = null, val init: (BasicShaderProgram.() -> Unit)? = null) : ISelectiveResourceReloadListener {
+
     private var programID: Int = 0
     private var vertexShaderID: Int = 0
     private var fragmentShaderID: Int = 0
@@ -38,6 +41,7 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
 
     init {
         (Minecraft.getMinecraft().resourceManager as IReloadableResourceManager).registerReloadListener(this)
+        init?.let { it() }
     }
 
     override fun onResourceManagerReload(resourceManager: IResourceManager, resourcePredicate: Predicate<IResourceType>) {

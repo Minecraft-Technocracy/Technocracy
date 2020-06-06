@@ -14,7 +14,14 @@ import org.lwjgl.opengl.GL30
 object RefractionEffect {
     var built = false
 
-    private lateinit var refracShader: BasicShaderProgram
+    private val refracShader = BasicShaderProgram(ResourceLocation("technocracy.foundation", "shaders/refrag.vsh"), ResourceLocation("technocracy.foundation", "shaders/refrag.fsh")) {
+        colorShift = getUniform("colorShift", BasicShaderProgram.ShaderUniform.UniformType.INT_1)
+        colorShiftAmount = getUniform("colorShiftAmount", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1)
+        time = getUniform("time", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_2)
+        getUniform("image", BasicShaderProgram.ShaderUniform.UniformType.SAMPLER).uploadUniform(0)
+        getUniform("image_normal", BasicShaderProgram.ShaderUniform.UniformType.SAMPLER).uploadUniform(2)
+        getUniform("image_diffuse", BasicShaderProgram.ShaderUniform.UniformType.SAMPLER).uploadUniform(3)
+    }
 
     lateinit var colorShift: BasicShaderProgram.ShaderUniform
     lateinit var colorShiftAmount: BasicShaderProgram.ShaderUniform
@@ -48,13 +55,8 @@ object RefractionEffect {
 
             buffer = Framebuffer(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, false)
 
-            refracShader = BasicShaderProgram(ResourceLocation("technocracy.foundation", "shaders/refrag.vsh"), ResourceLocation("technocracy.foundation", "shaders/refrag.fsh"))
-            colorShift = refracShader.getUniform("colorShift", BasicShaderProgram.ShaderUniform.UniformType.INT_1)
-            colorShiftAmount = refracShader.getUniform("colorShiftAmount", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1)
-            time = refracShader.getUniform("time", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_2)
-            refracShader.getUniform("image", BasicShaderProgram.ShaderUniform.UniformType.SAMPLER).uploadUniform(0)
-            refracShader.getUniform("image_normal", BasicShaderProgram.ShaderUniform.UniformType.SAMPLER).uploadUniform(2)
-            refracShader.getUniform("image_diffuse", BasicShaderProgram.ShaderUniform.UniformType.SAMPLER).uploadUniform(3)
+            //refracShader = BasicShaderProgram(ResourceLocation("technocracy.foundation", "shaders/refrag.vsh"), ResourceLocation("technocracy.foundation", "shaders/refrag.fsh"))
+
         }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_K)) {

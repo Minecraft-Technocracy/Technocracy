@@ -6,9 +6,12 @@ uniform sampler2D scene;
 uniform sampler2D bloomBlur;
 uniform int combines;
 uniform float gamma;
+uniform vec2 finalScreenSize;
+uniform vec2 uApplyParams;
 
 void main()
 {
+
     //const float gamma = 2.2;
     vec3 hdrColor = texture(scene, FragCoord).rgb;
     vec3 bloomColor = texture(bloomBlur, FragCoord).rgb;

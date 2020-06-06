@@ -29,6 +29,7 @@ import net.cydhra.technocracy.foundation.util.opengl.OpenGLBoundingBox
 import net.cydhra.technocracy.foundation.util.opengl.ScreenspaceUtil
 import net.cydhra.technocracy.foundation.util.structures.BlockInfo
 import net.cydhra.technocracy.foundation.util.structures.TemplateClientWorld
+import net.cydhra.technocracy.foundation.util.validate
 import net.cydhra.technocracy.foundation.util.validateAndClear
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
@@ -231,7 +232,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         framebuffer?.setFramebufferColor(0f, 0f, 0f, 0f)
         framebuffer = framebuffer.validateAndClear((parent.guiWidth - 7 - 7) * scaledResolution.scaleFactor, (58 + 18) * scaledResolution.scaleFactor)
         val framebuffer = framebuffer!!
-        sharedFBO = sharedFBO?.validate(framebuffer) ?: MultiTargetFBO(framebuffer, ownDepth = true).createFramebuffer()
+        sharedFBO = sharedFBO.validate(framebuffer, ownDepth = true)
         val sharedFBO = sharedFBO!!
         sharedFBO.framebufferClear()
         framebuffer.bindFramebuffer(true)
@@ -473,6 +474,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
             RenderHelper.disableStandardItemLighting()
             mc.entityRenderer.disableLightmap()
 
+            sharedFBO.bindFramebuffer(true)
             shader.start()
             GlStateManager.depthMask(false)
             ForgeHooksClient.setRenderLayer(BlockRenderLayer.SOLID)
@@ -482,6 +484,9 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
             OpenGlHelper.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, sharedFBO.framebufferObject)
             OpenGlHelper.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, framebuffer.framebufferObject)
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1f)
+
+            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
+
 
             /*
             we need to render cutout blocks and tile entitys with depth so they clip properly.

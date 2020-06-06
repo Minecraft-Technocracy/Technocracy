@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.util
 
+import net.cydhra.technocracy.foundation.util.opengl.MultiTargetFBO
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.BufferBuilder
 import net.minecraft.client.shader.Framebuffer
@@ -18,6 +19,28 @@ fun Framebuffer?.validateAndClear(width: Int = Minecraft.getMinecraft().displayW
         framebufferClear()
         bindFramebuffer(viewport)
     }
+}
+
+fun MultiTargetFBO?.validate(width: Int, height: Int, ownDepth: Boolean = false, hdrFrameBuffer: Boolean = false, scale: Float = 1f): MultiTargetFBO {
+    return if (this != null && this.width == width && this.height == height) {
+        this
+    } else {
+        this?.deleteFramebuffer()
+        val tmp = MultiTargetFBO(width, height, ownDepth, hdrFrameBuffer, scale)
+        tmp.createFramebuffer()
+        tmp
+    }.updateDepth()
+}
+
+fun MultiTargetFBO?.validate(framebuffer: Framebuffer, ownDepth: Boolean = false, hdrFrameBuffer: Boolean = false, scale: Float = 1f): MultiTargetFBO {
+    return if (this != null && width == framebuffer.framebufferWidth && height == framebuffer.framebufferHeight) {
+        this
+    } else {
+        this?.deleteFramebuffer()
+        val tmp = MultiTargetFBO(framebuffer, ownDepth, hdrFrameBuffer, scale)
+        tmp.createFramebuffer()
+        tmp
+    }.updateDepth()
 }
 
 fun BufferBuilder.pos(x: Float, y: Float, z: Float): BufferBuilder {

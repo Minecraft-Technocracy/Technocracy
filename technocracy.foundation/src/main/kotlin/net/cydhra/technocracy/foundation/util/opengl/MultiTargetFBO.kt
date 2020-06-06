@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.util.opengl
 
+import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.OpenGlHelper
 import net.minecraft.client.renderer.texture.TextureUtil
@@ -217,28 +218,6 @@ class MultiTargetFBO(var width: Int, var height: Int, var useDepth: Boolean, var
             GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_CLAMP)
             GlStateManager.bindTexture(0)
         }
-    }
-
-    fun validate(width: Int, height: Int): MultiTargetFBO {
-        return if (this.width == width && this.height == height) {
-            this
-        } else {
-            this.deleteFramebuffer()
-            val tmp = MultiTargetFBO(width, height, useDepth, hdrFrameBuffer)
-            tmp.createFramebuffer()
-            tmp
-        }.updateDepth()
-    }
-
-    fun validate(framebuffer: Framebuffer): MultiTargetFBO {
-        return if (width == framebuffer.framebufferWidth && height == framebuffer.framebufferHeight) {
-            this
-        } else {
-            this.deleteFramebuffer()
-            val tmp = MultiTargetFBO(framebuffer, ownDepth, hdrFrameBuffer, scale)
-            tmp.createFramebuffer()
-            tmp
-        }.updateDepth()
     }
 
 }
