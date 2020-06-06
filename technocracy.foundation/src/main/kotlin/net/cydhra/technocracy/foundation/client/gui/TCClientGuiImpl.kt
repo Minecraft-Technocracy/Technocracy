@@ -8,6 +8,7 @@ import net.minecraft.client.gui.Gui
 import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.util.ResourceLocation
+import java.awt.Color
 
 open class TCClientGuiImpl(simpleGui: TCGui)
     : GuiContainer(simpleGui.container), TCGui by simpleGui {
@@ -206,8 +207,8 @@ open class TCClientGuiImpl(simpleGui: TCGui)
     fun drawWindow(x: Int, y: Int, width: Int, height: Int, tint: Int = -1, windowAttachment: Boolean = false) {
         Gui.drawRect((if (windowAttachment) 0 else 4) + x, 4 + y, width + x, height + y, windowBodyColor and tint)
 
-        GlStateManager.color((tint shr 8 and 255).toFloat() / 255.0F, (tint and 255).toFloat() / 255.0F,
-                (tint shr 16 and 255).toFloat() / 255.0F, (tint shr 24 and 255).toFloat() / 255.0F)
+        GlStateManager.color((tint shr 16 and 255).toFloat() / 255.0F, (tint shr 8 and 255).toFloat() / 255.0F,
+                (tint and 255).toFloat() / 255.0F, (tint shr 24 and 255).toFloat() / 255.0F)
 
         Minecraft.getMinecraft().textureManager.bindTexture(guiComponents)
 
