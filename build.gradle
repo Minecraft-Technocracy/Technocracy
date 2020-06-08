@@ -273,3 +273,23 @@ task cloneTechnoblock() {
         }
     }
 }
+
+///**
+// * This adds any `subproject`'s Access Transformers to the `rootProject` so functionality works in debug mode.
+// * Credit to FusionLord https://gist.github.com/FusionLord/a8f0208b6ffaa2f466f119a13c4a1620
+// */
+import net.minecraftforge.gradle.user.patcherUser.forge.ForgeExtension
+import net.minecraftforge.gradle.user.patcherUser.forge.ForgePlugin
+
+task applySubATs {
+    ForgeExtension e = getPlugins().getPlugin(ForgePlugin.class).getExtension()
+    subprojects.each { p ->
+        p.sourceSets.main.resources.findAll{ f -> f.path.endsWith('_at.cfg')}.each { f ->
+            e.atSource(f)
+        }
+    }
+}
+
+afterEvaluate {
+    tasks.extractDependencyATs.finalizedBy applySubATs
+}
