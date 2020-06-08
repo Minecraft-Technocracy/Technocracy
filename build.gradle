@@ -231,11 +231,28 @@ dependencies {
     shade(project('technocracy.astronautics')) { transitive = false }
     shade(project('technocracy.optics')) { transitive = false }
     shade(project('technocracy.powertools')) { transitive = false }
+    shade(project('technocracy.core')) { transitive = false }
 
     runtime(project('technocracy.foundation'))
     runtime(project('technocracy.astronautics'))
     runtime(project('technocracy.optics'))
     runtime(project('technocracy.powertools'))
+    runtime(project('technocracy.core'))
+
+    deobfCompile group: 'net.shadowfacts', name: 'Forgelin', version: project.forgelin_version
+    deobfCompile group: 'mezz.jei', name: "jei_$project.minecraft_version", version: project.jei_version, classifier: 'api'
+    deobfCompile group: "it.zerono.mods.zerocore", name: "zerocore", version: project.zerocore_version
+    deobfCompile group: "team.chisel.ctm", name: "CTM", version: project.ctm_version
+    deobfCompile group: "mcp.mobius.waila", name: "Hwyla", version: project.waila_version, classifier: 'api'
+    deobfCompile group: "com.mod-buildcraft", name: "buildcraft-api", version: project.buildcraft_version
+
+    deobfCompile("cofh:CoFHCore:${cofhcore_version}:universal") {
+        transitive = false // We don't need RF nor JEI, thank you very much
+    }
+    deobfCompile group: 'cofh', name: 'RedstoneFlux', version: '1.12-+', classifier: 'universal'
+
+    deobfCompile group: "mcjty.theoneprobe", name: "TheOneProbe-1.12", version: project.top_version,
+            classifier: 'api'
 }
 
 jar {
