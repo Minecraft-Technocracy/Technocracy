@@ -114,17 +114,6 @@ class RenderEventListener {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     @Suppress("unused")
-    fun renderOverlay(event: RenderGameOverlayEvent.Post) {
-        if (event.type == RenderGameOverlayEvent.ElementType.ALL) {
-            val underwaterGrayscale = ResourceLocation("technocracy.foundation", "textures/extra/earlyalpha.png")
-            Minecraft.getMinecraft().renderEngine.bindTexture(underwaterGrayscale)
-            Gui.drawModalRectWithCustomSizedTexture(0, 0, 0f, 0f, 125, 125, 125f, 125f)
-        }
-    }
-
-    @SubscribeEvent
-    @SideOnly(Side.CLIENT)
-    @Suppress("unused")
     fun handleFluidBlockOverlayEvent(event: RenderBlockOverlayEvent) {
         //Cofh copy pasta
         if (event.overlayType == RenderBlockOverlayEvent.OverlayType.WATER) {
