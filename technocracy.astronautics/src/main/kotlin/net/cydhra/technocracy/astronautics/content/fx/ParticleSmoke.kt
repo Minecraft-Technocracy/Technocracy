@@ -22,10 +22,13 @@ import java.nio.ByteBuffer
 import java.util.function.Consumer
 import java.util.stream.Stream
 import kotlin.math.cos
+import kotlin.math.max
 import kotlin.math.sin
 
 
 class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) : AbstractParticle(worldIn, posXIn, posYIn, posZIn) {
+
+    var distanceSize: Float = 1.0f
 
     init {
         rotation = rand.nextInt(360).toFloat()
@@ -55,10 +58,19 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
             motionY = -(motionY / 6f)//-ThreadLocalRandom.current().nextFloat().toDouble() / 2
 
             super.move(motionX, motionY, motionZ)
+            distanceSize = 1.0f - max(0f,(max(0.0, Minecraft.getMinecraft().renderViewEntity!!.posY - posY - 50).toFloat() / 150f))
+
             return
         }
 
         super.move(x, y, z)
+        distanceSize = 1.0f - Math.min(1f,(max(0.0, Minecraft.getMinecraft().renderViewEntity!!.posY - posY - 50).toFloat() / 150f))
+    }
+
+    override fun onUpdate() {
+        super.onUpdate()
+
+        //distanceSize = 1.0f - (max(0.0, Minecraft.getMinecraft().renderViewEntity!!.getDistance(posX, posY, posZ)).toFloat() / 30f)
     }
 
     override fun renderParticle(partialTicks: Float) {
@@ -74,7 +86,10 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
         override val name = "Smoke"
         override val maxParticles = 100000
 
-        var vao: VAO? = null
+        val vao: VAO by lazy {
+            generateVAO()
+        }
+
         var vertexCount: Int = -1
 
         lateinit var vboData: ByteBuffer
@@ -93,17 +108,29 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
         //val vboData = GLAllocation.createDirectFloatBuffer(MAXPARTICLES * vboElementSize)
         //val tmpBuffer = GLAllocation.createDirectFloatBuffer(4 * 4)
 
-        lateinit var smokeShader: BasicShaderProgram
-        lateinit var projectionMatrix: BasicShaderProgram.ShaderUniform
-        lateinit var modelMatrix: BasicShaderProgram.ShaderUniform
+        val smokeShader = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shaders/smoke.vsh"), ResourceLocation("technocracy.astronautics", "shaders/smoke.fsh"), ResourceLocation("technocracy.astronautics", "shaders/smoke.gsh"), attributeBinder = Consumer {
+            GL20.glBindAttribLocation(it, 0, "position")
+            GL20.glBindAttribLocation(it, 1, "maxtime_currenttime_rendertime_rotation")
+            GL20.glBindAttribLocation(it, 2, "scale")
+            GL20.glBindAttribLocation(it, 3, "pos")
 
-        fun init() {
+            //GL20.glBindAttribLocation(it, 2, "modelViewMatrix")
+        }) {
+            getUniform("smoke", SAMPLER).uploadUniform(0)
+            getUniform("noise", SAMPLER).uploadUniform(2)
+            getUniform("lighting", SAMPLER).uploadUniform(3)
+        }
+
+        val projectionMatrix = smokeShader.getUniform("projectionMatrix", MATRIX_4x4)
+        val modelMatrix = smokeShader.getUniform("modelViewMatrix", MATRIX_4x4)
+
+        /*fun init() {
             smokeShader.getUniform("smoke", SAMPLER).uploadUniform(0)
             smokeShader.getUniform("noise", SAMPLER).uploadUniform(2)
             smokeShader.getUniform("lighting", SAMPLER).uploadUniform(3)
             projectionMatrix = smokeShader.getUniform("projectionMatrix", MATRIX_4x4)
             modelMatrix = smokeShader.getUniform("modelViewMatrix", MATRIX_4x4)
-        }
+        }*/
 
         val MODELVIEW = Matrix4f()
         val tmpMatrix = Matrix4f()
@@ -113,23 +140,8 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
 
             Minecraft.getMinecraft().mcProfiler.startSection("PreRender")
 
-            if (vao == null) {
-                generateVAO()
+            smokeShader.start()
 
-                smokeShader = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shaders/smoke.vsh"), ResourceLocation("technocracy.astronautics", "shaders/smoke.fsh"), ResourceLocation("technocracy.astronautics", "shaders/smoke.gsh"), attributeBinder = Consumer {
-                    GL20.glBindAttribLocation(it, 0, "position")
-                    GL20.glBindAttribLocation(it, 1, "maxtime_currenttime_rendertime_rotation")
-                    GL20.glBindAttribLocation(it, 2, "scale")
-                    GL20.glBindAttribLocation(it, 3, "pos")
-
-                    //GL20.glBindAttribLocation(it, 2, "modelViewMatrix")
-                })
-
-                smokeShader.start()
-                init()
-            } else {
-                smokeShader.start()
-            }
 
             //this.modelViewMatrix.uploadUniform(currentMatrix)
             //smokeShader.uploadUniform("modelViewMatrix", modelViewMatrix)
@@ -152,7 +164,7 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
             Minecraft.getMinecraft().renderEngine.bindTexture(ResourceLocation("technocracy.astronautics", "textures/fx/smoke.png"))
 
 
-            vao!!.bindVAO()
+            vao.bindVAO()
 
             GlStateManager.disableTexture2D()
             GlStateManager.enableBlend()
@@ -175,7 +187,7 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
                 vboData.putFloat(p.renderTime)
 
                 vboData.putFloat(p.rotation)
-                vboData.putFloat(p.size)
+                vboData.putFloat(p.size * (p as ParticleSmoke).distanceSize)
 
                 vboData.putFloat(p.getX(partialTicks))
                 vboData.putFloat(p.getY(partialTicks))
@@ -199,7 +211,7 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
         override fun postRenderType() {
             Minecraft.getMinecraft().mcProfiler.startSection("PostRender")
 
-            vao!!.unbindVAO()
+            vao.unbindVAO()
 
             smokeShader.stop()
 
@@ -210,8 +222,8 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
             Minecraft.getMinecraft().mcProfiler.endSection()
         }
 
-        fun generateVAO() {
-            vao = VAO()
+        fun generateVAO() : VAO {
+            val vao = VAO()
 
             val data = floatArrayOf(
                     //-0.5f, 0.5f,
@@ -226,9 +238,9 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
             val dataVBO = VBO(VBO.VBOUsage.STREAM_DRAW, maxParticles * vboElementSize * 4)
             vboData = dataVBO.mapBuffer(VBO.BufferUsage.WRITE_ONLY)
 
-            vao!!.linkVBO(vertexVBO)
+            vao.linkVBO(vertexVBO)
                     .addFloatAttribute(2)
-            vao!!.linkVBO(dataVBO)
+            vao.linkVBO(dataVBO)
                     .addInstancedFloatAttribute(4, vboElementSize)//maxtime_currenttime_renderTime_rotation
                     .addInstancedFloatAttribute(1, vboElementSize)//scale
                     .addInstancedFloatAttribute(3, vboElementSize)//pos*/
@@ -244,6 +256,8 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
             //OpenGLObjectLoader.addInstancedFloatAttributeToVAO(vaoID, vbo_data_ID, 3, 4, vboElementSize, 8)//matrix coll B
             //OpenGLObjectLoader.addInstancedFloatAttributeToVAO(vaoID, vbo_data_ID, 4, 4, vboElementSize, 12)//matrix coll C
             //OpenGLObjectLoader.addInstancedFloatAttributeToVAO(vaoID, vbo_data_ID, 5, 4, vboElementSize, 16)//matrix coll D*/
+
+            return vao
         }
 
         //currently unused cpu calculated viewmatrix
