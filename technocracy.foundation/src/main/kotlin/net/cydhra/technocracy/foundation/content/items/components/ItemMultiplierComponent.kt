@@ -15,10 +15,11 @@ import net.minecraft.nbt.NBTTagCompound
  */
 class ItemMultiplierComponent(
         val upgradeParameter: UpgradeParameter?,
-        val callback: ((Double) -> Unit)?
+        initvalue: Double = 1.0,
+        val callback: ((Double) -> Unit)? = null
 ) : AbstractItemComponent() {
     companion object {
-        private const val NBT_KEY_ENERGY = "multiplier"
+        private const val NBT_KEY_MULTIPLIER = "multiplier"
     }
 
     override val type: ComponentType = ComponentType.OTHER
@@ -26,7 +27,7 @@ class ItemMultiplierComponent(
     /**
      * Current multiplier progress per tick of the machine
      */
-    var multiplier: Double = 1.0
+    var multiplier: Double = initvalue
         set(v) {
             field = v
             callback?.invoke(v)
@@ -34,11 +35,11 @@ class ItemMultiplierComponent(
 
     override fun serializeNBT(): NBTTagCompound {
         return NBTTagCompound().apply {
-            setDouble(NBT_KEY_ENERGY, this@ItemMultiplierComponent.multiplier)
+            setDouble(NBT_KEY_MULTIPLIER, this@ItemMultiplierComponent.multiplier)
         }
     }
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
-        this.multiplier = nbt.getDouble(NBT_KEY_ENERGY)
+        this.multiplier = nbt.getDouble(NBT_KEY_MULTIPLIER)
     }
 }

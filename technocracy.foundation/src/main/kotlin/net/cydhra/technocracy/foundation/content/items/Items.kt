@@ -2,9 +2,6 @@
 
 package net.cydhra.technocracy.foundation.content.items
 
-import net.cydhra.technocracy.foundation.api.ecs.IComponent
-import net.cydhra.technocracy.foundation.api.upgrades.Upgradable
-import net.cydhra.technocracy.foundation.api.upgrades.Upgrade
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeClass
 import net.cydhra.technocracy.foundation.content.tileentities.upgrades.*
 import net.cydhra.technocracy.foundation.model.items.api.AlloyItem

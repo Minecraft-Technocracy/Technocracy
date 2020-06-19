@@ -1,12 +1,14 @@
 package net.cydhra.technocracy.foundation.model.items.capability
 
 import net.cydhra.technocracy.foundation.api.ecs.IComponent
+import net.cydhra.technocracy.foundation.api.upgrades.Installable
 import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_GENERIC
 import net.cydhra.technocracy.foundation.api.upgrades.Upgradable
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeParameter
 import net.cydhra.technocracy.foundation.content.items.components.AbstractItemCapabilityComponent
 import net.cydhra.technocracy.foundation.content.items.components.AbstractItemComponent
 import net.cydhra.technocracy.foundation.content.items.components.ItemMultiplierComponent
+import net.cydhra.technocracy.foundation.content.items.components.ItemOptionalAttachedComponent
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
@@ -16,7 +18,7 @@ import net.minecraftforge.common.capabilities.CapabilityInject
 import net.minecraftforge.common.capabilities.ICapabilitySerializable
 
 
-open class ItemCapabilityWrapper(var stack: ItemStack) : ICapabilitySerializable<NBTTagCompound>, Upgradable, ICapabilityWrapperCapability {
+open class ItemCapabilityWrapper(var stack: ItemStack) : ICapabilitySerializable<NBTTagCompound>, Upgradable, Installable, ICapabilityWrapperCapability {
     companion object {
         @JvmStatic
         @CapabilityInject(ICapabilityWrapperCapability::class)
@@ -141,6 +143,7 @@ open class ItemCapabilityWrapper(var stack: ItemStack) : ICapabilitySerializable
     }
 
     private val upgradeParameters = mutableMapOf<UpgradeParameter, ItemMultiplierComponent>()
+    private val attachableParameters = mutableMapOf<UpgradeParameter, ItemOptionalAttachedComponent<out AbstractItemComponent>>()
 
     /**
      * Register a new upgradable parameter at the machine
@@ -155,6 +158,18 @@ open class ItemCapabilityWrapper(var stack: ItemStack) : ICapabilitySerializable
     }
 
     /**
+     * Register a new upgradable parameter at the machine
+     *
+     * @param parameter the [UpgradeParameter] that shall be registered as supported
+     * @param multiplierComponent the multiplier affected by the parameter
+     */
+    fun registerAttachableParameter(
+            parameter: UpgradeParameter,
+            optionalComponent: ItemOptionalAttachedComponent<out AbstractItemComponent>) {
+        this.attachableParameters[parameter] = optionalComponent
+    }
+
+    /**
      * Apply a modification to a parameter. If this machine does not support the parameter or the parameter is
      * [UPGRADE_GENERIC], a [NullPointerException] will be thrown
      */
@@ -164,6 +179,19 @@ open class ItemCapabilityWrapper(var stack: ItemStack) : ICapabilitySerializable
 
     override fun supportsParameter(parameter: UpgradeParameter): Boolean {
         return upgradeParameters.contains(parameter)
+    }
+
+
+    override fun supportsInstallParameter(parameter: UpgradeParameter): Boolean {
+        return attachableParameters.contains(parameter) && !attachableParameters[parameter]!!.isAttached
+    }
+
+    override fun installParameter(parameter: UpgradeParameter, attach: Boolean) {
+        attachableParameters[parameter]!!.isAttached = attach
+    }
+
+    fun <T : AbstractItemComponent> getAttachableParameter(parameter: UpgradeParameter) : ItemOptionalAttachedComponent<T>? {
+        return attachableParameters[parameter] as ItemOptionalAttachedComponent<T>?
     }
 
 }

@@ -1,0 +1,206 @@
+package net.cydhra.technocracy.powertools.content.item
+
+import com.google.common.collect.Multimap
+import net.cydhra.technocracy.foundation.TCFoundation
+import net.cydhra.technocracy.foundation.api.ecs.IComponent
+import net.cydhra.technocracy.foundation.api.tileentities.TCTileEntityGuiProvider
+import net.cydhra.technocracy.foundation.api.upgrades.UpgradeClass
+import net.cydhra.technocracy.foundation.client.gui.SimpleGui
+import net.cydhra.technocracy.foundation.client.gui.TCGui
+import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
+import net.cydhra.technocracy.foundation.client.gui.handler.TCGuiHandler
+import net.cydhra.technocracy.foundation.client.gui.item.ItemUpgradesTab
+import net.cydhra.technocracy.foundation.content.capabilities.energy.DynamicItemEnergyCapability
+import net.cydhra.technocracy.foundation.content.items.components.ItemEnergyComponent
+import net.cydhra.technocracy.foundation.content.items.components.ItemMultiplierComponent
+import net.cydhra.technocracy.foundation.content.items.components.ItemOptionalAttachedComponent
+import net.cydhra.technocracy.foundation.content.items.components.ItemUpgradesComponent
+import net.cydhra.technocracy.foundation.content.items.upgrades.EnergyUpgrade
+import net.cydhra.technocracy.foundation.model.items.api.BaseArmorItem
+import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWrapper
+import net.cydhra.technocracy.foundation.model.items.util.IItemKeyBindEvent
+import net.cydhra.technocracy.foundation.proxy.ClientProxy
+import net.cydhra.technocracy.powertools.content.item.upgrades.UPGRADE_ARMOR_ARMOR
+import net.cydhra.technocracy.powertools.content.item.upgrades.UPGRADE_ARMOR_TOUGHNESS
+import net.minecraft.client.settings.KeyBinding
+import net.minecraft.entity.EntityLivingBase
+import net.minecraft.entity.SharedMonsterAttributes
+import net.minecraft.entity.ai.attributes.AttributeModifier
+import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.init.SoundEvents
+import net.minecraft.inventory.EntityEquipmentSlot
+import net.minecraft.item.ItemStack
+import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.util.DamageSource
+import net.minecraft.util.EnumFacing
+import net.minecraftforge.common.ISpecialArmor
+import net.minecraftforge.common.capabilities.ICapabilityProvider
+import net.minecraftforge.common.util.EnumHelper
+import java.util.*
+import kotlin.math.min
+
+
+class ModularHelmet : BaseArmorItem("modular_helmet", material = armor!!, equipmentSlot = EntityEquipmentSlot.HEAD, renderIndex = 1), IItemKeyBindEvent, TCTileEntityGuiProvider {
+
+    init {
+        maxStackSize = 1
+    }
+
+    override fun getRGBDurabilityForDisplay(stack: ItemStack): Int {
+        val energy = getComponent<ItemOptionalAttachedComponent<ItemEnergyComponent>>(stack, "battery")
+        if (energy != null && energy.isAttached) {
+            return 0x00FFFF33
+        }
+
+        return super.getRGBDurabilityForDisplay(stack)
+    }
+
+    override fun getMetadata(stack: ItemStack): Int {
+        return getDamage(stack)
+    }
+
+    override fun getDurabilityForDisplay(stack: ItemStack): Double {
+        val energy = getComponent<ItemOptionalAttachedComponent<ItemEnergyComponent>>(stack, "battery")
+        if (energy != null && energy.isAttached) {
+            val storage = energy.innerComponent.energyStorage
+            if (storage.capacity == 0) return 1.0
+            return 1 - storage.currentEnergy / storage.capacity.toDouble()
+        }
+        return super.getDurabilityForDisplay(stack)
+    }
+
+    override fun setDamage(stack: ItemStack, damage: Int) {
+        val cappedDmg = min(damage, getMaxDamage(stack))
+
+        val energy = getComponent<ItemOptionalAttachedComponent<ItemEnergyComponent>>(stack, "battery")
+        if (energy != null && energy.isAttached) {
+            return energy.innerComponent.energyStorage.forceUpdateOfCurrentEnergy(getMaxDamage(stack) - cappedDmg)
+        }
+
+        return super.setDamage(stack, cappedDmg)
+    }
+
+    override fun isDamaged(stack: ItemStack): Boolean {
+        // if false, the tooltip information about damage won't be shown
+        return false
+    }
+
+    override fun getDamage(stack: ItemStack): Int {
+
+        val energy = getComponent<ItemOptionalAttachedComponent<ItemEnergyComponent>>(stack, "battery")
+        if (energy != null && energy.isAttached) {
+            val storage = energy.innerComponent.energyStorage
+            return storage.maxEnergyStored - storage.energyStored
+        }
+
+        return super.getDamage(stack)
+    }
+
+    override fun getMaxDamage(stack: ItemStack): Int {
+
+        val energy = getComponent<ItemOptionalAttachedComponent<ItemEnergyComponent>>(stack, "battery")
+        if (energy != null && energy.isAttached) {
+            val storage = energy.innerComponent.energyStorage
+            return storage.maxEnergyStored
+        }
+
+        return 400
+    }
+
+    override fun showDurabilityBar(stack: ItemStack): Boolean {
+        return true
+    }
+
+    inline fun <reified T : IComponent> getComponent(stack: ItemStack, name: String, side: EnumFacing? = null): T? {
+        val wrapped = stack.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, side)
+        if (wrapped != null) {
+            return wrapped.getComponents().find { it.first == name }?.second as T
+        }
+        return null
+    }
+
+    override fun initCapabilities(stack: ItemStack, nbt: NBTTagCompound?): ICapabilityProvider? {
+        val wrapper = ItemCapabilityWrapper(stack)
+
+        wrapper.registerComponent(ItemUpgradesComponent(5, UpgradeClass.TOOL), "upgradeable")
+
+        val battery = ItemOptionalAttachedComponent(ItemEnergyComponent(DynamicItemEnergyCapability(0, 0, -1, -1)))
+        battery.innerComponent.needsClientSyncing = true
+        battery.innerComponent.energyStorage.needsClientSyncing = true
+        wrapper.registerComponent(battery, "battery")
+
+        val armorMultiplier = ItemMultiplierComponent(UPGRADE_ARMOR_ARMOR, 0.0)
+        val toughnessMultiplier = ItemMultiplierComponent(UPGRADE_ARMOR_TOUGHNESS, 0.0)
+
+        wrapper.registerComponent(armorMultiplier, "armor_multiplier")
+        wrapper.registerComponent(toughnessMultiplier, "toughness_multiplier")
+
+        wrapper.registerUpgradeParameter(UPGRADE_ARMOR_ARMOR, armorMultiplier)
+        wrapper.registerUpgradeParameter(UPGRADE_ARMOR_TOUGHNESS, toughnessMultiplier)
+        wrapper.registerAttachableParameter(EnergyUpgrade.INSTALL_ENERGY, battery)
+
+        return wrapper
+    }
+
+    override fun damageArmor(entity: EntityLivingBase?, stack: ItemStack, source: DamageSource?, damage: Int, slot: Int) {
+
+    }
+
+    override fun getProperties(player: EntityLivingBase?, armor: ItemStack, source: DamageSource?, damage: Double, slot: Int): ISpecialArmor.ArmorProperties {
+        val prop = ISpecialArmor.ArmorProperties(0, 1.0, Int.MAX_VALUE)
+        prop.Armor = getComponent<ItemMultiplierComponent>(armor, "armor_multiplier")?.multiplier ?: 0.0
+        prop.Toughness = getComponent<ItemMultiplierComponent>(armor, "toughness_multiplier")?.multiplier ?: 0.0
+        return prop
+    }
+
+    override fun getArmorDisplay(player: EntityPlayer?, armor: ItemStack, slot: Int): Int {
+        return ((getComponent<ItemMultiplierComponent>(armor, "armor_multiplier")?.multiplier ?: 0.0) * 2).toInt()
+    }
+
+    override fun getAttributeModifiers(slot: EntityEquipmentSlot, stack: ItemStack): Multimap<String, AttributeModifier> {
+        val map = super.getAttributeModifiers(slot, stack)
+
+        if(slot == equipmentSlot) {
+            map.put(SharedMonsterAttributes.ARMOR.name, AttributeModifier(ARMOR_MODIFIERS[equipmentSlot.index], "Armor modifier", getComponent<ItemMultiplierComponent>(stack, "armor_multiplier")?.multiplier
+                    ?: 0.0, 0))
+            map.put(SharedMonsterAttributes.ARMOR_TOUGHNESS.name, AttributeModifier(ARMOR_MODIFIERS[equipmentSlot.index], "Armor toughness", getComponent<ItemMultiplierComponent>(stack, "toughness_multiplier")?.multiplier
+                    ?: 0.0, 0))
+        }
+        
+        return map
+    }
+
+    override fun getKeyBind(): KeyBinding {
+        return ClientProxy.itemUpgradeGui
+    }
+
+    override fun keyPress(player: EntityPlayer, itemStack: ItemStack) {
+        if (!player.world.isRemote) {
+            player.openGui(TCFoundation, TCGuiHandler.itemGui, player.world, player.posX.toInt(), player.posY.toInt(), player.posY.toInt())
+        }
+    }
+
+    override fun getGui(player: EntityPlayer?): TCGui {
+        val stack = player!!.heldItemMainhand
+        val wrapped = stack.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, null)!!
+        val gui = SimpleGui(container = TCContainer(wrapped))
+
+        val upgradesComponent = wrapped.getComponents().firstOrNull { (_, c) -> c is ItemUpgradesComponent }?.second
+        if (upgradesComponent != null) {
+            gui.registerTab(ItemUpgradesTab(gui, upgradesComponent as ItemUpgradesComponent, player))
+        }
+
+        //lock the current stack so it cant be moved
+        gui.container.lockItem(stack)
+
+        gui.container.fixItemsNotSyncingBecauseOfShittyNetworkDesign = true
+
+        return gui
+    }
+
+    companion object {
+        val ARMOR_MODIFIERS = arrayOf(UUID.fromString("845DB27C-C624-495F-8C9F-6020A9A58B6B"), UUID.fromString("D8499B04-0E66-4726-AB29-64469D734E0D"), UUID.fromString("9F3D476D-C118-4544-8365-64846904B48E"), UUID.fromString("2AD3F246-FEE1-4E67-B886-69FD380BB150"))
+        val armor = EnumHelper.addArmorMaterial("PT", "test", 0, /*intArrayOf(3, 6, 8, 3)*/intArrayOf(0, 0, 0, 0), 10, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 0f);
+    }
+
+}

@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.powertools.content.item
 
 import net.cydhra.technocracy.foundation.TCFoundation
+import net.cydhra.technocracy.foundation.api.ecs.IComponent
 import net.cydhra.technocracy.foundation.api.tileentities.TCTileEntityGuiProvider
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeClass
 import net.cydhra.technocracy.foundation.client.gui.SimpleGui
@@ -8,9 +9,12 @@ import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
 import net.cydhra.technocracy.foundation.client.gui.handler.TCGuiHandler
 import net.cydhra.technocracy.foundation.client.gui.item.ItemUpgradesTab
+import net.cydhra.technocracy.foundation.content.capabilities.energy.DynamicItemEnergyCapability
 import net.cydhra.technocracy.foundation.content.items.components.ItemBatteryAddonComponent
 import net.cydhra.technocracy.foundation.content.items.components.ItemEnergyComponent
+import net.cydhra.technocracy.foundation.content.items.components.ItemOptionalAttachedComponent
 import net.cydhra.technocracy.foundation.content.items.components.ItemUpgradesComponent
+import net.cydhra.technocracy.foundation.content.items.upgrades.EnergyUpgrade.Companion.INSTALL_ENERGY
 import net.cydhra.technocracy.foundation.model.items.api.BaseItem
 import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWrapper
 import net.minecraft.block.state.IBlockState
@@ -21,6 +25,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.ActionResult
 import net.minecraft.util.EnumActionResult
+import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumHand
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
@@ -32,8 +37,12 @@ class ModularItem : BaseItem("modularitem"), TCTileEntityGuiProvider {
 
     override fun initCapabilities(stack: ItemStack, nbt: NBTTagCompound?): ICapabilityProvider? {
         val wrapper = ItemCapabilityWrapper(stack)
-        val battery = ItemBatteryAddonComponent()
+        val battery = ItemOptionalAttachedComponent(ItemEnergyComponent(DynamicItemEnergyCapability(0, 0, -1, -1)))
+        battery.innerComponent.needsClientSyncing = true
+        battery.innerComponent.energyStorage.needsClientSyncing = true
+
         wrapper.registerComponent(battery, "battery")
+        wrapper.registerAttachableParameter(INSTALL_ENERGY, battery)
         wrapper.registerComponent(ItemUpgradesComponent(3, UpgradeClass.TOOL), "upgradeable")
         return wrapper
     }
@@ -58,12 +67,11 @@ class ModularItem : BaseItem("modularitem"), TCTileEntityGuiProvider {
     }
 
     override fun getRGBDurabilityForDisplay(stack: ItemStack): Int {
-        val wrapped = stack.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, null)
-        if (wrapped != null) {
-            val energy = wrapped.getComponents().find { it.first == "energy_upgrade" }?.second
-            if (energy != null && energy is ItemEnergyComponent)
-                return 0x00FFFF33
+        val energy = getComponent<ItemOptionalAttachedComponent<ItemEnergyComponent>>(stack, "battery")
+        if (energy != null && energy.isAttached) {
+            return 0x00FFFF33
         }
+
         return super.getRGBDurabilityForDisplay(stack)
     }
 
@@ -71,15 +79,20 @@ class ModularItem : BaseItem("modularitem"), TCTileEntityGuiProvider {
         return getDamage(stack)
     }
 
-    override fun getDurabilityForDisplay(stack: ItemStack): Double {
-        val wrapped = stack.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, null)
+    inline fun <reified T : IComponent> getComponent(stack: ItemStack, name: String, side: EnumFacing? = null): T? {
+        val wrapped = stack.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, side)
         if (wrapped != null) {
-            val energy = wrapped.getComponents().find { it.first == "energy_upgrade" }
-            if (energy != null && energy.second is ItemEnergyComponent) {
-                val comp = (energy.second as ItemEnergyComponent)
-                if (comp.energyStorage.capacity == 0) return 1.0
-                return 1 - comp.energyStorage.currentEnergy / comp.energyStorage.capacity.toDouble()
-            }
+            return wrapped.getComponents().find { it.first == name }?.second as T
+        }
+        return null
+    }
+
+    override fun getDurabilityForDisplay(stack: ItemStack): Double {
+        val energy = getComponent<ItemOptionalAttachedComponent<ItemEnergyComponent>>(stack, "battery")
+        if (energy != null && energy.isAttached) {
+            val storage = energy.innerComponent.energyStorage
+            if (storage.capacity == 0) return 1.0
+            return 1 - storage.currentEnergy / storage.capacity.toDouble()
         }
         return super.getDurabilityForDisplay(stack)
     }
@@ -87,12 +100,11 @@ class ModularItem : BaseItem("modularitem"), TCTileEntityGuiProvider {
     override fun setDamage(stack: ItemStack, damage: Int) {
         val cappedDmg = min(damage, getMaxDamage(stack))
 
-        val wrapped = stack.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, null)
-        if (wrapped != null) {
-            val energy = wrapped.getComponents().find { it.first == "energy_upgrade" }?.second
-            if (energy != null && energy is ItemEnergyComponent)
-                return energy.energyStorage.forceUpdateOfCurrentEnergy(getMaxDamage(stack) - cappedDmg)
+        val energy = getComponent<ItemOptionalAttachedComponent<ItemEnergyComponent>>(stack, "battery")
+        if (energy != null && energy.isAttached) {
+            return energy.innerComponent.energyStorage.forceUpdateOfCurrentEnergy(getMaxDamage(stack) - cappedDmg)
         }
+
         return super.setDamage(stack, cappedDmg)
     }
 
@@ -108,22 +120,24 @@ class ModularItem : BaseItem("modularitem"), TCTileEntityGuiProvider {
     }
 
     override fun getDamage(stack: ItemStack): Int {
-        val wrapped = stack.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, null)
-        if (wrapped != null) {
-            val energy = wrapped.getComponents().find { it.first == "energy_upgrade" }?.second
-            if (energy != null && energy is ItemEnergyComponent)
-                return energy.energyStorage.maxEnergyStored - energy.energyStorage.energyStored
+
+        val energy = getComponent<ItemOptionalAttachedComponent<ItemEnergyComponent>>(stack, "battery")
+        if (energy != null && energy.isAttached) {
+            val storage = energy.innerComponent.energyStorage
+            return storage.maxEnergyStored - storage.energyStored
         }
+
         return super.getDamage(stack)
     }
 
     override fun getMaxDamage(stack: ItemStack): Int {
-        val wrapped = stack.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, null)
-        if (wrapped != null) {
-            val energy = wrapped.getComponents().find { it.first == "energy_upgrade" }?.second
-            if (energy != null && energy is ItemEnergyComponent)
-                return energy.energyStorage.maxEnergyStored
+
+        val energy = getComponent<ItemOptionalAttachedComponent<ItemEnergyComponent>>(stack, "battery")
+        if (energy != null && energy.isAttached) {
+            val storage = energy.innerComponent.energyStorage
+            return storage.maxEnergyStored
         }
+
         return 400
     }
 

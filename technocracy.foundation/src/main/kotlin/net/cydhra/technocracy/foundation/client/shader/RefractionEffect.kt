@@ -10,9 +10,9 @@ import net.minecraft.util.ResourceLocation
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL30
+import kotlin.properties.Delegates
 
 object RefractionEffect {
-    var built = false
 
     private val refracShader = BasicShaderProgram(ResourceLocation("technocracy.foundation", "shaders/refrag.vsh"), ResourceLocation("technocracy.foundation", "shaders/refrag.fsh")) {
         colorShift = getUniform("colorShift", BasicShaderProgram.ShaderUniform.UniformType.INT_1)
@@ -50,13 +50,9 @@ object RefractionEffect {
      * Generates the shader and binds the textures
      */
     fun preRenderType(diffuseTexture: ResourceLocation, normalTexture: ResourceLocation) {
-        if (!built) {
-            built = true
 
+        if(!::buffer.isInitialized) {
             buffer = Framebuffer(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, false)
-
-            //refracShader = BasicShaderProgram(ResourceLocation("technocracy.foundation", "shaders/refrag.vsh"), ResourceLocation("technocracy.foundation", "shaders/refrag.fsh"))
-
         }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_K)) {

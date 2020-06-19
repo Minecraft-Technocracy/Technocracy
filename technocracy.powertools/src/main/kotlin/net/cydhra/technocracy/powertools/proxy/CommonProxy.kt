@@ -7,10 +7,7 @@ import net.cydhra.technocracy.foundation.model.items.manager.ItemManager
 import net.cydhra.technocracy.foundation.model.tileentities.manager.TileEntityManager
 import net.cydhra.technocracy.powertools.TCPowertools
 import net.cydhra.technocracy.powertools.client.powertoolsCreativeTab
-import net.cydhra.technocracy.powertools.content.item.batteryCapacityUpgrade
-import net.cydhra.technocracy.powertools.content.item.batteryUpgrade_One
-import net.cydhra.technocracy.powertools.content.item.energyShield
-import net.cydhra.technocracy.powertools.content.item.modularItem
+import net.cydhra.technocracy.powertools.content.item.*
 import net.minecraftforge.common.MinecraftForge
 
 open class CommonProxy {
@@ -44,6 +41,9 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(batteryCapacityUpgrade)
         itemManager.prepareItemForRegistration(modularItem)
         itemManager.prepareItemForRegistration(energyShield)
+        itemManager.prepareItemForRegistration(modularhelmet)
+        itemManager.prepareItemForRegistration(armorUpgrade_IronPlating)
+        itemManager.prepareItemForRegistration(armorUpgrade_DiamondPlating)
     }
 
     open fun init() {

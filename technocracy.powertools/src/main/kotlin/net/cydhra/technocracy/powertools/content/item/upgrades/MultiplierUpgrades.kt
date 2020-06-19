@@ -22,7 +22,8 @@ class DigSpeedUpgrade(multiplier: Double) : ItemMultiplierUpgrade(multiplier, UP
 /**
  * Upgrades armor of armor using a multiplier. (duh)
  */
-class ArmorUpgrade(multiplier: Double) : ItemMultiplierUpgrade(multiplier, UPGRADE_ARMOR)
+class ArmorUpgrade(additive: Double) : ItemMultiplierUpgrade(additive, UPGRADE_ARMOR_ARMOR)
+class ArmorToughnessUpgrade(additive: Double) : ItemMultiplierUpgrade(additive, UPGRADE_ARMOR_TOUGHNESS)
 
 /**
  * Upgrades a multiplier on walking speed of armor

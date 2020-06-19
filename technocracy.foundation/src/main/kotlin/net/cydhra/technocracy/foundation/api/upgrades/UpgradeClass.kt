@@ -6,9 +6,5 @@ package net.cydhra.technocracy.foundation.api.upgrades
  */
 enum class UpgradeClass(val unlocalizedName: String) {
     MACHINE("machine"),
-    HELMET("helmet"),
-    CHEST_PLATE("plate"),
-    LEGGINGS("leggings"),
-    BOOTS("boots"),
     TOOL("tool")
 }

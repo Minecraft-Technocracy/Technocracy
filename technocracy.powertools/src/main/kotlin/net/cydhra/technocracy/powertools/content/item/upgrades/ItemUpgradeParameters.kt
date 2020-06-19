@@ -10,7 +10,8 @@ const val UPGRADE_ENERGY_USAGE: UpgradeParameter = "energy.usage"
 const val UPGRADE_DIG_SPEED: UpgradeParameter = "dig.speed"
 
 // armor
-const val UPGRADE_ARMOR: UpgradeParameter = "armor"
+const val UPGRADE_ARMOR_ARMOR: UpgradeParameter = "armor.armor"
+const val UPGRADE_ARMOR_TOUGHNESS: UpgradeParameter = "armor.toughness"
 const val UPGRADE_WALK_SPEED: UpgradeParameter = "walk.speed"
 
 // weapon
