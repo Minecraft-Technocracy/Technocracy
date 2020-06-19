@@ -2,7 +2,9 @@ package net.cydhra.technocracy.foundation.content.multiblock
 
 import it.zerono.mods.zerocore.api.multiblock.validation.IMultiblockValidator
 import net.cydhra.technocracy.foundation.api.ecs.IComponent
+import net.cydhra.technocracy.foundation.api.ecs.logic.EmptyLogicParameters
 import net.cydhra.technocracy.foundation.api.ecs.logic.ILogicClient
+import net.cydhra.technocracy.foundation.api.ecs.logic.ILogicParameters
 import net.cydhra.technocracy.foundation.api.ecs.logic.LogicClientDelegate
 import net.cydhra.technocracy.foundation.content.blocks.*
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ConversionDirection
@@ -24,7 +26,7 @@ import kotlin.math.ceil
 import kotlin.math.exp
 import kotlin.math.floor
 
-class SalineMultiBlock(world: World) : ILogicClient by LogicClientDelegate(), TiledBaseMultiBlock(
+class SalineMultiBlock(world: World) : ILogicClient<ILogicParameters> by LogicClientDelegate(), TiledBaseMultiBlock(
         frameBlockWhitelist = Predicate {
             it.block == salineWallBlock || it.block == salineFluidInputBlock || it.block == salineControllerBlock ||
                     it.block == salineHeatingAgentInputBlock || it.block == salineHeatingAgentOutputBlock
@@ -256,7 +258,7 @@ class SalineMultiBlock(world: World) : ILogicClient by LogicClientDelegate(), Ti
         }
 
         //Convert heating fluid
-        tick()
+        tick(EmptyLogicParameters)
 
         //https://github.com/Minecraft-Technocracy/Technocracy/issues/45#issuecomment-600246262
 

@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.optics.content.tileentities.logic
 
 import net.cydhra.technocracy.foundation.api.ecs.logic.ILogic
+import net.cydhra.technocracy.foundation.api.ecs.logic.ILogicParameters
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityEnergyStorageComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityInventoryComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityProgressComponent
@@ -14,7 +15,7 @@ class LaserDrillLogic(
         private val outputInventory: TileEntityInventoryComponent,
         private val energyPerProgress: Int,
         private val world: World
-) : ILogic {
+) : ILogic<ILogicParameters> {
 
     private var nextResource: ItemStack = ItemStack.EMPTY
 
@@ -24,12 +25,12 @@ class LaserDrillLogic(
         }
     }
 
-    override fun preProcessing(): Boolean {
+    override fun preProcessing(logicParameters: ILogicParameters): Boolean {
         return energyComponent.energyStorage.currentEnergy > energyPerProgress &&
                 (nextResource.isEmpty || outputInventory.inventory.stacks.any { it.isEmpty })
     }
 
-    override fun processing() {
+    override fun processing(logicParameters: ILogicParameters) {
         val energyAvailable = energyComponent.energyStorage.currentEnergy
         val progress = energyAvailable / energyPerProgress
 
@@ -55,7 +56,7 @@ class LaserDrillLogic(
         }
     }
 
-    override fun postProcessing(wasProcessing: Boolean) {
+    override fun postProcessing(wasProcessing: Boolean, logicParameters: ILogicParameters) {
 
     }
 

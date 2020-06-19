@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.content.tileentities.logic
 
 import net.cydhra.technocracy.foundation.api.ecs.logic.ILogic
+import net.cydhra.technocracy.foundation.api.ecs.logic.ILogicParameters
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityHeatStorageComponent
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
@@ -18,7 +19,7 @@ class CoolingLogic(
         private val hotFluidComponent: TileEntityFluidComponent,
         private val coldFluidComponent: TileEntityFluidComponent,
         private val heatBuffer: TileEntityHeatStorageComponent
-) : ILogic {
+) : ILogic<ILogicParameters> {
 
     private val recipes by lazy {
         RecipeManager.getSpecialRecipesByType(RecipeManager.RecipeType.HEAT)!!.filterIsInstance<HeatRecipe>()
@@ -26,15 +27,15 @@ class CoolingLogic(
 
     private var currentRecipe: HeatRecipe? = null
 
-    override fun preProcessing(): Boolean {
+    override fun preProcessing(logicParameters: ILogicParameters): Boolean {
         return true
     }
 
-    override fun processing() {
+    override fun processing(logicParameters: ILogicParameters) {
 
     }
 
-    override fun postProcessing(wasProcessing: Boolean) {
+    override fun postProcessing(wasProcessing: Boolean, logicParameters: ILogicParameters) {
         // if output is full
         if (this.hotFluidComponent.fluid.capacity == this.hotFluidComponent.fluid.currentFluid?.amount ?: 0) {
             return

@@ -1,6 +1,10 @@
 package net.cydhra.technocracy.foundation.model.items.capability
 
 import net.cydhra.technocracy.foundation.api.ecs.IComponent
+import net.cydhra.technocracy.foundation.api.ecs.logic.ILogic
+import net.cydhra.technocracy.foundation.api.ecs.logic.ILogicClient
+import net.cydhra.technocracy.foundation.api.ecs.logic.ILogicParameters
+import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackLogicParameters
 import net.cydhra.technocracy.foundation.api.upgrades.Installable
 import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_GENERIC
 import net.cydhra.technocracy.foundation.api.upgrades.Upgradable
@@ -18,7 +22,7 @@ import net.minecraftforge.common.capabilities.CapabilityInject
 import net.minecraftforge.common.capabilities.ICapabilitySerializable
 
 
-open class ItemCapabilityWrapper(var stack: ItemStack) : ICapabilitySerializable<NBTTagCompound>, Upgradable, Installable, ICapabilityWrapperCapability {
+open class ItemCapabilityWrapper(var stack: ItemStack) : ICapabilitySerializable<NBTTagCompound>, Upgradable, Installable, ICapabilityWrapperCapability, ILogicClient<ItemStackLogicParameters> {
     companion object {
         @JvmStatic
         @CapabilityInject(ICapabilityWrapperCapability::class)
@@ -190,8 +194,19 @@ open class ItemCapabilityWrapper(var stack: ItemStack) : ICapabilitySerializable
         attachableParameters[parameter]!!.isAttached = attach
     }
 
-    fun <T : AbstractItemComponent> getAttachableParameter(parameter: UpgradeParameter) : ItemOptionalAttachedComponent<T>? {
+    fun <T : AbstractItemComponent> getAttachableParameter(parameter: UpgradeParameter): ItemOptionalAttachedComponent<T>? {
         return attachableParameters[parameter] as ItemOptionalAttachedComponent<T>?
+    }
+
+    override fun removeLogicStrategy(name: String) {
+
+    }
+
+    override fun tick(logicParameters: ItemStackLogicParameters) {
+    }
+
+    override fun addLogicStrategy(strategy: ILogic<ItemStackLogicParameters>, name: String) {
+
     }
 
 }

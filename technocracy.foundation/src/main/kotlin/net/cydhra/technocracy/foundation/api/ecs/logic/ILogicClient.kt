@@ -4,7 +4,7 @@ package net.cydhra.technocracy.foundation.api.ecs.logic
  * Entities that can adopt an [ILogic] strategy must implement this interface. Since the implementation is trivial,
  * adopting entities may use a delegate to implement it.
  */
-interface ILogicClient {
+interface ILogicClient<T : ILogicParameters> {
 
     /**
      * Register a new logic strategy.
@@ -13,7 +13,7 @@ interface ILogicClient {
      * @param name a unique name for the strategy instance. no two instances with the same name may be registered at
      * a client
      */
-    fun addLogicStrategy(strategy: ILogic, name: String)
+    fun addLogicStrategy(strategy: ILogic<T>, name: String)
 
     /**
      * Remove the logic strategy with the given name
@@ -26,5 +26,5 @@ interface ILogicClient {
      *
      * @param logicParameters additional parameters required for client implementations
      */
-    fun tick(logicParameters: ILogicParameters = EmptyLogicStack)
+    fun tick(logicParameters: T)
 }

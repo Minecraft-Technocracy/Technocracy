@@ -1,6 +1,8 @@
 package net.cydhra.technocracy.foundation.model.tileentities.machines
 
+import net.cydhra.technocracy.foundation.api.ecs.logic.EmptyLogicParameters
 import net.cydhra.technocracy.foundation.api.ecs.logic.ILogicClient
+import net.cydhra.technocracy.foundation.api.ecs.logic.ILogicParameters
 import net.cydhra.technocracy.foundation.api.ecs.logic.LogicClientDelegate
 import net.cydhra.technocracy.foundation.api.ecs.tileentities.TCAggregatableTileEntity
 import net.cydhra.technocracy.foundation.api.tileentities.TCMachineTileEntity
@@ -32,7 +34,7 @@ import net.minecraft.util.EnumFacing
 
 open class MachineTileEntity(
         upgradeSlots: Int = 3
-) : AggregatableTileEntity(), TCMachineTileEntity, ILogicClient by LogicClientDelegate() {
+) : AggregatableTileEntity(), TCMachineTileEntity, ILogicClient<ILogicParameters> by LogicClientDelegate() {
 
     companion object {
         const val MACHINE_PROCESSING_LOGIC_NAME = "default_processing"
@@ -200,7 +202,7 @@ open class MachineTileEntity(
     override fun update() {
         // update ILogic strategies, but only server side
         if (!world.isRemote)
-            this.tick()
+            this.tick(EmptyLogicParameters)
     }
 
     /**

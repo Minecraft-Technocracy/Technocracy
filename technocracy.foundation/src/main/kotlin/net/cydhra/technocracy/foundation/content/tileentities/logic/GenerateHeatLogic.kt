@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.content.tileentities.logic
 
 import net.cydhra.technocracy.foundation.api.ecs.logic.ILogic
+import net.cydhra.technocracy.foundation.api.ecs.logic.ILogicParameters
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityHeatStorageComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityMultiplierComponent
 
@@ -16,20 +17,20 @@ class GenerateHeatLogic(
         private val baseHeatGeneration: Int,
         private val energyMultiplierComponent: TileEntityMultiplierComponent,
         private val heatBuffer: TileEntityHeatStorageComponent
-) : ILogic {
+) : ILogic<ILogicParameters> {
 
-    override fun preProcessing(): Boolean {
+    override fun preProcessing(logicParameters: ILogicParameters): Boolean {
         if (heatBuffer.heatCapacity - heatBuffer.heat < this.getGeneratedHeat())
             return false
 
         return true
     }
 
-    override fun processing() {
+    override fun processing(logicParameters: ILogicParameters) {
 
     }
 
-    override fun postProcessing(wasProcessing: Boolean) {
+    override fun postProcessing(wasProcessing: Boolean,logicParameters: ILogicParameters) {
         if (wasProcessing) {
             heatBuffer.heat += this.getGeneratedHeat().coerceAtMost(heatBuffer.heatCapacity - heatBuffer.heat)
         }

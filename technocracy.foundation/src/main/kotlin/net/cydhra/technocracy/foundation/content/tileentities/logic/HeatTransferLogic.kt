@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.content.tileentities.logic
 
 import net.cydhra.technocracy.foundation.api.ecs.logic.ILogic
+import net.cydhra.technocracy.foundation.api.ecs.logic.ILogicParameters
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityHeatStorageComponent
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ConversionDirection.COLD_TO_HOT
@@ -21,7 +22,7 @@ class HeatTransferLogic(
         private val coldFluidComponent: TileEntityFluidComponent,
         private val direction: ConversionDirection,
         private val heatBuffer: TileEntityHeatStorageComponent
-) : ILogic {
+) : ILogic<ILogicParameters> {
 
     private val inputFluidComponent: TileEntityFluidComponent = if (this.direction == COLD_TO_HOT) coldFluidComponent else hotFluidComponent
 
@@ -33,7 +34,7 @@ class HeatTransferLogic(
 
     private var currentRecipe: HeatRecipe? = null
 
-    override fun preProcessing(): Boolean {
+    override fun preProcessing(logicParameters: ILogicParameters): Boolean {
         // if output is full
         if (this.outputFluidComponent.fluid.capacity == this.outputFluidComponent.fluid.currentFluid?.amount ?: 0) {
             return false
@@ -80,7 +81,7 @@ class HeatTransferLogic(
         return true
     }
 
-    override fun processing() {
+    override fun processing(logicParameters: ILogicParameters) {
         // process no more heat than input and output can deliver
         var maximumConversionMb = this.processFluidPerTick
                 .coerceAtMost(this.outputFluidComponent.fluid.capacity
@@ -109,7 +110,7 @@ class HeatTransferLogic(
         }
     }
 
-    override fun postProcessing(wasProcessing: Boolean) {
+    override fun postProcessing(wasProcessing: Boolean, logicParameters: ILogicParameters) {
 
     }
 }

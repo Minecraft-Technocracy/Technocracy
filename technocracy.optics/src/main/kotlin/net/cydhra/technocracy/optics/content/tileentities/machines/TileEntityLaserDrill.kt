@@ -1,7 +1,9 @@
 package net.cydhra.technocracy.optics.content.tileentities.machines
 
 import net.cydhra.technocracy.foundation.api.ecs.IAggregatableGuiProvider
+import net.cydhra.technocracy.foundation.api.ecs.logic.EmptyLogicParameters
 import net.cydhra.technocracy.foundation.api.ecs.logic.ILogicClient
+import net.cydhra.technocracy.foundation.api.ecs.logic.ILogicParameters
 import net.cydhra.technocracy.foundation.api.ecs.logic.LogicClientDelegate
 import net.cydhra.technocracy.foundation.api.tileentities.TCTileEntityGuiProvider
 import net.cydhra.technocracy.foundation.api.tileentities.TEInventoryProvider
@@ -27,7 +29,7 @@ class TileEntityLaserDrill : AggregatableTileEntity(),
         ITickable,
         IAggregatableGuiProvider,
         TCTileEntityGuiProvider,
-        ILogicClient by LogicClientDelegate(),
+        ILogicClient<ILogicParameters> by LogicClientDelegate(),
         TEInventoryProvider {
 
     companion object {
@@ -76,7 +78,7 @@ class TileEntityLaserDrill : AggregatableTileEntity(),
     override fun update() {
         // update ILogic strategies, but only server side
         if (!world.isRemote)
-            this.tick()
+            this.tick(EmptyLogicParameters)
     }
 
     override fun getGui(player: EntityPlayer?): TCGui {

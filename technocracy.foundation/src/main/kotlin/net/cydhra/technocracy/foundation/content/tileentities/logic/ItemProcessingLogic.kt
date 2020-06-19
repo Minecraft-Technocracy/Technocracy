@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.content.tileentities.logic
 
 import net.cydhra.technocracy.foundation.api.ecs.logic.ILogic
+import net.cydhra.technocracy.foundation.api.ecs.logic.ILogicParameters
 import net.cydhra.technocracy.foundation.content.capabilities.energy.DynamicEnergyCapability
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
@@ -19,7 +20,7 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
                           private val processSpeedComponent: TileEntityMultiplierComponent,
                           private val energyCostComponent: TileEntityMultiplierComponent,
                           private val baseTickEnergyCost: Int,
-                          private val progress: TileEntityProgressComponent) : ILogic {
+                          private val progress: TileEntityProgressComponent) : ILogic<ILogicParameters> {
 
     companion object {
         // TODO this could be a value obtained from config
@@ -45,7 +46,7 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
      */
     private var processingProgress: Int = 0
 
-    override fun preProcessing(): Boolean {
+    override fun preProcessing(logicParameters: ILogicParameters): Boolean {
         // collect input item stacks
         val inputItems = if (inputInventory != null) {
             (0 until inputInventory.slots).map(inputInventory::getStackInSlot).filter { !it.isEmpty }
@@ -95,7 +96,7 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
         return false
     }
 
-    override fun processing() {
+    override fun processing(logicParameters: ILogicParameters) {
         // process recipe
         if (this.currentRecipe != null) {
             // if more progress is required then try to add it
@@ -152,7 +153,7 @@ class ItemProcessingLogic(private val recipeType: RecipeManager.RecipeType,
             (processingProgress.toFloat() / currentRecipe!!.processingCost.toFloat()).toInt() else 0
     }
 
-    override fun postProcessing(wasProcessing: Boolean) {
+    override fun postProcessing(wasProcessing: Boolean, logicParameters: ILogicParameters) {
 
     }
 

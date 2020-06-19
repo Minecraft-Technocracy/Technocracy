@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.content.tileentities.logic
 
 import net.cydhra.technocracy.foundation.api.ecs.logic.ILogic
+import net.cydhra.technocracy.foundation.api.ecs.logic.ILogicParameters
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityMultiplierComponent
 import kotlin.math.roundToInt
@@ -10,16 +11,16 @@ import kotlin.math.roundToInt
  */
 class AdditiveConsumptionLogic(private val additiveComponent: TileEntityFluidComponent,
                                private val baseConsumption: Int,
-                               private val multiplier: TileEntityMultiplierComponent) : ILogic {
-    override fun preProcessing(): Boolean {
+                               private val multiplier: TileEntityMultiplierComponent) : ILogic<ILogicParameters> {
+    override fun preProcessing(logicParameters: ILogicParameters): Boolean {
         return additiveComponent.fluid.currentFluid?.amount ?: 0 >= baseConsumption
     }
 
-    override fun processing() {
+    override fun processing(logicParameters: ILogicParameters) {
         additiveComponent.fluid.drain((baseConsumption * this.multiplier.multiplier).roundToInt(), doDrain = true, forced = true)
     }
 
-    override fun postProcessing(wasProcessing: Boolean) {
+    override fun postProcessing(wasProcessing: Boolean, logicParameters: ILogicParameters) {
 
     }
 }

@@ -2,6 +2,7 @@ package net.cydhra.technocracy.optics.api.tileentities.logic
 
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.api.ecs.logic.ILogic
+import net.cydhra.technocracy.foundation.api.ecs.logic.ILogicParameters
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityEnergyStorageComponent
 import net.cydhra.technocracy.foundation.data.config.IntegerConfigurable
 import net.cydhra.technocracy.optics.api.tileentities.components.LaserAbsorberComponent
@@ -14,7 +15,7 @@ class LaserLogic(
         private val blockPos: BlockPos,
         private val world: World,
         private val laserEmitterComponent: LaserEmitterTileEntityComponent,
-        private val energyStorage: TileEntityEnergyStorageComponent) : ILogic {
+        private val energyStorage: TileEntityEnergyStorageComponent) : ILogic<ILogicParameters> {
 
     companion object {
         /**
@@ -32,11 +33,11 @@ class LaserLogic(
                 64)
     }
 
-    override fun preProcessing(): Boolean {
+    override fun preProcessing(logicParameters: ILogicParameters): Boolean {
         return true
     }
 
-    override fun processing() {
+    override fun processing(logicParameters: ILogicParameters) {
         // energy transfer
         // TODO
 
@@ -76,7 +77,7 @@ class LaserLogic(
         }
     }
 
-    override fun postProcessing(wasProcessing: Boolean) {
+    override fun postProcessing(wasProcessing: Boolean, logicParameters: ILogicParameters) {
 
     }
 
