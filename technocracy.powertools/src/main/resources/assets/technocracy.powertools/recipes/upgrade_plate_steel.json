@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sss",
+    "rfx",
+    "sss"
+  ],
+  "key": {
+    "c": {
+      "type": "forge:ore_dict",
+      "ore": "sheetSteel"
+    },
+    "x": {
+      "item": "technocracy.foundation:spandex"
+    },
+    "f": {
+      "item": "technocracy.foundation:upgrade_frame"
+    }
+  },
+  "result": {
+    "item": "technocracy.powertools:armor_upgrade_steel_plating",
+    "count": 1
+  }
+}
