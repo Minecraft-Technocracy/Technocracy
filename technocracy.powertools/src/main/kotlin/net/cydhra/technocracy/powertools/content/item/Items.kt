@@ -6,8 +6,6 @@ import net.cydhra.technocracy.foundation.model.items.api.UpgradeItem
 import net.cydhra.technocracy.powertools.content.item.upgrades.ArmorToughnessUpgrade
 import net.cydhra.technocracy.powertools.content.item.upgrades.ArmorUpgrade
 import net.cydhra.technocracy.powertools.content.item.upgrades.CapacityUpgrade
-import net.minecraft.init.SoundEvents
-import net.minecraftforge.common.util.EnumHelper
 
 val batteryUpgrade_One = UpgradeItem("battery_upgrade_one", UpgradeClass.TOOL, EnergyUpgrade(800))
 val batteryCapacityUpgrade = UpgradeItem("battery_capacity_upgrade", UpgradeClass.TOOL, CapacityUpgrade(1.2))
@@ -18,4 +16,3 @@ val armorUpgrade_DiamondPlating = UpgradeItem("armor_upgrade_diamond_plating", U
 val modularItem = ModularItem()
 val energyShield = EnergyShieldItem()
 val modularhelmet = ModularHelmet()
-val armor = EnumHelper.addArmorMaterial("PT", "test", 33, intArrayOf(3, 6, 8, 3), 10, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 2f);
