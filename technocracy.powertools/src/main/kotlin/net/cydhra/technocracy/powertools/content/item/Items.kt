@@ -11,8 +11,10 @@ import net.minecraftforge.common.util.EnumHelper
 
 val batteryUpgrade_One = UpgradeItem("battery_upgrade_one", UpgradeClass.TOOL, EnergyUpgrade(800))
 val batteryCapacityUpgrade = UpgradeItem("battery_capacity_upgrade", UpgradeClass.TOOL, CapacityUpgrade(1.2))
-val armorUpgrade_IronPlating = UpgradeItem("armorUpgrade_IronPlating", UpgradeClass.TOOL, ArmorUpgrade(3.0), ArmorToughnessUpgrade(0.0))
-val armorUpgrade_DiamondPlating = UpgradeItem("armorUpgrade_DiamondPlating", UpgradeClass.TOOL, ArmorUpgrade(5.0), ArmorToughnessUpgrade(1.0))
+val armorUpgrade_IronPlating = UpgradeItem("armor_upgrade_steel_plating", UpgradeClass.TOOL, ArmorUpgrade(3.0),
+        ArmorToughnessUpgrade(0.0))
+val armorUpgrade_DiamondPlating = UpgradeItem("armor_upgrade_diamond_plating", UpgradeClass.TOOL, ArmorUpgrade(5.0),
+        ArmorToughnessUpgrade(1.0))
 val modularItem = ModularItem()
 val energyShield = EnergyShieldItem()
 val modularhelmet = ModularHelmet()
