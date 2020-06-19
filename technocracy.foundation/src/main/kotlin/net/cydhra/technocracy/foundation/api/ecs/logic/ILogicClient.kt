@@ -23,6 +23,8 @@ interface ILogicClient {
     /**
      * Updates all adopted logic strategies. Must be called by the implementor on its tick update function. Calls
      * update on adopted strategies on behalf of the implementation.
+     *
+     * @param logicParameters additional parameters required for client implementations
      */
-    fun tick()
+    fun tick(logicParameters: ILogicParameters = EmptyLogicStack)
 }

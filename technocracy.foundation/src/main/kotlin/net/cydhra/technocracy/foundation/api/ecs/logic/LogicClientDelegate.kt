@@ -20,7 +20,7 @@ class LogicClientDelegate : ILogicClient {
         this.logicStrategies.remove(name)
     }
 
-    override fun tick() {
+    override fun tick(logicStack: ILogicParameters) {
         val canProcess = this.logicStrategies.values.all(ILogic::preProcessing)
 
         if (canProcess) {
