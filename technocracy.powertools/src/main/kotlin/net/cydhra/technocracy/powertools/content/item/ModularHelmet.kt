@@ -3,6 +3,8 @@ package net.cydhra.technocracy.powertools.content.item
 import com.google.common.collect.Multimap
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.api.ecs.IComponent
+import net.cydhra.technocracy.foundation.api.ecs.logic.ILogicClient
+import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackLogicParameters
 import net.cydhra.technocracy.foundation.api.tileentities.TCTileEntityGuiProvider
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeClass
 import net.cydhra.technocracy.foundation.client.gui.SimpleGui
@@ -33,6 +35,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.DamageSource
 import net.minecraft.util.EnumFacing
+import net.minecraft.world.World
 import net.minecraftforge.common.ISpecialArmor
 import net.minecraftforge.common.capabilities.ICapabilityProvider
 import net.minecraftforge.common.util.EnumHelper
@@ -146,6 +149,11 @@ class ModularHelmet : BaseArmorItem("modular_helmet", material = armor!!, equipm
 
     }
 
+    override fun onArmorTick(world: World, player: EntityPlayer, itemStack: ItemStack) {
+        super.onArmorTick(world, player, itemStack)
+        (itemStack.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, null) as? ItemCapabilityWrapper)?.tick(ItemStackLogicParameters(player))
+    }
+
     override fun getProperties(player: EntityLivingBase?, armor: ItemStack, source: DamageSource?, damage: Double, slot: Int): ISpecialArmor.ArmorProperties {
         val prop = ISpecialArmor.ArmorProperties(0, 1.0, Int.MAX_VALUE)
         prop.Armor = getComponent<ItemMultiplierComponent>(armor, "armor_multiplier")?.multiplier ?: 0.0
@@ -160,13 +168,13 @@ class ModularHelmet : BaseArmorItem("modular_helmet", material = armor!!, equipm
     override fun getAttributeModifiers(slot: EntityEquipmentSlot, stack: ItemStack): Multimap<String, AttributeModifier> {
         val map = super.getAttributeModifiers(slot, stack)
 
-        if(slot == equipmentSlot) {
+        if (slot == equipmentSlot) {
             map.put(SharedMonsterAttributes.ARMOR.name, AttributeModifier(ARMOR_MODIFIERS[equipmentSlot.index], "Armor modifier", getComponent<ItemMultiplierComponent>(stack, "armor_multiplier")?.multiplier
                     ?: 0.0, 0))
             map.put(SharedMonsterAttributes.ARMOR_TOUGHNESS.name, AttributeModifier(ARMOR_MODIFIERS[equipmentSlot.index], "Armor toughness", getComponent<ItemMultiplierComponent>(stack, "toughness_multiplier")?.multiplier
                     ?: 0.0, 0))
         }
-        
+
         return map
     }
 
