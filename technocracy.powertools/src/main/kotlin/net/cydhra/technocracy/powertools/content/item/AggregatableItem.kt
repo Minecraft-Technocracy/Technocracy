@@ -7,8 +7,11 @@ import net.minecraft.nbt.NBTTagCompound
 
 /**
  * An item that is an aggregation of multiple [IComponent] instances that define state associated with stacks of this
- * item. State is generally used by different [net.cydhra.technocracy.foundation.api.ecs.logic.ILogic] for stateful
- * behavior of that specific item stack.
+ * item. State is generally used by different [logics][net.cydhra.technocracy.foundation.api.ecs.logic.ILogic] for
+ * stateful behavior of that specific item stack. Since items are singletons and itemstacks can't tick, this class is
+ * not an [net.cydhra.technocracy.foundation.api.ecs.logic.ILogicClient] but rather the
+ * [net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWrapper] is used as a client for the logic
+ * implementations.
  *
  * @param unlocalizedName the unlocalized name of the item
  */

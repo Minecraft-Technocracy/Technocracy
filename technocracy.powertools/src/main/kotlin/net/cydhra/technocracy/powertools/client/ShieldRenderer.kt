@@ -19,6 +19,9 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import org.lwjgl.util.vector.Vector2f
 
+/**
+ * Custom renderer for the energy shield item stack when held in hend and activated.
+ */
 @SideOnly(Side.CLIENT)
 object ShieldRenderer : TileEntityItemStackRenderer() {
 
@@ -39,25 +42,27 @@ object ShieldRenderer : TileEntityItemStackRenderer() {
             this.textureWidth = 512
             this.textureHeight = 512
 
-            plateItem = ModelRenderer(this, 0, 0).setTextureSize(10,10)
+            plateItem = ModelRenderer(this, 0, 0).setTextureSize(10, 10)
             plateItem.addBox(-8.0f, -11.0f, -1f, 12, 22, 1, 0.0f)
         }
     }
+
+    var time = Vector2f(0f, 0f)
 
     init {
         MinecraftForge.EVENT_BUS.register(this)
     }
 
-    var time = Vector2f(0f, 0f)
-
     @SubscribeEvent
-    fun update(event: TickEvent.ClientTickEvent) {
+    @Suppress("unused")
+    fun update(@Suppress("UNUSED_PARAMETER") event: TickEvent.ClientTickEvent) {
         time.x++
         time.y++
         time.y += 0.5f
     }
 
     @SubscribeEvent
+    @Suppress("unused")
     fun renderItem(event: RenderItemSideEvent) {
         //todo fix stuff not beeing rendered to fbo by rendering the held items on our own
         if (event.stack.item.unlocalizedName == "item.energy_shield") {

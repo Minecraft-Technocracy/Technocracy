@@ -130,14 +130,16 @@ class EnergyShieldItem : BaseItem("energy_shield"), IItemKeyBindEvent, TCTileEnt
     }
 
     @SubscribeEvent
-    fun onDamage(event: ItemCooldownEvent) {
+    @Suppress("unused")
+    fun onItemCooldown(event: ItemCooldownEvent) {
         if (event.item == this) {
             event.delay = 50
         }
     }
 
     @SubscribeEvent
-    fun onDamage(event: LivingAttackEvent) {
+    @Suppress("unused")
+    fun onItemCooldown(event: LivingAttackEvent) {
         val entity = event.entity
         //entity is using this shield
         val attacker = event.source.immediateSource
