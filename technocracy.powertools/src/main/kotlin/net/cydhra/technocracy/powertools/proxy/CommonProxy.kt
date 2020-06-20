@@ -44,6 +44,7 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(modularhelmet)
         itemManager.prepareItemForRegistration(armorUpgrade_IronPlating)
         itemManager.prepareItemForRegistration(armorUpgrade_DiamondPlating)
+        itemManager.prepareItemForRegistration(chestplateUpgrade_FireResistance)
     }
 
     open fun init() {

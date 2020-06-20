@@ -43,7 +43,7 @@ class ModularItem : BaseItem("modularitem"), TCTileEntityGuiProvider {
 
         wrapper.registerComponent(battery, "battery")
         wrapper.registerAttachableParameter(INSTALL_ENERGY, battery)
-        wrapper.registerComponent(ItemUpgradesComponent(3, UpgradeClass.TOOL), "upgradeable")
+        wrapper.registerComponent(ItemUpgradesComponent(3, listOf(UpgradeClass.TOOL)), "upgradeable")
         return wrapper
     }
 

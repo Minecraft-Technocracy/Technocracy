@@ -28,4 +28,8 @@ class LogicClientDelegate<T : ILogicParameters> : ILogicClient<T> {
         }
         this.logicStrategies.values.forEach { it.postProcessing(canProcess, logicParameters) }
     }
+
+    override fun hasLogicStrategy(name: String): Boolean {
+        return logicStrategies.containsKey(name)
+    }
 }

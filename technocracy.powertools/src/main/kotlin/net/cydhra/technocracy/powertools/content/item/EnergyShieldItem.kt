@@ -51,7 +51,7 @@ class EnergyShieldItem : BaseItem("energy_shield"), IItemKeyBindEvent, TCTileEnt
     override fun initCapabilities(stack: ItemStack, nbt: NBTTagCompound?): ICapabilityProvider? {
         val wrapper = ItemCapabilityWrapper(stack)
 
-        wrapper.registerComponent(ItemUpgradesComponent(3, UpgradeClass.TOOL), "upgradeable")
+        wrapper.registerComponent(ItemUpgradesComponent(3, listOf(UpgradeClass.TOOL)), "upgradeable")
 
         val energy = ItemEnergyComponent(DynamicItemEnergyCapability(0, 16000, 0))
         val energyMultiplier = ItemMultiplierComponent(UPGRADE_ENERGY_CAPACITY) {

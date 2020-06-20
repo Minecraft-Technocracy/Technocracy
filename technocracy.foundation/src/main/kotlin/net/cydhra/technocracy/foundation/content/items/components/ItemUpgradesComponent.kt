@@ -13,7 +13,7 @@ import net.minecraft.util.text.*
 import java.util.concurrent.CopyOnWriteArrayList
 
 
-class ItemUpgradesComponent(val numberOfUpgradeSlots: Int, val upgradeType: UpgradeClass) : AbstractItemComponent(), TEInventoryProvider {
+class ItemUpgradesComponent(val numberOfUpgradeSlots: Int, val upgradeType: List<UpgradeClass>) : AbstractItemComponent(), TEInventoryProvider {
 
     /**
      * A set of descriptive lines about installed upgrades
@@ -49,7 +49,7 @@ class ItemUpgradesComponent(val numberOfUpgradeSlots: Int, val upgradeType: Upgr
         if (item !is UpgradeItem<*>) return false
 
         // check whether the upgrade is a machine-type upgrade
-        if (item.upgradeClass != upgradeType) return false
+        if (!upgradeType.contains(item.upgradeClass)) return false
 
         // ask the item whether it can be installed
         if (!item.upgrades.all { upgrade -> (upgrade as ItemUpgrade).canInstallUpgrade(wrapper, this) })

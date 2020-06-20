@@ -125,7 +125,7 @@ class ModularHelmet : BaseArmorItem("modular_helmet", material = armor!!, equipm
     override fun initCapabilities(stack: ItemStack, nbt: NBTTagCompound?): ICapabilityProvider? {
         val wrapper = ItemCapabilityWrapper(stack)
 
-        wrapper.registerComponent(ItemUpgradesComponent(5, UpgradeClass.TOOL), "upgradeable")
+        wrapper.registerComponent(ItemUpgradesComponent(5, listOf(UpgradeClass.TOOL, UpgradeClass.ARMOR, UpgradeClass.HELMET)), "upgradeable")
 
         val battery = ItemOptionalAttachedComponent(ItemEnergyComponent(DynamicItemEnergyCapability(0, 0, -1, -1)))
         battery.innerComponent.needsClientSyncing = true
