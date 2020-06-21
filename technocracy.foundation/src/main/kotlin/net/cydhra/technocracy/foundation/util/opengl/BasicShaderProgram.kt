@@ -55,7 +55,9 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
     fun reloadShader(resourceManager: IResourceManager) {
         cleanUp()
         loadShader(resourceManager)
+        start()
         addUniforms()
+        stop()
     }
 
     private fun addUniforms() {

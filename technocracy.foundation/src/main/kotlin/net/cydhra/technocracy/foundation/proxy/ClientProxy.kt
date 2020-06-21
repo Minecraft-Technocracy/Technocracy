@@ -12,12 +12,15 @@ import net.cydhra.technocracy.foundation.content.blocks.pipe
 import net.cydhra.technocracy.foundation.content.blocks.tankGlassBlock
 import net.cydhra.technocracy.foundation.content.blocks.tankIOBlock
 import net.cydhra.technocracy.foundation.content.blocks.tankWallBlock
+import net.cydhra.technocracy.foundation.content.commands.ClearParticlesCommand
+import net.cydhra.technocracy.foundation.content.commands.ReloadShaderCommand
 import net.cydhra.technocracy.foundation.content.items.facadeItem
 import net.cydhra.technocracy.foundation.content.items.pipeItem
 import net.cydhra.technocracy.foundation.content.items.structureMarkerItem
 import net.cydhra.technocracy.foundation.model.fx.manager.TCParticleManager
 import net.minecraft.client.settings.KeyBinding
 import net.minecraft.util.ResourceLocation
+import net.minecraftforge.client.ClientCommandHandler
 import net.minecraftforge.client.model.ModelLoaderRegistry
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.animation.ITimeValue
@@ -79,6 +82,9 @@ class ClientProxy : CommonProxy() {
         tileEntityManager.onClientInitialize()
 
         ClientRegistry.registerKeyBinding(itemUpgradeGui)
+
+        ClientCommandHandler.instance.registerCommand(ClearParticlesCommand())
+        ClientCommandHandler.instance.registerCommand(ReloadShaderCommand())
     }
 
     override fun postInit() {
