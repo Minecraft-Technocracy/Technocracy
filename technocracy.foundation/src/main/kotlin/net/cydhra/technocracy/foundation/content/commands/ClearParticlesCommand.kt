@@ -4,9 +4,10 @@ import net.cydhra.technocracy.foundation.model.fx.manager.TCParticleManager
 import net.minecraft.command.CommandBase
 import net.minecraft.command.ICommandSender
 import net.minecraft.server.MinecraftServer
+import net.minecraftforge.client.IClientCommand
 
 
-class ClearParticlesCommand : CommandBase() {
+class ClearParticlesCommand : CommandBase(), IClientCommand {
     override fun getName(): String {
         return "clearParticles"
     }
@@ -17,5 +18,9 @@ class ClearParticlesCommand : CommandBase() {
 
     override fun getUsage(sender: ICommandSender): String {
         return "$name"
+    }
+
+    override fun allowUsageWithoutPrefix(sender: ICommandSender?, message: String?): Boolean {
+        return false
     }
 }

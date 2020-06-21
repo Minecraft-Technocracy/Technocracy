@@ -1,15 +1,13 @@
 package net.cydhra.technocracy.foundation
 
 import net.cydhra.technocracy.foundation.conduits.ConduitNetwork
-import net.cydhra.technocracy.foundation.content.commands.ClearParticlesCommand
-import net.cydhra.technocracy.foundation.content.commands.ClearTemplateCommand
-import net.cydhra.technocracy.foundation.content.commands.GenerateTemplateCommand
-import net.cydhra.technocracy.foundation.content.commands.PasteTemplateCommand
+import net.cydhra.technocracy.foundation.content.commands.*
 import net.cydhra.technocracy.foundation.content.multiblock.MultiBlockPhysics
 import net.cydhra.technocracy.foundation.data.config.PhysicSystem
 import net.cydhra.technocracy.foundation.data.world.api.DataManager
 import net.cydhra.technocracy.foundation.proxy.CommonProxy
 import net.minecraft.world.WorldServer
+import net.minecraftforge.client.ClientCommandHandler
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.config.Configuration
 import net.minecraftforge.fluids.FluidRegistry
@@ -128,7 +126,6 @@ object TCFoundation {
             start.registerServerCommand(GenerateTemplateCommand())
             start.registerServerCommand(ClearTemplateCommand())
             start.registerServerCommand(PasteTemplateCommand())
-            start.registerServerCommand(ClearParticlesCommand())
         }
     }
 
