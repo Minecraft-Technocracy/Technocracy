@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "srs",
+    "fuf",
+    "sps"
+  ],
+  "key": {
+    "s": {
+      "item": "technocracy.foundation:polystyrene"
+    },
+    "r": {
+      "type": "forge:ore_dict",
+      "ore": "rodIron"
+    },
+    "f": {
+      "item": "technocracy.foundation:fan"
+    },
+    "u": {
+      "item": "technocracy.foundation:upgrade_frame"
+    },
+    "p": {
+      "item": "technocracy.foundation:pump"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:machine_speed_up_4",
+    "count": 1
+  }
+}
