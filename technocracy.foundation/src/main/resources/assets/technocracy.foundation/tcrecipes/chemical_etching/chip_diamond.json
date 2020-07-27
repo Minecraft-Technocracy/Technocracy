@@ -1,0 +1,20 @@
+{
+  "input": [
+    {
+      "item": "technocracy.foundation:circuit_board"
+    },
+    {
+      "type": "forge:ore_dict",
+      "ore": "ingotSuperconductor"
+    },
+    {
+      "type": "forge:ore_dict",
+      "ore": "gemDiamond"
+    }
+  ],
+  "output": {
+    "item": "technocracy.foundation:chip_diamond",
+    "count": 1
+  },
+  "cost": 250
+}

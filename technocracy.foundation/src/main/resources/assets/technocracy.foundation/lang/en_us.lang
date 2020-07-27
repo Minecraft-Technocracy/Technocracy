@@ -49,6 +49,7 @@ item.pump.name=Pump
 item.fan.name=Fan
 item.spandex.name=Spandex
 item.cfrp.name=Carbon Fibre Reinforced Polymer
+item.chip_diamond.name=Carbon Crystal Microchip
 item.upgrade_slot.name=Upgrade Slot
 item.upgrade_frame.name=Upgrade Frame
 

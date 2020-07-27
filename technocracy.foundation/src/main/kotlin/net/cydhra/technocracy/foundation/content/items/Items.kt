@@ -59,6 +59,7 @@ val pumpItem = BaseItem("pump")
 val fanItem = BaseItem("fan")
 val spandexItem = BaseItem("spandex")
 val cfrpItem = BaseItem("cfrp")
+val chipDiamondItem = BaseItem("chip_diamond")
 
 val pipeItem = PipeItem()
 val facadeItem = FacadeItem()
