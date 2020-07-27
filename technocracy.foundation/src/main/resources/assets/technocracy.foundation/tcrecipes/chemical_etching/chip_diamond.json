@@ -5,7 +5,7 @@
     },
     {
       "type": "forge:ore_dict",
-      "ore": "ingotSuperconductor"
+      "ore": "ingotInvar"
     },
     {
       "type": "forge:ore_dict",

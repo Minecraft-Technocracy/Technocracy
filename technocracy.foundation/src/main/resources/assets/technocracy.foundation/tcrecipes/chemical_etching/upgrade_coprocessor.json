@@ -1,0 +1,19 @@
+{
+  "input": [
+    {
+      "item": "technocracy.foundation:upgrade_frame"
+    },
+    {
+      "type": "forge:ore_dict",
+      "ore": "ingotSuperconductor"
+    },
+    {
+      "item": "technocracy.foundation:chip_diamond"
+    }
+  ],
+  "output": {
+    "item": "technocracy.foundation:machine_speed_up_3",
+    "count": 1
+  },
+  "cost": 300
+}
