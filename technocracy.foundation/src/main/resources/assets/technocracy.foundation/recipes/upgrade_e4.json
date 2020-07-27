@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ibi",
+    "bsb",
+    "ibi"
+  ],
+  "key": {
+    "i": {
+      "item": "technocracy.foundation:cfrp"
+    },
+    "b": {
+      "item": "technocracy.foundation:biphenyl"
+    },
+    "s": {
+      "item": "technocracy.foundation:upgrade_frame"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:machine_energy_up_4",
+    "count": 1
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "mmm",
+    "bsb",
+    "mmm"
+  ],
+  "key": {
+    "m": {
+      "item": "technocracy.foundation:membrane"
+    },
+    "b": {
+      "item": "technocracy.foundation:biphenyl"
+    },
+    "s": {
+      "item": "technocracy.foundation:upgrade_frame"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:machine_energy_up_3",
+    "count": 1
+  }
+}
