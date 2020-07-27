@@ -6,14 +6,14 @@ import net.cydhra.technocracy.foundation.client.gui.TCTab
 import net.cydhra.technocracy.foundation.client.gui.components.label.WrappingLabel
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
 import net.cydhra.technocracy.foundation.content.items.components.ItemUpgradesComponent
-import net.cydhra.technocracy.foundation.content.items.wrenchItem
+import net.cydhra.technocracy.foundation.content.items.upgradeFrameItem
 import net.minecraft.entity.player.EntityPlayer
 
 //todo remove and make one class with MachineUpgradesTab
 class ItemUpgradesTab(parent: TCGui,
                       private val upgrades: ItemUpgradesComponent,
                       private val player: EntityPlayer?) :
-        TCTab("Upgrades", parent, icon = TCIcon(wrenchItem)) {
+        TCTab("Upgrades", parent, icon = TCIcon(upgradeFrameItem)) {
 
     companion object {
         const val PADDING_LEFT = 8
