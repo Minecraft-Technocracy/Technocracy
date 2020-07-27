@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ibi",
+    "psp",
+    "ibi"
+  ],
+  "key": {
+    "p": {
+      "item": "minecraft:piston"
+    },
+    "i": {
+      "type": "forge:ore_dict",
+      "ore": "sheetInvar"
+    },
+    "b": {
+      "item": "minecraft:bucket"
+    },
+    "s": {
+      "item": "technocracy.foundation:upgrade_slot"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:machine_add_energy_up_1",
+    "count": 1
+  }
+}

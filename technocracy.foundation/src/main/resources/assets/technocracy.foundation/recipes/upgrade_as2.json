@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "nmn",
+    "msm",
+    "ccc"
+  ],
+  "key": {
+    "c": {
+      "item": "technocracy.foundation:coil"
+    },
+    "m": {
+      "type": "forge:ore_dict",
+      "ore": "ingotMPCM"
+    },
+    "n": {
+      "item": "technocracy.foundation:nanotubes"
+    },
+    "s": {
+      "item": "technocracy.foundation:upgrade_frame"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:machine_add_speed_up_2",
+    "count": 1
+  }
+}
