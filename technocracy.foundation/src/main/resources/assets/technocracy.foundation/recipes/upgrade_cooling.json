@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "mmm",
+    "csc",
+    "bpb"
+  ],
+  "key": {
+    "b": {
+      "item": "minecraft:bucket"
+    },
+    "m": {
+      "type": "forge:ore_dict",
+      "ore": "ingotMPCM"
+    },
+    "c": {
+      "item": "technocracy.foundation:nanotubes"
+    },
+    "p": {
+      "item": "technocracy.foundation:chip_diamond"
+    },
+    "s": {
+      "item": "technocracy.foundation:upgrade_frame"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:machine_cooler_up",
+    "count": 1
+  }
+}

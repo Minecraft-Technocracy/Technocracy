@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "pmp",
+    "bsb",
+    "mdm"
+  ],
+  "key": {
+    "b": {
+      "item": "minecraft:bucket"
+    },
+    "m": {
+      "item": "technocracy.foundation:servo"
+    },
+    "d": {
+      "item": "technocracy.foundation:chip_diamond"
+    },
+    "p": {
+      "item": "technocracy.foundation:cfrp"
+    },
+    "s": {
+      "item": "technocracy.foundation:upgrade_frame"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:machine_lubricant_up",
+    "count": 1
+  }
+}
