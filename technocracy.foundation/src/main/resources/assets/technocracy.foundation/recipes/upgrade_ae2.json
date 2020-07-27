@@ -7,8 +7,7 @@
   ],
   "key": {
     "i": {
-      "type": "forge:ore_dict",
-      "ore": "ingotIron"
+      "item": "minecraft:obsidian"
     },
     "m": {
       "item": "technocracy.foundation:membrane"
