@@ -84,7 +84,7 @@ allprojects {
         }
         maven {
             name "waila Repository"
-            url "http://tehnut.info/maven"
+            url "http://maven.tehnut.info"
         }
         maven { // CoFH
             name 'CoFH maven'
