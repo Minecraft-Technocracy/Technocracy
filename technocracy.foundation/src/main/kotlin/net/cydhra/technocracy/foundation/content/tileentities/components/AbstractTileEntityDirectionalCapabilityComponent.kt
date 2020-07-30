@@ -20,8 +20,10 @@ abstract class AbstractTileEntityDirectionalCapabilityComponent : AbstractTileEn
     override fun serializeNBT(): NBTTagCompound {
         val tag = serialize()
 
-        append(tag) {
-            "facings" to tagList(*facing.toTypedArray())
+        synchronized(facing) {
+            append(tag) {
+                "facings" to tagList(*facing.toSet().toTypedArray())
+            }
         }
 
         return tag
@@ -29,11 +31,14 @@ abstract class AbstractTileEntityDirectionalCapabilityComponent : AbstractTileEn
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
         deserialize(nbt)
-        if (nbt.hasKey("facings")) {
-            facing.clear()
-            val list = nbt.getTagList("facings", 3)
-            for (i in list.iterator()) {
-                facing.add(EnumFacing.values()[(i as NBTTagInt).int])
+
+        synchronized(facing) {
+            if (nbt.hasKey("facings")) {
+                facing.clear()
+                val list = nbt.getTagList("facings", 3)
+                for (i in list.iterator()) {
+                    facing.add(EnumFacing.values()[(i as NBTTagInt).int])
+                }
             }
         }
     }
