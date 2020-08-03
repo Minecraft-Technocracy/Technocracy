@@ -16,6 +16,7 @@ import net.cydhra.technocracy.foundation.content.items.components.ItemMultiplier
 import net.cydhra.technocracy.foundation.content.items.components.ItemUpgradesComponent
 import net.cydhra.technocracy.foundation.model.items.api.BaseItem
 import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWrapper
+import net.cydhra.technocracy.foundation.model.items.capability.getComponent
 import net.cydhra.technocracy.foundation.model.items.util.IItemKeyBindEvent
 import net.cydhra.technocracy.foundation.proxy.ClientProxy
 import net.cydhra.technocracy.powertools.content.item.upgrades.UPGRADE_ENERGY_CAPACITY
@@ -171,14 +172,6 @@ class EnergyShieldItem : BaseItem("energy_shield"), IItemKeyBindEvent, TCTileEnt
 
     override fun getItemUseAction(stack: ItemStack?): EnumAction? {
         return EnumAction.BLOCK
-    }
-
-    inline fun <reified T : IComponent> getComponent(stack: ItemStack, name: String, side: EnumFacing? = null): T? {
-        val wrapped = stack.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, side)
-        if (wrapped != null) {
-            return wrapped.getComponents().find { it.first == name }?.second as T
-        }
-        return null
     }
 
     override fun getKeyBind(): KeyBinding {

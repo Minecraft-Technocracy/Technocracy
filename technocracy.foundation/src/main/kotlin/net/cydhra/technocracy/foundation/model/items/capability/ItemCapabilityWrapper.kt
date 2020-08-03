@@ -10,6 +10,7 @@ import net.cydhra.technocracy.foundation.content.items.components.AbstractItemCa
 import net.cydhra.technocracy.foundation.content.items.components.AbstractItemComponent
 import net.cydhra.technocracy.foundation.content.items.components.ItemMultiplierComponent
 import net.cydhra.technocracy.foundation.content.items.components.ItemOptionalAttachedComponent
+import net.minecraft.client.Minecraft
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
@@ -194,4 +195,16 @@ open class ItemCapabilityWrapper(var stack: ItemStack) : ICapabilitySerializable
     fun <T : AbstractItemComponent> getAttachableParameter(parameter: UpgradeParameter): ItemOptionalAttachedComponent<T>? {
         return attachableParameters[parameter] as ItemOptionalAttachedComponent<T>?
     }
+}
+
+inline fun <reified T : IComponent> getComponent(stack: ItemStack, name: String, side: EnumFacing? = null): T? {
+    Minecraft.getMinecraft().mcProfiler.startSection("TC_Item_Capability")
+    val wrapped = stack.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, side)
+    if (wrapped != null) {
+        val t = wrapped.getComponents().find { it.first == name }?.second as T
+        Minecraft.getMinecraft().mcProfiler.endSection()
+        return t
+    }
+    Minecraft.getMinecraft().mcProfiler.endSection()
+    return null
 }

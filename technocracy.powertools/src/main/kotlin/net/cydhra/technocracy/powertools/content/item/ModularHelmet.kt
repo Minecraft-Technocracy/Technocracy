@@ -2,9 +2,8 @@ package net.cydhra.technocracy.powertools.content.item
 
 import com.google.common.collect.Multimap
 import net.cydhra.technocracy.foundation.TCFoundation
-import net.cydhra.technocracy.foundation.api.ecs.IComponent
-import net.cydhra.technocracy.foundation.api.ecs.logic.ILogicClient
 import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackLogicParameters
+import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackTickType
 import net.cydhra.technocracy.foundation.api.tileentities.TCTileEntityGuiProvider
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeClass
 import net.cydhra.technocracy.foundation.client.gui.SimpleGui
@@ -20,6 +19,7 @@ import net.cydhra.technocracy.foundation.content.items.components.ItemUpgradesCo
 import net.cydhra.technocracy.foundation.content.items.upgrades.EnergyUpgrade
 import net.cydhra.technocracy.foundation.model.items.api.BaseArmorItem
 import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWrapper
+import net.cydhra.technocracy.foundation.model.items.capability.getComponent
 import net.cydhra.technocracy.foundation.model.items.util.IItemKeyBindEvent
 import net.cydhra.technocracy.foundation.proxy.ClientProxy
 import net.cydhra.technocracy.powertools.content.item.upgrades.UPGRADE_ARMOR_ARMOR
@@ -34,7 +34,6 @@ import net.minecraft.inventory.EntityEquipmentSlot
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.DamageSource
-import net.minecraft.util.EnumFacing
 import net.minecraft.world.World
 import net.minecraftforge.common.ISpecialArmor
 import net.minecraftforge.common.capabilities.ICapabilityProvider
@@ -114,14 +113,6 @@ class ModularHelmet : BaseArmorItem("modular_helmet", material = armor!!, equipm
         return true
     }
 
-    inline fun <reified T : IComponent> getComponent(stack: ItemStack, name: String, side: EnumFacing? = null): T? {
-        val wrapped = stack.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, side)
-        if (wrapped != null) {
-            return wrapped.getComponents().find { it.first == name }?.second as T
-        }
-        return null
-    }
-
     override fun initCapabilities(stack: ItemStack, nbt: NBTTagCompound?): ICapabilityProvider? {
         val wrapper = ItemCapabilityWrapper(stack)
 
@@ -151,7 +142,7 @@ class ModularHelmet : BaseArmorItem("modular_helmet", material = armor!!, equipm
 
     override fun onArmorTick(world: World, player: EntityPlayer, itemStack: ItemStack) {
         super.onArmorTick(world, player, itemStack)
-        (itemStack.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, null) as? ItemCapabilityWrapper)?.tick(ItemStackLogicParameters(player))
+        (itemStack.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, null) as? ItemCapabilityWrapper)?.tick(ItemStackLogicParameters(player, ItemStackTickType.ARMOR_TICK))
     }
 
     override fun getProperties(player: EntityLivingBase?, armor: ItemStack, source: DamageSource?, damage: Double, slot: Int): ISpecialArmor.ArmorProperties {
@@ -208,7 +199,7 @@ class ModularHelmet : BaseArmorItem("modular_helmet", material = armor!!, equipm
 
     companion object {
         val ARMOR_MODIFIERS = arrayOf(UUID.fromString("845DB27C-C624-495F-8C9F-6020A9A58B6B"), UUID.fromString("D8499B04-0E66-4726-AB29-64469D734E0D"), UUID.fromString("9F3D476D-C118-4544-8365-64846904B48E"), UUID.fromString("2AD3F246-FEE1-4E67-B886-69FD380BB150"))
-        val armor = EnumHelper.addArmorMaterial("PT", "test", 0, /*intArrayOf(3, 6, 8, 3)*/intArrayOf(0, 0, 0, 0), 10, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 0f);
+        val armor = EnumHelper.addArmorMaterial("PT", "test", 0, /*intArrayOf(3, 6, 8, 3)*/intArrayOf(0, 0, 0, 0), 10, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 0f)
     }
 
 }
