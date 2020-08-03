@@ -195,3 +195,11 @@ open class ItemCapabilityWrapper(var stack: ItemStack) : ICapabilitySerializable
         return attachableParameters[parameter] as ItemOptionalAttachedComponent<T>?
     }
 }
+
+inline fun <reified T : IComponent> getComponent(stack: ItemStack, name: String, side: EnumFacing? = null): T? {
+    val wrapped = stack.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, side)
+    if (wrapped != null) {
+        return wrapped.getComponents().find { it.first == name }?.second as T
+    }
+    return null
+}

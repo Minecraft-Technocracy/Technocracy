@@ -8,6 +8,7 @@ import net.cydhra.technocracy.foundation.model.tileentities.manager.TileEntityMa
 import net.cydhra.technocracy.powertools.TCPowertools
 import net.cydhra.technocracy.powertools.client.powertoolsCreativeTab
 import net.cydhra.technocracy.powertools.content.item.*
+import net.cydhra.technocracy.powertools.content.listener.ItemLogicEventHandler
 import net.minecraftforge.common.MinecraftForge
 
 open class CommonProxy {
@@ -45,6 +46,8 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(armorUpgrade_IronPlating)
         itemManager.prepareItemForRegistration(armorUpgrade_DiamondPlating)
         itemManager.prepareItemForRegistration(chestplateUpgrade_FireResistance)
+
+        ItemLogicEventHandler
     }
 
     open fun init() {
