@@ -16,13 +16,13 @@ data class ItemStackLogicParameters(val player: EntityPlayer, val data: ItemStac
 }
 
 enum class ItemStackTickType {
-    ARMOR_TICK, ENTITY_DAMAGE, ENTITY_ATTACK
+    ARMOR_TICK, ENTITY_DAMAGE, ENTITY_ATTACK, UNEQUIP
 }
 
 abstract class ItemStackTickData(val type: ItemStackTickType)
 
 class EmptyStackData(type: ItemStackTickType) : ItemStackTickData(type)
 
-class EntityDamageData(val event: LivingDamageEvent) : ItemStackTickData(ItemStackTickType.ENTITY_DAMAGE)
-class EntityAttackData(val event: LivingAttackEvent) : ItemStackTickData(ItemStackTickType.ENTITY_ATTACK)
-
+class EntityDamageData(val event: LivingDamageEvent, val armor: Boolean) : ItemStackTickData(ItemStackTickType.ENTITY_DAMAGE)
+class EntityAttackData(val event: LivingAttackEvent, val armor: Boolean) : ItemStackTickData(ItemStackTickType.ENTITY_ATTACK)
+class UnequipData(val armor: Boolean) : ItemStackTickData(ItemStackTickType.UNEQUIP)

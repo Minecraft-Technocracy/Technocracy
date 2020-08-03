@@ -1,12 +1,17 @@
 package net.cydhra.technocracy.powertools.content.item.upgrades
 
+import net.cydhra.technocracy.foundation.api.ecs.logic.ILogic
+import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackLogicParameters
 import net.cydhra.technocracy.foundation.api.upgrades.ItemUpgrade
 import net.cydhra.technocracy.foundation.api.upgrades.MachineUpgrade
 import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_GENERIC
+import net.cydhra.technocracy.foundation.api.upgrades.UpgradeParameter
 import net.cydhra.technocracy.foundation.content.items.components.ItemUpgradesComponent
 import net.cydhra.technocracy.foundation.model.items.api.upgrades.ItemMultiplierUpgrade
 import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWrapper
 import net.cydhra.technocracy.powertools.content.item.logic.FireExtinguishLogic
+import net.cydhra.technocracy.powertools.content.item.logic.NightVisionLogic
+import net.cydhra.technocracy.powertools.content.item.logic.WaterElectrolyzerLogic
 import net.minecraft.util.text.ITextComponent
 import net.minecraft.util.text.Style
 import net.minecraft.util.text.TextComponentTranslation
@@ -51,11 +56,9 @@ class AttackSpeedUpgrade(multiplier: Double) : ItemMultiplierUpgrade(multiplier,
  */
 class AttackDamageUpgrade(multiplier: Double) : ItemMultiplierUpgrade(multiplier, UPGRADE_ATTACK_DAMAGE)
 
-class FireExtinguishUpgrade : ItemUpgrade() {
-    override val upgradeParameter = UPGRADE_GENERIC
-
+class SimpleItemUpgrade(override val upgradeParameter: UpgradeParameter, val name: String, val toolTip: ITextComponent, val generator: (upgradable: ItemCapabilityWrapper, upgrades: ItemUpgradesComponent) -> ILogic<ItemStackLogicParameters>) : ItemUpgrade() {
     override fun canInstallUpgrade(upgradable: ItemCapabilityWrapper, upgrades: ItemUpgradesComponent): Boolean {
-        return !upgradable.hasLogicStrategy("FireExtinguish")
+        return !upgradable.hasLogicStrategy(name)
     }
 
     override fun onInstallUpgrade(upgradable: ItemCapabilityWrapper, upgrades: ItemUpgradesComponent) {
@@ -63,17 +66,30 @@ class FireExtinguishUpgrade : ItemUpgrade() {
     }
 
     override fun onUninstallUpgrade(upgradable: ItemCapabilityWrapper, upgrades: ItemUpgradesComponent) {
-        upgradable.removeLogicStrategy("FireExtinguish")
+        upgradable.removeLogicStrategy(name)
     }
 
     override fun onUpgradeLoad(upgradable: ItemCapabilityWrapper, upgrades: ItemUpgradesComponent) {
-        if (!upgradable.hasLogicStrategy("FireExtinguish"))
-            upgradable.addLogicStrategy(FireExtinguishLogic(), "FireExtinguish")
+        if (!upgradable.hasLogicStrategy(name))
+            upgradable.addLogicStrategy(generator(upgradable, upgrades), name)
     }
 
     override fun getUpgradeDescription(): Optional<ITextComponent> {
-        return Optional.of(
-                TextComponentTranslation("tooltips.upgrades.hint.antifire")
-                        .setStyle(Style().setColor(TextFormatting.GREEN)))
+        return Optional.of(toolTip)
     }
+}
+
+val fireExtinguishUpgrade = SimpleItemUpgrade(UPGRADE_GENERIC, "FireExtinguish", TextComponentTranslation("tooltips.upgrades.hint.antifire")
+        .setStyle(Style().setColor(TextFormatting.GREEN))) { _, _ ->
+    FireExtinguishLogic()
+}
+
+val waterElectrolyzerUpgrade = SimpleItemUpgrade(UPGRADE_GENERIC, "WaterElectrolyzer", TextComponentTranslation("tooltips.upgrades.hint.waterelectrolyzer")
+        .setStyle(Style().setColor(TextFormatting.GREEN))) { _, _ ->
+    WaterElectrolyzerLogic()
+}
+
+val nightVisionUpgrade = SimpleItemUpgrade(UPGRADE_GENERIC, "NightVision", TextComponentTranslation("tooltips.upgrades.hint.nightvision")
+        .setStyle(Style().setColor(TextFormatting.GREEN))) { _, _ ->
+    NightVisionLogic()
 }
