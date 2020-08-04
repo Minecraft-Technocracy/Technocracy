@@ -4,7 +4,6 @@ import net.cydhra.technocracy.foundation.api.ecs.logic.*
 import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWrapper
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.EntityEquipmentSlot
-import net.minecraft.item.ItemStack
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.entity.living.LivingAttackEvent
 import net.minecraftforge.event.entity.living.LivingDamageEvent
