@@ -8,7 +8,7 @@ import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackTickType
 /**
  * Logic for the water affinity upgrade
  */
-class AquaAffinityUpgradeLogic(private val level: Int = 1) : ILogic<ItemStackLogicParameters> {
+class AquaAffinityUpgradeLogic : ILogic<ItemStackLogicParameters> {
 
     override fun preProcessing(logicParameters: ItemStackLogicParameters): Boolean {
         return true
@@ -22,7 +22,7 @@ class AquaAffinityUpgradeLogic(private val level: Int = 1) : ILogic<ItemStackLog
                 ?: throw AssertionError("received block break data but got another event")
 
         if (eventData.event.entityPlayer.isInWater && !eventData.event.entityPlayer.onGround) {
-            eventData.event.newSpeed = eventData.event.newSpeed + 5 * level
+            eventData.event.newSpeed = eventData.event.newSpeed + 0.2f
         }
     }
 
