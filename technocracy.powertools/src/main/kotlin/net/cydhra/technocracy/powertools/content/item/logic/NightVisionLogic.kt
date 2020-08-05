@@ -7,6 +7,7 @@ import net.cydhra.technocracy.foundation.api.ecs.logic.EquipmentData
 import net.cydhra.technocracy.foundation.content.items.components.ItemEnergyComponent
 import net.minecraft.init.MobEffects
 import net.minecraft.potion.PotionEffect
+import net.minecraftforge.fml.relauncher.Side
 
 
 class NightVisionLogic : ILogic<ItemStackLogicParameters> {
@@ -18,7 +19,10 @@ class NightVisionLogic : ILogic<ItemStackLogicParameters> {
     }
 
     override fun processing(logicParameters: ItemStackLogicParameters) {
+
         if (logicParameters.type == ItemStackTickType.ARMOR_TICK) {
+            val serverside = logicParameters.side == Side.SERVER
+
             val e = logicParameters.wrapper.getEnergyComponent<ItemEnergyComponent>() ?: return
 
             val energy = e.energyStorage
@@ -47,7 +51,8 @@ class NightVisionLogic : ILogic<ItemStackLogicParameters> {
                     player.removePotionEffect(MobEffects.NIGHT_VISION)
                     player.removeActivePotionEffect(MobEffects.NIGHT_VISION)
                 }
-                energy.consumeEnergy(energyConsumtion)
+                if (serverside)
+                    energy.consumeEnergy(energyConsumtion)
                 player.addPotionEffect(PotionEffect(MobEffects.NIGHT_VISION, 420, -10, true, false))
             }
 

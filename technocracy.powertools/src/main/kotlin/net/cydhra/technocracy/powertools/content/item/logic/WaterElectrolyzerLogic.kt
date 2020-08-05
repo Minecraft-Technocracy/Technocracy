@@ -6,6 +6,7 @@ import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackTickType
 import net.cydhra.technocracy.foundation.content.items.components.ItemEnergyComponent
 import net.minecraft.block.material.Material
 import net.minecraft.potion.Potion
+import net.minecraftforge.fml.relauncher.Side
 
 
 class WaterElectrolyzerLogic : ILogic<ItemStackLogicParameters> {
@@ -20,13 +21,14 @@ class WaterElectrolyzerLogic : ILogic<ItemStackLogicParameters> {
         if (logicParameters.type == ItemStackTickType.ARMOR_TICK) {
 
             val energy = logicParameters.wrapper.getEnergyComponent<ItemEnergyComponent>()?.energyStorage ?: return
-            if(energy.currentEnergy < energyConsumtion) return
+            if (energy.currentEnergy < energyConsumtion) return
 
             val player = logicParameters.player
             if (player.isInsideOfMaterial(Material.WATER)) {
                 if (player.air <= 280) {
                     player.air = 300
-                    energy.consumeEnergy(energyConsumtion)
+                    if (logicParameters.side == Side.SERVER)
+                        energy.consumeEnergy(energyConsumtion)
                 }
             }
             //todo energy cost?
