@@ -11,6 +11,13 @@ item.battery_capacity_upgrade.name=Small Capacitor Upgrade
 item.armor_upgrade_steel_plating.name=Steel Plating Upgrade
 item.armor_upgrade_diamond_plating.name=Diamond Plating Upgrade
 
+item.chestplate_upgrade_fire_resistance.name=Fire Extinguisher
+item.helmet_upgrade_water_breathing.name=Portable Oxygen Generator
+item.helmet_upgrade_night_vision.name=Night Vision Goggles
+item.helmet_upgrade_aqua_affinity.name=Aquatic Accelerators
+item.helmet_upgrade_feather_fall.name=Impact Dampeners
+item.chestplate_upgrade_jetpack.name=Jetpack
+
 tooltips.upgrades.hint.energy=Energy Capacity
 
 tooltips.upgrades.parameter.energy.capacity=Energy Capacity
