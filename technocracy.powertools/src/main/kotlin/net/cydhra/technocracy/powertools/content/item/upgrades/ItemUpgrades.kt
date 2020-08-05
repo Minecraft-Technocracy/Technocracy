@@ -10,9 +10,14 @@ import net.cydhra.technocracy.foundation.content.items.components.ItemUpgradesCo
 import net.cydhra.technocracy.foundation.model.items.api.upgrades.ItemMultiplierUpgrade
 import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWrapper
 import net.cydhra.technocracy.powertools.content.item.logic.*
+import net.cydhra.technocracy.powertools.content.item.logic.FireExtinguishLogic
+import net.cydhra.technocracy.powertools.content.item.logic.JetpackLogic
+import net.cydhra.technocracy.powertools.content.item.logic.NightVisionLogic
+import net.cydhra.technocracy.powertools.content.item.logic.WaterElectrolyzerLogic
 import net.minecraft.util.text.ITextComponent
 import net.minecraft.util.text.Style
 import net.minecraft.util.text.TextComponentTranslation
+import net.minecraft.util.text.TextFormatting
 import net.minecraft.util.text.TextFormatting.GREEN
 import java.util.*
 
@@ -176,3 +181,8 @@ val featherFallUpgrade = StackableItemUpgrade(
         "FeatherFall",
         TextComponentTranslation("tooltips.upgrades.hint.featherfall").setStyle(Style().setColor(GREEN))
 ) { _, _, multiplier -> NoFallLogic(multiplier) }
+
+val jetPackUpgrade = SimpleItemUpgrade(UPGRADE_GENERIC, "JetPack", TextComponentTranslation("tooltips.upgrades.hint.jetpack")
+        .setStyle(Style().setColor(TextFormatting.GREEN))) { _, _ ->
+    JetpackLogic()
+}

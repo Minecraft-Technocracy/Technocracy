@@ -213,6 +213,10 @@ open class ItemCapabilityWrapper(val stack: ItemStack, private val delegator: IL
     }
 }
 
+fun getCapabilityWrapper(stack: ItemStack, side: EnumFacing? = null): ItemCapabilityWrapper? {
+    return stack.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, side) as? ItemCapabilityWrapper
+}
+
 inline fun <reified T : IComponent> getComponent(stack: ItemStack, name: String, side: EnumFacing? = null): T? {
     Minecraft.getMinecraft().mcProfiler.startSection("TC_Item_Capability")
     val wrapped = stack.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, side)

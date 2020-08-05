@@ -5,6 +5,8 @@ import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackLogicParameters
 import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackTickType
 import net.cydhra.technocracy.foundation.api.ecs.logic.EquipmentData
 import net.cydhra.technocracy.foundation.content.items.components.ItemEnergyComponent
+import net.cydhra.technocracy.foundation.model.items.capability.getCapabilityWrapper
+import net.cydhra.technocracy.powertools.content.item.upgrades.jetPackUpgrade
 import net.minecraft.init.MobEffects
 import net.minecraft.potion.PotionEffect
 import net.minecraftforge.fml.relauncher.Side
@@ -65,7 +67,10 @@ class NightVisionLogic : ILogic<ItemStackLogicParameters> {
 
             //remove if unequip
             if (data.state == EquipmentData.EquipState.UNEQUIP) {
-                if (data.to.isEmpty || data.from.item != data.to.item) {
+                val wrapper = getCapabilityWrapper(data.to) ?: return
+                val hasNightVision = wrapper.hasLogicStrategy(jetPackUpgrade.name)
+
+                if (!hasNightVision) {
                     val currentEffect = player.getActivePotionEffect(MobEffects.NIGHT_VISION) ?: return
                     //remove only if it is our effect
                     if (currentEffect.amplifier == -10) {
