@@ -16,3 +16,8 @@ tooltips.upgrades.hint.energy=Energy Capacity
 tooltips.upgrades.parameter.energy.capacity=Energy Capacity
 tooltips.upgrades.parameter.armor.armor=Armor
 tooltips.upgrades.parameter.armor.toughness=Toughness
+
+tooltips.upgrades.hint.antifire=Extinguishes You when you're burning. Do not stand in lava though.
+tooltips.upgrades.hint.waterelectrolyzer=Generates Oxygen from surrounding water.
+tooltips.upgrades.hint.nightvision=Grants night vision using a tiny bit of energy.
+tooltips.upgrades.hint.xpharvest=Filter broken blocks with quantum technology to increase the amount of XP Orbs dropped.
