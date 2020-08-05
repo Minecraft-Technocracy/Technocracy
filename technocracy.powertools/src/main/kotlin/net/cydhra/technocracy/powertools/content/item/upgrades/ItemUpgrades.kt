@@ -56,7 +56,7 @@ class AttackSpeedUpgrade(multiplier: Double) : ItemMultiplierUpgrade(multiplier,
  */
 class AttackDamageUpgrade(multiplier: Double) : ItemMultiplierUpgrade(multiplier, UPGRADE_ATTACK_DAMAGE)
 
-class SimpleItemUpgrade(override val upgradeParameter: UpgradeParameter, val name: String, val toolTip: ITextComponent, val generator: (upgradable: ItemCapabilityWrapper, upgrades: ItemUpgradesComponent) -> ILogic<ItemStackLogicParameters>) : ItemUpgrade() {
+open class SimpleItemUpgrade(override val upgradeParameter: UpgradeParameter, val name: String, val toolTip: ITextComponent, val generator: (ItemCapabilityWrapper, ItemUpgradesComponent) -> ILogic<ItemStackLogicParameters>) : ItemUpgrade() {
     override fun canInstallUpgrade(upgradable: ItemCapabilityWrapper, upgrades: ItemUpgradesComponent): Boolean {
         return !upgradable.hasLogicStrategy(name)
     }

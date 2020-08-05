@@ -3,6 +3,7 @@ package net.cydhra.technocracy.foundation.api.ecs.logic
 import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWrapper
 import net.cydhra.technocracy.foundation.util.getSide
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.item.ItemStack
 import net.minecraftforge.event.entity.living.LivingAttackEvent
 import net.minecraftforge.event.entity.living.LivingDamageEvent
 import net.minecraftforge.fml.relauncher.Side
@@ -31,6 +32,6 @@ class EmptyStackData(type: ItemStackTickType) : ItemStackTickData(type)
 
 class EntityDamageData(val event: LivingDamageEvent, val armor: Boolean) : ItemStackTickData(ItemStackTickType.ENTITY_DAMAGE)
 class EntityAttackData(val event: LivingAttackEvent, val armor: Boolean) : ItemStackTickData(ItemStackTickType.ENTITY_ATTACK)
-class EquipmentData(val armor: Boolean, val state: EquipState) : ItemStackTickData(ItemStackTickType.EQUIP_STATE_CHANGE) {
+class EquipmentData(val from: ItemStack, val to: ItemStack, val armor: Boolean, val state: EquipState) : ItemStackTickData(ItemStackTickType.EQUIP_STATE_CHANGE) {
     enum class EquipState { EQUIP, UNEQUIP }
 }

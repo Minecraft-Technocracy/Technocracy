@@ -8,6 +8,7 @@ import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.entity.living.LivingAttackEvent
 import net.minecraftforge.event.entity.living.LivingDamageEvent
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent
+import net.minecraftforge.event.entity.player.PlayerEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object ItemLogicEventHandler {
@@ -22,10 +23,8 @@ object ItemLogicEventHandler {
         val first = (event.from.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, null) as? ItemCapabilityWrapper)
         val second = (event.to.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, null) as? ItemCapabilityWrapper)
 
-        if (event.to.isEmpty || event.from.item != event.to.item) {
-            first?.tick(ItemStackLogicParameters(player, EquipmentData(event.slot.slotType == EntityEquipmentSlot.Type.ARMOR, EquipmentData.EquipState.UNEQUIP)))
-            second?.tick(ItemStackLogicParameters(player, EquipmentData(event.slot.slotType == EntityEquipmentSlot.Type.ARMOR, EquipmentData.EquipState.EQUIP)))
-        }
+        first?.tick(ItemStackLogicParameters(player, EquipmentData(event.from, event.to, event.slot.slotType == EntityEquipmentSlot.Type.ARMOR, EquipmentData.EquipState.UNEQUIP)))
+        second?.tick(ItemStackLogicParameters(player, EquipmentData(event.from, event.to, event.slot.slotType == EntityEquipmentSlot.Type.ARMOR, EquipmentData.EquipState.EQUIP)))
     }
 
     @SubscribeEvent
