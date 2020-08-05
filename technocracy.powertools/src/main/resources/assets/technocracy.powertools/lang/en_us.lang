@@ -18,7 +18,7 @@ tooltips.upgrades.parameter.armor.armor=Armor
 tooltips.upgrades.parameter.armor.toughness=Toughness
 
 tooltips.upgrades.hint.antifire=Extinguishes you when you're burning. Do not stand in lava though.
-tooltips.upgrades.hint.waterelectrolyzer=Generates Oxygen from surrounding water.
+tooltips.upgrades.hint.waterbreathing=Generates Oxygen from surrounding water.
 tooltips.upgrades.hint.nightvision=Grants night vision using a tiny bit of energy.
 tooltips.upgrades.hint.xpharvest=Filter broken blocks with quantum technology to increase the amount of XP orbs dropped.
 tooltips.upgrades.hint.aquaaffinity=Increases mining speed under water by 20%.

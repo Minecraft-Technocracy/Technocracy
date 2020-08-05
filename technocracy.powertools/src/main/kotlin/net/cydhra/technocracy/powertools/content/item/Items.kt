@@ -12,9 +12,9 @@ val armorUpgrade_IronPlating = UpgradeItem("armor_upgrade_steel_plating", Upgrad
 val armorUpgrade_DiamondPlating = UpgradeItem("armor_upgrade_diamond_plating", UpgradeClass.ARMOR, ArmorUpgrade(5.0),
         ArmorToughnessUpgrade(1.0))
 
-val chestplateUpgrade_FireResistance = UpgradeItem("chestplate_upgrade_fire_resistance", UpgradeClass.HELMET, fireExtinguishUpgrade)
-val helmetUpgrade_WaterElectrolyzer = UpgradeItem("helmet_upgrade_water_electrolyzer", UpgradeClass.HELMET, waterElectrolyzerUpgrade)
-val helmetUpgrade_NightVision = UpgradeItem("helmet_upgrade_night_vision", UpgradeClass.HELMET, nightVisionUpgrade)
+val chestplateUpgradeFireResistance = UpgradeItem("chestplate_upgrade_fire_resistance", UpgradeClass.HELMET, fireExtinguishUpgrade)
+val helmetUpgradeWaterBreathing = UpgradeItem("helmet_upgrade_water_breathing", UpgradeClass.HELMET, waterBreathingUpgrade)
+val helmetUpgradeNightVision = UpgradeItem("helmet_upgrade_night_vision", UpgradeClass.HELMET, nightVisionUpgrade)
 val helmetUpgradeAquaAffinityItem = UpgradeItem("helmet_upgrade_aqua_affinity", UpgradeClass.HELMET, aquaAffinityUpgrade)
 val bootsUpgradeFeatherFallItem = UpgradeItem("helmet_upgrade_feather_fall", UpgradeClass.HELMET, featherFallUpgrade)
 

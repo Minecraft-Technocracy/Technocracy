@@ -130,18 +130,24 @@ open class StackableItemUpgrade(
     }
 }
 
-val fireExtinguishUpgrade = SimpleItemUpgrade(UPGRADE_GENERIC, "FireExtinguish", TextComponentTranslation("tooltips.upgrades.hint.antifire")
-        .setStyle(Style().setColor(GREEN))) { _, _ ->
+val fireExtinguishUpgrade = SimpleItemUpgrade(UPGRADE_GENERIC,
+        "FireExtinguish",
+        TextComponentTranslation("tooltips.upgrades.hint.antifire")
+                .setStyle(Style().setColor(GREEN))) { _, _ ->
     FireExtinguishLogic()
 }
 
-val waterElectrolyzerUpgrade = SimpleItemUpgrade(UPGRADE_GENERIC, "WaterElectrolyzer", TextComponentTranslation("tooltips.upgrades.hint.waterelectrolyzer")
-        .setStyle(Style().setColor(GREEN))) { _, _ ->
+val waterBreathingUpgrade = SimpleItemUpgrade(UPGRADE_GENERIC,
+        "WaterElectrolyzer",
+        TextComponentTranslation("tooltips.upgrades.hint.waterbreathing")
+                .setStyle(Style().setColor(GREEN))) { _, _ ->
     WaterElectrolyzerLogic()
 }
 
-val nightVisionUpgrade = SimpleItemUpgrade(UPGRADE_GENERIC, "NightVision", TextComponentTranslation("tooltips.upgrades.hint.nightvision")
-        .setStyle(Style().setColor(GREEN))) { _, _ ->
+val nightVisionUpgrade = SimpleItemUpgrade(UPGRADE_GENERIC,
+        "NightVision",
+        TextComponentTranslation("tooltips.upgrades.hint.nightvision")
+                .setStyle(Style().setColor(GREEN))) { _, _ ->
     NightVisionLogic()
 }
 
