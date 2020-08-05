@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraftforge.event.entity.living.LivingAttackEvent
 import net.minecraftforge.event.entity.living.LivingDamageEvent
+import net.minecraftforge.event.entity.player.PlayerEvent
 import net.minecraftforge.event.world.BlockEvent
 
 
@@ -23,7 +24,7 @@ data class ItemStackLogicParameters(val player: EntityPlayer, val data: ItemStac
 }
 
 enum class ItemStackTickType {
-    ARMOR_TICK, ENTITY_DAMAGE, ENTITY_ATTACK, EQUIP_STATE_CHANGE, BLOCK_BREAK
+    ARMOR_TICK, ENTITY_DAMAGE, ENTITY_ATTACK, EQUIP_STATE_CHANGE, BLOCK_BREAK, BLOCK_BREAK_SPEED
 }
 
 abstract class ItemStackTickData(val type: ItemStackTickType)
@@ -37,3 +38,4 @@ class EquipmentData(val from: ItemStack, val to: ItemStack, val armor: Boolean, 
 }
 
 class BlockBreakData(val event: BlockEvent.BreakEvent) : ItemStackTickData(ItemStackTickType.BLOCK_BREAK)
+class BlockBreakSpeedData(val event: PlayerEvent.BreakSpeed) : ItemStackTickData(ItemStackTickType.BLOCK_BREAK_SPEED)

@@ -10,6 +10,7 @@ import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.entity.living.LivingAttackEvent
 import net.minecraftforge.event.entity.living.LivingDamageEvent
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent
+import net.minecraftforge.event.entity.player.PlayerEvent
 import net.minecraftforge.event.world.BlockEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
@@ -50,6 +51,14 @@ object ItemLogicEventHandler {
         for ((_, stack) in event.player.equipmentAndArmor.withIndex()) {
             (stack.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, null) as? ItemCapabilityWrapper)
                     ?.tick(ItemStackLogicParameters(event.player, BlockBreakData(event)))
+        }
+    }
+
+    @SubscribeEvent
+    fun breakSpeedEvent(event: PlayerEvent.BreakSpeed) {
+        for ((_, stack) in event.entityPlayer.equipmentAndArmor.withIndex()) {
+            (stack.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, null) as? ItemCapabilityWrapper)
+                    ?.tick(ItemStackLogicParameters(event.entityPlayer, BlockBreakSpeedData(event)))
         }
     }
 }

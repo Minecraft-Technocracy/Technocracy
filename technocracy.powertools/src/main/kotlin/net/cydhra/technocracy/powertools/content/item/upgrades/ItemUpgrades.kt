@@ -8,10 +8,7 @@ import net.cydhra.technocracy.foundation.api.upgrades.UpgradeParameter
 import net.cydhra.technocracy.foundation.content.items.components.ItemUpgradesComponent
 import net.cydhra.technocracy.foundation.model.items.api.upgrades.ItemMultiplierUpgrade
 import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWrapper
-import net.cydhra.technocracy.powertools.content.item.logic.FireExtinguishLogic
-import net.cydhra.technocracy.powertools.content.item.logic.NightVisionLogic
-import net.cydhra.technocracy.powertools.content.item.logic.WaterElectrolyzerLogic
-import net.cydhra.technocracy.powertools.content.item.logic.XPHarvesterUpgradeLogic
+import net.cydhra.technocracy.powertools.content.item.logic.*
 import net.minecraft.util.text.ITextComponent
 import net.minecraft.util.text.Style
 import net.minecraft.util.text.TextComponentTranslation
@@ -103,3 +100,8 @@ val xpHarvestingUpgrade2 = SimpleItemUpgrade(UPGRADE_GENERIC,
         "XPHarvester2",
         TextComponentTranslation("tooltips.upgrades.hint.xpharvest").setStyle(Style().setColor(GREEN))
 ) { _, _ -> XPHarvesterUpgradeLogic(4f) }
+
+val aquaAffinityUpgrade = SimpleItemUpgrade(UPGRADE_GENERIC,
+        "AquaAffinity",
+        TextComponentTranslation("tooltips.upgrades.hint.aquaaffinity").setStyle(Style().setColor(GREEN))
+) { _, _ -> AquaAffinityUpgradeLogic() }
