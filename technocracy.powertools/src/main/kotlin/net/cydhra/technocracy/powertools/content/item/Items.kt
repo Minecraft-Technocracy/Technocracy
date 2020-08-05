@@ -16,6 +16,7 @@ val chestplateUpgrade_FireResistance = UpgradeItem("chestplate_upgrade_fire_resi
 val helmetUpgrade_WaterElectrolyzer = UpgradeItem("helmet_upgrade_water_electrolyzer", UpgradeClass.HELMET, waterElectrolyzerUpgrade)
 val helmetUpgrade_NightVision = UpgradeItem("helmet_upgrade_night_vision", UpgradeClass.HELMET, nightVisionUpgrade)
 val helmetUpgradeAquaAffinityItem = UpgradeItem("helmet_upgrade_aqua_affinity", UpgradeClass.HELMET, aquaAffinityUpgrade)
+val bootsUpgradeFeatherFallItem = UpgradeItem("helmet_upgrade_feather_fall", UpgradeClass.HELMET, featherFallUpgrade)
 
 
 val modularItem = ModularItem()

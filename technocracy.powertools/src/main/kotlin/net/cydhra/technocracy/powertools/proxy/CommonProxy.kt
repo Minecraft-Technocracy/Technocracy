@@ -47,6 +47,7 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(armorUpgrade_DiamondPlating)
         itemManager.prepareItemForRegistration(chestplateUpgrade_FireResistance)
         itemManager.prepareItemForRegistration(helmetUpgradeAquaAffinityItem)
+        itemManager.prepareItemForRegistration(bootsUpgradeFeatherFallItem)
 
         itemManager.prepareItemForRegistration(helmetUpgrade_WaterElectrolyzer)
         itemManager.prepareItemForRegistration(helmetUpgrade_NightVision)
