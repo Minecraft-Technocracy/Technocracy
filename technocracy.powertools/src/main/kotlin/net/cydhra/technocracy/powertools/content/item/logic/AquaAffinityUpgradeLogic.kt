@@ -24,7 +24,7 @@ class AquaAffinityUpgradeLogic(private val multiplier: ItemMultiplierComponent) 
         val eventData = logicParameters.data as? BlockBreakSpeedData
                 ?: throw AssertionError("received block break data but got another event")
 
-        if (eventData.event.entityPlayer.isInWater && !eventData.event.entityPlayer.onGround) {
+        if (eventData.event.entityPlayer.isInWater) {
             eventData.event.newSpeed = (eventData.event.newSpeed + 0.2f * multiplier.multiplier).toFloat()
         }
     }
