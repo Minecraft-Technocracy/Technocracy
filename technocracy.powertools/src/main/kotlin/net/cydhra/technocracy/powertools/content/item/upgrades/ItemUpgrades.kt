@@ -3,7 +3,6 @@ package net.cydhra.technocracy.powertools.content.item.upgrades
 import net.cydhra.technocracy.foundation.api.ecs.logic.ILogic
 import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackLogicParameters
 import net.cydhra.technocracy.foundation.api.upgrades.ItemUpgrade
-import net.cydhra.technocracy.foundation.api.upgrades.MachineUpgrade
 import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_GENERIC
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeParameter
 import net.cydhra.technocracy.foundation.content.items.components.ItemUpgradesComponent
@@ -12,10 +11,11 @@ import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWr
 import net.cydhra.technocracy.powertools.content.item.logic.FireExtinguishLogic
 import net.cydhra.technocracy.powertools.content.item.logic.NightVisionLogic
 import net.cydhra.technocracy.powertools.content.item.logic.WaterElectrolyzerLogic
+import net.cydhra.technocracy.powertools.content.item.logic.XPHarvesterUpgradeLogic
 import net.minecraft.util.text.ITextComponent
 import net.minecraft.util.text.Style
 import net.minecraft.util.text.TextComponentTranslation
-import net.minecraft.util.text.TextFormatting
+import net.minecraft.util.text.TextFormatting.GREEN
 import java.util.*
 
 
@@ -80,16 +80,26 @@ open class SimpleItemUpgrade(override val upgradeParameter: UpgradeParameter, va
 }
 
 val fireExtinguishUpgrade = SimpleItemUpgrade(UPGRADE_GENERIC, "FireExtinguish", TextComponentTranslation("tooltips.upgrades.hint.antifire")
-        .setStyle(Style().setColor(TextFormatting.GREEN))) { _, _ ->
+        .setStyle(Style().setColor(GREEN))) { _, _ ->
     FireExtinguishLogic()
 }
 
 val waterElectrolyzerUpgrade = SimpleItemUpgrade(UPGRADE_GENERIC, "WaterElectrolyzer", TextComponentTranslation("tooltips.upgrades.hint.waterelectrolyzer")
-        .setStyle(Style().setColor(TextFormatting.GREEN))) { _, _ ->
+        .setStyle(Style().setColor(GREEN))) { _, _ ->
     WaterElectrolyzerLogic()
 }
 
 val nightVisionUpgrade = SimpleItemUpgrade(UPGRADE_GENERIC, "NightVision", TextComponentTranslation("tooltips.upgrades.hint.nightvision")
-        .setStyle(Style().setColor(TextFormatting.GREEN))) { _, _ ->
+        .setStyle(Style().setColor(GREEN))) { _, _ ->
     NightVisionLogic()
 }
+
+val xpHarvestingUpgrade1 = SimpleItemUpgrade(UPGRADE_GENERIC,
+        "XPHarvester1",
+        TextComponentTranslation("tooltips.upgrades.hint.xpharvest").setStyle(Style().setColor(GREEN))
+) { _, _ -> XPHarvesterUpgradeLogic(2f) }
+
+val xpHarvestingUpgrade2 = SimpleItemUpgrade(UPGRADE_GENERIC,
+        "XPHarvester2",
+        TextComponentTranslation("tooltips.upgrades.hint.xpharvest").setStyle(Style().setColor(GREEN))
+) { _, _ -> XPHarvesterUpgradeLogic(4f) }
