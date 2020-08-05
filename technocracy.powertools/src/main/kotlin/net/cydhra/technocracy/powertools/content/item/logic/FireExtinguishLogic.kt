@@ -32,7 +32,7 @@ class FireExtinguishLogic : ILogic<ItemStackLogicParameters> {
                     val cost = (event.amount * damageEnergyConsumtion).toInt()
                     val damage = abs(event.amount * (0.coerceAtLeast(cost - currentEnergy) / damageEnergyConsumtion))
 
-                    val hurtTimeFlag = entity.hurtResistantTime == 0
+                    val hurtTimeFlag = event.entityLiving.hurtResistantTime == 0
 
                     if (damage > 0f) {
                         event.amount = damage
