@@ -65,11 +65,13 @@ class NightVisionLogic : ILogic<ItemStackLogicParameters> {
 
             //remove if unequip
             if (data.state == EquipmentData.EquipState.UNEQUIP) {
-                val currentEffect = player.getActivePotionEffect(MobEffects.NIGHT_VISION) ?: return
-                //remove only if it is our effect
-                if (currentEffect.amplifier == -10) {
-                    player.removePotionEffect(MobEffects.NIGHT_VISION)
-                    player.removeActivePotionEffect(MobEffects.NIGHT_VISION)
+                if (data.to.isEmpty || data.from.item != data.to.item) {
+                    val currentEffect = player.getActivePotionEffect(MobEffects.NIGHT_VISION) ?: return
+                    //remove only if it is our effect
+                    if (currentEffect.amplifier == -10) {
+                        player.removePotionEffect(MobEffects.NIGHT_VISION)
+                        player.removeActivePotionEffect(MobEffects.NIGHT_VISION)
+                    }
                 }
             }
         }
