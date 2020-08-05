@@ -4,11 +4,14 @@ import net.cydhra.technocracy.foundation.api.ecs.logic.BlockBreakSpeedData
 import net.cydhra.technocracy.foundation.api.ecs.logic.ILogic
 import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackLogicParameters
 import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackTickType
+import net.cydhra.technocracy.foundation.content.items.components.ItemMultiplierComponent
 
 /**
  * Logic for the water affinity upgrade
+ *
+ * @param multiplier the multiplier determines how many levels of affinity should be applied
  */
-class AquaAffinityUpgradeLogic : ILogic<ItemStackLogicParameters> {
+class AquaAffinityUpgradeLogic(private val multiplier: ItemMultiplierComponent) : ILogic<ItemStackLogicParameters> {
 
     override fun preProcessing(logicParameters: ItemStackLogicParameters): Boolean {
         return true
@@ -22,7 +25,7 @@ class AquaAffinityUpgradeLogic : ILogic<ItemStackLogicParameters> {
                 ?: throw AssertionError("received block break data but got another event")
 
         if (eventData.event.entityPlayer.isInWater && !eventData.event.entityPlayer.onGround) {
-            eventData.event.newSpeed = eventData.event.newSpeed + 0.2f
+            eventData.event.newSpeed = (eventData.event.newSpeed + 0.2f * multiplier.multiplier).toFloat()
         }
     }
 

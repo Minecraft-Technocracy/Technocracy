@@ -5,6 +5,7 @@ import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackLogicParameters
 import net.cydhra.technocracy.foundation.api.upgrades.ItemUpgrade
 import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_GENERIC
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeParameter
+import net.cydhra.technocracy.foundation.content.items.components.ItemMultiplierComponent
 import net.cydhra.technocracy.foundation.content.items.components.ItemUpgradesComponent
 import net.cydhra.technocracy.foundation.model.items.api.upgrades.ItemMultiplierUpgrade
 import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWrapper
@@ -101,7 +102,40 @@ val xpHarvestingUpgrade2 = SimpleItemUpgrade(UPGRADE_GENERIC,
         TextComponentTranslation("tooltips.upgrades.hint.xpharvest").setStyle(Style().setColor(GREEN))
 ) { _, _ -> XPHarvesterUpgradeLogic(4f) }
 
-val aquaAffinityUpgrade = SimpleItemUpgrade(UPGRADE_GENERIC,
-        "AquaAffinity",
-        TextComponentTranslation("tooltips.upgrades.hint.aquaaffinity").setStyle(Style().setColor(GREEN))
-) { _, _ -> AquaAffinityUpgradeLogic() }
+/**
+ * A stackable upgrade adding mining speed under water
+ */
+val aquaAffinityUpgrade = object : ItemUpgrade() {
+    override val upgradeParameter: UpgradeParameter = UPGRADE_GENERIC
+
+    override fun canInstallUpgrade(upgradable: ItemCapabilityWrapper, upgrades: ItemUpgradesComponent): Boolean {
+        return true
+    }
+
+    override fun onInstallUpgrade(upgradable: ItemCapabilityWrapper, upgrades: ItemUpgradesComponent) {
+        this.onUpgradeLoad(upgradable, upgrades)
+    }
+
+    override fun onUninstallUpgrade(upgradable: ItemCapabilityWrapper, upgrades: ItemUpgradesComponent) {
+        (upgradable.getComponents().find { (name, _) -> name == "AquaAffinityMultiplier" }!!.second as
+                ItemMultiplierComponent).multiplier -= 1.0
+    }
+
+    override fun onUpgradeLoad(upgradable: ItemCapabilityWrapper, upgrades: ItemUpgradesComponent) {
+        val multiplier = if (!upgradable.hasLogicStrategy("AquaAffinity")) {
+            val multiplier = ItemMultiplierComponent(null, 0.0, null)
+            upgradable.registerComponent(multiplier, "AquaAffinityMultiplier")
+            upgradable.addLogicStrategy(AquaAffinityUpgradeLogic(multiplier), "AquaAffinity")
+            multiplier
+        } else {
+            upgradable.getComponents().find { (name, _) -> name == "AquaAffinityMultiplier" }!!.second as ItemMultiplierComponent
+        }
+
+        multiplier.multiplier += 1.0
+    }
+
+    override fun getUpgradeDescription(): Optional<ITextComponent> {
+        return Optional.of(TextComponentTranslation("tooltips.upgrades.hint.aquaaffinity")
+                .setStyle(Style().setColor(GREEN)))
+    }
+}
