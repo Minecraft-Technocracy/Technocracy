@@ -10,6 +10,7 @@ import net.cydhra.technocracy.foundation.content.items.components.ItemUpgradesCo
 import net.cydhra.technocracy.foundation.model.items.api.upgrades.ItemMultiplierUpgrade
 import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWrapper
 import net.cydhra.technocracy.powertools.content.item.logic.FireExtinguishLogic
+import net.cydhra.technocracy.powertools.content.item.logic.JetpackLogic
 import net.cydhra.technocracy.powertools.content.item.logic.NightVisionLogic
 import net.cydhra.technocracy.powertools.content.item.logic.WaterElectrolyzerLogic
 import net.minecraft.util.text.ITextComponent
@@ -93,3 +94,9 @@ val nightVisionUpgrade = SimpleItemUpgrade(UPGRADE_GENERIC, "NightVision", TextC
         .setStyle(Style().setColor(TextFormatting.GREEN))) { _, _ ->
     NightVisionLogic()
 }
+
+val jetPackUpgrade = SimpleItemUpgrade(UPGRADE_GENERIC, "JetPack", TextComponentTranslation("tooltips.upgrades.hint.jetpack")
+        .setStyle(Style().setColor(TextFormatting.GREEN))) { _, _ ->
+    JetpackLogic()
+}
+

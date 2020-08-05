@@ -49,6 +49,7 @@ open class CommonProxy {
 
         itemManager.prepareItemForRegistration(helmetUpgrade_WaterElectrolyzer)
         itemManager.prepareItemForRegistration(helmetUpgrade_NightVision)
+        itemManager.prepareItemForRegistration(chestplateUpgrade_Jetpack)
 
         ItemLogicEventHandler
     }
