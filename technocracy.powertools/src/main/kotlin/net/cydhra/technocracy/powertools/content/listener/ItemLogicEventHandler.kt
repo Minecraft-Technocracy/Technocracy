@@ -2,7 +2,6 @@ package net.cydhra.technocracy.powertools.content.listener
 
 import net.cydhra.technocracy.foundation.api.ecs.logic.*
 import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWrapper
-import net.minecraft.client.Minecraft
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.EntityEquipmentSlot
 import net.minecraftforge.common.MinecraftForge
@@ -19,7 +18,14 @@ object ItemLogicEventHandler {
     @SubscribeEvent
     fun equipmentEvent(event: LivingEquipmentChangeEvent) {
         val player = event.entityLiving as? EntityPlayer ?: return
-        (event.from.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, null) as? ItemCapabilityWrapper)?.tick(ItemStackLogicParameters(player, UnequipData(event.slot.slotType == EntityEquipmentSlot.Type.ARMOR)))
+
+        val first = (event.from.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, null) as? ItemCapabilityWrapper)
+        val second = (event.to.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, null) as? ItemCapabilityWrapper)
+
+        if (event.to.isEmpty || event.from.item != event.to.item) {
+            first?.tick(ItemStackLogicParameters(player, EquipmentData(event.slot.slotType == EntityEquipmentSlot.Type.ARMOR, EquipmentData.EquipState.UNEQUIP)))
+            second?.tick(ItemStackLogicParameters(player, EquipmentData(event.slot.slotType == EntityEquipmentSlot.Type.ARMOR, EquipmentData.EquipState.EQUIP)))
+        }
     }
 
     @SubscribeEvent

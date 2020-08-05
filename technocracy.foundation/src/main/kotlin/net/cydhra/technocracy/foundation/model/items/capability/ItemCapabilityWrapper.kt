@@ -20,12 +20,19 @@ import net.minecraftforge.common.capabilities.CapabilityInject
 import net.minecraftforge.common.capabilities.ICapabilitySerializable
 
 
-open class ItemCapabilityWrapper(var stack: ItemStack) : ICapabilitySerializable<NBTTagCompound>, Upgradable, Installable, ICapabilityWrapperCapability, ILogicClient<ItemStackLogicParameters> by LogicClientDelegate() {
+open class ItemCapabilityWrapper(val stack: ItemStack, private val delegator: ILogicClient<ItemStackLogicParameters> = LogicClientDelegate()) : ICapabilitySerializable<NBTTagCompound>, Upgradable, Installable, ICapabilityWrapperCapability, ILogicClient<ItemStackLogicParameters> by delegator {
+
     companion object {
         @JvmStatic
         @CapabilityInject(ICapabilityWrapperCapability::class)
         lateinit var CAPABILITY_WRAPPER: Capability<ICapabilityWrapperCapability>
     }
+
+    /**
+     * Provides a function that returns the energy component if one is present
+     */
+    var energyComponentProvider: (() -> IComponent?) = { null }
+
 
     /**
      * All machine components that are saved to NBT and possibly accessible from GUI
@@ -38,7 +45,7 @@ open class ItemCapabilityWrapper(var stack: ItemStack) : ICapabilitySerializable
      */
     private val capabilityComponents: MutableMap<String, AbstractItemCapabilityComponent> = mutableMapOf()
 
-    val upgradeableTypes = mutableListOf<UpgradeParameter>()
+    private val upgradeableTypes = mutableListOf<UpgradeParameter>()
 
     /*init {
         components.forEach {
@@ -194,6 +201,15 @@ open class ItemCapabilityWrapper(var stack: ItemStack) : ICapabilitySerializable
 
     fun <T : AbstractItemComponent> getAttachableParameter(parameter: UpgradeParameter): ItemOptionalAttachedComponent<T>? {
         return attachableParameters[parameter] as ItemOptionalAttachedComponent<T>?
+    }
+
+    override fun tick(logicParameters: ItemStackLogicParameters) {
+        logicParameters.wrapper = this
+        delegator.tick(logicParameters)
+    }
+
+    inline fun <reified T : IComponent> getEnergyComponent(): T? {
+        return energyComponentProvider.invoke() as? T
     }
 }
 

@@ -133,6 +133,8 @@ class ModularHelmet : BaseArmorItem("modular_helmet", material = armor!!, equipm
         wrapper.registerUpgradeParameter(UPGRADE_ARMOR_TOUGHNESS, toughnessMultiplier)
         wrapper.registerAttachableParameter(EnergyUpgrade.INSTALL_ENERGY, battery)
 
+        wrapper.energyComponentProvider = { if (battery.isAttached) battery.innerComponent else null }
+
         return wrapper
     }
 

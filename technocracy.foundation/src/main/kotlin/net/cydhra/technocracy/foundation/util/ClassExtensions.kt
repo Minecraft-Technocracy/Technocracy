@@ -4,6 +4,10 @@ import net.cydhra.technocracy.foundation.util.opengl.MultiTargetFBO
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.BufferBuilder
 import net.minecraft.client.shader.Framebuffer
+import net.minecraft.entity.Entity
+import net.minecraft.world.World
+import net.minecraftforge.event.entity.EntityEvent
+import net.minecraftforge.fml.relauncher.Side
 import org.lwjgl.util.vector.Vector4f
 
 fun Framebuffer?.validate(width: Int = Minecraft.getMinecraft().displayWidth, height: Int = Minecraft.getMinecraft().displayHeight, depth: Boolean = true): Framebuffer {
@@ -49,4 +53,16 @@ fun BufferBuilder.pos(x: Float, y: Float, z: Float): BufferBuilder {
 
 fun BufferBuilder.color(rgb: Vector4f, alpha: Float): BufferBuilder {
     return this.color(rgb.x, rgb.y, rgb.z, alpha)
+}
+
+fun World.getSide(): Side {
+    return if (this.isRemote) Side.CLIENT else Side.SERVER
+}
+
+fun Entity.getSide(): Side {
+    return this.world.getSide()
+}
+
+fun EntityEvent.getSide(): Side {
+    return entity.world.getSide()
 }

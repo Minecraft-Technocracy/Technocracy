@@ -30,6 +30,7 @@ class ItemUpgradesComponent(val numberOfUpgradeSlots: Int, val upgradeType: List
 
     init {
         this.inventory.componentParent = this
+        needsClientSyncing = true
     }
 
     override fun serializeNBT(): NBTTagCompound {
