@@ -9,6 +9,7 @@ import net.cydhra.technocracy.foundation.content.items.components.ItemMultiplier
 import net.cydhra.technocracy.foundation.content.items.components.ItemUpgradesComponent
 import net.cydhra.technocracy.foundation.model.items.api.upgrades.ItemMultiplierUpgrade
 import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWrapper
+import net.cydhra.technocracy.powertools.content.item.components.ToolClassComponent
 import net.cydhra.technocracy.powertools.content.item.logic.*
 import net.minecraft.util.text.ITextComponent
 import net.minecraft.util.text.Style
@@ -129,6 +130,48 @@ open class StackableItemUpgrade(
     override fun getUpgradeDescription(): Optional<ITextComponent> {
         return Optional.of(toolTip)
     }
+}
+
+/**
+ * An upgrade that adds a [toolClass] to an item at a given [level].
+ */
+open class ToolClassUpgrade(private val toolClass: String, private val level: Int) : ItemUpgrade() {
+    companion object {
+        const val TOOL_CLASS_COMPONENT_NAME = "ToolClasses"
+    }
+
+    override val upgradeParameter: UpgradeParameter = UPGRADE_GENERIC
+
+    override fun canInstallUpgrade(upgradable: ItemCapabilityWrapper, upgrades: ItemUpgradesComponent): Boolean {
+        return (upgradable.getComponents().find { (name, _) -> name == TOOL_CLASS_COMPONENT_NAME }?.second as? ToolClassComponent)
+                ?.toolClasses?.get(toolClass)?.takeUnless { it < 0 } == null
+    }
+
+    override fun onInstallUpgrade(upgradable: ItemCapabilityWrapper, upgrades: ItemUpgradesComponent) {
+        this.onUpgradeLoad(upgradable, upgrades)
+    }
+
+    override fun onUninstallUpgrade(upgradable: ItemCapabilityWrapper, upgrades: ItemUpgradesComponent) {
+        val component = upgradable.getComponents().find { (name, _) -> name == TOOL_CLASS_COMPONENT_NAME }!!.second as
+                ToolClassComponent
+        component.toolClasses[this.toolClass] = -1
+    }
+
+    override fun onUpgradeLoad(upgradable: ItemCapabilityWrapper, upgrades: ItemUpgradesComponent) {
+        var component = upgradable.getComponents().find { (name, _) -> name == TOOL_CLASS_COMPONENT_NAME }?.second as?
+                ToolClassComponent
+        if (component == null) {
+            component = ToolClassComponent()
+            upgradable.registerComponent(component, TOOL_CLASS_COMPONENT_NAME)
+        }
+
+        component.toolClasses[this.toolClass] = this.level
+    }
+
+    override fun getUpgradeDescription(): Optional<ITextComponent> {
+        return Optional.empty()
+    }
+
 }
 
 val fireExtinguishUpgrade = SimpleItemUpgrade(UPGRADE_GENERIC,

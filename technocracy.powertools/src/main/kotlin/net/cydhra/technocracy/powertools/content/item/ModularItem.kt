@@ -16,6 +16,8 @@ import net.cydhra.technocracy.foundation.content.items.upgrades.EnergyUpgrade.Co
 import net.cydhra.technocracy.foundation.model.items.api.BaseItem
 import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWrapper
 import net.cydhra.technocracy.foundation.model.items.capability.getComponent
+import net.cydhra.technocracy.powertools.content.item.components.ToolClassComponent
+import net.cydhra.technocracy.powertools.content.item.upgrades.ToolClassUpgrade
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.util.ITooltipFlag
 import net.minecraft.entity.EntityLivingBase
@@ -158,5 +160,14 @@ class ModularItem : BaseItem("modularitem"), TCTileEntityGuiProvider {
         gui.container.lockItem(stack)
 
         return gui
+    }
+
+    override fun getHarvestLevel(stack: ItemStack, toolClass: String, player: EntityPlayer?, blockState: IBlockState?): Int {
+        val capabilityWrapper = stack.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, null)!!
+        val toolClassComponent = capabilityWrapper.getComponents()
+                .find { (name, _) -> name == ToolClassUpgrade.TOOL_CLASS_COMPONENT_NAME }?.second as? ToolClassComponent
+                ?: return -1
+
+        return toolClassComponent.toolClasses[toolClass] ?: -1
     }
 }
