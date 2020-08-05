@@ -8,8 +8,8 @@ import java.lang.Math.abs
 
 class FireExtinguishLogic : ILogic<ItemStackLogicParameters> {
 
-    val energyConsumtion = 5
-    val damageEnergyConsumtion = 10f
+    val energyConsumption = 5
+    val damageEnergyConsumption = 10f
 
     override fun preProcessing(logicParameters: ItemStackLogicParameters): Boolean {
         return true
@@ -19,7 +19,6 @@ class FireExtinguishLogic : ILogic<ItemStackLogicParameters> {
 
         val energy = logicParameters.wrapper.getEnergyComponent<ItemEnergyComponent>()?.energyStorage ?: return
         val currentEnergy = energy.currentEnergy
-        if (currentEnergy < energyConsumtion) return
 
         val serverside = logicParameters.side == Side.SERVER
 
@@ -29,8 +28,8 @@ class FireExtinguishLogic : ILogic<ItemStackLogicParameters> {
                 val event = (logicParameters.data as EntityDamageData).event
                 if (event.source.isFireDamage) {
 
-                    val cost = (event.amount * damageEnergyConsumtion).toInt()
-                    val damage = abs(event.amount * (0.coerceAtLeast(cost - currentEnergy) / damageEnergyConsumtion))
+                    val cost = (event.amount * damageEnergyConsumption).toInt()
+                    val damage = abs(event.amount * (0.coerceAtLeast(cost - currentEnergy) / damageEnergyConsumption))
 
                     val hurtTimeFlag = event.entityLiving.hurtResistantTime == 0
 
@@ -44,7 +43,7 @@ class FireExtinguishLogic : ILogic<ItemStackLogicParameters> {
                     }
 
                     if (serverside && hurtTimeFlag)
-                        energy.consumeEnergy((event.amount * damageEnergyConsumtion).toInt())
+                        energy.consumeEnergy((event.amount * damageEnergyConsumption).toInt())
                 }
             }
 
@@ -53,9 +52,9 @@ class FireExtinguishLogic : ILogic<ItemStackLogicParameters> {
                 if (event.source.isFireDamage) {
 
                     //calculate how much energy it will cost to cancel the damage
-                    val cost = (event.amount * damageEnergyConsumtion).toInt()
+                    val cost = (event.amount * damageEnergyConsumption).toInt()
                     //calculate how much of the damage can be canceled with the currently energy level
-                    val damage = abs(event.amount * (0.coerceAtLeast(cost - currentEnergy) / damageEnergyConsumtion))
+                    val damage = abs(event.amount * (0.coerceAtLeast(cost - currentEnergy) / damageEnergyConsumption))
 
                     val entity = event.entityLiving
 
@@ -65,7 +64,7 @@ class FireExtinguishLogic : ILogic<ItemStackLogicParameters> {
                     val hurtTimeFlag = entity.hurtResistantTime == 0
 
                     if (serverside && hurtTimeFlag)
-                        energy.consumeEnergy((event.amount * damageEnergyConsumtion).toInt())
+                        energy.consumeEnergy((event.amount * damageEnergyConsumption).toInt())
 
                     //always cancel and if damage was too big reapply it
                     event.isCanceled = true
@@ -86,7 +85,7 @@ class FireExtinguishLogic : ILogic<ItemStackLogicParameters> {
                 if (player.isBurning && !player.isInLava && !player.world.isFlammableWithin(player.entityBoundingBox.shrink(0.001))) {
 
                     if (serverside)
-                        energy.consumeEnergy(energyConsumtion)
+                        energy.consumeEnergy(energyConsumption)
 
                     player.extinguish()
                 }

@@ -56,6 +56,10 @@ abstract class AbstractParticle(worldIn: World, posXIn: Double, posYIn: Double, 
         return particleAge
     }
 
+    fun setAge(i: Int) {
+        particleAge = i
+    }
+
     @Deprecated("Unused Method")
     override fun renderParticle(buffer: BufferBuilder, entityIn: Entity, partialTicks: Float, rotationX: Float, rotationZ: Float, rotationYZ: Float, rotationXY: Float, rotationXZ: Float) {
 

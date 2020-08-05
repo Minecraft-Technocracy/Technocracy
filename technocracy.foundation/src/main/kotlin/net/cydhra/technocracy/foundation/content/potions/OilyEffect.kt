@@ -33,10 +33,11 @@ class OilyEffect : BasePotion("oily", true, 0x1A1A1A) {
                     val stack = event.to
 
                     if (event.slot.slotType == EntityEquipmentSlot.Type.ARMOR) {
-                        if (stack.item.onDroppedByPlayer(stack, player)) {
+                        //how about not doing this and dropping the armor when the energy level changes
+                        /*if (stack.item.onDroppedByPlayer(stack, player)) {
                             net.minecraftforge.common.ForgeHooks.onPlayerTossEvent(player, stack, true)
                             player.inventory.armorInventory[event.slot.index] = ItemStack.EMPTY
-                        }
+                        }*/
                     } else {
                         player.dropItem(true)
                     }
