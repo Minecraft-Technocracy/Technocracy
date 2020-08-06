@@ -5,6 +5,7 @@ item.modular_plate.name=Modular Chestplate
 item.modular_leggins.name=Modular Leggins
 item.modular_boots.name=Modular Boots
 item.energy_shield.name=Energy Shield
+item.modular_item.name=Modular Tool
 
 item.battery_upgrade_one.name=Energy Upgrade
 item.battery_capacity_upgrade.name=Small Capacitor Upgrade
@@ -17,6 +18,9 @@ item.helmet_upgrade_night_vision.name=Night Vision Goggles
 item.helmet_upgrade_aqua_affinity.name=Aquatic Accelerators
 item.helmet_upgrade_feather_fall.name=Impact Dampeners
 item.chestplate_upgrade_jetpack.name=Jetpack
+item.tool_upgrade_axe.name=Axe Upgrade
+item.tool_upgrade_pickaxe.name=Pickaxe Upgrade
+item.tool_upgrade_shovel.name=Shovel Upgrade
 
 tooltips.upgrades.hint.energy=Energy Capacity
 
@@ -31,3 +35,6 @@ tooltips.upgrades.hint.xpharvest=Filter broken blocks with quantum technology to
 tooltips.upgrades.hint.aquaaffinity=Increases mining speed under water by 20%%.
 tooltips.upgrades.hint.featherfall=Decrease fall damage by 12%%.
 tooltips.upgrades.hint.jetpack=A plasma driven jetpack.
+tooltips.upgrades.hint.tool.axe=The tool can be used as an axe.
+tooltips.upgrades.hint.tool.pickaxe=The tool can be used as an pickaxe.
+tooltips.upgrades.hint.tool.shovel=The tool can be used as an shovel.

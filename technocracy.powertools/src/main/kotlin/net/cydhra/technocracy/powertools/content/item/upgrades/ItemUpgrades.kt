@@ -169,9 +169,9 @@ open class ToolClassUpgrade(private val toolClass: String, private val level: In
     }
 
     override fun getUpgradeDescription(): Optional<ITextComponent> {
-        return Optional.empty()
+        return Optional.of(TextComponentTranslation("tooltips.upgrades.hint.tool.$toolClass")
+                .setStyle(Style().setColor(GREEN)))
     }
-
 }
 
 val fireExtinguishUpgrade = SimpleItemUpgrade(UPGRADE_GENERIC,
