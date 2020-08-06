@@ -7,6 +7,7 @@ import net.cydhra.technocracy.foundation.api.ecs.logic.EquipmentData
 import net.cydhra.technocracy.foundation.content.items.components.ItemEnergyComponent
 import net.cydhra.technocracy.foundation.model.items.capability.getCapabilityWrapper
 import net.cydhra.technocracy.powertools.content.item.upgrades.jetPackUpgrade
+import net.cydhra.technocracy.powertools.content.item.upgrades.nightVisionUpgrade
 import net.minecraft.init.MobEffects
 import net.minecraft.potion.PotionEffect
 import net.minecraftforge.fml.relauncher.Side
@@ -14,7 +15,7 @@ import net.minecraftforge.fml.relauncher.Side
 
 class NightVisionLogic : ILogic<ItemStackLogicParameters> {
 
-    val energyConsumtion = 5
+    val energyConsumption = 5
 
     override fun preProcessing(logicParameters: ItemStackLogicParameters): Boolean {
         return true
@@ -32,7 +33,7 @@ class NightVisionLogic : ILogic<ItemStackLogicParameters> {
             val player = logicParameters.player
             val currentEffect = player.getActivePotionEffect(MobEffects.NIGHT_VISION)
 
-            if (energy.currentEnergy < energyConsumtion) {
+            if (energy.currentEnergy < energyConsumption) {
                 //not enought energy remove effect
                 //remove only if it is our effect
                 if (currentEffect != null && currentEffect.amplifier == -10) {
@@ -54,7 +55,7 @@ class NightVisionLogic : ILogic<ItemStackLogicParameters> {
                     player.removeActivePotionEffect(MobEffects.NIGHT_VISION)
                 }
                 if (serverside)
-                    energy.consumeEnergy(energyConsumtion)
+                    energy.consumeEnergy(energyConsumption)
                 player.addPotionEffect(PotionEffect(MobEffects.NIGHT_VISION, 420, -10, true, false))
             }
 
@@ -67,8 +68,7 @@ class NightVisionLogic : ILogic<ItemStackLogicParameters> {
 
             //remove if unequip
             if (data.state == EquipmentData.EquipState.UNEQUIP) {
-                val wrapper = getCapabilityWrapper(data.to) ?: return
-                val hasNightVision = wrapper.hasLogicStrategy(jetPackUpgrade.name)
+                val hasNightVision = getCapabilityWrapper(data.to)?.hasLogicStrategy(nightVisionUpgrade.name) ?: false
 
                 if (!hasNightVision) {
                     val currentEffect = player.getActivePotionEffect(MobEffects.NIGHT_VISION) ?: return

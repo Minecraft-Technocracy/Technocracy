@@ -1,4 +1,4 @@
-package net.cydhra.technocracy.astronautics.content.fx
+package net.cydhra.technocracy.foundation.content.fx
 
 import net.cydhra.technocracy.foundation.api.fx.IParticleType
 import net.cydhra.technocracy.foundation.model.fx.api.AbstractParticle
@@ -45,6 +45,30 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
         setMaxAge(20 * 5 + rand.nextInt(20 * 15)) // max 20 seconds screen time min 5 seconds
         //setMaxAge(maxAge)
         //particleAge = rand.nextInt(20 * 15)
+    }
+
+    fun setMotionX(x: Double) {
+        motionX = x
+    }
+
+    fun getMotionX() : Double {
+        return motionX
+    }
+
+    fun setMotionY(y: Double) {
+        motionY = y
+    }
+
+    fun getMotionY() : Double {
+        return motionY
+    }
+
+    fun setMotionZ(z: Double) {
+        motionZ = z
+    }
+
+    fun getMotionZ() : Double {
+        return motionZ
     }
 
     override fun move(x: Double, y: Double, z: Double) {

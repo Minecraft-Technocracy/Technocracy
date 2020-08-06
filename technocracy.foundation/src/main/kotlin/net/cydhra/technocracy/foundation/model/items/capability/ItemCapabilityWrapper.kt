@@ -209,7 +209,7 @@ open class ItemCapabilityWrapper(val stack: ItemStack, private val delegator: IL
     }
 
     inline fun <reified T : IComponent> getEnergyComponent(): T? {
-        return energyComponentProvider.invoke() as? T
+        return energyComponentProvider() as? T
     }
 }
 

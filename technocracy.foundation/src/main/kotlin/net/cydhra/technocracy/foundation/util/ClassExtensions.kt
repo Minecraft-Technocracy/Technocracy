@@ -1,11 +1,15 @@
 package net.cydhra.technocracy.foundation.util
 
 import net.cydhra.technocracy.foundation.util.opengl.MultiTargetFBO
+import net.minecraft.block.material.Material
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.BufferBuilder
 import net.minecraft.client.shader.Framebuffer
 import net.minecraft.entity.Entity
+import net.minecraft.entity.item.EntityBoat
+import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
+import net.minecraftforge.common.ForgeHooks
 import net.minecraftforge.event.entity.EntityEvent
 import net.minecraftforge.fml.relauncher.Side
 import org.lwjgl.util.vector.Vector4f
@@ -65,4 +69,24 @@ fun Entity.getSide(): Side {
 
 fun EntityEvent.getSide(): Side {
     return entity.world.getSide()
+}
+
+/**
+ * Body as in 3/4 of its hitbox
+ */
+fun Entity.isBodyInsideOfMaterial(materialIn: Material): Boolean {
+    return if (ridingEntity is EntityBoat) {
+        false
+    } else {
+        val d0 = posY + this.eyeHeight.toDouble()
+        val blockpos = BlockPos(posX, d0, posZ)
+        val iblockstate = world.getBlockState(blockpos)
+        val result = iblockstate.block.isEntityInsideMaterial(world, blockpos, iblockstate, this, d0, materialIn, true)
+        if (result != null) return result
+        if (iblockstate.material === materialIn) {
+            ForgeHooks.isInsideOfMaterial(materialIn, this, blockpos)
+        } else {
+            false
+        }
+    }
 }

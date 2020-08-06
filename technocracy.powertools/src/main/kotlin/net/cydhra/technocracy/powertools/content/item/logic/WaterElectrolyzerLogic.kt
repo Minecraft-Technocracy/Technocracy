@@ -5,13 +5,13 @@ import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackLogicParameters
 import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackTickType
 import net.cydhra.technocracy.foundation.content.items.components.ItemEnergyComponent
 import net.minecraft.block.material.Material
-import net.minecraft.potion.Potion
+import net.minecraft.util.EnumParticleTypes
 import net.minecraftforge.fml.relauncher.Side
 
 
 class WaterElectrolyzerLogic : ILogic<ItemStackLogicParameters> {
 
-    val energyConsumtion = 5
+    val energyConsumption = 5
 
     override fun preProcessing(logicParameters: ItemStackLogicParameters): Boolean {
         return true
@@ -21,17 +21,22 @@ class WaterElectrolyzerLogic : ILogic<ItemStackLogicParameters> {
         if (logicParameters.type == ItemStackTickType.ARMOR_TICK) {
 
             val energy = logicParameters.wrapper.getEnergyComponent<ItemEnergyComponent>()?.energyStorage ?: return
-            if (energy.currentEnergy < energyConsumtion) return
+            if (energy.currentEnergy < energyConsumption) return
 
             val player = logicParameters.player
             if (player.isInsideOfMaterial(Material.WATER)) {
                 if (player.air <= 280) {
                     player.air = 300
                     if (logicParameters.side == Side.SERVER)
-                        energy.consumeEnergy(energyConsumtion)
+                        energy.consumeEnergy(energyConsumption)
+                }
+
+                if(logicParameters.side == Side.CLIENT && player.ticksExisted % 4 == 0) {
+                    val f2: Float = player.rng.nextFloat() - player.rng.nextFloat()
+                    val f1: Float = player.rng.nextFloat() - player.rng.nextFloat()
+                    player.world.spawnParticle(EnumParticleTypes.WATER_BUBBLE, player.posX + f2.toDouble(), player.posY + player.getEyeHeight(), player.posZ + f1.toDouble(), player.motionX, player.motionY + 0.6, player.motionZ)
                 }
             }
-            //todo energy cost?
         }
     }
 
