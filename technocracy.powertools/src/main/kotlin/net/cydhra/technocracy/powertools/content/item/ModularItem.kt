@@ -10,6 +10,7 @@ import net.cydhra.technocracy.foundation.client.gui.handler.TCGuiHandler
 import net.cydhra.technocracy.foundation.client.gui.item.ItemUpgradesTab
 import net.cydhra.technocracy.foundation.content.capabilities.energy.DynamicItemEnergyCapability
 import net.cydhra.technocracy.foundation.content.items.components.ItemEnergyComponent
+import net.cydhra.technocracy.foundation.content.items.components.ItemMultiplierComponent
 import net.cydhra.technocracy.foundation.content.items.components.ItemOptionalAttachedComponent
 import net.cydhra.technocracy.foundation.content.items.components.ItemUpgradesComponent
 import net.cydhra.technocracy.foundation.content.items.upgrades.EnergyUpgrade.Companion.INSTALL_ENERGY
@@ -18,6 +19,7 @@ import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWr
 import net.cydhra.technocracy.foundation.model.items.capability.getComponent
 import net.cydhra.technocracy.powertools.content.item.components.ToolClassComponent
 import net.cydhra.technocracy.powertools.content.item.upgrades.ToolClassUpgrade
+import net.cydhra.technocracy.powertools.content.item.upgrades.UPGRADE_DIG_SPEED
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.util.ITooltipFlag
 import net.minecraft.entity.EntityLivingBase
@@ -32,8 +34,14 @@ import net.minecraft.world.World
 import net.minecraftforge.common.capabilities.ICapabilityProvider
 import kotlin.math.min
 
-
+/**
+ * A module tool
+ */
 class ModularItem : BaseItem("modularitem"), TCTileEntityGuiProvider {
+
+    companion object {
+        const val DIG_SPEED_MULTIPLIER_NAME = "DigSpeedMultiplier"
+    }
 
     override fun initCapabilities(stack: ItemStack, nbt: NBTTagCompound?): ICapabilityProvider? {
         val wrapper = ItemCapabilityWrapper(stack)
@@ -44,6 +52,10 @@ class ModularItem : BaseItem("modularitem"), TCTileEntityGuiProvider {
         wrapper.registerComponent(battery, "battery")
         wrapper.registerAttachableParameter(INSTALL_ENERGY, battery)
         wrapper.registerComponent(ItemUpgradesComponent(3, listOf(UpgradeClass.TOOL)), "upgradeable")
+
+        val digSpeedComponent = ItemMultiplierComponent(UPGRADE_DIG_SPEED, 0.0, null)
+        wrapper.registerComponent(digSpeedComponent, DIG_SPEED_MULTIPLIER_NAME)
+        wrapper.registerUpgradeParameter(UPGRADE_DIG_SPEED, digSpeedComponent)
         return wrapper
     }
 
@@ -169,5 +181,36 @@ class ModularItem : BaseItem("modularitem"), TCTileEntityGuiProvider {
                 ?: return -1
 
         return toolClassComponent.toolClasses[toolClass] ?: -1
+    }
+
+    override fun getToolClasses(stack: ItemStack): MutableSet<String> {
+        val capabilityWrapper = stack.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, null)!!
+        val toolClassComponent = capabilityWrapper.getComponents()
+                .find { (name, _) -> name == ToolClassUpgrade.TOOL_CLASS_COMPONENT_NAME }?.second as? ToolClassComponent
+
+        return toolClassComponent?.toolClasses?.keys ?: mutableSetOf()
+    }
+
+    override fun getDestroySpeed(stack: ItemStack, state: IBlockState): Float {
+        val capabilityWrapper = stack.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, null)!!
+        var toolClassComponent: ToolClassComponent? = null
+        lateinit var digSpeedMultiplier: ItemMultiplierComponent
+
+        for ((name, component) in capabilityWrapper.getComponents()) {
+            if (name == ToolClassUpgrade.TOOL_CLASS_COMPONENT_NAME) {
+                toolClassComponent = component as ToolClassComponent
+            } else if (name == DIG_SPEED_MULTIPLIER_NAME) {
+                digSpeedMultiplier = component as ItemMultiplierComponent
+            }
+        }
+
+        var efficiency = digSpeedMultiplier.multiplier.toFloat()
+
+        val harvestLevel = toolClassComponent?.toolClasses?.get(state.block.getHarvestTool(state))
+        if (harvestLevel != null && harvestLevel > -1) {
+            efficiency += ToolMaterial.GOLD.efficiency
+        }
+
+        return efficiency
     }
 }

@@ -4,6 +4,7 @@ import net.cydhra.technocracy.foundation.api.upgrades.UpgradeClass
 import net.cydhra.technocracy.foundation.content.items.upgrades.EnergyUpgrade
 import net.cydhra.technocracy.foundation.model.items.api.UpgradeItem
 import net.cydhra.technocracy.powertools.content.item.upgrades.*
+import net.minecraft.item.Item
 
 val batteryUpgrade_One = UpgradeItem("battery_upgrade_one", UpgradeClass.TOOL, EnergyUpgrade(800))
 val batteryCapacityUpgrade = UpgradeItem("battery_capacity_upgrade", UpgradeClass.TOOL, CapacityUpgrade(1.2))
@@ -18,6 +19,13 @@ val helmetUpgradeNightVision = UpgradeItem("helmet_upgrade_night_vision", Upgrad
 val helmetUpgradeAquaAffinityItem = UpgradeItem("helmet_upgrade_aqua_affinity", UpgradeClass.HELMET, aquaAffinityUpgrade)
 val bootsUpgradeFeatherFallItem = UpgradeItem("helmet_upgrade_feather_fall", UpgradeClass.HELMET, featherFallUpgrade)
 val chestplateUpgradeJetpackItem = UpgradeItem("chestplate_upgrade_jetpack", UpgradeClass.HELMET, jetPackUpgrade)
+
+val toolUpgradeShovel = UpgradeItem("tool_upgrade_shovel", UpgradeClass.TOOL,
+        ToolClassUpgrade("shovel", Item.ToolMaterial.DIAMOND.harvestLevel))
+val toolUpgradeAxe = UpgradeItem("tool_upgrade_axe", UpgradeClass.TOOL,
+        ToolClassUpgrade("axe", Item.ToolMaterial.DIAMOND.harvestLevel))
+val toolUpgradePickaxe = UpgradeItem("tool_upgrade_pickaxe", UpgradeClass.TOOL,
+        ToolClassUpgrade("pickaxe", Item.ToolMaterial.DIAMOND.harvestLevel))
 
 val modularItem = ModularItem()
 val energyShield = EnergyShieldItem()
