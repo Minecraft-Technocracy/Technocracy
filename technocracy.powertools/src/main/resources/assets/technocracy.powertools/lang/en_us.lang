@@ -5,7 +5,7 @@ item.modular_plate.name=Modular Chestplate
 item.modular_leggins.name=Modular Leggins
 item.modular_boots.name=Modular Boots
 item.energy_shield.name=Energy Shield
-item.modular_item.name=Modular Tool
+item.modularitem.name=Modular Tool
 
 item.battery_upgrade_one.name=Energy Upgrade
 item.battery_capacity_upgrade.name=Small Capacitor Upgrade
@@ -32,7 +32,7 @@ tooltips.upgrades.hint.antifire=Extinguishes you when you're burning. Do not sta
 tooltips.upgrades.hint.waterbreathing=Generates oxygen from surrounding water.
 tooltips.upgrades.hint.nightvision=Grants night vision using a tiny bit of energy.
 tooltips.upgrades.hint.xpharvest=Filter broken blocks with quantum technology to increase the amount of XP orbs dropped.
-tooltips.upgrades.hint.aquaaffinity=Increases mining speed under water by 20%%.
+tooltips.upgrades.hint.aquaaffinity=Increases mining speed under water by 250%%.
 tooltips.upgrades.hint.featherfall=Decrease fall damage by 12%%.
 tooltips.upgrades.hint.jetpack=A plasma driven jetpack.
 tooltips.upgrades.hint.tool.axe=The tool can be used as an axe.
