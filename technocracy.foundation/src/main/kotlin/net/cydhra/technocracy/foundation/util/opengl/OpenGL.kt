@@ -125,7 +125,7 @@ object OpenGLObjectLoader {
         val vboID = GL15.glGenBuffers()
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID)
         //put data into buffer
-        val buffer = BufferUtils.createFloatBuffer(data.size)
+        val buffer = GLAllocation.createDirectFloatBuffer(data.size)
         buffer.put(data)
         buffer.flip()
         //put buffer into vbo
