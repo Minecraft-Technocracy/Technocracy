@@ -21,22 +21,32 @@ import net.minecraftforge.fml.relauncher.SideOnly
  *
  * @param unlocalizedName registry and language name of the block
  * @param tileEntityConstructor constructor for the tile entity that is created
- * @param opaque whether this block is opaque
  * @param renderLayer render layer of blocks of this type
  */
 open class PlainMultiBlockPartBlock<T>(
         unlocalizedName: String,
         tileEntityConstructor: () -> T,
-        private val opaque: Boolean = true,
-        private val isFullCube: Boolean = true,
         private val glassSides: Boolean = false,
-        renderLayer: BlockRenderLayer? = null)
-    : AbstractTileEntityBlock(unlocalizedName, material = Material.IRON, renderLayer = renderLayer),
+        renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID)
+    : AbstractTileEntityBlock(unlocalizedName, material = Material.ROCK, renderLayer = renderLayer),
         TCMultiBlock<T> by MultiBlockBaseDelegate<T>(tileEntityConstructor)
         where T : TileEntity, T : TCMultiBlockActiveTileEntity, T : IMultiblockPart {
 
+    var opaque: Boolean = true
+        set(value) {
+            field = value
+            lightOpacity = if (value) 255 else 0
+        }
+    var isFullCube: Boolean = true
+
+    val init: Boolean
+
+    init {
+        init = true
+    }
+
     override fun isOpaqueCube(state: IBlockState): Boolean {
-        return this.opaque
+        return !init || this.opaque
     }
 
     override fun isFullCube(state: IBlockState): Boolean {

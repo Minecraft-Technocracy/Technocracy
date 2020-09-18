@@ -27,11 +27,9 @@ import javax.vecmath.Vector3f
  */
 class TankStructureBlock<T>(unlocalizedName: String,
                             tileEntityConstructor: () -> T,
-                            opaque: Boolean = true,
-                            isFullCube: Boolean = true,
                             glassSides: Boolean = false,
                             renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID)
-    : PlainMultiBlockPartBlock<T>(unlocalizedName, tileEntityConstructor, opaque, isFullCube, glassSides, renderLayer)
+    : PlainMultiBlockPartBlock<T>(unlocalizedName, tileEntityConstructor, glassSides, renderLayer)
         where T : TileEntity, T : TCMultiBlockActiveTileEntity, T : IMultiblockPart {
 
     init {

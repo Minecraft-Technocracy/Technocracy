@@ -45,17 +45,24 @@ val boilerFluidInputBlock = MultiBlockRotatableActiveBlock("boiler_input", ::Til
 val boilerWallBlock = PlainMultiBlockPartBlock("boiler_wall", ::TileEntityMultiBlockPartBoiler)
         .apply { setHardness(3.5f).setResistance(1f) }
 val boilerGlassBlock = PlainMultiBlockPartBlock("boiler_glass", ::TileEntityMultiBlockPartBoiler,
-        isFullCube = false, opaque = false, glassSides = true, renderLayer = BlockRenderLayer.CUTOUT)
-        .apply { setHardness(1.5f).setResistance(1f) }
+        glassSides = true, renderLayer = BlockRenderLayer.CUTOUT)
+        .apply {
+            setHardness(1.5f).setResistance(1f)
+            isFullCube = false
+            opaque = false
+        }
 val boilerConductorBlock = PlainBlock("boiler_conductor", material = Material.IRON)
         .apply { setHardness(4f).setResistance(2.5f) }
 
 val heatExchangerControllerBlock = MultiBlockRotatableActiveBlock("heat_exchanger_controller",
         ::TileEntityHeatExchangerController)
 val heatExchangerWallBlock = PlainMultiBlockPartBlock("heat_exchanger_wall", ::TileEntityMultiBlockPartHeatExchanger)
-val heatExchangerGlassBlock = PlainMultiBlockPartBlock("heat_exchanger_glass", ::TileEntityMultiBlockPartHeatExchanger,
-        isFullCube = false, opaque = false, glassSides = true, renderLayer = BlockRenderLayer.CUTOUT)
-        .apply { setHardness(1.5f).setResistance(1f) }
+val heatExchangerGlassBlock = PlainMultiBlockPartBlock("heat_exchanger_glass", ::TileEntityMultiBlockPartHeatExchanger, glassSides = true, renderLayer = BlockRenderLayer.CUTOUT)
+        .apply {
+            setHardness(1.5f).setResistance(1f)
+            isFullCube = false
+            opaque = false
+        }
 val heatExchangerColdAgentTube = PlainMultiBlockPartBlock("heat_exchanger_cold_tube", ::TileEntityMultiBlockPartHeatExchanger)
 val heatExchangerHotAgentTube = PlainMultiBlockPartBlock("heat_exchanger_hot_tube", ::TileEntityMultiBlockPartHeatExchanger)
 val heatExchangerInputBlock = MultiBlockRotatableActiveBlock("heat_exchanger_input", ::TileEntityHeatExchangerInput,
@@ -79,15 +86,18 @@ val capacitorEnergyPortBlock = MultiBlockActiveBlock("capacitor_energy_port", ::
         renderLayer = BlockRenderLayer.CUTOUT)
 
 val tankWallBlock = TankStructureBlock("tank_wall", ::TileEntityTankMultiBlockPart)
-val tankGlassBlock = TankStructureBlock("tank_glass", ::TileEntityTankMultiBlockPart, isFullCube = false, opaque = false, glassSides = true, renderLayer = BlockRenderLayer.CUTOUT)
+val tankGlassBlock = TankStructureBlock("tank_glass", ::TileEntityTankMultiBlockPart, glassSides = true, renderLayer = BlockRenderLayer.CUTOUT).apply {
+    isFullCube = false
+    opaque = false
+}
 val tankIOBlock = TankStructureBlock("tank_io", ::TileEntityTankPort)
 
 val salineControllerBlock = MultiBlockRotatableActiveBlock("saline_controller", ::TileEntitySalineController)
-val salineWallBlock = PlainMultiBlockPartBlock("saline_wall", ::TileEntityMultiBlockPartSaline, opaque = false)
-val salineHeatedWallBlock = PlainMultiBlockPartBlock("saline_heated_wall", ::TileEntityMultiBlockPartSaline, opaque = false)
+val salineWallBlock = PlainMultiBlockPartBlock("saline_wall", ::TileEntityMultiBlockPartSaline)
+val salineHeatedWallBlock = PlainMultiBlockPartBlock("saline_heated_wall", ::TileEntityMultiBlockPartSaline)
 val salineFluidInputBlock = MultiBlockRotatableActiveBlock("saline_fluid_input", ::TileEntitySalineFluidInput,
         renderLayer = BlockRenderLayer.CUTOUT)
-val salineFluidOutputBlock = MultiBlockActiveBlock("saline_fluid_output", ::TileEntitySalineFluidOutput,
+val salineFluidOutputBlock = MultiBlockRotatableActiveBlock("saline_fluid_output", ::TileEntitySalineFluidOutput,
         renderLayer = BlockRenderLayer.CUTOUT)
 val salineHeatingAgentInputBlock = MultiBlockRotatableActiveBlock("saline_heating_agent_input", ::TileEntitySalineHeatingAgentInput,
         renderLayer = BlockRenderLayer.CUTOUT)

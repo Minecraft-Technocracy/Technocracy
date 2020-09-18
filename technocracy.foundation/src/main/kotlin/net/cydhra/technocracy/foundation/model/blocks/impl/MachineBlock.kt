@@ -34,6 +34,7 @@ class MachineBlock(name: String, private val tileEntityConstructor: () -> TileEn
     init {
         this.setHardness(2f)
         this.setResistance(4f)
+        lightOpacity = 0
     }
 
     override fun createNewTileEntity(worldIn: World, meta: Int): TileEntity? {
