@@ -130,7 +130,7 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
             if (pair != null && pair.first is BlockWorkbench) {
                 if (!worldIn.isRemote) {
                     playerIn.displayGui(InterfaceFacadeCraftingTable(worldIn, pos))
-                    playerIn.addStat(StatList.CRAFTING_TABLE_INTERACTION)
+                    //playerIn.addStat(StatList.CRAFTING_TABLE_INTERACTION)
                 }
                 return true
             }

@@ -72,7 +72,8 @@ abstract class AbstractTileEntityBlock(unlocalizedName: String,
      */
     override fun harvestBlock(worldIn: World, player: EntityPlayer, pos: BlockPos, state: IBlockState, te: TileEntity?, stack: ItemStack) {
 
-        player.addStat(StatList.getBlockStats(this)!!)
+        //no stats for now
+        //player.addStat(StatList.getBlockStats(this)!!)
         player.addExhaustion(0.005f)
         if (!worldIn.isRemote) {
             val dropItem = getDropItem(state, worldIn, pos, te)
