@@ -22,15 +22,18 @@ import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWr
 import net.cydhra.technocracy.foundation.model.items.capability.getComponent
 import net.cydhra.technocracy.foundation.model.items.util.IItemKeyBindEvent
 import net.cydhra.technocracy.foundation.proxy.ClientProxy
+import net.cydhra.technocracy.powertools.TCPowertools
 import net.cydhra.technocracy.powertools.content.item.upgrades.UPGRADE_ARMOR_ARMOR
 import net.cydhra.technocracy.powertools.content.item.upgrades.UPGRADE_ARMOR_TOUGHNESS
 import net.minecraft.client.settings.KeyBinding
+import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.SharedMonsterAttributes
 import net.minecraft.entity.ai.attributes.AttributeModifier
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.init.SoundEvents
 import net.minecraft.inventory.EntityEquipmentSlot
+import net.minecraft.item.ItemArmor
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.DamageSource
@@ -42,7 +45,9 @@ import java.util.*
 import kotlin.math.min
 
 
-class ModularHelmet : BaseArmorItem("modular_helmet", material = armor!!, equipmentSlot = EntityEquipmentSlot.HEAD, renderIndex = 1), IItemKeyBindEvent, TCTileEntityGuiProvider {
+class ModularArmor(name: String, material: ArmorMaterial, slot: EntityEquipmentSlot, vararg upgradeClass: UpgradeClass) : BaseArmorItem(name, material = material, equipmentSlot = slot, renderIndex = 1), IItemKeyBindEvent, TCTileEntityGuiProvider {
+
+    val upgradeClasses = upgradeClass.toMutableList()
 
     init {
         maxStackSize = 1
@@ -116,7 +121,7 @@ class ModularHelmet : BaseArmorItem("modular_helmet", material = armor!!, equipm
     override fun initCapabilities(stack: ItemStack, nbt: NBTTagCompound?): ICapabilityProvider? {
         val wrapper = ItemCapabilityWrapper(stack)
 
-        wrapper.registerComponent(ItemUpgradesComponent(5, listOf(UpgradeClass.TOOL, UpgradeClass.ARMOR, UpgradeClass.HELMET)), "upgradeable")
+        wrapper.registerComponent(ItemUpgradesComponent(5, mutableListOf(UpgradeClass.TOOL, UpgradeClass.ARMOR).apply { addAll(upgradeClasses) }), "upgradeable")
 
         val battery = ItemOptionalAttachedComponent(ItemEnergyComponent(DynamicItemEnergyCapability(0, 0, -1, -1)))
         battery.innerComponent.needsClientSyncing = true
@@ -140,11 +145,6 @@ class ModularHelmet : BaseArmorItem("modular_helmet", material = armor!!, equipm
 
     override fun damageArmor(entity: EntityLivingBase?, stack: ItemStack, source: DamageSource?, damage: Int, slot: Int) {
 
-    }
-
-    override fun onArmorTick(world: World, player: EntityPlayer, itemStack: ItemStack) {
-        super.onArmorTick(world, player, itemStack)
-        (itemStack.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, null) as? ItemCapabilityWrapper)?.tick(ItemStackLogicParameters(player, ItemStackTickType.ARMOR_TICK))
     }
 
     override fun getProperties(player: EntityLivingBase?, armor: ItemStack, source: DamageSource?, damage: Double, slot: Int): ISpecialArmor.ArmorProperties {
@@ -200,8 +200,9 @@ class ModularHelmet : BaseArmorItem("modular_helmet", material = armor!!, equipm
     }
 
     companion object {
+
         val ARMOR_MODIFIERS = arrayOf(UUID.fromString("845DB27C-C624-495F-8C9F-6020A9A58B6B"), UUID.fromString("D8499B04-0E66-4726-AB29-64469D734E0D"), UUID.fromString("9F3D476D-C118-4544-8365-64846904B48E"), UUID.fromString("2AD3F246-FEE1-4E67-B886-69FD380BB150"))
-        val armor = EnumHelper.addArmorMaterial("PT", "test", 0, /*intArrayOf(3, 6, 8, 3)*/intArrayOf(0, 0, 0, 0), 10, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 0f)
+        val armor = EnumHelper.addArmorMaterial("${TCPowertools.MODID}:modular_armor", "${TCPowertools.MODID}:modular_armor", 0, /*intArrayOf(3, 6, 8, 3)*/intArrayOf(0, 0, 0, 0), 10, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 0f)!!
     }
 
 }

@@ -210,6 +210,11 @@ val jetPackUpgrade = SimpleItemUpgrade(UPGRADE_GENERIC, "JetPack", TextComponent
     JetpackLogic()
 }
 
+val propulsionUpgrade = StackableItemUpgrade("Propulsion", TextComponentTranslation("tooltips.upgrades.hint.propulsion")
+        .setStyle(Style().setColor(TextFormatting.GREEN))) { _, _, multiplier ->
+    PropulsionLogic(multiplier)
+}
+
 /**
  * A stackable upgrade adding mining speed under water
  */

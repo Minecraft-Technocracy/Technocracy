@@ -27,10 +27,16 @@ enum class ItemStackTickType {
     ARMOR_TICK, ENTITY_DAMAGE, ENTITY_ATTACK, EQUIP_STATE_CHANGE, BLOCK_BREAK, BLOCK_BREAK_SPEED
 }
 
+enum class ItemStackTickPriority {
+    LOW, MEDIUM, HIGH
+}
+
 abstract class ItemStackTickData(val type: ItemStackTickType)
 
 class EmptyStackData(type: ItemStackTickType) : ItemStackTickData(type)
 
+open class PriorityData(type: ItemStackTickType, val priority: ItemStackTickPriority) : ItemStackTickData(type)
+class EntityArmorTickData(priority: ItemStackTickPriority) : PriorityData(ItemStackTickType.ARMOR_TICK, priority)
 class EntityDamageData(val event: LivingDamageEvent, val armor: Boolean) : ItemStackTickData(ItemStackTickType.ENTITY_DAMAGE)
 class EntityAttackData(val event: LivingAttackEvent, val armor: Boolean) : ItemStackTickData(ItemStackTickType.ENTITY_ATTACK)
 class EquipmentData(val from: ItemStack, val to: ItemStack, val armor: Boolean, val state: EquipState) : ItemStackTickData(ItemStackTickType.EQUIP_STATE_CHANGE) {

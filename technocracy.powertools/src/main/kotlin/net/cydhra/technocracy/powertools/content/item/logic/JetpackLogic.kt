@@ -1,13 +1,11 @@
 package net.cydhra.technocracy.powertools.content.item.logic
 
-import net.cydhra.technocracy.foundation.api.ecs.logic.EquipmentData
-import net.cydhra.technocracy.foundation.api.ecs.logic.ILogic
-import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackLogicParameters
-import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackTickType
+import net.cydhra.technocracy.foundation.api.ecs.logic.*
 import net.cydhra.technocracy.foundation.content.fx.ParticleSmoke
 import net.cydhra.technocracy.foundation.content.items.components.ItemEnergyComponent
 import net.cydhra.technocracy.foundation.model.fx.manager.TCParticleManager
 import net.cydhra.technocracy.foundation.model.items.capability.getCapabilityWrapper
+import net.cydhra.technocracy.foundation.util.getSide
 import net.cydhra.technocracy.foundation.util.isBodyInsideOfMaterial
 import net.cydhra.technocracy.powertools.content.item.upgrades.jetPackUpgrade
 import net.minecraft.block.material.Material
@@ -32,6 +30,10 @@ class JetpackLogic : ILogic<ItemStackLogicParameters> {
         val player = logicParameters.player
 
         if (logicParameters.type == ItemStackTickType.ARMOR_TICK) {
+
+            val prio = (logicParameters.data as EntityArmorTickData).priority
+            if (prio != ItemStackTickPriority.LOW) return
+
             val energy = logicParameters.wrapper.getEnergyComponent<ItemEnergyComponent>()?.energyStorage
                     ?: run { player.disableFly(); return }
 
@@ -42,10 +44,6 @@ class JetpackLogic : ILogic<ItemStackLogicParameters> {
                 player.disableFly(); return
             }
 
-            player.capabilities.flySpeed = 0.04f
-            if (player.isSprinting)
-                player.capabilities.flySpeed /= 1.8f
-
             if (logicParameters.side == Side.SERVER) {
                 if (player.capabilities.isFlying) {
                     energy.consumeEnergy(energyConsumption)
@@ -54,6 +52,10 @@ class JetpackLogic : ILogic<ItemStackLogicParameters> {
                     }
                 }
             } else {
+
+                player.capabilities.flySpeed = 0.04f
+                if (player.isSprinting)
+                    player.capabilities.flySpeed /= 1.8f
 
                 //going to async with server so we can fly and still take falldamage
                 //this can cause users getting kicked if flying is not disabled but taking falldamage is important for balancing
@@ -125,7 +127,8 @@ class JetpackLogic : ILogic<ItemStackLogicParameters> {
         if (!isCreative) {
             capabilities.allowFlying = false
             capabilities.isFlying = false
-            capabilities.flySpeed = 0.05f
+            if (getSide() == Side.CLIENT)
+                capabilities.flySpeed = 0.05f
             sendPlayerAbilities()
         }
     }

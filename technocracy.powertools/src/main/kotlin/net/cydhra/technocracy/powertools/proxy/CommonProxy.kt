@@ -40,14 +40,21 @@ open class CommonProxy {
 
         itemManager.prepareItemForRegistration(batteryUpgrade_One)
         itemManager.prepareItemForRegistration(batteryCapacityUpgrade)
+
         itemManager.prepareItemForRegistration(modularItem)
         itemManager.prepareItemForRegistration(energyShield)
+
         itemManager.prepareItemForRegistration(modularhelmet)
+        itemManager.prepareItemForRegistration(modularboots)
+        itemManager.prepareItemForRegistration(modularchestplate)
+        itemManager.prepareItemForRegistration(modularleggings)
+
         itemManager.prepareItemForRegistration(armorUpgrade_IronPlating)
         itemManager.prepareItemForRegistration(armorUpgrade_DiamondPlating)
         itemManager.prepareItemForRegistration(chestplateUpgradeFireResistance)
         itemManager.prepareItemForRegistration(helmetUpgradeAquaAffinityItem)
         itemManager.prepareItemForRegistration(bootsUpgradeFeatherFallItem)
+        itemManager.prepareItemForRegistration(bootsUpgradePropulsionItem)
         itemManager.prepareItemForRegistration(toolUpgradeAxe)
         itemManager.prepareItemForRegistration(toolUpgradePickaxe)
         itemManager.prepareItemForRegistration(toolUpgradeShovel)

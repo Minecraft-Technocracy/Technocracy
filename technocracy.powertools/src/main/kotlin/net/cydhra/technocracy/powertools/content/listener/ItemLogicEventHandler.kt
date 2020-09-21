@@ -10,6 +10,7 @@ import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.entity.living.LivingAttackEvent
 import net.minecraftforge.event.entity.living.LivingDamageEvent
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent
+import net.minecraftforge.event.entity.living.LivingEvent
 import net.minecraftforge.event.entity.player.PlayerEvent
 import net.minecraftforge.event.world.BlockEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -17,6 +18,28 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 object ItemLogicEventHandler {
     init {
         MinecraftForge.EVENT_BUS.register(this)
+    }
+
+    @SubscribeEvent
+    fun onTick(event: LivingEvent.LivingUpdateEvent) {
+        val player = event.entityLiving
+        if (player !is EntityPlayer) return
+
+        val tickables = mutableListOf<ItemCapabilityWrapper>()
+
+        for (item in event.entityLiving.armorInventoryList) {  // FORGE: Tick armor on animation ticks
+            if (!item.isEmpty) {
+                val cap = item.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, null) as? ItemCapabilityWrapper
+                        ?: continue
+                tickables.add(cap)
+            }
+        }
+
+        for (prio in ItemStackTickPriority.values()) {
+            for (cap in tickables) {
+                cap.tick(ItemStackLogicParameters(player, EntityArmorTickData(prio)))
+            }
+        }
     }
 
     @SubscribeEvent
