@@ -5,11 +5,17 @@ import net.cydhra.technocracy.foundation.model.entities.manager.EntityManager
 import net.cydhra.technocracy.foundation.model.fluids.manager.FluidManager
 import net.cydhra.technocracy.foundation.model.items.manager.ItemManager
 import net.cydhra.technocracy.foundation.model.tileentities.manager.TileEntityManager
+import net.cydhra.technocracy.foundation.network.PacketHandler
+import net.cydhra.technocracy.foundation.network.ServerItemCooldownPacket
+import net.cydhra.technocracy.foundation.network.componentsync.GuiUpdateListener
 import net.cydhra.technocracy.powertools.TCPowertools
 import net.cydhra.technocracy.powertools.client.powertoolsCreativeTab
 import net.cydhra.technocracy.powertools.content.item.*
 import net.cydhra.technocracy.powertools.content.listener.ItemLogicEventHandler
+import net.cydhra.technocracy.powertools.network.ClientInputPacket
+import net.cydhra.technocracy.powertools.util.PlayerInputs
 import net.minecraftforge.common.MinecraftForge
+import net.minecraftforge.fml.relauncher.Side
 
 open class CommonProxy {
 
@@ -62,7 +68,11 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(helmetUpgradeWaterBreathing)
         itemManager.prepareItemForRegistration(helmetUpgradeNightVision)
         itemManager.prepareItemForRegistration(chestplateUpgradeJetpackItem)
-        ItemLogicEventHandler
+
+        PacketHandler.registerPacket(ClientInputPacket::class.java, ClientInputPacket::class.java, Side.SERVER)
+
+        MinecraftForge.EVENT_BUS.register(ItemLogicEventHandler)
+        MinecraftForge.EVENT_BUS.register(PlayerInputs)
     }
 
     open fun init() {
