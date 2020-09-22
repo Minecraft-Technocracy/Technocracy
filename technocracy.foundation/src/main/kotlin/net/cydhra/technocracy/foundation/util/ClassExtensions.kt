@@ -13,6 +13,7 @@ import net.minecraftforge.common.ForgeHooks
 import net.minecraftforge.event.entity.EntityEvent
 import net.minecraftforge.fml.relauncher.Side
 import org.lwjgl.util.vector.Vector4f
+import java.util.*
 
 fun Framebuffer?.validate(width: Int = Minecraft.getMinecraft().displayWidth, height: Int = Minecraft.getMinecraft().displayHeight, depth: Boolean = true): Framebuffer {
     if (this == null || this.framebufferWidth != width || this.framebufferHeight != height) {

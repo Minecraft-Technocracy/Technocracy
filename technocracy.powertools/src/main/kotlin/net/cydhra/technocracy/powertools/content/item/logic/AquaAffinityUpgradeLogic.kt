@@ -1,9 +1,8 @@
 package net.cydhra.technocracy.powertools.content.item.logic
 
-import net.cydhra.technocracy.foundation.api.ecs.logic.BlockBreakSpeedData
 import net.cydhra.technocracy.foundation.api.ecs.logic.ILogic
 import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackLogicParameters
-import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackTickType
+import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackTickType.Companion.BLOCK_BREAK_SPEED
 import net.cydhra.technocracy.foundation.content.items.components.ItemMultiplierComponent
 
 /**
@@ -18,11 +17,10 @@ class AquaAffinityUpgradeLogic(private val multiplier: ItemMultiplierComponent) 
     }
 
     override fun processing(logicParameters: ItemStackLogicParameters) {
-        if (logicParameters.type != ItemStackTickType.BLOCK_BREAK_SPEED)
+        if (logicParameters.data != BLOCK_BREAK_SPEED)
             return
 
-        val eventData = logicParameters.data as? BlockBreakSpeedData
-                ?: throw AssertionError("received block break data but got another event")
+        val eventData = BLOCK_BREAK_SPEED[logicParameters]
 
         if (eventData.event.entityPlayer.isInWater) {
             eventData.event.newSpeed = (eventData.event.newSpeed * 5f * multiplier.multiplier).toFloat()

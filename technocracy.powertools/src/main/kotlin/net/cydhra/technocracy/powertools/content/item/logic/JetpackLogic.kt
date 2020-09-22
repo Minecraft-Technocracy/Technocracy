@@ -29,10 +29,7 @@ class JetpackLogic : ILogic<ItemStackLogicParameters> {
     override fun processing(logicParameters: ItemStackLogicParameters) {
         val player = logicParameters.player
 
-        if (logicParameters.type == ItemStackTickType.ARMOR_TICK) {
-
-            val prio = (logicParameters.data as EntityArmorTickData).priority
-            if (prio != ItemStackTickPriority.LOW) return
+        if (logicParameters.data == ItemStackTickType.ARMOR_TICK.LOW) {
 
             val energy = logicParameters.wrapper.getEnergyComponent<ItemEnergyComponent>()?.energyStorage
                     ?: run { player.disableFly(); return }
@@ -66,7 +63,7 @@ class JetpackLogic : ILogic<ItemStackLogicParameters> {
                     spawnSmokeParticles(player)
                 }
             }
-        } else if (logicParameters.type == ItemStackTickType.EQUIP_STATE_CHANGE) {
+        } else if (logicParameters.data == ItemStackTickType.EQUIP_STATE_CHANGE) {
 
             if (logicParameters.side == Side.SERVER) {
                 val data = logicParameters.data as EquipmentData

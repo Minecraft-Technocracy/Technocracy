@@ -3,6 +3,7 @@ package net.cydhra.technocracy.powertools.content.item.logic
 import net.cydhra.technocracy.foundation.api.ecs.logic.ILogic
 import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackLogicParameters
 import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackTickType
+import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackTickType.Companion.ARMOR_TICK
 import net.cydhra.technocracy.foundation.content.items.components.ItemEnergyComponent
 import net.minecraft.block.material.Material
 import net.minecraft.util.EnumParticleTypes
@@ -18,7 +19,7 @@ class WaterElectrolyzerLogic : ILogic<ItemStackLogicParameters> {
     }
 
     override fun processing(logicParameters: ItemStackLogicParameters) {
-        if (logicParameters.type == ItemStackTickType.ARMOR_TICK) {
+        if (logicParameters.data == ARMOR_TICK) {
 
             val energy = logicParameters.wrapper.getEnergyComponent<ItemEnergyComponent>()?.energyStorage ?: return
             if (energy.currentEnergy < energyConsumption) return

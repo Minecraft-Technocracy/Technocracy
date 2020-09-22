@@ -23,7 +23,7 @@ class NightVisionLogic : ILogic<ItemStackLogicParameters> {
 
     override fun processing(logicParameters: ItemStackLogicParameters) {
 
-        if (logicParameters.type == ItemStackTickType.ARMOR_TICK) {
+        if (logicParameters.data == ItemStackTickType.ARMOR_TICK) {
             val serverside = logicParameters.side == Side.SERVER
 
             val e = logicParameters.wrapper.getEnergyComponent<ItemEnergyComponent>() ?: return
@@ -59,7 +59,7 @@ class NightVisionLogic : ILogic<ItemStackLogicParameters> {
                 player.addPotionEffect(PotionEffect(MobEffects.NIGHT_VISION, 420, -10, true, false))
             }
 
-        } else if (logicParameters.type == ItemStackTickType.EQUIP_STATE_CHANGE) {
+        } else if (logicParameters.data == ItemStackTickType.EQUIP_STATE_CHANGE) {
             val data = logicParameters.data as EquipmentData
             //only remove effect if it was on armor element
             if (!data.armor) return

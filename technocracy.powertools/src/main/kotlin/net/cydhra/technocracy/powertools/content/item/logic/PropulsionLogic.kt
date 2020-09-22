@@ -1,12 +1,14 @@
 package net.cydhra.technocracy.powertools.content.item.logic
 
 import net.cydhra.technocracy.foundation.api.ecs.logic.*
+import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackTickType.Companion.ARMOR_TICK
 import net.cydhra.technocracy.foundation.content.items.components.ItemEnergyComponent
 import net.cydhra.technocracy.foundation.content.items.components.ItemMultiplierComponent
 import net.cydhra.technocracy.foundation.util.isBodyInsideOfMaterial
 import net.minecraft.block.material.Material
 import net.minecraftforge.fml.relauncher.Side
 import kotlin.math.max
+import kotlin.math.min
 
 
 class PropulsionLogic(private val multiplier: ItemMultiplierComponent) : ILogic<ItemStackLogicParameters> {
@@ -19,10 +21,8 @@ class PropulsionLogic(private val multiplier: ItemMultiplierComponent) : ILogic<
 
     override fun processing(logicParameters: ItemStackLogicParameters) {
         val player = logicParameters.player
-
-        if (logicParameters.type == ItemStackTickType.ARMOR_TICK) {
-            val prio = (logicParameters.data as EntityArmorTickData).priority
-            if (prio != ItemStackTickPriority.MEDIUM) return
+        
+        if (logicParameters.data == ARMOR_TICK) {
 
             val energy = logicParameters.wrapper.getEnergyComponent<ItemEnergyComponent>()?.energyStorage ?: return
 
@@ -33,7 +33,7 @@ class PropulsionLogic(private val multiplier: ItemMultiplierComponent) : ILogic<
                 return
             }
 
-            val multiplier = max(multiplier.multiplier, 4.0).toFloat()
+            val multiplier = min(multiplier.multiplier, 4.0).toFloat()
 
             if (logicParameters.side == Side.SERVER) {
                 if (player.capabilities.isFlying) {
@@ -43,6 +43,7 @@ class PropulsionLogic(private val multiplier: ItemMultiplierComponent) : ILogic<
                 }
             } else {
                 player.capabilities.flySpeed = 0.04f + 0.01f * multiplier
+
             }
         }
     }

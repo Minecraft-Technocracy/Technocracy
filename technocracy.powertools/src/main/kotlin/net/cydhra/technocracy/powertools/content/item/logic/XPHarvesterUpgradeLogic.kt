@@ -4,6 +4,7 @@ import net.cydhra.technocracy.foundation.api.ecs.logic.BlockBreakData
 import net.cydhra.technocracy.foundation.api.ecs.logic.ILogic
 import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackLogicParameters
 import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackTickType
+import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackTickType.Companion.BLOCK_BREAK
 
 /**
  * Logic for xp harvester upgrade.
@@ -16,11 +17,10 @@ class XPHarvesterUpgradeLogic(private val xpMultiplier: Float) : ILogic<ItemStac
     }
 
     override fun processing(logicParameters: ItemStackLogicParameters) {
-        if (logicParameters.type != ItemStackTickType.BLOCK_BREAK)
+        if (logicParameters.data != BLOCK_BREAK)
             return
 
-        val eventData = logicParameters.data as? BlockBreakData
-                ?: throw AssertionError("received block break data but got another event")
+        val eventData = BLOCK_BREAK[logicParameters]
 
         eventData.event.expToDrop = (eventData.event.expToDrop * this.xpMultiplier).toInt()
     }

@@ -4,6 +4,7 @@ import net.cydhra.technocracy.foundation.api.ecs.logic.EntityDamageData
 import net.cydhra.technocracy.foundation.api.ecs.logic.ILogic
 import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackLogicParameters
 import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackTickType
+import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackTickType.Companion.ENTITY_DAMAGE
 import net.cydhra.technocracy.foundation.content.items.components.ItemMultiplierComponent
 import net.minecraft.util.DamageSource
 import kotlin.math.min
@@ -20,17 +21,16 @@ class NoFallLogic(private val multiplier: ItemMultiplierComponent) : ILogic<Item
     }
 
     override fun processing(logicParameters: ItemStackLogicParameters) {
-        if (logicParameters.type != ItemStackTickType.ENTITY_DAMAGE)
+        if (logicParameters.data != ENTITY_DAMAGE)
             return
 
-        val eventData = logicParameters.data as? EntityDamageData
-                ?: throw AssertionError("received block break data but got another event")
+        val event = ENTITY_DAMAGE[logicParameters].event
 
-        if (eventData.event.source == DamageSource.FALL) {
+        if (event.source == DamageSource.FALL) {
             // reduce by 12% for each upgrade and do not reduce to negative numbers
-            eventData.event.amount -= min(
-                    (eventData.event.amount * 0.12 * multiplier.multiplier).toFloat(),
-                    eventData.event.amount
+            event.amount -= min(
+                    (event.amount * 0.12 * multiplier.multiplier).toFloat(),
+                    event.amount
             )
         }
     }

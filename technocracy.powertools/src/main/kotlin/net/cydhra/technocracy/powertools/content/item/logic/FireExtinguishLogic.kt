@@ -1,6 +1,9 @@
 package net.cydhra.technocracy.powertools.content.item.logic
 
 import net.cydhra.technocracy.foundation.api.ecs.logic.*
+import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackTickType.Companion.ARMOR_TICK
+import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackTickType.Companion.ENTITY_ATTACK
+import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackTickType.Companion.ENTITY_DAMAGE
 import net.cydhra.technocracy.foundation.content.items.components.ItemEnergyComponent
 import net.minecraftforge.fml.relauncher.Side
 import java.lang.Math.abs
@@ -22,10 +25,9 @@ class FireExtinguishLogic : ILogic<ItemStackLogicParameters> {
 
         val serverside = logicParameters.side == Side.SERVER
 
-        when (logicParameters.type) {
-            ItemStackTickType.ENTITY_DAMAGE -> {
-
-                val event = (logicParameters.data as EntityDamageData).event
+        when (logicParameters.data) {
+            ENTITY_DAMAGE -> {
+                val event = ENTITY_DAMAGE[logicParameters].event
                 if (event.source.isFireDamage) {
 
                     val cost = (event.amount * damageEnergyConsumption).toInt()
@@ -47,8 +49,8 @@ class FireExtinguishLogic : ILogic<ItemStackLogicParameters> {
                 }
             }
 
-            ItemStackTickType.ENTITY_ATTACK -> {
-                val event = (logicParameters.data as EntityAttackData).event
+            ENTITY_ATTACK -> {
+                val event = ENTITY_ATTACK[logicParameters].event
                 if (event.source.isFireDamage) {
 
                     //calculate how much energy it will cost to cancel the damage
@@ -79,7 +81,7 @@ class FireExtinguishLogic : ILogic<ItemStackLogicParameters> {
                 }
             }
 
-            ItemStackTickType.ARMOR_TICK -> {
+            ARMOR_TICK -> {
                 val player = logicParameters.player
 
                 if (player.isBurning && !player.isInLava && !player.world.isFlammableWithin(player.entityBoundingBox.shrink(0.001))) {

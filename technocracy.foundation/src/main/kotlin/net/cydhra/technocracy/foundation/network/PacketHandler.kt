@@ -1,7 +1,5 @@
 package net.cydhra.technocracy.foundation.network
 
-import net.cydhra.technocracy.foundation.TCFoundation
-import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraftforge.fml.common.network.NetworkRegistry
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage

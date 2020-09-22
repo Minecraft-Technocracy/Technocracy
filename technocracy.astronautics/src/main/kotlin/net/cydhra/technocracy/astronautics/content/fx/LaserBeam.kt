@@ -1,6 +1,5 @@
 package net.cydhra.technocracy.astronautics.content.fx
 
-import net.cydhra.technocracy.coremod.event.RenderItemSideEvent
 import net.cydhra.technocracy.coremod.event.RenderShaderEvent
 import net.cydhra.technocracy.foundation.api.fx.IParticleType
 import net.cydhra.technocracy.foundation.model.fx.api.AbstractParticle

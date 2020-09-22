@@ -16,10 +16,6 @@ import net.minecraftforge.event.world.BlockEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object ItemLogicEventHandler {
-    init {
-        MinecraftForge.EVENT_BUS.register(this)
-    }
-
     @SubscribeEvent
     fun onTick(event: LivingEvent.LivingUpdateEvent) {
         val player = event.entityLiving
@@ -27,7 +23,7 @@ object ItemLogicEventHandler {
 
         val tickables = mutableListOf<ItemCapabilityWrapper>()
 
-        for (item in event.entityLiving.armorInventoryList) {  // FORGE: Tick armor on animation ticks
+        for (item in event.entityLiving.armorInventoryList) {
             if (!item.isEmpty) {
                 val cap = item.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, null) as? ItemCapabilityWrapper
                         ?: continue
