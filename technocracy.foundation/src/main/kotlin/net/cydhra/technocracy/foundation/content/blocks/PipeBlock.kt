@@ -80,22 +80,26 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
     }
 
     override fun onBlockDestroyedByExplosion(worldIn: World, pos: BlockPos, explosionIn: Explosion) {
+        val tileEntity = worldIn.getTileEntity(pos) as TileEntityPipe?
+        tileEntity?.removeTileEntity()
         super.onBlockDestroyedByExplosion(worldIn, pos, explosionIn)
     }
 
     override fun onBlockDestroyedByPlayer(worldIn: World, pos: BlockPos, state: IBlockState) {
+        val tileEntity = worldIn.getTileEntity(pos) as TileEntityPipe?
+        tileEntity?.removeTileEntity()
         super.onBlockDestroyedByPlayer(worldIn, pos, state)
     }
 
     override fun removedByPlayer(state: IBlockState, world: World, pos: BlockPos, player: EntityPlayer, willHarvest: Boolean): Boolean {
-        val tileEntity = world.getTileEntity(pos) as TileEntityPipe
-        tileEntity.removeTileEntity()
+        val tileEntity = world.getTileEntity(pos) as TileEntityPipe?
+        tileEntity?.removeTileEntity()
         return super.removedByPlayer(state, world, pos, player, willHarvest)
     }
 
     override fun onBlockExploded(world: World, pos: BlockPos, explosion: Explosion) {
-        val tileEntity = world.getTileEntity(pos) as TileEntityPipe
-        tileEntity.removeTileEntity()
+        val tileEntity = world.getTileEntity(pos) as TileEntityPipe?
+        tileEntity?.removeTileEntity()
         super.onBlockExploded(world, pos, explosion)
     }
 
@@ -246,10 +250,10 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
         return super.getPickBlock(state, target, world, pos, player)
     }
 
-    fun rayTraceBestBB(start: Vec3d, end: Vec3d, boundingBoxes: List<Triple<Pair<EnumFacing, AxisAlignedBB>, PipeType?, Int>>, offset: BlockPos): Triple<Pair<EnumFacing, AxisAlignedBB>, PipeType?, Int>? {
+    fun rayTraceBestBB(start: Vec3d, end: Vec3d, boundingBoxes: List<Triple<Pair<EnumFacing, AxisAlignedBB>, PipeType?, TileEntityPipe.BoxType>>, offset: BlockPos): Triple<Pair<EnumFacing, AxisAlignedBB>, PipeType?, TileEntityPipe.BoxType>? {
         if (boundingBoxes.isEmpty()) return null
 
-        var bestTriple: Triple<Pair<EnumFacing, AxisAlignedBB>, PipeType?, Int> = boundingBoxes[0]
+        var bestTriple: Triple<Pair<EnumFacing, AxisAlignedBB>, PipeType?, TileEntityPipe.BoxType> = boundingBoxes[0]
         val tmpbb = bestTriple.first.second.offset(offset)
         var distance = tmpbb.calculateIntercept(start, end)?.hitVec?.distanceTo(start) ?: Double.MAX_VALUE
 

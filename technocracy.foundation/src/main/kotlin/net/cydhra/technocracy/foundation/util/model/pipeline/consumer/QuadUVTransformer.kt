@@ -107,7 +107,7 @@ object QuadUVTransformer : IQuadConsumer {
      *
      * @return The color Vector
      */
-    fun interpColorFrom(color: Vector4f, interpHelper: InterpHelper, others: SimpleQuad): Vector4f {
+    fun interpColorFrom(color: Vector4f, others: SimpleQuad): Vector4f {
         for (e in 0..3) {
             val p1: Float = others.vertColor[0].get(e)
             val p2: Float = others.vertColor[1].get(e)
@@ -115,7 +115,7 @@ object QuadUVTransformer : IQuadConsumer {
             val p4: Float = others.vertColor[3].get(e)
             // Only interpolate if colors are different.
             if (p1 != p2 || p2 != p3 || p3 != p4) {
-                color.set(e, interpHelper.interpolate(p1, p2, p3, p4))
+                color.set(e, InterpHelper.interpolate(p1, p2, p3, p4))
             }
         }
         return color
@@ -130,14 +130,14 @@ object QuadUVTransformer : IQuadConsumer {
      *
      * @return The uv Vecotor
      */
-    fun interpUVFrom(uv: Vector2f, interpHelper: InterpHelper, others: SimpleQuad): Vector2f {
+    fun interpUVFrom(uv: Vector2f, others: SimpleQuad): Vector2f {
         for (e in 0..1) {
             val p1: Float = others.vertUv[0].get(e)
             val p2: Float = others.vertUv[1].get(e)
             val p3: Float = others.vertUv[2].get(e)
             val p4: Float = others.vertUv[3].get(e)
             if (p1 != p2 || p2 != p3 || p3 != p4) {
-                uv.set(e, interpHelper.interpolate(p1, p2, p3, p4))
+                uv.set(e, InterpHelper.interpolate(p1, p2, p3, p4))
             }
         }
         return uv
@@ -152,14 +152,14 @@ object QuadUVTransformer : IQuadConsumer {
      *
      * @return The lightMap Vector
      */
-    fun interpLightMapFrom(lightMap: Vector2f, interpHelper: InterpHelper, others: SimpleQuad): Vector2f {
+    fun interpLightMapFrom(lightMap: Vector2f, others: SimpleQuad): Vector2f {
         for (e in 0..1) {
             val p1: Float = others.vertLight[0].get(e)
             val p2: Float = others.vertLight[0].get(e)
             val p3: Float = others.vertLight[0].get(e)
             val p4: Float = others.vertLight[0].get(e)
             if (p1 != p2 || p2 != p3 || p3 != p4) {
-                lightMap.set(e, interpHelper.interpolate(p1, p2, p3, p4))
+                lightMap.set(e, InterpHelper.interpolate(p1, p2, p3, p4))
             }
         }
         return lightMap
@@ -171,26 +171,25 @@ object QuadUVTransformer : IQuadConsumer {
 
         if (quad.vertColor.isNotEmpty() || quad.vertUv.isNotEmpty() || quad.vertLight.isNotEmpty()) {
             val originalPositions = unmodifiedQuad!!.vertPos
-            val interpHelper = InterpHelper()
             val copy = SimpleQuad(quad)
 
-            interpHelper.reset(originalPositions[0].dx(s), originalPositions[0].dy(s),
+            InterpHelper.reset(originalPositions[0].dx(s), originalPositions[0].dy(s),
                     originalPositions[1].dx(s), originalPositions[1].dy(s),
                     originalPositions[2].dx(s), originalPositions[2].dy(s),
                     originalPositions[3].dx(s), originalPositions[3].dy(s))
 
-            interpHelper.setup()
+            InterpHelper.setup()
 
             quad.vertPos.forEachIndexed { index, v ->
-                interpHelper.locate(v.dx(s), v.dy(s))
+                InterpHelper.locate(v.dx(s), v.dy(s))
                 if (quad.vertColor.isNotEmpty()) {
-                    quad.vertColor[index] = interpColorFrom(quad.vertColor[index], interpHelper, copy)
+                    quad.vertColor[index] = interpColorFrom(quad.vertColor[index], copy)
                 }
                 if (quad.vertUv.isNotEmpty()) {
-                    quad.vertUv[index] = interpUVFrom(quad.vertUv[index], interpHelper, copy)
+                    quad.vertUv[index] = interpUVFrom(quad.vertUv[index], copy)
                 }
                 if (quad.vertLight.isNotEmpty()) {
-                    quad.vertLight[index] = interpLightMapFrom(quad.vertLight[index], interpHelper, copy)
+                    quad.vertLight[index] = interpLightMapFrom(quad.vertLight[index], copy)
                 }
             }
         }

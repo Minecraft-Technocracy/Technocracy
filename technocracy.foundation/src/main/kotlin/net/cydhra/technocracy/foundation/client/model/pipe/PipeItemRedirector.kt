@@ -3,6 +3,7 @@ package net.cydhra.technocracy.foundation.client.model.pipe
 import net.cydhra.technocracy.foundation.client.textures.TextureAtlasManager
 import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.cydhra.technocracy.foundation.content.items.PipeItem
+import net.cydhra.technocracy.foundation.util.model.ModelTextureRemapper
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.renderer.block.model.*
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
@@ -16,8 +17,7 @@ import java.util.*
 
 class PipeItemRedirector(val baseBakedModel: IBakedModel) : IBakedModel by baseBakedModel {
     companion object {
-
-        private val cache = mutableMapOf<Int, IBakedModel>()
+        val modelCache = mutableMapOf<Int, IBakedModel>()
     }
 
     override fun getQuads(state: IBlockState?, side: EnumFacing?, rand: Long): MutableList<BakedQuad> {
@@ -30,15 +30,21 @@ class PipeItemRedirector(val baseBakedModel: IBakedModel) : IBakedModel by baseB
                 if (stack.item !is PipeItem)
                     return originalModel
 
-                return cache.getOrPut(stack.metadata) {
-                    getModelWithTexture(null, baseBakedModel, TextureAtlasManager.getTextureForConnectionType(PipeType.values()[stack.metadata]))
+                return modelCache.getOrPut(stack.metadata) {
+                    getModelWithTexture(null, baseBakedModel) { sprite ->
+                        if (sprite.iconName.contains("replace_me")) {
+                            TextureAtlasManager.getTextureForConnectionType(PipeType.values()[stack.metadata])
+                        } else {
+                            sprite
+                        }
+                    }
                 }
             }
         }
     }
 
     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-    fun getModelWithTexture(state: IBlockState?, model: IBakedModel, texture: TextureAtlasSprite): IBakedModel {
-        return SimpleBakedModel.Builder(state, model, texture, BlockPos.ORIGIN).makeBakedModel()
+    fun getModelWithTexture(state: IBlockState?, model: IBakedModel, textureRemapper: ((sprite: TextureAtlasSprite) -> TextureAtlasSprite)): IBakedModel {
+        return ModelTextureRemapper(state, model, BlockPos.ORIGIN, textureRemapper).makeBakedModel()
     }
 }

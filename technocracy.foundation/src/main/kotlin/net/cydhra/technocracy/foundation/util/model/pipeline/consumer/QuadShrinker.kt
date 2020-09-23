@@ -13,9 +13,8 @@ import net.minecraft.util.math.MathHelper
 
 class QuadShrinker(var coverFace: EnumFacing, var faces: BooleanArray) : IQuadConsumer {
 
-    override lateinit var  origQuad: BakedQuad
-    override lateinit var  unmodifiedQuad: SimpleQuad
-
+    override lateinit var origQuad: BakedQuad
+    override lateinit var unmodifiedQuad: SimpleQuad
 
     override fun consume(quad: SimpleQuad) {
         val pixelSize = 1 / 16f
@@ -24,19 +23,19 @@ class QuadShrinker(var coverFace: EnumFacing, var faces: BooleanArray) : IQuadCo
         for (vertPo in quad.vertPos) {
             if (coverFace.axis == EnumFacing.Axis.X) {
                 vertPo.x *= size
-                if (coverFace!!.axisDirection == POSITIVE)
+                if (coverFace.axisDirection == POSITIVE)
                     vertPo.x += 1 - size
             }
 
-            if (coverFace!!.axis == EnumFacing.Axis.Y) {
+            if (coverFace.axis == EnumFacing.Axis.Y) {
                 vertPo.y *= size
-                if (coverFace!!.axisDirection == POSITIVE)
+                if (coverFace.axisDirection == POSITIVE)
                     vertPo.y += 1 - size
             }
 
-            if (coverFace!!.axis == EnumFacing.Axis.Z) {
+            if (coverFace.axis == EnumFacing.Axis.Z) {
                 vertPo.z *= size
-                if (coverFace!!.axisDirection == POSITIVE)
+                if (coverFace.axisDirection == POSITIVE)
                     vertPo.z += 1 - size
             }
         }

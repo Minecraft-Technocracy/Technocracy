@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.util.model.pipeline.consumer
 
 import net.cydhra.technocracy.foundation.client.model.pipe.FacadeBakery
+import net.cydhra.technocracy.foundation.data.config.RenderConfig
 import net.cydhra.technocracy.foundation.util.model.SimpleQuad
 import net.cydhra.technocracy.foundation.util.model.pipeline.IQuadConsumer
 import net.minecraft.client.renderer.block.model.BakedQuad

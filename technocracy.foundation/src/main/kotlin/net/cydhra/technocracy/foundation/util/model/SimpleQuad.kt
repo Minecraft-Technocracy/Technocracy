@@ -62,11 +62,13 @@ class SimpleQuad() {
     var sprite: TextureAtlasSprite? = null
     var applyDiffuseLighting = true
 
-    val vertPos = mutableListOf<Vector3f>()
-    val vertUv = mutableListOf<Vector2f>()
-    val vertLight = mutableListOf<Vector2f>()
-    val vertColor = mutableListOf<Vector4f>()
-    val vertNormal = mutableListOf<Vector3f>()
+    var arraysInit = false
+
+    val vertPos by lazy { arraysInit = true; mutableListOf<Vector3f>() }
+    val vertUv by lazy { arraysInit = true;mutableListOf<Vector2f>() }
+    val vertLight by lazy { arraysInit = true;mutableListOf<Vector2f>() }
+    val vertColor by lazy { arraysInit = true;mutableListOf<Vector4f>() }
+    val vertNormal by lazy { arraysInit = true;mutableListOf<Vector3f>() }
 
     val data = MultimapBuilder.enumKeys(VertexFormatElement.EnumUsage::class.java).arrayListValues().build<VertexFormatElement.EnumUsage, FloatArray>()
 

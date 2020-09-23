@@ -10,7 +10,6 @@ import net.minecraftforge.client.resource.ISelectiveResourceReloadListener
 import net.minecraftforge.client.resource.ReloadRequirements
 import net.minecraftforge.client.resource.SelectiveReloadStateHandler
 import net.minecraftforge.client.resource.VanillaResourceType
-import net.minecraftforge.fml.client.FMLClientHandler
 
 
 class ReloadShaderCommand : CommandBase(), IClientCommand {
@@ -30,7 +29,6 @@ class ReloadShaderCommand : CommandBase(), IClientCommand {
         val manager = Minecraft.getMinecraft().resourceManager
         SelectiveReloadStateHandler.INSTANCE.endReload()
         SelectiveReloadStateHandler.INSTANCE.beginReload(ReloadRequirements.include(VanillaResourceType.SHADERS))
-        println("aaa")
         for (listener in (manager as SimpleReloadableResourceManager).reloadListeners) {
             if (listener is ISelectiveResourceReloadListener)
                 listener.onResourceManagerReload(manager)

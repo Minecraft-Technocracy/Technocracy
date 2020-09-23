@@ -91,3 +91,29 @@ fun Entity.isBodyInsideOfMaterial(materialIn: Material): Boolean {
         }
     }
 }
+
+fun intFromBools(vararg bools: Boolean): Int {
+    if (bools.size > 32) throw ArrayIndexOutOfBoundsException("varags too long")
+    var i = 0
+    for ((index, b) in bools.withIndex()) {
+        i = i or ((1 and b) shl index)
+    }
+    return i
+}
+
+infix fun Int.and(other: Boolean): Int {
+    return if (other) this else 0
+}
+
+fun longFromBools(vararg bools: Boolean): Long {
+    if (bools.size > 64) throw ArrayIndexOutOfBoundsException("varags too long")
+    var i = 0L
+    for ((index, b) in bools.withIndex()) {
+        i = i or ((1L and b) shl index)
+    }
+    return i
+}
+
+infix fun Long.and(other: Boolean): Long {
+    return if (other) this else 0
+}

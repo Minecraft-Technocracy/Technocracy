@@ -218,13 +218,10 @@ fun getCapabilityWrapper(stack: ItemStack, side: EnumFacing? = null): ItemCapabi
 }
 
 inline fun <reified T : IComponent> getComponent(stack: ItemStack, name: String, side: EnumFacing? = null): T? {
-    Minecraft.getMinecraft().mcProfiler.startSection("TC_Item_Capability")
     val wrapped = stack.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, side)
     if (wrapped != null) {
         val t = wrapped.getComponents().find { it.first == name }?.second as T
-        Minecraft.getMinecraft().mcProfiler.endSection()
         return t
     }
-    Minecraft.getMinecraft().mcProfiler.endSection()
     return null
 }

@@ -4,7 +4,7 @@ import net.cydhra.technocracy.foundation.util.model.SimpleQuad
 import net.cydhra.technocracy.foundation.util.model.pipeline.IQuadConsumer
 import net.minecraft.client.renderer.block.model.BakedQuad
 
-object QuadTinter : IQuadConsumer {
+class QuadTinter : IQuadConsumer {
     override lateinit var  origQuad: BakedQuad
     override lateinit var  unmodifiedQuad: SimpleQuad
 

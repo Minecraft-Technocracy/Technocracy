@@ -13,6 +13,7 @@ import net.cydhra.technocracy.foundation.content.blocks.tankGlassBlock
 import net.cydhra.technocracy.foundation.content.blocks.tankIOBlock
 import net.cydhra.technocracy.foundation.content.blocks.tankWallBlock
 import net.cydhra.technocracy.foundation.content.commands.ClearParticlesCommand
+import net.cydhra.technocracy.foundation.content.commands.ClearTCCaches
 import net.cydhra.technocracy.foundation.content.commands.ReloadShaderCommand
 import net.cydhra.technocracy.foundation.content.items.facadeItem
 import net.cydhra.technocracy.foundation.content.items.pipeItem
@@ -85,6 +86,7 @@ class ClientProxy : CommonProxy() {
 
         ClientCommandHandler.instance.registerCommand(ClearParticlesCommand())
         ClientCommandHandler.instance.registerCommand(ReloadShaderCommand())
+        ClientCommandHandler.instance.registerCommand(ClearTCCaches())
     }
 
     override fun postInit() {

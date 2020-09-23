@@ -14,7 +14,6 @@ import java.util.function.Function
 class PipeItemModel : AbstractCustomModel() {
     override fun bake(state: IModelState, format: VertexFormat, bakedTextureGetter: Function<ResourceLocation, TextureAtlasSprite>): IBakedModel {
         val bakedBaseModel = ModelLoaderRegistry.getModel(MODEL_BASE!!).bake(state, format, bakedTextureGetter)
-
         return PipeItemRedirector(bakedBaseModel)
     }
 

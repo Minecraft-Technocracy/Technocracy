@@ -6,12 +6,12 @@ import net.minecraft.client.renderer.block.model.BakedQuad
 import java.util.function.BiConsumer
 
 
-class QuadDynamicTransformer(val callBack: BiConsumer<QuadDynamicTransformer, SimpleQuad>) : IQuadConsumer {
+class QuadDynamicTransformer(val callBack: QuadDynamicTransformer.(SimpleQuad) -> Unit) : IQuadConsumer {
     override lateinit var  origQuad: BakedQuad
     override lateinit var  unmodifiedQuad: SimpleQuad
 
     override fun consume(quad: SimpleQuad) {
-        callBack.accept(this, quad)
+        callBack.invoke(this, quad)
     }
 
     override fun reset() {}

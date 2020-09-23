@@ -1,16 +1,22 @@
 package net.cydhra.technocracy.foundation
 
+import net.cydhra.technocracy.foundation.client.model.pipe.FacadeBakery
 import net.cydhra.technocracy.foundation.conduits.ConduitNetwork
-import net.cydhra.technocracy.foundation.content.commands.*
+import net.cydhra.technocracy.foundation.content.commands.ClearTemplateCommand
+import net.cydhra.technocracy.foundation.content.commands.GenerateTemplateCommand
+import net.cydhra.technocracy.foundation.content.commands.PasteTemplateCommand
 import net.cydhra.technocracy.foundation.content.multiblock.MultiBlockPhysics
 import net.cydhra.technocracy.foundation.data.config.PhysicSystem
+import net.cydhra.technocracy.foundation.data.config.RenderConfig
 import net.cydhra.technocracy.foundation.data.world.api.DataManager
 import net.cydhra.technocracy.foundation.proxy.CommonProxy
 import net.minecraft.world.WorldServer
-import net.minecraftforge.client.ClientCommandHandler
 import net.minecraftforge.common.MinecraftForge
+import net.minecraftforge.common.config.Config
+import net.minecraftforge.common.config.ConfigManager
 import net.minecraftforge.common.config.Configuration
 import net.minecraftforge.fluids.FluidRegistry
+import net.minecraftforge.fml.client.event.ConfigChangedEvent
 import net.minecraftforge.fml.common.FMLLog
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.Mod.EventHandler
@@ -79,6 +85,13 @@ object TCFoundation {
             clientSide = "net.cydhra.technocracy.foundation.proxy.ClientProxy")
     lateinit var proxy: CommonProxy
 
+    @SubscribeEvent
+    fun onConfigChanged(event: ConfigChangedEvent.OnConfigChangedEvent) {
+        if (event.modID == MODID) {
+            ConfigManager.load(MODID, Config.Type.INSTANCE)
+        }
+    }
+
     @Suppress("unused")
     @EventHandler
     fun preInit(@Suppress("UNUSED_PARAMETER") event: FMLPreInitializationEvent) {
@@ -86,6 +99,7 @@ object TCFoundation {
         config = Configuration(event.suggestedConfigurationFile)
         config.load()
         physics = PhysicSystem(config)
+        RenderConfig()
 
         MinecraftForge.EVENT_BUS.register(proxy)
         MinecraftForge.EVENT_BUS.register(this)

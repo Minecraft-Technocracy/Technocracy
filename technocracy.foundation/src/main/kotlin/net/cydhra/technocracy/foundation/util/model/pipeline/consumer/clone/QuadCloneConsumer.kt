@@ -2,7 +2,6 @@ package net.cydhra.technocracy.foundation.util.model.pipeline.consumer.clone
 
 import net.cydhra.technocracy.foundation.util.model.SimpleQuad
 import net.cydhra.technocracy.foundation.util.model.pipeline.IQuadConsumer
-import net.cydhra.technocracy.foundation.util.model.pipeline.consumer.QuadFacadeTransformer
 import net.minecraft.client.renderer.block.model.BakedQuad
 
 
@@ -23,14 +22,17 @@ class QuadCloneConsumer(var clonePos: Boolean) : IQuadConsumer {
         quad.sprite = bakedQuad.sprite
         quad.applyDiffuseLighting = bakedQuad.shouldApplyDiffuseLighting()
         quad.tintColor = 0
-        quad.vertColor.clear()
-        quad.vertLight.clear()
-        quad.vertUv.clear()
-        quad.vertNormal.clear()
-        quad.data.clear()
 
-        if (clonePos) {
-            quad.vertPos.clear()
+        if(quad.arraysInit) {
+            quad.vertColor.clear()
+            quad.vertLight.clear()
+            quad.vertUv.clear()
+            quad.vertNormal.clear()
+            //quad.data.clear()
+
+            if (clonePos) {
+                quad.vertPos.clear()
+            }
         }
 
         bakedQuad.pipe(QuadCloneVertexConsumer(quad, clonePos))

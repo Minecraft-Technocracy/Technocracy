@@ -184,14 +184,19 @@ class TileEntityPipe : AggregatableTileEntity() {
 
     }
 
+
+    enum class BoxType {
+        PIPE, CONNECTOR, FACADE
+    }
+
     /**
      * Returns a list of triples which contain information about the pipe model parts
      * First is a pair of EnumFacing and corresponding bounding box
      * Second is the PipeType
      * Third is an integer indicating which type the model part is (0: node, 1: connection)
      */
-    fun getPipeModelParts(): List<Triple<Pair<EnumFacing, AxisAlignedBB>, PipeType?, Int>> {
-        val boxes = mutableListOf<Triple<Pair<EnumFacing, AxisAlignedBB>, PipeType?, Int>>()
+    fun getPipeModelParts(): List<Triple<Pair<EnumFacing, AxisAlignedBB>, PipeType?, BoxType>> {
+        val boxes = mutableListOf<Triple<Pair<EnumFacing, AxisAlignedBB>, PipeType?, BoxType>>()
 
         //populate connected facings
         val facings = mutableSetOf<EnumFacing>()
@@ -265,7 +270,7 @@ class TileEntityPipe : AggregatableTileEntity() {
                             facing.axis == EnumFacing.Axis.Z -> boundingBox.offset(-nodeConnectionOffset, 0.0, 0.0)
                             facing.axis.isVertical -> boundingBox.offset(0.0, 0.0, nodeConnectionOffset)
                             else -> boundingBox
-                        }, type, 1))
+                        }, type, BoxType.PIPE))
                     }
                 }
             }
@@ -285,12 +290,12 @@ class TileEntityPipe : AggregatableTileEntity() {
 
             boxes.add(Triple(EnumFacing.NORTH to node.expand(expX * 2, 0.0, expZ * 2)
                     .offset(-expX, 0.0, -expZ)
-                    , if (getInstalledTypes().size == 1) getInstalledTypes().first() else null, 0))
+                    , if (getInstalledTypes().size == 1) getInstalledTypes().first() else null, BoxType.CONNECTOR))
 
         } else {
             boxes.add(Triple(EnumFacing.NORTH to node.expand(expansion * 2, 0.0, expansion * 2).offset(-expansion,
                     0.0,
-                    -expansion), if (getInstalledTypes().size == 1) getInstalledTypes().first() else null, 0))
+                    -expansion), if (getInstalledTypes().size == 1) getInstalledTypes().first() else null, BoxType.CONNECTOR))
         }
 
         //Calc facades
@@ -319,7 +324,7 @@ class TileEntityPipe : AggregatableTileEntity() {
                     AxisAlignedBB(0.0, 0.0, 0.0, height, 1.0, 1.0)
                 }
             }
-            boxes.add(Triple(facing to bb, null, -1))
+            boxes.add(Triple(facing to bb, null, BoxType.FACADE))
 
         }
 

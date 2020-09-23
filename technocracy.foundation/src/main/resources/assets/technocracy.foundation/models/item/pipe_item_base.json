@@ -1,76 +1,92 @@
 {
-  "textures": {
-    "texture": "technocracy.foundation:block/machine_bottom"
-  },
-  "elements": [
-    {
-      "__comment": "Box1",
-      "from": [
-        4,
-        4,
-        4
-      ],
-      "to": [
-        12,
-        12,
-        12
-      ],
-      "faces": {
-        "down": {
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ],
-          "texture": "#texture"
-        },
-        "up": {
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ],
-          "texture": "#texture"
-        },
-        "north": {
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ],
-          "texture": "#texture"
-        },
-        "south": {
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ],
-          "texture": "#texture"
-        },
-        "west": {
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ],
-          "texture": "#texture"
-        },
-        "east": {
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ],
-          "texture": "#texture"
-        }
-      }
-    }
-  ]
+	"textures": {
+		"texture": "technocracy.foundation:extra/replace_me",
+		"texture1": "technocracy.foundation:block/frame_corners"
+	},
+	"elements": [ 	 
+		{
+			"__comment": "Box1",
+			"from": [ 2, 1, 6 ],
+			"to": [ 14, 5, 10 ],
+			"faces": {
+				"down": { "uv": [ 0, 0, 16, 4 ], "texture": "#texture" },
+				"up": { "uv": [ 0, 0, 16, 4 ], "texture": "#texture" },
+				"north": { "uv": [ 0, 0, 16, 4 ], "texture": "#texture" },
+				"south": { "uv": [ 0, 0, 16, 4 ], "texture": "#texture" }
+			}
+		},
+		{
+			"__comment": "Box2",
+			"from": [ 0, 0, 5 ],
+			"to": [ 2, 6, 11 ],
+			"faces": {
+				"down": { "uv": [ 0, 5, 2, 11 ], "texture": "#texture1" },
+				"up": { "uv": [ 0, 5, 2, 11 ], "texture": "#texture1" },
+				"north": { "uv": [ 14, 10, 16, 16 ], "texture": "#texture1" },
+				"south": { "uv": [ 0, 10, 2, 16 ], "texture": "#texture1" },
+				"west": { "uv": [ 5, 10, 11, 16 ], "texture": "#texture1" },
+				"east": { "uv": [ 5, 10, 11, 16 ], "texture": "#texture1" }
+			}
+		},
+		{
+			"__comment": "Box2",
+			"from": [ 14, 0, 5 ],
+			"to": [ 16, 6, 11 ],
+			"faces": {
+				"down": { "uv": [ 0, 5, 2, 11 ], "texture": "#texture1" },
+				"up": { "uv": [ 0, 5, 2, 11 ], "texture": "#texture1" },
+				"north": { "uv": [ 14, 10, 16, 16 ], "texture": "#texture1" },
+				"south": { "uv": [ 0, 10, 2, 16 ], "texture": "#texture1" },
+				"west": { "uv": [ 5, 10, 11, 16 ], "texture": "#texture1" },
+				"east": { "uv": [ 5, 10, 11, 16 ], "texture": "#texture1" }
+			}
+		},
+		{
+			"__comment": "Box5",
+			"from": [ -2, 0, -2 ],
+			"to": [ -1, 1, -1 ],
+			"faces": {
+				"down": { "uv": [ 14, 1, 15, 2 ], "texture": "#texture" },
+				"up": { "uv": [ 14, 14, 15, 15 ], "texture": "#texture" },
+				"north": { "uv": [ 1, 15, 2, 16 ], "texture": "#texture" },
+				"south": { "uv": [ 14, 15, 15, 16 ], "texture": "#texture" },
+				"west": { "uv": [ 14, 15, 15, 16 ], "texture": "#texture" },
+				"east": { "uv": [ 1, 15, 2, 16 ], "texture": "#texture" }
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation":  [ 0, -90, 55 ],
+			"translation":  [ 0, 2.6086, 0.5 ],
+			"scale":  [ 0.35, 0.35, 0.35 ]
+		},
+		"thirdperson_lefthand": {
+			"rotation":  [ 0, -90, 55 ],
+			"translation":  [ 0, 2.6086, 0.5 ],
+			"scale":  [ 0.35, 0.35, 0.35 ]
+		},
+		"firstperson_righthand": {
+			"rotation":  [ 0, -90, -60 ],
+			"translation":  [ 1.13, 3.8956, 1.13 ],
+			"scale":  [ 0.68, 0.68, 0.68 ]
+		},
+		"firstperson_lefthand": {
+			"rotation":  [ 0, -90, -60 ],
+			"translation":  [ 1.13, 3.8956, 1.13 ],
+			"scale":  [ 0.68, 0.68, 0.68 ]
+		},
+		"gui": {
+			"rotation":  [ 30, 225, 0 ],
+			"translation":  [ 0, 1, 0 ],
+			"scale":  [ 0.625, 0.625, 0.625 ]
+		},
+		"ground": {
+			"translation":  [ 0, 2, 0 ],
+			"scale":  [ 0.5, 0.5, 0.5 ]
+		},
+		"fixed": {
+			"translation":  [ 0, 4.8695, 0 ]
+		}
+	}
 }

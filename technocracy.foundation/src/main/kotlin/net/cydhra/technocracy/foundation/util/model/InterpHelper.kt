@@ -21,7 +21,7 @@ package net.cydhra.technocracy.foundation.util.model
 /**
  * @author covers1624
  */
-class InterpHelper {
+object InterpHelper {
     private val posCache = Array(4) { FloatArray(2) }
     private val valCache = FloatArray(4)
     private var x0 = 0f

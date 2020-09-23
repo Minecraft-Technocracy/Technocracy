@@ -87,10 +87,14 @@ object TCParticleManager {
                 Minecraft.getMinecraft().mcProfiler.startSection("TC_Particles_Sorting")
 
                 particles.iterator().forEach {
-                    val lst = it.value.parallelStream().filter { p ->
-                        p.onUpdate(player)
-                    }.sorted { o1, o2 -> o2.lastDistance.compareTo(o1.lastDistance) }.collect(Collectors.toList())
-                    it.setValue(lst)
+                    try {
+                        val lst = it.value.parallelStream().filter { p ->
+                            p.onUpdate(player)
+                        }.sorted { o1, o2 -> o2.lastDistance.compareTo(o1.lastDistance) }.collect(Collectors.toList())
+                        it.setValue(lst)
+                    } catch (ex: Exception) {
+                        ex.printStackTrace()
+                    }
                 }
 
                 Minecraft.getMinecraft().mcProfiler.endSection()
