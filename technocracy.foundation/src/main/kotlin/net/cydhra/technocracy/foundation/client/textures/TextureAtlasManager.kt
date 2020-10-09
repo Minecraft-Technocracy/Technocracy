@@ -8,8 +8,10 @@ import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.event.TextureStitchEvent
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 
-
+@SideOnly(Side.CLIENT)
 class TextureAtlasManager {
     init {
         MinecraftForge.EVENT_BUS.register(this)
@@ -18,15 +20,14 @@ class TextureAtlasManager {
     companion object {
         lateinit var connector_energy: TextureAtlasSprite
         lateinit var connector_inventory: TextureAtlasSprite
-        lateinit var pipe_item: DynamicTextureAtlasSprite
-        lateinit var pipe_fluid: DynamicTextureAtlasSprite
-        lateinit var pipe_energy: DynamicTextureAtlasSprite
         lateinit var pipe_node: TextureAtlasSprite
 
         lateinit var drum_iron: TextureAtlasSprite
         lateinit var drum_iron_top: TextureAtlasSprite
         lateinit var drum_steel: TextureAtlasSprite
         lateinit var drum_steel_top: TextureAtlasSprite
+
+        val pipeTextures = mutableMapOf<PipeType, DynamicTextureAtlasSprite>()
 
         private lateinit var textureMap: TextureMap
 
@@ -42,18 +43,6 @@ class TextureAtlasManager {
          */
         fun getResourceLocation(name: String): ResourceLocation {
             return ResourceLocation("technocracy.foundation", name)
-        }
-
-        /**
-         * Returns the texture for connections of a specific pipe type
-         */
-        fun getTextureForConnectionType(type: PipeType): DynamicTextureAtlasSprite {
-            //todo make it easier to add new pipe types without editing this method
-            return when (type) {
-                PipeType.ENERGY -> pipe_energy
-                PipeType.FLUID -> pipe_fluid
-                PipeType.ITEM -> pipe_item
-            }
         }
     }
 
@@ -75,9 +64,10 @@ class TextureAtlasManager {
         connector_energy = event.map.registerSprite(getResourceLocation("extra/connector_energy"))
         connector_inventory = event.map.registerSprite(getResourceLocation("extra/connector_inventory"))
 
-        pipe_item = getDynamicAnimatedSprite(getResourceLocation("block/pipe_item"))
-        pipe_fluid = getDynamicAnimatedSprite(getResourceLocation("block/pipe_fluid"))
-        pipe_energy = getDynamicAnimatedSprite(getResourceLocation("block/pipe_energy"))
+        pipeTextures[PipeType.ITEM] = getDynamicAnimatedSprite(getResourceLocation("block/pipe_item"))
+        pipeTextures[PipeType.FLUID] = getDynamicAnimatedSprite(getResourceLocation("block/pipe_fluid"))
+        pipeTextures[PipeType.ENERGY] = getDynamicAnimatedSprite(getResourceLocation("block/pipe_energy"))
+
         pipe_node = event.map.registerSprite(getResourceLocation("block/frame_corners"))
 
         drum_iron = event.map.registerSprite(getResourceLocation("block/drum/drum_iron"))

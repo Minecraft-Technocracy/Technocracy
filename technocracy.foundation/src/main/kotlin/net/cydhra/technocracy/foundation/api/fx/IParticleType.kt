@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.api.fx
 
+import com.google.common.util.concurrent.Monitor
 import net.cydhra.technocracy.foundation.model.fx.api.AbstractParticle
 import java.util.stream.Stream
 
@@ -25,9 +26,19 @@ interface IParticleType {
     val maxParticles: Int
 
     /**
+     * if not null [uploadBuffers] will be called
+     */
+    val mutex: Monitor?
+
+    /**
      * called once before this type gets rendered
      */
     fun preRenderType()
+
+    /**
+     * called async once before world rendering to allow buffer uploads
+     */
+    fun uploadBuffers(particles: Stream<AbstractParticle>, partialTicks: Float) {}
 
     /**
      * called once if [IParticleType.perParticleRender] is set to true

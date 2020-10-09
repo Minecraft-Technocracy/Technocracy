@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.content.fx
 
+import com.google.common.util.concurrent.Monitor
 import net.cydhra.technocracy.foundation.api.fx.IParticleType
 import net.cydhra.technocracy.foundation.model.fx.api.AbstractParticle
 import net.cydhra.technocracy.foundation.util.opengl.BasicShaderProgram
@@ -16,6 +17,7 @@ import net.minecraft.world.World
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL20
 import org.lwjgl.opengl.GL31
+import org.lwjgl.opengl.NVHalfFloat
 import org.lwjgl.util.vector.Matrix4f
 import org.lwjgl.util.vector.Vector3f
 import java.nio.ByteBuffer
@@ -109,6 +111,12 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
         override val perParticleRender = false
         override val name = "Smoke"
         override val maxParticles = 100000
+        override val mutex by lazy {
+            //load vao
+            vao
+
+            Monitor()
+        }
 
         val vao: VAO by lazy {
             generateVAO()
@@ -132,11 +140,11 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
         //val vboData = GLAllocation.createDirectFloatBuffer(MAXPARTICLES * vboElementSize)
         //val tmpBuffer = GLAllocation.createDirectFloatBuffer(4 * 4)
 
-        val smokeShader = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shaders/smoke.vsh"), ResourceLocation("technocracy.astronautics", "shaders/smoke.fsh"), ResourceLocation("technocracy.astronautics", "shaders/smoke.gsh"), attributeBinder = Consumer {
-            GL20.glBindAttribLocation(it, 0, "position")
-            GL20.glBindAttribLocation(it, 1, "maxtime_currenttime_rendertime_rotation")
-            GL20.glBindAttribLocation(it, 2, "scale")
-            GL20.glBindAttribLocation(it, 3, "pos")
+        val smokeShader = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shaders/smoke.vsh"), ResourceLocation("technocracy.astronautics", "shaders/smoke.fsh"), ResourceLocation("technocracy.astronautics", "shaders/smoke.gsh"), attributeBinder = {
+            GL20.glBindAttribLocation(programID, 0, "position")
+            GL20.glBindAttribLocation(programID, 1, "maxtime_currenttime_rendertime_rotation")
+            GL20.glBindAttribLocation(programID, 2, "scale")
+            GL20.glBindAttribLocation(programID, 3, "pos")
 
             //GL20.glBindAttribLocation(it, 2, "modelViewMatrix")
         }) {
@@ -159,6 +167,32 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
         val MODELVIEW = Matrix4f()
         val tmpMatrix = Matrix4f()
         val position = Vector3f()
+
+        var lastSize = 0
+
+        override fun uploadBuffers(particles: Stream<AbstractParticle>, partialTicks: Float) {
+            vboData.clear()
+
+            var i = 0
+            for (p in particles) {
+                vboData.putFloat(p.getMaxAge().toFloat())
+                vboData.putFloat(p.getAge() + partialTicks)
+                vboData.putFloat(p.renderTime)
+
+                vboData.putFloat(p.rotation)
+                vboData.putFloat(p.size * (p as ParticleSmoke).distanceSize)
+
+                vboData.putFloat(p.getX(partialTicks))
+                vboData.putFloat(p.getY(partialTicks))
+                vboData.putFloat(p.getZ(partialTicks))
+
+                //updateMatrix(p.interpolatePosition(position, partialTicks), p.rotation, p.size).store(vboData)
+                i++
+            }
+            lastSize = i
+
+            vboData.flip()
+        }
 
         override fun preRenderType() {
 
@@ -202,7 +236,7 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
         override fun render(particles: Stream<AbstractParticle>, partialTicks: Float): Int {
             Minecraft.getMinecraft().mcProfiler.startSection("buffer_update")
 
-            vboData.clear()
+            /*vboData.clear()
 
             var i = 0
             for (p in particles) {
@@ -221,15 +255,15 @@ class ParticleSmoke(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Doub
                 i++
             }
 
-            vboData.flip()
+            vboData.flip()*/
 
             Minecraft.getMinecraft().mcProfiler.endStartSection("uploading")
             //OpenGLObjectLoader.updateVBO(vbo_data_ID, vboData, GL15.GL_STREAM_DRAW)
             smokeShader.updateUniforms()
             Minecraft.getMinecraft().mcProfiler.endStartSection("rendering")
-            GL31.glDrawArraysInstanced(GL11.GL_POINTS, 0, vertexCount, i)
+            GL31.glDrawArraysInstanced(GL11.GL_POINTS, 0, vertexCount, lastSize)
             Minecraft.getMinecraft().mcProfiler.endSection()
-            return i
+            return lastSize
         }
 
         override fun postRenderType() {

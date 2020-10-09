@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.astronautics.content.fx
 
+import com.google.common.util.concurrent.Monitor
 import net.cydhra.technocracy.coremod.event.RenderShaderEvent
 import net.cydhra.technocracy.foundation.api.fx.IParticleType
 import net.cydhra.technocracy.foundation.model.fx.api.AbstractParticle
@@ -76,6 +77,8 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
         override val name = "LaserBeam"
         override val perParticleRender = false
         override val maxParticles = -1
+
+        override val mutex = null
 
         private val sqr_2half = sqrt(2.toDouble()) * 0.5
 

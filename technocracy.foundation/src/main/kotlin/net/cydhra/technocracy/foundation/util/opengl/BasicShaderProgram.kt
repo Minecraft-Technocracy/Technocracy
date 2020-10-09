@@ -1,14 +1,12 @@
 package net.cydhra.technocracy.foundation.util.opengl
 
-import net.cydhra.technocracy.foundation.util.CompoundBuilder
+import net.cydhra.technocracy.foundation.util.toFloatArray
+import net.cydhra.technocracy.foundation.util.toIntArray
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.OpenGlHelper
 import net.minecraft.client.resources.IReloadableResourceManager
 import net.minecraft.client.resources.IResourceManager
-import net.minecraft.client.resources.SimpleReloadableResourceManager
 import net.minecraft.client.util.JsonException
-import net.minecraft.command.CommandReload
-import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.resource.IResourceType
 import net.minecraftforge.client.resource.ISelectiveResourceReloadListener
@@ -25,23 +23,31 @@ import java.io.BufferedInputStream
 import java.io.Closeable
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
-import java.util.function.BiConsumer
-import java.util.function.Consumer
 import java.util.function.Predicate
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 @SideOnly(Side.CLIENT)
-class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: ResourceLocation, val geometryIn: ResourceLocation? = null, val attributeBinder: Consumer<Int>? = null, val resourceReloader: BiConsumer<IResourceManager, Predicate<IResourceType>>? = null, val init: (BasicShaderProgram.() -> Unit)? = null) : ISelectiveResourceReloadListener {
+class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: ResourceLocation, val geometryIn: ResourceLocation? = null, val attributeBinder: (BasicShaderProgram.() -> Unit)? = null, inline val init: (BasicShaderProgram.() -> Unit)? = null) : ISelectiveResourceReloadListener {
 
-    private var programID: Int = 0
+    var programID: Int = 0
+        private set
+
     private var vertexShaderID: Int = 0
     private var fragmentShaderID: Int = 0
     private var geometryShaderID: Int = 0
-    private var running = false
+
+    var running = false
+        private set
+
     private val uniform = mutableListOf<ShaderUniform>()
+
+    var resourceReloader: (BasicShaderProgram.(IResourceManager, Predicate<IResourceType>) -> Unit)? = null
 
     init {
         (Minecraft.getMinecraft().resourceManager as IReloadableResourceManager).registerReloadListener(this)
-        init?.let { it() }
+        init?.invoke(this)
     }
 
     override fun onResourceManagerReload(resourceManager: IResourceManager, resourcePredicate: Predicate<IResourceType>) {
@@ -49,7 +55,7 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
             reloadShader(resourceManager)
         }
 
-        resourceReloader?.accept(resourceManager, resourcePredicate)
+        resourceReloader?.invoke(this, resourceManager, resourcePredicate)
     }
 
     fun reloadShader(resourceManager: IResourceManager) {
@@ -86,7 +92,7 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
             OpenGlHelper.glAttachShader(programID, geometryShaderID)
 
         //No binding after linking possible without relinking it
-        attributeBinder?.accept(programID)
+        attributeBinder?.invoke(this)
 
         OpenGlHelper.glLinkProgram(programID)
 
@@ -115,9 +121,7 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
     }
 
     fun getUniform(variableName: String, type: ShaderUniform.UniformType): ShaderUniform {
-        val tmp = ShaderUniform(type, OpenGlHelper.glGetUniformLocation(this.programID, variableName), variableName, this)
-        uniform.add(tmp)
-        return tmp
+        return ShaderUniform(type, OpenGlHelper.glGetUniformLocation(this.programID, variableName), variableName, this).apply { uniform.add(this) }
     }
 
     fun updateUniforms() {
@@ -239,7 +243,6 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
             }
         }
 
-
         private fun uploadSampler() {
             val tmp = buffer_int ?: return
             OpenGlHelper.glUniform1i(uniformId, tmp[0])
@@ -247,7 +250,7 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
 
         fun uploadUniform(vararg ints: Int): ShaderUniform {
             if (type.type == UniformType.GenericType.FLOAT) {
-                uploadUniform(*ints.asSequence().map { it.toFloat() }.toList().toFloatArray())
+                uploadUniform(*ints.toFloatArray())
                 return this
             }
 
@@ -257,7 +260,7 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
                 notify(notifyWrongSize); return this
             }
 
-            ints.asSequence().forEachIndexed { i, value ->
+            for ((i, value) in ints.withIndex()) {
                 if (buffer[i] != value) {
                     buffer.put(i, value)
                     dirty = true
@@ -267,13 +270,13 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
         }
 
         fun uploadUniform(vararg doubles: Double): ShaderUniform {
-            uploadUniform(*doubles.asSequence().map { it.toFloat() }.toList().toFloatArray())
+            uploadUniform(*doubles.toFloatArray())
             return this
         }
 
         fun uploadUniform(vararg floats: Float): ShaderUniform {
             if (type.type == UniformType.GenericType.INT) {
-                uploadUniform(*floats.asSequence().map { it.toInt() }.toList().toIntArray())
+                uploadUniform(*floats.toIntArray())
                 return this
             }
 
@@ -283,12 +286,13 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
                 notify(notifyWrongSize); return this
             }
 
-            floats.asSequence().forEachIndexed { i, value ->
+            for ((i, value) in floats.withIndex()) {
                 if (buffer[i] != value) {
                     buffer.put(i, value)
                     dirty = true
                 }
             }
+
             return this
         }
 

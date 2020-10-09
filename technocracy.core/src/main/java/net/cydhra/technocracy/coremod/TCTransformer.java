@@ -140,6 +140,23 @@ public class TCTransformer implements IClassTransformer {
                             }
                         }
                     }
+                } else if(method.name.equals("renderWorldPass")) {
+                    InsnList ins = new InsnList();
+
+                    //get eventbus
+                    ins.add(new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraftforge/common/MinecraftForge", "EVENT_BUS", "Lnet/minecraftforge/fml/common/eventhandler/EventBus;"));
+
+                    //crate event
+                    ins.add(new TypeInsnNode(Opcodes.NEW, "net/cydhra/technocracy/coremod/event/RenderWorldFirstEvent"));
+                    ins.add(new InsnNode(Opcodes.DUP));
+                    //partialTicks
+                    ins.add(new VarInsnNode(Opcodes.FLOAD, 2));
+                    ins.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/cydhra/technocracy/coremod/event/RenderWorldFirstEvent", "<init>", "(F)V", false));
+                    //load and call event
+                    ins.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraftforge/fml/common/eventhandler/EventBus", "post", "(Lnet/minecraftforge/fml/common/eventhandler/Event;)Z", false));
+                    ins.add(new InsnNode(Opcodes.POP));
+
+                    method.instructions.insert(ins);
                 }
             }
             return getBytes(node);

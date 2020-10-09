@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.astronautics.content.fx
 
+import com.google.common.util.concurrent.Monitor
 import net.cydhra.technocracy.foundation.api.fx.IParticleType
 import net.cydhra.technocracy.foundation.client.shader.RefractionEffect
 import net.cydhra.technocracy.foundation.model.fx.api.AbstractParticle
@@ -48,6 +49,7 @@ class RefrectParticle(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Do
         override val name = "refract"
         override val perParticleRender = false
         override val maxParticles = -1
+        override val mutex = null
 
         //var built = false
 

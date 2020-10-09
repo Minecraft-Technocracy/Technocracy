@@ -377,7 +377,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
 
         nodeList.forEach { nodeTag ->
             val blockPos = NBTUtil.getPosFromTag((nodeTag as NBTTagCompound).getCompoundTag(NBT_KEY_NODE_POS))
-            val types = nodeTag.getIntArray(NBT_KEY_NODE_TYPE_LIST).map { PipeType.values()[it] }.toMutableSet()
+            val types = nodeTag.getIntArray(NBT_KEY_NODE_TYPE_LIST).map { PipeType[it] }.toMutableSet()
             this.nodes[blockPos] = types
         }
 
@@ -388,7 +388,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
             this.edges[blockPos] = mutableMapOf()
 
             typeList.forEach { typeTag ->
-                val pipeType = PipeType.values()[(typeTag as NBTTagCompound).getInteger(NBT_KEY_EDGE_TYPE_LIST_ENTRY)]
+                val pipeType = PipeType[(typeTag as NBTTagCompound).getInteger(NBT_KEY_EDGE_TYPE_LIST_ENTRY)]
                 val facings = typeTag.getIntArray(NBT_KEY_EDGE_TYPE_LIST_DIRECTION_LIST).map { EnumFacing.values()[it] }
                         .toMutableSet()
 
@@ -426,8 +426,10 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
             val typeList = crossSectionTag.getTagList(NBT_KEY_CROSS_SECTION_TYPES, Constants.NBT.TAG_INT)
             this.chunkCrossSections[blockPos] = mutableSetOf()
 
+            PipeType[2]
+
             typeList.forEach { type ->
-                this.chunkCrossSections[blockPos]!!.add(PipeType.values()[(type as NBTTagInt).int])
+                this.chunkCrossSections[blockPos]!!.add(PipeType[(type as NBTTagInt).int])
             }
         }
 
@@ -679,3 +681,4 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
                 .flatten()
     }
 }
+

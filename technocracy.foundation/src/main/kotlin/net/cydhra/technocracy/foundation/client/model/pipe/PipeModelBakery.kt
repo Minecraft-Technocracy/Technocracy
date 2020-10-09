@@ -87,7 +87,7 @@ class PipeModelBakery : IBakedModel {
 
                         val texture = when (it.third) {
                             TileEntityPipe.BoxType.CONNECTOR -> TextureAtlasManager.pipe_node
-                            TileEntityPipe.BoxType.PIPE -> TextureAtlasManager.getTextureForConnectionType(it.second!!)
+                            TileEntityPipe.BoxType.PIPE -> it.second!!.texture
                             else -> error("Box type out of bounds")
                         }
 

@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.model.fx.manager
 
+import net.cydhra.technocracy.coremod.event.RenderWorldFirstEvent
 import net.cydhra.technocracy.foundation.api.fx.IParticleType
 import net.cydhra.technocracy.foundation.model.fx.api.AbstractParticle
 import net.minecraft.client.Minecraft
@@ -12,6 +13,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import java.util.*
+import java.util.concurrent.Executors
 import java.util.stream.Collectors
 import kotlin.math.max
 
@@ -20,6 +22,8 @@ import kotlin.math.max
 object TCParticleManager {
     val particles = mutableMapOf<IParticleType, MutableList<AbstractParticle>>()
     var lastRender = 0
+
+    val pool = Executors.newCachedThreadPool()
 
     val rnd = Random()
 
@@ -33,6 +37,26 @@ object TCParticleManager {
         if (Minecraft.getMinecraft().gameSettings.showDebugInfo) {
             event.left.add("")
             event.left.add("TC_Particles: $lastRender/${particles.values.stream().mapToInt { it.size }.sum()}")
+        }
+    }
+
+    @SubscribeEvent
+    fun preRender(event: RenderWorldFirstEvent) {
+        for ((type, list) in particles) {
+            if (list.isEmpty()) continue
+            val mut = type.mutex ?: continue
+
+            pool.submit {
+                mut.enter()
+
+                var stream = list.stream()
+
+                if (type.maxParticles != -1)
+                    stream = stream.skip(max(0, list.size - type.maxParticles).toLong())
+
+                type.uploadBuffers(stream, event.partialTicks)
+                mut.leave()
+            }
         }
     }
 
@@ -55,6 +79,9 @@ object TCParticleManager {
                 if (list.isEmpty()) continue
 
                 startSection(type.name)
+
+                type.mutex?.enter()
+
                 type.preRenderType()
 
                 if (type.perParticleRender) {
@@ -72,6 +99,7 @@ object TCParticleManager {
                 }
 
                 type.postRenderType()
+                type.mutex?.leave()
                 endSection()
             }
             endSection()

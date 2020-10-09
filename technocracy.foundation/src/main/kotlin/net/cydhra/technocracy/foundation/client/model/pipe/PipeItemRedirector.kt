@@ -3,6 +3,7 @@ package net.cydhra.technocracy.foundation.client.model.pipe
 import net.cydhra.technocracy.foundation.client.textures.TextureAtlasManager
 import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.cydhra.technocracy.foundation.content.items.PipeItem
+import net.cydhra.technocracy.foundation.util.get
 import net.cydhra.technocracy.foundation.util.model.ModelTextureRemapper
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.renderer.block.model.*
@@ -33,7 +34,7 @@ class PipeItemRedirector(val baseBakedModel: IBakedModel) : IBakedModel by baseB
                 return modelCache.getOrPut(stack.metadata) {
                     getModelWithTexture(null, baseBakedModel) { sprite ->
                         if (sprite.iconName.contains("replace_me")) {
-                            TextureAtlasManager.getTextureForConnectionType(PipeType.values()[stack.metadata])
+                            PipeType[stack.metadata].texture
                         } else {
                             sprite
                         }

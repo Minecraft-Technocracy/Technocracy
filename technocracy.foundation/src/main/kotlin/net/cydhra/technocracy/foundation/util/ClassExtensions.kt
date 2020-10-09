@@ -14,6 +14,11 @@ import net.minecraftforge.event.entity.EntityEvent
 import net.minecraftforge.fml.relauncher.Side
 import org.lwjgl.util.vector.Vector4f
 import java.util.*
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 
 fun Framebuffer?.validate(width: Int = Minecraft.getMinecraft().displayWidth, height: Int = Minecraft.getMinecraft().displayHeight, depth: Boolean = true): Framebuffer {
     if (this == null || this.framebufferWidth != width || this.framebufferHeight != height) {
@@ -116,4 +121,62 @@ fun longFromBools(vararg bools: Boolean): Long {
 
 infix fun Long.and(other: Boolean): Long {
     return if (other) this else 0
+}
+
+inline fun <T> Collection<T>.applyAll(block: T.() -> Unit): Collection<T> {
+    for (t in this)
+        block(t)
+    return this
+}
+
+fun FloatArray.toIntArray(): IntArray {
+    val result = IntArray(size)
+    var index = 0
+    for (element in this)
+        result[index++] = element.toInt()
+    return result
+}
+
+fun FloatArray.toDoubleArray(): DoubleArray {
+    val result = DoubleArray(size)
+    var index = 0
+    for (element in this)
+        result[index++] = element.toDouble()
+    return result
+}
+
+fun DoubleArray.toIntArray(): IntArray {
+    val result = IntArray(size)
+    var index = 0
+    for (element in this)
+        result[index++] = element.toInt()
+    return result
+}
+
+fun DoubleArray.toFloatArray(): FloatArray {
+    val result = FloatArray(size)
+    var index = 0
+    for (element in this)
+        result[index++] = element.toFloat()
+    return result
+}
+
+fun IntArray.toFloatArray(): FloatArray {
+    val result = FloatArray(size)
+    var index = 0
+    for (element in this)
+        result[index++] = element.toFloat()
+    return result
+}
+
+fun IntArray.toDoubleArray(): DoubleArray {
+    val result = DoubleArray(size)
+    var index = 0
+    for (element in this)
+        result[index++] = element.toDouble()
+    return result
+}
+
+operator fun <E> Collection<E>.get(index: Int): E {
+    return elementAtOrNull(index)!!
 }

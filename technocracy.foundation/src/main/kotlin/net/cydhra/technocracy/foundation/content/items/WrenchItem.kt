@@ -54,20 +54,20 @@ class WrenchItem : BaseItem("wrench"), IWrench, IItemScrollEvent, IToolHammer, I
             val mode = getWrenchMode(stack)
             if (mode == WrenchMode.DEFAULT) {
                 for (pt in PipeType.values()) {
-                    TextureAtlasManager.getTextureForConnectionType(pt).setAnimationTime(0)
+                    pt.texture.setAnimationTime(0)
                 }
             } else {
                 for (pt in PipeType.values()) {
                     if (mode.allowedPipe == pt) {
-                        TextureAtlasManager.getTextureForConnectionType(pt).setAnimationTime(0)
+                        pt.texture.setAnimationTime(0)
                     } else {
-                        TextureAtlasManager.getTextureForConnectionType(pt).setAnimationTime(1)
+                        pt.texture.setAnimationTime(1)
                     }
                 }
             }
         } else {
             for (pt in PipeType.values()) {
-                TextureAtlasManager.getTextureForConnectionType(pt).setAnimationTime(0)
+                pt.texture.setAnimationTime(0)
             }
         }
     }

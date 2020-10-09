@@ -28,7 +28,6 @@ class ClearTCCaches : CommandBase(), IClientCommand {
         FacadeBakery.quadCache.clear()
         PipeModelBakery.quadCache.clear()
         PipeItemRedirector.modelCache.clear()
-        FacadeItemBakedModel.quadCache.clear()
     }
 
     override fun getAliases(): MutableList<String> {
