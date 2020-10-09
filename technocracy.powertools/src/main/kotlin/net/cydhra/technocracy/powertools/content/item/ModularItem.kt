@@ -51,7 +51,7 @@ class ModularItem : BaseItem("modularitem"), TCTileEntityGuiProvider {
 
         wrapper.registerComponent(battery, "battery")
         wrapper.registerAttachableParameter(INSTALL_ENERGY, battery)
-        wrapper.registerComponent(ItemUpgradesComponent(3, listOf(UpgradeClass.TOOL)), "upgradeable")
+        wrapper.registerComponent(ItemUpgradesComponent(listOf(UpgradeClass.TOOL)), "upgradeable")
 
         val digSpeedComponent = ItemMultiplierComponent(UPGRADE_DIG_SPEED, 0.0, null)
         wrapper.registerComponent(digSpeedComponent, DIG_SPEED_MULTIPLIER_NAME)

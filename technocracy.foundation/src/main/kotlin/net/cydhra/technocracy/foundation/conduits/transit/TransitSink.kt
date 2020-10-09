@@ -20,6 +20,7 @@ class TransitSink(pos: BlockPos) : TransitEdge(pos) {
             PipeType.ENERGY -> 1000
             PipeType.FLUID -> 1000
             PipeType.ITEM -> 16
+            else -> 0
         }
 
     constructor(id: Int, type: PipeType, facing: EnumFacing, pos: BlockPos) : this(pos) {

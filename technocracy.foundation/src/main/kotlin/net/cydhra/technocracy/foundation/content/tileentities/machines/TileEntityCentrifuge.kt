@@ -23,7 +23,7 @@ import net.minecraft.util.EnumFacing
  * A tile entity linked to a pulverizer block that can store up to two stacks of items and processes the first stack
  * into its output (second) stack, if the processing output and second stack can be merged.
  */
-class TileEntityCentrifuge : MachineTileEntity(), TEInventoryProvider {
+class TileEntityCentrifuge : MachineTileEntity(), TEInventoryProvider<DynamicInventoryCapability> {
 
     /**
      * Input inventory for the pulverizer with one slot

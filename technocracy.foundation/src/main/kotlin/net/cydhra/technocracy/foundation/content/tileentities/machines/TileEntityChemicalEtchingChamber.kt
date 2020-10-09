@@ -29,7 +29,7 @@ import net.minecraft.util.EnumFacing
 /**
  *
  */
-class TileEntityChemicalEtchingChamber : MachineTileEntity(), TEInventoryProvider {
+class TileEntityChemicalEtchingChamber : MachineTileEntity(), TEInventoryProvider<DynamicInventoryCapability> {
     private val inputInventory = TileEntityInventoryComponent(3, this, EnumFacing.EAST)
     private val outputInventoryComponent = TileEntityInventoryComponent(1, this, EnumFacing.WEST,
             DynamicInventoryCapability.InventoryType.OUTPUT)

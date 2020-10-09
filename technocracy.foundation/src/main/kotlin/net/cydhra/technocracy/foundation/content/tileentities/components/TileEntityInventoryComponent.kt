@@ -19,7 +19,7 @@ import net.minecraftforge.items.CapabilityItemHandler
  */
 class TileEntityInventoryComponent(
         size: Int,
-        provider: TEInventoryProvider,
+        provider: TEInventoryProvider<DynamicInventoryCapability>,
         override val facing: MutableSet<EnumFacing>,
         val inventoryType: DynamicInventoryCapability.InventoryType = DynamicInventoryCapability.InventoryType.BOTH) :
         AbstractTileEntityDirectionalCapabilityComponent() {
@@ -31,7 +31,7 @@ class TileEntityInventoryComponent(
      */
     constructor(
             size: Int,
-            provider: TEInventoryProvider,
+            provider: TEInventoryProvider<DynamicInventoryCapability>,
             facing: EnumFacing,
             inventoryType: DynamicInventoryCapability.InventoryType = DynamicInventoryCapability.InventoryType.BOTH)
             : this(size, provider, mutableSetOf(facing), inventoryType)

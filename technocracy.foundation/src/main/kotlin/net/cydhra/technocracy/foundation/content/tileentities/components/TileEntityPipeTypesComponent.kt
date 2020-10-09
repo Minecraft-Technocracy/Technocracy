@@ -29,9 +29,9 @@ class TileEntityPipeTypesComponent : AbstractTileEntityComponent() {
 
             for (i in 0 until amount) {
                 val name = nbt.getString("$i")
-                val optional = Arrays.stream(PipeType.values()).filter { it.name == name }.findFirst()
-                if (optional.isPresent)
-                    types.add(optional.get())
+                val optional = PipeType.values().filter { it.name == name }.firstOrNull()
+                if (optional != null)
+                    types.add(optional)
             }
         }
     }

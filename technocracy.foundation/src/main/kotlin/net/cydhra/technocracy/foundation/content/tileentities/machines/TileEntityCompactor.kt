@@ -13,7 +13,7 @@ import net.minecraft.util.EnumFacing
 /**
  *
  */
-class TileEntityCompactor : MachineTileEntity(), TEInventoryProvider {
+class TileEntityCompactor : MachineTileEntity(), TEInventoryProvider<DynamicInventoryCapability> {
 
     /**
      * Input inventory for the furnace with one slot

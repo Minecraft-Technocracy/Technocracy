@@ -33,15 +33,21 @@ class PipeItem : BaseItem("pipe_item") {
 
         var pos = posIn
         val state = worldIn.getBlockState(pos)
-        val block = state.block
+        var block = state.block
 
         val stack = player.getHeldItem(hand)
 
         if (!block.isReplaceable(worldIn, pos)) {
+            var ofsetted = false
+            if (block !is PipeBlock || player.isSneaking) {
+                pos = pos.offset(facing)
+                block = worldIn.getBlockState(pos).block
+                ofsetted = true
+            }
             if (block is PipeBlock) {
                 val tile = worldIn.getTileEntity(pos)!! as TileEntityPipe
 
-                val thisPipeType = PipeType.values()[stack.metadata]
+                val thisPipeType = PipeType[stack.metadata]
 
                 if (!tile.hasPipeType(thisPipeType)) {
                     tile.addPipeType(thisPipeType)
@@ -53,18 +59,16 @@ class PipeItem : BaseItem("pipe_item") {
                     stack.shrink(1)
 
                     return EnumActionResult.SUCCESS
+                } else if(!ofsetted) {
+                    pos = pos.offset(facing)
                 }
             }
-        }
-
-        if (!block.isReplaceable(worldIn, pos)) {
-            pos = pos.offset(facing)
         }
 
         val canedit = player.canPlayerEdit(pos, facing, stack)
         val mayplace = worldIn.mayPlace(pipe, pos, false, facing, null)
 
-        return if (!stack.isEmpty && canedit  && mayplace) {
+        return if (!stack.isEmpty && canedit && mayplace) {
             var pipeState = pipe.defaultState
 
             if (placeBlockAt(stack, player, worldIn, pos, facing, hitX, hitY, hitZ, pipeState)) {
@@ -97,8 +101,8 @@ class PipeItem : BaseItem("pipe_item") {
             pipe.onBlockPlacedBy(world, pos, state, player, stack)
 
             val tile = world.getTileEntity(pos)
-            if(tile != null)
-                (tile as TileEntityPipe).addPipeType(PipeType.values()[stack.metadata])
+            if (tile != null)
+                (tile as TileEntityPipe).addPipeType(PipeType[stack.metadata])
 
             if (player is EntityPlayerMP)
                 CriteriaTriggers.PLACED_BLOCK.trigger(player, pos, stack)
@@ -108,7 +112,7 @@ class PipeItem : BaseItem("pipe_item") {
     }
 
     override fun getUnlocalizedName(stack: ItemStack): String {
-        return super.getUnlocalizedName() + "." + PipeType.values()[stack.metadata].unlocalizedName
+        return super.getUnlocalizedName() + "." + PipeType[stack.metadata].unlocalizedName
     }
 
     override fun getSubItems(tab: CreativeTabs, items: NonNullList<ItemStack>) {

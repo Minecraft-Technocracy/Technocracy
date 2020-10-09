@@ -25,7 +25,7 @@ import net.minecraftforge.fml.relauncher.SideOnly
  * A tile entity linked to a pulverizer block that can store up to two stacks of items and processes the first stack
  * into its output (second) stack, if the processing output and second stack can be merged.
  */
-class TileEntityAlloySmeltery : MachineTileEntity(), TEInventoryProvider {
+class TileEntityAlloySmeltery : MachineTileEntity(), TEInventoryProvider<DynamicInventoryCapability> {
 
     /**
      * Input inventory for the pulverizer with one slot

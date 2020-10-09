@@ -5,6 +5,7 @@ import net.cydhra.technocracy.foundation.api.tileentities.TEInventoryProvider
 import net.cydhra.technocracy.foundation.api.upgrades.ItemUpgrade
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeClass
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
+import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicItemHolderCapability
 import net.cydhra.technocracy.foundation.model.items.api.UpgradeItem
 import net.minecraft.init.Items
 import net.minecraft.item.ItemStack
@@ -13,7 +14,7 @@ import net.minecraft.util.text.*
 import java.util.concurrent.CopyOnWriteArrayList
 
 
-class ItemUpgradesComponent(val numberOfUpgradeSlots: Int, val upgradeType: List<UpgradeClass>) : AbstractItemComponent(), TEInventoryProvider {
+class ItemUpgradesComponent(val upgradeType: List<UpgradeClass>) : AbstractItemComponent(), TEInventoryProvider<DynamicItemHolderCapability> {
 
     /**
      * A set of descriptive lines about installed upgrades
@@ -22,44 +23,63 @@ class ItemUpgradesComponent(val numberOfUpgradeSlots: Int, val upgradeType: List
 
     override val type: ComponentType = ComponentType.OTHER
 
+    val inv = object : TEInventoryProvider<DynamicInventoryCapability> {
+        override fun isItemValid(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack): Boolean {
+            assert(inventory == this@ItemUpgradesComponent.dummySlot)
+            val item = stack.item
+
+            // only accept upgrade items
+            if (item !is UpgradeItem<*>) return false
+
+            // check whether the upgrade is a machine-type upgrade
+            if (!upgradeType.contains(item.upgradeClass)) return false
+
+            // ask the item whether it can be installed
+            if (!item.upgrades.all { upgrade -> (upgrade as ItemUpgrade).canInstallUpgrade(wrapper, this@ItemUpgradesComponent) })
+                return false
+
+            return true
+        }
+
+        override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack, originalStack: ItemStack) {
+            inventory.forceStackInSlot(slot, ItemStack.EMPTY)
+            if (stack.item != Items.AIR) {
+                itemHolder.addStack(stack)
+            }
+        }
+    }
+
     /**
      * The inventory where to place upgrade items. Is public because GUI must be able to access it for modification
      */
-    val inventory: DynamicInventoryCapability = DynamicInventoryCapability(numberOfUpgradeSlots, this)
+    val dummySlot: DynamicInventoryCapability = DynamicInventoryCapability(1, inv)
+
+    /**
+     * The inventory where to place upgrade items. Is public because GUI must be able to access it for modification
+     */
+    val itemHolder: DynamicItemHolderCapability = DynamicItemHolderCapability(this)
 
 
     init {
-        this.inventory.componentParent = this
+        this.dummySlot.componentParent = this
+        this.itemHolder.componentParent = this
         needsClientSyncing = true
     }
 
     override fun serializeNBT(): NBTTagCompound {
-        return inventory.serializeNBT()
+        return itemHolder.serializeNBT()
     }
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
-        inventory.deserializeNBT(nbt)
+        itemHolder.deserializeNBT(nbt)
         this.updateDescription()
     }
 
-    override fun isItemValid(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack): Boolean {
-        assert(inventory == this.inventory)
-        val item = stack.item
-
-        // only accept upgrade items
-        if (item !is UpgradeItem<*>) return false
-
-        // check whether the upgrade is a machine-type upgrade
-        if (!upgradeType.contains(item.upgradeClass)) return false
-
-        // ask the item whether it can be installed
-        if (!item.upgrades.all { upgrade -> (upgrade as ItemUpgrade).canInstallUpgrade(wrapper, this) })
-            return false
-
+    override fun isItemValid(inventory: DynamicItemHolderCapability, slot: Int, stack: ItemStack): Boolean {
         return true
     }
 
-    override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack,
+    override fun onSlotUpdate(inventory: DynamicItemHolderCapability, slot: Int, stack: ItemStack,
                               originalStack: ItemStack) {
         if (stack.item == originalStack.item) return
 
@@ -90,7 +110,7 @@ class ItemUpgradesComponent(val numberOfUpgradeSlots: Int, val upgradeType: List
     }
 
     fun getInstalledUpgrades(): List<ItemUpgrade> {
-        return this.inventory.stacks
+        return this.itemHolder.getStacks()
                 .asSequence()
                 .filter { !it.isEmpty }
                 .map { it.item }
@@ -114,7 +134,7 @@ class ItemUpgradesComponent(val numberOfUpgradeSlots: Int, val upgradeType: List
 
         this.description.add(TextComponentTranslation("tooltips.upgrades.title.description")
                 .appendSibling(TextComponentString(":")) to TextComponentString(
-                "${this.inventory.stacks.filter { !it.isEmpty }.count()}/${this.numberOfUpgradeSlots}")
+                "${this.itemHolder.getStacks().filter { !it.isEmpty }.count()}")
                 .setStyle(Style().setColor(TextFormatting.DARK_GREEN)))
 
 //        this.multipliers.forEach { multiplier ->

@@ -21,7 +21,7 @@ import java.util.concurrent.CopyOnWriteArrayList
  *
  * @param numberOfUpgradeSlots how many upgrade slots the machine has.
  */
-class TileEntityMachineUpgradesComponent(val numberOfUpgradeSlots: Int) : AbstractTileEntityComponent(), TEInventoryProvider {
+class TileEntityMachineUpgradesComponent(val numberOfUpgradeSlots: Int) : AbstractTileEntityComponent(), TEInventoryProvider<DynamicInventoryCapability> {
 
     /**
      * A set of descriptive lines about installed upgrades

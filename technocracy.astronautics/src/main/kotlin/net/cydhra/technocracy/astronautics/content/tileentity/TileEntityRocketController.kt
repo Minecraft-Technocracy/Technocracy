@@ -37,7 +37,7 @@ import kotlin.math.ceil
 import kotlin.math.min
 
 
-class TileEntityRocketController : AggregatableTileEntity(), IAggregatableGuiProvider, TEInventoryProvider, TCTileEntityGuiProvider, DynamicInventoryCapability.CustomItemStackStackLimit {
+class TileEntityRocketController : AggregatableTileEntity(), IAggregatableGuiProvider, TEInventoryProvider<DynamicInventoryCapability>, TCTileEntityGuiProvider, DynamicInventoryCapability.CustomItemStackStackLimit {
 
     override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack, originalStack: ItemStack) {
     }

@@ -25,7 +25,7 @@ import net.minecraft.util.EnumFacing
 /**
  *
  */
-class TileEntityIndustrialRefinery : MachineTileEntity(), TEInventoryProvider {
+class TileEntityIndustrialRefinery : MachineTileEntity(), TEInventoryProvider<DynamicInventoryCapability> {
     private val inputFluidComponent1 = TileEntityFluidComponent(4000,
             tanktype = DynamicFluidCapability.TankType.INPUT, facing = mutableSetOf(EnumFacing.WEST))
 

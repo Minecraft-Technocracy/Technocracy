@@ -15,7 +15,7 @@ import net.minecraft.util.EnumFacing
 /**
  *
  */
-class TileEntityDissolutionChamber : MachineTileEntity(), TEInventoryProvider {
+class TileEntityDissolutionChamber : MachineTileEntity(), TEInventoryProvider<DynamicInventoryCapability> {
 
     private val inputInventoryComponent = TileEntityInventoryComponent(1, this, EnumFacing.WEST)
     private val inputFluidComponent = TileEntityFluidComponent(4000,

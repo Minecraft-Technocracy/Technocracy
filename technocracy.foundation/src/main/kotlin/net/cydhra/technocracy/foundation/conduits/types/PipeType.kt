@@ -99,7 +99,7 @@ class PipeType(val unlocalizedName: String,
                     return@acceptContent PipeItemContent(content.source, content.slot, virtualStack)
                 })
 
-        operator fun get(index: Int) : PipeType {
+        operator fun get(index: Int): PipeType {
             return types[index]
         }
 
@@ -116,8 +116,9 @@ class PipeType(val unlocalizedName: String,
         return this.unlocalizedName
     }
 
-    @SideOnly(Side.CLIENT)
-    val texture: DynamicTextureAtlasSprite = TextureAtlasManager.pipeTextures[this]!!
+    val texture: DynamicTextureAtlasSprite
+        @SideOnly(Side.CLIENT)
+        get() = TextureAtlasManager.pipeTextures[this]!!
 
     val ordinal: Int = types.indexOf(this)
 

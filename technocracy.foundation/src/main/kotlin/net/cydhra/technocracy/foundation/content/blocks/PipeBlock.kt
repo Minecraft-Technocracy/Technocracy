@@ -15,6 +15,7 @@ import net.minecraft.block.BlockRedstoneOre
 import net.minecraft.block.BlockWorkbench
 import net.minecraft.block.material.Material
 import net.minecraft.block.properties.PropertyEnum
+import net.minecraft.block.properties.PropertyInteger
 import net.minecraft.block.state.BlockFaceShape
 import net.minecraft.block.state.BlockStateContainer
 import net.minecraft.block.state.IBlockState
@@ -36,6 +37,7 @@ import net.minecraft.util.math.RayTraceResult
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.Explosion
 import net.minecraft.world.IBlockAccess
+import net.minecraft.world.IWorldNameable
 import net.minecraft.world.World
 import net.minecraftforge.common.property.IExtendedBlockState
 import net.minecraftforge.fml.common.Optional
@@ -49,9 +51,6 @@ import kotlin.math.max
 
 @Optional.Interface(iface = "team.chisel.ctm.api.IFacade", modid = "ctm")
 class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), IFacade {
-    companion object {
-        var PIPETYPE: PropertyEnum<PipeType> = PropertyEnum.create("pipetype", PipeType::class.java)
-    }
 
     init {
         setHardness(1.5F)
@@ -63,8 +62,24 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
 
     var lastFallLoc: BlockPos? = null
 
+    override fun harvestBlock(worldIn: World, player: EntityPlayer, pos: BlockPos, state: IBlockState, te: TileEntity?, stack: ItemStack) {
+        player.addExhaustion(0.005f)
+        if (!worldIn.isRemote) {
+            if (te is TileEntityPipe) {
+                for (pipe in te.getInstalledTypes()) {
+                    spawnAsEntity(worldIn, pos, ItemStack(pipeItem, 1, pipe.ordinal))
+                }
+                for (facade in te.getFacades().values) {
+                    spawnAsEntity(worldIn, pos, facade.copy().apply { this.count = 1 })
+                }
+            }
+        }
+        //Set it to air like the flower pot's harvestBlock method
+        worldIn.setBlockToAir(pos)
+    }
+
     override fun getDropItem(state: IBlockState, world: IBlockAccess, pos: BlockPos, te: TileEntity?): ItemStack {
-        return ItemStack(this, 1, getMetaFromState(state))
+        return ItemStack.EMPTY
     }
 
     override fun getExtendedState(state: IBlockState, world: IBlockAccess?, pos: BlockPos?): IExtendedBlockState {
@@ -72,7 +87,7 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
     }
 
     override fun createBlockState(): BlockStateContainer {
-        return BlockStateContainer.Builder(this).add(PIPETYPE).add(POSITION).build()
+        return BlockStateContainer.Builder(this).add(POSITION).build()
     }
 
     override fun createNewTileEntity(worldIn: World, meta: Int): TileEntity? {
@@ -174,7 +189,7 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
                     val triple = rayTraceBestBB(startPos, endPos, tile.getPipeModelParts(), pos)
                     tile.removeFacadeOnSide(triple!!.first.first)
                 } else if (lookingat.item is PipeItem) {
-                    tile.removePipeType(PipeType.values()[lookingat.metadata])
+                    tile.removePipeType(PipeType[lookingat.metadata])
                 }
 
                 spawnAsEntity(worldIn, pos, lookingat)
@@ -289,14 +304,6 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
         return bestbb
     }
 
-    override fun getMetaFromState(state: IBlockState): Int {
-        return state.getValue(PIPETYPE).ordinal
-    }
-
-    override fun getStateFromMeta(meta: Int): IBlockState {
-        return this.defaultState.withProperty(PIPETYPE, PipeType.values()[meta])
-    }
-
     override fun addCollisionBoxToList(state: IBlockState, worldIn: World, pos: BlockPos, entityBox: AxisAlignedBB,
                                        collidingBoxes: List<AxisAlignedBB>, entityIn: Entity?, isActualState: Boolean) {
         val list = (worldIn.getTileEntity(pos) as TileEntityPipe).getPipeModelParts().map { it.first.second }.toList()
@@ -372,8 +379,10 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
 
     override fun onFallenUpon(world: World, pos: BlockPos, entityIn: Entity, fallDistance: Float) {
         lastFallLoc = pos
-        val tile = world.getTileEntity(pos) as? TileEntityPipe ?: return super.onFallenUpon(world, pos, entityIn, fallDistance)
-        val pair = getBlockOnFacing(tile, EnumFacing.UP) ?: return super.onFallenUpon(world, pos, entityIn, fallDistance)
+        val tile = world.getTileEntity(pos) as? TileEntityPipe
+                ?: return super.onFallenUpon(world, pos, entityIn, fallDistance)
+        val pair = getBlockOnFacing(tile, EnumFacing.UP)
+                ?: return super.onFallenUpon(world, pos, entityIn, fallDistance)
         //can use current pos as onLanded is called in same method
         return pair.first.onFallenUpon(world, pos, entityIn, fallDistance)
     }

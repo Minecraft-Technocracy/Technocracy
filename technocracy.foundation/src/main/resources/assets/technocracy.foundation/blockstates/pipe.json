@@ -1,16 +1,6 @@
 {
   "variants": {
-    "pipetype=energy": [
-      {
-        "model": "technocracy.foundation:pipe"
-      }
-    ],
-    "pipetype=fluid": [
-      {
-        "model": "technocracy.foundation:pipe"
-      }
-    ],
-    "pipetype=item": [
+    "normal": [
       {
         "model": "technocracy.foundation:pipe"
       }

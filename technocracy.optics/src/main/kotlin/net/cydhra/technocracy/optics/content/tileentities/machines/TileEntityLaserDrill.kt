@@ -30,7 +30,7 @@ class TileEntityLaserDrill : AggregatableTileEntity(),
         IAggregatableGuiProvider,
         TCTileEntityGuiProvider,
         ILogicClient<ILogicParameters> by LogicClientDelegate(),
-        TEInventoryProvider {
+        TEInventoryProvider<DynamicInventoryCapability> {
 
     companion object {
         const val PADDING_LEFT = 8

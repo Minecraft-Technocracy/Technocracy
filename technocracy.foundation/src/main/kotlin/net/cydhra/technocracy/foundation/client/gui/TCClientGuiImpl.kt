@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.item.ItemStack
 import net.minecraft.util.ResourceLocation
 import java.awt.Color
 
@@ -272,6 +273,10 @@ open class TCClientGuiImpl(simpleGui: TCGui)
 
     fun renderHoveredItemToolTip(mouseX: Int, mouseY: Int) {
         super.renderHoveredToolTip(mouseX, mouseY)
+    }
+
+    public override fun renderToolTip(stack: ItemStack, mouseX: Int, mouseY: Int) {
+        super.renderToolTip(stack,mouseX, mouseY)
     }
 
     override fun onResize(mcIn: Minecraft, w: Int, h: Int) {

@@ -121,7 +121,7 @@ class ModularArmor(name: String, material: ArmorMaterial, slot: EntityEquipmentS
     override fun initCapabilities(stack: ItemStack, nbt: NBTTagCompound?): ICapabilityProvider? {
         val wrapper = ItemCapabilityWrapper(stack)
 
-        wrapper.registerComponent(ItemUpgradesComponent(5, mutableListOf(UpgradeClass.TOOL, UpgradeClass.ARMOR).apply { addAll(upgradeClasses) }), "upgradeable")
+        wrapper.registerComponent(ItemUpgradesComponent(mutableListOf(UpgradeClass.TOOL, UpgradeClass.ARMOR).apply { addAll(upgradeClasses) }), "upgradeable")
 
         val battery = ItemOptionalAttachedComponent(ItemEnergyComponent(DynamicItemEnergyCapability(0, 0, -1, -1)))
         battery.innerComponent.needsClientSyncing = true
@@ -184,7 +184,7 @@ class ModularArmor(name: String, material: ArmorMaterial, slot: EntityEquipmentS
     override fun getGui(player: EntityPlayer?): TCGui {
         val stack = player!!.heldItemMainhand
         val wrapped = stack.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, null)!!
-        val gui = SimpleGui(container = TCContainer(wrapped))
+        val gui = SimpleGui(container = TCContainer(wrapped), guiHeight = 206)
 
         val upgradesComponent = wrapped.getComponents().firstOrNull { (_, c) -> c is ItemUpgradesComponent }?.second
         if (upgradesComponent != null) {

@@ -86,7 +86,6 @@ abstract class AbstractTileEntityBlock(unlocalizedName: String,
         worldIn.setBlockToAir(pos)
     }
 
-
     override fun getPickBlock(state: IBlockState, target: RayTraceResult, world: World, pos: BlockPos, player: EntityPlayer): ItemStack? {
         return getDropItem(state, world, pos, world.getTileEntity(pos))
     }

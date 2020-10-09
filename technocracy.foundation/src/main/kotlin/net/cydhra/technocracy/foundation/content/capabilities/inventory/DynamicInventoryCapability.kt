@@ -14,7 +14,7 @@ import net.minecraftforge.items.ItemHandlerHelper
 import kotlin.math.min
 
 
-class DynamicInventoryCapability(size: Int = 0, private val machine: TEInventoryProvider, val slotTypes: MutableMap<Int, InventoryType> = mutableMapOf()) : IItemHandler,
+class DynamicInventoryCapability(size: Int = 0, private val machine: TEInventoryProvider<DynamicInventoryCapability>, val slotTypes: MutableMap<Int, InventoryType> = mutableMapOf()) : IItemHandler,
         IItemHandlerModifiable,
         INBTSerializable<NBTTagCompound>, AbstractComponentCapabilityBridge() {
 
@@ -48,6 +48,13 @@ class DynamicInventoryCapability(size: Int = 0, private val machine: TEInventory
         val original = this.stacks[slot]
         this.stacks[slot] = stack
         onContentsChanged(slot, original)
+    }
+
+    /**
+     * sets the item without calling [onContentsChanged]
+     */
+    fun forceStackInSlot(slot: Int, stack: ItemStack) {
+        this.stacks[slot] = stack
     }
 
     override fun getSlots(): Int {

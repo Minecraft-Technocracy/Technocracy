@@ -15,7 +15,7 @@ import net.minecraft.util.EnumFacing
 /**
  *
  */
-class TileEntityCrystallizationChamber : MachineTileEntity(), TEInventoryProvider {
+class TileEntityCrystallizationChamber : MachineTileEntity(), TEInventoryProvider<DynamicInventoryCapability> {
 
     /**
      * Input inventory for the furnace with one slot

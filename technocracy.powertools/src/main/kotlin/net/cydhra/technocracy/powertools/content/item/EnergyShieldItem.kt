@@ -52,7 +52,7 @@ class EnergyShieldItem : BaseItem("energy_shield"), IItemKeyBindEvent, TCTileEnt
     override fun initCapabilities(stack: ItemStack, nbt: NBTTagCompound?): ICapabilityProvider? {
         val wrapper = ItemCapabilityWrapper(stack)
 
-        wrapper.registerComponent(ItemUpgradesComponent(3, listOf(UpgradeClass.TOOL)), "upgradeable")
+        wrapper.registerComponent(ItemUpgradesComponent(listOf(UpgradeClass.TOOL)), "upgradeable")
 
         val energy = ItemEnergyComponent(DynamicItemEnergyCapability(0, 16000, 0))
         val energyMultiplier = ItemMultiplierComponent(UPGRADE_ENERGY_CAPACITY) {
@@ -187,7 +187,7 @@ class EnergyShieldItem : BaseItem("energy_shield"), IItemKeyBindEvent, TCTileEnt
     override fun getGui(player: EntityPlayer?): TCGui {
         val stack = player!!.heldItemMainhand
         val wrapped = stack.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, null)!!
-        val gui = SimpleGui(container = TCContainer(wrapped))
+        val gui = SimpleGui(container = TCContainer(wrapped), guiHeight = 206)
 
         val upgradesComponent = wrapped.getComponents().firstOrNull { (_, c) -> c is ItemUpgradesComponent }?.second
         if (upgradesComponent != null) {

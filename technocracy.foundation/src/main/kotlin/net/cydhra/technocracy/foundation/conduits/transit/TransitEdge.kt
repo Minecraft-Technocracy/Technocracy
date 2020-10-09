@@ -47,7 +47,7 @@ abstract class TransitEdge(val pos: BlockPos) : INBTSerializable<NBTTagCompound>
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
         this.id = nbt.getInteger(NBT_KEY_ID)
-        this.type = PipeType.values()[nbt.getInteger(NBT_KEY_TYPE)]
+        this.type = PipeType[nbt.getInteger(NBT_KEY_TYPE)]
         this.facing = EnumFacing.values()[nbt.getInteger(NBT_KEY_FACING)]
 
         val pathTag = nbt.getCompoundTag(NBT_KEY_PATHS)

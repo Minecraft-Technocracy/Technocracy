@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.api.tileentities
 
+import net.cydhra.technocracy.foundation.content.capabilities.AbstractComponentCapabilityBridge
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.minecraft.item.ItemStack
 
@@ -10,7 +11,7 @@ import net.minecraft.item.ItemStack
  * to be notified about inventory updates may implement this. Under no circumstances should there be any assumptions
  * about the nature of an implementor of this interface.
  */
-interface TEInventoryProvider {
+interface TEInventoryProvider<T: AbstractComponentCapabilityBridge> {
 
     /**
      * @param inventory the handler that is requesting whether the slot is valid
@@ -19,12 +20,12 @@ interface TEInventoryProvider {
      *
      * @return true, if the stack can be inserted into the slot
      */
-    fun isItemValid(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack): Boolean
+    fun isItemValid(inventory: T, slot: Int, stack: ItemStack): Boolean
 
     /**
      * @param inventory the handler that got its slot updated
      * @param slot inventory slot
      * @param stack the new ItemStack in the slot
      */
-    fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack, originalStack: ItemStack)
+    fun onSlotUpdate(inventory: T, slot: Int, stack: ItemStack, originalStack: ItemStack)
 }

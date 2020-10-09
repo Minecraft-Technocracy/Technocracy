@@ -17,7 +17,7 @@ import net.minecraft.util.EnumFacing
 /**
  *
  */
-class TileEntityPolymerizationChamber : MachineTileEntity(), TEInventoryProvider {
+class TileEntityPolymerizationChamber : MachineTileEntity(), TEInventoryProvider<DynamicInventoryCapability> {
     private val inputFluidComponent = TileEntityFluidComponent(4000,
             tanktype = DynamicFluidCapability.TankType.INPUT, facing = mutableSetOf(EnumFacing.WEST))
 
