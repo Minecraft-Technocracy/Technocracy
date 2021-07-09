@@ -6,9 +6,9 @@ buildscript {
         kotlin_version = '1.5.20'
 
         minecraft_version = '1.12.2'
-        forge_version = '14.23.5.2815'
-        forge_plugin_version = '2.3.2-SNAPSHOT'
-        mappings_version = 'snapshot_20180609'
+        forge_version = '14.23.5.2855'
+        forge_plugin_version = '4.0'
+        mappings_version = '20180609-1.12'
         grgit_version = '3.1.1'
         dokka_version = '0.10.1'
 
@@ -43,13 +43,13 @@ buildscript {
     }
 }
 
-apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'kotlin'
 apply plugin: 'idea'
 apply plugin: 'org.jetbrains.dokka'
 
 allprojects {
-    apply plugin: 'net.minecraftforge.gradle.forge'
+    apply plugin: 'net.minecraftforge.gradle'
     apply plugin: 'kotlin'
     apply plugin: 'idea'
     apply plugin: 'org.jetbrains.dokka'
@@ -100,33 +100,60 @@ allprojects {
         }
     }
 
+    dependencies {
+        implementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: project.kotlin_version
+        minecraft group: 'net.minecraftforge', name: 'forge',
+                version: "$project.minecraft_version-$project.forge_version"
+    }
+
     minecraft {
-        version = "$project.minecraft_version-$project.forge_version"
-        runDir = "run"
-        mappings = project.mappings_version
-        makeObfSourceJar = false
+        mappings channel: 'snapshot', version: mappings_version
+
+        // Run configurations.
+        runs {
+            client {
+                workingDirectory project.file('run')
+
+                // Recommended logging data for a userdev environment
+                property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+                // Recommended logging level for the console
+                property 'forge.logging.console.level', 'debug'
+            }
+
+            server {
+                workingDirectory project.file('server')
+
+                // Recommended logging data for a userdev environment
+                property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+                // Recommended logging level for the console
+                property 'forge.logging.console.level', 'debug'
+            }
+        }
     }
 
-    processResources {
-        // this will ensure that this task is redone when the versions change.
-        inputs.property "version", project.version
-        inputs.property "mcversion", project.minecraft.version
-
-        // replace stuff in mcmod.info, nothing else
-        from(sourceSets.main.resources.srcDirs) {
-            include 'mcmod.info'
-
-            // replace version and mcversion
-            expand 'version': project.version, 'mcversion': project.minecraft.version, 'modid': project.mod_id
-        }
-
-        // copy everything else except the mcmod.info
-        from(sourceSets.main.resources.srcDirs) {
-            exclude 'mcmod.info'
-        }
-
-        rename '(.+_at.cfg)', 'META-INF/$1'
-    }
+    // TODO: update this to FG_4.0
+//    processResources {
+//        // this will ensure that this task is redone when the versions change.
+//        inputs.property "version", project.version
+//        inputs.property "mcversion", project.minecraft.version
+//
+//        // replace stuff in mcmod.info, nothing else
+//        from(sourceSets.main.resources.srcDirs) {
+//            include 'mcmod.info'
+//
+//            // replace version and mcversion
+//            expand 'version': project.version, 'mcversion': project.minecraft.version, 'modid': project.mod_id
+//        }
+//
+//        // copy everything else except the mcmod.info
+//        from(sourceSets.main.resources.srcDirs) {
+//            exclude 'mcmod.info'
+//        }
+//
+//        rename '(.+_at.cfg)', 'META-INF/$1'
+//    }
 
     compileKotlin {
         kotlinOptions.jvmTarget = project.jvm_target
@@ -146,21 +173,26 @@ allprojects {
 }
 
 project('technocracy.foundation') {
-    dependencies {
-        deobfCompile group: 'net.shadowfacts', name: 'Forgelin', version: project.forgelin_version
-        deobfCompile group: 'mezz.jei', name: "jei_$project.minecraft_version", version: project.jei_version, classifier: 'api'
-        deobfCompile group: "it.zerono.mods.zerocore", name: "zerocore", version: project.zerocore_version
-        deobfCompile group: "team.chisel.ctm", name: "CTM", version: project.ctm_version
-        deobfCompile group: "mcp.mobius.waila", name: "Hwyla", version: project.waila_version, classifier: 'api'
-        deobfCompile group: "com.mod-buildcraft", name: "buildcraft-api", version: project.buildcraft_version
+    minecraft {
+        accessTransformer file('src/main/resources/technocracy_at.cfg')
+    }
 
-        deobfCompile("cofh:CoFHCore:${cofhcore_version}:universal") {
+    dependencies {
+        compileOnly fg.deobf("net.shadowfacts:Forgelin:$project.forgelin_version")
+        compileOnly fg.deobf("mezz.jei:jei_$project.minecraft_version:$project.jei_version:api")
+        compileOnly fg.deobf("it.zerono.mods.zerocore:zerocore:$project.zerocore_version")
+        compileOnly fg.deobf("team.chisel.ctm:CTM:$project.ctm_version")
+        compileOnly fg.deobf("mcp.mobius.waila:Hwyla:$project.waila_version:api")
+        compileOnly fg.deobf("com.mod-buildcraft:buildcraft-api:$project.buildcraft_version")
+
+        compileOnly fg.deobf("cofh:CoFHCore:${cofhcore_version}:universal") {
             transitive = false // We don't need RF nor JEI, thank you very much
         }
-        deobfCompile group: 'cofh', name: 'RedstoneFlux', version: '1.12-+', classifier: 'universal'
+        compileOnly fg.deobf("cofh:RedstoneFlux:1.12-+:universal")
 
-        deobfCompile group: "mcjty.theoneprobe", name: "TheOneProbe-1.12", version: project.top_version,
-                classifier: 'api'
+        compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.12:$project.top_version:api")
+
+        implementation project(":technocracy.core")
 
         if (project.hasProperty('technoblock')) {
             def override = project.getProperty('technoblock')
@@ -173,7 +205,16 @@ project('technocracy.foundation') {
 
     jar {
         manifest {
-            attributes 'FMLAT': 'technocracy_at.cfg'
+            attributes([
+                    'FMLAT'                   : 'technocracy_at.cfg',
+                    "Specification-Title"     : "technocracy",
+                    "Specification-Vendor"    : "kibisik",
+                    "Specification-Version"   : "1", // We are version 1 of ourselves
+                    "Implementation-Title"    : project.name,
+                    "Implementation-Version"  : "${version}",
+                    "Implementation-Vendor"   : "kibisik",
+                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+            ])
         }
     }
 }
@@ -187,7 +228,16 @@ project('technocracy.astronautics') {
     // jar configuration
     jar {
         manifest {
-            attributes 'FMLAT': 'astronautics_at.cfg'
+            attributes([
+                    'FMLAT'                   : 'astronautics_at.cfg',
+                    "Specification-Title"     : "technocracy.astronautics",
+                    "Specification-Vendor"    : "kibisik",
+                    "Specification-Version"   : "1", // We are version 1 of ourselves
+                    "Implementation-Title"    : project.name,
+                    "Implementation-Version"  : "${version}",
+                    "Implementation-Vendor"   : "kibisik",
+                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+            ])
         }
     }
 }
@@ -209,12 +259,42 @@ project('technocracy.optics') {
     dependencies {
         compile project(':technocracy.foundation')
     }
+
+    // jar configuration
+    jar {
+        manifest {
+            attributes([
+                    "Specification-Title"     : "technocracy.optics",
+                    "Specification-Vendor"    : "kibisik",
+                    "Specification-Version"   : "1", // We are version 1 of ourselves
+                    "Implementation-Title"    : project.name,
+                    "Implementation-Version"  : "${version}",
+                    "Implementation-Vendor"   : "kibisik",
+                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+            ])
+        }
+    }
 }
 
 project('technocracy.powertools') {
     dependencies {
         compile project(':technocracy.foundation')
         compile project(':technocracy.core')
+    }
+
+    // jar configuration
+    jar {
+        manifest {
+            attributes([
+                    "Specification-Title"     : "technocracy.powertools",
+                    "Specification-Vendor"    : "kibisik",
+                    "Specification-Version"   : "1", // We are version 1 of ourselves
+                    "Implementation-Title"    : project.name,
+                    "Implementation-Version"  : "${version}",
+                    "Implementation-Vendor"   : "kibisik",
+                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+            ])
+        }
     }
 }
 
@@ -239,20 +319,19 @@ dependencies {
     runtime(project('technocracy.powertools'))
     runtime(project('technocracy.core'))
 
-    deobfCompile group: 'net.shadowfacts', name: 'Forgelin', version: project.forgelin_version
-    deobfCompile group: 'mezz.jei', name: "jei_$project.minecraft_version", version: project.jei_version, classifier: 'api'
-    deobfCompile group: "it.zerono.mods.zerocore", name: "zerocore", version: project.zerocore_version
-    deobfCompile group: "team.chisel.ctm", name: "CTM", version: project.ctm_version
-    deobfCompile group: "mcp.mobius.waila", name: "Hwyla", version: project.waila_version, classifier: 'api'
-    deobfCompile group: "com.mod-buildcraft", name: "buildcraft-api", version: project.buildcraft_version
+    compileOnly fg.deobf("net.shadowfacts:Forgelin:$project.forgelin_version")
+    compileOnly fg.deobf("mezz.jei:jei_$project.minecraft_version:$project.jei_version:api")
+    compileOnly fg.deobf("it.zerono.mods.zerocore:zerocore:$project.zerocore_version")
+    compileOnly fg.deobf("team.chisel.ctm:CTM:$project.ctm_version")
+    compileOnly fg.deobf("mcp.mobius.waila:Hwyla:$project.waila_version:api")
+    compileOnly fg.deobf("com.mod-buildcraft:buildcraft-api:$project.buildcraft_version")
 
-    deobfCompile("cofh:CoFHCore:${cofhcore_version}:universal") {
+    compileOnly fg.deobf("cofh:CoFHCore:${cofhcore_version}:universal") {
         transitive = false // We don't need RF nor JEI, thank you very much
     }
-    deobfCompile group: 'cofh', name: 'RedstoneFlux', version: '1.12-+', classifier: 'universal'
+    compileOnly fg.deobf("cofh:RedstoneFlux:1.12-+:universal")
 
-    deobfCompile group: "mcjty.theoneprobe", name: "TheOneProbe-1.12", version: project.top_version,
-            classifier: 'api'
+    compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.12:$project.top_version:api")
 }
 
 jar {
@@ -265,19 +344,6 @@ jar {
     manifest {
         attributes 'FMLAT': 'monolith_at.cfg'
     }
-}
-
-/*
- * A setup task to setup all modules at once
- */
-task setup() {
-    setGroup("setup")
-    dependsOn(
-            ':technocracy.foundation:setupDecompWorkspace',
-            ':technocracy.astronautics:setupDecompWorkspace',
-            ':technocracy.optics:setupDecompWorkspace',
-            ':technocracy.powertools:setupDecompWorkspace'
-    )
 }
 
 task cloneTechnoblock() {
@@ -295,18 +361,18 @@ task cloneTechnoblock() {
 // * This adds any `subproject`'s Access Transformers to the `rootProject` so functionality works in debug mode.
 // * Credit to FusionLord https://gist.github.com/FusionLord/a8f0208b6ffaa2f466f119a13c4a1620
 // */
-import net.minecraftforge.gradle.user.patcherUser.forge.ForgeExtension
-import net.minecraftforge.gradle.user.patcherUser.forge.ForgePlugin
-
-task applySubATs {
-    ForgeExtension e = getPlugins().getPlugin(ForgePlugin.class).getExtension()
-    subprojects.each { p ->
-        p.sourceSets.main.resources.findAll{ f -> f.path.endsWith('_at.cfg')}.each { f ->
-            e.atSource(f)
-        }
-    }
-}
-
-afterEvaluate {
-    tasks.extractDependencyATs.finalizedBy applySubATs
-}
+//import net.minecraftforge.gradle.user.patcherUser.forge.ForgeExtension
+//import net.minecraftforge.gradle.user.patcherUser.forge.ForgePlugin
+//
+//task applySubATs {
+//    ForgeExtension e = getPlugins().getPlugin(ForgePlugin.class).getExtension()
+//    subprojects.each { p ->
+//        p.sourceSets.main.resources.findAll { f -> f.path.endsWith('_at.cfg') }.each { f ->
+//            e.atSource(f)
+//        }
+//    }
+//}
+//
+//afterEvaluate {
+//    tasks.extractDependencyATs.finalizedBy applySubATs
+//}

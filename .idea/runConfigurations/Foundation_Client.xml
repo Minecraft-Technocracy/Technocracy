@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Foundation Client" type="Application" factoryName="Application">
-    <option name="MAIN_CLASS_NAME" value="GradleStart" />
+    <option name="MAIN_CLASS_NAME" value="mcp.client.Start" />
     <module name="technocracy.technocracy.foundation.main" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run" />
     <RunnerSettings RunnerId="Run" />
