@@ -107,6 +107,8 @@ allprojects {
     }
 
     minecraft {
+        accessTransformer file('technocracy.foundation/src/main/resources/technocracy_at.cfg')
+
         mappings channel: 'snapshot', version: mappings_version
 
         // Run configurations.
@@ -173,10 +175,6 @@ allprojects {
 }
 
 project('technocracy.foundation') {
-    minecraft {
-        accessTransformer file('src/main/resources/technocracy_at.cfg')
-    }
-
     dependencies {
         compileOnly fg.deobf("net.shadowfacts:Forgelin:$project.forgelin_version")
         compileOnly fg.deobf("mezz.jei:jei_$project.minecraft_version:$project.jei_version:api")
@@ -201,6 +199,10 @@ project('technocracy.foundation') {
         } else {
             implementation group: 'com.github.Minecraft-Technocracy', name: 'technoblock', version: '533e16d272'
         }
+    }
+
+    minecraft {
+        accessTransformer file('src/main/resources/technocracy_at.cfg')
     }
 
     jar {
