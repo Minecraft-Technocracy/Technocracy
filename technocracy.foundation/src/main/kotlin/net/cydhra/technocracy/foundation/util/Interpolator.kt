@@ -51,12 +51,14 @@ object Interpolator {
         }
 
         fun getCurrent(time: Float): InterpolationStep<T> {
-            return steps.filter { it.time < time }.maxBy { it.time } ?: steps.minBy { it.time } ?: steps.first()
+            return steps.filter { it.time < time }.maxByOrNull { it.time } ?: steps.minByOrNull { it.time }
+            ?: steps.first()
         }
 
         fun getNext(time: Float): InterpolationStep<T>? {
             val current = getCurrent(time)
-            return steps.filter { it != current }.filter { it.time > current.time }.minBy { abs(it.time - current.time) }
+            return steps.filter { it != current }.filter { it.time > current.time }
+                .minByOrNull { abs(it.time - current.time) }
         }
 
         private fun interpolate(from: InterpolationStep<T>, to: InterpolationStep<T>, time: Float): T {

@@ -155,8 +155,8 @@ class BoilerMultiBlock(world: World) : BaseMultiBlock(
                                 MultiBlockPhysics.conductorTemperature
                             else
                                 arrayOf(pos.down(), pos.north(), pos.east(), pos.south(), pos.west())
-                                        .mapNotNull { heatMap[it] }
-                                        .max() ?: 0
+                                    .mapNotNull { heatMap[it] }
+                                    .maxOrNull() ?: 0
 
                     // if current heat is lower than neighbor heat and falloff, update it
                     if (heatMap[pos] ?: 0 < neighborHeat - 1) {
