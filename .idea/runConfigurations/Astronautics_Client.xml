@@ -1,7 +1,21 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Astronautics Client" type="Application" factoryName="Application">
-    <option name="MAIN_CLASS_NAME" value="GradleStart" />
+    <envs>
+      <env name="MCP_TO_SRG" value="$PROJECT_DIR$/../technocracy\technocracy.foundation\build\createSrgToMcp\output.srg" />
+      <env name="MOD_CLASSES" value="$PROJECT_DIR$/../technocracy\technocracy.foundation\build\resources\main;$PROJECT_DIR$/../technocracy\technocracy.foundation\build\classes\java\main;$PROJECT_DIR$/../technocracy\technocracy.foundation\build\classes\kotlin\main" />
+      <env name="mainClass" value="net.minecraft.launchwrapper.Launch" />
+      <env name="MCP_MAPPINGS" value="snapshot_20180609-1.12" />
+      <env name="FORGE_VERSION" value="14.23.5.2855" />
+      <env name="assetIndex" value="1.12" />
+      <env name="assetDirectory" value="C:\Users\Johannes\.gradle\caches\forge_gradle\assets" />
+      <env name="nativesDirectory" value="$PROJECT_DIR$/../technocracy\technocracy.foundation\build\natives" />
+      <env name="FORGE_GROUP" value="net.minecraftforge" />
+      <env name="tweakClass" value="net.minecraftforge.fml.common.launcher.FMLTweaker" />
+      <env name="MC_VERSION" value="1.12.2" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="net.minecraftforge.legacydev.MainClient" />
     <module name="technocracy.technocracy.astronautics.main" />
+    <option name="VM_PARAMETERS" value="-Dforge.logging.console.level=debug -Dforge.logging.markers=SCAN,REGISTRIES,REGISTRYDUMP" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run" />
     <method v="2">
       <option name="Make" enabled="true" />

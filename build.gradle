@@ -67,6 +67,10 @@ allprojects {
     repositories {
         jcenter()
         maven {
+            name 'Minecraft Forge Repository'
+            url "https://files.minecraftforge.net/maven"
+        }
+        maven {
             name 'Forgelin Maven Repository'
             url 'https://maven.shadowfacts.net/'
         }
@@ -107,7 +111,8 @@ allprojects {
     }
 
     minecraft {
-        accessTransformer file('technocracy.foundation/src/main/resources/technocracy_at.cfg')
+        accessTransformer new File(project.rootDir, 'technocracy.foundation/src/main/resources/technocracy_at.cfg')
+        accessTransformer new File(project.rootDir, 'technocracy.astronautics/src/main/resources/astronautics_at.cfg')
 
         mappings channel: 'snapshot', version: mappings_version
 
@@ -201,10 +206,6 @@ project('technocracy.foundation') {
         }
     }
 
-    minecraft {
-        accessTransformer file('src/main/resources/technocracy_at.cfg')
-    }
-
     jar {
         manifest {
             attributes([
@@ -246,7 +247,9 @@ project('technocracy.astronautics') {
 
 project('technocracy.core') {
     dependencies {
-
+        implementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: project.kotlin_version
+        minecraft group: 'net.minecraftforge', name: 'forge',
+                version: "$project.minecraft_version-$project.forge_version"
     }
 
     jar {
