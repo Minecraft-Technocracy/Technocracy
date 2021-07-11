@@ -121,6 +121,10 @@ allprojects {
             client {
                 workingDirectory project.file('run')
 
+                //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
+                property 'mixin.env.remapRefMap', 'true'
+                property 'mixin.env.refMapRemappingFile', "$projectDir/build/createSrgToMcp/output.srg"
+
                 // Recommended logging data for a userdev environment
                 property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
 
@@ -181,19 +185,33 @@ allprojects {
 
 project('technocracy.foundation') {
     dependencies {
-        compileOnly fg.deobf("net.shadowfacts:Forgelin:$project.forgelin_version")
-        compileOnly fg.deobf("mezz.jei:jei_$project.minecraft_version:$project.jei_version:api")
-        compileOnly fg.deobf("it.zerono.mods.zerocore:zerocore:$project.zerocore_version")
-        compileOnly fg.deobf("team.chisel.ctm:CTM:$project.ctm_version")
-        compileOnly fg.deobf("mcp.mobius.waila:Hwyla:$project.waila_version:api")
-        compileOnly fg.deobf("com.mod-buildcraft:buildcraft-api:$project.buildcraft_version")
+        // hard mod dependencies
+        implementation fg.deobf("net.shadowfacts:Forgelin:$project.forgelin_version")
+        // forgelin demands reflect and gradle apparently refuses to load it transitively
+        runtimeOnly group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: project.kotlin_version
 
-        compileOnly fg.deobf("cofh:CoFHCore:${cofhcore_version}:universal") {
+        implementation fg.deobf("it.zerono.mods.zerocore:zerocore:$project.zerocore_version")
+
+        implementation fg.deobf("com.mod-buildcraft:buildcraft-api:$project.buildcraft_version")
+        implementation fg.deobf("cofh:CoFHCore:${cofhcore_version}:universal") {
             transitive = false // We don't need RF nor JEI, thank you very much
         }
-        compileOnly fg.deobf("cofh:RedstoneFlux:1.12-+:universal")
+        implementation fg.deobf("cofh:RedstoneFlux:1.12-+:universal")
 
+        // soft mod dependencies
+        compileOnly fg.deobf("mezz.jei:jei_$project.minecraft_version:$project.jei_version:api")
+        compileOnly fg.deobf("mcp.mobius.waila:Hwyla:$project.waila_version:api")
         compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.12:$project.top_version:api")
+        compileOnly fg.deobf("team.chisel.ctm:CTM:$project.ctm_version")
+
+        // add soft mods to the runtime environment
+        runtimeOnly fg.deobf("mezz.jei:jei_$project.minecraft_version:$project.jei_version")
+        runtimeOnly fg.deobf("mcp.mobius.waila:Hwyla:$project.waila_version")
+        runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.12:$project.top_version")
+
+        // CTM has an AT which isn't applied if we load it via gradle (because of course it isn't).
+        // so to test CTM, add it to run/mods manually.
+//        runtimeOnly fg.deobf("team.chisel.ctm:CTM:$project.ctm_version")
 
         implementation project(":technocracy.core")
 
