@@ -1,16 +1,23 @@
 package net.cydhra.technocracy.coremod;
 
 import net.minecraft.launchwrapper.IClassTransformer;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTException;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.objectweb.asm.Opcodes.*;
 
 public class TCTransformer implements IClassTransformer {
     @Override
@@ -31,11 +38,11 @@ public class TCTransformer implements IClassTransformer {
                     ins.add(new TypeInsnNode(Opcodes.NEW, "net/cydhra/technocracy/coremod/event/RenderItemSideEvent"));
                     ins.add(new InsnNode(Opcodes.DUP));
                     //entity
-                    ins.add(new VarInsnNode(Opcodes.ALOAD, 1));
+                    ins.add(new VarInsnNode(ALOAD, 1));
                     //itemstack
-                    ins.add(new VarInsnNode(Opcodes.ALOAD, 2));
+                    ins.add(new VarInsnNode(ALOAD, 2));
                     //transformtype
-                    ins.add(new VarInsnNode(Opcodes.ALOAD, 3));
+                    ins.add(new VarInsnNode(ALOAD, 3));
                     //lefthand
                     ins.add(new VarInsnNode(Opcodes.ILOAD, 4));
                     ins.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/cydhra/technocracy/coremod/event/RenderItemSideEvent", "<init>", "(Lnet/minecraft/entity/EntityLivingBase;Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/renderer/block/model/ItemCameraTransforms$TransformType;Z)V", false));
@@ -62,9 +69,9 @@ public class TCTransformer implements IClassTransformer {
                     ins.add(new TypeInsnNode(Opcodes.NEW, "net/cydhra/technocracy/coremod/event/ItemCooldownEvent"));
                     ins.add(new InsnNode(Opcodes.DUP));
                     //this
-                    ins.add(new VarInsnNode(Opcodes.ALOAD, 0));
+                    ins.add(new VarInsnNode(ALOAD, 0));
                     //item
-                    ins.add(new VarInsnNode(Opcodes.ALOAD, 1));
+                    ins.add(new VarInsnNode(ALOAD, 1));
                     //delay
                     ins.add(new VarInsnNode(Opcodes.ILOAD, 2));
                     ins.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/cydhra/technocracy/coremod/event/ItemCooldownEvent", "<init>", "(Lnet/minecraft/util/CooldownTracker;Lnet/minecraft/item/Item;I)V", false));
@@ -76,19 +83,19 @@ public class TCTransformer implements IClassTransformer {
                     //get eventbus
                     ins.add(new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraftforge/common/MinecraftForge", "EVENT_BUS", "Lnet/minecraftforge/fml/common/eventhandler/EventBus;"));
                     //load and call event
-                    ins.add(new VarInsnNode(Opcodes.ALOAD, stack));
+                    ins.add(new VarInsnNode(ALOAD, stack));
                     ins.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraftforge/fml/common/eventhandler/EventBus", "post", "(Lnet/minecraftforge/fml/common/eventhandler/Event;)Z", false));
                     //pop boolean from post
                     ins.add(new InsnNode(Opcodes.POP));
 
                     //load event
-                    ins.add(new VarInsnNode(Opcodes.ALOAD, stack));
+                    ins.add(new VarInsnNode(ALOAD, stack));
                     //getDelay and save it in local delay
                     ins.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/cydhra/technocracy/coremod/event/ItemCooldownEvent", "getDelay", "()I", false));
                     ins.add(new VarInsnNode(Opcodes.ISTORE, 2));
 
                     //load event
-                    ins.add(new VarInsnNode(Opcodes.ALOAD, stack));
+                    ins.add(new VarInsnNode(ALOAD, stack));
                     //getDelay and save it in local delay
                     ins.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/cydhra/technocracy/coremod/event/ItemCooldownEvent", "getItem", "()Lnet/minecraft/item/Item;", false));
                     ins.add(new VarInsnNode(Opcodes.ASTORE, 1));
@@ -104,8 +111,8 @@ public class TCTransformer implements IClassTransformer {
             for (MethodNode method : node.methods) {
                 if (method.name.equals("updateCameraAndRender")) {
 
-                    for(AbstractInsnNode ain : method.instructions.toArray()) {
-                        if(ain instanceof MethodInsnNode) {
+                    for (AbstractInsnNode ain : method.instructions.toArray()) {
+                        if (ain instanceof MethodInsnNode) {
 
 
                             /*ObfuscationReflectionHelper.remapFieldNames()
@@ -140,7 +147,7 @@ public class TCTransformer implements IClassTransformer {
                             }
                         }
                     }
-                } else if(method.name.equals("renderWorldPass")) {
+                } else if (method.name.equals("renderWorldPass")) {
                     InsnList ins = new InsnList();
 
                     //get eventbus

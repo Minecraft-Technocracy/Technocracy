@@ -3,6 +3,7 @@ package net.cydhra.technocracy.coremod.event;
 import net.minecraft.item.Item;
 import net.minecraft.util.CooldownTracker;
 import net.minecraftforge.fml.common.eventhandler.Event;
+import org.lwjgl.input.Keyboard;
 
 public class ItemCooldownEvent extends Event {
     public ItemCooldownEvent(CooldownTracker tracker, Item item, int delay) {

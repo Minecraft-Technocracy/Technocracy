@@ -11,7 +11,7 @@ import java.util.Map;
 public class TCCorePlugin implements IFMLLoadingPlugin {
     @Override
     public String[] getASMTransformerClass() {
-        return new String[] {"net.cydhra.technocracy.coremod.TCTransformer"};
+        return new String[]{"net.cydhra.technocracy.coremod.TCTransformer"};
     }
 
     @Override
