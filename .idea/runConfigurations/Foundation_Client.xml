@@ -1,7 +1,5 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Foundation Client" type="Application" factoryName="Application">
-    <option name="ALTERNATIVE_JRE_PATH" value="C:\Program Files\Amazon Corretto\jdk1.8.0_292\jre" />
-    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <envs>
       <env name="MCP_TO_SRG" value="../technocracy.foundation\build\createSrgToMcp\output.srg" />
       <env name="MOD_CLASSES" value="../technocracy.foundation\build\resources\main;../technocracy.foundation\build\classes\java\main;../technocracy.foundation\build\classes\kotlin\main" />
