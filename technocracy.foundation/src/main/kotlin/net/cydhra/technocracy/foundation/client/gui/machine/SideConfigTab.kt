@@ -89,10 +89,11 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
 
         infoTitleLabel = DefaultLabel(10, offsetY + 2, "", gui = parent)
 
-        hideBlocks = DefaultButton(10, offsetY + height - 15 - 2, 15, 15, "H", parent) { _, _, _, button ->
+        hideBlocks = DefaultButton(10, offsetY + height - 15 - 2, 15, 15, "H", parent, "Hide side blocks") { _, _, _, button ->
             if (button == 0)
                 hideNeighbors = !hideNeighbors
             hideBlocks.text = if (hideNeighbors) "S" else "H"
+            hideBlocks.tooltip = if (hideNeighbors) "Show side blocks" else "Hide side blocks"
         }
 
         yaw = currentLockedSide.horizontalAngle

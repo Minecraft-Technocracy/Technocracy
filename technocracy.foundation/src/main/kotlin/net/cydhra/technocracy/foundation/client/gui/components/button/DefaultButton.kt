@@ -22,8 +22,8 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 
 
-open class DefaultButton(posX: Int, posY: Int, width: Int, height: Int, text: String, override var gui: TCGui, clientClick: ((side: Side, player: EntityPlayer, tileEntity: IAggregatable?, button: Int) -> Unit)? = null) :
-        Button(posX, posY, width, height, text, clientClick) {
+open class DefaultButton(posX: Int, posY: Int, width: Int, height: Int, text: String, override var gui: TCGui, tooltip: String = "", clientClick: ((side: Side, player: EntityPlayer, tileEntity: IAggregatable?, button: Int) -> Unit)? = null) :
+        Button(posX, posY, width, height, text, tooltip, clientClick) {
 
     protected val BUTTON_TEXTURES = ResourceLocation("textures/gui/widgets.png")
 
