@@ -67,6 +67,8 @@ class TCSlotIO(itemHandler: IItemHandler, override val index: Int, xPosition: In
         return mouseX > xPos && mouseX < xPos + height && mouseY > yPos && mouseY < yPos + height
     }
 
+    override fun onMouseScroll(dir: Int) {}
+
     override var internal_enabled = true
 
     /**

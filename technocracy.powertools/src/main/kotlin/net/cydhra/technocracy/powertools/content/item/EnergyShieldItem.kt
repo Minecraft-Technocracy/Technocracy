@@ -2,7 +2,6 @@ package net.cydhra.technocracy.powertools.content.item
 
 import net.cydhra.technocracy.coremod.event.ItemCooldownEvent
 import net.cydhra.technocracy.foundation.TCFoundation
-import net.cydhra.technocracy.foundation.api.ecs.IComponent
 import net.cydhra.technocracy.foundation.api.tileentities.TCTileEntityGuiProvider
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeClass
 import net.cydhra.technocracy.foundation.client.gui.SimpleGui
@@ -33,6 +32,8 @@ import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.capabilities.ICapabilityProvider
 import net.minecraftforge.event.entity.living.LivingAttackEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 
 
 class EnergyShieldItem : BaseItem("energy_shield"), IItemKeyBindEvent, TCTileEntityGuiProvider {
@@ -105,6 +106,7 @@ class EnergyShieldItem : BaseItem("energy_shield"), IItemKeyBindEvent, TCTileEnt
         return super.getDamage(stack)
     }*/
 
+    @SideOnly(Side.CLIENT)
     override fun addInformation(stack: ItemStack, worldIn: World?, tooltip: MutableList<String>, flagIn: ITooltipFlag) {
         val energy = getComponent<ItemEnergyComponent>(stack, "energy")
         if (energy != null) {
@@ -174,8 +176,9 @@ class EnergyShieldItem : BaseItem("energy_shield"), IItemKeyBindEvent, TCTileEnt
         return EnumAction.BLOCK
     }
 
+    @SideOnly(Side.CLIENT)
     override fun getKeyBind(): KeyBinding {
-        return ClientProxy.itemUpgradeGui
+        return ClientProxy.instance.itemUpgradeGui
     }
 
     override fun keyPress(player: EntityPlayer, itemStack: ItemStack) {

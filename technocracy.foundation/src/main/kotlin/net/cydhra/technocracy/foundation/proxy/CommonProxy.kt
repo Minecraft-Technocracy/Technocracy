@@ -46,6 +46,9 @@ import net.cydhra.technocracy.foundation.model.potions.manager.PotionManager
 import net.cydhra.technocracy.foundation.model.tileentities.manager.TileEntityManager
 import net.cydhra.technocracy.foundation.network.*
 import net.cydhra.technocracy.foundation.network.componentsync.*
+import net.minecraft.client.multiplayer.PlayerControllerMP
+import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.item.crafting.FurnaceRecipes
 import net.minecraft.item.crafting.Ingredient
 import net.minecraft.util.ResourceLocation
@@ -384,5 +387,11 @@ open class CommonProxy {
     open fun loadAnimationStateMachine(location: ResourceLocation,
                                        parameters: ImmutableMap<String, ITimeValue>): IAnimationStateMachine? {
         return null
+    }
+
+    open fun syncToMainThread(runnable: () -> Unit, player: EntityPlayer) {
+        if (player is EntityPlayerMP) {
+            player.serverWorld.addScheduledTask(runnable)
+        }
     }
 }

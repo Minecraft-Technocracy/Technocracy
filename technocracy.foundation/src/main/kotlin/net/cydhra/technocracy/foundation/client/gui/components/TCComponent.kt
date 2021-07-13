@@ -32,6 +32,9 @@ abstract class TCComponent : ITCComponent {
         }
     }
 
+    override fun onMouseScroll(dir: Int) {
+    }
+
     fun drawModalRectWithCustomSizedTexture(x: Double, y: Double, u: Double, v: Double, width: Double, height: Double, textureWidth: Float, textureHeight: Float) {
         val f = 1.0f / textureWidth
         val f1 = 1.0f / textureHeight
@@ -66,5 +69,7 @@ interface ITCComponent {
 
     fun mouseClicked(x: Int, y: Int, mouseX: Int, mouseY: Int, mouseButton: Int)
     fun isMouseOnComponent(mouseX: Int, mouseY: Int): Boolean
+
+    fun onMouseScroll(dir: Int)
 
 }

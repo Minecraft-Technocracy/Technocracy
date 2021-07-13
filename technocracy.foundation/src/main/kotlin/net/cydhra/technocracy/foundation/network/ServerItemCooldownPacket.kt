@@ -1,6 +1,7 @@
 package net.cydhra.technocracy.foundation.network
 
 import io.netty.buffer.ByteBuf
+import net.cydhra.technocracy.foundation.util.syncToMainThread
 import net.minecraft.client.Minecraft
 import net.minecraft.init.Items
 import net.minecraft.item.Item
@@ -23,8 +24,11 @@ class ServerItemCooldownPacket(var entityId: Int = 0, var item: Item = Items.AIR
     }
 
     override fun onMessage(message: ServerItemCooldownPacket, ctx: MessageContext): IMessage? {
-        val player = Minecraft.getMinecraft().world.playerEntities.find { it.entityId == message.entityId }
-        player?.cooldownTracker?.setCooldown(message.item, message.ticks)
+        ctx.syncToMainThread {
+            val player = Minecraft.getMinecraft().world.playerEntities.find { it.entityId == message.entityId }
+            player?.cooldownTracker?.setCooldown(message.item, message.ticks)
+            null
+        }
         return null
     }
 }

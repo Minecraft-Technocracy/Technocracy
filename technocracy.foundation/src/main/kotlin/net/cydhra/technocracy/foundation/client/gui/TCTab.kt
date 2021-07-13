@@ -4,10 +4,12 @@ import net.cydhra.technocracy.foundation.client.gui.components.ITCComponent
 import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
 import net.cydhra.technocracy.foundation.client.gui.components.label.DefaultLabel
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotPlayer
+import net.cydhra.technocracy.foundation.util.applyAll
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.ResourceLocation
+import org.lwjgl.input.Mouse
 
 /**
  * A tab within a technocracy-style GUI. Each technocracy-style gui is composed of one or more tabs, that can be
@@ -64,7 +66,10 @@ abstract class TCTab(val name: String, val parent: TCGui, val tint: Int = -1,
         }
     }
 
-    open fun handleMouseInput() {}
+    open fun handleMouseInput() {
+        val i = Mouse.getEventDWheel()
+        components.forEach { it.onMouseScroll(i) }
+    }
 
     protected fun addPlayerInventorySlots(player: EntityPlayer, x: Int, y: Int) {
         this.components.add(DefaultLabel(x, y, player.inventory.displayName.unformattedText, 4210752, false, parent))

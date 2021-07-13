@@ -71,6 +71,8 @@ class TCSlotPlayer(inventoryIn: IInventory, override val index: Int, xPosition: 
         return mouseX > xPos && mouseX < xPos + width && mouseY > yPos && mouseY < yPos + height
     }
 
+    override fun onMouseScroll(dir: Int) {}
+
     override var internal_enabled = true
 
     /**

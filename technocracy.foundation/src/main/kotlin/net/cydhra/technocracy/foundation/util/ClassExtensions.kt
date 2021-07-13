@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.util
 
+import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.util.opengl.MultiTargetFBO
 import net.minecraft.block.material.Material
 import net.minecraft.client.Minecraft
@@ -7,10 +8,13 @@ import net.minecraft.client.renderer.BufferBuilder
 import net.minecraft.client.shader.Framebuffer
 import net.minecraft.entity.Entity
 import net.minecraft.entity.item.EntityBoat
+import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import net.minecraftforge.common.ForgeHooks
 import net.minecraftforge.event.entity.EntityEvent
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext
 import net.minecraftforge.fml.relauncher.Side
 import org.lwjgl.util.vector.Vector4f
 import java.util.*
@@ -180,3 +184,17 @@ fun IntArray.toDoubleArray(): DoubleArray {
 operator fun <E> Collection<E>.get(index: Int): E {
     return elementAtOrNull(index)!!
 }
+
+fun EntityPlayer.syncToMainThread(runnable: () -> Unit) {
+    TCFoundation.proxy.syncToMainThread({ runnable() }, this)
+}
+
+fun MessageContext.syncToMainThread(runnable: MessageContext.() -> IMessage?): IMessage? {
+    var msg: IMessage? = null
+    val player = if (this.side.isClient) Minecraft.getMinecraft().player else this.serverHandler.player
+    TCFoundation.proxy.syncToMainThread({ msg = runnable() }, player)
+    return msg
+}
+
+val MessageContext.player: EntityPlayer
+    get() = if (this.side.isClient) Minecraft.getMinecraft().player else this.serverHandler.player

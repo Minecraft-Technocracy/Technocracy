@@ -14,6 +14,7 @@ import net.minecraftforge.fluids.FluidStack
 import java.util.function.Predicate
 
 
+
 class TankMultiBlock(world: World) : BaseMultiBlock(
         frameBlockWhitelist = Predicate {
             it.block == tankWallBlock || it.block == tankIOBlock
@@ -61,7 +62,6 @@ class TankMultiBlock(world: World) : BaseMultiBlock(
         val sizeX = maximumCoord.x - minimumCoord.x + 1
         val sizeY = maximumCoord.y - minimumCoord.y + 1
         val sizeZ = maximumCoord.z - minimumCoord.z + 1
-
 
         val interiorMin = minimumCoord.add(1, 1, 1)
         val interiorMax = maximumCoord.add(-1, -1, -1)

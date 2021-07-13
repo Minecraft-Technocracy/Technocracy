@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.texture.TextureUtil
 import net.minecraft.client.resources.IResourceManager
 import net.minecraft.client.shader.Framebuffer
 import org.lwjgl.opengl.GL11
+import java.awt.image.BufferedImage
 
 /**
  * Can copy the texture of the provided Framebuffer

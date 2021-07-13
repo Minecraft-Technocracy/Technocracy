@@ -13,6 +13,7 @@ import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntit
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
+import kotlin.math.sqrt
 
 
 open class TileEntityTankMultiBlockPart : TileEntityMultiBlockPart<TankMultiBlock>(TankMultiBlock::class,
@@ -24,7 +25,7 @@ open class TileEntityTankMultiBlockPart : TileEntityMultiBlockPart<TankMultiBloc
 
     override fun getGui(player: EntityPlayer?): TCGui {
 
-        val gui = SimpleGui(guiWidth = 176,  guiHeight = 200, container = TCContainer(this))
+        val gui = SimpleGui(guiWidth = 176, guiHeight = 200, container = TCContainer(this))
 
         //176, val guiHeight: Int = 166
 
@@ -47,6 +48,17 @@ open class TileEntityTankMultiBlockPart : TileEntityMultiBlockPart<TankMultiBloc
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
         return false
+    }
+
+    override fun canInteractWith(player: EntityPlayer?): Boolean {
+        if (player == null) return true
+
+        val controller = this.multiblockController ?: return true
+
+        //allow for bigger interaction range
+        val size = controller.maximumCoord.distanceSq(controller.minimumCoord)
+
+        return player.isEntityAlive && !tile.isInvalid && player.getDistanceSq(tile.pos) <= 16 + size
     }
 
     init {

@@ -3,6 +3,7 @@ package net.cydhra.technocracy.foundation.model.blocks.api
 import it.zerono.mods.zerocore.api.multiblock.IMultiblockPart
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.math.BlockPos
+import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 
 interface TCMultiBlock<out T> where T : TileEntity, T : IMultiblockPart {

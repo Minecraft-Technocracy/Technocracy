@@ -5,6 +5,7 @@ import kotlin.math.abs
 
 object Interpolator {
 
+
     fun easeCircIn(t: Float, b: Double, c: Double, d: Float): Double {
         var t = t
         return c * d.let { t /= it; t } * t * t + b

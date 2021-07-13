@@ -27,7 +27,7 @@ class MutliBlockTankFluidModelBakery(val baseModel: IBakedModel) : IBakedModel b
 
         val currentLayer = MinecraftForgeClient.getRenderLayer()
 
-        if (state == null || (side != null && state.block.getBlockLayer() == currentLayer)) {
+        if (state == null || (side != null && state.block.blockLayer == currentLayer)) {
             return baseModel.getQuads(state, side, rand)
         }
 

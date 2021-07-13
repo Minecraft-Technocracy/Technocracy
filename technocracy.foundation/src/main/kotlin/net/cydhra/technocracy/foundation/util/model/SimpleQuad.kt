@@ -4,11 +4,13 @@ import com.google.common.collect.Lists
 import com.google.common.collect.MultimapBuilder
 import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.client.renderer.vertex.VertexFormat
 import net.minecraft.client.renderer.vertex.VertexFormatElement
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.MathHelper
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad
+import net.minecraftforge.fml.client.FMLClientHandler
 import org.apache.commons.lang3.tuple.Pair
 import org.lwjgl.util.vector.Vector2f
 import org.lwjgl.util.vector.Vector3f
@@ -206,6 +208,18 @@ class SimpleQuad() {
     fun bake(): BakedQuad {
         checkNotNull(sprite) { "no face or sprite set" }
 
+        //code fragment from team.chisel.ctm.client.util.Quad
+        //https://github.com/Chisel-Team/ConnectedTexturesMod/blob/8b4f74a575e3eb4bb93cea359b31759c61a04da0/src/main/java/team/chisel/ctm/client/util/Quad.java#L425-L433
+        // Sorry OF users
+        val hasLightmap = vertLight.isNotEmpty() && !FMLClientHandler.instance().hasOptifine()
+        if (hasLightmap) {
+            if (format === DefaultVertexFormats.ITEM) { // ITEM is convertable to BLOCK (replace normal+padding with lmap)
+                format = DefaultVertexFormats.BLOCK
+            } else if (!format.elements.contains(DefaultVertexFormats.TEX_2S)) { // Otherwise, this format is unknown, add TEX_2S if it does not exist
+                format = VertexFormat(format).addElement(DefaultVertexFormats.TEX_2S)
+            }
+        }
+
         val builder = UnpackedBakedQuad.Builder(format)
         builder.setQuadOrientation(face)
         builder.setQuadTint(tintIndex)
@@ -243,7 +257,7 @@ class SimpleQuad() {
                     }
                     VertexFormatElement.EnumUsage.UV -> {
                         if (ele.index == 1) {
-                            if (vertLight.size > v) {
+                            if(vertLight.size > v) {
                                 val light = vertLight[v]
                                 builder.put(i, light.x, light.y)
                             } else {

@@ -2,8 +2,6 @@ package net.cydhra.technocracy.powertools.content.item
 
 import com.google.common.collect.Multimap
 import net.cydhra.technocracy.foundation.TCFoundation
-import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackLogicParameters
-import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackTickType
 import net.cydhra.technocracy.foundation.api.tileentities.TCTileEntityGuiProvider
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeClass
 import net.cydhra.technocracy.foundation.client.gui.SimpleGui
@@ -25,22 +23,22 @@ import net.cydhra.technocracy.foundation.proxy.ClientProxy
 import net.cydhra.technocracy.powertools.TCPowertools
 import net.cydhra.technocracy.powertools.content.item.upgrades.UPGRADE_ARMOR_ARMOR
 import net.cydhra.technocracy.powertools.content.item.upgrades.UPGRADE_ARMOR_TOUGHNESS
+import net.minecraft.client.Minecraft
 import net.minecraft.client.settings.KeyBinding
-import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.SharedMonsterAttributes
 import net.minecraft.entity.ai.attributes.AttributeModifier
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.init.SoundEvents
 import net.minecraft.inventory.EntityEquipmentSlot
-import net.minecraft.item.ItemArmor
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.DamageSource
-import net.minecraft.world.World
 import net.minecraftforge.common.ISpecialArmor
 import net.minecraftforge.common.capabilities.ICapabilityProvider
 import net.minecraftforge.common.util.EnumHelper
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import java.util.*
 import kotlin.math.min
 
@@ -161,18 +159,19 @@ class ModularArmor(name: String, material: ArmorMaterial, slot: EntityEquipmentS
     override fun getAttributeModifiers(slot: EntityEquipmentSlot, stack: ItemStack): Multimap<String, AttributeModifier> {
         val map = super.getAttributeModifiers(slot, stack)
 
-        if (slot == equipmentSlot) {
-            map.put(SharedMonsterAttributes.ARMOR.name, AttributeModifier(ARMOR_MODIFIERS[equipmentSlot.index], "Armor modifier", getComponent<ItemMultiplierComponent>(stack, "armor_multiplier")?.multiplier
+        if (slot == armorType) {
+            map.put(SharedMonsterAttributes.ARMOR.name, AttributeModifier(ARMOR_MODIFIERS[armorType.index], "Armor modifier", getComponent<ItemMultiplierComponent>(stack, "armor_multiplier")?.multiplier
                     ?: 0.0, 0))
-            map.put(SharedMonsterAttributes.ARMOR_TOUGHNESS.name, AttributeModifier(ARMOR_MODIFIERS[equipmentSlot.index], "Armor toughness", getComponent<ItemMultiplierComponent>(stack, "toughness_multiplier")?.multiplier
+            map.put(SharedMonsterAttributes.ARMOR_TOUGHNESS.name, AttributeModifier(ARMOR_MODIFIERS[armorType.index], "Armor toughness", getComponent<ItemMultiplierComponent>(stack, "toughness_multiplier")?.multiplier
                     ?: 0.0, 0))
         }
 
         return map
     }
 
+    @SideOnly(Side.CLIENT)
     override fun getKeyBind(): KeyBinding {
-        return ClientProxy.itemUpgradeGui
+        return ClientProxy.instance.itemUpgradeGui
     }
 
     override fun keyPress(player: EntityPlayer, itemStack: ItemStack) {

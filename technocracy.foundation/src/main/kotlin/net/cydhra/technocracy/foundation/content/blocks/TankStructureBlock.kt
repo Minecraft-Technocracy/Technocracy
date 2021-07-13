@@ -8,6 +8,7 @@ import net.cydhra.technocracy.foundation.util.propertys.DIMENSIONS
 import net.cydhra.technocracy.foundation.util.propertys.FLUIDSTACK
 import net.cydhra.technocracy.foundation.util.propertys.POSITION
 import net.cydhra.technocracy.foundation.util.propertys.TANKSIZE
+import net.minecraft.block.BlockRedstoneLight
 import net.minecraft.block.state.BlockStateContainer
 import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.player.EntityPlayer
@@ -66,6 +67,23 @@ class TankStructureBlock<T>(unlocalizedName: String,
         }
 
         return (state as IExtendedBlockState).withProperty(FLUIDSTACK, null).withProperty(DIMENSIONS, null).withProperty(TANKSIZE, null).withProperty(POSITION, null)
+    }
+
+    override fun getLightValue(state: IBlockState, world: IBlockAccess, pos: BlockPos): Int {
+        val tile = world.getTileEntity(pos) as? TileEntityTankMultiBlockPart ?: return super.getLightValue(state, world, pos)
+        val controller = tile.multiblockController?.controllerTileEntity ?: return super.getLightValue(state, world, pos)
+
+        if (controller.isMachineAssembled && controller == tile) {
+            val fluid = tile.fluidComp.innerComponent.fluid.currentFluid
+            if (tile.fluidComp.isAttached && fluid != null)
+                return fluid.fluid.luminosity
+        }
+
+        return super.getLightValue(state, world, pos)
+    }
+
+    override fun getLightOpacity(state: IBlockState, world: IBlockAccess, pos: BlockPos): Int {
+        return 0
     }
 
     override fun createBlockState(): BlockStateContainer {

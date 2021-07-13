@@ -6,6 +6,8 @@ import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
 import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractTileEntityDirectionalCapabilityComponent
 import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
 import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
+import net.cydhra.technocracy.foundation.util.player
+import net.cydhra.technocracy.foundation.util.syncToMainThread
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.fml.common.network.ByteBufUtils
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage
@@ -37,31 +39,33 @@ class ClientChangeSideConfigPacket() : IMessage, IMessageHandler<ClientChangeSid
     }
 
     override fun onMessage(packet: ClientChangeSideConfigPacket, context: MessageContext): IMessage? {
-        val container = context.serverHandler.player.openContainer
+        return context.syncToMainThread {
+            val container = player.openContainer
 
-        if (container !is TCContainer)
-            return null
+            if (container !is TCContainer)
+                return@syncToMainThread null
 
-        val te = container.provider
+            val te = container.provider
 
-        val components = if (te is IAggregatable) {
-            te.getComponents()
-        } else if (te is TileEntityMultiBlockPart<*>) {
-            (te.multiblockController as BaseMultiBlock).getComponents()
-        } else return null
+            val components = if (te is IAggregatable) {
+                te.getComponents()
+            } else if (te is TileEntityMultiBlockPart<*>) {
+                (te.multiblockController as BaseMultiBlock).getComponents()
+            } else return@syncToMainThread null
 
-        components.filter { it.second is AbstractTileEntityDirectionalCapabilityComponent && it.first == packet.componentName }.forEach { (_, component) ->
-            val comp = (component as AbstractTileEntityDirectionalCapabilityComponent)
-            if (packet.addFace) {
-                comp.facing.add(packet.facing)
-            } else {
-                comp.facing.remove(packet.facing)
+            components.filter { it.second is AbstractTileEntityDirectionalCapabilityComponent && it.first == packet.componentName }.forEach { (_, component) ->
+                val comp = (component as AbstractTileEntityDirectionalCapabilityComponent)
+                if (packet.addFace) {
+                    comp.facing.add(packet.facing)
+                } else {
+                    comp.facing.remove(packet.facing)
+                }
+                comp.markDirty(true)
+                comp.notifyBlockUpdate()
             }
-            comp.markDirty(true)
-            comp.notifyBlockUpdate()
-        }
 
-        return null
+            return@syncToMainThread null
+        }
     }
 
 }

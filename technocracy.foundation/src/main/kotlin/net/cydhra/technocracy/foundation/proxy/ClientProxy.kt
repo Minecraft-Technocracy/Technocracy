@@ -19,15 +19,18 @@ import net.cydhra.technocracy.foundation.content.items.facadeItem
 import net.cydhra.technocracy.foundation.content.items.pipeItem
 import net.cydhra.technocracy.foundation.content.items.structureMarkerItem
 import net.cydhra.technocracy.foundation.model.fx.manager.TCParticleManager
+import net.minecraft.client.Minecraft
 import net.minecraft.client.settings.KeyBinding
+import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.ResourceLocation
+import net.minecraft.world.WorldServer
 import net.minecraftforge.client.ClientCommandHandler
 import net.minecraftforge.client.model.ModelLoaderRegistry
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.animation.ITimeValue
 import net.minecraftforge.common.model.animation.IAnimationStateMachine
 import net.minecraftforge.fml.client.registry.ClientRegistry
-import net.minecraftforge.fml.common.Mod
+import net.minecraftforge.fml.common.FMLCommonHandler
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import org.lwjgl.input.Keyboard
@@ -37,11 +40,19 @@ import org.lwjgl.input.Keyboard
  * Client side implementation of sided proxy. Calls Common proxy and adds client-side-only behaviour like rendering
  * and animations.
  */
-@Mod.EventBusSubscriber(modid = TCFoundation.MODID)
+@SideOnly(Side.CLIENT)
 class ClientProxy : CommonProxy() {
 
+    @SideOnly(Side.CLIENT)
     companion object {
-        val itemUpgradeGui = KeyBinding("key.item.upgradegui", Keyboard.KEY_H, "key.technocracy.category")
+        lateinit var instance: ClientProxy
+    }
+
+    @SideOnly(Side.CLIENT)
+    val itemUpgradeGui = KeyBinding("key.item.upgradegui", Keyboard.KEY_H, "key.technocracy.category")
+
+    init {
+        instance = this
     }
 
     /**
@@ -93,5 +104,20 @@ class ClientProxy : CommonProxy() {
         super.postInit()
 
         MinecraftForge.EVENT_BUS.register(TCParticleManager)
+    }
+
+    override fun syncToMainThread(runnable: () -> Unit, player: EntityPlayer) {
+        val world = player.world
+
+        if (world.isRemote) {
+            Minecraft.getMinecraft().addScheduledTask(runnable)
+        } else {
+            //Single player
+            if (world is WorldServer) {
+                world.addScheduledTask(runnable)
+            } else {
+                FMLCommonHandler.instance().minecraftServerInstance!!.addScheduledTask(runnable)
+            }
+        }
     }
 }

@@ -6,8 +6,11 @@ import net.cydhra.technocracy.foundation.api.ecs.IComponent
 import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
 import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
 import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
+import net.cydhra.technocracy.foundation.util.syncToMainThread
 import net.minecraft.client.Minecraft
 import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.network.PacketThreadUtil
+import net.minecraft.network.play.INetHandlerPlayClient
 import net.minecraftforge.fml.common.network.ByteBufUtils
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler
@@ -50,29 +53,30 @@ class ServerMachineInfoPacket() : IMessage, IMessageHandler<ServerMachineInfoPac
     }
 
     override fun onMessage(packet: ServerMachineInfoPacket, context: MessageContext): IMessage? {
+        return context.syncToMainThread {
+            val container = if (context.side.isClient) Minecraft.getMinecraft().player.openContainer else context.serverHandler.player.openContainer
 
-        val container = if (context.side.isClient) Minecraft.getMinecraft().player.openContainer else context.serverHandler.player.openContainer
+            if (container !is TCContainer)
+                return@syncToMainThread null
 
-        if (container !is TCContainer)
-            return null
-
-        //todo send update packet to clients that have open the same gui
-        val te = container.provider
-        //val te = Minecraft.getMinecraft().world.getTileEntity((BlockPos.fromLong(packet.tag.getLong("pos"))))
-        if (te is TileEntityMultiBlockPart<*>) {
-            (te.multiblockController as BaseMultiBlock).getComponents().forEach { (name, component) ->
-                val tag = packet.tag.getCompoundTag(name)
-                component.deserializeNBT(tag)
-                component.onLoadAggregate()
+            //todo send update packet to clients that have open the same gui
+            val te = container.provider
+            //val te = Minecraft.getMinecraft().world.getTileEntity((BlockPos.fromLong(packet.tag.getLong("pos"))))
+            if (te is TileEntityMultiBlockPart<*>) {
+                (te.multiblockController as BaseMultiBlock).getComponents().forEach { (name, component) ->
+                    val tag = packet.tag.getCompoundTag(name)
+                    component.deserializeNBT(tag)
+                    component.onLoadAggregate()
+                }
+            } else {
+                te.getComponents().forEach { (name, component) ->
+                    val tag = packet.tag.getCompoundTag(name)
+                    component.deserializeNBT(tag)
+                    component.onLoadAggregate()
+                }
             }
-        } else {
-            te.getComponents().forEach { (name, component) ->
-                val tag = packet.tag.getCompoundTag(name)
-                component.deserializeNBT(tag)
-                component.onLoadAggregate()
-            }
+
+            null
         }
-        return null
     }
-
 }

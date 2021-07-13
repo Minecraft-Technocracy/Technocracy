@@ -5,6 +5,7 @@ import net.cydhra.technocracy.foundation.api.fx.IParticleType
 import net.cydhra.technocracy.foundation.model.fx.api.AbstractParticle
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.culling.Frustum
+import net.minecraft.util.math.AxisAlignedBB
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.client.event.RenderWorldLastEvent
 import net.minecraftforge.event.world.WorldEvent
