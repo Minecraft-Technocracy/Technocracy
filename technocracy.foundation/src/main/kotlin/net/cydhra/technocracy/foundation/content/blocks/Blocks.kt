@@ -1,16 +1,11 @@
 package net.cydhra.technocracy.foundation.content.blocks
 
 import net.cydhra.technocracy.foundation.content.tileentities.machines.*
-import net.cydhra.technocracy.foundation.content.tileentities.multiblock.*
-import net.cydhra.technocracy.foundation.content.tileentities.multiblock.boiler.TileEntityBoilerController
-import net.cydhra.technocracy.foundation.content.tileentities.multiblock.boiler.TileEntityBoilerHeater
-import net.cydhra.technocracy.foundation.content.tileentities.multiblock.boiler.TileEntityBoilerInput
-import net.cydhra.technocracy.foundation.content.tileentities.multiblock.boiler.TileEntityBoilerOutput
+import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartCapacitor
+import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartRefinery
+import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartSaline
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.capacitor.TileEntityCapacitorController
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.capacitor.TileEntityCapacitorEnergyPort
-import net.cydhra.technocracy.foundation.content.tileentities.multiblock.heatexchanger.TileEntityHeatExchangerController
-import net.cydhra.technocracy.foundation.content.tileentities.multiblock.heatexchanger.TileEntityHeatExchangerInput
-import net.cydhra.technocracy.foundation.content.tileentities.multiblock.heatexchanger.TileEntityHeatExchangerOutput
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refinery.TileEntityRefineryController
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refinery.TileEntityRefineryHeater
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refinery.TileEntityRefineryInput
@@ -37,38 +32,6 @@ val industrialRefineryBlock = MachineBlock("industrial_refinery", ::TileEntityIn
 val kilnBlock = MachineBlock("kiln", ::TileEntityKiln)
 val polymerizationChamberBlock = MachineBlock("polymerization_chamber", ::TileEntityPolymerizationChamber)
 val pulverizerBlock = MachineBlock("pulverizer", ::TileEntityPulverizer)
-
-val boilerControllerBlock = MultiBlockRotatableActiveBlock("boiler_controller", ::TileEntityBoilerController)
-val boilerHeaterBlock = MultiBlockActiveBlock("boiler_heater", ::TileEntityBoilerHeater, renderLayer = BlockRenderLayer.CUTOUT)
-val boilerFluidOutputBlock = MultiBlockActiveBlock("boiler_output", ::TileEntityBoilerOutput, renderLayer = BlockRenderLayer.CUTOUT)
-val boilerFluidInputBlock = MultiBlockRotatableActiveBlock("boiler_input", ::TileEntityBoilerInput, BlockRenderLayer.CUTOUT)
-val boilerWallBlock = PlainMultiBlockPartBlock("boiler_wall", ::TileEntityMultiBlockPartBoiler)
-        .apply { setHardness(3.5f).setResistance(1f) }
-val boilerGlassBlock = PlainMultiBlockPartBlock("boiler_glass", ::TileEntityMultiBlockPartBoiler,
-        glassSides = true, renderLayer = BlockRenderLayer.CUTOUT)
-        .apply {
-            setHardness(1.5f).setResistance(1f)
-            isFullCube = false
-            opaque = false
-        }
-val boilerConductorBlock = PlainBlock("boiler_conductor", material = Material.IRON)
-        .apply { setHardness(4f).setResistance(2.5f) }
-
-val heatExchangerControllerBlock = MultiBlockRotatableActiveBlock("heat_exchanger_controller",
-        ::TileEntityHeatExchangerController)
-val heatExchangerWallBlock = PlainMultiBlockPartBlock("heat_exchanger_wall", ::TileEntityMultiBlockPartHeatExchanger)
-val heatExchangerGlassBlock = PlainMultiBlockPartBlock("heat_exchanger_glass", ::TileEntityMultiBlockPartHeatExchanger, glassSides = true, renderLayer = BlockRenderLayer.CUTOUT)
-        .apply {
-            setHardness(1.5f).setResistance(1f)
-            isFullCube = false
-            opaque = false
-        }
-val heatExchangerColdAgentTube = PlainMultiBlockPartBlock("heat_exchanger_cold_tube", ::TileEntityMultiBlockPartHeatExchanger)
-val heatExchangerHotAgentTube = PlainMultiBlockPartBlock("heat_exchanger_hot_tube", ::TileEntityMultiBlockPartHeatExchanger)
-val heatExchangerInputBlock = MultiBlockRotatableActiveBlock("heat_exchanger_input", ::TileEntityHeatExchangerInput,
-        renderLayer = BlockRenderLayer.CUTOUT)
-val heatExchangerOutputBlock = MultiBlockRotatableActiveBlock("heat_exchanger_output", ::TileEntityHeatExchangerOutput,
-        renderLayer = BlockRenderLayer.CUTOUT)
 
 val refineryControllerBlock = MultiBlockRotatableActiveBlock("refinery_controller", ::TileEntityRefineryController)
 val refineryWallBlock = PlainMultiBlockPartBlock("refinery_wall", ::TileEntityMultiBlockPartRefinery)

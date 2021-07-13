@@ -11,16 +11,11 @@ import net.cydhra.technocracy.foundation.content.items.*
 import net.cydhra.technocracy.foundation.content.oresystems.*
 import net.cydhra.technocracy.foundation.content.potions.oilyEffect
 import net.cydhra.technocracy.foundation.content.tileentities.machines.*
-import net.cydhra.technocracy.foundation.content.tileentities.multiblock.*
-import net.cydhra.technocracy.foundation.content.tileentities.multiblock.boiler.TileEntityBoilerController
-import net.cydhra.technocracy.foundation.content.tileentities.multiblock.boiler.TileEntityBoilerHeater
-import net.cydhra.technocracy.foundation.content.tileentities.multiblock.boiler.TileEntityBoilerInput
-import net.cydhra.technocracy.foundation.content.tileentities.multiblock.boiler.TileEntityBoilerOutput
+import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartCapacitor
+import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartRefinery
+import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartSaline
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.capacitor.TileEntityCapacitorController
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.capacitor.TileEntityCapacitorEnergyPort
-import net.cydhra.technocracy.foundation.content.tileentities.multiblock.heatexchanger.TileEntityHeatExchangerController
-import net.cydhra.technocracy.foundation.content.tileentities.multiblock.heatexchanger.TileEntityHeatExchangerInput
-import net.cydhra.technocracy.foundation.content.tileentities.multiblock.heatexchanger.TileEntityHeatExchangerOutput
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refinery.TileEntityRefineryController
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refinery.TileEntityRefineryHeater
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refinery.TileEntityRefineryInput
@@ -46,7 +41,6 @@ import net.cydhra.technocracy.foundation.model.potions.manager.PotionManager
 import net.cydhra.technocracy.foundation.model.tileentities.manager.TileEntityManager
 import net.cydhra.technocracy.foundation.network.*
 import net.cydhra.technocracy.foundation.network.componentsync.*
-import net.minecraft.client.multiplayer.PlayerControllerMP
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.item.crafting.FurnaceRecipes
@@ -159,22 +153,6 @@ open class CommonProxy {
         blockManager.prepareBlocksForRegistration(kilnBlock)
         blockManager.prepareBlocksForRegistration(polymerizationChamberBlock)
         blockManager.prepareBlocksForRegistration(pulverizerBlock)
-
-        blockManager.prepareBlocksForRegistration(boilerControllerBlock)
-        blockManager.prepareBlocksForRegistration(boilerHeaterBlock)
-        blockManager.prepareBlocksForRegistration(boilerFluidInputBlock)
-        blockManager.prepareBlocksForRegistration(boilerFluidOutputBlock)
-        blockManager.prepareBlocksForRegistration(boilerWallBlock)
-        blockManager.prepareBlocksForRegistration(boilerGlassBlock)
-        blockManager.prepareBlocksForRegistration(boilerConductorBlock)
-
-        blockManager.prepareBlocksForRegistration(heatExchangerControllerBlock)
-        blockManager.prepareBlocksForRegistration(heatExchangerWallBlock)
-        blockManager.prepareBlocksForRegistration(heatExchangerGlassBlock)
-        blockManager.prepareBlocksForRegistration(heatExchangerColdAgentTube)
-        blockManager.prepareBlocksForRegistration(heatExchangerHotAgentTube)
-        blockManager.prepareBlocksForRegistration(heatExchangerInputBlock)
-        blockManager.prepareBlocksForRegistration(heatExchangerOutputBlock)
 
         blockManager.prepareBlocksForRegistration(refineryControllerBlock)
         blockManager.prepareBlocksForRegistration(refineryWallBlock)
@@ -303,17 +281,6 @@ open class CommonProxy {
         tileEntityManager.prepareTileEntityForRegistration(TileEntityPolymerizationChamber::class)
         tileEntityManager.prepareTileEntityForRegistration(TileEntityPulverizer::class)
         tileEntityManager.prepareTileEntityForRegistration(TileEntityPipe::class)
-
-        tileEntityManager.prepareTileEntityForRegistration(TileEntityMultiBlockPartBoiler::class)
-        tileEntityManager.prepareTileEntityForRegistration(TileEntityBoilerController::class)
-        tileEntityManager.prepareTileEntityForRegistration(TileEntityBoilerHeater::class)
-        tileEntityManager.prepareTileEntityForRegistration(TileEntityBoilerInput::class)
-        tileEntityManager.prepareTileEntityForRegistration(TileEntityBoilerOutput::class)
-
-        tileEntityManager.prepareTileEntityForRegistration(TileEntityMultiBlockPartHeatExchanger::class)
-        tileEntityManager.prepareTileEntityForRegistration(TileEntityHeatExchangerController::class)
-        tileEntityManager.prepareTileEntityForRegistration(TileEntityHeatExchangerInput::class)
-        tileEntityManager.prepareTileEntityForRegistration(TileEntityHeatExchangerOutput::class)
 
         tileEntityManager.prepareTileEntityForRegistration(TileEntityRefineryController::class)
         tileEntityManager.prepareTileEntityForRegistration(TileEntityRefineryInput::class)
