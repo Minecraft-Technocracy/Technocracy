@@ -27,7 +27,11 @@ val compactorBlock = MachineBlock("compactor", ::TileEntityCompactor)
 val crystallizationChamberBlock = MachineBlock("crystallization_chamber", ::TileEntityCrystallizationChamber)
 val dissolutionChamberBlock = MachineBlock("dissolution_chamber", ::TileEntityDissolutionChamber)
 val electricFurnaceBlock = MachineBlock("electric_furnace", ::TileEntityElectricFurnace)
-val electrolysisChamberBlock = MachineBlock("electrolysis_chamber", ::TileEntityElectrolysisChamber).apply { renderLayers.add(BlockRenderLayer.TRANSLUCENT) }
+val electrolysisChamberBlock = MachineBlock(
+        "electrolysis_chamber",
+        ::TileEntityElectrolysisChamber
+).apply { renderLayers.add(BlockRenderLayer.TRANSLUCENT) }
+val flowHeaterBlock = MachineBlock("flow_heater", ::TileEntityFlowHeater)
 val industrialRefineryBlock = MachineBlock("industrial_refinery", ::TileEntityIndustrialRefinery)
 val kilnBlock = MachineBlock("kiln", ::TileEntityKiln)
 val polymerizationChamberBlock = MachineBlock("polymerization_chamber", ::TileEntityPolymerizationChamber)
