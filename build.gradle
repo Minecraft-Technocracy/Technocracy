@@ -153,28 +153,6 @@ allprojects {
         }
     }
 
-    // TODO: update this to FG_4.0
-//    processResources {
-//        // this will ensure that this task is redone when the versions change.
-//        inputs.property "version", project.version
-//        inputs.property "mcversion", project.minecraft.version
-//
-//        // replace stuff in mcmod.info, nothing else
-//        from(sourceSets.main.resources.srcDirs) {
-//            include 'mcmod.info'
-//
-//            // replace version and mcversion
-//            expand 'version': project.version, 'mcversion': project.minecraft.version, 'modid': project.mod_id
-//        }
-//
-//        // copy everything else except the mcmod.info
-//        from(sourceSets.main.resources.srcDirs) {
-//            exclude 'mcmod.info'
-//        }
-//
-//        rename '(.+_at.cfg)', 'META-INF/$1'
-//    }
-
     compileKotlin {
         kotlinOptions.jvmTarget = project.jvm_target
     }
@@ -210,6 +188,15 @@ allprojects {
                 into "$project.rootDir/build/extractedATs"
             }
         }
+    }
+
+    /**
+     * This hack hot-fixes not-loading assets until I figure out how to load them properly
+     */
+    task moveAssets(type: Copy) {
+        tasks.processResources.finalizedBy(moveAssets)
+        from file("$project.buildDir/resources/main")
+        into file("$project.buildDir/classes/kotlin/main")
     }
 }
 
