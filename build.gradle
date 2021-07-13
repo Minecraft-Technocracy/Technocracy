@@ -237,7 +237,6 @@ project('technocracy.foundation') {
         // the base minecraft jar)
         transformer "team.chisel.ctm:CTM:$project.ctm_version"
         transformer "mezz.jei:jei_$project.minecraft_version:$project.jei_version"
-        transformer "mcp.mobius.waila:Hwyla:$project.waila_version"
         transformer "mcjty.theoneprobe:TheOneProbe-1.12:$project.top_version"
         transformer "cofh:RedstoneFlux:1.12-+:universal"
         transformer ("cofh:CoFHCore:${cofhcore_version}:universal") {
