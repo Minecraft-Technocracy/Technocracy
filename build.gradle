@@ -67,10 +67,6 @@ allprojects {
     repositories {
         jcenter()
         maven {
-            name 'Minecraft Forge Repository'
-            url "https://files.minecraftforge.net/maven"
-        }
-        maven {
             name 'Forgelin Maven Repository'
             url 'https://maven.shadowfacts.net/'
         }
@@ -104,6 +100,11 @@ allprojects {
         }
     }
 
+    configurations {
+        transformer
+        runtimeOnly.extendsFrom(transformer)
+    }
+
     dependencies {
         implementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: project.kotlin_version
         minecraft group: 'net.minecraftforge', name: 'forge',
@@ -113,6 +114,14 @@ allprojects {
     minecraft {
         accessTransformer new File(project.rootDir, 'technocracy.foundation/src/main/resources/technocracy_at.cfg')
         accessTransformer new File(project.rootDir, 'technocracy.astronautics/src/main/resources/astronautics_at.cfg')
+
+        def dependencyATsPath = new File(project.rootDir, "build/extractedATs/")
+        if (dependencyATsPath.exists()) {
+            dependencyATsPath.listFiles().each { transformer ->
+                logger.lifecycle "adding dependency transformer: $transformer"
+                accessTransformer new File(dependencyATsPath, transformer.name)
+            }
+        }
 
         mappings channel: 'snapshot', version: mappings_version
 
@@ -181,6 +190,27 @@ allprojects {
         outputFormat = 'markdown'
         outputDirectory = "$buildDir/dokka"
     }
+
+    /**
+     * This is a very dirty hack and should be rectified post-haste. It applies all the ATs of dependencies to the
+     * original minecraft dependency that the modules are compiled against, which in turn is prone to create bugs.
+     * Particularly, if our mod accesses something that has been made public by a soft-dependent Access Transformer, our
+     * mod will crash when the soft-dependency is not installed. However, as always, ForgeGradle documentation is so shit
+     * and the software is so unstable and confusing, that I have not devised a better solution to this problem yet,
+     * because FML does not apply FG-dependency-ATs on mod-load.
+     */
+    task extractDependencyATs(type: Sync) {
+        group "environment"
+        tasks.createMcpToSrg.dependsOn(extractDependencyATs)
+        beforeEvaluate {
+            // we cannot use 'runtime' as the source, because FG adds the forge pseudo-dependency to it, and it fails
+            // to resolve, because of the stupid hacks FG uses to handle it.
+            project.configurations.transformer.each { f ->
+                from zipTree(f).matching { it.include "META-INF/*_at.cfg" }.asFileTree.flatten()
+                into "$project.rootDir/build/extractedATs"
+            }
+        }
+    }
 }
 
 project('technocracy.foundation') {
@@ -192,26 +222,28 @@ project('technocracy.foundation') {
 
         implementation fg.deobf("it.zerono.mods.zerocore:zerocore:$project.zerocore_version")
 
-        implementation fg.deobf("com.mod-buildcraft:buildcraft-api:$project.buildcraft_version")
-        implementation fg.deobf("cofh:CoFHCore:${cofhcore_version}:universal") {
-            transitive = false // We don't need RF nor JEI, thank you very much
-        }
-        implementation fg.deobf("cofh:RedstoneFlux:1.12-+:universal")
-
         // soft mod dependencies
         compileOnly fg.deobf("mezz.jei:jei_$project.minecraft_version:$project.jei_version:api")
         compileOnly fg.deobf("mcp.mobius.waila:Hwyla:$project.waila_version:api")
         compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.12:$project.top_version:api")
         compileOnly fg.deobf("team.chisel.ctm:CTM:$project.ctm_version")
+        compileOnly fg.deobf("cofh:RedstoneFlux:1.12-+:universal")
+        compileOnly fg.deobf("cofh:CoFHCore:${cofhcore_version}:universal") {
+            transitive = false
+        }
+        compileOnly fg.deobf("com.mod-buildcraft:buildcraft-api:$project.buildcraft_version")
 
-        // add soft mods to the runtime environment
-        runtimeOnly fg.deobf("mezz.jei:jei_$project.minecraft_version:$project.jei_version")
-        runtimeOnly fg.deobf("mcp.mobius.waila:Hwyla:$project.waila_version")
-        runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.12:$project.top_version")
-
-        // CTM has an AT which isn't applied if we load it via gradle (because of course it isn't).
-        // so to test CTM, add it to run/mods manually.
-//        runtimeOnly fg.deobf("team.chisel.ctm:CTM:$project.ctm_version")
+        // add soft mods to the runtime environment (this will add the mods at runtime and also apply their ATs to
+        // the base minecraft jar)
+        transformer "team.chisel.ctm:CTM:$project.ctm_version"
+        transformer "mezz.jei:jei_$project.minecraft_version:$project.jei_version"
+        transformer "mcp.mobius.waila:Hwyla:$project.waila_version"
+        transformer "mcjty.theoneprobe:TheOneProbe-1.12:$project.top_version"
+        transformer "cofh:RedstoneFlux:1.12-+:universal"
+        transformer ("cofh:CoFHCore:${cofhcore_version}:universal") {
+            transitive = false
+        }
+        transformer "com.mod-buildcraft:buildcraft-api:$project.buildcraft_version"
 
         implementation project(":technocracy.core")
 
@@ -348,12 +380,10 @@ dependencies {
     compileOnly fg.deobf("team.chisel.ctm:CTM:$project.ctm_version")
     compileOnly fg.deobf("mcp.mobius.waila:Hwyla:$project.waila_version:api")
     compileOnly fg.deobf("com.mod-buildcraft:buildcraft-api:$project.buildcraft_version")
-
     compileOnly fg.deobf("cofh:CoFHCore:${cofhcore_version}:universal") {
         transitive = false // We don't need RF nor JEI, thank you very much
     }
     compileOnly fg.deobf("cofh:RedstoneFlux:1.12-+:universal")
-
     compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.12:$project.top_version:api")
 }
 
@@ -379,23 +409,3 @@ task cloneTechnoblock() {
         }
     }
 }
-
-///**
-// * This adds any `subproject`'s Access Transformers to the `rootProject` so functionality works in debug mode.
-// * Credit to FusionLord https://gist.github.com/FusionLord/a8f0208b6ffaa2f466f119a13c4a1620
-// */
-//import net.minecraftforge.gradle.user.patcherUser.forge.ForgeExtension
-//import net.minecraftforge.gradle.user.patcherUser.forge.ForgePlugin
-//
-//task applySubATs {
-//    ForgeExtension e = getPlugins().getPlugin(ForgePlugin.class).getExtension()
-//    subprojects.each { p ->
-//        p.sourceSets.main.resources.findAll { f -> f.path.endsWith('_at.cfg') }.each { f ->
-//            e.atSource(f)
-//        }
-//    }
-//}
-//
-//afterEvaluate {
-//    tasks.extractDependencyATs.finalizedBy applySubATs
-//}

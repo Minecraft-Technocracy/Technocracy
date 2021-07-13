@@ -23,6 +23,7 @@
     <ConfigurationWrapper RunnerId="Run" />
     <method v="2">
       <option name="Make" enabled="true" />
+      <option name="Gradle.BeforeRunTask" enabled="true" tasks="prepareRunClient" externalProjectPath="$PROJECT_DIR$/technocracy.foundation" vmOptions="" scriptParameters="" />
     </method>
   </configuration>
 </component>
