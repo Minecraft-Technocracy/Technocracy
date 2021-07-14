@@ -1,0 +1,11 @@
+{
+  "input": {
+    "fluid": "water",
+    "amount": 100
+  },
+  "output": {
+    "fluid": "steam",
+    "amount": 100
+  },
+  "cost": 40
+}

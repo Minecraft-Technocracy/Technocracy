@@ -1,6 +1,5 @@
 package net.cydhra.technocracy.powertools.proxy
 
-import net.cydhra.technocracy.powertools.client.FlashLightRenderer
 import net.cydhra.technocracy.powertools.client.ShieldRenderer
 import net.cydhra.technocracy.powertools.content.item.energyShield
 

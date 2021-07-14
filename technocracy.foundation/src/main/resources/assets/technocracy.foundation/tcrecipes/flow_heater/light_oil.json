@@ -1,0 +1,11 @@
+{
+  "input": {
+    "fluid": "light_oil",
+    "amount": 100
+  },
+  "output": {
+    "fluid": "light_oil_hot",
+    "amount": 100
+  },
+  "cost": 40
+}

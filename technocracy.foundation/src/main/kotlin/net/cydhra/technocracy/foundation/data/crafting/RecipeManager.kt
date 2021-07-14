@@ -67,7 +67,13 @@ object RecipeManager {
         parseMachineRecipes("dissolution", IFTFRecipeParser, loadedMachineRecipes, RecipeType.DISSOLUTION)
         parseMachineRecipes("electric_furnace", ITIRecipeParser, loadedMachineRecipes, RecipeType.ELECTRIC_FURNACE)
         parseMachineRecipes("electrolysis", FTMFRecipeParser, loadedMachineRecipes, RecipeType.ELECTROLYSIS)
-        parseMachineRecipes("industrial_refinery", MIMFTIRecipeParser, loadedMachineRecipes, RecipeType.INDUSTRIAL_REFINERY)
+        parseMachineRecipes("flow_heater", FTFRecipeParser, loadedMachineRecipes, RecipeType.FLOW_HEATER)
+        parseMachineRecipes(
+            "industrial_refinery",
+            MIMFTIRecipeParser,
+            loadedMachineRecipes,
+            RecipeType.INDUSTRIAL_REFINERY
+        )
         parseMachineRecipes("kiln", FTFRecipeParser, loadedMachineRecipes, RecipeType.KILN)
         parseMachineRecipes("polymerization", FTIRecipeParser, loadedMachineRecipes, RecipeType.POLYMERIZATION)
         parseMachineRecipes("pulverizer", ITIRecipeParser, loadedMachineRecipes, RecipeType.PULVERIZER)
@@ -195,6 +201,7 @@ object RecipeManager {
         DISSOLUTION(dissolutionChamberBlock, TileEntityDissolutionChamber::class.java),
         ELECTRIC_FURNACE(electricFurnaceBlock, TileEntityElectricFurnace::class.java),
         ELECTROLYSIS(electrolysisChamberBlock, TileEntityElectrolysisChamber::class.java),
+        FLOW_HEATER(flowHeaterBlock, TileEntityFlowHeater::class.java),
         INDUSTRIAL_REFINERY(industrialRefineryBlock, TileEntityIndustrialRefinery::class.java),
         KILN(kilnBlock, TileEntityKiln::class.java),
         POLYMERIZATION(polymerizationChamberBlock, TileEntityPolymerizationChamber::class.java),
