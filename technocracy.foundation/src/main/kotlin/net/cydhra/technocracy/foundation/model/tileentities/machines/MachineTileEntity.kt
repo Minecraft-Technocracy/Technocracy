@@ -4,7 +4,6 @@ import net.cydhra.technocracy.foundation.api.ecs.logic.EmptyLogicParameters
 import net.cydhra.technocracy.foundation.api.ecs.logic.ILogicClient
 import net.cydhra.technocracy.foundation.api.ecs.logic.ILogicParameters
 import net.cydhra.technocracy.foundation.api.ecs.logic.LogicClientDelegate
-import net.cydhra.technocracy.foundation.api.ecs.tileentities.TCAggregatableTileEntity
 import net.cydhra.technocracy.foundation.api.tileentities.TCMachineTileEntity
 import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_ENERGY
 import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_GENERIC
@@ -81,12 +80,14 @@ open class MachineTileEntity(
     override fun onLoad() {
         super.onLoad()
 
-        this.addLogicStrategy(RedstoneLogic(this.world, this.pos, this.redstoneModeComponent),
-                MACHINE_REDSTONE_LOGIC_NAME)
+        this.addLogicStrategy(
+            RedstoneLogic(this.world, this.pos, this.redstoneModeComponent),
+            MACHINE_REDSTONE_LOGIC_NAME
+        )
     }
 
-    override fun getGui(player: EntityPlayer?): TCGui {
-        val gui = SimpleGui(container = TCContainer(this))
+    override fun getGui(player: EntityPlayer?, other: TCGui?): TCGui {
+        val gui = other ?: SimpleGui(container = TCContainer(this))
         gui.registerTab(object : BaseMachineTab(this, gui) {
             override fun init() {
                 super.init()

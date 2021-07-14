@@ -49,19 +49,20 @@ class TileEntityCentrifuge : MachineTileEntity(), TEInventoryProvider<DynamicInv
         this.registerComponent(outputInventoryComponent, "output_inventory")
 
         this.addLogicStrategy(ItemProcessingLogic(
-                recipeType = RecipeManager.RecipeType.CENTRIFUGE,
-                inputInventory = this.inputInventoryComponent.inventory,
-                outputInventory = this.outputInventoryComponent.inventory,
-                energyStorage = this.energyStorageComponent.energyStorage,
-                processSpeedComponent = this.processingSpeedComponent,
-                energyCostComponent = this.energyCostComponent,
-                baseTickEnergyCost = 40,
-                progress = this.progressComponent), MACHINE_PROCESSING_LOGIC_NAME)
+            recipeType = RecipeManager.RecipeType.CENTRIFUGE,
+            inputInventory = this.inputInventoryComponent.inventory,
+            outputInventory = this.outputInventoryComponent.inventory,
+            energyStorage = this.energyStorageComponent.energyStorage,
+            processSpeedComponent = this.processingSpeedComponent,
+            energyCostComponent = this.energyCostComponent,
+            baseTickEnergyCost = 40,
+            progress = this.progressComponent
+        ), MACHINE_PROCESSING_LOGIC_NAME
+        )
     }
 
-    override fun getGui(player: EntityPlayer?): TCGui {
-
-        val gui = SimpleGui(container = TCContainer(this))
+    override fun getGui(player: EntityPlayer?, other: TCGui?): TCGui {
+        val gui = other ?: SimpleGui(container = TCContainer(this))
         gui.registerTab(object : BaseMachineTab(this, gui) {
             override fun init() {
                 super.init()

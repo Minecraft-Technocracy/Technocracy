@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.fml.relauncher.Side
 import org.lwjgl.input.Mouse
@@ -20,8 +19,17 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 
 
-open class RedRoundButton(posX: Int, posY: Int, width: Int, height: Int, text: String, override var gui: TCGui, clientClick: ((side: Side, player: EntityPlayer, tileEntity: IAggregatable?, button: Int) -> Unit)? = null) :
-        Button(posX, posY, width, height, text, clientClick) {
+open class RedRoundButton(
+    posX: Int,
+    posY: Int,
+    width: Int,
+    height: Int,
+    text: String,
+    tooltip: String = "",
+    override var gui: TCGui,
+    clientClick: ((side: Side, player: EntityPlayer, tileEntity: IAggregatable?, button: Int) -> Unit)? = null
+) :
+    Button(posX, posY, width, height, text, tooltip, clientClick) {
 
     protected val BUTTON_TEXTURES = ResourceLocation("textures/gui/widgets.png")
 

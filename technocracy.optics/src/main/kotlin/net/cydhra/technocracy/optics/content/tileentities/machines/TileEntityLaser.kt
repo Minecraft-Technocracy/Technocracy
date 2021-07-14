@@ -27,8 +27,10 @@ class TileEntityLaser : AggregatableTileEntity(), IAggregatableGuiProvider, ITic
     }
 
     override fun onLoad() {
-        this.addLogicStrategy(LaserLogic(this.pos, this.world, this.laserEmitter, this.energyStorage),
-                "laser_logic")
+        this.addLogicStrategy(
+            LaserLogic(this.pos, this.world, this.laserEmitter, this.energyStorage),
+            "laser_logic"
+        )
     }
 
     override fun update() {
@@ -37,8 +39,8 @@ class TileEntityLaser : AggregatableTileEntity(), IAggregatableGuiProvider, ITic
             this.tick(EmptyLogicParameters)
     }
 
-    override fun getGui(player: EntityPlayer?): TCGui {
-        val gui = SimpleGui(container = TCContainer(this))
+    override fun getGui(player: EntityPlayer?, other: TCGui?): TCGui {
+        val gui = other ?: SimpleGui(container = TCContainer(this))
 
         // TODO
 

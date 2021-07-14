@@ -75,8 +75,8 @@ class TileEntityAlloySmeltery : MachineTileEntity(), TEInventoryProvider<Dynamic
 
 
     @SideOnly(Side.CLIENT)
-    override fun getGui(player: EntityPlayer?): TCGui {
-        val gui = SimpleGui(container = TCContainer(this))
+    override fun getGui(player: EntityPlayer?, other: TCGui?): TCGui {
+        val gui = other ?: SimpleGui(container = (TCContainer(this)))
         gui.registerTab(object : BaseMachineTab(this, gui) {
             override fun init() {
                 super.init()

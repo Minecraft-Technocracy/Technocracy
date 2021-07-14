@@ -5,7 +5,6 @@ import net.cydhra.technocracy.foundation.api.ecs.tileentities.AbstractTileEntity
 import net.cydhra.technocracy.foundation.api.tileentities.TCMachineTileEntity
 import net.cydhra.technocracy.foundation.api.tileentities.TEInventoryProvider
 import net.cydhra.technocracy.foundation.api.upgrades.MachineUpgrade
-import net.cydhra.technocracy.foundation.api.upgrades.Upgrade
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeClass
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.model.items.api.UpgradeItem
@@ -91,6 +90,7 @@ class TileEntityMachineUpgradesComponent(val numberOfUpgradeSlots: Int) : Abstra
                 (upgrade as MachineUpgrade).onInstallUpgrade(this.tile as TCMachineTileEntity, this)
             }
         }
+
 
         this.tile.markDirty()
         this.notifyBlockUpdate()

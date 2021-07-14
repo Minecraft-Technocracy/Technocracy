@@ -20,7 +20,10 @@ import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
 import net.cydhra.technocracy.foundation.client.gui.handler.TCGuiHandler
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
-import net.cydhra.technocracy.foundation.content.tileentities.components.*
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityDataComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityInventoryComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityOwnerShipComponent
 import net.cydhra.technocracy.foundation.data.world.groups.GroupManager
 import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableTileEntity
 import net.cydhra.technocracy.foundation.network.componentsync.GuiUpdateListener
@@ -85,10 +88,11 @@ class TileEntityRocketController : AggregatableTileEntity(), IAggregatableGuiPro
         return false
     }
 
-    override fun getGui(player: EntityPlayer?): TCGui {
+    override fun getGui(player: EntityPlayer?, other: TCGui?): TCGui {
 
-        val gui = SimpleGui(guiHeight = 230, container = TCContainer(this))
-        gui.registerTab(object : TCTab("${getBlockType().localizedName} linked: ${currentRocket != null}", gui, -1, TCIcon(this.blockType)) {
+        val gui = other ?: SimpleGui(guiHeight = 230, container = TCContainer(this))
+        gui.registerTab(object :
+            TCTab("${getBlockType().localizedName} linked: ${currentRocket != null}", gui, -1, TCIcon(this.blockType)) {
 
             override fun init() {
 

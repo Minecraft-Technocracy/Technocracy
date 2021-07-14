@@ -55,18 +55,19 @@ class TileEntityIndustrialRefinery : MachineTileEntity(), TEInventoryProvider<Dy
         this.addLogicStrategy(ItemProcessingLogic(
                 RecipeManager.RecipeType.INDUSTRIAL_REFINERY,
                 inputInventory = inputItemComponent.inventory,
-                outputInventory = outputInventoryComponent.inventory,
-                inputFluidSlots = arrayOf(inputFluidComponent1.fluid, inputFluidComponent2.fluid),
-                energyStorage = this.energyStorageComponent.energyStorage,
-                processSpeedComponent = this.processingSpeedComponent,
-                energyCostComponent = this.energyCostComponent,
-                progress = this.progressComponent,
-                baseTickEnergyCost = 200
-        ), MACHINE_PROCESSING_LOGIC_NAME)
+            outputInventory = outputInventoryComponent.inventory,
+            inputFluidSlots = arrayOf(inputFluidComponent1.fluid, inputFluidComponent2.fluid),
+            energyStorage = this.energyStorageComponent.energyStorage,
+            processSpeedComponent = this.processingSpeedComponent,
+            energyCostComponent = this.energyCostComponent,
+            progress = this.progressComponent,
+            baseTickEnergyCost = 200
+        ), MACHINE_PROCESSING_LOGIC_NAME
+        )
     }
 
-    override fun getGui(player: EntityPlayer?): TCGui {
-        val gui = SimpleGui(container = TCContainer(this))
+    override fun getGui(player: EntityPlayer?, other: TCGui?): TCGui {
+        val gui = other ?: SimpleGui(container = TCContainer(this))
         gui.registerTab(object : BaseMachineTab(this, gui) {
             override fun init() {
                 super.init()

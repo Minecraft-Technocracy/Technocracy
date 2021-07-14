@@ -158,10 +158,10 @@ class ModularItem : BaseItem("modularitem"), TCTileEntityGuiProvider {
         return ActionResult(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn))
     }
 
-    override fun getGui(player: EntityPlayer?): TCGui {
+    override fun getGui(player: EntityPlayer?, other: TCGui?): TCGui {
         val stack = player!!.heldItemMainhand
         val wrapped = stack.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, null)!!
-        val gui = SimpleGui(container = TCContainer(wrapped))
+        val gui = other ?: SimpleGui(container = TCContainer(wrapped))
 
         val upgradesComponent = wrapped.getComponents().firstOrNull { (_, c) -> c is ItemUpgradesComponent }?.second
         if (upgradesComponent != null) {

@@ -119,8 +119,8 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
         }
     }
 
-    override fun getGui(player: EntityPlayer?): TCGui {
-        val gui = SimpleGui(container = TCContainer(this))
+    override fun getGui(player: EntityPlayer?, other: TCGui?): TCGui {
+        val gui = other ?: SimpleGui(container = TCContainer(this))
         gui.registerTab(object : BaseMultiblockTab(this, gui, TCIcon(siliconItem)) {
             override fun init() {
                 var nextOutput = 125
@@ -128,9 +128,12 @@ abstract class TileEntityMultiBlockPart<T>(private val clazz: KClass<T>, private
                 var inputNearestToTheMiddle = 0
                 var outputNearestToTheMiddle = parent.guiWidth
                 var foundProgressComponent: TileEntityProgressComponent? = null
-                val sortedComponents = listOf(*(this@TileEntityMultiBlockPart.multiblockController as BaseMultiBlock).getComponents().toTypedArray())
-                        .sortedBy { (_, component) -> component !is TileEntityFluidComponent }
-                        .sortedBy { (_, component) -> component !is TileEntityEnergyStorageComponent }
+                val sortedComponents = listOf(
+                    *(this@TileEntityMultiBlockPart.multiblockController as BaseMultiBlock).getComponents()
+                        .toTypedArray()
+                )
+                    .sortedBy { (_, component) -> component !is TileEntityFluidComponent }
+                    .sortedBy { (_, component) -> component !is TileEntityEnergyStorageComponent }
                 sortedComponents.forEach { (name, component) ->
                     when (component) {
                         is TileEntityEnergyStorageComponent -> {

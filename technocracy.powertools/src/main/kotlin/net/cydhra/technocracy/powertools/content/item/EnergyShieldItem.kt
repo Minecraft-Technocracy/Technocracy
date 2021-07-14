@@ -187,10 +187,10 @@ class EnergyShieldItem : BaseItem("energy_shield"), IItemKeyBindEvent, TCTileEnt
         }
     }
 
-    override fun getGui(player: EntityPlayer?): TCGui {
+    override fun getGui(player: EntityPlayer?, other: TCGui?): TCGui {
         val stack = player!!.heldItemMainhand
         val wrapped = stack.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, null)!!
-        val gui = SimpleGui(container = TCContainer(wrapped), guiHeight = 206)
+        val gui = other ?: SimpleGui(container = TCContainer(wrapped), guiHeight = 206)
 
         val upgradesComponent = wrapped.getComponents().firstOrNull { (_, c) -> c is ItemUpgradesComponent }?.second
         if (upgradesComponent != null) {

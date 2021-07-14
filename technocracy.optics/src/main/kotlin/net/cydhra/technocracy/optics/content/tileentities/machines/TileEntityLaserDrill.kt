@@ -73,7 +73,13 @@ class TileEntityLaserDrill : AggregatableTileEntity(),
         return false
     }
 
-    override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack, originalStack: ItemStack) {}
+    override fun onSlotUpdate(
+        inventory: DynamicInventoryCapability,
+        slot: Int,
+        stack: ItemStack,
+        originalStack: ItemStack
+    ) {
+    }
 
     override fun update() {
         // update ILogic strategies, but only server side
@@ -81,14 +87,18 @@ class TileEntityLaserDrill : AggregatableTileEntity(),
             this.tick(EmptyLogicParameters)
     }
 
-    override fun getGui(player: EntityPlayer?): TCGui {
-        val gui = SimpleGui(container = TCContainer(this))
+    override fun getGui(player: EntityPlayer?, other: TCGui?): TCGui {
+        val gui = other ?: SimpleGui(container = TCContainer(this))
         gui.registerTab(object : TCTab(this.blockType?.localizedName ?: "Laser Drill", gui) {
             override fun init() {
                 for (i in 0 until outputInventory.inventory.size) {
-                    components.add(TCSlotIO(outputInventory.inventory, i,
+                    components.add(
+                        TCSlotIO(
+                            outputInventory.inventory, i,
                             PADDING_LEFT + (i % SLOTS_PER_ROW) * SLOT_WIDTH_PLUS_PADDING,
-                            PADDING_TOP + (i / SLOTS_PER_ROW) * SLOT_WIDTH_PLUS_PADDING, parent))
+                            PADDING_TOP + (i / SLOTS_PER_ROW) * SLOT_WIDTH_PLUS_PADDING, parent
+                        )
+                    )
                 }
 
                 if (player != null)

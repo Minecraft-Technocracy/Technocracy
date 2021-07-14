@@ -23,7 +23,6 @@ import net.cydhra.technocracy.foundation.proxy.ClientProxy
 import net.cydhra.technocracy.powertools.TCPowertools
 import net.cydhra.technocracy.powertools.content.item.upgrades.UPGRADE_ARMOR_ARMOR
 import net.cydhra.technocracy.powertools.content.item.upgrades.UPGRADE_ARMOR_TOUGHNESS
-import net.minecraft.client.Minecraft
 import net.minecraft.client.settings.KeyBinding
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.SharedMonsterAttributes
@@ -180,10 +179,10 @@ class ModularArmor(name: String, material: ArmorMaterial, slot: EntityEquipmentS
         }
     }
 
-    override fun getGui(player: EntityPlayer?): TCGui {
+    override fun getGui(player: EntityPlayer?, other: TCGui?): TCGui {
         val stack = player!!.heldItemMainhand
         val wrapped = stack.getCapability(ItemCapabilityWrapper.CAPABILITY_WRAPPER, null)!!
-        val gui = SimpleGui(container = TCContainer(wrapped), guiHeight = 206)
+        val gui = other ?: SimpleGui(container = TCContainer(wrapped), guiHeight = 206)
 
         val upgradesComponent = wrapped.getComponents().firstOrNull { (_, c) -> c is ItemUpgradesComponent }?.second
         if (upgradesComponent != null) {

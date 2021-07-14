@@ -11,5 +11,9 @@ interface TCTileEntityGuiProvider {
     /**
      * @return the gui to display to all players
      */
-    fun getGui(player: EntityPlayer?): TCGui
+    fun getGui(player: EntityPlayer?): TCGui {
+        return getGui(player, null)
+    }
+
+    fun getGui(player: EntityPlayer?, gui: TCGui?): TCGui
 }

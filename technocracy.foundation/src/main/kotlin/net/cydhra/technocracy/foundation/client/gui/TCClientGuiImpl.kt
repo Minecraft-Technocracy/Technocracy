@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.client.gui
 
+import net.cydhra.technocracy.foundation.api.tileentities.TCTileEntityGuiProvider
 import net.cydhra.technocracy.foundation.network.PacketHandler
 import net.cydhra.technocracy.foundation.network.componentsync.ClientRequestSyncPacket
 import net.cydhra.technocracy.foundation.network.componentsync.ClientSwitchTabPacket
@@ -9,10 +10,8 @@ import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.item.ItemStack
 import net.minecraft.util.ResourceLocation
-import java.awt.Color
 
-open class TCClientGuiImpl(simpleGui: TCGui)
-    : GuiContainer(simpleGui.container), TCGui by simpleGui {
+open class TCClientGuiImpl(val simpleGui: TCGui) : GuiContainer(simpleGui.container), TCGui by simpleGui {
 
     data class Rectangle(val x: Int, val y: Int, val width: Int, val height: Int)
 
@@ -76,8 +75,8 @@ open class TCClientGuiImpl(simpleGui: TCGui)
     override fun initGui() {
         super.initGui()
 
-        for(tab in getTabs()) {
-            for(comp in tab.components) {
+        for (tab in getTabs()) {
+            for (comp in tab.components) {
                 comp.gui = this
             }
         }
@@ -98,13 +97,23 @@ open class TCClientGuiImpl(simpleGui: TCGui)
         guiY = (height - ySize) / 2
 
         GlStateManager.enableBlend()
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
+        GlStateManager.tryBlendFuncSeparate(
+            GlStateManager.SourceFactor.SRC_ALPHA,
+            GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+            GlStateManager.SourceFactor.ONE,
+            GlStateManager.DestFactor.ZERO
+        )
 
         //draw gui background
         drawWindow(guiX, guiY, xSize, ySize)
 
         GlStateManager.enableBlend()
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
+        GlStateManager.tryBlendFuncSeparate(
+            GlStateManager.SourceFactor.SRC_ALPHA,
+            GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+            GlStateManager.SourceFactor.ONE,
+            GlStateManager.DestFactor.ZERO
+        )
 
         if (getTabs().size > 1) {
             drawTabs()
@@ -169,11 +178,18 @@ open class TCClientGuiImpl(simpleGui: TCGui)
                 val y = index * TAB_SELECTED_HEIGHT + getTabBarPositionRelativeY() + TAB_GAP_WIDTH + guiY
                 // check if this tab has been clicked
                 if (mouseX > x && mouseX < x + TAB_WIDTH && mouseY > y && mouseY < y + TAB_HEIGHT) {
-                    setActiveTab(index)
-                    active = getActiveTab()
+
+
+                    container.tabs.clear()
+                    container.inventorySlots.clear()
+                    container.inventoryItemStacks.clear()
+
+                    (container.provider as TCTileEntityGuiProvider).getGui(Minecraft.getMinecraft().player, simpleGui)
+                    initGui()
 
                     PacketHandler.sendToServer(ClientSwitchTabPacket(index))
-
+                    setActiveTab(index)
+                    active = getActiveTab()
                     //update position of the components to new gui size
                     xSize = active.getSizeX()
                     ySize = active.getSizeY()
@@ -208,8 +224,10 @@ open class TCClientGuiImpl(simpleGui: TCGui)
     fun drawWindow(x: Int, y: Int, width: Int, height: Int, tint: Int = -1, windowAttachment: Boolean = false) {
         Gui.drawRect((if (windowAttachment) 0 else 4) + x, 4 + y, width + x, height + y, windowBodyColor and tint)
 
-        GlStateManager.color((tint shr 16 and 255).toFloat() / 255.0F, (tint shr 8 and 255).toFloat() / 255.0F,
-                (tint and 255).toFloat() / 255.0F, (tint shr 24 and 255).toFloat() / 255.0F)
+        GlStateManager.color(
+            (tint shr 16 and 255).toFloat() / 255.0F, (tint shr 8 and 255).toFloat() / 255.0F,
+            (tint and 255).toFloat() / 255.0F, (tint shr 24 and 255).toFloat() / 255.0F
+        )
 
         Minecraft.getMinecraft().textureManager.bindTexture(guiComponents)
 
@@ -228,17 +246,28 @@ open class TCClientGuiImpl(simpleGui: TCGui)
 
         if (!windowAttachment) {
             drawTexturedModalRect(x, y, cornerTopLeft.x, cornerTopLeft.y, cornerTopLeft.width, cornerTopLeft.height)
-            drawTexturedModalRect(x,
-                    height + y,
-                    cornerBottomLeft.x,
-                    cornerBottomLeft.y,
-                    cornerBottomLeft.width,
-                    cornerBottomLeft.height)
+            drawTexturedModalRect(
+                x,
+                height + y,
+                cornerBottomLeft.x,
+                cornerBottomLeft.y,
+                cornerBottomLeft.width,
+                cornerBottomLeft.height
+            )
         }
 
-        drawTexturedModalRect(width + x, y, cornerTopRight.x, cornerTopRight.y, cornerTopRight.width, cornerTopRight.height)
-        drawTexturedModalRect(width - 1 + x, height - 1 + y, cornerBottomRight.x, cornerBottomRight.y, cornerBottomRight.width,
-                cornerBottomRight.height)
+        drawTexturedModalRect(
+            width + x,
+            y,
+            cornerTopRight.x,
+            cornerTopRight.y,
+            cornerTopRight.width,
+            cornerTopRight.height
+        )
+        drawTexturedModalRect(
+            width - 1 + x, height - 1 + y, cornerBottomRight.x, cornerBottomRight.y, cornerBottomRight.width,
+            cornerBottomRight.height
+        )
     }
 
     override fun updateScreen() {
@@ -276,7 +305,7 @@ open class TCClientGuiImpl(simpleGui: TCGui)
     }
 
     public override fun renderToolTip(stack: ItemStack, mouseX: Int, mouseY: Int) {
-        super.renderToolTip(stack,mouseX, mouseY)
+        super.renderToolTip(stack, mouseX, mouseY)
     }
 
     override fun onResize(mcIn: Minecraft, w: Int, h: Int) {
