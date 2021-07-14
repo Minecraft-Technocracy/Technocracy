@@ -1,10 +1,22 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Astronautics Server" type="Application" factoryName="Application">
-    <option name="MAIN_CLASS_NAME" value="GradleStartServer" />
+    <envs>
+      <env name="MCP_TO_SRG" value="../technocracy.foundation\build\createSrgToMcp\output.srg" />
+      <env name="MOD_CLASSES" value="../technocracy.foundation\build\resources\main;../technocracy.foundation\build\classes\java\main;../technocracy.foundation\build\classes\kotlin\main" />
+      <env name="mainClass" value="net.minecraft.launchwrapper.Launch" />
+      <env name="MCP_MAPPINGS" value="snapshot_20180609-1.12" />
+      <env name="FORGE_VERSION" value="14.23.5.2855" />
+      <env name="FORGE_GROUP" value="net.minecraftforge" />
+      <env name="tweakClass" value="net.minecraftforge.fml.common.launcher.FMLServerTweaker" />
+      <env name="MC_VERSION" value="1.12.2" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="net.minecraftforge.legacydev.MainServer" />
     <module name="technocracy.technocracy.astronautics.main" />
+    <option name="VM_PARAMETERS" value="-Dforge.logging.console.level=debug -Dforge.logging.markers=SCAN,REGISTRIES,REGISTRYDUMP -Dmixin.env.remapRefMap=true -Dmixin.env.refMapRemappingFile=../technocracy.foundation/build/createSrgToMcp/output.srg" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/server" />
     <method v="2">
       <option name="Make" enabled="true" />
+      <option name="Gradle.BeforeRunTask" enabled="true" tasks="prepareRunServer" externalProjectPath="$PROJECT_DIR$/technocracy.astronautics" vmOptions="" scriptParameters="" />
     </method>
   </configuration>
 </component>
