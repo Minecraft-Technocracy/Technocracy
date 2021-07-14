@@ -11,6 +11,8 @@ import net.cydhra.technocracy.foundation.model.blocks.util.IDynamicBlockItemCapa
 import net.cydhra.technocracy.foundation.model.blocks.util.IDynamicBlockItemProperty
 import net.cydhra.technocracy.foundation.model.blocks.util.IDynamicBlockPlaceBehavior
 import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWrapper
+import net.cydhra.technocracy.foundation.network.PacketHandler
+import net.cydhra.technocracy.foundation.network.ServerCustomChatPacket
 import net.cydhra.technocracy.foundation.util.ColorUtil
 import net.minecraft.block.material.Material
 import net.minecraft.block.properties.PropertyEnum
@@ -20,6 +22,7 @@ import net.minecraft.client.util.ITooltipFlag
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.Entity
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.item.IItemPropertyGetter
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
@@ -29,7 +32,6 @@ import net.minecraft.util.math.AxisAlignedBB
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.MathHelper
 import net.minecraft.util.text.TextComponentString
-import net.minecraft.util.text.TextComponentTranslation
 import net.minecraft.util.text.TextFormatting
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
@@ -43,7 +45,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler
 class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colorMultiplier = object : IBlockColor {
     override fun colorMultiplier(state: IBlockState, worldIn: IBlockAccess?, pos: BlockPos?, tintIndex: Int): Int {
         val tile = (worldIn!!.getTileEntity(pos!!) ?: return -1) as? TileEntityDrum
-                ?: return -1
+            ?: return -1
         val fluid = tile.fluidCapability.currentFluid
         return ColorUtil.getColor(fluid)
     }
@@ -93,10 +95,21 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
         super.addInformation(stack, worldIn, tooltip, flagIn)
     }
 
-    override fun placeBlockAt(place: Boolean, stack: ItemStack, player: EntityPlayer, world: World, pos: BlockPos, side: EnumFacing, hitX: Float, hitY: Float, hitZ: Float, newState: IBlockState): Boolean {
+    override fun placeBlockAt(
+        place: Boolean,
+        stack: ItemStack,
+        player: EntityPlayer,
+        world: World,
+        pos: BlockPos,
+        side: EnumFacing,
+        hitX: Float,
+        hitY: Float,
+        hitZ: Float,
+        newState: IBlockState
+    ): Boolean {
         //if (!stack.hasTagCompound()) return place
         val tile = world.getTileEntity(pos) as? TileEntityDrum
-                ?: return place
+            ?: return place
 
         val cap = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)
 
@@ -113,7 +126,8 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
     override fun getDropItem(state: IBlockState, world: IBlockAccess, pos: BlockPos, te: TileEntity?): ItemStack {
         val stack = ItemStack(this, 1, getMetaFromState(state))
         if (te != null && te is TileEntityDrum && te.fluidCapability.currentFluid != null) {
-            stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)!!.fill(te.fluidCapability.currentFluid, true)
+            stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)!!
+                .fill(te.fluidCapability.currentFluid, true)
 
             /*val comp = NBTTagCompound()
             te.serializeNBT(comp)
@@ -180,7 +194,15 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
         return false
     }
 
-    override fun addCollisionBoxToList(state: IBlockState, worldIn: World, pos: BlockPos, entityBox: AxisAlignedBB, collidingBoxes: MutableList<AxisAlignedBB>, entityIn: Entity?, isActualState: Boolean) {
+    override fun addCollisionBoxToList(
+        state: IBlockState,
+        worldIn: World,
+        pos: BlockPos,
+        entityBox: AxisAlignedBB,
+        collidingBoxes: MutableList<AxisAlignedBB>,
+        entityIn: Entity?,
+        isActualState: Boolean
+    ) {
         @Suppress("DEPRECATION") // very funny, forge. But not helpful
         addCollisionBoxToList(pos, entityBox, collidingBoxes, boundingBox)
     }
@@ -193,7 +215,14 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
         return boundingBox.offset(pos)
     }
 
-    override fun onBlockWrenched(worldIn: World, player: EntityPlayer, pos: BlockPos, state: IBlockState, te: TileEntity?, stack: ItemStack): Boolean {
+    override fun onBlockWrenched(
+        worldIn: World,
+        player: EntityPlayer,
+        pos: BlockPos,
+        state: IBlockState,
+        te: TileEntity?,
+        stack: ItemStack
+    ): Boolean {
         if (player.isSneaking) {
             harvestBlock(worldIn, player, pos, state, te, stack)
             return true
@@ -201,7 +230,17 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
         return false
     }
 
-    override fun onBlockActivated(worldIn: World, pos: BlockPos, state: IBlockState, playerIn: EntityPlayer, hand: EnumHand, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean {
+    override fun onBlockActivated(
+        worldIn: World,
+        pos: BlockPos,
+        state: IBlockState,
+        playerIn: EntityPlayer,
+        hand: EnumHand,
+        facing: EnumFacing,
+        hitX: Float,
+        hitY: Float,
+        hitZ: Float
+    ): Boolean {
         if (worldIn.isRemote)
             return true
 
@@ -218,11 +257,9 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
             val fluid = tile.fluidCapability.currentFluid
             //TODO translate
 
-            playerIn.sendMessage(TextComponentTranslation("rocket.controller.invalid.already_linked"))
-
-            playerIn.sendStatusMessage(
-                TextComponentString(if (fluid == null) "Empty" else "${fluid.localizedName}: ${fluid.amount}/${tile.fluidCapability.capacity}mB"),
-                true
+            PacketHandler.sendToClient(
+                ServerCustomChatPacket(TextComponentString(if (fluid == null) "Empty" else "${fluid.localizedName}: ${fluid.amount}/${tile.fluidCapability.capacity}mB")),
+                playerIn as EntityPlayerMP
             )
         }
 
@@ -231,12 +268,19 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
 
     override fun initCapabilities(stack: ItemStack, nbt: NBTTagCompound?): ICapabilityProvider? {
         val wrapper = ItemCapabilityWrapper(stack)
-        wrapper.registerComponent(ItemFluidComponent(DynamicItemFluidStorage(stack, DrumType.fromId(stack.metadata).amount)), "fluid")
+        wrapper.registerComponent(
+            ItemFluidComponent(
+                DynamicItemFluidStorage(
+                    stack,
+                    DrumType.fromId(stack.metadata).amount
+                )
+            ), "fluid"
+        )
         return wrapper
     }
 
     enum class DrumType(val typeName: String, val amount: Int) :
-            IStringSerializable {
+        IStringSerializable {
         IRON("iron", 16000), STEEL("steel", 32000), INVAR("invar", 64000), CARBON("carbon", 128000);
 
         companion object {
