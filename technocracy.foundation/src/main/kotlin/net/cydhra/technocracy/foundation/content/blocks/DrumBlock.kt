@@ -2,6 +2,7 @@ package net.cydhra.technocracy.foundation.content.blocks
 
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicItemFluidStorage
+import net.cydhra.technocracy.foundation.content.items.components.ItemFluidComponent
 import net.cydhra.technocracy.foundation.content.tileentities.storage.TileEntityDrum
 import net.cydhra.technocracy.foundation.model.blocks.api.AbstractTileEntityBlock
 import net.cydhra.technocracy.foundation.model.blocks.color.IBlockColor
@@ -10,7 +11,6 @@ import net.cydhra.technocracy.foundation.model.blocks.util.IDynamicBlockItemCapa
 import net.cydhra.technocracy.foundation.model.blocks.util.IDynamicBlockItemProperty
 import net.cydhra.technocracy.foundation.model.blocks.util.IDynamicBlockPlaceBehavior
 import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWrapper
-import net.cydhra.technocracy.foundation.content.items.components.ItemFluidComponent
 import net.cydhra.technocracy.foundation.util.ColorUtil
 import net.minecraft.block.material.Material
 import net.minecraft.block.properties.PropertyEnum
@@ -29,6 +29,7 @@ import net.minecraft.util.math.AxisAlignedBB
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.MathHelper
 import net.minecraft.util.text.TextComponentString
+import net.minecraft.util.text.TextComponentTranslation
 import net.minecraft.util.text.TextFormatting
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
@@ -213,10 +214,16 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
             FluidUtil.interactWithFluidHandler(playerIn, hand, worldIn, pos, facing)
         } else {
             val tile = worldIn.getTileEntity(pos) as? TileEntityDrum
-                    ?: return true
+                ?: return true
             val fluid = tile.fluidCapability.currentFluid
             //TODO translate
-            playerIn.sendStatusMessage(TextComponentString("Drum content: " + if (fluid == null) "Empty" else "${fluid.amount}mB ${fluid.localizedName}"), true)
+
+            playerIn.sendMessage(TextComponentTranslation("rocket.controller.invalid.already_linked"))
+
+            playerIn.sendStatusMessage(
+                TextComponentString(if (fluid == null) "Empty" else "${fluid.localizedName}: ${fluid.amount}/${tile.fluidCapability.capacity}mB"),
+                true
+            )
         }
 
         return true

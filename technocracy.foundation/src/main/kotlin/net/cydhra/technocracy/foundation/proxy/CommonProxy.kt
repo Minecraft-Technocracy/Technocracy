@@ -322,7 +322,16 @@ open class CommonProxy {
         PacketHandler.registerPacket(ClientComponentClickPacket::class.java, ClientComponentClickPacket::class.java, Side.SERVER)
         PacketHandler.registerPacket(ClientSwitchTabPacket::class.java, ClientSwitchTabPacket::class.java, Side.SERVER)
         PacketHandler.registerPacket(ClientChangeSideConfigPacket::class.java, ClientChangeSideConfigPacket::class.java, Side.SERVER)
-        PacketHandler.registerPacket(ServerItemCooldownPacket::class.java, ServerItemCooldownPacket::class.java, Side.CLIENT)
+        PacketHandler.registerPacket(
+            ServerItemCooldownPacket::class.java,
+            ServerItemCooldownPacket::class.java,
+            Side.CLIENT
+        )
+        PacketHandler.registerPacket(
+            ServerCustomChatPacket::class.java,
+            ServerCustomChatPacket::class.java,
+            Side.CLIENT
+        )
     }
 
     open fun init() {
