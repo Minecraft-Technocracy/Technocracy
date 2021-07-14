@@ -11,7 +11,8 @@ import net.cydhra.technocracy.foundation.data.crafting.special.HeatRecipe
 import net.minecraftforge.fluids.FluidStack
 
 /**
- * A logic that processes hot fluids producing cold fluids and heat.
+ * A logic that is used for heat exchange between hot and cold fluids. If heat transfer is not possible, the
+ * machine's processing is blocked, so it cannot be used for coolant logic.
  *
  * @param processFluidPerTick how much fluid is converted per tick at maximum. Default is 10 mB, which corresponds to
  * 200 mb fluid per second.
