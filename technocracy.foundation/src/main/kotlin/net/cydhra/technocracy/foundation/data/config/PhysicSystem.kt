@@ -8,11 +8,13 @@ import net.minecraftforge.common.config.Configuration
  * whenever calculations based on physical assumptions are made
  */
 class PhysicSystem(private val config: Configuration) {
-    val milliHeatPerRf by IntegerConfigurable(config,
+    val milliHeatPerRf by IntegerConfigurable(
+            config,
             "physics",
             "milliHeatPerFlux",
-            1000,
+            50,
             "How much milli-Heat is required to generate one RF",
             1,
-            1_000_000_000)
+            1_000_000_000
+    )
 }

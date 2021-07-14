@@ -33,7 +33,7 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.EnumFacing
 
 open class MachineTileEntity(
-        upgradeSlots: Int = 3
+    upgradeSlots: Int = 3
 ) : AggregatableTileEntity(), TCMachineTileEntity, ILogicClient<ILogicParameters> by LogicClientDelegate() {
 
     companion object {
@@ -48,7 +48,7 @@ open class MachineTileEntity(
     protected val redstoneModeComponent = TileEntityRedstoneModeComponent()
 
     /**
-     * The machines internal energy storage and transfer limit state
+     * The machines internal energy stor5age and transfer limit state
      */
     protected val energyStorageComponent = TileEntityEnergyStorageComponent(mutableSetOf(EnumFacing.DOWN))
 
@@ -64,9 +64,9 @@ open class MachineTileEntity(
      * A map of all upgradable parameters within the machine. This is important because an
      * [net.cydhra.technocracy.foundation.api.upgrades.Upgradable] must expose all parameters it supports.
      */
-    private val upgradeParameters = mutableMapOf(
-            UPGRADE_SPEED to processingSpeedComponent,
-            UPGRADE_ENERGY to energyCostComponent
+    protected val upgradeParameters = mutableMapOf(
+        UPGRADE_SPEED to processingSpeedComponent,
+        UPGRADE_ENERGY to energyCostComponent
     )
 
     init {
@@ -99,8 +99,9 @@ open class MachineTileEntity(
                 var foundProgressComponent: TileEntityProgressComponent? = null
 
                 val sortedComponents = listOf(*this@MachineTileEntity.getComponents().toTypedArray())
-                        .sortedBy { (_, component) -> component !is TileEntityFluidComponent }
-                        .sortedBy { (_, component) -> component !is TileEntityEnergyStorageComponent }
+                    .sortedBy { (_, component) -> component !is TileEntityFluidComponent }
+                    .sortedBy { (_, component) -> component !is TileEntityHeatStorageComponent }
+                    .sortedBy { (_, component) -> component !is TileEntityEnergyStorageComponent }
                 sortedComponents.forEach { (name, component) ->
                     if (name != CoolingUpgrade.COOLER_FLUID_INPUT_NAME && name != CoolingUpgrade.COOLER_FLUID_OUTPUT_NAME && name != LubricantUpgrade.LUBRICANT_FLUID_COMPONENT_NAME) {
                         when (component) {
@@ -169,11 +170,15 @@ open class MachineTileEntity(
                     }
                 }
                 if (foundProgressComponent != null)
-                    components.add(DefaultProgressBar((outputNearestToTheMiddle - inputNearestToTheMiddle) / 2 + inputNearestToTheMiddle,
+                    components.add(
+                        DefaultProgressBar(
+                            (outputNearestToTheMiddle - inputNearestToTheMiddle) / 2 + inputNearestToTheMiddle,
                             40,
                             Orientation.RIGHT,
                             foundProgressComponent as TileEntityProgressComponent,
-                            gui))
+                            gui
+                        )
+                    )
 
                 if (player != null)
                     addPlayerInventorySlots(player, 8, gui.guiHeight - 58 - 16 - 5 - 12)
@@ -197,7 +202,8 @@ open class MachineTileEntity(
     open fun addDefaultTabs(gui: TCGui, player: EntityPlayer?) {
         gui.registerTab(MachineSettingsTab(gui, this))
 
-        val upgradesComponent = this.getComponents().firstOrNull { (_, c) -> c is TileEntityMachineUpgradesComponent }?.second
+        val upgradesComponent =
+            this.getComponents().firstOrNull { (_, c) -> c is TileEntityMachineUpgradesComponent }?.second
         if (upgradesComponent != null) {
             gui.registerTab(MachineUpgradesTab(gui, upgradesComponent as TileEntityMachineUpgradesComponent, player))
         }
@@ -221,8 +227,9 @@ open class MachineTileEntity(
      * @param multiplierComponent the multiplier affected by the parameter
      */
     protected fun registerUpgradeParameter(
-            parameter: UpgradeParameter,
-            multiplierComponent: TileEntityMultiplierComponent) {
+        parameter: UpgradeParameter,
+        multiplierComponent: TileEntityMultiplierComponent
+    ) {
         this.upgradeParameters[parameter] = multiplierComponent
     }
 

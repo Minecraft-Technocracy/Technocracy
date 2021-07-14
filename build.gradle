@@ -159,10 +159,16 @@ allprojects {
     /**
      * This hack hot-fixes not-loading assets until I figure out how to load them properly
      */
-    task moveAssets(type: Copy) {
+    task moveAssets(type: Sync) {
         tasks.processResources.finalizedBy(moveAssets)
         from file("$project.buildDir/resources/main")
         into file("$project.buildDir/classes/kotlin/main")
+        preserve {
+            exclude "$project.buildDir/classes/kotlin/main/assets"
+            exclude "$project.buildDir/classes/kotlin/main/mcmod.info"
+            exclude "$project.buildDir/classes/kotlin/main/pack.mcmeta"
+            exclude "$project.buildDir/classes/kotlin/main/technocracy_at.cfg"
+        }
     }
 }
 

@@ -13,8 +13,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
 
 /**
- * A tile entity linked to a pulverizer block that can store up to two stacks of items and processes the first stack
- * into its output (second) stack, if the processing output and second stack can be merged.
+ * A machine that turns solid items into fluids/gasses through supposed oxidation
  */
 class TileEntityChemicalOxidizer : MachineTileEntity(), TEInventoryProvider<DynamicInventoryCapability> {
 

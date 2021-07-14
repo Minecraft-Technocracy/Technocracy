@@ -27,3 +27,8 @@ const val UPGRADE_ENERGY: UpgradeParameter = "energy"
  * Upgrades that modify additive consumption
  */
 const val UPGRADE_ADDITIVE: UpgradeParameter = "additive"
+
+/**
+ * Upgrades that modify speeds that are not subject to a normal energy-speed tradeoff
+ */
+const val UPGRADE_CONVERSION: UpgradeParameter = "conversion"
