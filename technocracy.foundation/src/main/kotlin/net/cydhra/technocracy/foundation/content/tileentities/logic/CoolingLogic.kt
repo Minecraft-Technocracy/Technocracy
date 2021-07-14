@@ -15,10 +15,10 @@ import net.minecraftforge.fluids.FluidStack
  * 200 mb fluid per second.
  */
 class CoolingLogic(
-        var processFluidPerTick: Int = 10,
-        private val hotFluidComponent: TileEntityFluidComponent,
-        private val coldFluidComponent: TileEntityFluidComponent,
-        private val heatBuffer: TileEntityHeatStorageComponent
+    var processFluidPerTick: Int = 10,
+    private val hotFluidComponent: TileEntityFluidComponent,
+    private val coldFluidComponent: TileEntityFluidComponent,
+    private val heatBuffer: TileEntityHeatStorageComponent
 ) : ILogic<ILogicParameters> {
 
     private val recipes by lazy {
@@ -53,7 +53,8 @@ class CoolingLogic(
 
         // check if output is not blocked by other fluid than current output
         if (this.hotFluidComponent.fluid.currentFluid != null
-                && this.currentRecipe!!.hotFluid != this.hotFluidComponent.fluid.currentFluid!!.fluid) {
+            && this.currentRecipe!!.hotFluid != this.hotFluidComponent.fluid.currentFluid!!.fluid
+        ) {
             return
         }
 
@@ -65,19 +66,30 @@ class CoolingLogic(
 
         // process no more heat than input and output can deliver
         var maximumConversionMb = this.processFluidPerTick
-                .coerceAtMost(this.hotFluidComponent.fluid.capacity
-                        - (this.hotFluidComponent.fluid.currentFluid?.amount ?: 0))
-                .coerceAtMost(this.coldFluidComponent.fluid.currentFluid!!.amount)
+            .coerceAtMost(
+                this.hotFluidComponent.fluid.capacity
+                        - (this.hotFluidComponent.fluid.currentFluid?.amount ?: 0)
+            )
+            .coerceAtMost(this.coldFluidComponent.fluid.currentFluid!!.amount)
 
         // process no more heat than possible within the limits of the heat buffer
+        var tempDelta = (this.currentRecipe!!.hotFluid.temperature - this.currentRecipe!!.coldFluid.temperature)
+
+        // hotfix for mekanism having the wrong temperature for liquid steam which sadly overrides our steam
+        if (tempDelta == 0)
+            tempDelta = 80
+
         maximumConversionMb =
-                maximumConversionMb.coerceAtMost(this.heatBuffer.heat / (this.currentRecipe!!.milliHeatPerDegree *
-                        (this.currentRecipe!!.hotFluid.temperature - this.currentRecipe!!.coldFluid.temperature)))
+            maximumConversionMb.coerceAtMost(this.heatBuffer.heat / (this.currentRecipe!!.milliHeatPerDegree * tempDelta))
 
 
         this.coldFluidComponent.fluid.drain(maximumConversionMb, true, forced = true)
-        this.hotFluidComponent.fluid.fill(FluidStack(currentRecipe!!.hotFluid, maximumConversionMb), doFill = true, forced = true)
+        this.hotFluidComponent.fluid.fill(
+            FluidStack(currentRecipe!!.hotFluid, maximumConversionMb),
+            doFill = true,
+            forced = true
+        )
         this.heatBuffer.heat -= maximumConversionMb * this.currentRecipe!!.milliHeatPerDegree *
-                (this.currentRecipe!!.hotFluid.temperature - this.currentRecipe!!.coldFluid.temperature)
+                tempDelta
     }
 }
