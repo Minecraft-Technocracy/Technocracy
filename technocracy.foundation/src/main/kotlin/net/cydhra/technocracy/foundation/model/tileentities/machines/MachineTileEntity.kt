@@ -13,6 +13,7 @@ import net.cydhra.technocracy.foundation.client.gui.SimpleGui
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.components.energymeter.DefaultEnergyMeter
 import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.DefaultFluidMeter
+import net.cydhra.technocracy.foundation.client.gui.components.heatmeter.DefaultHeatMeter
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.DefaultProgressBar
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.Orientation
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
@@ -129,6 +130,13 @@ open class MachineTileEntity(
                                         TODO("not implemented")
                                     }
                                 }
+                            }
+                            is TileEntityHeatStorageComponent -> {
+                                components.add(DefaultHeatMeter(nextInput, 20, component, gui))
+                                if (inputNearestToTheMiddle < nextInput - 5) {
+                                    inputNearestToTheMiddle = nextInput - 5 // 5 is the space between components
+                                }
+                                nextInput += 17 + 5
                             }
                             is TileEntityInventoryComponent -> {
                                 if (component.inventoryType != DynamicInventoryCapability.InventoryType.OUTPUT) {

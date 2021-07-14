@@ -1,5 +1,6 @@
 package net.cydhra.technocracy.foundation.client.gui.components.fluidmeter
 
+import net.cydhra.technocracy.foundation.client.gui.TCClientGuiImpl
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.components.heatmeter.DefaultHeatMeter
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
@@ -71,6 +72,9 @@ class CoolantMeter(posX: Int, posY: Int, val coolantIn: TileEntityFluidComponent
             }
             heatBar.isMouseOnComponent(mouseX - posX, mouseY - posY) -> {
                 heatBar.drawTooltip(mouseX, mouseY)
+            }
+            else -> {
+                (gui as TCClientGuiImpl).drawHoveringText("Coolant meter", mouseX, mouseY)
             }
         }
     }
