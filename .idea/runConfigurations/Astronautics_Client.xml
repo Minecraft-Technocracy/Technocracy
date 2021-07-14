@@ -18,7 +18,7 @@
     <option name="VM_PARAMETERS" value="-Dforge.logging.console.level=debug -Dforge.logging.markers=SCAN,REGISTRIES,REGISTRYDUMP" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run" />
     <method v="2">
-      <option name="Make" enabled="true" />
+      <option name="Gradle.BeforeRunTask" enabled="true" tasks="prepareRunClient" externalProjectPath="$PROJECT_DIR$/technocracy.astronautics" vmOptions="" scriptParameters="" />
     </method>
   </configuration>
 </component>

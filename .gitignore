@@ -19,17 +19,11 @@ out
 .idea/libraries
 .idea/modules
 .idea/dictionaries
-.idea/gradle.xml
-.idea/modules.xml
-.idea/uiDesigner.xml
-.idea/workspace.xml
-.idea/misc.xml
-.idea/hotswap_agent.xml
+.idea/codeStyles
 .idea/.name
-.idea/compiler.xml
-.idea/jarRepositories.xml
-.idea/vcs.xml
-.idea/codeStyles/codeStyleConfig.xml
+.idea/*.xml
+
+
 classes
 
 # gradle
