@@ -13,6 +13,7 @@ class ItemFluidComponent(val fluid: DynamicItemFluidStorage) : AbstractItemCapab
 
     init {
         fluid.componentParent = this
+        needsClientSyncing = true
     }
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
