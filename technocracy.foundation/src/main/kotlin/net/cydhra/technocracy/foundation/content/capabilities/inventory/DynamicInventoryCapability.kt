@@ -14,9 +14,14 @@ import net.minecraftforge.items.ItemHandlerHelper
 import kotlin.math.min
 
 
-class DynamicInventoryCapability(size: Int = 0, private val machine: TEInventoryProvider<DynamicInventoryCapability>, val slotTypes: MutableMap<Int, InventoryType> = mutableMapOf()) : IItemHandler,
-        IItemHandlerModifiable,
-        INBTSerializable<NBTTagCompound>, AbstractComponentCapabilityBridge() {
+class DynamicInventoryCapability(
+    size: Int = 0,
+    private val machine: TEInventoryProvider<DynamicInventoryCapability>,
+    val slotTypes: MutableMap<Int, InventoryType> = mutableMapOf(),
+    val canExtractManually: Boolean = false
+) : IItemHandler,
+    IItemHandlerModifiable,
+    INBTSerializable<NBTTagCompound>, AbstractComponentCapabilityBridge() {
 
     var stacks: NonNullList<ItemStack>
 

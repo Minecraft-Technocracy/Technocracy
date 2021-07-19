@@ -1,24 +1,28 @@
 package net.cydhra.technocracy.foundation.client.gui.components.slot
 
 import net.cydhra.technocracy.foundation.api.ecs.IAggregatable
-import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.TCClientGuiImpl
+import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.init.Items
-import net.minecraft.tileentity.TileEntity
 import net.minecraftforge.fml.relauncher.Side
-import net.minecraftforge.items.IItemHandler
 import net.minecraftforge.items.SlotItemHandler
 
 /**
  * A gui slot that is used to draw tile-entity inventory slots. For player inventory slots, see [TCSlotPlayer]
  */
-class TCSlotIO(itemHandler: IItemHandler, override val index: Int, xPosition: Int, yPosition: Int, override var gui: TCGui) :
-        SlotItemHandler(itemHandler, index, xPosition, yPosition), ITCSlot {
+class TCSlotIO(
+    itemHandler: DynamicInventoryCapability,
+    override val index: Int,
+    xPosition: Int,
+    yPosition: Int,
+    override var gui: TCGui
+) :
+    SlotItemHandler(SlotItemHandler(itemHandler), index, xPosition, yPosition), ITCSlot {
 
     override var permaLocked = false
 

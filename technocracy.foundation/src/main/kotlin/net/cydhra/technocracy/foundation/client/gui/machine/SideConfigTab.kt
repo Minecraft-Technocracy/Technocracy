@@ -11,9 +11,9 @@ import net.cydhra.technocracy.foundation.client.gui.components.energymeter.Energ
 import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.CoolantMeter
 import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.FluidMeter
 import net.cydhra.technocracy.foundation.client.gui.components.label.DefaultLabel
+import net.cydhra.technocracy.foundation.client.gui.components.slot.SlotItemHandler
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotPlayer
-import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.content.items.wrenchItem
 import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractTileEntityCapabilityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractTileEntityDirectionalCapabilityComponent
@@ -35,7 +35,10 @@ import net.minecraft.block.state.IBlockState
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.gui.ScaledResolution
-import net.minecraft.client.renderer.*
+import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.client.renderer.OpenGlHelper
+import net.minecraft.client.renderer.RenderHelper
+import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.texture.TextureMap
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
@@ -168,8 +171,8 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
                         }
                         is TCSlotIO -> {
                             val handler = it.itemHandler
-                            if (handler is DynamicInventoryCapability) {
-                                val comp = handler.componentParent
+                            if (handler is SlotItemHandler) {
+                                val comp = handler.parent.componentParent
                                 if (comp is TileEntityInventoryComponent) {
                                     if (it.isMouseOnComponent(mouseX - x, mouseY - y)) {
                                         changedComponent = comp
@@ -445,8 +448,8 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
 
                         is TCSlotIO -> {
                             val handler = it.itemHandler
-                            if (handler is DynamicInventoryCapability) {
-                                val comp = handler.componentParent
+                            if (handler is SlotItemHandler) {
+                                val comp = handler.parent.componentParent
                                 if (comp is TileEntityInventoryComponent) {
                                     increaseRotation(comp)
                                 }
@@ -475,8 +478,8 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
 
                         is TCSlotIO -> {
                             val handler = it.itemHandler
-                            if (handler is DynamicInventoryCapability) {
-                                val comp = handler.componentParent
+                            if (handler is SlotItemHandler) {
+                                val comp = handler.parent.componentParent
                                 if (comp is TileEntityInventoryComponent && visited.add(comp)) {
                                     renderBlockOverlay(face, comp, colorMap, bb, rotations, totalRotsOnSide)
                                 }
@@ -551,8 +554,8 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
                     when (it) {
                         is TCSlotIO -> {
                             val handler = it.itemHandler
-                            if (handler is DynamicInventoryCapability) {
-                                val comp = handler.componentParent
+                            if (handler is SlotItemHandler) {
+                                val comp = handler.parent.componentParent
                                 if (comp is TileEntityInventoryComponent) {
                                     renderSelectionOutline(x - 1, y - 1, face, it, comp, colorMap, rotations)
                                 }

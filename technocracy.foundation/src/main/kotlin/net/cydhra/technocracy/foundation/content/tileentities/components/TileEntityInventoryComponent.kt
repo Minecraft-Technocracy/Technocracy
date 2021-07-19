@@ -47,7 +47,8 @@ class TileEntityInventoryComponent(
      */
     val inventory: DynamicInventoryCapability = DynamicInventoryCapability(
         size, provider,
-        (0..size).map { it to inventoryType }.toMap().toMutableMap()
+        (0..size).map { it to inventoryType }.toMap().toMutableMap(),
+        canExtractManually
     )
 
     override val type: ComponentType = ComponentType.INVENTORY
