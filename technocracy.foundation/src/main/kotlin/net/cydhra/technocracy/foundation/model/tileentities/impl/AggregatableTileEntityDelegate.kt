@@ -4,6 +4,8 @@ import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.api.ecs.IComponent
 import net.cydhra.technocracy.foundation.api.ecs.tileentities.AbstractTileEntityComponent
 import net.cydhra.technocracy.foundation.api.ecs.tileentities.TCAggregatableTileEntity
+import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
+import net.cydhra.technocracy.foundation.content.capabilities.inventory.MultipleInventoryCapability
 import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractTileEntityCapabilityComponent
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.nbt.NBTTagCompound
@@ -11,6 +13,7 @@ import net.minecraft.nbt.NBTTagList
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
+import net.minecraftforge.items.CapabilityItemHandler
 
 /**
  * Delegate implementation of [TCAggregatableTileEntity] that can be used by tile entities to reduce code duplication
@@ -91,9 +94,25 @@ class AggregatableTileEntityDelegate : TCAggregatableTileEntity {
     }
 
     override fun <T : Any?> castCapability(capability: Capability<T>, facing: EnumFacing?): T? {
+
+        //wrap all inventory capabilities on same side to one big capability
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            val components = capabilityComponents.values.filter { it.hasCapability(capability, facing) }
+            if (components.size >= 2) {
+                return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(MultipleInventoryCapability(components.map {
+                    it.getCapability(
+                        capability,
+                        facing
+                    ) as DynamicInventoryCapability
+                }))
+            } else {
+                return components.firstOrNull()?.getCapability(capability, facing)
+            }
+        }
+
         return capabilityComponents.values
-                .firstOrNull { it.hasCapability(capability, facing) }
-                ?.getCapability(capability, facing)
+            .firstOrNull { it.hasCapability(capability, facing) }
+            ?.getCapability(capability, facing)
     }
 
     override fun generateNbtUpdateCompound(player: EntityPlayerMP, tag: NBTTagCompound): NBTTagCompound {

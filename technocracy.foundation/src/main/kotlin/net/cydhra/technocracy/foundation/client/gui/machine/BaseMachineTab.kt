@@ -4,7 +4,7 @@ import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.TCIcon
 import net.cydhra.technocracy.foundation.client.gui.TCTab
 import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.CoolantMeter
-import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.LubricantFluidMeter
+import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.LubricantMeter
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityHeatStorageComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityMachineUpgradesComponent
@@ -30,7 +30,14 @@ abstract class BaseMachineTab(val machine: MachineTileEntity, parent: TCGui, ico
             if (hasLubricant) {
                 val compLubricant = machine.getComponents().find { it.first == LubricantUpgrade.LUBRICANT_FLUID_COMPONENT_NAME }
                 if(compLubricant != null) {
-                    yOff += components.addElement(LubricantFluidMeter(-36, yOff , compLubricant.second as TileEntityFluidComponent, parent)).height
+                    yOff += components.addElement(
+                        LubricantMeter(
+                            -36,
+                            yOff,
+                            compLubricant.second as TileEntityFluidComponent,
+                            parent
+                        )
+                    ).height
                     yOff += 5
                 }
             }

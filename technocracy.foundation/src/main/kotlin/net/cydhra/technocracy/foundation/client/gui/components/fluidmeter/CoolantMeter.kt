@@ -2,7 +2,11 @@ package net.cydhra.technocracy.foundation.client.gui.components.fluidmeter
 
 import net.cydhra.technocracy.foundation.client.gui.TCClientGuiImpl
 import net.cydhra.technocracy.foundation.client.gui.TCGui
+import net.cydhra.technocracy.foundation.client.gui.components.ICompositeComponent
+import net.cydhra.technocracy.foundation.client.gui.components.ITCComponent
+import net.cydhra.technocracy.foundation.client.gui.components.TCComponent
 import net.cydhra.technocracy.foundation.client.gui.components.heatmeter.DefaultHeatMeter
+import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractTileEntityDirectionalCapabilityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityHeatStorageComponent
 import net.minecraft.client.Minecraft
@@ -12,7 +16,15 @@ import net.minecraft.util.ResourceLocation
 import org.lwjgl.opengl.GL11
 
 
-class CoolantMeter(posX: Int, posY: Int, val coolantIn: TileEntityFluidComponent, val coolantOut: TileEntityFluidComponent, val heat: TileEntityHeatStorageComponent, gui: TCGui) : FluidMeter(posX, posY, coolantIn) {
+class CoolantMeter(
+    override var posX: Int,
+    override var posY: Int,
+    val coolantIn: TileEntityFluidComponent,
+    val coolantOut: TileEntityFluidComponent,
+    val heat: TileEntityHeatStorageComponent,
+    gui: TCGui
+) : TCComponent(),
+    ICompositeComponent {
 
     val meterIn = DefaultFluidMeter(6, 7, coolantIn, gui)
     val meterOut = DefaultFluidMeter(6 + 16 + 8 + 4, 7, coolantOut, gui)
@@ -22,18 +34,20 @@ class CoolantMeter(posX: Int, posY: Int, val coolantIn: TileEntityFluidComponent
     override var height = 64
 
     override var gui = gui
-    set(value) {
-        field = value
-        meterIn.gui = value
-        meterOut.gui = value
-        heatBar.gui = value
-    }
+        set(value) {
+            field = value
+            meterIn.gui = value
+            meterOut.gui = value
+            heatBar.gui = value
+        }
 
     companion object {
-        val coolantTexture: ResourceLocation = ResourceLocation("technocracy.foundation", "textures/gui/coolant_addon.png")
+        val coolantTexture: ResourceLocation =
+            ResourceLocation("technocracy.foundation", "textures/gui/coolant_addon.png")
     }
 
-    override fun drawOverlay(x: Int, y: Int) {
+    override fun isMouseOnComponent(mouseX: Int, mouseY: Int): Boolean {
+        return mouseX > posX && mouseX < posX + width && mouseY > posY && mouseY < posY + height
     }
 
     override fun drawBackground(x: Int, y: Int) {
@@ -44,16 +58,18 @@ class CoolantMeter(posX: Int, posY: Int, val coolantIn: TileEntityFluidComponent
         Gui.drawModalRectWithCustomSizedTexture(x + posX, y + posY, 0f, 0f, width, height, 64f, 64f)
     }
 
-    override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
-        if (partialTicks != -1f) {
-            drawBackground(x, y)
-        }
+    override fun drawChildren(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
+        meterIn.draw(x + posX, y + posY, mouseX, mouseY, partialTicks)
+        meterOut.draw(x + posX, y + posY, mouseX, mouseY, partialTicks)
+        heatBar.draw(x + posX, y + posY, mouseX, mouseY, partialTicks)
+    }
 
-        val renderPartialTicks = Minecraft.getMinecraft().renderPartialTicks
-
-        meterIn.draw(x + posX, y + posY, mouseX, mouseY, renderPartialTicks)
-        meterOut.draw(x + posX, y + posY, mouseX, mouseY, renderPartialTicks)
-        heatBar.draw(x + posX, y + posY, mouseX, mouseY, renderPartialTicks)
+    override fun getElements(): List<Pair<ITCComponent, AbstractTileEntityDirectionalCapabilityComponent>> {
+        return listOf(
+            meterIn to coolantIn,
+            meterOut to coolantOut,
+            //heatBar to heat
+        )
     }
 
     override fun update() {
