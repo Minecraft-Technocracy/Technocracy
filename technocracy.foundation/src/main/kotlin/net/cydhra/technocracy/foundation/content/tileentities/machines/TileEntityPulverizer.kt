@@ -19,13 +19,16 @@ class TileEntityPulverizer : MachineTileEntity(), TEInventoryProvider<DynamicInv
     /**
      * Input inventory for the pulverizer with one slot
      */
-    private val inputInventoryComponent = TileEntityInventoryComponent(1, this, EnumFacing.WEST)
+    private val inputInventoryComponent =
+        TileEntityInventoryComponent(1, this, EnumFacing.WEST, DynamicInventoryCapability.InventoryType.INPUT)
 
     /**
      * Output inventory for the pulverizer with one slot
      */
-    private val outputInventoryComponent = TileEntityInventoryComponent(1, this, EnumFacing.EAST,
-            DynamicInventoryCapability.InventoryType.OUTPUT)
+    private val outputInventoryComponent = TileEntityInventoryComponent(
+        1, this, EnumFacing.EAST,
+        DynamicInventoryCapability.InventoryType.OUTPUT
+    )
 
     /**
      * All recipes of the pulverizer; loaded lazily so they are not loaded before game loop, as they might not have
@@ -39,7 +42,8 @@ class TileEntityPulverizer : MachineTileEntity(), TEInventoryProvider<DynamicInv
         this.registerComponent(inputInventoryComponent, "input_inventory")
         this.registerComponent(outputInventoryComponent, "output_inventory")
 
-        this.addLogicStrategy(ItemProcessingLogic(
+        this.addLogicStrategy(
+            ItemProcessingLogic(
                 recipeType = RecipeManager.RecipeType.PULVERIZER,
                 inputInventory = this.inputInventoryComponent.inventory,
                 outputInventory = this.outputInventoryComponent.inventory,
@@ -47,13 +51,20 @@ class TileEntityPulverizer : MachineTileEntity(), TEInventoryProvider<DynamicInv
                 processSpeedComponent = this.processingSpeedComponent,
                 energyCostComponent = this.energyCostComponent,
                 baseTickEnergyCost = 20,
-                progress = this.progressComponent), MACHINE_PROCESSING_LOGIC_NAME)
+                progress = this.progressComponent
+            ), MACHINE_PROCESSING_LOGIC_NAME
+        )
     }
 
     override fun isItemValid(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack): Boolean {
         return inventory == inputInventoryComponent.inventory && this.recipes.any { it.getInput()[0].test(stack) }
     }
 
-    override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack, originalStack: ItemStack) {
+    override fun onSlotUpdate(
+        inventory: DynamicInventoryCapability,
+        slot: Int,
+        stack: ItemStack,
+        originalStack: ItemStack
+    ) {
     }
 }
