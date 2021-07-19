@@ -37,7 +37,6 @@ val aqueousLithium = BaseFluid("aqueous_lithium", Color(140, 255, 150), opaqueTe
 val aqueousSodiumAcrylate = BaseFluid("aqueous_sodium_acrylate", Color(255, 255, 255), opaqueTexture = false)
 val phenolFluid = BaseFluid("phenol", Color(180, 180, 180), opaqueTexture = false)
 val chloroBenzeneFluid = BaseFluid("chloro_benzene", Color(200, 255, 200), opaqueTexture = false)
-val diphenyletherFluid = BaseFluid("diphenyl_ether", Color(255, 255, 160), opaqueTexture = true)
 val heatTransferOilFluid = BaseFluid("heat_transfer_oil", Color(160, 190, 90),
         opaqueTexture = false, temperature = 300, secondaryTemperature = 850)
 val glue = BaseFluid("glue", Color(160, 110, 45), opaqueTexture = true).apply {

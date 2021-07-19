@@ -3,7 +3,7 @@
     "item": "technocracy.foundation:biphenyl"
   },
   "fluid": {
-    "fluid": "diphenyl_ether",
+    "fluid": "chloro_benzene",
     "amount": 200
   },
   "output": {

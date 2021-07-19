@@ -85,8 +85,5 @@ val drum = DrumBlock()
 val leadGlassPaneBlock = LeadGlassPaneBlock()
         .apply { setHardness(1.5f).setResistance(1f) }
 
-val chrysotileBlock = PlainBlock("chrysotile", Material.ROCK).apply { setHardness(1.5f).setResistance(2.3f) }
-val asbestosBlock = PlainBlock("asbestos_block", Material.ROCK, oreDictionaryName = "blockAsbestos")
-        .apply { setHardness(1.4f).setResistance(5f) }
 val saltBlock = PlainBlock("salt_block", Material.ROCK, oreDictionaryName = "blockSalt")
         .apply { setHardness(1.0f).setResistance(2.5f) }

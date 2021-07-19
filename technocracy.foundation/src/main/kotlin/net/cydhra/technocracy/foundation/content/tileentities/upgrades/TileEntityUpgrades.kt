@@ -4,8 +4,11 @@ import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.api.tileentities.TCMachineTileEntity
 import net.cydhra.technocracy.foundation.api.upgrades.*
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
-import net.cydhra.technocracy.foundation.content.fluids.diphenyletherFluid
-import net.cydhra.technocracy.foundation.content.tileentities.components.*
+import net.cydhra.technocracy.foundation.content.fluids.heatTransferOilFluid
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityHeatStorageComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityMachineUpgradesComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityMultiplierComponent
 import net.cydhra.technocracy.foundation.content.tileentities.logic.AdditiveConsumptionLogic
 import net.cydhra.technocracy.foundation.content.tileentities.logic.CoolingLogic
 import net.cydhra.technocracy.foundation.content.tileentities.logic.GenerateHeatLogic
@@ -65,10 +68,12 @@ class LubricantUpgrade : MachineUpgrade() {
     }
 
     override fun onUpgradeLoad(upgradable: TCMachineTileEntity, upgrades: TileEntityMachineUpgradesComponent) {
-        val lubricantTank = TileEntityFluidComponent(capacity = 8000,
-                allowedFluid = *arrayOf(diphenyletherFluid.name),
-                tanktype = DynamicFluidCapability.TankType.INPUT,
-                facing = mutableSetOf(EnumFacing.NORTH))
+        val lubricantTank = TileEntityFluidComponent(
+            capacity = 8000,
+            allowedFluid = arrayOf(heatTransferOilFluid.name),
+            tanktype = DynamicFluidCapability.TankType.INPUT,
+            facing = mutableSetOf(EnumFacing.NORTH)
+        )
         val lubricantMultiplier = TileEntityMultiplierComponent(null)
 
         // since loads are not only triggered when loading the chunk, but also upon packages from server, check

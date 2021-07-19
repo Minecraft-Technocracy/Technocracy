@@ -1,6 +1,5 @@
 package net.cydhra.technocracy.foundation.content.world
 
-import net.cydhra.technocracy.foundation.content.blocks.chrysotileBlock
 import net.cydhra.technocracy.foundation.content.blocks.saltBlock
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
@@ -14,11 +13,9 @@ import java.util.*
 
 class WorldGenDeco : IWorldGenerator {
 
-    val chrysotileDecorator = WorldGenMinable(chrysotileBlock.defaultState, 33)
     val saltDecorator = WorldGenMinable(saltBlock.defaultState, 15)
 
     override fun generate(random: Random, chunkX: Int, chunkZ: Int, world: World, chunkGenerator: IChunkGenerator?, chunkProvider: IChunkProvider?) {
-        genStandardOre(world, random, 10, chrysotileDecorator, 20, 100, BlockPos(chunkX * 16, 0, chunkZ * 16))
         genStandardOre(world, random, 8, saltDecorator, 20, 80, BlockPos(chunkX * 16, 0, chunkZ * 16))
     }
 
