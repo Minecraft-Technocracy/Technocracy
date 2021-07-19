@@ -365,6 +365,23 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
         }
     }
 
+    internal fun getNodes(pos: BlockPos): Set<PipeType> {
+        return this.nodes[pos] ?: emptySet()
+    }
+
+    internal fun getEdges(pos: BlockPos): Map<PipeType, Set<EnumFacing>> {
+        return this.edges[pos] ?: emptyMap()
+    }
+
+    internal fun getAttachments(pos: BlockPos): Map<PipeType, Set<EnumFacing>> {
+        val result = mutableMapOf<PipeType, MutableSet<EnumFacing>>()
+        (this.attachedSinks[pos] ?: emptySet()).forEach { sink ->
+            result.putIfAbsent(sink.type, mutableSetOf())
+            result[sink.type]!!.add(sink.facing)
+        }
+        return result
+    }
+
     override fun deserializeNBT(nbt: NBTTagCompound) {
         this.transitEdgeCounter = nbt.getInteger(NBT_KEY_TRANSIT_COUNTER_STATE)
 
