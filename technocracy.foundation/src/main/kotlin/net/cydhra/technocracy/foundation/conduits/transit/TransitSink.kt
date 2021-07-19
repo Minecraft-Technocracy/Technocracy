@@ -14,13 +14,20 @@ class TransitSink(pos: BlockPos) : TransitEdge(pos) {
 
     private var transferCoolDown = 0
 
-    // TODO delegate to the tile entity that is represented by this sink
+    // TODO delegate to the tile entity that is represented by this sink, or to the edge
     val transferLimit: Int
         get() = when (this.type) {
-            PipeType.ENERGY -> 1000
-            PipeType.FLUID -> 1000
+            PipeType.ENERGY -> 20
+            PipeType.FLUID -> 20
             PipeType.ITEM -> 16
             else -> 0
+        }
+
+    val cooldownModifier: Int
+        get() = when (this.type) {
+            PipeType.ENERGY, PipeType.FLUID -> 1
+            PipeType.ITEM -> 20
+            else -> 4
         }
 
     constructor(id: Int, type: PipeType, facing: EnumFacing, pos: BlockPos) : this(pos) {
@@ -73,7 +80,7 @@ class TransitSink(pos: BlockPos) : TransitEdge(pos) {
         // TODO: obey transfer limits
         val remainingContent = this.type.acceptContent(world, this.pos.offset(facing), facing.opposite, content, false)
         if (remainingContent != content) {
-            this.setCoolDown()
+            this.setCoolDown(world)
             content.drainSourceUntil(remainingContent)
         }
 
@@ -83,8 +90,8 @@ class TransitSink(pos: BlockPos) : TransitEdge(pos) {
     /**
      * Set this sink to cooldown. This is done when content is transferred from or to this sink.
      */
-    fun setCoolDown() {
+    fun setCoolDown(world: WorldServer) {
         // TODO delegate the cooldown modifier to the sink
-        this.transferCoolDown = 20
+        this.transferCoolDown = this.cooldownModifier
     }
 }

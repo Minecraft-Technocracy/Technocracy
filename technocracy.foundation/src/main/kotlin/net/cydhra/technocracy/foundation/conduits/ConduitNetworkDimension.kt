@@ -112,7 +112,7 @@ internal class ConduitNetworkDimension(private val dimensionId: Int) {
                             remainingContent = potentialTargets[index++].transferContent(world, remainingContent)
                         }
 
-                        source.setCoolDown()
+                        source.setCoolDown(world)
                     }
                 }
     }
