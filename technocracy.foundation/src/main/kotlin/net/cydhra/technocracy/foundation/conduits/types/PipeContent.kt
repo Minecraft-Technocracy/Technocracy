@@ -43,6 +43,12 @@ data class PipeFluidContent(val source: IFluidHandler, val simulatedStack: Fluid
         require(content is PipeFluidContent) { "cannot drain fluid content by another content type" }
         this.source.drain(simulatedStack.amount - content.simulatedStack.amount, true)
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is PipeFluidContent) return false
+
+        return super.equals(other) && this.simulatedStack.isFluidStackIdentical(other.simulatedStack)
+    }
 }
 
 data class PipeEnergyContent(val source: IEnergyStorage, val amount: Int) : PipeContent() {
