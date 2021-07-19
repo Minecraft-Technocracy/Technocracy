@@ -17,7 +17,8 @@ import net.minecraft.util.EnumFacing
  */
 class TileEntityChemicalOxidizer : MachineTileEntity(), TEInventoryProvider<DynamicInventoryCapability> {
 
-    private val inputInventoryComponent = TileEntityInventoryComponent(1, this, EnumFacing.WEST)
+    private val inputInventoryComponent =
+        TileEntityInventoryComponent(1, this, EnumFacing.WEST, DynamicInventoryCapability.InventoryType.INPUT)
 
     private val outputInventoryComponent = TileEntityFluidComponent(4000,
             tanktype = DynamicFluidCapability.TankType.OUTPUT, facing = mutableSetOf(EnumFacing.EAST))

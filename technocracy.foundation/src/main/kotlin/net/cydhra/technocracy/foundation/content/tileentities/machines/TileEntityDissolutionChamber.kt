@@ -17,9 +17,12 @@ import net.minecraft.util.EnumFacing
  */
 class TileEntityDissolutionChamber : MachineTileEntity(), TEInventoryProvider<DynamicInventoryCapability> {
 
-    private val inputInventoryComponent = TileEntityInventoryComponent(1, this, EnumFacing.WEST)
-    private val inputFluidComponent = TileEntityFluidComponent(4000,
-            tanktype = DynamicFluidCapability.TankType.INPUT, facing = mutableSetOf(EnumFacing.UP))
+    private val inputInventoryComponent =
+        TileEntityInventoryComponent(1, this, EnumFacing.WEST, DynamicInventoryCapability.InventoryType.INPUT)
+    private val inputFluidComponent = TileEntityFluidComponent(
+        4000,
+        tanktype = DynamicFluidCapability.TankType.INPUT, facing = mutableSetOf(EnumFacing.UP)
+    )
     private val outputFluidComponent = TileEntityFluidComponent(4000,
             tanktype = DynamicFluidCapability.TankType.OUTPUT, facing = mutableSetOf(EnumFacing.EAST))
 

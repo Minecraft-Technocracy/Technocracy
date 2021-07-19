@@ -68,7 +68,12 @@ class TileEntityRocketController : AggregatableTileEntity(), IAggregatableGuiPro
     val maxStackSize = TileEntityDataComponent(0)// TileEntityIntegerDataComponent()
     val dynCapability = DynamicFluidCapability(0, mutableListOf("rocket_fuel"))
     val fluidBuffer = TileEntityFluidComponent(dynCapability, EnumFacing.values().toMutableSet())
-    val inventoryBuffer = TileEntityInventoryComponent(0, this, EnumFacing.values().toMutableSet())
+    val inventoryBuffer = TileEntityInventoryComponent(
+        0,
+        this,
+        EnumFacing.values().toMutableSet(),
+        DynamicInventoryCapability.InventoryType.INPUT
+    )
 
     var currentRocket: EntityRocket? = null
 

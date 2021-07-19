@@ -16,13 +16,17 @@ import net.minecraftforge.items.CapabilityItemHandler
  * @param facing the tile entity facing, where this inventory is accessible from
  * @param inventoryType the IO-type of inventory. For automation purposes, input and output slots are in different
  * inventories (so they can be accessed from different faces of a machine block).
+ * @param canExtractManually whether a user can bypass the [inventoryType] to extract items manually. Machines must
+ * ignore this value.
  */
 class TileEntityInventoryComponent(
-        size: Int,
-        provider: TEInventoryProvider<DynamicInventoryCapability>,
-        override val facing: MutableSet<EnumFacing>,
-        val inventoryType: DynamicInventoryCapability.InventoryType = DynamicInventoryCapability.InventoryType.BOTH) :
-        AbstractTileEntityDirectionalCapabilityComponent() {
+    size: Int,
+    provider: TEInventoryProvider<DynamicInventoryCapability>,
+    override val facing: MutableSet<EnumFacing>,
+    val inventoryType: DynamicInventoryCapability.InventoryType,
+    val canExtractManually: Boolean = inventoryType == DynamicInventoryCapability.InventoryType.INPUT
+) :
+    AbstractTileEntityDirectionalCapabilityComponent() {
 
     /**
      * Secondary constructor that takes only one facing
@@ -30,17 +34,21 @@ class TileEntityInventoryComponent(
      * @see [TileEntityInventoryComponent]
      */
     constructor(
-            size: Int,
-            provider: TEInventoryProvider<DynamicInventoryCapability>,
-            facing: EnumFacing,
-            inventoryType: DynamicInventoryCapability.InventoryType = DynamicInventoryCapability.InventoryType.BOTH)
-            : this(size, provider, mutableSetOf(facing), inventoryType)
+        size: Int,
+        provider: TEInventoryProvider<DynamicInventoryCapability>,
+        facing: EnumFacing,
+        inventoryType: DynamicInventoryCapability.InventoryType,
+        canExtractManually: Boolean = inventoryType == DynamicInventoryCapability.InventoryType.INPUT
+    )
+            : this(size, provider, mutableSetOf(facing), inventoryType, canExtractManually)
 
     /**
      * Inventory capability of the machine
      */
-    val inventory: DynamicInventoryCapability = DynamicInventoryCapability(size, provider,
-            (0..size).map { it to inventoryType }.toMap().toMutableMap())
+    val inventory: DynamicInventoryCapability = DynamicInventoryCapability(
+        size, provider,
+        (0..size).map { it to inventoryType }.toMap().toMutableMap()
+    )
 
     override val type: ComponentType = ComponentType.INVENTORY
 

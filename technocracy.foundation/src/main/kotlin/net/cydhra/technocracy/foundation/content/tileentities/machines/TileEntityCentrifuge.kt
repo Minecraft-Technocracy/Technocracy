@@ -28,7 +28,8 @@ class TileEntityCentrifuge : MachineTileEntity(), TEInventoryProvider<DynamicInv
     /**
      * Input inventory for the pulverizer with one slot
      */
-    private val inputInventoryComponent = TileEntityInventoryComponent(1, this, EnumFacing.WEST)
+    private val inputInventoryComponent =
+        TileEntityInventoryComponent(1, this, EnumFacing.WEST, DynamicInventoryCapability.InventoryType.INPUT)
 
     /**
      * Output inventory for the pulverizer with one slot

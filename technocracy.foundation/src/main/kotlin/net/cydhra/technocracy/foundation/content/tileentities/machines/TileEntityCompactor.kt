@@ -18,7 +18,8 @@ class TileEntityCompactor : MachineTileEntity(), TEInventoryProvider<DynamicInve
     /**
      * Input inventory for the furnace with one slot
      */
-    private val inputInventoryComponent = TileEntityInventoryComponent(1, this, EnumFacing.WEST)
+    private val inputInventoryComponent =
+        TileEntityInventoryComponent(1, this, EnumFacing.WEST, DynamicInventoryCapability.InventoryType.INPUT)
 
     /**
      * Output inventory for the furnace with one slot

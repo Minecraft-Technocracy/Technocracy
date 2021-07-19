@@ -30,7 +30,10 @@ class TileEntityAlloySmeltery : MachineTileEntity(), TEInventoryProvider<Dynamic
     /**
      * Input inventory for the pulverizer with one slot
      */
-    private val inputInventoryComponent = TileEntityInventoryComponent(3, this, EnumFacing.WEST)
+    private val inputInventoryComponent = TileEntityInventoryComponent(
+        3, this, EnumFacing.WEST,
+        DynamicInventoryCapability.InventoryType.INPUT
+    )
 
     /**
      * Output inventory for the pulverizer with one slot

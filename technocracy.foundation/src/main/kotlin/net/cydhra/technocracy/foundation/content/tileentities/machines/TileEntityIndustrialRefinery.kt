@@ -32,8 +32,10 @@ class TileEntityIndustrialRefinery : MachineTileEntity(), TEInventoryProvider<Dy
     private val inputFluidComponent2 = TileEntityFluidComponent(4000,
             tanktype = DynamicFluidCapability.TankType.INPUT, facing = mutableSetOf(EnumFacing.SOUTH))
 
-    private val inputItemComponent = TileEntityInventoryComponent(2, this, EnumFacing.NORTH,
-            DynamicInventoryCapability.InventoryType.BOTH)
+    private val inputItemComponent = TileEntityInventoryComponent(
+        2, this, EnumFacing.NORTH,
+        DynamicInventoryCapability.InventoryType.INPUT
+    )
 
     private val outputInventoryComponent = TileEntityInventoryComponent(1, this, EnumFacing.EAST,
             DynamicInventoryCapability.InventoryType.OUTPUT)
