@@ -1,5 +1,9 @@
 package net.cydhra.technocracy.foundation.conduits
 
+import net.cydhra.technocracy.foundation.conduits.parts.AttachmentPart
+import net.cydhra.technocracy.foundation.conduits.parts.EdgePart
+import net.cydhra.technocracy.foundation.conduits.parts.NodePart
+import net.cydhra.technocracy.foundation.conduits.parts.Part
 import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.minecraft.client.Minecraft
 import net.minecraft.util.EnumFacing
@@ -203,11 +207,28 @@ object ConduitNetwork {
 
     fun hasSink(world: WorldServer, pos: BlockPos, face: EnumFacing, type: PipeType): Boolean {
         val dimension =
-                dimensions[world.provider.dimension] ?: throw IllegalStateException("the dimension is not loaded")
+            dimensions[world.provider.dimension] ?: throw IllegalStateException("the dimension is not loaded")
 
         val chunk = dimension.getChunkAt(ChunkPos(pos)) ?: throw IllegalStateException("the chunk is not loaded")
 
         return chunk.hasSink(pos, face, type)
+    }
+
+    /**
+     * Get a list of [Part]s that represent all pipe nodes, edges and machine attachments that are present in the
+     * given position.
+     */
+    fun getNodeParts(world: WorldServer, pos: BlockPos): Collection<Part> {
+        val dimension =
+            dimensions[world.provider.dimension] ?: throw IllegalStateException("the dimension is not loaded")
+
+        val chunk = dimension.getChunkAt(ChunkPos(pos)) ?: throw IllegalStateException("the chunk is not loaded")
+        val parts = mutableListOf<Part>()
+        parts += chunk.getNodes(pos).map { NodePart(it) }
+        parts += chunk.getEdges(pos).flatMap { (type, set) -> set.map { EdgePart(type, it) } }
+        parts += chunk.getAttachments(pos).flatMap { (type, set) -> set.map { AttachmentPart(type, it) } }
+
+        return parts
     }
 
     fun beginTransaction(): NetworkTransactionContext {

@@ -15,7 +15,8 @@
       "ore": "sheetSteel"
     },
     "a": {
-      "item": "technocracy.foundation:asbestos"
+      "type": "forge:ore_dict",
+      "ore": "ingotIron"
     }
   },
   "result": {

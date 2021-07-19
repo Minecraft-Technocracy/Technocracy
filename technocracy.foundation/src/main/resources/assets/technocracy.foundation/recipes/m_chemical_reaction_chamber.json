@@ -11,7 +11,7 @@
     },
     "r": {
       "type": "forge:ore_dict",
-      "ore": "itemAsbestos"
+      "ore": "sheetSteel"
     },
     "i": {
       "type": "forge:ore_dict",

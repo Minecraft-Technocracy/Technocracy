@@ -7,8 +7,7 @@
   ],
   "key": {
     "a": {
-      "type": "forge:ore_dict",
-      "ore": "itemAsbestos"
+      "item": "technocracy.foundation:biphenyl"
     },
     "d": {
       "type": "forge:ore_dict",

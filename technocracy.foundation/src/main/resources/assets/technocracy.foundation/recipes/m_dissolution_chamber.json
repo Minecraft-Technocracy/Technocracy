@@ -14,8 +14,7 @@
       "item": "technocracy.foundation:servo"
     },
     "a": {
-      "type": "forge:ore_dict",
-      "ore": "itemAsbestos"
+      "item": "technocracy.foundation:cfrp"
     },
     "f": {
       "item": "technocracy.foundation:industrial_machine_frame"
