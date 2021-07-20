@@ -12,6 +12,8 @@ import net.cydhra.technocracy.foundation.content.tileentities.components.TileEnt
 import net.cydhra.technocracy.foundation.content.tileentities.logic.AdditiveConsumptionLogic
 import net.cydhra.technocracy.foundation.content.tileentities.logic.CoolingLogic
 import net.cydhra.technocracy.foundation.content.tileentities.logic.GenerateHeatLogic
+import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
+import net.cydhra.technocracy.foundation.data.crafting.special.HeatRecipe
 import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.TileEntityMultiplierUpgrade
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.text.ITextComponent
@@ -49,15 +51,19 @@ class LubricantUpgrade : MachineUpgrade() {
 
     override val upgradeParameter = UPGRADE_GENERIC
 
-    override fun canInstallUpgrade(upgradable: TCMachineTileEntity,
-                                   upgrades: TileEntityMachineUpgradesComponent): Boolean {
+    override fun canInstallUpgrade(
+        upgradable: TCMachineTileEntity,
+        upgrades: TileEntityMachineUpgradesComponent
+    ): Boolean {
         return upgrades.getInstalledUpgrades()
-                .filterIsInstance<LubricantUpgrade>()
-                .isEmpty()
+            .filterIsInstance<LubricantUpgrade>()
+            .isEmpty()
     }
 
-    override fun onInstallUpgrade(upgradable: TCMachineTileEntity,
-                                  upgrades: TileEntityMachineUpgradesComponent) {
+    override fun onInstallUpgrade(
+        upgradable: TCMachineTileEntity,
+        upgrades: TileEntityMachineUpgradesComponent
+    ) {
         this.onUpgradeLoad(upgradable, upgrades)
     }
 
@@ -81,15 +87,17 @@ class LubricantUpgrade : MachineUpgrade() {
         if (upgradable.getComponents().none { it.first == LUBRICANT_FLUID_COMPONENT_NAME }) {
             upgradable.registerComponent(lubricantTank, LUBRICANT_FLUID_COMPONENT_NAME)
             upgradable.registerComponent(lubricantMultiplier, LUBRICANT_MULTIPLIER_COMPONENT_NAME)
-            upgradable.addLogicStrategy(AdditiveConsumptionLogic(lubricantTank, LUBRICANT_BASE_USAGE, lubricantMultiplier),
-                    LUBRICANT_CONSUMPTION_LOGIC_NAME)
+            upgradable.addLogicStrategy(
+                AdditiveConsumptionLogic(lubricantTank, LUBRICANT_BASE_USAGE, lubricantMultiplier),
+                LUBRICANT_CONSUMPTION_LOGIC_NAME
+            )
         }
     }
 
     override fun getUpgradeDescription(): Optional<ITextComponent> {
         return Optional.of(
-                TextComponentTranslation("tooltips.upgrades.hint.lubricant")
-                        .setStyle(Style().setColor(TextFormatting.GREEN))
+            TextComponentTranslation("tooltips.upgrades.hint.lubricant")
+                .setStyle(Style().setColor(TextFormatting.GREEN))
         )
     }
 }
@@ -105,20 +113,23 @@ class CoolingUpgrade : MachineUpgrade() {
 
     override val upgradeParameter = UPGRADE_GENERIC
 
-    override fun canInstallUpgrade(upgradable: TCMachineTileEntity, upgrades: TileEntityMachineUpgradesComponent): Boolean {
+    override fun canInstallUpgrade(
+        upgradable: TCMachineTileEntity,
+        upgrades: TileEntityMachineUpgradesComponent
+    ): Boolean {
         return upgrades
-                .getInstalledUpgrades()
-                .filterIsInstance<CoolingUpgrade>()
-                .isEmpty() &&
+            .getInstalledUpgrades()
+            .filterIsInstance<CoolingUpgrade>()
+            .isEmpty() &&
                 upgradable.getComponents()
-                        .map { it.second }
-                        .filterIsInstance<TileEntityHeatStorageComponent>()
-                        .isEmpty() &&
+                    .map { it.second }
+                    .filterIsInstance<TileEntityHeatStorageComponent>()
+                    .isEmpty() &&
                 upgradable.getComponents()
-                        .map { it.second }
-                        .filterIsInstance<TileEntityMultiplierComponent>()
-                        .filter { it.upgradeParameter == UPGRADE_ENERGY }
-                        .count() == 1
+                    .map { it.second }
+                    .filterIsInstance<TileEntityMultiplierComponent>()
+                    .filter { it.upgradeParameter == UPGRADE_ENERGY }
+                    .count() == 1
 
     }
 
@@ -137,37 +148,46 @@ class CoolingUpgrade : MachineUpgrade() {
     override fun onUpgradeLoad(upgradable: TCMachineTileEntity, upgrades: TileEntityMachineUpgradesComponent) {
         val heatStorage = TileEntityHeatStorageComponent(0, 100_000)
         val coolerAgentInput = TileEntityFluidComponent(
-                capacity = 8000,
-                facing = mutableSetOf(EnumFacing.NORTH),
-                tanktype = DynamicFluidCapability.TankType.INPUT)
+            capacity = 8000,
+            facing = mutableSetOf(EnumFacing.NORTH),
+            tanktype = DynamicFluidCapability.TankType.INPUT,
+            allowedFluid = RecipeManager.getSpecialRecipesByType(RecipeManager.RecipeType.HEAT)!!.map {
+                (it as HeatRecipe).coldFluid.name
+            }.toTypedArray()
+        )
         val coolerAgentOutput = TileEntityFluidComponent(
-                capacity = 8000,
-                facing = mutableSetOf(EnumFacing.SOUTH),
-                tanktype = DynamicFluidCapability.TankType.OUTPUT
+            capacity = 8000,
+            facing = mutableSetOf(EnumFacing.SOUTH),
+            tanktype = DynamicFluidCapability.TankType.OUTPUT
         )
 
         if (upgradable.getComponents().none { it.first == COOLER_HEAT_STORAGE_COMPONENT_NAME }) {
             upgradable.registerComponent(heatStorage, COOLER_HEAT_STORAGE_COMPONENT_NAME)
             upgradable.registerComponent(coolerAgentInput, COOLER_FLUID_INPUT_NAME)
             upgradable.registerComponent(coolerAgentOutput, COOLER_FLUID_OUTPUT_NAME)
-            upgradable.addLogicStrategy(CoolingLogic(
+            upgradable.addLogicStrategy(
+                CoolingLogic(
                     hotFluidComponent = coolerAgentOutput,
                     coldFluidComponent = coolerAgentInput,
-                    heatBuffer = heatStorage), COOLER_LOGIC)
+                    heatBuffer = heatStorage
+                ), COOLER_LOGIC
+            )
             upgradable.addLogicStrategy(GenerateHeatLogic(
-                    baseHeatGeneration = TCFoundation.physics.milliHeatPerRf / 2,
-                    energyMultiplierComponent = upgradable.getComponents()
-                            .map { it.second }
-                            .filterIsInstance<TileEntityMultiplierComponent>()
-                            .single { it.upgradeParameter == UPGRADE_ENERGY },
-                    heatBuffer = heatStorage), HEAT_GEN_LOGIC)
+                baseHeatGeneration = TCFoundation.physics.milliHeatPerRf / 2,
+                energyMultiplierComponent = upgradable.getComponents()
+                    .map { it.second }
+                    .filterIsInstance<TileEntityMultiplierComponent>()
+                    .single { it.upgradeParameter == UPGRADE_ENERGY },
+                heatBuffer = heatStorage
+            ), HEAT_GEN_LOGIC
+            )
         }
     }
 
     override fun getUpgradeDescription(): Optional<ITextComponent> {
         return Optional.of(
-                TextComponentTranslation("tooltips.upgrades.hint.cooler")
-                        .setStyle(Style().setColor(TextFormatting.GREEN))
+            TextComponentTranslation("tooltips.upgrades.hint.cooler")
+                .setStyle(Style().setColor(TextFormatting.GREEN))
         )
     }
 }
