@@ -85,21 +85,23 @@ internal class ConduitNetworkDimension(private val dimensionId: Int) {
      */
     fun tick(world: WorldServer) {
         val transitGraph = this.loadedChunks
-                .map { (_, chunk) -> chunk.getTransitEdges().map { edge -> edge to chunk } }
-                .flatten()
+            .map { (_, chunk) -> chunk.getTransitEdges().map { edge -> edge to chunk } }
+            .flatten()
 
         transitGraph
-                .filter { (edge, _) -> edge is TransitSink }
-                .forEach { (edge, _) -> (edge as TransitSink).tick() }
+            .filter { (edge, _) -> edge is TransitSink }
+            .forEach { (edge, _) -> (edge as TransitSink).tick() }
 
         transitGraph
-                .filter { (edge, _) -> edge is TransitSink }
-                .filter { (edge, _) -> (edge as TransitSink).offersContent(world) }
-                .forEach { (source, chunk) ->
+            .filter { (edge, _) -> edge is TransitSink }
+            .filter { (edge, _) -> (edge as TransitSink).offersContent(world) }
+            .forEach { (source, chunk) ->
+                // verify that content is still available, because another sink could have already drained it
+                if ((source as TransitSink).offersContent(world)) {
                     // get offered content of source
                     val content = (source as TransitSink).getContent(world)
 
-                    // find available sink using routing strategy
+                    // find available sinks using path finding
                     val potentialTargets = dijkstra(world, source, chunk, content, emptyMap(), true)
 
                     // transfer content
@@ -115,6 +117,7 @@ internal class ConduitNetworkDimension(private val dimensionId: Int) {
                         source.setCoolDown(world)
                     }
                 }
+            }
     }
 
     /**
@@ -127,12 +130,12 @@ internal class ConduitNetworkDimension(private val dimensionId: Int) {
      * are returned
      */
     fun dijkstra(
-            world: WorldServer,
-            start: TransitSink,
-            chunk: ConduitNetworkChunk,
-            content: PipeContent,
-            usedFlows: Map<TransitEdge, Int>,
-            multipleSinks: Boolean = true
+        world: WorldServer,
+        start: TransitSink,
+        chunk: ConduitNetworkChunk,
+        content: PipeContent,
+        usedFlows: Map<TransitEdge, Int>,
+        multipleSinks: Boolean = true
     ): List<TransitSink> {
         // nodes that were already visited
         val visited = mutableListOf<TransitEdge>()
@@ -186,7 +189,7 @@ internal class ConduitNetworkDimension(private val dimensionId: Int) {
 
                 if (targetChunk != null) {
                     val targetEdge = targetChunk
-                            .getTransitChunkEdge(targetPosition, start.type, currentEdge.facing.opposite)
+                        .getTransitChunkEdge(targetPosition, start.type, currentEdge.facing.opposite)
                     enqueuePath(currentEdge, targetEdge!!, targetChunk, currentCost + 1)
                 }
             }
