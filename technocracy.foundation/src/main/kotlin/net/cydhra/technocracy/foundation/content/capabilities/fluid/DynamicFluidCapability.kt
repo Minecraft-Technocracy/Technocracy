@@ -72,31 +72,10 @@ open class DynamicFluidCapability(var capacity: Int = 1000, val allowedFluid: Mu
      * The force parameter is used to internally manipulate it and ignores the type of the tank
      */
     fun drain(maxDrain: Int, doDrain: Boolean, forced: Boolean): FluidStack? {
-        if (!forced && tanktype == TankType.INPUT)
-            return null
-
-        val lastFluid = currentFluid
-
         if (currentFluid == null)
             return null
 
-        val drain = min(maxDrain, currentFluid!!.amount)
-
-        if (doDrain) {
-            currentFluid!!.amount -= drain
-        }
-
-        val out = FluidStack(currentFluid!!.fluid, drain)
-
-        if (currentFluid!!.amount <= 0) {
-            currentFluid = null
-        }
-
-        if (doDrain) {
-            markDirty(currentFluid != lastFluid)
-        }
-
-        return out
+        return drain(FluidStack(currentFluid, maxDrain), doDrain, forced)
     }
 
     fun setFluid(resource: FluidStack) {
