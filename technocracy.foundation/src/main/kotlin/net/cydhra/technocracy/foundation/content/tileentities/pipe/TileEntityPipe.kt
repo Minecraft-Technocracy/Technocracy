@@ -1,43 +1,197 @@
 package net.cydhra.technocracy.foundation.content.tileentities.pipe
 
-import net.cydhra.technocracy.foundation.content.blocks.pipe
 import net.cydhra.technocracy.foundation.client.model.pipe.FacadeBakery
 import net.cydhra.technocracy.foundation.conduits.ConduitNetwork
+import net.cydhra.technocracy.foundation.conduits.parts.AttachmentPart
+import net.cydhra.technocracy.foundation.conduits.parts.EdgePart
+import net.cydhra.technocracy.foundation.conduits.parts.NodePart
 import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFacadeComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityPipeTypesComponent
 import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableTileEntity
 import net.minecraft.block.Block
+import net.minecraft.client.Minecraft
 import net.minecraft.init.Blocks
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.AxisAlignedBB
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
+import net.minecraft.util.math.Vec3i
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.WorldServer
+import org.lwjgl.util.vector.Matrix3f
+import org.lwjgl.util.vector.Vector3f
+import kotlin.math.abs
 
 
 class TileEntityPipe : AggregatableTileEntity() {
     companion object {
-        const val size = 0.05
-        const val nodeSize = 0.075
+        const val boxsize = 0.05
+        const val nodeSize = 0.075 * 1.5
 
-        val node = getBB(Vec3d((0.5 - nodeSize), (0.5 - nodeSize), (0.5 - nodeSize)),
-                Vec3d((0.5 + nodeSize), (0.5 + nodeSize), (0.5 + nodeSize)))
+        val node = getBB(
+            Vec3d((0.5 - nodeSize), (0.5 - nodeSize), (0.5 - nodeSize)),
+            Vec3d((0.5 + nodeSize), (0.5 + nodeSize), (0.5 + nodeSize))
+        )
 
-        val connections = mapOf(EnumFacing.NORTH to getBB(Vec3d((0.5 - size), (0.5 - size), 0.0),
-                Vec3d((0.5 + size), (0.5 + size), (0.5 - size))),
-                EnumFacing.SOUTH to getBB(Vec3d((0.5 - size), (0.5 - size), (0.5 + size)),
-                        Vec3d((0.5 + size), (0.5 + size), 1.0)),
-                EnumFacing.EAST to getBB(Vec3d((0.5 + size), (0.5 - size), (0.5 - size)),
-                        Vec3d(1.0, (0.5 + size), (0.5 + size))),
-                EnumFacing.WEST to getBB(Vec3d(0.0, (0.5 - size), (0.5 - size)),
-                        Vec3d((0.5 - size), (0.5 + size), (0.5 + size))),
-                EnumFacing.UP to getBB(Vec3d((0.5 - size), (0.5 + size), (0.5 - size)),
-                        Vec3d((0.5 + size), 1.0, (0.5 + size))),
-                EnumFacing.DOWN to getBB(Vec3d((0.5 - size), 0.0, (0.5 - size)),
-                        Vec3d((0.5 + size), (0.5 - size), (0.5 + size))))
+        val boxes = mapOf(
+            EnumFacing.NORTH to getBB(
+                Vec3d((0.5 - boxsize), (0.5 - boxsize), 0.0),
+                Vec3d((0.5 + boxsize), (0.5 + boxsize), (0.5 - boxsize))
+            ),
+            EnumFacing.SOUTH to getBB(
+                Vec3d((0.5 - boxsize), (0.5 - boxsize), (0.5 + boxsize)),
+                Vec3d((0.5 + boxsize), (0.5 + boxsize), 1.0)
+            ),
+            EnumFacing.EAST to getBB(
+                Vec3d((0.5 + boxsize), (0.5 - boxsize), (0.5 - boxsize)),
+                Vec3d(1.0, (0.5 + boxsize), (0.5 + boxsize))
+            ),
+            EnumFacing.WEST to getBB(
+                Vec3d(0.0, (0.5 - boxsize), (0.5 - boxsize)),
+                Vec3d((0.5 - boxsize), (0.5 + boxsize), (0.5 + boxsize))
+            ),
+            EnumFacing.UP to getBB(
+                Vec3d((0.5 - boxsize), (0.5 + boxsize), (0.5 - boxsize)),
+                Vec3d((0.5 + boxsize), 1.0, (0.5 + boxsize))
+            ),
+            EnumFacing.DOWN to getBB(
+                Vec3d((0.5 - boxsize), 0.0, (0.5 - boxsize)),
+                Vec3d((0.5 + boxsize), (0.5 - boxsize), (0.5 + boxsize))
+            )
+        )
+
+
+        val connectors: List<AxisAlignedBB>
+        val pipeVectors: Map<EnumFacing, Pair<List<List<Vector3f>>, Vector3f>>
+
+        init {
+            val pixelSize = 1 / 16f
+            val connectorThickness = pixelSize * FacadeBakery.facadeSize.toDouble()
+            val connectorRadius = 0.6 / 2
+
+            connectors = listOf(
+                AxisAlignedBB(0.0, 0.0, 0.0, 0.0, connectorThickness, 0.0).offset(0.5, 0.0, 0.5)
+                    .grow(connectorRadius, 0.0, connectorRadius),
+                AxisAlignedBB(0.0, 1.0 - connectorThickness, 0.0, 0.0, 1.0, 0.0).offset(0.5, 0.0, 0.5)
+                    .grow(connectorRadius, 0.0, connectorRadius),
+                AxisAlignedBB(0.0, 0.0, 0.0, 0.0, 0.0, connectorThickness).offset(0.5, 0.5, 0.0)
+                    .grow(connectorRadius, connectorRadius, 0.0),
+                AxisAlignedBB(0.0, 0.0, 1.0 - connectorThickness, 0.0, 0.0, 1.0).offset(0.5, 0.5, 0.0)
+                    .grow(connectorRadius, connectorRadius, 0.0),
+                AxisAlignedBB(0.0, 0.0, 0.0, connectorThickness, 0.0, 0.0).offset(0.0, 0.5, 0.5)
+                    .grow(0.0, connectorRadius, connectorRadius),
+                AxisAlignedBB(1.0 - connectorThickness, 0.0, 0.0, 1.0, 0.0, 0.0).offset(0.0, 0.5, 0.5)
+                    .grow(0.0, connectorRadius, connectorRadius)
+            )
+
+
+            //start positions of the cable bundles
+            //oriented towards positive z axis
+            val boxoffset = 0.1f
+            val vectors = mutableListOf(
+                listOf(
+                    Vector3f(0.0f, 0.0f, 0.0f)
+                ), listOf(
+                    Vector3f(boxoffset, 0.0f, 0.0f),
+                    Vector3f(-boxoffset, 0.0f, 0.0f),
+                ), listOf(
+                    Vector3f(0.0f, -boxoffset, 0.0f),
+                    Vector3f(boxoffset, boxoffset, 0.0f),
+                    Vector3f(-boxoffset, boxoffset, 0.0f),
+                ), listOf(
+                    Vector3f(-boxoffset, -boxoffset, 0.0f),
+                    Vector3f(boxoffset, -boxoffset, 0.0f),
+                    Vector3f(boxoffset, boxoffset, 0.0f),
+                    Vector3f(-boxoffset, boxoffset, 0.0f),
+                ), listOf(
+                    Vector3f(-boxoffset, -boxoffset, 0.0f),
+                    Vector3f(boxoffset, -boxoffset, 0.0f),
+                    Vector3f(boxoffset, boxoffset, 0.0f),
+                    Vector3f(-boxoffset, boxoffset, 0.0f),
+                    Vector3f(0.0f, 0.0f, 0.0f),
+                )
+            )
+
+
+            fun EnumFacing.isPos(): Boolean {
+                return this.axisDirection == EnumFacing.AxisDirection.POSITIVE
+            }
+
+            operator fun Vec3i.invoke(): Vector3f {
+                return Vector3f(this.x.toFloat(), this.y.toFloat(), this.z.toFloat())
+            }
+
+            fun AxisAlignedBB.offset(vec: Vector3f): AxisAlignedBB {
+                return this.offset(vec.x.toDouble(), vec.y.toDouble(), vec.z.toDouble())
+            }
+
+            fun AxisAlignedBB.offset(offset: Double): AxisAlignedBB {
+                return this.offset(offset, offset, offset)
+            }
+
+            pipeVectors = mutableMapOf<EnumFacing, Pair<MutableList<MutableList<Vector3f>>, Vector3f>>().apply {
+                for (facing in EnumFacing.values()) {
+
+                    val facingVectorList = mutableListOf<MutableList<Vector3f>>()
+
+                    //if the axis is negative switch the facing and invert the direction vector
+                    //this part switches the facing
+                    val face = facing.takeIf { it.isPos() } ?: facing.opposite
+
+                    //calc cross product so we know the rotation axis
+                    val rot = face.directionVec.crossProduct(EnumFacing.SOUTH.directionVec)()
+
+                    //cos 0
+                    //sin 1
+                    val matrix = Matrix3f().apply {
+                        m00 = rot.x
+                        m01 = rot.x * rot.y - rot.z
+                        m02 = rot.x * rot.z + rot.y
+                        m10 = rot.y * rot.x + rot.z
+                        m11 = rot.y
+                        m12 = rot.y * rot.z - rot.x
+                        m20 = rot.z * rot.x - rot.y
+                        m21 = rot.z * rot.y + rot.x
+                        m22 = rot.z
+                    }
+
+                    //rotate all vectors using the matrix
+                    for (vecs in vectors) {
+                        facingVectorList.add(mutableListOf<Vector3f>().apply {
+                            for (v in vecs) {
+                                if (facing.axis == EnumFacing.SOUTH.axis) {
+                                    //we are on the z axis so we dont need to rotate the vectors
+                                    add(v)
+                                } else {
+                                    //rotate the location vector
+                                    add(Matrix3f.transform(matrix, v, null))
+                                }
+                            }
+                        })
+                    }
+
+                    //get the direction vector
+                    val direction = if (facing.axis == EnumFacing.SOUTH.axis) {
+                        facing.directionVec()
+                    } else {
+                        //if the axis is negative switch the facing and invert the direction vector
+                        //this part inverts the direction vector
+                        val dir = if (facing.isPos()) {
+                            EnumFacing.SOUTH
+                        } else {
+                            EnumFacing.NORTH
+                        }.directionVec()
+
+                        //also rotate the direction vector using the matrix
+                        Matrix3f.transform(matrix, dir, null)
+                    }
+
+                    put(facing, facingVectorList to direction)
+                }
+            }
+        }
 
         private fun getBB(min: Vec3d, max: Vec3d): AxisAlignedBB {
             return AxisAlignedBB(min.x, min.y, min.z, max.x, max.y, max.z)
@@ -107,17 +261,18 @@ class TileEntityPipe : AggregatableTileEntity() {
     }
 
     fun removePipeType(type: PipeType) {
-        pipeTypes.types.remove(type)
-
-        if (pipeTypes.types.isEmpty()) {
-            for (f in facades.facades) {
-                f.value.count = 1
-                Block.spawnAsEntity(world, pos, f.value)
-            }
-            world.setBlockState(this.pos, Blocks.AIR.defaultState)
-        }
-
         if (!this.world.isRemote) {
+
+            pipeTypes.types.remove(type)
+
+            if (pipeTypes.types.isEmpty()) {
+                for (f in facades.facades) {
+                    f.value.count = 1
+                    Block.spawnAsEntity(world, pos, f.value)
+                }
+                world.setBlockState(this.pos, Blocks.AIR.defaultState)
+            }
+
             val transaction = ConduitNetwork.beginTransaction()
             ConduitNetwork.removeConduitNode(transaction, this.world as WorldServer, this.pos, type)
             ConduitNetwork.removeAllAttachedSinks(transaction, this.world as WorldServer, this.pos, type)
@@ -146,8 +301,10 @@ class TileEntityPipe : AggregatableTileEntity() {
                     EnumFacing.values().forEach { face ->
                         val offset = this.pos.offset(face)
                         if (ConduitNetwork.hasConduitNode(this.world as WorldServer, offset, type)) {
-                            ConduitNetwork.removeConduitEdge(transaction, this.world as WorldServer,
-                                    this.pos, offset, type)
+                            ConduitNetwork.removeConduitEdge(
+                                transaction, this.world as WorldServer,
+                                this.pos, offset, type
+                            )
                         }
                     }
                     transaction.commit()
@@ -186,7 +343,7 @@ class TileEntityPipe : AggregatableTileEntity() {
 
 
     enum class BoxType {
-        PIPE, CONNECTOR, FACADE
+        PIPE, BOX, FACADE, CONNECTOR
     }
 
     /**
@@ -196,106 +353,181 @@ class TileEntityPipe : AggregatableTileEntity() {
      * Third is an integer indicating which type the model part is (0: node, 1: connection)
      */
     fun getPipeModelParts(): List<Triple<Pair<EnumFacing, AxisAlignedBB>, PipeType?, BoxType>> {
-        val boxes = mutableListOf<Triple<Pair<EnumFacing, AxisAlignedBB>, PipeType?, BoxType>>()
+        val out = mutableListOf<Triple<Pair<EnumFacing, AxisAlignedBB>, PipeType?, BoxType>>()
 
-        //populate connected facings
-        val facings = mutableSetOf<EnumFacing>()
-        this.getInstalledTypes().sorted().forEach { type ->
-            connections.forEach { (facing, _) ->
-                if (world.getBlockState(this.pos.offset(facing)).block == pipe) {
-                    val neighbourPipe = (world.getTileEntity(this.pos.offset(facing)) as TileEntityPipe)
-                    val connected = neighbourPipe.getInstalledTypes().contains(type)
+        //todo for the love of god fix on server
+        val parts = ConduitNetwork.getNodeParts(
+            Minecraft.getMinecraft().integratedServer!!.getWorld(world.provider.dimension),
+            this.pos
+        ).sortedBy {
+            if (it is NodePart)
+                return@sortedBy it.pipeType.ordinal
+            if (it is EdgePart)
+                return@sortedBy it.pipeType.ordinal
+            if (it is AttachmentPart)
+                return@sortedBy it.pipeType.ordinal
+            return@sortedBy 0
+        }
 
-                    if (connected) {
-                        facings.add(facing)
+
+        val facings = mutableMapOf<EnumFacing, Int>()
+        val hasEdge = mutableSetOf<PipeType>()
+        var nodes = 0
+        for (p in parts) {
+            when (p) {
+                is AttachmentPart -> {
+                    out.add(Triple(p.facing to connectors[p.facing.index], p.pipeType, BoxType.CONNECTOR))
+                }
+                is EdgePart -> {
+                    val size = facings.getOrDefault(p.facing, 0)
+                    facings[p.facing] = size + 1
+                    hasEdge.add(p.pipeType)
+                }
+                is NodePart -> {
+                    nodes++
+                }
+            }
+        }
+
+        val facingsCounter = mutableMapOf<EnumFacing, Int>()
+
+        fun MutableMap<EnumFacing, Int>.getAndInc(key: EnumFacing): Int {
+            val tmp = facingsCounter.getOrElse(key) {
+                facingsCounter[key] = 1
+                return 0
+            }
+            facingsCounter[key] = tmp + 1
+            return tmp
+        }
+
+        fun AxisAlignedBB.offset(vec: Vector3f): AxisAlignedBB {
+            return this.offset(vec.x.toDouble(), vec.y.toDouble(), vec.z.toDouble())
+        }
+
+        fun AxisAlignedBB.offset(offset: Double): AxisAlignedBB {
+            return this.offset(offset, offset, offset)
+        }
+
+        for (p in parts) {
+            when (p) {
+                is EdgePart -> {
+                    val (vecs, dir) = pipeVectors[p.facing]!!
+                    val offset = vecs[facings[p.facing]!! - 1][facingsCounter.getAndInc(p.facing)]
+
+                    val x = dir.x * 0.5 + (1 - abs(dir.x)) * nodeSize
+                    val y = dir.y * 0.5 + (1 - abs(dir.y)) * nodeSize
+                    val z = dir.z * 0.5 + (1 - abs(dir.z)) * nodeSize
+
+                    out.add(
+                        Triple(
+                            p.facing to AxisAlignedBB(0.0, 0.0, 0.0, x, y, z)
+                                .offset(offset).offset(0.5), p.pipeType, BoxType.PIPE
+                        )
+                    )
+
+                    out.add(
+                        Triple(
+                            p.facing to AxisAlignedBB(
+                                -nodeSize * 0.1,
+                                -nodeSize * 0.1,
+                                -nodeSize * 0.1,
+                                nodeSize + nodeSize * 0.1,
+                                nodeSize + nodeSize * 0.1,
+                                nodeSize + nodeSize * 0.1
+                            ).offset(offset).offset(0.5), p.pipeType, BoxType.CONNECTOR
+                        )
+                    )
+                }
+                is AttachmentPart -> {
+                }
+                is NodePart -> {
+                    if (!hasEdge.contains(p.pipeType)) {
+                        val expansion = ((this.getInstalledTypes().size - 1) * node.averageEdgeLength) / 2
+                        out.add(
+                            Triple(
+                                EnumFacing.NORTH to node.expand(expansion * 2, 0.0, expansion * 2).offset(
+                                    -expansion,
+                                    0.0,
+                                    -expansion
+                                ), if (getInstalledTypes().size == 1) getInstalledTypes().first() else null, BoxType.BOX
+                            )
+                        )
                     }
                 }
             }
         }
 
-        //distinguish multiple entries using a set and decide if a connection is straight or goes around a corner
-        val straight = facings.map { it.axis }.toSet().size == 1
+        //calculation of the box that hides the bends of the cable
 
-        //Render all nodes and connections
-        this.getInstalledTypes().sorted().forEachIndexed { index, type ->
-            connections.forEach { (facing, boundingBox) ->
-                var nodeConnectionOffset =
-                        (index * node.averageEdgeLength) - ((this.getInstalledTypes().size - 1) * node.averageEdgeLength) / 2
+        //calculate the max size of cables per axis
+        val bends = mutableMapOf<EnumFacing.Axis, Int>()
+        for ((face, int) in facings) {
+            bends[face.axis] = (bends[face.axis] ?: 0).coerceAtLeast(int)
+        }
 
-                //The block is a pipe
-                if (world.getBlockState(this.pos.offset(facing)).block == pipe) {
-                    val neighbourPipe = (world.getTileEntity(this.pos.offset(facing)) as TileEntityPipe)
-                    val connected = neighbourPipe.getInstalledTypes().contains(type)
+        val x = bends[EnumFacing.Axis.X] ?: 0
+        val y = bends[EnumFacing.Axis.Y] ?: 0
+        val z = bends[EnumFacing.Axis.Z] ?: 0
+        val scalar = Vector3f(0.0f, 0.0f, 0.0f)
 
-                    //Is connected in any way to the neighbour pipe
-                    if (connected) {
+        //needs to be an edge with atleast 2 cables
+        //or a y edge with atleast 3 cables and some horizontal edges
+        if (bends.filter { it.value > 0 }.count() >= 2 || (y >= 3 && x + z > 0)) {
 
-                        //neighbour has less types
-                        if (neighbourPipe.getInstalledTypes().size < this.getInstalledTypes().size) {
-                            //use offset of the neighbour
-                            nodeConnectionOffset =
-                                    if (this.getInstalledTypes().size != 1 && neighbourPipe.getInstalledTypes().size != 1) { // if both type sizes are not one some more calculations are needed
-                                        var neighbourIndex = index
 
-                                        //find the index of the neighbour pipe of the current type
-                                        neighbourPipe.getInstalledTypes().sorted().forEachIndexed { idx, it ->
-                                            if (it == type) {
-                                                neighbourIndex = idx
-                                            }
-                                        }
+            //normal case L junktion of 2 cable bundles
+            if ((x >= 2f && z >= 2f)) {
+                scalar.x = 1f
+                scalar.z = 1f
+            }
 
-                                        //apply the the offset with the current neighbour index
-                                        (neighbourIndex * node.averageEdgeLength) - ((neighbourPipe.getInstalledTypes().size - 1) * node.averageEdgeLength) / 2
-                                    } else {
-                                        ((neighbourPipe.getInstalledTypes().size - 1) * node.averageEdgeLength) / 2 //Apply offset for one installed type
-                                    }
-                        } else if (neighbourPipe.getInstalledTypes().size == this.getInstalledTypes().size) { //if has same size of types
-                            var sameTypeCount = 0
+            //atleast 3 calbes in one direction
+            //needs to ajust the height
+            if (x >= 3f || z >= 3f || y >= 3f) {
+                scalar.y = 1f
+            }
 
-                            //calculate the amount of types both lists have
-                            neighbourPipe.getInstalledTypes().sorted().forEach {
-                                if (this.getInstalledTypes().contains(it)) {
-                                    sameTypeCount++
-                                }
-                            }
+            //if the y bundle has atleast 3 cables we need to make it thicker
+            if (y >= 3) {
+                scalar.x = 1f
+                scalar.z = 1f
+            }
 
-                            if (sameTypeCount == 1) { //both have exactly one same type
-                                nodeConnectionOffset = 0.0 //no offset is needed at all
-                            }
-                        }
+            //2 cables onto 1 calbe we need to cover that up too
+            //===
+            // |
+            if (x >= 2f && z <= 1f) {
+                scalar.z = 1f
+            }
 
-                        //Add connection
-                        boxes.add(Triple(facing to when {
-                            facing.axis == EnumFacing.Axis.X -> boundingBox.offset(0.0, 0.0, nodeConnectionOffset)
-                            facing.axis == EnumFacing.Axis.Z -> boundingBox.offset(-nodeConnectionOffset, 0.0, 0.0)
-                            facing.axis.isVertical -> boundingBox.offset(0.0, 0.0, nodeConnectionOffset)
-                            else -> boundingBox
-                        }, type, BoxType.PIPE))
-                    }
-                }
+            //2 cables onto 1 calbe we need to cover that up too
+            //  ||
+            //--||
+            //  ||
+            if (z >= 2f && x <= 1f) {
+                scalar.x = 1f
             }
         }
 
-        //Draw main node
-        val expansion = ((this.getInstalledTypes().size - 1) * node.averageEdgeLength) / 2
-        if (straight) {
-            val expX: Double = when (facings.first().axis) {
-                EnumFacing.Axis.Z -> expansion
-                else -> 0.0
-            }
-            val expZ: Double = when (facings.first().axis) {
-                EnumFacing.Axis.Z -> 0.0
-                else -> expansion
-            }
+        if (scalar.x > 0f || scalar.y > 0f || scalar.z > 0f) {
+            out.add(
 
-            boxes.add(Triple(EnumFacing.NORTH to node.expand(expX * 2, 0.0, expZ * 2)
-                    .offset(-expX, 0.0, -expZ)
-                    , if (getInstalledTypes().size == 1) getInstalledTypes().first() else null, BoxType.CONNECTOR))
+                //we need to be a bit bigger then the normal end connector
+                //so we use 0.15 as the normal one uses 0.1
 
-        } else {
-            boxes.add(Triple(EnumFacing.NORTH to node.expand(expansion * 2, 0.0, expansion * 2).offset(-expansion,
-                    0.0,
-                    -expansion), if (getInstalledTypes().size == 1) getInstalledTypes().first() else null, BoxType.CONNECTOR))
+                //then we add our scaling in the desired direction
+                //scale it with 0.12 as that did visually look good
+                Triple(
+                    EnumFacing.NORTH to AxisAlignedBB(
+                        -nodeSize * 0.15 - scalar.x * 0.12,
+                        -nodeSize * 0.15 - scalar.y * 0.12,
+                        -nodeSize * 0.15 - scalar.z * 0.12,
+                        nodeSize + nodeSize * 0.15 + scalar.x * 0.12,
+                        nodeSize + nodeSize * 0.15 + scalar.y * 0.12,
+                        nodeSize + nodeSize * 0.15 + +scalar.z * 0.12
+                    ).offset(0.5, 0.5, 0.5), null, BoxType.BOX
+                )
+            )
         }
 
         //Calc facades
@@ -324,10 +556,9 @@ class TileEntityPipe : AggregatableTileEntity() {
                     AxisAlignedBB(0.0, 0.0, 0.0, height, 1.0, 1.0)
                 }
             }
-            boxes.add(Triple(facing to bb, null, BoxType.FACADE))
-
+            out.add(Triple(facing to bb, null, BoxType.FACADE))
         }
 
-        return boxes
+        return out
     }
 }

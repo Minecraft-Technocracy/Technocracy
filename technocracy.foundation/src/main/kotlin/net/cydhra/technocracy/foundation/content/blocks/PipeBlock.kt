@@ -14,8 +14,6 @@ import net.minecraft.block.Block
 import net.minecraft.block.BlockRedstoneOre
 import net.minecraft.block.BlockWorkbench
 import net.minecraft.block.material.Material
-import net.minecraft.block.properties.PropertyEnum
-import net.minecraft.block.properties.PropertyInteger
 import net.minecraft.block.state.BlockFaceShape
 import net.minecraft.block.state.BlockStateContainer
 import net.minecraft.block.state.IBlockState
@@ -25,7 +23,6 @@ import net.minecraft.entity.Entity
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
-import net.minecraft.stats.StatList
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.BlockRenderLayer
 import net.minecraft.util.EnumFacing
@@ -37,7 +34,6 @@ import net.minecraft.util.math.RayTraceResult
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.Explosion
 import net.minecraft.world.IBlockAccess
-import net.minecraft.world.IWorldNameable
 import net.minecraft.world.World
 import net.minecraftforge.common.property.IExtendedBlockState
 import net.minecraftforge.fml.common.Optional
@@ -162,7 +158,7 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
             val mode = (stack.item as WrenchItem).getWrenchMode(stack)
 
             if (mode.allowedPipe != null) {
-                if (tile.hasPipeType(mode.allowedPipe)) {
+                if (tile.hasPipeType(mode.allowedPipe) && !worldIn.isRemote) {
                     tile.removePipeType(mode.allowedPipe)
                     spawnAsEntity(worldIn, pos, ItemStack(pipeItem, 1, mode.allowedPipe.ordinal))
                 }

@@ -22,7 +22,6 @@ import net.minecraftforge.common.model.TRSRTransformation
 import net.minecraftforge.common.property.IExtendedBlockState
 import org.apache.commons.lang3.tuple.Pair
 import javax.vecmath.Matrix4f
-import kotlin.time.ExperimentalTime
 
 class PipeModelBakery : IBakedModel {
 
@@ -86,6 +85,7 @@ class PipeModelBakery : IBakedModel {
 
 
                         val texture = when (it.third) {
+                            TileEntityPipe.BoxType.BOX -> TextureAtlasManager.pipe_node
                             TileEntityPipe.BoxType.CONNECTOR -> TextureAtlasManager.pipe_node
                             TileEntityPipe.BoxType.PIPE -> it.second!!.texture
                             else -> error("Box type out of bounds")
@@ -96,6 +96,7 @@ class PipeModelBakery : IBakedModel {
                         val minV = texture.getInterpolatedV(0.0)
 
                         val maxV = when (it.third) {
+                            TileEntityPipe.BoxType.BOX -> texture.getInterpolatedV(16.0)
                             TileEntityPipe.BoxType.CONNECTOR -> texture.getInterpolatedV(16.0)
                             TileEntityPipe.BoxType.PIPE -> texture.getInterpolatedV(4.0)
                             else -> error("Box type out of bounds")
@@ -114,7 +115,7 @@ class PipeModelBakery : IBakedModel {
                         val north = SimpleQuad(DefaultVertexFormats.BLOCK).setTexture(texture).setFace(EnumFacing.NORTH)
                         north.addPos(maxX, maxY, minZ).addPos(maxX, minY, minZ).addPos(minX, minY, minZ).addPos(minX, maxY, minZ)
                         north.addUV(minU, minV).addUV(minU, maxV).addUV(maxU, maxV).addUV(maxU, minV).rotate(rotateY)
-                        north.addLight(15, 15).addLight(15, 15).addLight(15, 15).addLight(15, 15)
+                        north.addLight(0, 0).addLight(0, 0).addLight(0, 0).addLight(0, 0)
                         //quads.add(north.bake())
 
                         val south = SimpleQuad(DefaultVertexFormats.BLOCK).setTexture(texture).setFace(EnumFacing.SOUTH)
