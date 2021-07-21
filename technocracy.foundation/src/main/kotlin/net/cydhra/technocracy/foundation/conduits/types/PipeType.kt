@@ -67,9 +67,9 @@ class PipeType(
                 cap.drain(limit, false)?.let { PipeFluidContent(cap, it) }
                     ?: error("a fluid capability did not offer fluids despite previously advertising it")
             },
-            acceptContent = { world, pos, facing, content, simulate ->
+            acceptContent = closure@{ world, pos, facing, content, simulate ->
                 val cap = world.getTileEntity(pos)!!
-                    .getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY!!, facing)!!
+                    .getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY!!, facing) ?: return@closure content
                 val fill = cap.fill((content as PipeFluidContent).simulatedStack, !simulate)
                 PipeFluidContent(content.source, content.simulatedStack.copy().apply { amount -= fill })
             })
