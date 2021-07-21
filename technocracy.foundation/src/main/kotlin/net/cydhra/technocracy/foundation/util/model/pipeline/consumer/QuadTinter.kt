@@ -4,9 +4,12 @@ import net.cydhra.technocracy.foundation.util.model.SimpleQuad
 import net.cydhra.technocracy.foundation.util.model.pipeline.IQuadConsumer
 import net.minecraft.client.renderer.block.model.BakedQuad
 
+/**
+ * copies the tint from the baked quad to the simple quad
+ */
 class QuadTinter : IQuadConsumer {
-    override lateinit var  origQuad: BakedQuad
-    override lateinit var  unmodifiedQuad: SimpleQuad
+    override lateinit var origQuad: BakedQuad
+    override lateinit var unmodifiedQuad: SimpleQuad
 
     var tint = -1
 
@@ -15,7 +18,7 @@ class QuadTinter : IQuadConsumer {
     }
 
     override fun consume(quad: SimpleQuad) {
-        if (origQuad!!.hasTintIndex()) {
+        if (origQuad.hasTintIndex()) {
             quad.tintColor = tint
         }
     }

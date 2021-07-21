@@ -15,7 +15,7 @@ class QuadCloneConsumer(var clonePos: Boolean) : IQuadConsumer {
     override fun consume(quad: SimpleQuad) {
         if (origQuad == null)
             return
-        val bakedQuad = origQuad!!
+        val bakedQuad = origQuad
 
         quad.face = bakedQuad.face
         quad.tintIndex = bakedQuad.tintIndex

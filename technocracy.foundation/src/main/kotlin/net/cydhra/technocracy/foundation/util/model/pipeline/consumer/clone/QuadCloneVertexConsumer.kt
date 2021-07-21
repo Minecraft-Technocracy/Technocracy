@@ -33,10 +33,9 @@ class QuadCloneVertexConsumer(val quad: SimpleQuad, val clonePos: Boolean) : IVe
             quad.vertNormal.add(Vector3f(data[0], data[1], data[2]))
         } else if (clonePos && usage.usage == VertexFormatElement.EnumUsage.POSITION) {
             quad.vertPos.add(Vector3f(data[0], data[1], data[2]))
-        } else
-            if (usage.usage != VertexFormatElement.EnumUsage.POSITION) {
-                quad.data.put(usage.usage, data)
-            }
+        } else if (usage.usage != VertexFormatElement.EnumUsage.POSITION) {
+            quad.data.put(usage.usage, data)
+        }
     }
 
     override fun setQuadOrientation(orientation: EnumFacing?) {

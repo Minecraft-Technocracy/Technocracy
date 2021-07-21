@@ -4,8 +4,11 @@ import net.cydhra.technocracy.foundation.util.model.SimpleQuad
 import net.minecraft.client.renderer.block.model.BakedQuad
 
 
+/**
+ * A pipeline that applies
+ */
 class QuadPipeline {
-    val consumers = mutableSetOf<IQuadConsumer>()
+    private val consumers = mutableListOf<IQuadConsumer>()
 
     fun addConsumer(vararg consumer: IQuadConsumer): QuadPipeline {
         for (cons in consumer)
@@ -25,7 +28,7 @@ class QuadPipeline {
             cons.origQuad = origQuad
             cons.unmodifiedQuad = unmod
             cons.consume(quad)
-            unmod = cons.unmodifiedQuad!!
+            unmod = cons.unmodifiedQuad
         }
         return quad
     }
@@ -35,7 +38,7 @@ class QuadPipeline {
         for (cons in consumers) {
             cons.unmodifiedQuad = unmod
             cons.consume(quad)
-            unmod = cons.unmodifiedQuad!!
+            unmod = cons.unmodifiedQuad
         }
         return quad
     }

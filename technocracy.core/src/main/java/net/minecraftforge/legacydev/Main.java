@@ -176,6 +176,11 @@ public class Main {
             lst.add("net.minecraftforge.legacydev.CoremodTweaker");
         }
 
+        if (this instanceof MainServer) {
+            lst.add("--tweakClass");
+            lst.add("net.minecraftforge.");
+        }
+
         lst.addAll(extras);
 
         return lst.toArray(new String[lst.size()]);

@@ -22,7 +22,8 @@ class TileEntityTankPort : TileEntityTankMultiBlockPart() {
                 val fluidComp = multiblockController?.controllerTileEntity!!.fluidComp
                 if (fluidComp.isAttached) {
                     return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast<T>(
-                            multiblockController!!.controllerTileEntity!!.fluidComp.innerComponent.fluid)
+                        fluidComp.innerComponent.fluid
+                    )
                 }
             }
         }
