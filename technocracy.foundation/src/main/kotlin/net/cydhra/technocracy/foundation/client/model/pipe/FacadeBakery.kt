@@ -20,11 +20,11 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.item.ItemStack
 import net.minecraft.util.BlockRenderLayer
 import net.minecraft.util.EnumFacing
+import net.minecraft.util.math.AxisAlignedBB
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.MathHelper
 import net.minecraft.world.IBlockAccess
-import kotlin.time.ExperimentalTime
-import kotlin.time.measureTime
+
 
 object FacadeBakery {
 
@@ -130,21 +130,55 @@ object FacadeBakery {
         return quads
     }
 
-    fun genQuads(coverModel: IBakedModel, customState: IBlockState, coverFace: EnumFacing, faces: BooleanArray, access: IBlockAccess, pos: BlockPos): List<BakedQuad> {
+
+    var facadeSize = 1f
+    val THIN_THICKNESS = 1.0 / 16.0 * facadeSize
+    val THIN_FACADE_BOXES = arrayOf(
+        AxisAlignedBB(0.0, 0.0, 0.0, 1.0, THIN_THICKNESS, 1.0),
+        AxisAlignedBB(0.0, 1.0 - THIN_THICKNESS, 0.0, 1.0, 1.0, 1.0),
+        AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 1.0, THIN_THICKNESS),
+        AxisAlignedBB(0.0, 0.0, 1.0 - THIN_THICKNESS, 1.0, 1.0, 1.0),
+        AxisAlignedBB(0.0, 0.0, 0.0, THIN_THICKNESS, 1.0, 1.0),
+        AxisAlignedBB(1.0 - THIN_THICKNESS, 0.0, 0.0, 1.0, 1.0, 1.0)
+    )
+
+    fun genQuads(
+        coverModel: IBakedModel,
+        customState: IBlockState,
+        coverFace: EnumFacing,
+        faces: BooleanArray,
+        access: IBlockAccess,
+        pos: BlockPos
+    ): List<BakedQuad> {
         val quads = mutableListOf<BakedQuad>()
         var origQuads = coverModel.getQuads(customState, null, 0)
 
         val tinter = QuadTinter()
 
+        var facadeMask = 0
+
+        for ((index, side) in EnumFacing.values().withIndex()) {
+            if (side.axis != coverFace.axis && faces[index]) {
+                facadeMask = facadeMask or (1 shl side.ordinal)
+            }
+        }
+
         //TODO rework the QuadFacadeTransformer so it uses the vertex position for the translation instead of just the facing
-        val pipeline = QuadPipeline().addConsumer(QuadCloneConsumer(true), tinter, QuadShrinker(coverFace, faces), QuadFacadeTransformer(coverFace, faces), QuadUVTransformer)
+        val pipeline = QuadPipeline().addConsumer(
+            QuadCloneConsumer(true),
+            tinter,
+            QuadShrinker(coverFace, faces),
+            QuadCornerKicker(coverFace.ordinal, facadeMask, THIN_FACADE_BOXES[coverFace.ordinal]),
+            QuadUVTransformer
+        )
 
         //TODO cleanup
         if (origQuads.isNotEmpty()) {
             //Custom model
             origQuads.forEachIndexed { _, bakedQuad ->
                 val quad = SimpleQuad(DefaultVertexFormats.BLOCK)
-                tinter.tint = Minecraft.getMinecraft().blockColors.colorMultiplier(customState, access, pos, bakedQuad.tintIndex)
+                tinter.tint =
+                    Minecraft.getMinecraft().blockColors.colorMultiplier(customState, access, pos, bakedQuad.tintIndex)
                 quads.add(pipeline.pipe(quad, bakedQuad).bake())
             }
         } else {
@@ -189,9 +223,6 @@ object FacadeBakery {
 
         return quads
     }
-
-    var facadeSize = 1f
-
 
     /**
      * Pre generate the quads used for the ctm block
