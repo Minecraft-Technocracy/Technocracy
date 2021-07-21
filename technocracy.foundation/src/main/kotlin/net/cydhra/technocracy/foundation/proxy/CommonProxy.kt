@@ -39,6 +39,7 @@ import net.cydhra.technocracy.foundation.data.crafting.types.ITIRecipe
 import net.cydhra.technocracy.foundation.model.oresystems.api.OreSystem
 import net.cydhra.technocracy.foundation.network.*
 import net.cydhra.technocracy.foundation.network.componentsync.*
+import net.cydhra.technocracy.foundation.network.conduits.ServerConduitNetworkSyncPacket
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.item.crafting.FurnaceRecipes
@@ -71,17 +72,19 @@ open class CommonProxy {
      * the config, which isn't loaded at instantiation of the proxy.
      */
     fun initializeProxy() {
-        materialSystems = arrayOf(aluminumSystem,
-                copperSystem,
-                leadSystem,
-                lithiumSystem,
-                nickelSystem,
-                niobiumSystem,
-                silverSystem,
-                tinSystem,
-                zirconiumSystem,
-                ironSystem,
-                goldSystem)
+        materialSystems = arrayOf(
+            aluminumSystem,
+            copperSystem,
+            leadSystem,
+            lithiumSystem,
+            nickelSystem,
+            niobiumSystem,
+            silverSystem,
+            tinSystem,
+            zirconiumSystem,
+            ironSystem,
+            goldSystem
+        )
 
         blockManager = BlockManager(TCFoundation.MODID, technocracyCreativeTabs)
         fluidManager = FluidManager(blockManager)
@@ -98,7 +101,11 @@ open class CommonProxy {
         MinecraftForge.EVENT_BUS.register(PotionManager)
         MinecraftForge.EVENT_BUS.register(ConduitNetwork)
 
-        CapabilityManager.INSTANCE.register(ICapabilityWrapperCapability::class.java, ICapabilityWrapperStorage(), ::DefaultItemCapability)
+        CapabilityManager.INSTANCE.register(
+            ICapabilityWrapperCapability::class.java,
+            ICapabilityWrapperStorage(),
+            ::DefaultItemCapability
+        )
 
         materialSystems.forEach { it.preInit(it, blockManager, itemManager, fluidManager) }
 
@@ -310,13 +317,37 @@ open class CommonProxy {
 
         NetworkRegistry.INSTANCE.registerGuiHandler(TCFoundation, TCGuiHandler())
 
-        PacketHandler.registerPacket(ClientItemScrollPacket::class.java, ClientItemScrollPacket::class.java, Side.SERVER)
-        PacketHandler.registerPacket(ClientItemKeyBindPacket::class.java, ClientItemKeyBindPacket::class.java, Side.SERVER)
-        PacketHandler.registerPacket(ServerMachineInfoPacket::class.java, ServerMachineInfoPacket::class.java, Side.CLIENT)
-        PacketHandler.registerPacket(ClientRequestSyncPacket::class.java, ClientRequestSyncPacket::class.java, Side.SERVER)
-        PacketHandler.registerPacket(ClientComponentClickPacket::class.java, ClientComponentClickPacket::class.java, Side.SERVER)
+        PacketHandler.registerPacket(
+            ClientItemScrollPacket::class.java,
+            ClientItemScrollPacket::class.java,
+            Side.SERVER
+        )
+        PacketHandler.registerPacket(
+            ClientItemKeyBindPacket::class.java,
+            ClientItemKeyBindPacket::class.java,
+            Side.SERVER
+        )
+        PacketHandler.registerPacket(
+            ServerMachineInfoPacket::class.java,
+            ServerMachineInfoPacket::class.java,
+            Side.CLIENT
+        )
+        PacketHandler.registerPacket(
+            ClientRequestSyncPacket::class.java,
+            ClientRequestSyncPacket::class.java,
+            Side.SERVER
+        )
+        PacketHandler.registerPacket(
+            ClientComponentClickPacket::class.java,
+            ClientComponentClickPacket::class.java,
+            Side.SERVER
+        )
         PacketHandler.registerPacket(ClientSwitchTabPacket::class.java, ClientSwitchTabPacket::class.java, Side.SERVER)
-        PacketHandler.registerPacket(ClientChangeSideConfigPacket::class.java, ClientChangeSideConfigPacket::class.java, Side.SERVER)
+        PacketHandler.registerPacket(
+            ClientChangeSideConfigPacket::class.java,
+            ClientChangeSideConfigPacket::class.java,
+            Side.SERVER
+        )
         PacketHandler.registerPacket(
             ServerItemCooldownPacket::class.java,
             ServerItemCooldownPacket::class.java,
@@ -325,6 +356,11 @@ open class CommonProxy {
         PacketHandler.registerPacket(
             ServerCustomChatPacket::class.java,
             ServerCustomChatPacket::class.java,
+            Side.CLIENT
+        )
+        PacketHandler.registerPacket(
+            ServerConduitNetworkSyncPacket::class.java,
+            ServerConduitNetworkSyncPacket::class.java,
             Side.CLIENT
         )
     }
@@ -337,15 +373,16 @@ open class CommonProxy {
         // register all furnace recipes within electrical furnace
         FurnaceRecipes.instance().smeltingList.forEach { recipe ->
             RecipeManager.registerRecipe(
-                    type = RecipeManager.RecipeType.ELECTRIC_FURNACE,
-                    recipe = ITIRecipe(
-                            inputItem = Ingredient.fromStacks(recipe.key),
-                            outputItem = recipe.value,
-                            // the processing cost is derived from EXP output, as more valuable items give more exp
-                            // and thus should be expected to be more late game.
-                            processingCost = 60 +
-                                    (100 * FurnaceRecipes.instance().getSmeltingExperience(recipe.value)).toInt()
-                    ))
+                type = RecipeManager.RecipeType.ELECTRIC_FURNACE,
+                recipe = ITIRecipe(
+                    inputItem = Ingredient.fromStacks(recipe.key),
+                    outputItem = recipe.value,
+                    // the processing cost is derived from EXP output, as more valuable items give more exp
+                    // and thus should be expected to be more late game.
+                    processingCost = 60 +
+                            (100 * FurnaceRecipes.instance().getSmeltingExperience(recipe.value)).toInt()
+                )
+            )
         }
 
         RecipeManager.initialize()
@@ -357,8 +394,10 @@ open class CommonProxy {
      * @param location ASM model file location
      * @param parameters ASM parameter list
      */
-    open fun loadAnimationStateMachine(location: ResourceLocation,
-                                       parameters: ImmutableMap<String, ITimeValue>): IAnimationStateMachine? {
+    open fun loadAnimationStateMachine(
+        location: ResourceLocation,
+        parameters: ImmutableMap<String, ITimeValue>
+    ): IAnimationStateMachine? {
         return null
     }
 

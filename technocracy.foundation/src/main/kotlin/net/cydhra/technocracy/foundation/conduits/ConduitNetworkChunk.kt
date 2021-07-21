@@ -73,16 +73,12 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      */
     private val nodes: MutableMap<BlockPos, MutableSet<PipeType>> = mutableMapOf()
 
-    val debug_nodes: Map<BlockPos, MutableSet<PipeType>> = nodes
-
     /**
      * A mutable mapping of block positions to a mapping of pipe types to a set of directions this type has edges in.
      * All edges are saved twice, so both connected block positions have an entry for the edge. This increases memory
      * use, but is considered worth for the reduced complexity of obtaining edge lists
      */
     private val edges: MutableMap<BlockPos, MutableMap<PipeType, MutableSet<EnumFacing>>> = mutableMapOf()
-
-    val debug_edges: Map<BlockPos, Map<PipeType, Set<EnumFacing>>> = edges
 
     /**
      * A mutable mapping of block positions to a mapping of pipe types to a set of directions where edges interface
@@ -91,14 +87,10 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      */
     private val attachedSinks: MutableMap<BlockPos, MutableSet<TransitSink>> = mutableMapOf()
 
-    val debug_sinks: Map<BlockPos, Set<TransitSink>> = attachedSinks
-
     /**
      * Transit edges that connect a conduit node to a different chunk
      */
     private val chunkTransitEdges: MutableMap<BlockPos, MutableSet<TransitChunkEdge>> = mutableMapOf()
-
-    val debug_transits: Map<BlockPos, Set<TransitChunkEdge>> = chunkTransitEdges
 
     /**
      * Set of all cross sections within the chunk, where more than two pipes of the same type connect
@@ -109,8 +101,6 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      * Transit edges added to cross sections to interrupt path finding
      */
     private val crossSectionTransitEdges: MutableMap<BlockPos, MutableSet<TransitCrossSectionEdge>> = mutableMapOf()
-
-    val debug_cross_transits: Map<BlockPos, Set<TransitCrossSectionEdge>> = crossSectionTransitEdges
 
     /**
      * Add a node to the conduit network. This method does only add this one node to the network: no additional nodes
@@ -385,45 +375,10 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
     override fun deserializeNBT(nbt: NBTTagCompound) {
         this.transitEdgeCounter = nbt.getInteger(NBT_KEY_TRANSIT_COUNTER_STATE)
 
-        val nodeList = nbt.getTagList(NBT_KEY_NODE_LIST, Constants.NBT.TAG_COMPOUND)
-        val edgeList = nbt.getTagList(NBT_KEY_EDGE_LIST, Constants.NBT.TAG_COMPOUND)
-        val attachmentList = nbt.getTagList(NBT_KEY_ATTACHMENTS_LIST, Constants.NBT.TAG_COMPOUND)
+        this.deserializePipeStructure(nbt)
         val transitEdgesList = nbt.getTagList(NBT_KEY_CHUNK_TRANSIT_EDGES_LIST, Constants.NBT.TAG_COMPOUND)
         val crossSectionList = nbt.getTagList(NBT_KEY_CROSS_SECTIONS, Constants.NBT.TAG_COMPOUND)
         val crossSectionTransitList = nbt.getTagList(NBT_KEY_CROSS_SECTION_TRANSIT_MAP, Constants.NBT.TAG_COMPOUND)
-
-        nodeList.forEach { nodeTag ->
-            val blockPos = NBTUtil.getPosFromTag((nodeTag as NBTTagCompound).getCompoundTag(NBT_KEY_NODE_POS))
-            val types = nodeTag.getIntArray(NBT_KEY_NODE_TYPE_LIST).map { PipeType[it] }.toMutableSet()
-            this.nodes[blockPos] = types
-        }
-
-        edgeList.forEach { edgeTag ->
-            val blockPos = NBTUtil.getPosFromTag((edgeTag as NBTTagCompound).getCompoundTag(NBT_KEY_EDGE_POS))
-            val typeList = edgeTag.getTagList(NBT_KEY_EDGE_TYPE_LIST, Constants.NBT.TAG_COMPOUND)
-
-            this.edges[blockPos] = mutableMapOf()
-
-            typeList.forEach { typeTag ->
-                val pipeType = PipeType[(typeTag as NBTTagCompound).getInteger(NBT_KEY_EDGE_TYPE_LIST_ENTRY)]
-                val facings = typeTag.getIntArray(NBT_KEY_EDGE_TYPE_LIST_DIRECTION_LIST).map { EnumFacing.values()[it] }
-                        .toMutableSet()
-
-                this.edges[blockPos]!![pipeType] = facings
-            }
-        }
-
-        attachmentList.forEach { attachmentTag ->
-            val blockPos =
-                    NBTUtil.getPosFromTag((attachmentTag as NBTTagCompound).getCompoundTag(NBT_KEY_ATTACHMENTS_POS))
-            val sinkList = attachmentTag.getTagList(NBT_KEY_SINKS_LIST, Constants.NBT.TAG_COMPOUND)
-
-            this.attachedSinks[blockPos] = mutableSetOf()
-
-            sinkList.forEach { sinkTag ->
-                this.attachedSinks[blockPos]!!.add(TransitSink(blockPos).apply { deserializeNBT(sinkTag as NBTTagCompound) })
-            }
-        }
 
         transitEdgesList.forEach { transitEdgeTag ->
             val blockPos =
@@ -459,7 +414,50 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
 
             typeList.forEach { transitEdgeEntry ->
                 this.crossSectionTransitEdges[blockPos]!!.add(TransitCrossSectionEdge(blockPos)
-                        .apply { deserializeNBT(transitEdgeEntry as NBTTagCompound) })
+                    .apply { deserializeNBT(transitEdgeEntry as NBTTagCompound) })
+            }
+        }
+    }
+
+    /**
+     * Deserialize only the pipe structure in the given compound. This is especially useful for clients that only
+     * receive the pipe structure, but not the entire internal network state.
+     */
+    internal fun deserializePipeStructure(compound: NBTTagCompound) {
+        val nodeList = compound.getTagList(NBT_KEY_NODE_LIST, Constants.NBT.TAG_COMPOUND)
+        val edgeList = compound.getTagList(NBT_KEY_EDGE_LIST, Constants.NBT.TAG_COMPOUND)
+        val attachmentList = compound.getTagList(NBT_KEY_ATTACHMENTS_LIST, Constants.NBT.TAG_COMPOUND)
+
+        nodeList.forEach { nodeTag ->
+            val blockPos = NBTUtil.getPosFromTag((nodeTag as NBTTagCompound).getCompoundTag(NBT_KEY_NODE_POS))
+            val types = nodeTag.getIntArray(NBT_KEY_NODE_TYPE_LIST).map { PipeType[it] }.toMutableSet()
+            this.nodes[blockPos] = types
+        }
+
+        edgeList.forEach { edgeTag ->
+            val blockPos = NBTUtil.getPosFromTag((edgeTag as NBTTagCompound).getCompoundTag(NBT_KEY_EDGE_POS))
+            val typeList = edgeTag.getTagList(NBT_KEY_EDGE_TYPE_LIST, Constants.NBT.TAG_COMPOUND)
+
+            this.edges[blockPos] = mutableMapOf()
+
+            typeList.forEach { typeTag ->
+                val pipeType = PipeType[(typeTag as NBTTagCompound).getInteger(NBT_KEY_EDGE_TYPE_LIST_ENTRY)]
+                val facings = typeTag.getIntArray(NBT_KEY_EDGE_TYPE_LIST_DIRECTION_LIST).map { EnumFacing.values()[it] }
+                    .toMutableSet()
+
+                this.edges[blockPos]!![pipeType] = facings
+            }
+        }
+
+        attachmentList.forEach { attachmentTag ->
+            val blockPos =
+                NBTUtil.getPosFromTag((attachmentTag as NBTTagCompound).getCompoundTag(NBT_KEY_ATTACHMENTS_POS))
+            val sinkList = attachmentTag.getTagList(NBT_KEY_SINKS_LIST, Constants.NBT.TAG_COMPOUND)
+
+            this.attachedSinks[blockPos] = mutableSetOf()
+
+            sinkList.forEach { sinkTag ->
+                this.attachedSinks[blockPos]!!.add(TransitSink(blockPos).apply { deserializeNBT(sinkTag as NBTTagCompound) })
             }
         }
     }
@@ -468,46 +466,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
         val compound = NBTTagCompound()
 
         compound.setInteger(NBT_KEY_TRANSIT_COUNTER_STATE, this.transitEdgeCounter)
-
-        val nodeList = NBTTagList()
-        for (blockPos in this.nodes.keys) {
-            val nodeTag = NBTTagCompound()
-            nodeTag.setTag(NBT_KEY_NODE_POS, NBTUtil.createPosTag(blockPos))
-            nodeTag.setTag(NBT_KEY_NODE_TYPE_LIST, NBTTagIntArray(this.nodes[blockPos]!!.map(PipeType::ordinal)))
-            nodeList.appendTag(nodeTag)
-        }
-
-        val edgeList = NBTTagList()
-        for (edgePos in this.edges.keys) {
-            val edgeTag = NBTTagCompound()
-            edgeTag.setTag(NBT_KEY_EDGE_POS, NBTUtil.createPosTag(edgePos))
-
-            val typeList = NBTTagList()
-            for (pipeType in this.edges[edgePos]!!.keys) {
-                val typeTag = NBTTagCompound()
-                typeTag.setInteger(NBT_KEY_EDGE_TYPE_LIST_ENTRY, pipeType.ordinal)
-                typeTag.setTag(NBT_KEY_EDGE_TYPE_LIST_DIRECTION_LIST,
-                        NBTTagIntArray(this.edges[edgePos]!![pipeType]!!.map(EnumFacing::ordinal)))
-                typeList.appendTag(typeTag)
-            }
-
-            edgeTag.setTag(NBT_KEY_EDGE_TYPE_LIST, typeList)
-            edgeList.appendTag(edgeTag)
-        }
-
-        val attachmentList = NBTTagList()
-        for (sinkPos in this.attachedSinks.keys) {
-            val attachmentTag = NBTTagCompound()
-            attachmentTag.setTag(NBT_KEY_ATTACHMENTS_POS, NBTUtil.createPosTag(sinkPos))
-
-            val sinksList = NBTTagList()
-            for (sink in this.attachedSinks[sinkPos]!!) {
-                sinksList.appendTag(sink.serializeNBT())
-            }
-
-            attachmentTag.setTag(NBT_KEY_SINKS_LIST, sinksList)
-            attachmentList.appendTag(attachmentTag)
-        }
+        this.serializePipeStructure(compound)
 
         val transitEdgeList = NBTTagList()
         for (transitEdgePos in this.chunkTransitEdges.keys) {
@@ -551,14 +510,63 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
             crossSectionEdgeList.appendTag(transitEdgeTag)
         }
 
-        compound.setTag(NBT_KEY_NODE_LIST, nodeList)
-        compound.setTag(NBT_KEY_EDGE_LIST, edgeList)
-        compound.setTag(NBT_KEY_ATTACHMENTS_LIST, attachmentList)
         compound.setTag(NBT_KEY_CHUNK_TRANSIT_EDGES_LIST, transitEdgeList)
         compound.setTag(NBT_KEY_CROSS_SECTIONS, crossSectionList)
         compound.setTag(NBT_KEY_CROSS_SECTION_TRANSIT_MAP, crossSectionEdgeList)
 
         return compound
+    }
+
+    /**
+     * Serialize only the pipe structure, without internal state into the given compound. This subset of the state
+     * can be sent to clients for rendering.
+     */
+    internal fun serializePipeStructure(compound: NBTTagCompound) {
+        val nodeList = NBTTagList()
+        for (blockPos in this.nodes.keys) {
+            val nodeTag = NBTTagCompound()
+            nodeTag.setTag(NBT_KEY_NODE_POS, NBTUtil.createPosTag(blockPos))
+            nodeTag.setTag(NBT_KEY_NODE_TYPE_LIST, NBTTagIntArray(this.nodes[blockPos]!!.map(PipeType::ordinal)))
+            nodeList.appendTag(nodeTag)
+        }
+
+        val edgeList = NBTTagList()
+        for (edgePos in this.edges.keys) {
+            val edgeTag = NBTTagCompound()
+            edgeTag.setTag(NBT_KEY_EDGE_POS, NBTUtil.createPosTag(edgePos))
+
+            val typeList = NBTTagList()
+            for (pipeType in this.edges[edgePos]!!.keys) {
+                val typeTag = NBTTagCompound()
+                typeTag.setInteger(NBT_KEY_EDGE_TYPE_LIST_ENTRY, pipeType.ordinal)
+                typeTag.setTag(
+                    NBT_KEY_EDGE_TYPE_LIST_DIRECTION_LIST,
+                    NBTTagIntArray(this.edges[edgePos]!![pipeType]!!.map(EnumFacing::ordinal))
+                )
+                typeList.appendTag(typeTag)
+            }
+
+            edgeTag.setTag(NBT_KEY_EDGE_TYPE_LIST, typeList)
+            edgeList.appendTag(edgeTag)
+        }
+
+        val attachmentList = NBTTagList()
+        for (sinkPos in this.attachedSinks.keys) {
+            val attachmentTag = NBTTagCompound()
+            attachmentTag.setTag(NBT_KEY_ATTACHMENTS_POS, NBTUtil.createPosTag(sinkPos))
+
+            val sinksList = NBTTagList()
+            for (sink in this.attachedSinks[sinkPos]!!) {
+                sinksList.appendTag(sink.serializeNBT())
+            }
+
+            attachmentTag.setTag(NBT_KEY_SINKS_LIST, sinksList)
+            attachmentList.appendTag(attachmentTag)
+        }
+
+        compound.setTag(NBT_KEY_NODE_LIST, nodeList)
+        compound.setTag(NBT_KEY_EDGE_LIST, edgeList)
+        compound.setTag(NBT_KEY_ATTACHMENTS_LIST, attachmentList)
     }
 
     /**
