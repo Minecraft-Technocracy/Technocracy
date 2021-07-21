@@ -18,22 +18,22 @@ object TCOpenGlHelper {
         val gl20 = contextcapabilities.OpenGL20
         val arb_draw_buffers = contextcapabilities.GL_ARB_draw_buffers
 
-        drawBuffers = if (gl20) TCOpenGlHelper.GLType.BASE else if (arb_draw_buffers) TCOpenGlHelper.GLType.ARB else TCOpenGlHelper.GLType.NONE
+        drawBuffers = if (gl20) GLType.BASE else if (arb_draw_buffers) GLType.ARB else GLType.NONE
     }
 
     fun glDrawBuffers(buffer: IntBuffer) {
-        if (drawBuffers == TCOpenGlHelper.GLType.BASE) {
+        if (drawBuffers == GLType.BASE) {
             GL20.glDrawBuffers(buffer)
-        } else if (drawBuffers == TCOpenGlHelper.GLType.ARB) {
+        } else if (drawBuffers == GLType.ARB) {
             ARBDrawBuffers.glDrawBuffersARB(buffer)
         }
         buffer.rewind()
     }
 
     fun glDrawBuffers(buffer: Int) {
-        if (drawBuffers == TCOpenGlHelper.GLType.BASE) {
+        if (drawBuffers == GLType.BASE) {
             GL20.glDrawBuffers(buffer)
-        } else if (drawBuffers == TCOpenGlHelper.GLType.ARB) {
+        } else if (drawBuffers == GLType.ARB) {
             ARBDrawBuffers.glDrawBuffersARB(buffer)
         }
     }

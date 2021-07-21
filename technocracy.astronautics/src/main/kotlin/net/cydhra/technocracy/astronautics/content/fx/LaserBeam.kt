@@ -3,11 +3,7 @@ package net.cydhra.technocracy.astronautics.content.fx
 import net.cydhra.technocracy.coremod.event.RenderShaderEvent
 import net.cydhra.technocracy.foundation.api.fx.AbstractParticle
 import net.cydhra.technocracy.foundation.api.fx.IParticleType
-import net.cydhra.technocracy.foundation.util.opengl.BasicShaderProgram
-import net.cydhra.technocracy.foundation.util.opengl.MultiTargetFBO
-import net.cydhra.technocracy.foundation.util.opengl.VBO
-import net.cydhra.technocracy.foundation.util.validate
-import net.cydhra.technocracy.foundation.util.validateAndClear
+import net.cydhra.technocracy.foundation.util.opengl.*
 import net.minecraft.block.material.Material
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.ScaledResolution
@@ -17,7 +13,6 @@ import net.minecraft.client.renderer.OpenGlHelper
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_TEX
-import net.minecraft.client.shader.Framebuffer
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.util.ResourceLocation
 import net.minecraft.world.World
@@ -32,7 +27,8 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 
 
-class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) : AbstractParticle(worldIn, posXIn, posYIn, posZIn) {
+class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) :
+    AbstractParticle(worldIn, posXIn, posYIn, posZIn) {
 
     init {
         particleAge = 20 * 10
@@ -88,27 +84,48 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
         var sizeOuter = -1
         var init = false
 
-        var mtfbo: MultiTargetFBO? = null
-        var pingPong: MultiTargetFBO? = null
-        var ping: Framebuffer? = null
-        var pong: Framebuffer? = null
-        var downSampleFB: Framebuffer? = null
+        val mtfbo = MultiTargetFBO(
+            0,
+            0,
+            false,
+            FBOTarget(ColorAttachment.ATTACHMENT0),
+            FBOTarget({ Minecraft.getMinecraft().framebuffer }, ColorAttachment.ATTACHMENT1)
+        )
 
-        val gaus = BasicShaderProgram(ResourceLocation("technocracy.foundation", "shaders/default.vsh"), ResourceLocation("technocracy.astronautics", "shaders/gaus.fsh"))
+        //var pingPong: MultiTargetFBO? = null
+        val ping = Framebuffer()
+        val pong = Framebuffer()
+        val downSampleFB = Framebuffer()
+
+        val gaus = BasicShaderProgram(
+            ResourceLocation("technocracy.foundation", "shaders/default.vsh"),
+            ResourceLocation("technocracy.astronautics", "shaders/gaus.fsh")
+        )
         val horizontal = gaus.getUniform("horizontal", BasicShaderProgram.ShaderUniform.UniformType.INT_1)
-        val expandFaktor = gaus.getUniform("expandFaktor", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1).uploadUniform(1f)
+        val expandFaktor =
+            gaus.getUniform("expandFaktor", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1).uploadUniform(1f)
 
-        val kawase = BasicShaderProgram(ResourceLocation("technocracy.foundation", "shaders/default.vsh"), ResourceLocation("technocracy.astronautics", "shaders/kawase.fsh"))
-        val u_xyPixelSize_zIteration = kawase.getUniform("u_xyPixelSize_zIteration", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_3)
+        val kawase = BasicShaderProgram(
+            ResourceLocation("technocracy.foundation", "shaders/default.vsh"),
+            ResourceLocation("technocracy.astronautics", "shaders/kawase.fsh")
+        )
+        val u_xyPixelSize_zIteration =
+            kawase.getUniform("u_xyPixelSize_zIteration", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_3)
 
 
-        val downSample = BasicShaderProgram(ResourceLocation("technocracy.foundation", "shaders/default.vsh"), ResourceLocation("technocracy.astronautics", "shaders/downsample.fsh")) {
+        val downSample = BasicShaderProgram(
+            ResourceLocation("technocracy.foundation", "shaders/default.vsh"),
+            ResourceLocation("technocracy.astronautics", "shaders/downsample.fsh")
+        ) {
             getUniform("image", BasicShaderProgram.ShaderUniform.UniformType.SAMPLER).uploadUniform(0)
         }
 
         val pixelSize = downSample.getUniform("pixelSize", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_2)
 
-        val blend = BasicShaderProgram(ResourceLocation("technocracy.foundation", "shaders/default.vsh"), ResourceLocation("technocracy.astronautics", "shaders/blend.fsh")) {
+        val blend = BasicShaderProgram(
+            ResourceLocation("technocracy.foundation", "shaders/default.vsh"),
+            ResourceLocation("technocracy.astronautics", "shaders/blend.fsh")
+        ) {
             getUniform("scene", BasicShaderProgram.ShaderUniform.UniformType.SAMPLER).uploadUniform(0)
             getUniform("bloomBlur", BasicShaderProgram.ShaderUniform.UniformType.SAMPLER).uploadUniform(2)
         }
@@ -117,7 +134,10 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
         val uApplyParams = blend.getUniform("uApplyParams", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_2)
         val finalScreenSize = blend.getUniform("finalScreenSize", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_2)
 
-        val laser = BasicShaderProgram(ResourceLocation("technocracy.astronautics", "shaders/laser.vsh"), ResourceLocation("technocracy.astronautics", "shaders/laser.fsh"))
+        val laser = BasicShaderProgram(
+            ResourceLocation("technocracy.astronautics", "shaders/laser.vsh"),
+            ResourceLocation("technocracy.astronautics", "shaders/laser.fsh")
+        )
         val center = laser.getUniform("center", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_3)
         val time = laser.getUniform("time", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1)
         val scale = laser.getUniform("scale", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_1)
@@ -139,7 +159,12 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
             renderedParticle = true
 
             GlStateManager.enableBlend()
-            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
+            GlStateManager.tryBlendFuncSeparate(
+                GlStateManager.SourceFactor.SRC_ALPHA,
+                GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+                GlStateManager.SourceFactor.ONE,
+                GlStateManager.DestFactor.ZERO
+            )
             GlStateManager.disableTexture2D()
             GlStateManager.depthMask(false)
             GlStateManager.disableAlpha()
@@ -204,10 +229,7 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
             GlStateManager.popMatrix()*/
 
 
-            mtfbo = mtfbo.validate(Minecraft.getMinecraft().framebuffer, hdrFrameBuffer = false)
-            val mtfbo = mtfbo!!
-            mtfbo.framebufferClear()
-            mtfbo.bindFramebuffer(false)
+            mtfbo.validateAndClear(depth = false, bind = true, viewport = false)
 
             if (Keyboard.isKeyDown(Keyboard.KEY_K)) {
                 if (rebuild) {
@@ -436,22 +458,25 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
             val dsw: Int = (sW + downsampledRTFactor - 1).toInt() / downsampledRTFactor
             val dsh: Int = (sH + downsampledRTFactor - 1).toInt() / downsampledRTFactor
 
-            ping = ping.validateAndClear()
-            pong = pong.validateAndClear()
-            downSampleFB = downSampleFB.validateAndClear(dsw, dsh)
-            val ping = ping!!
-            val pong = pong!!
-            val downSampleFB = downSampleFB!!
+            ping.validateAndClear(depth = false)
+            pong.validateAndClear(depth = false)
+
+            downSampleFB.validateAndClear(dsw, dsh, depth = false)
 
             var horizontal = true
 
-            GlStateManager.bindTexture(mtfbo!!.textureTwo)
+            GlStateManager.bindTexture(mtfbo[1])
 
             GlStateManager.enableTexture2D()
             GlStateManager.color(1f, 1f, 1f, 1f)
             GlStateManager.disableAlpha()
             GlStateManager.enableBlend()
-            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
+            GlStateManager.tryBlendFuncSeparate(
+                GlStateManager.SourceFactor.SRC_ALPHA,
+                GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+                GlStateManager.SourceFactor.ONE,
+                GlStateManager.DestFactor.ZERO
+            )
 
             val tess = Tessellator.getInstance()
             val buffer = tess.buffer
@@ -579,7 +604,12 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
             GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit)
             GlStateManager.bindTexture(0)
 
-            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO)
+            GlStateManager.tryBlendFuncSeparate(
+                GlStateManager.SourceFactor.SRC_ALPHA,
+                GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+                GlStateManager.SourceFactor.ONE,
+                GlStateManager.DestFactor.ZERO
+            )
 
             GlStateManager.enableAlpha()
         }
@@ -635,7 +665,16 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
             }
         }
 
-        fun drawWobbleNoodle(posX: Double, posY: Double, posZ: Double, shape: Int, sizeXZ: Float, sizeY: Int, time: Float, ringOffset: Float) {
+        fun drawWobbleNoodle(
+            posX: Double,
+            posY: Double,
+            posZ: Double,
+            shape: Int,
+            sizeXZ: Float,
+            sizeY: Int,
+            time: Float,
+            ringOffset: Float
+        ) {
             val tess = Tessellator.getInstance()
             val buffer = tess.buffer
 
@@ -670,13 +709,15 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
                     val offz = -cos(Math.toRadians(step * i.toDouble() + 45)) * sqr_2half
 
                     buffer.pos(posX + offx * size, posY + y + y * ringOffset, posZ + offz * size).endVertex()
-                    buffer.pos(posX + offx * sizeNext, posY + 1 + y + y * ringOffset, posZ + offz * sizeNext).endVertex()
+                    buffer.pos(posX + offx * sizeNext, posY + 1 + y + y * ringOffset, posZ + offz * sizeNext)
+                        .endVertex()
                 }
 
                 //draws a invisible triangle with an area of 0 connecting the rings
                 //upper ring
                 if (ringOffset != 0f)
-                    buffer.pos(posX + startOffX * sizeNext, posY + 1 + y + y * ringOffset, posZ + startOffZ * sizeNext).endVertex()
+                    buffer.pos(posX + startOffX * sizeNext, posY + 1 + y + y * ringOffset, posZ + startOffZ * sizeNext)
+                        .endVertex()
             }
 
             /*for (y in 0 until sizeY) {

@@ -24,25 +24,21 @@ import net.cydhra.technocracy.foundation.content.tileentities.components.TileEnt
 import net.cydhra.technocracy.foundation.network.PacketHandler
 import net.cydhra.technocracy.foundation.network.componentsync.ClientChangeSideConfigPacket
 import net.cydhra.technocracy.foundation.util.opengl.BasicShaderProgram
-import net.cydhra.technocracy.foundation.util.opengl.MultiTargetFBO
+import net.cydhra.technocracy.foundation.util.opengl.Framebuffer
 import net.cydhra.technocracy.foundation.util.opengl.OpenGLBoundingBox
 import net.cydhra.technocracy.foundation.util.opengl.ScreenspaceUtil
 import net.cydhra.technocracy.foundation.util.structures.BlockInfo
 import net.cydhra.technocracy.foundation.util.structures.TemplateClientWorld
-import net.cydhra.technocracy.foundation.util.validate
-import net.cydhra.technocracy.foundation.util.validateAndClear
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.GlStateManager
-import net.minecraft.client.renderer.OpenGlHelper
 import net.minecraft.client.renderer.RenderHelper
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.texture.TextureMap
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
-import net.minecraft.client.shader.Framebuffer
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.tileentity.TileEntityChest
 import net.minecraft.util.BlockRenderLayer
@@ -58,7 +54,6 @@ import net.minecraftforge.client.MinecraftForgeClient
 import org.apache.commons.lang3.text.WordUtils
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL30
 import org.lwjgl.util.glu.Project
 import org.lwjgl.util.vector.Vector2f
 import org.lwjgl.util.vector.Vector3f
@@ -76,7 +71,9 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
     TCTab("SideConfig", parent, icon = TCIcon(wrenchItem)) {
 
     companion object {
-        var framebuffer: Framebuffer? = null
+        val framebuffer = Framebuffer {
+            setFramebufferColor(0f, 0f, 0f, 0f)
+        }
         val shader = BasicShaderProgram(
             ResourceLocation("technocracy.foundation", "shaders/fade.vsh"),
             ResourceLocation("technocracy.foundation", "shaders/fade.fsh")
@@ -122,10 +119,10 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
     var zoomLevel: Float = -2.6f
 
     var checkMouse = false
-    var sharedFBO: MultiTargetFBO? = null
+    //var sharedFBO: MultiTargetFBO? = null
 
     override fun onClose() {
-        sharedFBO?.deleteFramebuffer()
+        //sharedFBO?.deleteFramebuffer()
     }
 
     override fun mouseClicked(x: Int, y: Int, mouseX: Int, mouseY: Int, mouseButton: Int) {
@@ -227,7 +224,13 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
 
         val scaledResolution = ScaledResolution(Minecraft.getMinecraft())
         GlStateManager.pushMatrix()
-        framebuffer?.setFramebufferColor(0f, 0f, 0f, 0f)
+
+        framebuffer.validateAndClear(
+            (parent.guiWidth - 7 - 7) * scaledResolution.scaleFactor,
+            (58 + 18) * scaledResolution.scaleFactor, bind = true, viewport = true
+        )
+
+        /*framebuffer?.setFramebufferColor(0f, 0f, 0f, 0f)
         framebuffer = framebuffer.validateAndClear(
             (parent.guiWidth - 7 - 7) * scaledResolution.scaleFactor,
             (58 + 18) * scaledResolution.scaleFactor
@@ -236,7 +239,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         sharedFBO = sharedFBO.validate(framebuffer, ownDepth = true)
         val sharedFBO = sharedFBO!!
         sharedFBO.framebufferClear()
-        framebuffer.bindFramebuffer(true)
+        framebuffer.bindFramebuffer(true)*/
 
         //reset projection
         GlStateManager.matrixMode(GL11.GL_PROJECTION)
@@ -313,7 +316,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
 
         //render the other blocks
         if (!hideNeighbors) {
-            renderNeighbors(sharedFBO, pos, tess, tcw, framebuffer)
+            renderNeighbors(pos, tess, tcw, framebuffer)
         }
 
         ForgeHooksClient.setRenderLayer(null)
@@ -729,7 +732,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
     }
 
     private fun renderNeighbors(
-        sharedFBO: MultiTargetFBO,
+        //sharedFBO: MultiTargetFBO,
         pos: BlockPos,
         tess: Tessellator,
         tcw: TemplateClientWorld,
@@ -845,8 +848,8 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         )
         shader.stop()
 
-        OpenGlHelper.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0)
-        OpenGlHelper.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, 0)
+        //OpenGlHelper.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0)
+        //OpenGlHelper.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, 0)
 
         framebuffer.bindFramebuffer(true)
     }

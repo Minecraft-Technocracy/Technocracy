@@ -1,7 +1,6 @@
 package net.cydhra.technocracy.foundation.util
 
 import net.cydhra.technocracy.foundation.TCFoundation
-import net.cydhra.technocracy.foundation.util.opengl.MultiTargetFBO
 import net.minecraft.block.material.Material
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.BufferBuilder
@@ -17,14 +16,12 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext
 import net.minecraftforge.fml.relauncher.Side
 import org.lwjgl.util.vector.Vector4f
-import java.util.*
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.InvocationKind
-import kotlin.contracts.contract
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KProperty
 
-fun Framebuffer?.validate(width: Int = Minecraft.getMinecraft().displayWidth, height: Int = Minecraft.getMinecraft().displayHeight, depth: Boolean = true): Framebuffer {
+fun Framebuffer?.validate_(
+    width: Int = Minecraft.getMinecraft().displayWidth,
+    height: Int = Minecraft.getMinecraft().displayHeight,
+    depth: Boolean = true
+): Framebuffer {
     if (this == null || this.framebufferWidth != width || this.framebufferHeight != height) {
         this?.deleteFramebuffer()
         return Framebuffer(width, height, depth)
@@ -32,33 +29,16 @@ fun Framebuffer?.validate(width: Int = Minecraft.getMinecraft().displayWidth, he
     return this
 }
 
-fun Framebuffer?.validateAndClear(width: Int = Minecraft.getMinecraft().displayWidth, height: Int = Minecraft.getMinecraft().displayHeight, depth: Boolean = true, viewport: Boolean = true): Framebuffer {
-    return validate(width, height, depth).apply {
+fun Framebuffer?.validateAndClear_(
+    width: Int = Minecraft.getMinecraft().displayWidth,
+    height: Int = Minecraft.getMinecraft().displayHeight,
+    depth: Boolean = true,
+    viewport: Boolean = true
+): Framebuffer {
+    return validate_(width, height, depth).apply {
         framebufferClear()
         bindFramebuffer(viewport)
     }
-}
-
-fun MultiTargetFBO?.validate(width: Int, height: Int, ownDepth: Boolean = false, hdrFrameBuffer: Boolean = false, scale: Float = 1f): MultiTargetFBO {
-    return if (this != null && this.width == width && this.height == height) {
-        this
-    } else {
-        this?.deleteFramebuffer()
-        val tmp = MultiTargetFBO(width, height, ownDepth, hdrFrameBuffer, scale)
-        tmp.createFramebuffer()
-        tmp
-    }.updateDepth()
-}
-
-fun MultiTargetFBO?.validate(framebuffer: Framebuffer, ownDepth: Boolean = false, hdrFrameBuffer: Boolean = false, scale: Float = 1f): MultiTargetFBO {
-    return if (this != null && width == framebuffer.framebufferWidth && height == framebuffer.framebufferHeight) {
-        this
-    } else {
-        this?.deleteFramebuffer()
-        val tmp = MultiTargetFBO(framebuffer, ownDepth, hdrFrameBuffer, scale)
-        tmp.createFramebuffer()
-        tmp
-    }.updateDepth()
 }
 
 fun BufferBuilder.pos(x: Float, y: Float, z: Float): BufferBuilder {

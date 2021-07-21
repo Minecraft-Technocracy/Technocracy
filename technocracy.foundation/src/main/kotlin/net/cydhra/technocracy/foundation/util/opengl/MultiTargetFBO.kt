@@ -4,40 +4,50 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.OpenGlHelper
 import net.minecraft.client.renderer.texture.TextureUtil
-import net.minecraft.client.shader.Framebuffer
 import org.lwjgl.BufferUtils
-import org.lwjgl.opengl.*
+import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL14
+import java.nio.IntBuffer
 
-/**
- * A FBO with 2 color render targets
- */
-class MultiTargetFBO(var width: Int, var height: Int, var useDepth: Boolean, var hdrFrameBuffer: Boolean = false, var scale: Float = 1f) {
-
-    constructor(sharedBuffers: Framebuffer, ownDepth: Boolean = false, hdrFrameBuffer: Boolean = false, scale: Float = 1f) : this(sharedBuffers.framebufferWidth, sharedBuffers.framebufferHeight, ownDepth || sharedBuffers.useDepth, hdrFrameBuffer, scale) {
-        this.parentBuffer = sharedBuffers
-        this.ownDepth = ownDepth
-        generateBuffers = false
-    }
-
-    private var generateBuffers = true
-    private var parentBuffer: Framebuffer? = null
-    private var ownDepth = true
+class MultiTargetFBO(
+    var width: Int,
+    var height: Int,
+    var useDepth: Boolean,
+    vararg val allTargets: FBOTarget
+) {
 
     var framebufferObject: Int = 0
-    var textureOne: Int = 0
     var depthBuffer: Int = 0
     var depthTexture: Int = 0
 
-    var textureTwo: Int = -1
+    val ownTargets = mutableListOf<FBOTarget>()
 
-    companion object {
-        val attachments = BufferUtils.createIntBuffer(2)
+    /**
+     * returns the texture id of the target with index i
+     */
+    operator fun get(int: Int): Int {
+        return allTargets[int].textureID()
+    }
 
-        init {
-            attachments.put(GL30.GL_COLOR_ATTACHMENT0)
-            attachments.put(GL30.GL_COLOR_ATTACHMENT1)
-            attachments.flip()
+    val attachments: IntBuffer = BufferUtils.createIntBuffer(allTargets.size)
+    val clearableAttachments: IntBuffer
+
+    init {
+        for (target in allTargets) {
+            attachments.put(target.attachment.id)
+            if (target.taregtType == FBOTarget.TargetType.NEW) {
+                ownTargets.add(target)
+            }
         }
+
+        clearableAttachments = BufferUtils.createIntBuffer(ownTargets.size)
+
+        for (target in ownTargets) {
+            clearableAttachments.put(target.attachment.id)
+        }
+
+        attachments.flip()
+        clearableAttachments.flip()
     }
 
     fun createFramebuffer(): MultiTargetFBO {
@@ -46,29 +56,33 @@ class MultiTargetFBO(var width: Int, var height: Int, var useDepth: Boolean, var
         }
 
         this.framebufferObject = OpenGlHelper.glGenFramebuffers()
-        this.textureOne = parentBuffer?.framebufferTexture ?: TextureUtil.glGenTextures();
-        this.textureTwo = TextureUtil.glGenTextures();
 
-        if (ownDepth || parentBuffer == null) {
+        for (target in ownTargets) {
+            target.setTextureId(TextureUtil.glGenTextures())
+        }
+
+        if (useDepth) {
             this.depthBuffer = OpenGlHelper.glGenRenderbuffers()
-        } else {
-            this.depthBuffer = parentBuffer!!.depthBuffer
         }
 
         OpenGlHelper.glBindFramebuffer(OpenGlHelper.GL_FRAMEBUFFER, this.framebufferObject)
-        this.setFramebufferFilter(this.textureOne, parentBuffer?.framebufferFilter ?: GL11.GL_NEAREST)
-        GlStateManager.bindTexture(this.textureOne)
 
-        if (parentBuffer == null)
-            setupTexture()
+        for (target in allTargets) {
+            if (target.taregtType == FBOTarget.TargetType.NEW) {
+                setFramebufferFilter(target)
+                setupTexture(target)
+            } else {
+                GlStateManager.bindTexture(target.textureID())
+            }
 
-        OpenGlHelper.glFramebufferTexture2D(OpenGlHelper.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D, this.textureOne, 0)
-
-        this.setFramebufferFilter(this.textureTwo, GL11.GL_NEAREST)
-        GlStateManager.bindTexture(this.textureTwo)
-        setupTexture()
-        //GlStateManager.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, width, height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, null)
-        OpenGlHelper.glFramebufferTexture2D(OpenGlHelper.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT1, GL11.GL_TEXTURE_2D, this.textureTwo, 0)
+            OpenGlHelper.glFramebufferTexture2D(
+                OpenGlHelper.GL_FRAMEBUFFER,
+                target.attachment.id,
+                GL11.GL_TEXTURE_2D,
+                target.textureID(),
+                0
+            )
+        }
 
         if (this.useDepth) {
             depthTexture = TextureUtil.glGenTextures()
@@ -76,8 +90,18 @@ class MultiTargetFBO(var width: Int, var height: Int, var useDepth: Boolean, var
 
             OpenGlHelper.glBindRenderbuffer(OpenGlHelper.GL_RENDERBUFFER, this.depthBuffer)
 
-            OpenGlHelper.glRenderbufferStorage(OpenGlHelper.GL_RENDERBUFFER, GL14.GL_DEPTH_COMPONENT24, this.width, this.height)
-            OpenGlHelper.glFramebufferRenderbuffer(OpenGlHelper.GL_FRAMEBUFFER, OpenGlHelper.GL_DEPTH_ATTACHMENT, OpenGlHelper.GL_RENDERBUFFER, this.depthBuffer)
+            OpenGlHelper.glRenderbufferStorage(
+                OpenGlHelper.GL_RENDERBUFFER,
+                GL14.GL_DEPTH_COMPONENT24,
+                this.width,
+                this.height
+            )
+            OpenGlHelper.glFramebufferRenderbuffer(
+                OpenGlHelper.GL_FRAMEBUFFER,
+                OpenGlHelper.GL_DEPTH_ATTACHMENT,
+                OpenGlHelper.GL_RENDERBUFFER,
+                this.depthBuffer
+            )
         }
 
         this.framebufferClear()
@@ -88,25 +112,23 @@ class MultiTargetFBO(var width: Int, var height: Int, var useDepth: Boolean, var
         return this
     }
 
-    private fun setupTexture(useHDR: Boolean = hdrFrameBuffer) {
-
-        val width = ((width + scale - 1) / scale).toInt()
-        val height = ((height + scale - 1) / scale).toInt()
-
-        if (useHDR) {
-            GlStateManager.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB16, width, (height * scale).toInt(), 0, GL11.GL_RGB, GL11.GL_FLOAT, null)
-        } else {
-            GlStateManager.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, width, (height * scale).toInt(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, null)
-        }
+    private fun setupTexture(taregt: FBOTarget) {
+        GlStateManager.glTexImage2D(
+            GL11.GL_TEXTURE_2D,
+            0,
+            taregt.internalFormat,
+            width,
+            height,
+            0,
+            taregt.format,
+            taregt.dataType,
+            null
+        )
     }
 
     fun updateDepth(): MultiTargetFBO {
         if (useDepth) {
-            if (ownDepth || parentBuffer == null) {
-                bindFramebuffer(false)
-            } else {
-                parentBuffer!!.bindFramebuffer(false)
-            }
+            bindFramebuffer(false)
 
             GlStateManager.bindTexture(depthTexture)
             GL11.glCopyTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_DEPTH_COMPONENT, 0, 0, this.width, this.height, 0)
@@ -139,7 +161,7 @@ class MultiTargetFBO(var width: Int, var height: Int, var useDepth: Boolean, var
             OpenGlHelper.glBindFramebuffer(OpenGlHelper.GL_FRAMEBUFFER, this.framebufferObject)
 
             if (viewPort) {
-                GlStateManager.viewport(0, 0, (width * scale).toInt(), (height * scale).toInt())
+                GlStateManager.viewport(0, 0, width, height)
             }
         }
     }
@@ -153,27 +175,71 @@ class MultiTargetFBO(var width: Int, var height: Int, var useDepth: Boolean, var
     fun framebufferClear() {
         this.bindFramebuffer(true)
 
-        if (parentBuffer != null) {
-            TCOpenGlHelper.glDrawBuffers(GL30.GL_COLOR_ATTACHMENT1)
-        } else {
-            TCOpenGlHelper.glDrawBuffers(attachments)
-        }
+        TCOpenGlHelper.glDrawBuffers(this.clearableAttachments)
 
-        GlStateManager.clearColor(0f, 0f, 0f, 1f)
+        GlStateManager.clearColor(0f, 0f, 0f, 0f)
         var i = GL11.GL_COLOR_BUFFER_BIT
 
-        if (this.useDepth && ownDepth) {
+        if (this.useDepth) {
             GlStateManager.clearDepth(1.0)
             i = i or GL11.GL_DEPTH_BUFFER_BIT
         }
 
         GlStateManager.clear(i)
 
-        if (parentBuffer != null) {
-            TCOpenGlHelper.glDrawBuffers(attachments)
-        }
+        TCOpenGlHelper.glDrawBuffers(this.attachments)
 
         this.unbindFramebuffer()
+    }
+
+    fun refreshFramebuffer() {
+        if (OpenGlHelper.isFramebufferEnabled()) {
+            GlStateManager.bindTexture(0)
+            OpenGlHelper.glBindFramebuffer(OpenGlHelper.GL_FRAMEBUFFER, this.framebufferObject)
+
+            for (target in ownTargets) {
+                val tmp = target.textureID()
+                if (tmp > -1) {
+                    TextureUtil.deleteTexture(tmp)
+                    target.setTextureId(-1)
+                }
+            }
+
+            if (this.depthTexture > -1) {
+                TextureUtil.deleteTexture(this.depthTexture)
+                this.depthTexture = -1
+            }
+        }
+    }
+
+    fun validate(
+        width: Int = Minecraft.getMinecraft().displayWidth,
+        height: Int = Minecraft.getMinecraft().displayHeight,
+        depth: Boolean = true
+    ): MultiTargetFBO {
+        if (this.width != width || this.height != height || depth != useDepth) {
+            useDepth = depth
+            this.refreshFramebuffer()
+            this.width = width
+            this.height = height
+            //TODO this actually will delete the fbo anyways so replace with own
+            createFramebuffer()
+        }
+        return this
+    }
+
+    fun validateAndClear(
+        width: Int = Minecraft.getMinecraft().displayWidth,
+        height: Int = Minecraft.getMinecraft().displayHeight,
+        depth: Boolean = true,
+        viewport: Boolean = true,
+        bind: Boolean = true
+    ): MultiTargetFBO {
+        return validate(width, height, depth).apply {
+            framebufferClear()
+            if (bind)
+                bindFramebuffer(viewport)
+        }
     }
 
     fun deleteFramebuffer() {
@@ -181,24 +247,22 @@ class MultiTargetFBO(var width: Int, var height: Int, var useDepth: Boolean, var
             GlStateManager.bindTexture(0)
             OpenGlHelper.glBindFramebuffer(OpenGlHelper.GL_FRAMEBUFFER, this.framebufferObject)
 
-            if (this.depthBuffer > -1 && generateBuffers) {
+            if (this.depthBuffer > -1) {
                 OpenGlHelper.glDeleteRenderbuffers(this.depthBuffer)
                 this.depthBuffer = -1
             }
 
-            if (this.textureOne > -1 && generateBuffers) {
-                TextureUtil.deleteTexture(this.textureOne)
-                this.textureOne = -1
+            for (target in ownTargets) {
+                val tmp = target.textureID()
+                if (tmp > -1) {
+                    TextureUtil.deleteTexture(tmp)
+                    target.setTextureId(-1)
+                }
             }
 
             if (this.depthTexture > -1) {
                 TextureUtil.deleteTexture(this.depthTexture)
                 this.depthTexture = -1
-            }
-
-            if (this.textureTwo > -1) {
-                TextureUtil.deleteTexture(this.textureTwo)
-                this.textureTwo = -1
             }
 
             if (this.framebufferObject > -1) {
@@ -209,15 +273,13 @@ class MultiTargetFBO(var width: Int, var height: Int, var useDepth: Boolean, var
         }
     }
 
-    fun setFramebufferFilter(texture: Int, filter: Int) {
+    fun setFramebufferFilter(target: FBOTarget) {
         if (OpenGlHelper.isFramebufferEnabled()) {
-            GlStateManager.bindTexture(texture)
-            GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, filter)
-            GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, filter)
-            GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP)
-            GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_CLAMP)
-            GlStateManager.bindTexture(0)
+            GlStateManager.bindTexture(target.textureID())
+            GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, target.textureFilter)
+            GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, target.textureFilter)
+            GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, target.textureWrap)
+            GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, target.textureWrap)
         }
     }
-
 }

@@ -5,26 +5,26 @@ import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.TCTab
 import net.cydhra.technocracy.foundation.util.Interpolator
 import net.cydhra.technocracy.foundation.util.opengl.BasicShaderProgram
-import net.cydhra.technocracy.foundation.util.opengl.VAO
+import net.cydhra.technocracy.foundation.util.opengl.Framebuffer
 import net.cydhra.technocracy.foundation.util.opengl.VBO
-import net.cydhra.technocracy.foundation.util.validateAndClear
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
-import net.minecraft.client.shader.Framebuffer
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL31
 import org.lwjgl.util.glu.Project
 import org.lwjgl.util.vector.Vector4f
 import java.nio.FloatBuffer
 import javax.vecmath.Vector3d
-import kotlin.math.*
+import kotlin.math.acos
+import kotlin.math.cos
+import kotlin.math.roundToInt
+import kotlin.math.sin
 import kotlin.random.Random
 
 
@@ -36,8 +36,12 @@ class TabPlanetaryRendering(gui: TCGui) : TCTab("", gui, -1) {
         @SideOnly(Side.CLIENT)
         lateinit var vboStars: VBO
         var generatedStars = false
+
         @SideOnly(Side.CLIENT)
-        var buffer: Framebuffer? = null
+        val buffer = Framebuffer {
+            setFramebufferColor(0.12f, 0.12f, 0.12f, 0f)
+        }
+
         @SideOnly(Side.CLIENT)
         var depthShader: BasicShaderProgram? = null
         @SideOnly(Side.CLIENT)
@@ -147,8 +151,8 @@ class TabPlanetaryRendering(gui: TCGui) : TCTab("", gui, -1) {
             vboStars = VBO(VBO.VBOUsage.STATIC_DRAW, buffer.array()).addFloatAttribute(3)
         }
 
-        buffer?.setFramebufferColor(0.12f, 0.12f, 0.12f, 0f)
-        buffer = buffer.validateAndClear()
+        //buffer?.setFramebufferColor(0.12f, 0.12f, 0.12f, 0f)
+        buffer.validateAndClear()
 
         var playerPos = ic.getInterpolated(this.zoom)
 
@@ -269,7 +273,7 @@ class TabPlanetaryRendering(gui: TCGui) : TCTab("", gui, -1) {
         GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO)
 
         //crtShader!!.render(partialTicks)
-        buffer?.bindFramebufferTexture()
+        buffer.bindFramebufferTexture()
         mc.framebuffer.bindFramebuffer(true)
         //crtBuffer?.bindFramebuffer(false)
 
