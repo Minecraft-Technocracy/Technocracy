@@ -58,10 +58,12 @@ class TileEntityManager(val modName: String) {
      */
     @SideOnly(Side.CLIENT)
     fun onClientInitialize() {
-        associatedSpecialRenderers.forEach { tileEntityClass, specialRenderer ->
+        for ((tileEntityClass, specialRenderer) in associatedSpecialRenderers) {
             @Suppress("UNCHECKED_CAST") // this class'es contract ensures that it works
-            ClientRegistry.bindTileEntitySpecialRenderer(tileEntityClass.java,
-                    specialRenderer as TileEntitySpecialRenderer<in TileEntity>)
+            ClientRegistry.bindTileEntitySpecialRenderer(
+                tileEntityClass.java,
+                specialRenderer as TileEntitySpecialRenderer<in TileEntity>
+            )
         }
     }
 
