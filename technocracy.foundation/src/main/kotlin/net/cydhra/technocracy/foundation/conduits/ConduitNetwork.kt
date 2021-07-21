@@ -5,18 +5,13 @@ import net.cydhra.technocracy.foundation.conduits.parts.EdgePart
 import net.cydhra.technocracy.foundation.conduits.parts.NodePart
 import net.cydhra.technocracy.foundation.conduits.parts.Part
 import net.cydhra.technocracy.foundation.conduits.types.PipeType
-import net.minecraft.client.Minecraft
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.world.WorldServer
-import net.minecraftforge.client.event.RenderWorldLastEvent
 import net.minecraftforge.event.world.ChunkDataEvent
 import net.minecraftforge.event.world.ChunkEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
-import net.minecraftforge.fml.relauncher.Side
-import net.minecraftforge.fml.relauncher.SideOnly
-import org.lwjgl.opengl.GL11
 
 /**
  * Global facade to the conduit network. All components that interact with the conduit network shall talk to this
@@ -317,115 +312,5 @@ object ConduitNetwork {
         val dimension = dimensions[dimensionId]!!
 
         dimension.unloadChunk(event.chunk)
-    }
-
-    @SubscribeEvent
-    @SideOnly(Side.CLIENT)
-    fun renderDebugEvent(event: RenderWorldLastEvent) {
-        if(true)
-            return
-        val mc = Minecraft.getMinecraft()
-
-        GL11.glPushMatrix()
-        GL11.glTranslated(-mc.renderManager.viewerPosX, -mc.renderManager.viewerPosY, -mc.renderManager.viewerPosZ)
-
-        GL11.glDisable(GL11.GL_DEPTH_TEST)
-        GL11.glEnable(GL11.GL_BLEND)
-        GL11.glDisable(GL11.GL_TEXTURE_2D)
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
-        GL11.glEnable(GL11.GL_LINE_SMOOTH)
-        GL11.glDisable(GL11.GL_LIGHTING)
-        GL11.glDepthMask(false)
-        GL11.glLineWidth(2f)
-
-        try {
-            dimensions[0]!!.debug_getChunks().forEach { nChunk ->
-                nChunk.debug_transits.forEach { (pos, set) ->
-                    GL11.glTranslated(pos.x.toDouble() + 0.5, pos.y.toDouble() + 0.5, pos.z.toDouble() + 0.5)
-
-                    set.forEach { transitEdge ->
-                        transitEdge.paths.forEach { (id, _) ->
-                            when (transitEdge.type) {
-                                PipeType.ENERGY -> GL11.glColor4d(1.0, 0.0, 0.0, 1.0)
-                                PipeType.FLUID -> GL11.glColor4d(0.0, 0.0, 1.0, 1.0)
-                                PipeType.ITEM -> GL11.glColor4d(0.0, 1.0, 0.0, 1.0)
-                            }
-
-                            when (transitEdge.type) {
-                                PipeType.FLUID -> GL11.glTranslated(0.025, 0.025, 0.025)
-                                PipeType.ITEM -> GL11.glTranslated(0.05, 0.05, 0.05)
-                            }
-
-                            val (otherPos, otherEdge) = nChunk.getTransitEdge(id)!!
-
-                            GL11.glBegin(GL11.GL_LINES)
-                            GL11.glVertex3d(transitEdge.facing.directionVec.x / 2.0, transitEdge.facing.directionVec.y / 2.0,
-                                    transitEdge.facing.directionVec.z / 2.0)
-                            GL11.glVertex3d(
-                                    otherPos.x.toDouble() - pos.x + otherEdge.facing.directionVec.x / 2.0,
-                                    otherPos.y.toDouble() - pos.y + otherEdge.facing.directionVec.y / 2.0,
-                                    otherPos.z.toDouble() - pos.z + otherEdge.facing.directionVec.z / 2.0)
-
-                            GL11.glEnd()
-
-                            when (transitEdge.type) {
-                                PipeType.FLUID -> GL11.glTranslated(-0.025, -0.025, -0.025)
-                                PipeType.ITEM -> GL11.glTranslated(-0.05, -0.05, -0.05)
-                            }
-                        }
-                    }
-
-                    GL11.glTranslated(-pos.x.toDouble() - 0.5, -pos.y.toDouble() - 0.5, -pos.z.toDouble() - 0.5)
-                }
-
-                nChunk.debug_cross_transits.forEach { (pos, set) ->
-                    GL11.glTranslated(pos.x.toDouble() + 0.5, pos.y.toDouble() + 0.5, pos.z.toDouble() + 0.5)
-
-                    set.forEach { transitEdge ->
-                        when (transitEdge.type) {
-                            PipeType.ENERGY -> GL11.glColor4d(1.0, 0.0, 0.0, 1.0)
-                            PipeType.FLUID -> GL11.glColor4d(0.0, 0.0, 1.0, 1.0)
-                            PipeType.ITEM -> GL11.glColor4d(0.0, 1.0, 0.0, 1.0)
-                        }
-
-                        transitEdge.paths.forEach { (id, _) ->
-                            val (otherPos, otherEdge) = nChunk.getTransitEdge(id)!!
-
-                            when (transitEdge.type) {
-                                PipeType.FLUID -> GL11.glTranslated(0.025, 0.025, 0.025)
-                                PipeType.ITEM -> GL11.glTranslated(0.05, 0.05, 0.05)
-                            }
-
-                            GL11.glBegin(GL11.GL_LINES)
-                            GL11.glVertex3d(transitEdge.facing.directionVec.x / 2.0, transitEdge.facing.directionVec.y / 2.0,
-                                    transitEdge.facing.directionVec.z / 2.0)
-                            GL11.glVertex3d(
-                                    otherPos.x.toDouble() - pos.x + otherEdge.facing.directionVec.x / 2.0,
-                                    otherPos.y.toDouble() - pos.y + otherEdge.facing.directionVec.y / 2.0,
-                                    otherPos.z.toDouble() - pos.z + otherEdge.facing.directionVec.z / 2.0)
-
-                            GL11.glEnd()
-
-                            when (transitEdge.type) {
-                                PipeType.FLUID -> GL11.glTranslated(-0.025, -0.025, -0.025)
-                                PipeType.ITEM -> GL11.glTranslated(-0.05, -0.05, -0.05)
-                            }
-                        }
-                    }
-
-                    GL11.glTranslated(-pos.x.toDouble() - 0.5, -pos.y.toDouble() - 0.5, -pos.z.toDouble() - 0.5)
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        GL11.glEnable(GL11.GL_TEXTURE_2D)
-        GL11.glDisable(GL11.GL_BLEND)
-        GL11.glEnable(GL11.GL_DEPTH_TEST)
-        GL11.glDisable(GL11.GL_LINE_SMOOTH)
-
-        GL11.glDepthMask(true)
-        GL11.glPopMatrix()
     }
 }
