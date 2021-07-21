@@ -1,22 +1,17 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    " n ",
-    " nn",
-    "r  "
+    "s s",
+    " s "
   ],
   "key": {
-    "n": {
+    "s": {
       "type": "forge:ore_dict",
-      "ore": "ingotNickel"
-    },
-    "r": {
-      "type": "forge:ore_dict",
-      "ore": "rodIron"
+      "ore": "sheetTin"
     }
   },
   "result": {
-    "item": "technocracy.foundation:wrench",
-    "count": 1
+    "item": "technocracy.foundation:empty_can",
+    "count": 2
   }
 }
