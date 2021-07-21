@@ -164,10 +164,10 @@ allprojects {
         from file("$project.buildDir/resources/main")
         into file("$project.buildDir/classes/kotlin/main")
         preserve {
-            exclude "$project.buildDir/classes/kotlin/main/assets"
-            exclude "$project.buildDir/classes/kotlin/main/mcmod.info"
-            exclude "$project.buildDir/classes/kotlin/main/pack.mcmeta"
-            exclude "$project.buildDir/classes/kotlin/main/technocracy_at.cfg"
+            exclude "assets/**"
+            exclude "mcmod.info"
+            exclude "pack.mcmeta"
+            exclude "technocracy_at.cfg"
         }
     }
 }
