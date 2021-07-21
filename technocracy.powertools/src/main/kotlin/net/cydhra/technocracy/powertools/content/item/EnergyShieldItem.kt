@@ -12,11 +12,11 @@ import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
 import net.cydhra.technocracy.foundation.client.gui.handler.TCGuiHandler
 import net.cydhra.technocracy.foundation.client.gui.item.ItemUpgradesTab
 import net.cydhra.technocracy.foundation.content.capabilities.energy.DynamicItemEnergyCapability
+import net.cydhra.technocracy.foundation.content.items.BaseItem
 import net.cydhra.technocracy.foundation.content.items.components.ItemEnergyComponent
 import net.cydhra.technocracy.foundation.content.items.components.ItemMultiplierComponent
 import net.cydhra.technocracy.foundation.content.items.components.ItemUpgradesComponent
 import net.cydhra.technocracy.foundation.content.items.util.IItemKeyBindEvent
-import net.cydhra.technocracy.foundation.model.items.api.BaseItem
 import net.cydhra.technocracy.foundation.proxy.ClientProxy
 import net.cydhra.technocracy.powertools.content.item.upgrades.UPGRADE_ENERGY_CAPACITY
 import net.minecraft.client.settings.KeyBinding

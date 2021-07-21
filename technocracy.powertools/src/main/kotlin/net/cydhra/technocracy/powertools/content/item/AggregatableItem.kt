@@ -2,7 +2,7 @@ package net.cydhra.technocracy.powertools.content.item
 
 import net.cydhra.technocracy.foundation.api.ecs.IComponent
 import net.cydhra.technocracy.foundation.api.ecs.item.TCAggregatableItem
-import net.cydhra.technocracy.foundation.model.items.api.BaseItem
+import net.cydhra.technocracy.foundation.content.items.BaseItem
 import net.minecraft.nbt.NBTTagCompound
 
 /**

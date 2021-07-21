@@ -1,8 +1,8 @@
 package net.cydhra.technocracy.powertools.content.item
 
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeClass
+import net.cydhra.technocracy.foundation.content.items.UpgradeItem
 import net.cydhra.technocracy.foundation.content.items.upgrades.EnergyUpgrade
-import net.cydhra.technocracy.foundation.model.items.api.UpgradeItem
 import net.cydhra.technocracy.powertools.content.item.upgrades.*
 import net.minecraft.inventory.EntityEquipmentSlot
 import net.minecraft.item.Item

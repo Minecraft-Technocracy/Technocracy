@@ -1,11 +1,9 @@
 package net.cydhra.technocracy.astronautics.content.items
 
 import net.cydhra.technocracy.astronautics.model.items.color.ConcreteSprayerColor
-import net.cydhra.technocracy.foundation.model.items.api.BaseItem
+import net.cydhra.technocracy.foundation.content.items.BaseItem
 import net.minecraft.creativetab.CreativeTabs
-import net.minecraft.enchantment.Enchantment
 import net.minecraft.item.EnumDyeColor
-import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.NonNullList
