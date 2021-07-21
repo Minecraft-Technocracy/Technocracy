@@ -18,6 +18,11 @@
  */
 package net.minecraftforge.legacydev;
 
+import joptsimple.NonOptionArgumentSpec;
+import joptsimple.OptionParser;
+import joptsimple.OptionSet;
+
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -28,9 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
-import joptsimple.NonOptionArgumentSpec;
-import joptsimple.OptionParser;
-import joptsimple.OptionSet;
 
 public class Main {
     static Logger LOGGER = setupLogger();
@@ -45,9 +47,46 @@ public class Main {
         return Logger.getLogger("LegacyDev");
     }
 
+    void setupLegacyGradleEnvs() {
+
+        String home = System.getProperty("user.home");
+
+        String mcp = getenv("MCP_MAPPINGS");
+
+        //snapshot_20180609-1.12
+        String type = "mcp_" + mcp.split("_")[0];
+        String[] tmp = mcp.split("_")[1].split("-");
+        String id = tmp[0];
+        String version = getenv("MC_VERSION");
+
+        final File SRG_DIR = new File(home + "/.gradle/caches/minecraft/de/oceanlabs/mcp/" + type + "/" + id + "/srgs");
+        final File SRG_NOTCH_SRG = new File(home + "/.gradle/caches/minecraft/de/oceanlabs/mcp/" + type + "/" + id + "/" + version + "/srgs/notch-srg.srg");
+        final File SRG_NOTCH_MCP = new File(home + "/.gradle/caches/minecraft/de/oceanlabs/mcp/" + type + "/" + id + "/" + version + "/srgs/notch-mcp.srg");
+        final File SRG_SRG_MCP = new File(home + "/.gradle/caches/minecraft/de/oceanlabs/mcp/" + type + "/" + id + "/" + version + "/srgs/srg-mcp.srg");
+        final File SRG_MCP_SRG = new File(home + "/.gradle/caches/minecraft/de/oceanlabs/mcp/" + type + "/" + id + "/" + version + "/srgs/mcp-srg.srg");
+        final File SRG_MCP_NOTCH = new File(home + "/.gradle/caches/minecraft/de/oceanlabs/mcp/" + type + "/" + id + "/" + version + "/srgs/mcp-notch.srg");
+        final File CSV_DIR = new File(home + "/.gradle/caches/minecraft/de/oceanlabs/mcp/" + type + "/" + id + "");
+
+
+        System.out.println("wsedfrvgbhnjmkl");
+        System.out.println(SRG_NOTCH_SRG.getAbsolutePath());
+
+        try {
+            System.setProperty("net.minecraftforge.gradle.GradleStart.srgDir", SRG_DIR.getCanonicalPath());
+            System.setProperty("net.minecraftforge.gradle.GradleStart.srg.notch-srg", SRG_NOTCH_SRG.getCanonicalPath());
+            System.setProperty("net.minecraftforge.gradle.GradleStart.srg.notch-mcp", SRG_NOTCH_MCP.getCanonicalPath());
+            System.setProperty("net.minecraftforge.gradle.GradleStart.srg.srg-mcp", SRG_SRG_MCP.getCanonicalPath());
+            System.setProperty("net.minecraftforge.gradle.GradleStart.srg.mcp-srg", SRG_MCP_SRG.getCanonicalPath());
+            System.setProperty("net.minecraftforge.gradle.GradleStart.srg.mcp-notch", SRG_MCP_NOTCH.getCanonicalPath());
+            System.setProperty("net.minecraftforge.gradle.GradleStart.csvDir", CSV_DIR.getCanonicalPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     protected void start(String[] args) throws ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         String natives = getenv("nativesDirectory");
-        if (natives != null ) {
+        if (natives != null) {
             LOGGER.info("Natives: " + natives);
             handleNatives(natives);
         }
@@ -57,6 +96,8 @@ public class Main {
             throw new IllegalArgumentException("Must specify mainClass environment variable");
         LOGGER.info("Main Class: " + mainClass);
 
+
+        setupLegacyGradleEnvs();
         String srg2mcp = getenv("MCP_TO_SRG");
         if (srg2mcp != null) {
             LOGGER.info("Srg2Mcp: " + srg2mcp);
@@ -84,10 +125,11 @@ public class Main {
 
         Class<?> cls = Class.forName(mainClass);
         Method main = cls.getDeclaredMethod("main", String[].class);
-        main.invoke(null, new Object[] { cleanArgs });
+        main.invoke(null, new Object[]{cleanArgs});
     }
 
-    protected void handleNatives(String path) { }
+    protected void handleNatives(String path) {
+    }
 
     protected Map<String, String> getDefaultArguments() {
         return new LinkedHashMap<>();
@@ -118,7 +160,7 @@ public class Main {
         LOGGER.info("Extra: " + extras);
 
         List<String> lst = new ArrayList<>();
-        defaults.forEach((k,v) -> {
+        defaults.forEach((k, v) -> {
             if (!nullOrEmpty(v)) {
                 lst.add("--" + k);
                 lst.add(v);
