@@ -6,7 +6,7 @@ import net.cydhra.technocracy.foundation.api.upgrades.ItemUpgrade
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeClass
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicItemHolderCapability
-import net.cydhra.technocracy.foundation.model.items.api.UpgradeItem
+import net.cydhra.technocracy.foundation.content.items.UpgradeItem
 import net.minecraft.init.Items
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound

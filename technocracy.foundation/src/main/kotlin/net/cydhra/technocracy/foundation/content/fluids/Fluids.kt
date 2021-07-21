@@ -1,6 +1,5 @@
 package net.cydhra.technocracy.foundation.content.fluids
 
-import net.cydhra.technocracy.foundation.model.fluids.api.BaseFluid
 import java.awt.Color
 
 

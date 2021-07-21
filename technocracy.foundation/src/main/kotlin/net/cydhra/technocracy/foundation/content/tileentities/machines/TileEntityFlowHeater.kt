@@ -4,11 +4,11 @@ import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_CONVERSION
 import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_ENERGY
 import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_SPEED
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
+import net.cydhra.technocracy.foundation.content.tileentities.MachineTileEntity
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityHeatStorageComponent
 import net.cydhra.technocracy.foundation.content.tileentities.logic.CoolingLogic
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ProduceHeatLogic
-import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
 import net.minecraft.util.EnumFacing
 
 /**

@@ -2,7 +2,7 @@ package net.cydhra.technocracy.foundation.client.gui.handler
 
 import net.cydhra.technocracy.foundation.api.tileentities.TCTileEntityGuiProvider
 import net.cydhra.technocracy.foundation.client.gui.TCClientGuiImpl
-import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
+import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPart
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World

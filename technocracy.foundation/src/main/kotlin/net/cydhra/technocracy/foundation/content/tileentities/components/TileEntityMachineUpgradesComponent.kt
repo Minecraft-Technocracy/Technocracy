@@ -7,8 +7,8 @@ import net.cydhra.technocracy.foundation.api.tileentities.TEInventoryProvider
 import net.cydhra.technocracy.foundation.api.upgrades.MachineUpgrade
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeClass
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
-import net.cydhra.technocracy.foundation.model.items.api.UpgradeItem
-import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
+import net.cydhra.technocracy.foundation.content.items.UpgradeItem
+import net.cydhra.technocracy.foundation.content.tileentities.MachineTileEntity
 import net.minecraft.init.Items
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound

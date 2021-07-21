@@ -1,8 +1,7 @@
 package net.cydhra.technocracy.foundation.client.gui.multiblock
 
 import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
-import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
-import net.minecraft.entity.player.EntityPlayer
+import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPart
 
 open class MultiblockContainer(val machine: TileEntityMultiBlockPart<*>) : TCContainer(machine
         /*((machine.multiblockController as BaseMultiBlock).getComponents()

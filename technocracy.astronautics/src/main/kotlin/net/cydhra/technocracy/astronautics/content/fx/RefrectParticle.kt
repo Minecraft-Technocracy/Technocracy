@@ -1,12 +1,12 @@
 package net.cydhra.technocracy.astronautics.content.fx
 
-import com.google.common.util.concurrent.Monitor
+import net.cydhra.technocracy.foundation.api.fx.AbstractParticle
 import net.cydhra.technocracy.foundation.api.fx.IParticleType
 import net.cydhra.technocracy.foundation.client.shader.RefractionEffect
-import net.cydhra.technocracy.foundation.model.fx.api.AbstractParticle
 import net.cydhra.technocracy.foundation.util.opengl.OpenGLBoundingBox
 import net.minecraft.client.Minecraft
-import net.minecraft.client.renderer.*
+import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.client.renderer.Tessellator
 import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.AxisAlignedBB
 import net.minecraft.world.World

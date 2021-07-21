@@ -1,13 +1,11 @@
 package net.cydhra.technocracy.powertools.proxy
 
-import net.cydhra.technocracy.foundation.model.blocks.manager.BlockManager
-import net.cydhra.technocracy.foundation.model.entities.manager.EntityManager
-import net.cydhra.technocracy.foundation.model.fluids.manager.FluidManager
-import net.cydhra.technocracy.foundation.model.items.manager.ItemManager
-import net.cydhra.technocracy.foundation.model.tileentities.manager.TileEntityManager
+import net.cydhra.technocracy.foundation.api.fluids.FluidManager
+import net.cydhra.technocracy.foundation.content.blocks.BlockManager
+import net.cydhra.technocracy.foundation.content.entities.manager.EntityManager
+import net.cydhra.technocracy.foundation.content.items.ItemManager
+import net.cydhra.technocracy.foundation.content.tileentities.TileEntityManager
 import net.cydhra.technocracy.foundation.network.PacketHandler
-import net.cydhra.technocracy.foundation.network.ServerItemCooldownPacket
-import net.cydhra.technocracy.foundation.network.componentsync.GuiUpdateListener
 import net.cydhra.technocracy.powertools.TCPowertools
 import net.cydhra.technocracy.powertools.client.powertoolsCreativeTab
 import net.cydhra.technocracy.powertools.content.item.*

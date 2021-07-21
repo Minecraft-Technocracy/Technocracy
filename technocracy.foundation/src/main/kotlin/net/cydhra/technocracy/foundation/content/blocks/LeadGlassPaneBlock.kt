@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.content.blocks
 
-import net.cydhra.technocracy.foundation.model.blocks.api.IBaseBlock
-import net.cydhra.technocracy.foundation.model.blocks.color.IBlockColor
+import net.cydhra.technocracy.foundation.api.blocks.IBaseBlock
+import net.cydhra.technocracy.foundation.api.blocks.color.IBlockColor
 import net.minecraft.block.BlockPane
 import net.minecraft.block.SoundType
 import net.minecraft.block.material.Material

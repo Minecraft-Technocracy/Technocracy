@@ -13,11 +13,11 @@ import net.cydhra.technocracy.foundation.client.gui.TCTab
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
 import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
+import net.cydhra.technocracy.foundation.content.tileentities.AggregatableTileEntity
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityEnergyStorageComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityHeatStorageComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityInventoryComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityProgressComponent
-import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableTileEntity
 import net.cydhra.technocracy.optics.api.tileentities.components.LaserAbsorberComponent
 import net.cydhra.technocracy.optics.content.tileentities.logic.LaserDrillLogic
 import net.minecraft.entity.player.EntityPlayer

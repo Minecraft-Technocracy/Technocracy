@@ -3,12 +3,10 @@ package net.cydhra.technocracy.foundation.content.blocks
 import it.zerono.mods.zerocore.api.multiblock.IMultiblockPart
 import net.cydhra.technocracy.foundation.api.tileentities.TCMultiBlockActiveTileEntity
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.tank.TileEntityTankMultiBlockPart
-import net.cydhra.technocracy.foundation.model.blocks.impl.PlainMultiBlockPartBlock
 import net.cydhra.technocracy.foundation.util.propertys.DIMENSIONS
 import net.cydhra.technocracy.foundation.util.propertys.FLUIDSTACK
 import net.cydhra.technocracy.foundation.util.propertys.POSITION
 import net.cydhra.technocracy.foundation.util.propertys.TANKSIZE
-import net.minecraft.block.BlockRedstoneLight
 import net.minecraft.block.state.BlockStateContainer
 import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.player.EntityPlayer

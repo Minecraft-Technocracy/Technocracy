@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.astronautics.content.blocks
 
 import net.cydhra.technocracy.astronautics.client.astronauticsColorTabs
-import net.cydhra.technocracy.foundation.model.blocks.impl.ColoredPlainBlock
+import net.cydhra.technocracy.foundation.content.blocks.ColoredPlainBlock
 import net.minecraft.block.material.Material
 import net.minecraft.entity.Entity
 import net.minecraft.util.math.BlockPos

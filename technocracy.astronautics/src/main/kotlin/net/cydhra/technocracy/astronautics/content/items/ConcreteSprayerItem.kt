@@ -4,8 +4,8 @@ import net.cydhra.technocracy.astronautics.content.blocks.ScaffoldBlock
 import net.cydhra.technocracy.astronautics.content.blocks.wetConcreteBlock
 import net.cydhra.technocracy.astronautics.content.blocks.wetReinforcedConcreteBlock
 import net.cydhra.technocracy.astronautics.model.items.color.ConcreteSprayerColor
+import net.cydhra.technocracy.foundation.content.blocks.color.DyeBlockColor
 import net.cydhra.technocracy.foundation.content.items.emptyCanItem
-import net.cydhra.technocracy.foundation.model.blocks.color.DyeBlockColor
 import net.cydhra.technocracy.foundation.model.items.api.BaseItem
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.EntityLivingBase
@@ -173,7 +173,8 @@ class ConcreteSprayerItem : BaseItem("concrete_sprayer", itemColor = ConcreteSpr
                                 val block = worldIn.getBlockState(newPos).block
 
                                 if (block is ScaffoldBlock)
-                                    worldIn.setBlockState(newPos, wetReinforcedConcreteBlock.defaultState.withProperty(DyeBlockColor.COLOR, color))
+                                    worldIn.setBlockState(newPos, wetReinforcedConcreteBlock.defaultState.withProperty(
+                                        DyeBlockColor.COLOR, color))
                             }
                         }
                     }
@@ -203,7 +204,8 @@ class ConcreteSprayerItem : BaseItem("concrete_sprayer", itemColor = ConcreteSpr
                                 if (distXYZInner < 1.0) {
                                     if (placed < maxBlocks) {
                                         placed++
-                                        worldIn.setBlockState(newPos, wetConcreteBlock.defaultState.withProperty(DyeBlockColor.COLOR, color))
+                                        worldIn.setBlockState(newPos, wetConcreteBlock.defaultState.withProperty(
+                                            DyeBlockColor.COLOR, color))
                                     }
                                 }
                             }

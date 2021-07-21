@@ -9,8 +9,8 @@ import net.cydhra.technocracy.foundation.api.tileentities.TCTileEntityGuiProvide
 import net.cydhra.technocracy.foundation.client.gui.SimpleGui
 import net.cydhra.technocracy.foundation.client.gui.TCGui
 import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
+import net.cydhra.technocracy.foundation.content.tileentities.AggregatableTileEntity
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityEnergyStorageComponent
-import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableTileEntity
 import net.cydhra.technocracy.optics.api.tileentities.components.LaserEmitterTileEntityComponent
 import net.cydhra.technocracy.optics.api.tileentities.logic.LaserLogic
 import net.minecraft.entity.player.EntityPlayer

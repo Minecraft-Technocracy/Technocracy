@@ -1,10 +1,8 @@
 package net.cydhra.technocracy.foundation.content.potions
 
 import net.cydhra.technocracy.foundation.TCFoundation
-import net.cydhra.technocracy.foundation.model.potions.api.BasePotion
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.EntityEquipmentSlot
-import net.minecraft.item.ItemStack
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent
 import net.minecraftforge.event.entity.living.LivingEvent

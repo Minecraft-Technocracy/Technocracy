@@ -1,9 +1,9 @@
 package net.cydhra.technocracy.astronautics.content.blocks
 
 import net.cydhra.technocracy.astronautics.client.astronauticsColorTabs
-import net.cydhra.technocracy.foundation.model.blocks.color.DyeBlockColor
-import net.cydhra.technocracy.foundation.model.blocks.impl.ColoredPlainBlock
-import net.cydhra.technocracy.foundation.model.blocks.util.IDynamicBlockDisplayName
+import net.cydhra.technocracy.foundation.api.blocks.util.IDynamicBlockDisplayName
+import net.cydhra.technocracy.foundation.content.blocks.ColoredPlainBlock
+import net.cydhra.technocracy.foundation.content.blocks.color.DyeBlockColor
 import net.minecraft.block.BlockColored
 import net.minecraft.block.SoundType
 import net.minecraft.block.material.Material
@@ -23,7 +23,8 @@ class WetReinforcedConcreteBlock : ColoredPlainBlock("wet_reinforced_concrete", 
 
     override fun randomTick(worldIn: World, pos: BlockPos, state: IBlockState, random: Random) {
         if (random.nextInt(10) <= 2) {
-            worldIn.setBlockState(pos, reinforcedConcreteBlock.defaultState.withProperty(BlockColored.COLOR, state.getValue(DyeBlockColor.COLOR)))
+            worldIn.setBlockState(pos, reinforcedConcreteBlock.defaultState.withProperty(BlockColored.COLOR, state.getValue(
+                DyeBlockColor.COLOR)))
         }
     }
 

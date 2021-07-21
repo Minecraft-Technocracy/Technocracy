@@ -2,14 +2,20 @@ package net.cydhra.technocracy.foundation.proxy
 
 import com.google.common.collect.ImmutableMap
 import net.cydhra.technocracy.foundation.TCFoundation
+import net.cydhra.technocracy.foundation.api.fluids.FluidManager
+import net.cydhra.technocracy.foundation.api.items.capability.ICapabilityWrapperCapability
+import net.cydhra.technocracy.foundation.api.items.capability.ICapabilityWrapperStorage
 import net.cydhra.technocracy.foundation.client.gui.handler.TCGuiHandler
 import net.cydhra.technocracy.foundation.client.technocracyCreativeTabs
 import net.cydhra.technocracy.foundation.conduits.ConduitNetwork
 import net.cydhra.technocracy.foundation.content.blocks.*
 import net.cydhra.technocracy.foundation.content.fluids.*
 import net.cydhra.technocracy.foundation.content.items.*
+import net.cydhra.technocracy.foundation.content.items.capability.DefaultItemCapability
 import net.cydhra.technocracy.foundation.content.oresystems.*
+import net.cydhra.technocracy.foundation.content.potions.PotionManager
 import net.cydhra.technocracy.foundation.content.potions.oilyEffect
+import net.cydhra.technocracy.foundation.content.tileentities.TileEntityManager
 import net.cydhra.technocracy.foundation.content.tileentities.machines.*
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartCapacitor
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartRefinery
@@ -30,15 +36,7 @@ import net.cydhra.technocracy.foundation.content.world.OilSandGen
 import net.cydhra.technocracy.foundation.content.world.WorldGenDeco
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.data.crafting.types.ITIRecipe
-import net.cydhra.technocracy.foundation.model.blocks.manager.BlockManager
-import net.cydhra.technocracy.foundation.model.fluids.manager.FluidManager
-import net.cydhra.technocracy.foundation.model.items.capability.DefaultItemCapability
-import net.cydhra.technocracy.foundation.model.items.capability.ICapabilityWrapperCapability
-import net.cydhra.technocracy.foundation.model.items.capability.ICapabilityWrapperStorage
-import net.cydhra.technocracy.foundation.model.items.manager.ItemManager
 import net.cydhra.technocracy.foundation.model.oresystems.api.OreSystem
-import net.cydhra.technocracy.foundation.model.potions.manager.PotionManager
-import net.cydhra.technocracy.foundation.model.tileentities.manager.TileEntityManager
 import net.cydhra.technocracy.foundation.network.*
 import net.cydhra.technocracy.foundation.network.componentsync.*
 import net.minecraft.entity.player.EntityPlayer

@@ -20,12 +20,12 @@ import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
 import net.cydhra.technocracy.foundation.client.gui.handler.TCGuiHandler
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
+import net.cydhra.technocracy.foundation.content.tileentities.AggregatableTileEntity
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityDataComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityInventoryComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityOwnerShipComponent
 import net.cydhra.technocracy.foundation.data.world.groups.GroupManager
-import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableTileEntity
 import net.cydhra.technocracy.foundation.network.componentsync.GuiUpdateListener
 import net.cydhra.technocracy.foundation.util.structures.Template
 import net.minecraft.entity.player.EntityPlayer

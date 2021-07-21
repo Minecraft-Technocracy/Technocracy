@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.content.commands
 
-import net.cydhra.technocracy.foundation.model.fx.manager.TCParticleManager
+import net.cydhra.technocracy.foundation.api.fx.TCParticleManager
 import net.minecraft.command.CommandBase
 import net.minecraft.command.ICommandSender
 import net.minecraft.server.MinecraftServer

@@ -2,7 +2,7 @@ package net.cydhra.technocracy.foundation.content.tileentities.multiblock.refine
 
 import net.cydhra.technocracy.foundation.content.multiblock.RefineryMultiBlock
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityEnergyStorageComponent
-import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
+import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPart
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
 

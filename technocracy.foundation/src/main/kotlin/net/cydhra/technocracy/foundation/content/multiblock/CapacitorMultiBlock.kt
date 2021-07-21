@@ -5,7 +5,6 @@ import net.cydhra.technocracy.foundation.api.ecs.IComponent
 import net.cydhra.technocracy.foundation.content.blocks.*
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.capacitor.TileEntityCapacitorController
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.capacitor.TileEntityCapacitorEnergyPort
-import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
 import net.minecraft.block.Block
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos

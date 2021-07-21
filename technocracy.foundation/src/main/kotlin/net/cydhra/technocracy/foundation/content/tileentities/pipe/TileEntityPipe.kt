@@ -6,9 +6,9 @@ import net.cydhra.technocracy.foundation.conduits.parts.AttachmentPart
 import net.cydhra.technocracy.foundation.conduits.parts.EdgePart
 import net.cydhra.technocracy.foundation.conduits.parts.NodePart
 import net.cydhra.technocracy.foundation.conduits.types.PipeType
+import net.cydhra.technocracy.foundation.content.tileentities.AggregatableTileEntity
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFacadeComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityPipeTypesComponent
-import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableTileEntity
 import net.minecraft.block.Block
 import net.minecraft.client.Minecraft
 import net.minecraft.init.Blocks

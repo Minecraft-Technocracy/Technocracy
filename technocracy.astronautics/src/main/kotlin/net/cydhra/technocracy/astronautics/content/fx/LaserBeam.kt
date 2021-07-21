@@ -1,9 +1,8 @@
 package net.cydhra.technocracy.astronautics.content.fx
 
-import com.google.common.util.concurrent.Monitor
 import net.cydhra.technocracy.coremod.event.RenderShaderEvent
+import net.cydhra.technocracy.foundation.api.fx.AbstractParticle
 import net.cydhra.technocracy.foundation.api.fx.IParticleType
-import net.cydhra.technocracy.foundation.model.fx.api.AbstractParticle
 import net.cydhra.technocracy.foundation.util.opengl.BasicShaderProgram
 import net.cydhra.technocracy.foundation.util.opengl.MultiTargetFBO
 import net.cydhra.technocracy.foundation.util.opengl.VBO
@@ -12,23 +11,25 @@ import net.cydhra.technocracy.foundation.util.validateAndClear
 import net.minecraft.block.material.Material
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.ScaledResolution
-import net.minecraft.client.renderer.*
+import net.minecraft.client.renderer.ActiveRenderInfo
+import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.client.renderer.OpenGlHelper
+import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_TEX
 import net.minecraft.client.shader.Framebuffer
 import net.minecraft.entity.EntityLivingBase
-import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.ResourceLocation
-import net.minecraft.util.math.MathHelper
 import net.minecraft.world.World
-import net.minecraftforge.client.ForgeHooksClient
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
-import org.lwjgl.util.glu.Project
 import java.util.stream.Stream
-import kotlin.math.*
+import kotlin.math.cos
+import kotlin.math.max
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 
 class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) : AbstractParticle(worldIn, posXIn, posYIn, posZIn) {

@@ -2,7 +2,6 @@ package net.cydhra.technocracy.foundation.content.blocks
 
 import net.cydhra.technocracy.foundation.content.fluids.mineralOilFluid
 import net.cydhra.technocracy.foundation.content.potions.oilyEffect
-import net.cydhra.technocracy.foundation.model.blocks.impl.BaseLiquidBlock
 import net.minecraft.block.BlockLiquid
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState

@@ -5,12 +5,12 @@ import net.cydhra.technocracy.foundation.client.gui.TCIcon
 import net.cydhra.technocracy.foundation.client.gui.TCTab
 import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.CoolantMeter
 import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.LubricantMeter
+import net.cydhra.technocracy.foundation.content.tileentities.MachineTileEntity
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityHeatStorageComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityMachineUpgradesComponent
 import net.cydhra.technocracy.foundation.content.tileentities.upgrades.CoolingUpgrade
 import net.cydhra.technocracy.foundation.content.tileentities.upgrades.LubricantUpgrade
-import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
 import net.minecraft.init.Blocks
 
 // nullable platform type: its null if the te is not placed in the world (required for jei)

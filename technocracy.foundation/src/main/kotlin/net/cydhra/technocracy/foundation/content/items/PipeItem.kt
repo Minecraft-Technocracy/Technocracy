@@ -1,10 +1,9 @@
 package net.cydhra.technocracy.foundation.content.items
 
-import net.cydhra.technocracy.foundation.content.blocks.pipe
 import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.cydhra.technocracy.foundation.content.blocks.PipeBlock
+import net.cydhra.technocracy.foundation.content.blocks.pipe
 import net.cydhra.technocracy.foundation.content.tileentities.pipe.TileEntityPipe
-import net.cydhra.technocracy.foundation.model.items.api.BaseItem
 import net.minecraft.advancements.CriteriaTriggers
 import net.minecraft.block.state.IBlockState
 import net.minecraft.creativetab.CreativeTabs

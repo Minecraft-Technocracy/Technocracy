@@ -13,7 +13,6 @@ import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refiner
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.saline.*
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.tank.TileEntityTankMultiBlockPart
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.tank.TileEntityTankPort
-import net.cydhra.technocracy.foundation.model.blocks.impl.*
 import net.minecraft.block.material.Material
 import net.minecraft.util.BlockRenderLayer
 

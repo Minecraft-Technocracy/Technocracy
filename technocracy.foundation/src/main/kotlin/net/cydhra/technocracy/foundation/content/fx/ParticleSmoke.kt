@@ -1,8 +1,8 @@
 package net.cydhra.technocracy.foundation.content.fx
 
 import com.google.common.util.concurrent.Monitor
+import net.cydhra.technocracy.foundation.api.fx.AbstractParticle
 import net.cydhra.technocracy.foundation.api.fx.IParticleType
-import net.cydhra.technocracy.foundation.model.fx.api.AbstractParticle
 import net.cydhra.technocracy.foundation.util.opengl.BasicShaderProgram
 import net.cydhra.technocracy.foundation.util.opengl.BasicShaderProgram.ShaderUniform.UniformType.MATRIX_4x4
 import net.cydhra.technocracy.foundation.util.opengl.BasicShaderProgram.ShaderUniform.UniformType.SAMPLER
@@ -17,11 +17,9 @@ import net.minecraft.world.World
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL20
 import org.lwjgl.opengl.GL31
-import org.lwjgl.opengl.NVHalfFloat
 import org.lwjgl.util.vector.Matrix4f
 import org.lwjgl.util.vector.Vector3f
 import java.nio.ByteBuffer
-import java.util.function.Consumer
 import java.util.stream.Stream
 import kotlin.math.cos
 import kotlin.math.max

@@ -2,13 +2,13 @@ package net.cydhra.technocracy.powertools.content.item.upgrades
 
 import net.cydhra.technocracy.foundation.api.ecs.logic.ILogic
 import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackLogicParameters
+import net.cydhra.technocracy.foundation.api.items.capability.ItemCapabilityWrapper
 import net.cydhra.technocracy.foundation.api.upgrades.ItemUpgrade
 import net.cydhra.technocracy.foundation.api.upgrades.UPGRADE_GENERIC
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeParameter
 import net.cydhra.technocracy.foundation.content.items.components.ItemMultiplierComponent
 import net.cydhra.technocracy.foundation.content.items.components.ItemUpgradesComponent
-import net.cydhra.technocracy.foundation.model.items.api.upgrades.ItemMultiplierUpgrade
-import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWrapper
+import net.cydhra.technocracy.foundation.content.items.upgrades.ItemMultiplierUpgrade
 import net.cydhra.technocracy.powertools.content.item.components.ToolClassComponent
 import net.cydhra.technocracy.powertools.content.item.logic.*
 import net.minecraft.util.text.ITextComponent

@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.client.events
 
-import net.cydhra.technocracy.foundation.model.items.util.IItemKeyBindEvent
-import net.cydhra.technocracy.foundation.model.items.util.IItemScrollEvent
+import net.cydhra.technocracy.foundation.content.items.util.IItemKeyBindEvent
+import net.cydhra.technocracy.foundation.content.items.util.IItemScrollEvent
 import net.cydhra.technocracy.foundation.network.ClientItemKeyBindPacket
 import net.cydhra.technocracy.foundation.network.ClientItemScrollPacket
 import net.cydhra.technocracy.foundation.network.PacketHandler

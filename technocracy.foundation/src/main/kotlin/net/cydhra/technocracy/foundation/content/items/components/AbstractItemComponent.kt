@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.content.items.components
 
 import net.cydhra.technocracy.foundation.api.ecs.IComponent
-import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWrapper
+import net.cydhra.technocracy.foundation.api.items.capability.ItemCapabilityWrapper
 
 
 abstract class AbstractItemComponent : IComponent {

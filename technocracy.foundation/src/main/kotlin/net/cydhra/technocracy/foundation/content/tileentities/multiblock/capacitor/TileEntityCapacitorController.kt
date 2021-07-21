@@ -6,11 +6,11 @@ import net.cydhra.technocracy.foundation.client.gui.components.energymeter.Defau
 import net.cydhra.technocracy.foundation.client.gui.components.label.DefaultLabel
 import net.cydhra.technocracy.foundation.client.gui.multiblock.BaseMultiblockTab
 import net.cydhra.technocracy.foundation.content.items.siliconItem
+import net.cydhra.technocracy.foundation.content.multiblock.BaseMultiBlock
 import net.cydhra.technocracy.foundation.content.multiblock.CapacitorMultiBlock
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityEnergyStorageComponent
-import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
-import net.cydhra.technocracy.foundation.model.tileentities.multiblock.ITileEntityMultiblockController
-import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
+import net.cydhra.technocracy.foundation.content.tileentities.multiblock.ITileEntityMultiblockController
+import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPart
 import net.minecraft.client.Minecraft
 import net.minecraft.util.EnumFacing
 

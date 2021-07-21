@@ -1,16 +1,15 @@
 package net.cydhra.technocracy.foundation.content.blocks
 
+import net.cydhra.technocracy.foundation.api.blocks.color.IBlockColor
+import net.cydhra.technocracy.foundation.api.blocks.util.IDynamicBlockDisplayName
+import net.cydhra.technocracy.foundation.api.blocks.util.IDynamicBlockItemCapability
+import net.cydhra.technocracy.foundation.api.blocks.util.IDynamicBlockItemProperty
+import net.cydhra.technocracy.foundation.api.blocks.util.IDynamicBlockPlaceBehavior
+import net.cydhra.technocracy.foundation.api.items.capability.ItemCapabilityWrapper
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicItemFluidStorage
 import net.cydhra.technocracy.foundation.content.items.components.ItemFluidComponent
 import net.cydhra.technocracy.foundation.content.tileentities.storage.TileEntityDrum
-import net.cydhra.technocracy.foundation.model.blocks.api.AbstractTileEntityBlock
-import net.cydhra.technocracy.foundation.model.blocks.color.IBlockColor
-import net.cydhra.technocracy.foundation.model.blocks.util.IDynamicBlockDisplayName
-import net.cydhra.technocracy.foundation.model.blocks.util.IDynamicBlockItemCapability
-import net.cydhra.technocracy.foundation.model.blocks.util.IDynamicBlockItemProperty
-import net.cydhra.technocracy.foundation.model.blocks.util.IDynamicBlockPlaceBehavior
-import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWrapper
 import net.cydhra.technocracy.foundation.network.PacketHandler
 import net.cydhra.technocracy.foundation.network.ServerCustomChatPacket
 import net.cydhra.technocracy.foundation.util.ColorUtil

@@ -1,3 +1,0 @@
-package net.cydhra.technocracy.foundation.model.tileentities.multiblock
-
-interface ITileEntityMultiblockController

@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.astronautics.content.blocks
 
-import net.cydhra.technocracy.foundation.model.blocks.api.AbstractBaseBlock
+import net.cydhra.technocracy.foundation.content.blocks.AbstractBaseBlock
 import net.minecraft.block.material.EnumPushReaction
 import net.minecraft.block.material.Material
 import net.minecraft.block.properties.PropertyEnum

@@ -1,10 +1,9 @@
 package net.cydhra.technocracy.foundation.content.items.upgrades
 
+import net.cydhra.technocracy.foundation.api.items.capability.ItemCapabilityWrapper
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeParameter
 import net.cydhra.technocracy.foundation.content.items.components.ItemEnergyComponent
 import net.cydhra.technocracy.foundation.content.items.components.ItemUpgradesComponent
-import net.cydhra.technocracy.foundation.model.items.api.upgrades.ItemInstallUpgrade
-import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWrapper
 import net.minecraft.util.text.ITextComponent
 import net.minecraft.util.text.Style
 import net.minecraft.util.text.TextComponentTranslation

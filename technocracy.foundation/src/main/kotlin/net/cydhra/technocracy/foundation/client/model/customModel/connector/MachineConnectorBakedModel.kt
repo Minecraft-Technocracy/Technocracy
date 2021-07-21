@@ -1,9 +1,9 @@
 package net.cydhra.technocracy.foundation.client.model.customModel.connector
 
 import net.cydhra.technocracy.foundation.client.textures.TextureAtlasManager
+import net.cydhra.technocracy.foundation.content.tileentities.MachineTileEntity
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityEnergyStorageComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityInventoryComponent
-import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
 import net.cydhra.technocracy.foundation.util.propertys.POSITION
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.Minecraft

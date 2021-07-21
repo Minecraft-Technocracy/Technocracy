@@ -7,7 +7,6 @@ import net.cydhra.technocracy.foundation.content.blocks.tankIOBlock
 import net.cydhra.technocracy.foundation.content.blocks.tankWallBlock
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.tank.TileEntityTankMultiBlockPart
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.tank.TileEntityTankPort
-import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
 import net.minecraft.init.Blocks
 import net.minecraft.world.World
 import net.minecraftforge.fluids.FluidStack

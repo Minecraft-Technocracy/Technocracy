@@ -2,7 +2,7 @@ package net.cydhra.technocracy.astronautics.content.entity
 
 import net.cydhra.technocracy.astronautics.client.render.entity.RenderEntityParticleEmitter
 import net.cydhra.technocracy.astronautics.client.render.entity.RenderEntityRocket
-import net.cydhra.technocracy.foundation.model.entities.util.EntityRegistryElement
+import net.cydhra.technocracy.foundation.content.entities.util.EntityRegistryElement
 import java.util.function.Function
 
 

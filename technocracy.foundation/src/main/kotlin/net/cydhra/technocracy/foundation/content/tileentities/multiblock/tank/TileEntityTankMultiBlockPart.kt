@@ -7,13 +7,13 @@ import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.Defaul
 import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.multiblock.TankMultiBlock
-import net.cydhra.technocracy.foundation.content.tileentities.components.*
-import net.cydhra.technocracy.foundation.model.tileentities.multiblock.ITileEntityMultiblockController
-import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityOptionalAttachedComponent
+import net.cydhra.technocracy.foundation.content.tileentities.multiblock.ITileEntityMultiblockController
+import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPart
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
-import kotlin.math.sqrt
 
 
 open class TileEntityTankMultiBlockPart : TileEntityMultiBlockPart<TankMultiBlock>(TankMultiBlock::class,

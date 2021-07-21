@@ -11,13 +11,13 @@ import net.cydhra.technocracy.foundation.client.gui.components.fluidmeter.Defaul
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
+import net.cydhra.technocracy.foundation.content.tileentities.MachineTileEntity
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.integration.jei.AbstractRecipeCategory
 import net.cydhra.technocracy.foundation.integration.jei.AbstractRecipeWrapper
 import net.cydhra.technocracy.foundation.integration.jei.gui.FluidBackgroundDrawable
 import net.cydhra.technocracy.foundation.integration.jei.gui.FluidOverlayDrawable
 import net.cydhra.technocracy.foundation.integration.jei.gui.TabDrawable
-import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
 import net.minecraft.block.Block
 import net.minecraft.client.Minecraft
 import net.minecraft.inventory.Slot

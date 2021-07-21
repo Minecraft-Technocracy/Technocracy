@@ -12,7 +12,6 @@ import net.cydhra.technocracy.foundation.content.tileentities.logic.HeatTransfer
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.saline.*
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.data.crafting.special.SalineRecipe
-import net.cydhra.technocracy.foundation.model.multiblock.api.TiledBaseMultiBlock
 import net.minecraft.block.BlockHorizontal
 import net.minecraft.init.Blocks
 import net.minecraft.tileentity.TileEntity

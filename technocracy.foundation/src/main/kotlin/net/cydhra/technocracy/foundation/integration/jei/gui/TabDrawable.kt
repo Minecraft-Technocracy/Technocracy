@@ -3,7 +3,7 @@ package net.cydhra.technocracy.foundation.integration.jei.gui
 import mezz.jei.api.gui.IDrawable
 import net.cydhra.technocracy.foundation.client.gui.TCTab
 import net.cydhra.technocracy.foundation.client.gui.components.progressbar.ProgressBar
-import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
+import net.cydhra.technocracy.foundation.content.tileentities.MachineTileEntity
 import net.minecraft.client.Minecraft
 
 class TabDrawable(val tileEntity: MachineTileEntity) : IDrawable {

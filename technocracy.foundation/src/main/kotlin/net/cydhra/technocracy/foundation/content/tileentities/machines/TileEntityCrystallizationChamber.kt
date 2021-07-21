@@ -3,12 +3,12 @@ package net.cydhra.technocracy.foundation.content.tileentities.machines
 import net.cydhra.technocracy.foundation.api.tileentities.TEInventoryProvider
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
+import net.cydhra.technocracy.foundation.content.tileentities.MachineTileEntity
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityInventoryComponent
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ItemProcessingLogic
 import net.cydhra.technocracy.foundation.data.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
-import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
 

@@ -7,12 +7,12 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParseException
 import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.content.blocks.*
+import net.cydhra.technocracy.foundation.content.tileentities.MachineTileEntity
 import net.cydhra.technocracy.foundation.content.tileentities.machines.*
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager.RECIPE_ASSETS_FOLDER
 import net.cydhra.technocracy.foundation.data.crafting.special.HeatRecipeParser
 import net.cydhra.technocracy.foundation.data.crafting.special.SalineRecipeParser
 import net.cydhra.technocracy.foundation.data.crafting.types.*
-import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
 import net.minecraft.block.Block
 import net.minecraft.util.JsonUtils
 import net.minecraftforge.common.crafting.CraftingHelper

@@ -1,21 +1,21 @@
 package net.cydhra.technocracy.powertools.content.item.logic
 
-import net.cydhra.technocracy.foundation.api.ecs.logic.*
+import net.cydhra.technocracy.foundation.api.ecs.logic.EquipmentData
+import net.cydhra.technocracy.foundation.api.ecs.logic.ILogic
+import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackLogicParameters
+import net.cydhra.technocracy.foundation.api.ecs.logic.ItemStackTickType
+import net.cydhra.technocracy.foundation.api.fx.TCParticleManager
+import net.cydhra.technocracy.foundation.api.items.capability.getCapabilityWrapper
 import net.cydhra.technocracy.foundation.content.fx.ParticleSmoke
 import net.cydhra.technocracy.foundation.content.items.components.ItemEnergyComponent
-import net.cydhra.technocracy.foundation.model.fx.manager.TCParticleManager
-import net.cydhra.technocracy.foundation.model.items.capability.getCapabilityWrapper
 import net.cydhra.technocracy.foundation.util.getSide
 import net.cydhra.technocracy.foundation.util.isBodyInsideOfMaterial
 import net.cydhra.technocracy.powertools.content.item.upgrades.jetPackUpgrade
 import net.minecraft.block.material.Material
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.util.EnumParticleTypes
-import net.minecraft.util.math.MathHelper
 import net.minecraft.util.math.Vec3d
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
-import scala.xml.dtd.ContentModelParser.particle
 
 
 class JetpackLogic : ILogic<ItemStackLogicParameters> {

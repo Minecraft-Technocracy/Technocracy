@@ -2,12 +2,10 @@ package net.cydhra.technocracy.foundation.content.items
 
 import buildcraft.api.tools.IToolWrench
 import cofh.api.item.IToolHammer
+import net.cydhra.technocracy.foundation.api.blocks.IBaseBlock
 import net.cydhra.technocracy.foundation.api.wrench.IWrench
-import net.cydhra.technocracy.foundation.client.textures.TextureAtlasManager
 import net.cydhra.technocracy.foundation.conduits.types.PipeType
-import net.cydhra.technocracy.foundation.model.blocks.api.IBaseBlock
-import net.cydhra.technocracy.foundation.model.items.api.BaseItem
-import net.cydhra.technocracy.foundation.model.items.util.IItemScrollEvent
+import net.cydhra.technocracy.foundation.content.items.util.IItemScrollEvent
 import net.minecraft.client.Minecraft
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityLivingBase

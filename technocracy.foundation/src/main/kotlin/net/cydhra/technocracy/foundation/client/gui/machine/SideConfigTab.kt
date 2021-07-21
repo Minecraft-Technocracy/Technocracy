@@ -14,13 +14,13 @@ import net.cydhra.technocracy.foundation.client.gui.components.label.DefaultLabe
 import net.cydhra.technocracy.foundation.client.gui.components.slot.SlotItemHandler
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
 import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotPlayer
+import net.cydhra.technocracy.foundation.content.blocks.AbstractRotatableTileEntityBlock
+import net.cydhra.technocracy.foundation.content.blocks.AbstractRotatableTileEntityBlock.Companion.facingProperty
 import net.cydhra.technocracy.foundation.content.items.wrenchItem
+import net.cydhra.technocracy.foundation.content.tileentities.MachineTileEntity
 import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractTileEntityCapabilityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractTileEntityDirectionalCapabilityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityInventoryComponent
-import net.cydhra.technocracy.foundation.model.blocks.api.AbstractRotatableTileEntityBlock
-import net.cydhra.technocracy.foundation.model.blocks.api.AbstractRotatableTileEntityBlock.Companion.facingProperty
-import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
 import net.cydhra.technocracy.foundation.network.PacketHandler
 import net.cydhra.technocracy.foundation.network.componentsync.ClientChangeSideConfigPacket
 import net.cydhra.technocracy.foundation.util.opengl.BasicShaderProgram

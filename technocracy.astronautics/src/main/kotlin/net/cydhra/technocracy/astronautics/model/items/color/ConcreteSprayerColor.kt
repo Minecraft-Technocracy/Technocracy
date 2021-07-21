@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.astronautics.model.items.color
 
-import net.cydhra.technocracy.foundation.model.blocks.color.IBlockColor
+import net.cydhra.technocracy.foundation.api.blocks.color.IBlockColor
 import net.minecraft.block.state.IBlockState
 import net.minecraft.item.EnumDyeColor
 import net.minecraft.item.ItemStack

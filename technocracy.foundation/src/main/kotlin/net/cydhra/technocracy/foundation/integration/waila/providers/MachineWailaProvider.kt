@@ -8,8 +8,8 @@ import net.cydhra.technocracy.foundation.TCFoundation
 import net.cydhra.technocracy.foundation.api.ecs.ComponentType
 import net.cydhra.technocracy.foundation.api.ecs.tileentities.TCAggregatableTileEntity
 import net.cydhra.technocracy.foundation.content.capabilities.energy.DynamicEnergyStorageStrategy
-import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
-import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
+import net.cydhra.technocracy.foundation.content.multiblock.BaseMultiBlock
+import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPart
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound

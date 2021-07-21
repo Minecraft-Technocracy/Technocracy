@@ -10,11 +10,11 @@ import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotIO
 import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
 import net.cydhra.technocracy.foundation.client.gui.machine.BaseMachineTab
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
+import net.cydhra.technocracy.foundation.content.tileentities.MachineTileEntity
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityInventoryComponent
 import net.cydhra.technocracy.foundation.content.tileentities.logic.ItemProcessingLogic
 import net.cydhra.technocracy.foundation.data.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
-import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing

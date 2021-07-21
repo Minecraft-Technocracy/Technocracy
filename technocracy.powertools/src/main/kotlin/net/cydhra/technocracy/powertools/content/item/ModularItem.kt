@@ -1,6 +1,8 @@
 package net.cydhra.technocracy.powertools.content.item
 
 import net.cydhra.technocracy.foundation.TCFoundation
+import net.cydhra.technocracy.foundation.api.items.capability.ItemCapabilityWrapper
+import net.cydhra.technocracy.foundation.api.items.capability.getComponent
 import net.cydhra.technocracy.foundation.api.tileentities.TCTileEntityGuiProvider
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeClass
 import net.cydhra.technocracy.foundation.client.gui.SimpleGui
@@ -15,8 +17,6 @@ import net.cydhra.technocracy.foundation.content.items.components.ItemOptionalAt
 import net.cydhra.technocracy.foundation.content.items.components.ItemUpgradesComponent
 import net.cydhra.technocracy.foundation.content.items.upgrades.EnergyUpgrade.Companion.INSTALL_ENERGY
 import net.cydhra.technocracy.foundation.model.items.api.BaseItem
-import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWrapper
-import net.cydhra.technocracy.foundation.model.items.capability.getComponent
 import net.cydhra.technocracy.powertools.content.item.components.ToolClassComponent
 import net.cydhra.technocracy.powertools.content.item.upgrades.ToolClassUpgrade
 import net.cydhra.technocracy.powertools.content.item.upgrades.UPGRADE_DIG_SPEED

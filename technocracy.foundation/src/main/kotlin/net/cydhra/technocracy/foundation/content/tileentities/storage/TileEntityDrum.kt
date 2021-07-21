@@ -2,8 +2,8 @@ package net.cydhra.technocracy.foundation.content.tileentities.storage
 
 import net.cydhra.technocracy.foundation.content.blocks.DrumBlock
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
+import net.cydhra.technocracy.foundation.content.tileentities.AggregatableTileEntity
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
-import net.cydhra.technocracy.foundation.model.tileentities.impl.AggregatableTileEntity
 import net.minecraft.util.EnumFacing
 
 

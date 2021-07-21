@@ -3,7 +3,6 @@ package net.cydhra.technocracy.foundation.content.items
 import net.cydhra.technocracy.foundation.client.technocracyFacadeCreativeTab
 import net.cydhra.technocracy.foundation.content.blocks.PipeBlock
 import net.cydhra.technocracy.foundation.content.tileentities.pipe.TileEntityPipe
-import net.cydhra.technocracy.foundation.model.items.api.BaseItem
 import net.cydhra.technocracy.foundation.util.facade.FacadeStack
 import net.minecraft.block.Block
 import net.minecraft.block.BlockGlass

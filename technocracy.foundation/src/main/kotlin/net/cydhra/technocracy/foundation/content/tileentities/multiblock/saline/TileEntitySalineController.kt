@@ -14,13 +14,12 @@ import net.cydhra.technocracy.foundation.content.items.siliconItem
 import net.cydhra.technocracy.foundation.content.multiblock.SalineMultiBlock
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityHeatStorageComponent
-import net.cydhra.technocracy.foundation.model.tileentities.multiblock.ITileEntityMultiblockController
-import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
+import net.cydhra.technocracy.foundation.content.tileentities.multiblock.ITileEntityMultiblockController
+import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPart
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.entity.player.EntityPlayer
-import kotlin.math.round
 
 class TileEntitySalineController :
         TileEntityMultiBlockPart<SalineMultiBlock>(SalineMultiBlock::class, ::SalineMultiBlock),

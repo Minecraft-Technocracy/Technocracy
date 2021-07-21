@@ -4,13 +4,11 @@ import io.netty.buffer.ByteBuf
 import net.cydhra.technocracy.foundation.api.ecs.IAggregatable
 import net.cydhra.technocracy.foundation.api.ecs.IComponent
 import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
-import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
-import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
+import net.cydhra.technocracy.foundation.content.multiblock.BaseMultiBlock
+import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPart
 import net.cydhra.technocracy.foundation.util.syncToMainThread
 import net.minecraft.client.Minecraft
 import net.minecraft.nbt.NBTTagCompound
-import net.minecraft.network.PacketThreadUtil
-import net.minecraft.network.play.INetHandlerPlayClient
 import net.minecraftforge.fml.common.network.ByteBufUtils
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler

@@ -14,7 +14,6 @@ import net.cydhra.technocracy.foundation.content.tileentities.logic.CoolingLogic
 import net.cydhra.technocracy.foundation.content.tileentities.logic.GenerateHeatLogic
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
 import net.cydhra.technocracy.foundation.data.crafting.special.HeatRecipe
-import net.cydhra.technocracy.foundation.model.tileentities.api.upgrades.TileEntityMultiplierUpgrade
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.text.ITextComponent
 import net.minecraft.util.text.Style

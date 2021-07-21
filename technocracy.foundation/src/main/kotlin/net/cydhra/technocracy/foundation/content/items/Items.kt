@@ -3,12 +3,8 @@
 package net.cydhra.technocracy.foundation.content.items
 
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeClass
+import net.cydhra.technocracy.foundation.content.items.color.ConstantItemColor
 import net.cydhra.technocracy.foundation.content.tileentities.upgrades.*
-import net.cydhra.technocracy.foundation.model.items.api.AlloyItem
-import net.cydhra.technocracy.foundation.model.items.api.BaseItem
-import net.cydhra.technocracy.foundation.model.items.api.ColoredPrefixedItem
-import net.cydhra.technocracy.foundation.model.items.api.UpgradeItem
-import net.cydhra.technocracy.foundation.model.items.color.ConstantItemColor
 
 val coalDustItem = ColoredPrefixedItem("dust", "coal", ConstantItemColor(0x2f2f2f))
 

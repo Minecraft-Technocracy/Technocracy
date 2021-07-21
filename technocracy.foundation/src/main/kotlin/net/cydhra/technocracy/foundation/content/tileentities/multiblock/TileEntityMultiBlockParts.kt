@@ -3,7 +3,6 @@ package net.cydhra.technocracy.foundation.content.tileentities.multiblock
 import net.cydhra.technocracy.foundation.content.multiblock.CapacitorMultiBlock
 import net.cydhra.technocracy.foundation.content.multiblock.RefineryMultiBlock
 import net.cydhra.technocracy.foundation.content.multiblock.SalineMultiBlock
-import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
 
 /*
  * This file contains all subclasses of TileEntityMultiBlockPart, as they do not define behavior anyway and the only

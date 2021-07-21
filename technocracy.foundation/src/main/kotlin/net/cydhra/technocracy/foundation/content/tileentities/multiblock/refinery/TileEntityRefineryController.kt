@@ -7,8 +7,8 @@ import net.cydhra.technocracy.foundation.content.fluids.mineralOilFluid
 import net.cydhra.technocracy.foundation.content.multiblock.RefineryMultiBlock
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityProgressComponent
-import net.cydhra.technocracy.foundation.model.tileentities.multiblock.ITileEntityMultiblockController
-import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
+import net.cydhra.technocracy.foundation.content.tileentities.multiblock.ITileEntityMultiblockController
+import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPart
 import net.minecraft.util.EnumFacing
 
 class TileEntityRefineryController : TileEntityMultiBlockPart<RefineryMultiBlock>(RefineryMultiBlock::class,

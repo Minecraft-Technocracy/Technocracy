@@ -3,9 +3,9 @@ package net.cydhra.technocracy.foundation.network.componentsync
 import io.netty.buffer.ByteBuf
 import net.cydhra.technocracy.foundation.api.ecs.IAggregatable
 import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
+import net.cydhra.technocracy.foundation.content.multiblock.BaseMultiBlock
 import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractTileEntityDirectionalCapabilityComponent
-import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
-import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
+import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPart
 import net.cydhra.technocracy.foundation.util.player
 import net.cydhra.technocracy.foundation.util.syncToMainThread
 import net.minecraft.util.EnumFacing

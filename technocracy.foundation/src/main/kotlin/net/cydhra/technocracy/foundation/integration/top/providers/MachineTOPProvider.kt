@@ -3,12 +3,12 @@ package net.cydhra.technocracy.foundation.integration.top.providers
 import mcjty.theoneprobe.api.*
 import net.cydhra.technocracy.foundation.api.ecs.IComponent
 import net.cydhra.technocracy.foundation.api.ecs.tileentities.TCAggregatableTileEntity
+import net.cydhra.technocracy.foundation.content.multiblock.BaseMultiBlock
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityEnergyStorageComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityInventoryComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityOptionalAttachedComponent
-import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
-import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
+import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPart
 import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack

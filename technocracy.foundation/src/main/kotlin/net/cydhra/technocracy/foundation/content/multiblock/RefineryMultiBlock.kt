@@ -9,7 +9,6 @@ import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refiner
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refinery.TileEntityRefineryOutput
 import net.cydhra.technocracy.foundation.data.crafting.IMachineRecipe
 import net.cydhra.technocracy.foundation.data.crafting.RecipeManager
-import net.cydhra.technocracy.foundation.model.multiblock.api.BaseMultiBlock
 import net.minecraft.init.Blocks
 import net.minecraft.world.World
 import net.minecraftforge.fluids.FluidStack

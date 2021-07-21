@@ -6,7 +6,6 @@ import net.cydhra.technocracy.foundation.content.items.PipeItem
 import net.cydhra.technocracy.foundation.content.items.WrenchItem
 import net.cydhra.technocracy.foundation.content.items.pipeItem
 import net.cydhra.technocracy.foundation.content.tileentities.pipe.TileEntityPipe
-import net.cydhra.technocracy.foundation.model.blocks.api.AbstractTileEntityBlock
 import net.cydhra.technocracy.foundation.util.facade.FacadeStack
 import net.cydhra.technocracy.foundation.util.facade.extras.workbench.InterfaceFacadeCraftingTable
 import net.cydhra.technocracy.foundation.util.propertys.POSITION

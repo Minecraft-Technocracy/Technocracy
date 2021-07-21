@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.api.ecs.logic
 
-import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWrapper
+import net.cydhra.technocracy.foundation.api.items.capability.ItemCapabilityWrapper
 import net.cydhra.technocracy.foundation.util.getSide
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
@@ -8,9 +8,6 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent
 import net.minecraftforge.event.entity.living.LivingDamageEvent
 import net.minecraftforge.event.entity.player.PlayerEvent
 import net.minecraftforge.event.world.BlockEvent
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.contract
-import kotlin.reflect.KClass
 
 
 /**

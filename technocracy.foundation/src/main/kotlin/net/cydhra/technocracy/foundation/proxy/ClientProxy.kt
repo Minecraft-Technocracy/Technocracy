@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.proxy
 
 import com.google.common.collect.ImmutableMap
-import net.cydhra.technocracy.foundation.TCFoundation
+import net.cydhra.technocracy.foundation.api.fx.TCParticleManager
 import net.cydhra.technocracy.foundation.client.events.KeyEventHandler
 import net.cydhra.technocracy.foundation.client.model.facade.FacadeItemModel
 import net.cydhra.technocracy.foundation.client.model.pipe.PipeItemModel
@@ -18,7 +18,6 @@ import net.cydhra.technocracy.foundation.content.commands.ReloadShaderCommand
 import net.cydhra.technocracy.foundation.content.items.facadeItem
 import net.cydhra.technocracy.foundation.content.items.pipeItem
 import net.cydhra.technocracy.foundation.content.items.structureMarkerItem
-import net.cydhra.technocracy.foundation.model.fx.manager.TCParticleManager
 import net.minecraft.client.Minecraft
 import net.minecraft.client.settings.KeyBinding
 import net.minecraft.entity.player.EntityPlayer

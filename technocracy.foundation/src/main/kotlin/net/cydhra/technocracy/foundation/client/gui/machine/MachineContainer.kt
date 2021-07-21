@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.client.gui.machine
 
 import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
-import net.cydhra.technocracy.foundation.model.tileentities.machines.MachineTileEntity
+import net.cydhra.technocracy.foundation.content.tileentities.MachineTileEntity
 
 open class MachineContainer(machine: MachineTileEntity) : TCContainer(machine
         /*(machine.getComponents().filter { (name, component) -> component is InventoryTileEntityComponent && name.contains("input") }

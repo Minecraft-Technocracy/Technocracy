@@ -2,6 +2,8 @@ package net.cydhra.technocracy.powertools.content.item
 
 import net.cydhra.technocracy.coremod.event.ItemCooldownEvent
 import net.cydhra.technocracy.foundation.TCFoundation
+import net.cydhra.technocracy.foundation.api.items.capability.ItemCapabilityWrapper
+import net.cydhra.technocracy.foundation.api.items.capability.getComponent
 import net.cydhra.technocracy.foundation.api.tileentities.TCTileEntityGuiProvider
 import net.cydhra.technocracy.foundation.api.upgrades.UpgradeClass
 import net.cydhra.technocracy.foundation.client.gui.SimpleGui
@@ -13,10 +15,8 @@ import net.cydhra.technocracy.foundation.content.capabilities.energy.DynamicItem
 import net.cydhra.technocracy.foundation.content.items.components.ItemEnergyComponent
 import net.cydhra.technocracy.foundation.content.items.components.ItemMultiplierComponent
 import net.cydhra.technocracy.foundation.content.items.components.ItemUpgradesComponent
+import net.cydhra.technocracy.foundation.content.items.util.IItemKeyBindEvent
 import net.cydhra.technocracy.foundation.model.items.api.BaseItem
-import net.cydhra.technocracy.foundation.model.items.capability.ItemCapabilityWrapper
-import net.cydhra.technocracy.foundation.model.items.capability.getComponent
-import net.cydhra.technocracy.foundation.model.items.util.IItemKeyBindEvent
 import net.cydhra.technocracy.foundation.proxy.ClientProxy
 import net.cydhra.technocracy.powertools.content.item.upgrades.UPGRADE_ENERGY_CAPACITY
 import net.minecraft.client.settings.KeyBinding

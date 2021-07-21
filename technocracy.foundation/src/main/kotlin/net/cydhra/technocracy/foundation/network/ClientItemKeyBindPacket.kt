@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.network
 
 import io.netty.buffer.ByteBuf
-import net.cydhra.technocracy.foundation.model.items.util.IItemKeyBindEvent
+import net.cydhra.technocracy.foundation.content.items.util.IItemKeyBindEvent
 import net.cydhra.technocracy.foundation.util.player
 import net.cydhra.technocracy.foundation.util.syncToMainThread
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage

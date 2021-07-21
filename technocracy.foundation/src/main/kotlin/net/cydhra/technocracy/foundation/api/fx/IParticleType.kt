@@ -1,7 +1,6 @@
 package net.cydhra.technocracy.foundation.api.fx
 
 import com.google.common.util.concurrent.Monitor
-import net.cydhra.technocracy.foundation.model.fx.api.AbstractParticle
 import java.util.stream.Stream
 
 /**

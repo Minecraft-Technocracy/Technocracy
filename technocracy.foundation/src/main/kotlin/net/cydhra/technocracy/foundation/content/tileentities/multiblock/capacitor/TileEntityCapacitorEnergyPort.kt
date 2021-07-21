@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.foundation.content.tileentities.multiblock.capacitor
 
 import net.cydhra.technocracy.foundation.content.multiblock.CapacitorMultiBlock
-import net.cydhra.technocracy.foundation.model.tileentities.multiblock.TileEntityMultiBlockPart
+import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPart
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.energy.CapabilityEnergy

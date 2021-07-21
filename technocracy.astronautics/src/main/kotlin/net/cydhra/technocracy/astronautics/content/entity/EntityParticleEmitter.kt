@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.astronautics.content.entity
 
 import net.cydhra.technocracy.astronautics.content.fx.RefrectParticle
-import net.cydhra.technocracy.foundation.model.fx.manager.TCParticleManager
+import net.cydhra.technocracy.foundation.api.fx.TCParticleManager
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityLiving
 import net.minecraft.entity.MoverType

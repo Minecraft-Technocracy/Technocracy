@@ -12,11 +12,11 @@ import net.cydhra.technocracy.astronautics.content.items.concreteCanItem
 import net.cydhra.technocracy.astronautics.content.items.concreteSprayerItem
 import net.cydhra.technocracy.astronautics.content.tileentity.TileEntityRocketController
 import net.cydhra.technocracy.astronautics.dyson.DysonSphereController
-import net.cydhra.technocracy.foundation.model.blocks.manager.BlockManager
-import net.cydhra.technocracy.foundation.model.entities.manager.EntityManager
-import net.cydhra.technocracy.foundation.model.fluids.manager.FluidManager
-import net.cydhra.technocracy.foundation.model.items.manager.ItemManager
-import net.cydhra.technocracy.foundation.model.tileentities.manager.TileEntityManager
+import net.cydhra.technocracy.foundation.api.fluids.FluidManager
+import net.cydhra.technocracy.foundation.content.blocks.BlockManager
+import net.cydhra.technocracy.foundation.content.entities.manager.EntityManager
+import net.cydhra.technocracy.foundation.content.items.ItemManager
+import net.cydhra.technocracy.foundation.content.tileentities.TileEntityManager
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.capabilities.CapabilityManager
 
