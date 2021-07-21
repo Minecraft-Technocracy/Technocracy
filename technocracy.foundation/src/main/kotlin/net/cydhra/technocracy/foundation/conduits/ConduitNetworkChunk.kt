@@ -1,5 +1,9 @@
 package net.cydhra.technocracy.foundation.conduits
 
+import net.cydhra.technocracy.foundation.conduits.parts.AttachmentPart
+import net.cydhra.technocracy.foundation.conduits.parts.EdgePart
+import net.cydhra.technocracy.foundation.conduits.parts.NodePart
+import net.cydhra.technocracy.foundation.conduits.parts.Part
 import net.cydhra.technocracy.foundation.conduits.transit.TransitChunkEdge
 import net.cydhra.technocracy.foundation.conduits.transit.TransitCrossSectionEdge
 import net.cydhra.technocracy.foundation.conduits.transit.TransitEdge
@@ -11,6 +15,8 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ChunkPos
 import net.minecraftforge.common.util.Constants
 import net.minecraftforge.common.util.INBTSerializable
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import java.util.*
 
 /**
@@ -20,7 +26,7 @@ import java.util.*
  *
  * @param chunkPos the chunk position in the dimension
  */
-internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSerializable<NBTTagCompound> {
+internal class ConduitNetworkChunk(val chunkPos: ChunkPos) : INBTSerializable<NBTTagCompound> {
 
     companion object {
         private const val NBT_KEY_TRANSIT_COUNTER_STATE = "transit_counter"
@@ -114,7 +120,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      *
      * @throws IllegalStateException if the node already exists
      */
-    internal fun insertNode(pos: BlockPos, type: PipeType) {
+    internal fun insertNode(pos: BlockPos, type: PipeType): Part {
         check(this.nodes[pos]?.contains(type) != true) { "the inserted node already exists within the network" }
 
         if (!this.nodes.contains(pos)) {
@@ -123,6 +129,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
 
         this.nodes[pos]!!.add(type)
         this.markDirty()
+        return NodePart(type)
     }
 
     /**
@@ -135,11 +142,12 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      *
      * @throws IllegalStateException if the node does not exist
      */
-    internal fun removeNode(pos: BlockPos, type: PipeType) {
+    internal fun removeNode(pos: BlockPos, type: PipeType): List<Part> {
         check(this.nodes[pos]?.contains(type) != false) { "the removed node does not exist within the network" }
 
         this.nodes[pos]!!.remove(type)
         this.markDirty()
+        return Collections.singletonList(NodePart(type))
     }
 
     /**
@@ -156,7 +164,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      * @throws [IllegalStateException] if one of the node positions does not contain a [type] node
      * @throws [IllegalStateException] if the edge already exists
      */
-    internal fun insertEdge(pos: BlockPos, facing: EnumFacing, type: PipeType) {
+    internal fun insertEdge(pos: BlockPos, facing: EnumFacing, type: PipeType): Part {
         check(this.nodes[pos]?.contains(type) != false) { "position does not contain a node of type $type" }
         check(this.edges[pos]?.get(type)?.contains(facing) != true) { "the edge already existed" }
 
@@ -185,6 +193,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
         }
 
         this.markDirty()
+        return EdgePart(type, facing)
     }
 
     /**
@@ -197,16 +206,20 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      * @param facing the direction of the edge
      * @param type pipe type of the edge
      *
+     * @return all [Part]s that have been removed
+     *
      * @throws [IllegalStateException] if the positions given are not adjacent
      * @throws [IllegalStateException] if the edge does not exist
      */
-    internal fun removeEdge(pos: BlockPos, facing: EnumFacing, type: PipeType) {
+    internal fun removeEdge(pos: BlockPos, facing: EnumFacing, type: PipeType): List<Part> {
         check(this.edges[pos]?.get(type)?.contains(facing) != false) { "the edge does not exist" }
+        val removedParts = mutableListOf<Part>()
 
         this.edges[pos]!![type]!!.remove(facing)
+        removedParts.add(EdgePart(type, facing))
 
         // remove attached sinks if any
-        this.removeTransitSink(pos, facing, type)
+        removedParts.addAll(this.removeTransitSink(pos, facing, type))
 
         // remove cross section if necessary
         if (this.chunkCrossSections[pos]?.contains(type) == true) {
@@ -219,6 +232,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
         }
 
         this.markDirty()
+        return removedParts
     }
 
     /**
@@ -231,7 +245,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      *
      * @throws IllegalStateException if the sink is already attached
      */
-    internal fun attachTransitSink(pos: BlockPos, facing: EnumFacing, type: PipeType) {
+    internal fun attachTransitSink(pos: BlockPos, facing: EnumFacing, type: PipeType): Part {
         check(!this.hasSink(pos, facing, type)) { "sink already attached" }
 
         if (this.attachedSinks[pos] == null) {
@@ -240,6 +254,8 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
 
         this.attachedSinks[pos]!!.add(TransitSink(transitEdgeCounter++, type, facing, pos))
         this.markDirty()
+
+        return AttachmentPart(type, facing)
     }
 
     /**
@@ -250,28 +266,46 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      * @param facing the face that the sink block shares with the pipe block (viewed from the pipe block)
      * @param type the type of pipe that is interfacing with the sink
      */
-    internal fun removeTransitSink(pos: BlockPos, facing: EnumFacing, type: PipeType) {
-        this.attachedSinks[pos]?.removeIf { it.type == type && it.facing == facing }
+    internal fun removeTransitSink(pos: BlockPos, facing: EnumFacing, type: PipeType): List<Part> {
+        val sinks = this.attachedSinks[pos] ?: return emptyList()
+        val removedParts = mutableListOf<Part>()
+
+        val candidates = sinks.filter { it.type == type && it.facing == facing }
+        sinks.removeAll(candidates)
+        removedParts.addAll(candidates.map { AttachmentPart(it.type, it.facing) })
+
+        if (sinks.isEmpty()) {
+            this.attachedSinks.remove(pos)
+        }
+
         this.markDirty()
+        return removedParts
     }
 
     /**
      * Remove all sinks that link to a node at given position. This is called if the node is removed, so remaining
      * sinks can be removed as well. This method removes the sinks if present, and does nothing otherwise.
      */
-    fun removeAllSinks(pos: BlockPos, type: PipeType) {
+    fun removeAllSinks(pos: BlockPos, type: PipeType): List<Part> {
+        val sinkList = this.attachedSinks[pos] ?: return emptyList()
+        val removed = mutableListOf<Part>()
+
         // remove all edges that are linked to this type and thus their attachments
-        this.attachedSinks[pos]?.filter { it.type == type }?.forEach { sink ->
-            this.removeEdge(pos, sink.facing, type)
+        sinkList.filter { it.type == type }.forEach { sink ->
+            removed.addAll(this.removeEdge(pos, sink.facing, type))
         }
 
         // if there is a sink entry present, remove the type entry (it is empty now anyway)
-        this.attachedSinks[pos]?.removeIf { it.type == type }
+        val candidates = sinkList.filter { it.type == type }
+        sinkList.removeAll(candidates)
+        removed.addAll(candidates.map { AttachmentPart(it.type, it.facing) })
 
         // if there is a sink entry present and it is empty now, remove it
-        if (this.attachedSinks[pos]?.isEmpty() == true) {
+        if (sinkList.isEmpty()) {
             this.attachedSinks.remove(pos)
         }
+
+        return removed
     }
 
     /**
@@ -335,7 +369,7 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
 
     /**
      * Removes a face from a cross section. If the cross section is no longer a cross section, it will be removed, too.
-     * Asserts that a cross section exists at that point. It asserts that the edge
+     * Asserts that a cross section exists at that point.
      */
     private fun removeFaceFromCrossSection(pos: BlockPos, type: PipeType, facing: EnumFacing) {
         this.crossSectionTransitEdges[pos]!!.removeIf { it.facing == facing && it.type == type }
@@ -701,9 +735,75 @@ internal class ConduitNetworkChunk(private val chunkPos: ChunkPos) : INBTSeriali
      */
     fun getTransitEdges(): List<TransitEdge> {
         return this.chunkTransitEdges.values
-                .union(this.attachedSinks.values)
-                .union(this.crossSectionTransitEdges.values)
-                .flatten()
+            .union(this.attachedSinks.values)
+            .union(this.crossSectionTransitEdges.values)
+            .flatten()
+    }
+
+    /**
+     * Insert new network parts from the server. Do not update internal state, as this is not the server. The
+     * internal state of attached parts will be invalid.
+     */
+    @SideOnly(Side.CLIENT)
+    fun receivePart(pos: BlockPos, part: Part) {
+        when (part) {
+            is AttachmentPart -> {
+                if (this.attachedSinks[pos] == null) {
+                    this.attachedSinks[pos] = mutableSetOf()
+                }
+
+                this.attachedSinks[pos]!!.add(TransitSink(0, part.pipeType, part.facing, pos))
+            }
+            is EdgePart -> {
+                if (!this.edges.containsKey(pos)) {
+                    this.edges[pos] = mutableMapOf()
+                }
+
+                if (!this.edges[pos]!!.containsKey(part.pipeType)) {
+                    this.edges[pos]!![part.pipeType] = mutableSetOf()
+                }
+
+                this.edges[pos]!![part.pipeType]!! += part.facing
+            }
+            is NodePart -> {
+                if (!this.nodes.contains(pos)) {
+                    this.nodes[pos] = mutableSetOf()
+                }
+
+                this.nodes[pos]!!.add(part.pipeType)
+            }
+        }
+    }
+
+    /**
+     * Remove network parts as instructed by the server. Do not update internal state, as this is not the server.
+     */
+    @SideOnly(Side.CLIENT)
+    fun removePart(pos: BlockPos, part: Part) {
+        when (part) {
+            is AttachmentPart -> {
+                this.attachedSinks[pos]!!.removeIf { it.type == part.pipeType && it.facing == part.facing }
+                if (this.attachedSinks[pos]!!.isEmpty()) {
+                    this.attachedSinks.remove(pos)
+                }
+            }
+            is EdgePart -> {
+                this.edges[pos]!![part.pipeType]!!.remove(part.facing)
+                if (this.edges[pos]!![part.pipeType]!!.isEmpty()) {
+                    this.edges[pos]!!.remove(part.pipeType)
+
+                    if (this.edges[pos]!!.isEmpty()) {
+                        this.edges.remove(pos)
+                    }
+                }
+            }
+            is NodePart -> {
+                this.nodes[pos]!!.remove(part.pipeType)
+                if (this.nodes[pos]!!.isEmpty()) {
+                    this.nodes.remove(pos)
+                }
+            }
+        }
     }
 }
 

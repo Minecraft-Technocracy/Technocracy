@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext
 
 /**
- * Synchronized a conduit network chunk to the client, when the client starts watching it.
+ * Synchronize a conduit network chunk to the client, when the client starts watching it.
  */
 class ServerConduitNetworkSyncPacket() : IMessage, IMessageHandler<ServerConduitNetworkSyncPacket, IMessage> {
     private var dimension: Int = 0
