@@ -212,6 +212,7 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(circuitBoardItem)
         itemManager.prepareItemForRegistration(glueBallItem)
         itemManager.prepareItemForRegistration(biphenylItem)
+        itemManager.prepareItemForRegistration(tubingItem)
 
         itemManager.prepareItemForRegistration(membraneItem)
         itemManager.prepareItemForRegistration(ironRodItem)

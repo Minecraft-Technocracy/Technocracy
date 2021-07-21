@@ -1,14 +1,17 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "   ",
-    "lll",
-    "   "
+    "ttt",
+    "ccc",
+    "ttt"
   ],
   "key": {
-    "l": {
+    "c": {
       "type": "forge:ore_dict",
-      "ore": "ingotAluminum"
+      "ore": "ingotLightAlloy"
+    },
+    "t": {
+      "item": "technocracy.foundation:tubing"
     }
   },
   "result": {

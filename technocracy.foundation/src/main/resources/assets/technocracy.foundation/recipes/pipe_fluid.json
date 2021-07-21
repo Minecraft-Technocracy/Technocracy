@@ -1,19 +1,22 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "   ",
+    "ttt",
     "ccc",
-    "   "
+    "ttt"
   ],
   "key": {
     "c": {
       "type": "forge:ore_dict",
-      "ore": "ingotCopper"
+      "ore": "ingotZircalloy"
+    },
+    "t": {
+      "item": "technocracy.foundation:tubing"
     }
   },
   "result": {
     "item": "technocracy.foundation:pipe_item",
-    "data": 0,
+    "data": 1,
     "count": 6
   }
 }

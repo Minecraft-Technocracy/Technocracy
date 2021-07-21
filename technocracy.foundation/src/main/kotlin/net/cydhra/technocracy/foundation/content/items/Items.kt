@@ -31,6 +31,7 @@ val polishedMirrorItem = ItemPolishedMirror()
 val circuitBoardItem = BaseItem("circuit_board")
 val glueBallItem = BaseItem("glue_ball", oreDictName = "slimeball")
 val biphenylItem = BaseItem("biphenyl")
+val tubingItem = BaseItem("tubing")
 
 val invarItem = AlloyItem("invar", ConstantItemColor(0xDDC2BE))
 val steelItem = AlloyItem("steel", ConstantItemColor(0x707680))

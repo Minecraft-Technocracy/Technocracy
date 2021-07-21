@@ -1,0 +1,20 @@
+{
+  "input": [
+    {
+      "item": "minecraft:concrete_powder",
+      "data": 32767
+    },
+    {
+      "item": "minecraft:clay_ball"
+    },
+    {
+      "type": "forge:ore_dict",
+      "ore": "itemSilicon"
+    }
+  ],
+  "output": {
+    "item": "technocracy.foundation:tubing",
+    "count": 12
+  },
+  "cost": 40
+}

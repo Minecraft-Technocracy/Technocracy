@@ -51,6 +51,7 @@ item.cfrp.name=Carbon Fibre Reinforced Polymer
 item.chip_diamond.name=Carbon Crystal Microchip
 item.upgrade_slot.name=Upgrade Slot
 item.upgrade_frame.name=Upgrade Frame
+item.tubing.name=Tubing
 
 item.ingot.invar.name=Invar Ingot
 item.ingot.steel.name=Steel Ingot
