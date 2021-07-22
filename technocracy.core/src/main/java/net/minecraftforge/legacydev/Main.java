@@ -67,10 +67,6 @@ public class Main {
         final File SRG_MCP_NOTCH = new File(home + "/.gradle/caches/minecraft/de/oceanlabs/mcp/" + type + "/" + id + "/" + version + "/srgs/mcp-notch.srg");
         final File CSV_DIR = new File(home + "/.gradle/caches/minecraft/de/oceanlabs/mcp/" + type + "/" + id + "");
 
-
-        System.out.println("wsedfrvgbhnjmkl");
-        System.out.println(SRG_NOTCH_SRG.getAbsolutePath());
-
         try {
             System.setProperty("net.minecraftforge.gradle.GradleStart.srgDir", SRG_DIR.getCanonicalPath());
             System.setProperty("net.minecraftforge.gradle.GradleStart.srg.notch-srg", SRG_NOTCH_SRG.getCanonicalPath());
@@ -174,11 +170,6 @@ public class Main {
 
             lst.add("--tweakClass");
             lst.add("net.minecraftforge.legacydev.CoremodTweaker");
-        }
-
-        if (this instanceof MainServer) {
-            lst.add("--tweakClass");
-            lst.add("net.minecraftforge.");
         }
 
         lst.addAll(extras);
