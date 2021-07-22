@@ -40,6 +40,7 @@ import net.cydhra.technocracy.foundation.model.oresystems.api.OreSystem
 import net.cydhra.technocracy.foundation.network.*
 import net.cydhra.technocracy.foundation.network.componentsync.*
 import net.cydhra.technocracy.foundation.network.conduits.ServerConduitNetworkSyncPacket
+import net.cydhra.technocracy.foundation.network.conduits.ServerConduitNetworkUpdatePacket
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.item.crafting.FurnaceRecipes
@@ -361,6 +362,11 @@ open class CommonProxy {
         PacketHandler.registerPacket(
             ServerConduitNetworkSyncPacket::class.java,
             ServerConduitNetworkSyncPacket::class.java,
+            Side.CLIENT
+        )
+        PacketHandler.registerPacket(
+            ServerConduitNetworkUpdatePacket::class.java,
+            ServerConduitNetworkUpdatePacket::class.java,
             Side.CLIENT
         )
     }

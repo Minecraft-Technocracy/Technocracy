@@ -10,7 +10,6 @@ import net.cydhra.technocracy.foundation.content.tileentities.AggregatableTileEn
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFacadeComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityPipeTypesComponent
 import net.minecraft.block.Block
-import net.minecraft.client.Minecraft
 import net.minecraft.init.Blocks
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
@@ -255,7 +254,7 @@ class TileEntityPipe : AggregatableTileEntity() {
                 }
             }
 
-            transaction.commit()
+            transaction.commit(this.world as WorldServer)
         }
         markForUpdate()
     }
@@ -284,7 +283,7 @@ class TileEntityPipe : AggregatableTileEntity() {
                 }
             }
 
-            transaction.commit()
+            transaction.commit(this.world as WorldServer)
             markForUpdate()
         }
     }
@@ -307,7 +306,7 @@ class TileEntityPipe : AggregatableTileEntity() {
                             )
                         }
                     }
-                    transaction.commit()
+                    transaction.commit(this.world as WorldServer)
                 }
             }
         }
@@ -328,7 +327,7 @@ class TileEntityPipe : AggregatableTileEntity() {
                         ConduitNetwork.removeTransitSink(transaction, world, pos, face, type)
                     }
                 }
-                transaction.commit()
+                transaction.commit(this.world as WorldServer)
             }
         }
     }
@@ -355,11 +354,7 @@ class TileEntityPipe : AggregatableTileEntity() {
     fun getPipeModelParts(): List<Triple<Pair<EnumFacing, AxisAlignedBB>, PipeType?, BoxType>> {
         val out = mutableListOf<Triple<Pair<EnumFacing, AxisAlignedBB>, PipeType?, BoxType>>()
 
-        //todo for the love of god fix on server
-        val parts = ConduitNetwork.getNodeParts(
-            Minecraft.getMinecraft().integratedServer!!.getWorld(world.provider.dimension),
-            this.pos
-        ).sortedBy {
+        val parts = ConduitNetwork.getNodeParts(world, this.pos).sortedBy {
             if (it is NodePart)
                 return@sortedBy it.pipeType.ordinal
             if (it is EdgePart)

@@ -8,6 +8,8 @@ import net.minecraft.util.math.ChunkPos
 import net.minecraft.world.WorldServer
 import net.minecraft.world.chunk.Chunk
 import net.minecraftforge.event.world.ChunkDataEvent
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import java.util.*
 
 internal class ConduitNetworkDimension(private val dimensionId: Int) {
@@ -34,6 +36,13 @@ internal class ConduitNetworkDimension(private val dimensionId: Int) {
      */
     internal fun loadChunk(chunk: Chunk) {
         loadedChunks[chunk.pos] = ConduitNetworkChunkDataCache.popChunkData(chunk.pos) ?: ConduitNetworkChunk(chunk.pos)
+    }
+
+    @SideOnly(Side.CLIENT)
+    internal fun loadEmptyChunk(chunkPos: ChunkPos): ConduitNetworkChunk {
+        val chunk = ConduitNetworkChunk(chunkPos)
+        loadedChunks[chunkPos] = chunk
+        return chunk
     }
 
     /**
