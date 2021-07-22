@@ -389,6 +389,12 @@ object ConduitNetwork {
         }
     }
 
+    @Suppress("unused")
+    @SubscribeEvent
+    fun onWorldUnload(event: WorldEvent.Unload) {
+        this.dimensions.remove(event.world.provider.dimension)
+    }
+
     /**
      * Receive data about the pipe structure in a [ConduitNetworkChunk]
      */
