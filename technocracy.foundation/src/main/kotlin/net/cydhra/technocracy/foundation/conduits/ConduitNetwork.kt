@@ -362,12 +362,15 @@ object ConduitNetwork {
     @Suppress("unused")
     @SubscribeEvent
     fun onChunkUnload(event: ChunkEvent.Unload) {
-        if (event.world.isRemote) return
+        // only do that if we are either the server, or a client that is not connected to the internal server.
+        // This ensures that the client does not execute this code twice. Make sure `Minecraft.getMinecraft()` is
+        // never evaluated on the server
+        if (!event.world.isRemote || !Minecraft.getMinecraft().isSingleplayer) {
+            val dimensionId = event.world.provider.dimension
+            val dimension = dimensions[dimensionId]!!
 
-        val dimensionId = event.world.provider.dimension
-        val dimension = dimensions[dimensionId]!!
-
-        dimension.unloadChunk(event.chunk)
+            dimension.unloadChunk(event.chunk)
+        }
     }
 
     /**
@@ -389,6 +392,11 @@ object ConduitNetwork {
         }
     }
 
+    /**
+     * When a world is unloaded (most importantly when leaving a single player world, or a server), unload it from
+     * the network. This both saves on memory, and prevents state corruption when dimensions between different world
+     * files are mixed up.
+     */
     @Suppress("unused")
     @SubscribeEvent
     fun onWorldUnload(event: WorldEvent.Unload) {
@@ -396,7 +404,9 @@ object ConduitNetwork {
     }
 
     /**
-     * Receive data about the pipe structure in a [ConduitNetworkChunk]
+     * Receive data about the pipe structure in a [ConduitNetworkChunk]. If
+     * we are in singleplayer, the updates must be ignored, as the [ConduitNetwork] does not differentiate between
+     * server state and client state, and as such already has all this data available.
      */
     @SideOnly(Side.CLIENT)
     fun receiveNetworkChunk(dimension: Int, chunkPos: ChunkPos, data: NBTTagCompound) {
@@ -406,6 +416,11 @@ object ConduitNetwork {
         }
     }
 
+    /**
+     * Receive updates to the pipe state in a chunk. The updates are sent by the server to all relevant clients. If
+     * we are in singleplayer, the updates must be ignored, as the [ConduitNetwork] does not differentiate between
+     * server state and client state, and as such already has all this data available.
+     */
     @SideOnly(Side.CLIENT)
     fun receiveNetworkUpdates(dimension: Int, added: List<Pair<BlockPos, Part>>, removed: List<Pair<BlockPos, Part>>) {
         if (!Minecraft.getMinecraft().isSingleplayer) {
