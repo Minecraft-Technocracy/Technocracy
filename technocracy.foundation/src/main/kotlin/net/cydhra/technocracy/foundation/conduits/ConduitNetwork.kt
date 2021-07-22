@@ -8,6 +8,7 @@ import net.cydhra.technocracy.foundation.conduits.types.PipeType
 import net.cydhra.technocracy.foundation.network.PacketHandler
 import net.cydhra.technocracy.foundation.network.conduits.ServerConduitNetworkSyncPacket
 import net.cydhra.technocracy.foundation.network.conduits.ServerConduitNetworkUpdatePacket
+import net.minecraft.client.Minecraft
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
@@ -17,6 +18,7 @@ import net.minecraft.world.WorldServer
 import net.minecraftforge.event.world.ChunkDataEvent
 import net.minecraftforge.event.world.ChunkEvent
 import net.minecraftforge.event.world.ChunkWatchEvent
+import net.minecraftforge.event.world.WorldEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
@@ -392,22 +394,26 @@ object ConduitNetwork {
      */
     @SideOnly(Side.CLIENT)
     fun receiveNetworkChunk(dimension: Int, chunkPos: ChunkPos, data: NBTTagCompound) {
-        val dim = this.dimensions.getOrPut(dimension) { ConduitNetworkDimension(dimension) }
-        dim.loadEmptyChunk(chunkPos).deserializePipeStructure(data)
+        if (!Minecraft.getMinecraft().isSingleplayer) {
+            val dim = this.dimensions.getOrPut(dimension) { ConduitNetworkDimension(dimension) }
+            dim.loadEmptyChunk(chunkPos).deserializePipeStructure(data)
+        }
     }
 
     @SideOnly(Side.CLIENT)
     fun receiveNetworkUpdates(dimension: Int, added: List<Pair<BlockPos, Part>>, removed: List<Pair<BlockPos, Part>>) {
-        val dim = this.dimensions.getOrPut(dimension) { ConduitNetworkDimension(dimension) }
+        if (!Minecraft.getMinecraft().isSingleplayer) {
+            val dim = this.dimensions.getOrPut(dimension) { ConduitNetworkDimension(dimension) }
 
-        for ((pos, part) in added) {
-            val chunkPos = ChunkPos(pos)
-            dim.getChunkAt(chunkPos)?.receivePart(pos, part)
-        }
+            for ((pos, part) in added) {
+                val chunkPos = ChunkPos(pos)
+                dim.getChunkAt(chunkPos)?.receivePart(pos, part)
+            }
 
-        for ((pos, part) in removed) {
-            val chunkPos = ChunkPos(pos)
-            dim.getChunkAt(chunkPos)?.removePart(pos, part)
+            for ((pos, part) in removed) {
+                val chunkPos = ChunkPos(pos)
+                dim.getChunkAt(chunkPos)?.removePart(pos, part)
+            }
         }
     }
 }
