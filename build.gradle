@@ -64,6 +64,15 @@ allprojects {
         remove api
     }
 
+    configurations.all {
+        resolutionStrategy {
+            dependencySubstitution {
+                substitute module('net.minecraftforge:legacydev') using module(
+                        'com.github.Minecraft-Technocracy:legacydev:0.2.4')
+            }
+        }
+    }
+
     repositories {
         jcenter()
         maven {
@@ -198,7 +207,7 @@ project('technocracy.foundation') {
         runtimeOnly "mcjty.theoneprobe:TheOneProbe-1.12:$project.top_version"
         runtimeOnly "it.zerono.mods.zerocore:zerocore:$project.zerocore_version"
         runtimeOnly "cofh:RedstoneFlux:1.12-+:universal"
-        runtimeOnly ("cofh:CoFHCore:${cofhcore_version}:universal") {
+        runtimeOnly("cofh:CoFHCore:${cofhcore_version}:universal") {
             transitive = false
         }
         // uncomment to enable hwyla in dev environment
