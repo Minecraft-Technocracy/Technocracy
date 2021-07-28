@@ -18,7 +18,7 @@
     },
     "s": {
       "type": "forge:ore_dict",
-      "ore": "ingotSiliconBronze"
+      "ore": "ingotBronze"
     },
     "b": {
       "item": "technocracy.foundation:membrane"

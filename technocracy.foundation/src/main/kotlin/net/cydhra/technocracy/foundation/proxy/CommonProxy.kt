@@ -234,7 +234,6 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(chipDiamondItem)
 
         itemManager.prepareItemForRegistration(invarItem)
-        itemManager.prepareItemForRegistration(siliconBronzeItem)
         itemManager.prepareItemForRegistration(superconductorItem)
         itemManager.prepareItemForRegistration(metallicPhaseChangeMaterialItem)
         itemManager.prepareItemForRegistration(steelItem)
