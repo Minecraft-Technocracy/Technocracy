@@ -13,6 +13,7 @@ import net.cydhra.technocracy.foundation.content.tileentities.multiblock.refiner
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.saline.*
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.tank.TileEntityTankMultiBlockPart
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.tank.TileEntityTankPort
+import net.cydhra.technocracy.foundation.content.tileentities.storage.TileEntityBattery
 import net.minecraft.block.material.Material
 import net.minecraft.util.BlockRenderLayer
 
@@ -48,25 +49,40 @@ val refineryHeaterBlock = MultiBlockActiveBlock("refinery_heater", ::TileEntityR
 val capacitorControllerBlock = MultiBlockRotatableActiveBlock("capacitor_controller", ::TileEntityCapacitorController)
 val capacitorWallBlock = PlainMultiBlockPartBlock("capacitor_wall", ::TileEntityMultiBlockPartCapacitor)
 val capacitorConnectorBlock = PlainMultiBlockPartBlock("capacitor_connector", ::TileEntityMultiBlockPartCapacitor)
-val capacitorEnergyPortBlock = MultiBlockActiveBlock("capacitor_energy_port", ::TileEntityCapacitorEnergyPort,
-        renderLayer = BlockRenderLayer.CUTOUT)
+val capacitorEnergyPortBlock = MultiBlockActiveBlock(
+        "capacitor_energy_port", ::TileEntityCapacitorEnergyPort,
+        renderLayer = BlockRenderLayer.CUTOUT
+)
 
 val tankWallBlock = TankStructureBlock("tank_wall", ::TileEntityTankMultiBlockPart)
-val tankGlassBlock = TankStructureBlock("tank_glass", ::TileEntityTankMultiBlockPart, glassSides = true, renderLayer = BlockRenderLayer.CUTOUT).apply {
-    isFullCube = false
-    opaque = false
+val tankGlassBlock = TankStructureBlock(
+        "tank_glass",
+        ::TileEntityTankMultiBlockPart,
+        glassSides = true,
+        renderLayer = BlockRenderLayer.CUTOUT
+).apply {
+        isFullCube = false
+        opaque = false
 }
 val tankIOBlock = TankStructureBlock("tank_io", ::TileEntityTankPort)
+
+val batteryBlock = MachineBlock("battery_block", ::TileEntityBattery)
 
 val salineControllerBlock = MultiBlockRotatableActiveBlock("saline_controller", ::TileEntitySalineController)
 val salineWallBlock = PlainMultiBlockPartBlock("saline_wall", ::TileEntityMultiBlockPartSaline)
 val salineHeatedWallBlock = PlainMultiBlockPartBlock("saline_heated_wall", ::TileEntityMultiBlockPartSaline)
-val salineFluidInputBlock = MultiBlockRotatableActiveBlock("saline_fluid_input", ::TileEntitySalineFluidInput,
-        renderLayer = BlockRenderLayer.CUTOUT)
-val salineFluidOutputBlock = MultiBlockRotatableActiveBlock("saline_fluid_output", ::TileEntitySalineFluidOutput,
-        renderLayer = BlockRenderLayer.CUTOUT)
-val salineHeatingAgentInputBlock = MultiBlockRotatableActiveBlock("saline_heating_agent_input", ::TileEntitySalineHeatingAgentInput,
-        renderLayer = BlockRenderLayer.CUTOUT)
+val salineFluidInputBlock = MultiBlockRotatableActiveBlock(
+        "saline_fluid_input", ::TileEntitySalineFluidInput,
+        renderLayer = BlockRenderLayer.CUTOUT
+)
+val salineFluidOutputBlock = MultiBlockRotatableActiveBlock(
+        "saline_fluid_output", ::TileEntitySalineFluidOutput,
+        renderLayer = BlockRenderLayer.CUTOUT
+)
+val salineHeatingAgentInputBlock = MultiBlockRotatableActiveBlock(
+        "saline_heating_agent_input", ::TileEntitySalineHeatingAgentInput,
+        renderLayer = BlockRenderLayer.CUTOUT
+)
 val salineHeatingAgentOutputBlock = MultiBlockRotatableActiveBlock("saline_heating_agent_output", ::TileEntitySalineHeatingAgentOutput,
         renderLayer = BlockRenderLayer.CUTOUT)
 

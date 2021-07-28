@@ -19,8 +19,11 @@ import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 import net.minecraftforge.common.property.IExtendedBlockState
 
-class MachineBlock(name: String, private val tileEntityConstructor: () -> TileEntity, renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID)
-    : AbstractRotatableTileEntityBlock(name, material = Material.ROCK, renderLayer = renderLayer) {
+/**
+ * Blocks for machines or machine-like tile entities. This should only be used for tileentities inheriting
+ * [TCAggregatableTileEntity].
+ */
+class MachineBlock(name: String, private val tileEntityConstructor: () -> TileEntity, renderLayer: BlockRenderLayer = BlockRenderLayer.SOLID) : AbstractRotatableTileEntityBlock(name, material = Material.ROCK, renderLayer = renderLayer) {
 
     override fun addExtendedPropertyToState(state: IExtendedBlockState, world: IBlockAccess?, pos: BlockPos?): IExtendedBlockState {
         return state.withProperty(POSITION, pos)

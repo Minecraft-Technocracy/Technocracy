@@ -30,6 +30,7 @@ import net.cydhra.technocracy.foundation.content.tileentities.multiblock.saline.
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.tank.TileEntityTankMultiBlockPart
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.tank.TileEntityTankPort
 import net.cydhra.technocracy.foundation.content.tileentities.pipe.TileEntityPipe
+import net.cydhra.technocracy.foundation.content.tileentities.storage.TileEntityBattery
 import net.cydhra.technocracy.foundation.content.tileentities.storage.TileEntityDrum
 import net.cydhra.technocracy.foundation.content.world.OilLakeGen
 import net.cydhra.technocracy.foundation.content.world.OilSandGen
@@ -190,6 +191,7 @@ open class CommonProxy {
         blockManager.prepareBlocksForRegistration(oilBlock)
         blockManager.prepareBlocksForRegistration(drum)
         blockManager.prepareBlocksForRegistration(leadGlassPaneBlock)
+        blockManager.prepareBlocksForRegistration(batteryBlock)
 
         blockManager.prepareBlocksForRegistration(sulfuricAcidBlock)
 
@@ -308,6 +310,7 @@ open class CommonProxy {
         tileEntityManager.prepareTileEntityForRegistration(TileEntitySalineHeatingAgentOutput::class)
 
         tileEntityManager.prepareTileEntityForRegistration(TileEntityDrum::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileEntityBattery::class)
         //ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPipe::class.java, PipeRenderer())
 
         PotionManager.preparePotionForRegistration(oilyEffect)

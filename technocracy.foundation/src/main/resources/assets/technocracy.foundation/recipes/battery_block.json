@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "blb",
+    "blb",
+    "sss"
+  ],
+  "key": {
+    "b": {
+      "item": "technocracy.foundation:battery"
+    },
+    "l": {
+      "type": "forge:ore_dict",
+      "ore": "ingotLithium"
+    },
+    "s": {
+      "type": "forge:ore_dict",
+      "ore": "sheetSteel"
+    }
+  },
+  "result": {
+    "item": "technocracy.foundation:battery_block",
+    "count": 1
+  }
+}

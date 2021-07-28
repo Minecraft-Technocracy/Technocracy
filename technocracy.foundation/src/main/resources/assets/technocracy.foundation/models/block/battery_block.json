@@ -1,0 +1,1204 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "particle": "technocracy.foundation:block/machine_bottom_green",
+    "steel": "technocracy.foundation:block/contact",
+    "steel_dark": "technocracy.foundation:block/steel_dark",
+    "machine_side_bolted": "technocracy.foundation:block/machine_side_contacts_green",
+    "machine_side": "technocracy.foundation:block/machine_side_empty_green",
+    "machine_bottom": "technocracy.foundation:block/machine_bottom_green",
+    "battery_front": "technocracy.foundation:block/machine_battery_front"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        6,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            0.01,
+            10.01,
+            15.99,
+            15.99
+          ],
+          "texture": "#machine_bottom",
+          "rotation": 90
+        },
+        "up": {
+          "uv": [
+            0.01,
+            0.01,
+            15.99,
+            5.99
+          ],
+          "texture": "#machine_bottom",
+          "rotation": 270
+        },
+        "north": {
+          "uv": [
+            10.01,
+            0.01,
+            15.99,
+            15.99
+          ],
+          "texture": "#battery_front"
+        },
+        "south": {
+          "uv": [
+            0.01,
+            0.01,
+            5.99,
+            15.99
+          ],
+          "texture": "#machine_side"
+        },
+        "west": {
+          "uv": [
+            0.01,
+            0.01,
+            15.99,
+            15.99
+          ],
+          "texture": "#machine_side_bolted"
+        },
+        "east": {
+          "uv": [
+            0.01,
+            1.01,
+            15.99,
+            15.99
+          ],
+          "texture": "#machine_bottom"
+        }
+      }
+    },
+    {
+      "from": [
+        10,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            0.01,
+            15.99,
+            15.99,
+            10.01
+          ],
+          "texture": "#machine_bottom",
+          "rotation": 90
+        },
+        "up": {
+          "uv": [
+            0.01,
+            10.01,
+            15.99,
+            15.99
+          ],
+          "texture": "#machine_bottom",
+          "rotation": 270
+        },
+        "north": {
+          "uv": [
+            0.01,
+            0.01,
+            5.99,
+            15.99
+          ],
+          "texture": "#battery_front"
+        },
+        "south": {
+          "uv": [
+            10.01,
+            0.01,
+            15.99,
+            15.99
+          ],
+          "texture": "#machine_side"
+        },
+        "west": {
+          "uv": [
+            0.01,
+            1.01,
+            15.99,
+            15.99
+          ],
+          "texture": "#machine_bottom"
+        },
+        "east": {
+          "uv": [
+            0.01,
+            0.01,
+            15.99,
+            15.99
+          ],
+          "texture": "#machine_side_bolted"
+        }
+      }
+    },
+    {
+      "from": [
+        6,
+        0,
+        1
+      ],
+      "to": [
+        10,
+        15,
+        16
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            0.01,
+            4.01,
+            14.99,
+            9.99
+          ],
+          "texture": "#machine_bottom",
+          "rotation": 90
+        },
+        "up": {
+          "uv": [
+            0.01,
+            0.01,
+            15.99,
+            5.99
+          ],
+          "texture": "#steel",
+          "rotation": 270
+        },
+        "north": {
+          "uv": [
+            10.01,
+            1.51,
+            15.99,
+            15.99
+          ],
+          "texture": "#steel"
+        },
+        "south": {
+          "uv": [
+            6.01,
+            1.01,
+            9.99,
+            15.99
+          ],
+          "texture": "#machine_side"
+        },
+        "west": {
+          "uv": [
+            0.01,
+            1.51,
+            15.99,
+            15.99
+          ],
+          "texture": "#steel"
+        },
+        "east": {
+          "uv": [
+            0.01,
+            1.51,
+            15.99,
+            15.99
+          ],
+          "texture": "#steel"
+        }
+      }
+    },
+    {
+      "from": [
+        6,
+        15,
+        13
+      ],
+      "to": [
+        10,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            0.01,
+            6.01,
+            2.99,
+            9.99
+          ],
+          "texture": "#steel_dark",
+          "rotation": 90
+        },
+        "up": {
+          "uv": [
+            0.01,
+            6.01,
+            2.99,
+            9.99
+          ],
+          "texture": "#machine_bottom",
+          "rotation": 270
+        },
+        "north": {
+          "uv": [
+            6.01,
+            1.01,
+            9.99,
+            1.99
+          ],
+          "texture": "#machine_bottom"
+        },
+        "south": {
+          "uv": [
+            6.01,
+            0.01,
+            9.99,
+            0.99
+          ],
+          "texture": "#machine_side"
+        },
+        "west": {
+          "uv": [
+            13.01,
+            1.01,
+            15.99,
+            1.99
+          ],
+          "texture": "#steel_dark"
+        },
+        "east": {
+          "uv": [
+            0.01,
+            1.01,
+            2.99,
+            1.99
+          ],
+          "texture": "#steel_dark"
+        }
+      }
+    },
+    {
+      "from": [
+        6,
+        15,
+        0
+      ],
+      "to": [
+        10,
+        16,
+        2
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            0.01,
+            6.01,
+            1.99,
+            9.99
+          ],
+          "texture": "#machine_bottom",
+          "rotation": 90
+        },
+        "up": {
+          "uv": [
+            14.01,
+            6.01,
+            15.99,
+            9.99
+          ],
+          "texture": "#machine_bottom",
+          "rotation": 270
+        },
+        "north": {
+          "uv": [
+            6.01,
+            0.01,
+            9.99,
+            0.99
+          ],
+          "texture": "#machine_bottom"
+        },
+        "south": {
+          "uv": [
+            6.01,
+            1.01,
+            9.99,
+            1.99
+          ],
+          "texture": "#machine_bottom"
+        },
+        "west": {
+          "uv": [
+            14.01,
+            1.01,
+            15.99,
+            1.99
+          ],
+          "texture": "#machine_bottom"
+        },
+        "east": {
+          "uv": [
+            0.01,
+            1.01,
+            1.99,
+            1.99
+          ],
+          "texture": "#machine_bottom"
+        }
+      }
+    },
+    {
+      "from": [
+        6,
+        15,
+        11
+      ],
+      "to": [
+        10,
+        16,
+        12
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            0.01,
+            6.01,
+            1.99,
+            9.99
+          ],
+          "texture": "#machine_bottom",
+          "rotation": 90
+        },
+        "up": {
+          "uv": [
+            4.01,
+            6.01,
+            4.99,
+            9.99
+          ],
+          "texture": "#machine_bottom",
+          "rotation": 270
+        },
+        "north": {
+          "uv": [
+            6.01,
+            1.01,
+            9.99,
+            1.99
+          ],
+          "texture": "#machine_bottom"
+        },
+        "south": {
+          "uv": [
+            6.01,
+            1.01,
+            9.99,
+            1.99
+          ],
+          "texture": "#machine_bottom"
+        },
+        "west": {
+          "uv": [
+            14.01,
+            1.01,
+            15.99,
+            1.99
+          ],
+          "texture": "#machine_bottom"
+        },
+        "east": {
+          "uv": [
+            0.01,
+            1.01,
+            1.99,
+            1.99
+          ],
+          "texture": "#machine_bottom"
+        }
+      }
+    },
+    {
+      "from": [
+        6,
+        15,
+        9
+      ],
+      "to": [
+        10,
+        16,
+        10
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            0.01,
+            6.01,
+            1.99,
+            9.99
+          ],
+          "texture": "#machine_bottom",
+          "rotation": 90
+        },
+        "up": {
+          "uv": [
+            6.01,
+            6.01,
+            6.99,
+            9.99
+          ],
+          "texture": "#machine_bottom",
+          "rotation": 270
+        },
+        "north": {
+          "uv": [
+            6.01,
+            1.01,
+            9.99,
+            1.99
+          ],
+          "texture": "#machine_bottom"
+        },
+        "south": {
+          "uv": [
+            6.01,
+            1.01,
+            9.99,
+            1.99
+          ],
+          "texture": "#machine_bottom"
+        },
+        "west": {
+          "uv": [
+            14.01,
+            1.01,
+            15.99,
+            1.99
+          ],
+          "texture": "#machine_bottom"
+        },
+        "east": {
+          "uv": [
+            0.01,
+            1.01,
+            1.99,
+            1.99
+          ],
+          "texture": "#machine_bottom"
+        }
+      }
+    },
+    {
+      "from": [
+        6,
+        15,
+        7
+      ],
+      "to": [
+        10,
+        16,
+        8
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            0.01,
+            6.01,
+            1.99,
+            9.99
+          ],
+          "texture": "#machine_bottom",
+          "rotation": 90
+        },
+        "up": {
+          "uv": [
+            8.01,
+            6.01,
+            8.99,
+            9.99
+          ],
+          "texture": "#machine_bottom",
+          "rotation": 270
+        },
+        "north": {
+          "uv": [
+            6.01,
+            1.01,
+            9.99,
+            1.99
+          ],
+          "texture": "#machine_bottom"
+        },
+        "south": {
+          "uv": [
+            6.01,
+            1.01,
+            9.99,
+            1.99
+          ],
+          "texture": "#machine_bottom"
+        },
+        "west": {
+          "uv": [
+            14.01,
+            1.01,
+            15.99,
+            1.99
+          ],
+          "texture": "#machine_bottom"
+        },
+        "east": {
+          "uv": [
+            0.01,
+            1.01,
+            1.99,
+            1.99
+          ],
+          "texture": "#machine_bottom"
+        }
+      }
+    },
+    {
+      "from": [
+        6,
+        15,
+        3
+      ],
+      "to": [
+        10,
+        16,
+        4
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            0.01,
+            6.01,
+            1.99,
+            9.99
+          ],
+          "texture": "#machine_bottom",
+          "rotation": 90
+        },
+        "up": {
+          "uv": [
+            12.01,
+            6.01,
+            12.99,
+            9.99
+          ],
+          "texture": "#machine_bottom",
+          "rotation": 270
+        },
+        "north": {
+          "uv": [
+            6.01,
+            1.01,
+            9.99,
+            1.99
+          ],
+          "texture": "#machine_bottom"
+        },
+        "south": {
+          "uv": [
+            6.01,
+            1.01,
+            9.99,
+            1.99
+          ],
+          "texture": "#machine_bottom"
+        },
+        "west": {
+          "uv": [
+            14.01,
+            1.01,
+            15.99,
+            1.99
+          ],
+          "texture": "#machine_bottom"
+        },
+        "east": {
+          "uv": [
+            0.01,
+            1.01,
+            1.99,
+            1.99
+          ],
+          "texture": "#machine_bottom"
+        }
+      }
+    },
+    {
+      "from": [
+        6,
+        15,
+        5
+      ],
+      "to": [
+        10,
+        16,
+        6
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            0.01,
+            6.01,
+            1.99,
+            9.99
+          ],
+          "texture": "#machine_bottom",
+          "rotation": 90
+        },
+        "up": {
+          "uv": [
+            10.01,
+            6.01,
+            10.99,
+            9.99
+          ],
+          "texture": "#machine_bottom",
+          "rotation": 270
+        },
+        "north": {
+          "uv": [
+            6.01,
+            1.01,
+            9.99,
+            1.99
+          ],
+          "texture": "#machine_bottom"
+        },
+        "south": {
+          "uv": [
+            6.01,
+            1.01,
+            9.99,
+            1.99
+          ],
+          "texture": "#machine_bottom"
+        },
+        "west": {
+          "uv": [
+            14.01,
+            1.01,
+            15.99,
+            1.99
+          ],
+          "texture": "#machine_bottom"
+        },
+        "east": {
+          "uv": [
+            0.01,
+            1.01,
+            1.99,
+            1.99
+          ],
+          "texture": "#machine_bottom"
+        }
+      }
+    },
+    {
+      "from": [
+        9,
+        0,
+        0
+      ],
+      "to": [
+        10,
+        15,
+        1
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            6.01,
+            0.01,
+            6.99,
+            0.99
+          ],
+          "texture": "#battery_front",
+          "rotation": 180
+        },
+        "up": {
+          "uv": [
+            6.01,
+            15.01,
+            6.99,
+            15.99
+          ],
+          "texture": "#battery_front",
+          "rotation": 180
+        },
+        "north": {
+          "uv": [
+            6.01,
+            1.01,
+            6.99,
+            15.99
+          ],
+          "texture": "#battery_front"
+        },
+        "south": {
+          "uv": [
+            9.01,
+            1.01,
+            9.99,
+            15.99
+          ],
+          "texture": "#battery_front"
+        },
+        "west": {
+          "uv": [
+            0.01,
+            1.01,
+            0.99,
+            15.99
+          ],
+          "texture": "#battery_front"
+        },
+        "east": {
+          "uv": [
+            15.01,
+            1.01,
+            15.99,
+            15.99
+          ],
+          "texture": "#battery_front"
+        }
+      }
+    },
+    {
+      "from": [
+        6,
+        0,
+        0
+      ],
+      "to": [
+        7,
+        15,
+        1
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            9.01,
+            0.01,
+            9.99,
+            0.99
+          ],
+          "texture": "#battery_front",
+          "rotation": 180
+        },
+        "up": {
+          "uv": [
+            6.01,
+            15.01,
+            6.99,
+            15.99
+          ],
+          "texture": "#battery_front",
+          "rotation": 180
+        },
+        "north": {
+          "uv": [
+            9.01,
+            1.01,
+            9.99,
+            15.99
+          ],
+          "texture": "#battery_front"
+        },
+        "south": {
+          "uv": [
+            9.01,
+            1.01,
+            9.99,
+            15.99
+          ],
+          "texture": "#battery_front"
+        },
+        "west": {
+          "uv": [
+            0.01,
+            1.01,
+            0.99,
+            15.99
+          ],
+          "texture": "#battery_front"
+        },
+        "east": {
+          "uv": [
+            15.01,
+            1.01,
+            15.99,
+            15.99
+          ],
+          "texture": "#battery_front"
+        }
+      }
+    },
+    {
+      "from": [
+        7,
+        0,
+        0
+      ],
+      "to": [
+        9,
+        6,
+        1
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            7.01,
+            0.01,
+            8.99,
+            0.99
+          ],
+          "texture": "#battery_front",
+          "rotation": 180
+        },
+        "up": {
+          "uv": [
+            6.01,
+            15.01,
+            6.99,
+            15.99
+          ],
+          "texture": "#battery_front",
+          "rotation": 180
+        },
+        "north": {
+          "uv": [
+            7.01,
+            10.01,
+            8.99,
+            15.99
+          ],
+          "texture": "#battery_front"
+        },
+        "south": {
+          "uv": [
+            9.01,
+            1.01,
+            9.99,
+            15.99
+          ],
+          "texture": "#battery_front"
+        },
+        "west": {
+          "uv": [
+            0.01,
+            1.01,
+            0.99,
+            15.99
+          ],
+          "texture": "#battery_front"
+        },
+        "east": {
+          "uv": [
+            15.01,
+            1.01,
+            15.99,
+            15.99
+          ],
+          "texture": "#battery_front"
+        }
+      }
+    },
+    {
+      "from": [
+        7,
+        9,
+        0
+      ],
+      "to": [
+        9,
+        10,
+        1
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            6.01,
+            0.01,
+            6.99,
+            0.99
+          ],
+          "texture": "#battery_front",
+          "rotation": 180
+        },
+        "up": {
+          "uv": [
+            6.01,
+            15.01,
+            6.99,
+            15.99
+          ],
+          "texture": "#battery_front",
+          "rotation": 180
+        },
+        "north": {
+          "uv": [
+            7.01,
+            6.01,
+            8.99,
+            6.99
+          ],
+          "texture": "#battery_front"
+        },
+        "south": {
+          "uv": [
+            9.01,
+            1.01,
+            9.99,
+            15.99
+          ],
+          "texture": "#battery_front"
+        },
+        "west": {
+          "uv": [
+            0.01,
+            1.01,
+            0.99,
+            15.99
+          ],
+          "texture": "#battery_front"
+        },
+        "east": {
+          "uv": [
+            15.01,
+            1.01,
+            15.99,
+            15.99
+          ],
+          "texture": "#battery_front"
+        }
+      }
+    },
+    {
+      "from": [
+        7,
+        11,
+        0
+      ],
+      "to": [
+        9,
+        12,
+        1
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            6.01,
+            0.01,
+            6.99,
+            0.99
+          ],
+          "texture": "#battery_front",
+          "rotation": 180
+        },
+        "up": {
+          "uv": [
+            6.01,
+            15.01,
+            6.99,
+            15.99
+          ],
+          "texture": "#battery_front",
+          "rotation": 180
+        },
+        "north": {
+          "uv": [
+            7.01,
+            4.01,
+            8.99,
+            4.99
+          ],
+          "texture": "#battery_front"
+        },
+        "south": {
+          "uv": [
+            9.01,
+            1.01,
+            9.99,
+            15.99
+          ],
+          "texture": "#battery_front"
+        },
+        "west": {
+          "uv": [
+            0.01,
+            1.01,
+            0.99,
+            15.99
+          ],
+          "texture": "#battery_front"
+        },
+        "east": {
+          "uv": [
+            15.01,
+            1.01,
+            15.99,
+            15.99
+          ],
+          "texture": "#battery_front"
+        }
+      }
+    },
+    {
+      "from": [
+        7,
+        13,
+        0
+      ],
+      "to": [
+        9,
+        14,
+        1
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            6.01,
+            0.01,
+            6.99,
+            0.99
+          ],
+          "texture": "#battery_front",
+          "rotation": 180
+        },
+        "up": {
+          "uv": [
+            6.01,
+            15.01,
+            6.99,
+            15.99
+          ],
+          "texture": "#battery_front",
+          "rotation": 180
+        },
+        "north": {
+          "uv": [
+            7.01,
+            2.01,
+            8.99,
+            2.99
+          ],
+          "texture": "#battery_front"
+        },
+        "south": {
+          "uv": [
+            9.01,
+            1.01,
+            9.99,
+            15.99
+          ],
+          "texture": "#battery_front"
+        },
+        "west": {
+          "uv": [
+            0.01,
+            1.01,
+            0.99,
+            15.99
+          ],
+          "texture": "#battery_front"
+        },
+        "east": {
+          "uv": [
+            15.01,
+            1.01,
+            15.99,
+            15.99
+          ],
+          "texture": "#battery_front"
+        }
+      }
+    },
+    {
+      "from": [
+        7,
+        7,
+        0
+      ],
+      "to": [
+        9,
+        8,
+        1
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            6.01,
+            0.01,
+            6.99,
+            0.99
+          ],
+          "texture": "#battery_front",
+          "rotation": 180
+        },
+        "up": {
+          "uv": [
+            6.01,
+            15.01,
+            6.99,
+            15.99
+          ],
+          "texture": "#battery_front",
+          "rotation": 180
+        },
+        "north": {
+          "uv": [
+            7.01,
+            8.01,
+            8.99,
+            8.99
+          ],
+          "texture": "#battery_front"
+        },
+        "south": {
+          "uv": [
+            9.01,
+            1.01,
+            9.99,
+            15.99
+          ],
+          "texture": "#battery_front"
+        },
+        "west": {
+          "uv": [
+            0.01,
+            1.01,
+            0.99,
+            15.99
+          ],
+          "texture": "#battery_front"
+        },
+        "east": {
+          "uv": [
+            15.01,
+            1.01,
+            15.99,
+            15.99
+          ],
+          "texture": "#battery_front"
+        }
+      }
+    }
+  ]
+}

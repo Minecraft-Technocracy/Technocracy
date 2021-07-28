@@ -17,7 +17,7 @@ import net.cydhra.technocracy.foundation.client.gui.components.slot.TCSlotPlayer
 import net.cydhra.technocracy.foundation.content.blocks.AbstractRotatableTileEntityBlock
 import net.cydhra.technocracy.foundation.content.blocks.AbstractRotatableTileEntityBlock.Companion.facingProperty
 import net.cydhra.technocracy.foundation.content.items.wrenchItem
-import net.cydhra.technocracy.foundation.content.tileentities.MachineTileEntity
+import net.cydhra.technocracy.foundation.content.tileentities.AggregatableTileEntity
 import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractTileEntityCapabilityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.AbstractTileEntityDirectionalCapabilityComponent
 import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityInventoryComponent
@@ -69,7 +69,7 @@ import kotlin.math.min
  * @param machine the machine that is configured from this gui
  * @param mainTab the main tab of the machine, that is partially rendered into this gui.
  */
-class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: TCTab) :
+class SideConfigTab(parent: TCGui, val machine: AggregatableTileEntity, val mainTab: TCTab) :
     TCTab("SideConfig", parent, icon = TCIcon(wrenchItem)) {
 
     companion object {

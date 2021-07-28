@@ -153,6 +153,8 @@ tile.drum.bedrock.name=Bedrockium Drum
 tile.drum.invar.name=Invar Drum
 tile.drum.carbon.name=Carbon Drum
 
+tile.battery_block.name=Battery
+
 tile.saline_wall.name=Saline Wall
 tile.saline_heated_wall.name=Heated Saline Wall
 tile.saline_controller.name=Saline Controller
