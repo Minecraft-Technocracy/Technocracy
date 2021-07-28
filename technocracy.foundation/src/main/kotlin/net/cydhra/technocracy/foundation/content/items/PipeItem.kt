@@ -65,7 +65,7 @@ class PipeItem : BaseItem("pipe_item") {
         }
 
         val canedit = player.canPlayerEdit(pos, facing, stack)
-        val mayplace = worldIn.mayPlace(pipe, pos, false, facing, null)
+        val mayplace = worldIn.mayPlace(pipe, pos, true, facing, null)
 
         return if (!stack.isEmpty && canedit && mayplace) {
             var pipeState = pipe.defaultState
