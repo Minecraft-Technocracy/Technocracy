@@ -51,6 +51,8 @@ import net.minecraft.util.math.RayTraceResult
 import net.minecraft.world.World
 import net.minecraftforge.client.ForgeHooksClient
 import net.minecraftforge.client.MinecraftForgeClient
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import org.apache.commons.lang3.text.WordUtils
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
@@ -71,18 +73,43 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
     TCTab("SideConfig", parent, icon = TCIcon(wrenchItem)) {
 
     companion object {
-        val framebuffer = Framebuffer {
-            setFramebufferColor(0f, 0f, 0f, 0f)
-        }
-        val shader = BasicShaderProgram(
-            ResourceLocation("technocracy.foundation", "shaders/fade.vsh"),
-            ResourceLocation("technocracy.foundation", "shaders/fade.fsh")
-        )
-        val alphaClip =
-            shader.getUniform("alphaClip", BasicShaderProgram.ShaderUniform.UniformType.INT_1).uploadUniform(false)
-        val screenSize = shader.getUniform("screenSize", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_2)
-    }
+        private var init = false
 
+        @SideOnly(Side.CLIENT)
+        @JvmStatic
+        private lateinit var framebuffer: Framebuffer
+
+        @SideOnly(Side.CLIENT)
+        @JvmStatic
+        private lateinit var shader: BasicShaderProgram
+
+        @SideOnly(Side.CLIENT)
+        @JvmStatic
+        private lateinit var alphaClip: BasicShaderProgram.ShaderUniform
+
+        @SideOnly(Side.CLIENT)
+        @JvmStatic
+        private lateinit var screenSize: BasicShaderProgram.ShaderUniform
+
+        @SideOnly(Side.CLIENT)
+        private fun initClientVariables() {
+            if (!init) {
+                framebuffer = Framebuffer @SideOnly(Side.CLIENT) {
+                    setFramebufferColor(0f, 0f, 0f, 0f)
+                }
+
+                shader = BasicShaderProgram(
+                    ResourceLocation("technocracy.foundation", "shaders/fade.vsh"),
+                    ResourceLocation("technocracy.foundation", "shaders/fade.fsh")
+                )
+
+                alphaClip = shader.getUniform("alphaClip", BasicShaderProgram.ShaderUniform.UniformType.INT_1)
+                    .uploadUniform(false)
+
+                screenSize = shader.getUniform("screenSize", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_2)
+            }
+        }
+    }
 
     lateinit var infoTitleLabel: DefaultLabel
     lateinit var hideBlocks: DefaultButton
@@ -204,8 +231,9 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         }
     }
 
+    @SideOnly(Side.CLIENT)
     override fun draw(x: Int, y: Int, mouseX: Int, mouseY: Int, partialTicks: Float) {
-
+        initClientVariables()
 
         val mc = Minecraft.getMinecraft()
 
@@ -364,6 +392,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         drawComponentOverlay(x, y, face, colorMap, rotations, mouseX, mouseY, partialTicks)
     }
 
+    @SideOnly(Side.CLIENT)
     private fun renderMachine(state: IBlockState, tcw: TemplateClientWorld) {
         val mc = Minecraft.getMinecraft()
         val tess = Tessellator.getInstance()
@@ -466,6 +495,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         RenderHelper.disableStandardItemLighting()
     }
 
+    @SideOnly(Side.CLIENT)
     private fun renderIOOverlay(rotations: Vector3f, colorMap: MutableMap<AbstractTileEntityCapabilityComponent, Int>) {
         GlStateManager.tryBlendFuncSeparate(
             GlStateManager.SourceFactor.SRC_ALPHA,
@@ -571,6 +601,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         GlStateManager.disableAlpha()
     }
 
+    @SideOnly(Side.CLIENT)
     private fun drawSceneToGui(framebuffer: Framebuffer, offsetX: Int, offsetY: Int, width: Int, height: Int) {
         val mc = Minecraft.getMinecraft()
 
@@ -609,6 +640,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         GlStateManager.translate(-offsetX.toDouble(), -offsetY.toDouble(), 0.0)
     }
 
+    @SideOnly(Side.CLIENT)
     private fun drawComponentOverlay(
         x: Int,
         y: Int,
@@ -681,6 +713,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         mc.renderItem.zLevel = 0.0f
     }
 
+    @SideOnly(Side.CLIENT)
     private fun renderMouseSelection(rayTrace: RayTraceResult?) {
         GlStateManager.enableAlpha()
         GlStateManager.alphaFunc(GL11.GL_GREATER, 0.5f)
@@ -731,6 +764,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         GlStateManager.enableDepth()
     }
 
+    @SideOnly(Side.CLIENT)
     private fun renderNeighbors(
         //sharedFBO: MultiTargetFBO,
         pos: BlockPos,
@@ -857,6 +891,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
     /**
      * Helper function to render the selection outline onto the selected side within the side config
      */
+    @SideOnly(Side.CLIENT)
     private fun renderSelectionOutline(
         x: Int,
         y: Int,
@@ -906,6 +941,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
      * @param rotation the rotation of the block
      * @param totalRotsOnSide
      */
+    @SideOnly(Side.CLIENT)
     private fun renderBlockOverlay(
         facing: EnumFacing,
         component: AbstractTileEntityDirectionalCapabilityComponent,
@@ -973,6 +1009,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
      * @param pos the position of the tile entity
      * @param tcw the world that provides the tile entity
      */
+    @SideOnly(Side.CLIENT)
     private fun renderSurroundingTiles(pos: BlockPos, tcw: World) {
         for (face in EnumFacing.values()) {
             var tile = tcw.getTileEntity(pos.offset(face))
@@ -989,6 +1026,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
         }
     }
 
+    @SideOnly(Side.CLIENT)
     private fun renderTileEntity(tile: TileEntity?, pos: BlockPos) {
         val mc = Minecraft.getMinecraft()
         tile ?: return
@@ -1021,6 +1059,7 @@ class SideConfigTab(parent: TCGui, val machine: MachineTileEntity, val mainTab: 
      * @param tess the tessellator instance
      * @param tcw the world that provides the block
      */
+    @SideOnly(Side.CLIENT)
     private fun renderBlocks(layer: BlockRenderLayer, pos: BlockPos, tess: Tessellator, tcw: World) {
         val mc = Minecraft.getMinecraft()
         var begun = false

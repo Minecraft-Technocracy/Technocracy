@@ -24,9 +24,6 @@ import java.io.Closeable
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 import java.util.function.Predicate
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.InvocationKind
-import kotlin.contracts.contract
 
 @SideOnly(Side.CLIENT)
 class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: ResourceLocation, val geometryIn: ResourceLocation? = null, val attributeBinder: (BasicShaderProgram.() -> Unit)? = null, inline val init: (BasicShaderProgram.() -> Unit)? = null) : ISelectiveResourceReloadListener {
@@ -120,8 +117,17 @@ class BasicShaderProgram(val vertexIn: ResourceLocation, val fragmentIn: Resourc
         running = false
     }
 
+    operator fun get(variableName: String, type: ShaderUniform.UniformType): ShaderUniform {
+        return getUniform(variableName, type)
+    }
+
     fun getUniform(variableName: String, type: ShaderUniform.UniformType): ShaderUniform {
-        return ShaderUniform(type, OpenGlHelper.glGetUniformLocation(this.programID, variableName), variableName, this).apply { uniform.add(this) }
+        return ShaderUniform(
+            type,
+            OpenGlHelper.glGetUniformLocation(this.programID, variableName),
+            variableName,
+            this
+        ).apply { uniform.add(this) }
     }
 
     fun updateUniforms() {

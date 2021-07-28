@@ -5,6 +5,8 @@ import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.OpenGlHelper
 import net.minecraft.client.renderer.texture.TextureUtil
 import net.minecraft.client.shader.Framebuffer
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import org.lwjgl.opengl.GL11
 
 
@@ -23,6 +25,7 @@ fun hackyFramebufferInit(): Boolean {
  *
  * we do this so we have more controll over when we actually want to create our framebuffer
  */
+@SideOnly(Side.CLIENT)
 class LazyFramebuffer private constructor(initializer: (LazyFramebuffer.() -> Unit)? = null, tmp: Boolean) :
     Framebuffer(-1, -1, false) {
 
