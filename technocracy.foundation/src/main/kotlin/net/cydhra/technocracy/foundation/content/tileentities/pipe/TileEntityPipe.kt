@@ -19,9 +19,12 @@ import net.minecraft.util.math.Vec3d
 import net.minecraft.util.math.Vec3i
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.WorldServer
+import org.apache.commons.lang3.tuple.MutablePair
 import org.lwjgl.util.vector.Matrix3f
 import org.lwjgl.util.vector.Vector3f
 import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 
 class TileEntityPipe : AggregatableTileEntity() {
@@ -122,14 +125,6 @@ class TileEntityPipe : AggregatableTileEntity() {
                 return Vector3f(this.x.toFloat(), this.y.toFloat(), this.z.toFloat())
             }
 
-            fun AxisAlignedBB.offset(vec: Vector3f): AxisAlignedBB {
-                return this.offset(vec.x.toDouble(), vec.y.toDouble(), vec.z.toDouble())
-            }
-
-            fun AxisAlignedBB.offset(offset: Double): AxisAlignedBB {
-                return this.offset(offset, offset, offset)
-            }
-
             pipeVectors = mutableMapOf<EnumFacing, Pair<MutableList<MutableList<Vector3f>>, Vector3f>>().apply {
                 for (facing in EnumFacing.values()) {
 
@@ -162,10 +157,14 @@ class TileEntityPipe : AggregatableTileEntity() {
                             for (v in vecs) {
                                 if (facing.axis == EnumFacing.SOUTH.axis) {
                                     //we are on the z axis so we dont need to rotate the vectors
-                                    add(v)
+                                    add(Vector3f(v.x + 0.5f, v.y + 0.5f, v.z + 0.5f))
                                 } else {
                                     //rotate the location vector
-                                    add(Matrix3f.transform(matrix, v, null))
+                                    add(Matrix3f.transform(matrix, v, null).apply {
+                                        x += 0.5f
+                                        y += 0.5f
+                                        z += 0.5f
+                                    })
                                 }
                             }
                         })
@@ -195,6 +194,8 @@ class TileEntityPipe : AggregatableTileEntity() {
         private fun getBB(min: Vec3d, max: Vec3d): AxisAlignedBB {
             return AxisAlignedBB(min.x, min.y, min.z, max.x, max.y, max.z)
         }
+
+        val emptyBB = AxisAlignedBB(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
     }
 
     private val pipeTypes = TileEntityPipeTypesComponent()
@@ -409,27 +410,30 @@ class TileEntityPipe : AggregatableTileEntity() {
                     val (vecs, dir) = pipeVectors[p.facing]!!
                     val offset = vecs[facings[p.facing]!! - 1][facingsCounter.getAndInc(p.facing)]
 
-                    val x = dir.x * 0.5 + (1 - abs(dir.x)) * nodeSize
-                    val y = dir.y * 0.5 + (1 - abs(dir.y)) * nodeSize
-                    val z = dir.z * 0.5 + (1 - abs(dir.z)) * nodeSize
+                    val oneMinus = Vector3f(1 - abs(dir.x), 1 - abs(dir.y), 1 - abs(dir.z))
+
+                    val x = (dir.x * 0.5 + (oneMinus.x) * nodeSize)
+                    val y = (dir.y * 0.5 + (oneMinus.y) * nodeSize)
+                    val z = (dir.z * 0.5 + (oneMinus.z) * nodeSize)
+
 
                     out.add(
                         Triple(
-                            p.facing to AxisAlignedBB(0.0, 0.0, 0.0, x, y, z)
-                                .offset(offset).offset(0.5), p.pipeType, BoxType.PIPE
+                            p.facing to emptyBB.expand(x, y, z)
+                                .offset(offset)
+                                .offset(-x * oneMinus.x * 0.5, -y * oneMinus.y * 0.5, -z * oneMinus.z * 0.5),
+                            p.pipeType,
+                            BoxType.PIPE
                         )
                     )
 
                     out.add(
                         Triple(
-                            p.facing to AxisAlignedBB(
-                                -nodeSize * 0.1,
-                                -nodeSize * 0.1,
-                                -nodeSize * 0.1,
-                                nodeSize + nodeSize * 0.1,
-                                nodeSize + nodeSize * 0.1,
-                                nodeSize + nodeSize * 0.1
-                            ).offset(offset).offset(0.5), p.pipeType, BoxType.CONNECTOR
+                            //we need half the node size, since grow expands in all directions
+                            //and add expand by 0.1 to be slightly bigger then the normal nodeSize
+                            p.facing to emptyBB.grow(nodeSize * (0.5 + 0.1)).offset(offset),
+                            p.pipeType,
+                            BoxType.CONNECTOR
                         )
                     )
                 }
@@ -437,14 +441,14 @@ class TileEntityPipe : AggregatableTileEntity() {
                 }
                 is NodePart -> {
                     if (!hasEdge.contains(p.pipeType)) {
-                        val expansion = ((this.getInstalledTypes().size - 1) * node.averageEdgeLength) / 2
+                        val (vecs, _) = pipeVectors[EnumFacing.SOUTH]!!
+                        val offset = vecs[getInstalledTypes().size - 1][--nodes]
+
                         out.add(
                             Triple(
-                                EnumFacing.NORTH to node.expand(expansion * 2, 0.0, expansion * 2).offset(
-                                    -expansion,
-                                    0.0,
-                                    -expansion
-                                ), if (getInstalledTypes().size == 1) getInstalledTypes().first() else null, BoxType.BOX
+                                EnumFacing.NORTH to emptyBB.grow(nodeSize * (0.5 + 0.1)).offset(
+                                    offset
+                                ), p.pipeType, BoxType.PIPE
                             )
                         )
                     }
@@ -456,8 +460,15 @@ class TileEntityPipe : AggregatableTileEntity() {
 
         //calculate the max size of cables per axis
         val bends = mutableMapOf<EnumFacing.Axis, Int>()
+        val straights = mutableMapOf<EnumFacing.Axis, MutablePair<Int, Int>>()
         for ((face, int) in facings) {
             bends[face.axis] = (bends[face.axis] ?: 0).coerceAtLeast(int)
+            straights.getOrPut(face.axis) { MutablePair(0, 0) }.apply {
+                if (face.axisDirection == EnumFacing.AxisDirection.POSITIVE)
+                    this.setLeft(int)
+                else
+                    this.setRight(int)
+            }
         }
 
         val x = bends[EnumFacing.Axis.X] ?: 0
@@ -468,7 +479,6 @@ class TileEntityPipe : AggregatableTileEntity() {
         //needs to be an edge with atleast 2 cables
         //or a y edge with atleast 3 cables and some horizontal edges
         if (bends.filter { it.value > 0 }.count() >= 2 || (y >= 3 && x + z > 0)) {
-
 
             //normal case L junktion of 2 cable bundles
             if ((x >= 2f && z >= 2f)) {
@@ -502,9 +512,17 @@ class TileEntityPipe : AggregatableTileEntity() {
             if (z >= 2f && x <= 1f) {
                 scalar.x = 1f
             }
+
+
+            //2 cables going from vertical into one horizontal cable
+            if (y >= 2f && x >= 1f || y >= 1f) {
+                scalar.x = 1f
+            }
         }
 
+        val half = nodeSize / 2
         if (scalar.x > 0f || scalar.y > 0f || scalar.z > 0f) {
+
             out.add(
 
                 //we need to be a bit bigger then the normal end connector
@@ -514,15 +532,59 @@ class TileEntityPipe : AggregatableTileEntity() {
                 //scale it with 0.12 as that did visually look good
                 Triple(
                     EnumFacing.NORTH to AxisAlignedBB(
-                        -nodeSize * 0.15 - scalar.x * 0.12,
-                        -nodeSize * 0.15 - scalar.y * 0.12,
-                        -nodeSize * 0.15 - scalar.z * 0.12,
-                        nodeSize + nodeSize * 0.15 + scalar.x * 0.12,
-                        nodeSize + nodeSize * 0.15 + scalar.y * 0.12,
-                        nodeSize + nodeSize * 0.15 + +scalar.z * 0.12
+                        -half - nodeSize * 0.15 - scalar.x * 0.12,
+                        -half - nodeSize * 0.15 - scalar.y * 0.12,
+                        -half - nodeSize * 0.15 - scalar.z * 0.12,
+                        half + nodeSize * 0.15 + scalar.x * 0.12,
+                        half + nodeSize * 0.15 + scalar.y * 0.12,
+                        half + nodeSize * 0.15 + +scalar.z * 0.12
                     ).offset(0.5, 0.5, 0.5), null, BoxType.BOX
                 )
             )
+        }
+
+        for ((axis, pair) in straights) {
+
+            val max = max(pair.left, pair.right)
+            val min = min(pair.left, pair.right)
+
+            if (min >= 1 && max - min >= 1) {
+
+                val scalar = Vector3f(0f, 0f, 0f)
+
+                if (axis != EnumFacing.Axis.Y) {
+                    if (max >= 3f) {
+                        scalar.y = 1f
+                    }
+                }
+
+                if (axis == EnumFacing.Axis.X) {
+                    scalar.z = 1f
+                }
+                if (axis == EnumFacing.Axis.Z) {
+                    scalar.x = 1f
+                }
+
+                if (axis == EnumFacing.Axis.Y) {
+                    if (max >= 3) {
+                        scalar.x = 1f
+                        scalar.z = 1f
+                    }
+                }
+
+                out.add(
+                    Triple(
+                        EnumFacing.NORTH to AxisAlignedBB(
+                            -half - nodeSize * 0.15 - scalar.x * 0.12,
+                            -half - nodeSize * 0.15 - scalar.y * 0.12,
+                            -half - nodeSize * 0.15 - scalar.z * 0.12,
+                            half + nodeSize * 0.15 + scalar.x * 0.12,
+                            half + nodeSize * 0.15 + scalar.y * 0.12,
+                            half + nodeSize * 0.15 + +scalar.z * 0.12
+                        ).offset(0.5, 0.5, 0.5), null, BoxType.BOX
+                    )
+                )
+            }
         }
 
         //Calc facades
