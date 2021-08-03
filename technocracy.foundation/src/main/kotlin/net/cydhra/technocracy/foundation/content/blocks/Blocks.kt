@@ -1,5 +1,7 @@
 package net.cydhra.technocracy.foundation.content.blocks
 
+import net.cydhra.technocracy.foundation.content.blocks.wrapper.BlockWrapperBlock
+import net.cydhra.technocracy.foundation.content.blocks.wrapper.TileWrapperBlock
 import net.cydhra.technocracy.foundation.content.tileentities.machines.*
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartCapacitor
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartRefinery
@@ -102,3 +104,6 @@ val leadGlassPaneBlock = LeadGlassPaneBlock()
 
 val saltBlock = PlainBlock("salt_block", Material.ROCK, oreDictionaryName = "blockSalt")
         .apply { setHardness(1.0f).setResistance(2.5f) }
+
+val blockWrapper = BlockWrapperBlock()
+val tileWrapper = TileWrapperBlock()

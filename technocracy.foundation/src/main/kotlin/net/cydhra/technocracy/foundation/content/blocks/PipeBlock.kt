@@ -247,7 +247,7 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
         val entity = Minecraft.getMinecraft().player
         val startPos = Vec3d(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ)
         val endPos = startPos.addVector(entity.lookVec.x * length, entity.lookVec.y * length, entity.lookVec.z * length)
-        val tile = world.getTileEntity(pos) as TileEntityPipe
+        val tile = world.getTileEntity(pos) as? TileEntityPipe ?: return ItemStack.EMPTY
         val map = tile.getPipeModelParts()
 
         val triple = rayTraceBestBB(startPos, endPos, map, pos)

@@ -85,13 +85,24 @@ val machineEnergyUp4Item = UpgradeItem("machine_energy_up_4", UpgradeClass.MACHI
 val machineAdditiveEnergy1Item = UpgradeItem("machine_add_energy_up_1", UpgradeClass.MACHINE,
         AdditiveConsumptionMultiplier(1.0), EnergyMultiplier(-0.5))
 val machineAdditiveEnergy2Item = UpgradeItem("machine_add_energy_up_2", UpgradeClass.MACHINE,
-        AdditiveConsumptionMultiplier(3.0), EnergyMultiplier(-1.5))
-val machineAdditiveSpeed1Item = UpgradeItem("machine_add_speed_up_1", UpgradeClass.MACHINE,
-        AdditiveConsumptionMultiplier(1.0), SpeedMultiplier(1.0))
-val machineAdditiveSpeed2Item = UpgradeItem("machine_add_speed_up_2", UpgradeClass.MACHINE,
-        AdditiveConsumptionMultiplier(3.0), SpeedMultiplier(3.0))
+        AdditiveConsumptionMultiplier(3.0), EnergyMultiplier(-1.5)
+)
+val machineAdditiveSpeed1Item = UpgradeItem(
+        "machine_add_speed_up_1", UpgradeClass.MACHINE,
+        AdditiveConsumptionMultiplier(1.0), SpeedMultiplier(1.0)
+)
+val machineAdditiveSpeed2Item = UpgradeItem(
+        "machine_add_speed_up_2", UpgradeClass.MACHINE,
+        AdditiveConsumptionMultiplier(3.0), SpeedMultiplier(3.0)
+)
 
-val machineLubricantUpItem = UpgradeItem("machine_lubricant_up", UpgradeClass.MACHINE,
-        SpeedMultiplier(4.0), LubricantUpgrade())
-val machineCoolerUpgradeItem = UpgradeItem("machine_cooler_up", UpgradeClass.MACHINE,
-        SpeedMultiplier(4.5), EnergyMultiplier(2.5), CoolingUpgrade())
+val machineLubricantUpItem = UpgradeItem(
+        "machine_lubricant_up", UpgradeClass.MACHINE,
+        SpeedMultiplier(4.0), LubricantUpgrade()
+)
+val machineCoolerUpgradeItem = UpgradeItem(
+        "machine_cooler_up", UpgradeClass.MACHINE,
+        SpeedMultiplier(4.5), EnergyMultiplier(2.5), CoolingUpgrade()
+)
+
+val debugItem = DebugItem()

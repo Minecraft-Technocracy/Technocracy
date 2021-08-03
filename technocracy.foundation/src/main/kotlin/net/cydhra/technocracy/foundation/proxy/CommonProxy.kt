@@ -15,7 +15,9 @@ import net.cydhra.technocracy.foundation.content.items.capability.DefaultItemCap
 import net.cydhra.technocracy.foundation.content.oresystems.*
 import net.cydhra.technocracy.foundation.content.potions.PotionManager
 import net.cydhra.technocracy.foundation.content.potions.oilyEffect
+import net.cydhra.technocracy.foundation.content.tileentities.TileBlockWrapper
 import net.cydhra.technocracy.foundation.content.tileentities.TileEntityManager
+import net.cydhra.technocracy.foundation.content.tileentities.TileTileWrapper
 import net.cydhra.technocracy.foundation.content.tileentities.machines.*
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartCapacitor
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartRefinery
@@ -198,6 +200,9 @@ open class CommonProxy {
         blockManager.prepareBlocksForRegistration(pipe)
         blockManager.prepareBlocksForRegistration(saltBlock)
 
+        blockManager.prepareBlocksForRegistration(blockWrapper)
+        blockManager.prepareBlocksForRegistration(tileWrapper)
+
         itemManager.prepareItemForRegistration(machineFrameItem)
         itemManager.prepareItemForRegistration(advancedMachineFrameItem)
         itemManager.prepareItemForRegistration(industrialMachineFrameItem)
@@ -270,6 +275,8 @@ open class CommonProxy {
         itemManager.prepareItemForRegistration(machineLubricantUpItem)
         itemManager.prepareItemForRegistration(machineCoolerUpgradeItem)
 
+        itemManager.prepareItemForRegistration(debugItem)
+
         tileEntityManager.prepareTileEntityForRegistration(TileEntityAlloySmeltery::class)
         tileEntityManager.prepareTileEntityForRegistration(TileEntityCentrifuge::class)
         tileEntityManager.prepareTileEntityForRegistration(TileEntityChemicalProcessingChamber::class)
@@ -310,6 +317,10 @@ open class CommonProxy {
 
         tileEntityManager.prepareTileEntityForRegistration(TileEntityDrum::class)
         tileEntityManager.prepareTileEntityForRegistration(TileEntityBattery::class)
+
+
+        tileEntityManager.prepareTileEntityForRegistration(TileTileWrapper::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileBlockWrapper::class)
         //ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPipe::class.java, PipeRenderer())
 
         PotionManager.preparePotionForRegistration(oilyEffect)
