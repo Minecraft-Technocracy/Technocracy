@@ -67,6 +67,8 @@ class PipeBlock : AbstractTileEntityBlock("pipe", material = Material.PISTON), I
                 for (facade in te.getFacades().values) {
                     spawnAsEntity(worldIn, pos, facade.copy().apply { this.count = 1 })
                 }
+
+                te.removeTileEntity()
             }
         }
         //Set it to air like the flower pot's harvestBlock method
