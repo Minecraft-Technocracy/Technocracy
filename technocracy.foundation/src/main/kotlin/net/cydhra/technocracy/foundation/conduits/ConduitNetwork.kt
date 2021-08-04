@@ -338,7 +338,7 @@ object ConduitNetwork {
         if (event.world.isRemote) return
 
         val dimensionId = event.world.provider.dimension
-        val dimension = dimensions[dimensionId]!!
+        val dimension = dimensions[dimensionId] ?: return
 
         dimension.saveChunkData(event)
     }

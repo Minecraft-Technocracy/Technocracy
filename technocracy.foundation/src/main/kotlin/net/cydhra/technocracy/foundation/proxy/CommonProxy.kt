@@ -15,9 +15,9 @@ import net.cydhra.technocracy.foundation.content.items.capability.DefaultItemCap
 import net.cydhra.technocracy.foundation.content.oresystems.*
 import net.cydhra.technocracy.foundation.content.potions.PotionManager
 import net.cydhra.technocracy.foundation.content.potions.oilyEffect
-import net.cydhra.technocracy.foundation.content.tileentities.TileBlockWrapper
+import net.cydhra.technocracy.foundation.content.tileentities.BlockWrapperTileEntity
 import net.cydhra.technocracy.foundation.content.tileentities.TileEntityManager
-import net.cydhra.technocracy.foundation.content.tileentities.TileTileWrapper
+import net.cydhra.technocracy.foundation.content.tileentities.TileWrapperTileEntity
 import net.cydhra.technocracy.foundation.content.tileentities.machines.*
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartCapacitor
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartRefinery
@@ -319,8 +319,8 @@ open class CommonProxy {
         tileEntityManager.prepareTileEntityForRegistration(TileEntityBattery::class)
 
 
-        tileEntityManager.prepareTileEntityForRegistration(TileTileWrapper::class)
-        tileEntityManager.prepareTileEntityForRegistration(TileBlockWrapper::class)
+        tileEntityManager.prepareTileEntityForRegistration(TileWrapperTileEntity::class)
+        tileEntityManager.prepareTileEntityForRegistration(BlockWrapperTileEntity::class)
         //ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPipe::class.java, PipeRenderer())
 
         PotionManager.preparePotionForRegistration(oilyEffect)

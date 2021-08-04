@@ -2,7 +2,7 @@ package net.cydhra.technocracy.foundation.content.items
 
 import net.cydhra.technocracy.foundation.content.blocks.blockWrapper
 import net.cydhra.technocracy.foundation.content.blocks.tileWrapper
-import net.cydhra.technocracy.foundation.content.tileentities.TileBlockWrapper
+import net.cydhra.technocracy.foundation.content.tileentities.BlockWrapperTileEntity
 import net.cydhra.technocracy.foundation.util.structures.BlockInfo
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.EnumActionResult
@@ -47,9 +47,12 @@ class DebugItem : BaseItem("debugitem") {
                 blockWrapper.getStateForPlacement(world, pos, side, hitX, hitY, hitZ, 0, player, hand)
             }
 
-            if (!world.setBlockState(pos, newState, 11)) return EnumActionResult.PASS
+            //remove tile so no items can be droped
+            world.removeTileEntity(pos)
 
-            val tile = world.getTileEntity(pos) as TileBlockWrapper
+            if (!world.setBlockState(pos, newState)) return EnumActionResult.PASS
+
+            val tile = world.getTileEntity(pos) as BlockWrapperTileEntity
             tile.block = info
             tile.markDirty()
 

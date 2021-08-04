@@ -1,7 +1,9 @@
 package net.cydhra.technocracy.foundation.content.blocks.wrapper
 
 import net.cydhra.technocracy.foundation.content.blocks.AbstractTileEntityBlock
-import net.cydhra.technocracy.foundation.content.tileentities.TileBlockWrapper
+import net.cydhra.technocracy.foundation.content.tileentities.BlockWrapperTileEntity
+import net.cydhra.technocracy.foundation.util.propertys.BLOCKSTATE
+import net.cydhra.technocracy.foundation.util.propertys.POSITION
 import net.cydhra.technocracy.foundation.util.structures.BlockInfo
 import net.minecraft.block.material.Material
 import net.minecraft.block.properties.PropertyEnum
@@ -14,60 +16,71 @@ import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.tileentity.TileEntity
-import net.minecraft.util.BlockRenderLayer
-import net.minecraft.util.EnumFacing
-import net.minecraft.util.EnumHand
-import net.minecraft.util.IStringSerializable
-import net.minecraft.util.math.*
+import net.minecraft.util.*
+import net.minecraft.util.math.AxisAlignedBB
+import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.RayTraceResult
+import net.minecraft.util.math.Vec3d
 import net.minecraft.world.Explosion
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 import net.minecraftforge.common.IPlantable
-import java.util.*
+import net.minecraftforge.common.property.IExtendedBlockState
+import net.minecraftforge.fml.common.Optional
+import team.chisel.ctm.api.IFacade
 
+@Optional.Interface(iface = "team.chisel.ctm.api.IFacade", modid = "ctm")
 open class BlockWrapperBlock(val name: String = "blockwrapper") :
-    AbstractTileEntityBlock(name, material = Material.CLOTH) {
+    AbstractTileEntityBlock(name, material = Material.CLOTH), IFacade {
 
     companion object {
-        private var RENDER_LAYER: PropertyEnum<RenderLayer> =
-            PropertyEnum.create("renderlayer", RenderLayer::class.java)
+        private var RENDER_TYPE: PropertyEnum<RenderType> =
+            PropertyEnum.create("rendertype", RenderType::class.java)
     }
 
-    private enum class RenderLayer(val type: BlockRenderLayer) : IStringSerializable {
-        SOLID(BlockRenderLayer.SOLID), CUTOUT_MIPPED(BlockRenderLayer.CUTOUT_MIPPED), CUTOUT(BlockRenderLayer.CUTOUT), TRANSLUCENT(
-            BlockRenderLayer.TRANSLUCENT
-        );
+    override fun getRenderType(state: IBlockState): EnumBlockRenderType {
+        return EnumBlockRenderType.values()[cacheState.getValue(RENDER_TYPE).ordinal]
+    }
 
-        companion object {
-            fun fromId(id: Int): RenderLayer {
-                return values()[MathHelper.clamp(id, 0, values().size - 1)]
-            }
+    var cacheState = defaultState
 
-            fun fromLayer(id: BlockRenderLayer): RenderLayer {
-                return values().first { it.type == id }
-            }
-        }
+    //because minecraft is using the default state for getRenderType we need to cache the state in this method
+    //as it gets called right before the render type is queried
+    override fun canRenderInLayer(state: IBlockState, layer: BlockRenderLayer): Boolean {
+        cacheState = state
+        return true
+    }
+
+    private enum class RenderType(val type: String) : IStringSerializable {
+        INVISIBLE("invisible"),
+        LIQUID("liquid"),
+        ENTITYBLOCK_ANIMATED("entityblockanimated"),
+        MODEL("model");
 
         override fun getName(): String {
-            return this.type.name.lowercase(Locale.getDefault())
+            return type
         }
     }
 
     override fun createBlockState(): BlockStateContainer {
-        return BlockStateContainer.Builder(this).add(RENDER_LAYER).build()
+        return BlockStateContainer.Builder(this).add(RENDER_TYPE).add(POSITION).add(BLOCKSTATE).build()
     }
 
     override fun getMetaFromState(state: IBlockState): Int {
-        return state.getValue(RENDER_LAYER).ordinal
+        return state.getValue(RENDER_TYPE).ordinal
     }
 
     override fun getStateFromMeta(meta: Int): IBlockState {
-        return this.defaultState.withProperty(RENDER_LAYER, RenderLayer.values()[meta])
+        return this.defaultState.withProperty(RENDER_TYPE, RenderType.values()[meta])
     }
 
     override fun getBlockHardness(blockState: IBlockState, worldIn: World, pos: BlockPos): Float {
         val tile =
-            worldIn.getTileEntity(pos) as? TileBlockWrapper ?: return super.getBlockHardness(blockState, worldIn, pos)
+            worldIn.getTileEntity(pos) as? BlockWrapperTileEntity ?: return super.getBlockHardness(
+                blockState,
+                worldIn,
+                pos
+            )
         return tile.block?.state?.getBlockHardness(tile.getWorld(worldIn), pos) ?: super.getBlockHardness(
             blockState,
             worldIn,
@@ -168,10 +181,6 @@ open class BlockWrapperBlock(val name: String = "blockwrapper") :
         return info.block.canPlaceTorchOnTop(state, world, pos)
     }
 
-    override fun canRenderInLayer(state: IBlockState, layer: BlockRenderLayer): Boolean {
-        return state.getValue(RENDER_LAYER).type == layer
-    }
-
     override fun getStateForPlacement(
         world: World,
         pos: BlockPos,
@@ -183,6 +192,8 @@ open class BlockWrapperBlock(val name: String = "blockwrapper") :
         placer: EntityLivingBase,
         hand: EnumHand
     ): IBlockState {
+        val state = world.getBlockState(pos)
+
         return super.getStateForPlacement(
             world,
             pos,
@@ -190,7 +201,7 @@ open class BlockWrapperBlock(val name: String = "blockwrapper") :
             hitX,
             hitY,
             hitZ,
-            world.getBlockState(pos).block.blockLayer.ordinal,
+            state.renderType.ordinal,
             placer,
             hand
         )
@@ -292,9 +303,9 @@ open class BlockWrapperBlock(val name: String = "blockwrapper") :
         return info.state
     }
 
-    override fun getExtendedState(state: IBlockState, world: IBlockAccess, pos: BlockPos): IBlockState {
-        val (info, world) = getData(world, pos) ?: return super.getExtendedState(state, world, pos)
-        return info.block.getExtendedState(info.state, world, pos)
+    override fun getExtendedState(state: IBlockState, world: IBlockAccess?, pos: BlockPos?): IBlockState {
+        val (info, _) = getData(world!!, pos!!) ?: return state
+        return (state as IExtendedBlockState).withProperty(POSITION, pos).withProperty(BLOCKSTATE, info.state)
     }
 
     override fun getCollisionBoundingBox(
@@ -346,13 +357,24 @@ open class BlockWrapperBlock(val name: String = "blockwrapper") :
         return super.getActualState(state, worldIn, pos)
     }
 
-    fun getData(world: IBlockAccess, pos: BlockPos): Pair<BlockInfo, World>? {
-        val tile = world.getTileEntity(pos) as? TileBlockWrapper
+    fun getData(world: World, pos: BlockPos): Pair<BlockInfo, World>? {
+        val tile = world.getTileEntity(pos) as? BlockWrapperTileEntity
         val info = tile?.block ?: return null
-        return info to tile.getWorld(world as World)
+        return info to tile.getWorld(world)
+    }
+
+    fun getData(world: IBlockAccess, pos: BlockPos): Pair<BlockInfo, IBlockAccess>? {
+        val tile = world.getTileEntity(pos) as? BlockWrapperTileEntity
+        val info = tile?.block ?: return null
+        return info to tile.getAccess(world)
     }
 
     override fun createNewTileEntity(worldIn: World, meta: Int): TileEntity {
-        return TileBlockWrapper()
+        return BlockWrapperTileEntity()
+    }
+
+    override fun getFacade(world: IBlockAccess, pos: BlockPos, side: EnumFacing?): IBlockState {
+        val (info, _) = getData(world, pos) ?: return defaultState
+        return info.state
     }
 }

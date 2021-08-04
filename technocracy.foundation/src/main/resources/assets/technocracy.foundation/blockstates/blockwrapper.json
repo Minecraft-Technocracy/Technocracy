@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "rendertype=invisible": {
+      "model": "technocracy.foundation:blockwrapper"
+    },
+    "rendertype=liquid": {
+      "model": "technocracy.foundation:blockwrapper"
+    },
+    "rendertype=entityblockanimated": {
+      "model": "technocracy.foundation:blockwrapper"
+    },
+    "rendertype=model": {
+      "model": "technocracy.foundation:blockwrapper"
+    }
+  }
+}

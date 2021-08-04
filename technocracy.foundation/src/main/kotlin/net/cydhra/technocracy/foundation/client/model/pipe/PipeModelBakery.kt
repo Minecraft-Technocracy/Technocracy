@@ -83,6 +83,9 @@ class PipeModelBakery : IBakedModel {
 
                     if (cache == null) {
 
+                        if (it.third == TileEntityPipe.BoxType.BOX)
+                            continue
+
 
                         val texture = when (it.third) {
                             TileEntityPipe.BoxType.BOX -> TextureAtlasManager.pipe_node

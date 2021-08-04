@@ -2,10 +2,11 @@ package net.cydhra.technocracy.foundation.content.tileentities
 
 import net.cydhra.technocracy.foundation.util.structures.BlockInfo
 import net.minecraft.block.Block
-import net.minecraft.block.ITileEntityProvider
+import net.minecraft.block.state.IBlockState
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.math.BlockPos
+import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 import net.minecraft.world.chunk.Chunk
 import net.minecraft.world.chunk.IChunkProvider
@@ -14,7 +15,7 @@ import net.minecraft.world.chunk.IChunkProvider
 /**
  * Replaces a block and stores the original state of it
  */
-open class TileBlockWrapper() : AggregatableTileEntity() {
+open class BlockWrapperTileEntity() : AggregatableTileEntity() {
 
     constructor(info: BlockInfo) : this() {
         block = info
@@ -22,6 +23,10 @@ open class TileBlockWrapper() : AggregatableTileEntity() {
 
     open fun getWorld(world: World): World {
         return world
+    }
+
+    open fun getAccess(access: IBlockAccess): IBlockAccess {
+        return access
     }
 
     var block: BlockInfo? = null
@@ -76,21 +81,49 @@ open class TileBlockWrapper() : AggregatableTileEntity() {
 /**
  * We need another block just for tiles so we can use the vbo for blocks and special renderer for tiles
  */
-class TileTileWrapper : TileBlockWrapper() {
-    val wrappedTile by lazy {
-        val block_ = block!!.block
+class TileWrapperTileEntity : BlockWrapperTileEntity() {
+    var internalTile: TileEntity? = null
 
-        if (block_ is ITileEntityProvider) {
-            return@lazy block_.createNewTileEntity(world, block!!.meta)
+    fun getWrappedTile(): TileEntity? {
+        if (internalTile == null) {
+            val block_ = block?.block
+            internalTile = block_?.createTileEntity(world, block!!.state)
         }
-        block_.createTileEntity(world, block!!.state)
+        return internalTile
     }
 
     override fun getWorld(world: World): World {
-        return CustomTEWorld(world, pos, wrappedTile)
+        return CustomTEWorld(world, pos, getWrappedTile())
     }
 
-    class CustomTEWorld(val parent: World, val blockPos: BlockPos, val tileEntity: TileEntity?) :
+    override fun getAccess(access: IBlockAccess): IBlockAccess {
+        return CustomTEAccess(access, pos, getWrappedTile())
+    }
+
+    private class CustomTEAccess(val parent: IBlockAccess, val blockPos: BlockPos, val tileEntity: TileEntity?) :
+        IBlockAccess by parent {
+        override fun getTileEntity(pos: BlockPos): TileEntity? {
+            if (blockPos == pos) {
+                return tileEntity
+            }
+
+            val other = parent.getTileEntity(pos)
+            if (other is TileWrapperTileEntity) {
+                other.getWrappedTile()
+            }
+            return other
+        }
+
+        override fun getBlockState(pos: BlockPos): IBlockState {
+            val tile = parent.getTileEntity(pos)
+            if (tile is BlockWrapperTileEntity) {
+                return tile.block?.state ?: parent.getBlockState(pos)
+            }
+            return parent.getBlockState(pos)
+        }
+    }
+
+    private class CustomTEWorld(val parent: World, val blockPos: BlockPos, val tileEntity: TileEntity?) :
         World(parent.saveHandler, parent.worldInfo, parent.provider, parent.profiler, parent.isRemote) {
         override fun createChunkProvider(): IChunkProvider {
             return parent.chunkProvider
@@ -108,7 +141,21 @@ class TileTileWrapper : TileBlockWrapper() {
             if (blockPos == pos) {
                 return tileEntity
             }
-            return super.getTileEntity(pos)
+
+            val other = super.getTileEntity(pos)
+
+            if (other is TileWrapperTileEntity) {
+                other.getWrappedTile()
+            }
+            return other
+        }
+
+        override fun getBlockState(pos: BlockPos): IBlockState {
+            val tile = super.getTileEntity(pos)
+            if (tile is BlockWrapperTileEntity) {
+                return tile.block?.state ?: super.getBlockState(pos)
+            }
+            return super.getBlockState(pos)
         }
     }
 }

@@ -1,13 +1,13 @@
 package net.cydhra.technocracy.foundation.client.render.tileentity
 
-import net.cydhra.technocracy.foundation.content.tileentities.TileTileWrapper
+import net.cydhra.technocracy.foundation.content.tileentities.TileWrapperTileEntity
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer
 import net.minecraft.tileentity.TileEntity
 
-class TileWrapperBlockSpezialRenderer : TileEntitySpecialRenderer<TileTileWrapper>() {
+class TileWrapperBlockSpezialRenderer : TileEntitySpecialRenderer<TileWrapperTileEntity>() {
     override fun render(
-        te: TileTileWrapper,
+        te: TileWrapperTileEntity,
         x: Double,
         y: Double,
         z: Double,
@@ -15,8 +15,9 @@ class TileWrapperBlockSpezialRenderer : TileEntitySpecialRenderer<TileTileWrappe
         destroyStage: Int,
         alpha: Float
     ) {
-        val tile = te.wrappedTile ?: return
-        TileEntityRendererDispatcher.instance.getRenderer<TileEntity>(tile)!!
-            .render(tile, x, y, z, partialTicks, destroyStage, alpha)
+        val tile = te.getWrappedTile() ?: return
+        tile.world = te.getWorld(world)
+        TileEntityRendererDispatcher.instance.getRenderer<TileEntity>(tile)
+            ?.render(tile, x, y, z, partialTicks, destroyStage, alpha)
     }
 }

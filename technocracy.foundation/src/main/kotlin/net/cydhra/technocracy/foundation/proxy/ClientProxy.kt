@@ -7,19 +7,17 @@ import net.cydhra.technocracy.foundation.client.model.facade.FacadeItemModel
 import net.cydhra.technocracy.foundation.client.model.pipe.PipeItemModel
 import net.cydhra.technocracy.foundation.client.model.pipe.PipeModel
 import net.cydhra.technocracy.foundation.client.model.tank.MutliBlockTankFluidModel
+import net.cydhra.technocracy.foundation.client.model.wrapper.WrappedBlockModel
 import net.cydhra.technocracy.foundation.client.render.tileentity.TileWrapperBlockSpezialRenderer
 import net.cydhra.technocracy.foundation.client.textures.TextureAtlasManager
-import net.cydhra.technocracy.foundation.content.blocks.pipe
-import net.cydhra.technocracy.foundation.content.blocks.tankGlassBlock
-import net.cydhra.technocracy.foundation.content.blocks.tankIOBlock
-import net.cydhra.technocracy.foundation.content.blocks.tankWallBlock
+import net.cydhra.technocracy.foundation.content.blocks.*
 import net.cydhra.technocracy.foundation.content.commands.ClearParticlesCommand
 import net.cydhra.technocracy.foundation.content.commands.ClearTCCaches
 import net.cydhra.technocracy.foundation.content.commands.ReloadShaderCommand
 import net.cydhra.technocracy.foundation.content.items.facadeItem
 import net.cydhra.technocracy.foundation.content.items.pipeItem
 import net.cydhra.technocracy.foundation.content.items.structureMarkerItem
-import net.cydhra.technocracy.foundation.content.tileentities.TileTileWrapper
+import net.cydhra.technocracy.foundation.content.tileentities.TileWrapperTileEntity
 import net.minecraft.client.Minecraft
 import net.minecraft.client.settings.KeyBinding
 import net.minecraft.entity.player.EntityPlayer
@@ -76,6 +74,9 @@ class ClientProxy : CommonProxy() {
         blockManager.linkBlockToModel(tankGlassBlock, MutliBlockTankFluidModel())
         blockManager.linkBlockToModel(pipe, PipeModel())
 
+        blockManager.linkBlockToModel(blockWrapper, WrappedBlockModel())
+        blockManager.linkBlockToModel(tileWrapper, WrappedBlockModel())
+
         itemManager.linkItemToModel(pipeItem, PipeItemModel())
         itemManager.linkItemToModel(facadeItem, FacadeItemModel())
 
@@ -94,7 +95,7 @@ class ClientProxy : CommonProxy() {
         itemManager.registerItemColors()
         blockManager.registerBlockColors()
 
-        tileEntityManager.linkTileEntityWithRenderer(TileTileWrapper::class, TileWrapperBlockSpezialRenderer())
+        tileEntityManager.linkTileEntityWithRenderer(TileWrapperTileEntity::class, TileWrapperBlockSpezialRenderer())
 
         tileEntityManager.onClientInitialize()
 
