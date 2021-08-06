@@ -94,6 +94,7 @@ class SideConfigTab(parent: TCGui, val machine: AggregatableTileEntity, val main
         @SideOnly(Side.CLIENT)
         private fun initClientVariables() {
             if (!init) {
+                init = true
                 framebuffer = Framebuffer @SideOnly(Side.CLIENT) {
                     setFramebufferColor(0f, 0f, 0f, 0f)
                 }

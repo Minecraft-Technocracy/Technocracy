@@ -239,7 +239,8 @@ object ConduitNetwork {
      */
     fun getNodeParts(world: World, pos: BlockPos): Collection<Part> {
         val dimension =
-            dimensions[world.provider.dimension] ?: throw IllegalStateException("the dimension is not loaded")
+            dimensions[world.provider.dimension]
+                ?: throw IllegalStateException("the dimension is not loaded $world ${world.provider.dimension}")
 
         val chunk = dimension.getChunkAt(ChunkPos(pos)) ?: throw IllegalStateException("the chunk is not loaded")
         val parts = mutableListOf<Part>()

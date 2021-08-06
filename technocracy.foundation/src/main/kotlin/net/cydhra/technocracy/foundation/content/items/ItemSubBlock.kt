@@ -38,8 +38,11 @@ class ItemSubBlock(block: Block) : ItemBlock(block) {
         return list.size != 1
     }
 
-    override fun isInCreativeTab(targetTab: CreativeTabs): Boolean {
-        return super.isInCreativeTab(targetTab) || (block is IBlockMultipleCreativeTabs && block.isValidCreativeTab(targetTab))
+    override fun isInCreativeTab(targetTab: CreativeTabs?): Boolean {
+        if (targetTab == null) return false
+        return super.isInCreativeTab(targetTab) || (block is IBlockMultipleCreativeTabs && block.isValidCreativeTab(
+            targetTab
+        ))
     }
 
     override fun getMetadata(damage: Int): Int {

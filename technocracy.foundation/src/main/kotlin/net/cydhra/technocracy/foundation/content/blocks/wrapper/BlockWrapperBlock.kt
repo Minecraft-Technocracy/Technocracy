@@ -1,15 +1,18 @@
 package net.cydhra.technocracy.foundation.content.blocks.wrapper
 
+import net.cydhra.technocracy.foundation.api.blocks.util.IBlockStateMapper
 import net.cydhra.technocracy.foundation.content.blocks.AbstractTileEntityBlock
 import net.cydhra.technocracy.foundation.content.tileentities.BlockWrapperTileEntity
 import net.cydhra.technocracy.foundation.util.propertys.BLOCKSTATE
 import net.cydhra.technocracy.foundation.util.propertys.POSITION
 import net.cydhra.technocracy.foundation.util.structures.BlockInfo
 import net.minecraft.block.material.Material
-import net.minecraft.block.properties.PropertyEnum
+import net.minecraft.block.properties.PropertyBool
 import net.minecraft.block.state.BlockFaceShape
 import net.minecraft.block.state.BlockStateContainer
 import net.minecraft.block.state.IBlockState
+import net.minecraft.client.renderer.block.model.ModelResourceLocation
+import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityLiving
 import net.minecraft.entity.EntityLivingBase
@@ -27,19 +30,33 @@ import net.minecraft.world.World
 import net.minecraftforge.common.IPlantable
 import net.minecraftforge.common.property.IExtendedBlockState
 import net.minecraftforge.fml.common.Optional
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import team.chisel.ctm.api.IFacade
 
 @Optional.Interface(iface = "team.chisel.ctm.api.IFacade", modid = "ctm")
 open class BlockWrapperBlock(val name: String = "blockwrapper") :
-    AbstractTileEntityBlock(name, material = Material.CLOTH), IFacade {
+    AbstractTileEntityBlock(name, material = Material.CLOTH), IFacade, IBlockStateMapper {
+
+    override fun getCreativeTabToDisplayOn(): CreativeTabs? {
+        return null
+    }
 
     companion object {
-        private var RENDER_TYPE: PropertyEnum<RenderType> =
-            PropertyEnum.create("rendertype", RenderType::class.java)
+        //private var RENDER_TYPE: PropertyEnum<RenderType> =
+        //    PropertyEnum.create("rendertype", RenderType::class.java)
+
+        private var OpaqueCube: PropertyBool = PropertyBool.create("opaquecube")
+        private var IsInvisible: PropertyBool = PropertyBool.create("invisible")
+        private var FullCube: PropertyBool = PropertyBool.create("fullcube")
+
+        private var Translucent: PropertyBool = PropertyBool.create("translucent")
+        //private var UseNeighborBrightness: PropertyBool = PropertyBool.create("nbbrightness")
+        //private var CollideCheck: PropertyBool = PropertyBool.create("collidecheck")
     }
 
     override fun getRenderType(state: IBlockState): EnumBlockRenderType {
-        return EnumBlockRenderType.values()[cacheState.getValue(RENDER_TYPE).ordinal]
+        return if (cacheState.getValue(IsInvisible)) EnumBlockRenderType.INVISIBLE else EnumBlockRenderType.MODEL
     }
 
     var cacheState = defaultState
@@ -49,6 +66,30 @@ open class BlockWrapperBlock(val name: String = "blockwrapper") :
     override fun canRenderInLayer(state: IBlockState, layer: BlockRenderLayer): Boolean {
         cacheState = state
         return true
+    }
+
+
+    override fun canHarvestBlock(world: IBlockAccess, pos: BlockPos, player: EntityPlayer): Boolean {
+
+        val (info, _) = getData(world, pos) ?: return false
+
+        var state = world.getBlockState(pos)
+        state = state.block.getActualState(state, world, pos)
+        if (state.material.isToolNotRequired) {
+            return true
+        }
+
+        val stack = player.heldItemMainhand
+        val tool: String? = info.block.getHarvestTool(state)
+        if (stack.isEmpty || tool == null) {
+            return player.canHarvestBlock(state)
+        }
+
+        val toolLevel = stack.item.getHarvestLevel(stack, tool, player, state)
+        return if (toolLevel < 0) {
+            player.canHarvestBlock(state)
+        } else toolLevel >= info.block.getHarvestLevel(state)
+
     }
 
     private enum class RenderType(val type: String) : IStringSerializable {
@@ -63,29 +104,140 @@ open class BlockWrapperBlock(val name: String = "blockwrapper") :
     }
 
     override fun createBlockState(): BlockStateContainer {
-        return BlockStateContainer.Builder(this).add(RENDER_TYPE).add(POSITION).add(BLOCKSTATE).build()
+        return BlockStateContainer.Builder(this).add(IsInvisible).add(OpaqueCube)
+            .add(FullCube).add(Translucent)/*.add(CollideCheck)*/
+            /*.add(UseNeighborBrightness)*/.add(POSITION).add(BLOCKSTATE).build()
+    }
+
+    override fun isOpaqueCube(state: IBlockState): Boolean {
+        return state.getValue(OpaqueCube)
+    }
+
+    override fun isFullCube(state: IBlockState): Boolean {
+        return state.getValue(FullCube)// super.isFullCube(state)
+    }
+
+    /*@Deprecated("")
+    override fun isTopSolid(state: IBlockState): Boolean {
+        return state.material.isOpaque && state.isFullCube
+    }*/
+
+    @Deprecated("")
+    override fun isFullBlock(state: IBlockState?): Boolean {
+        return /*state?.getValue(FullBlock) ?:*/ false
+    }
+
+    @Deprecated("")
+    @SideOnly(Side.CLIENT)
+    override fun isTranslucent(state: IBlockState?): Boolean {
+        return state?.getValue(Translucent) ?: translucent
+    }
+
+    override fun isNormalCube(state: IBlockState, world: IBlockAccess, pos: BlockPos): Boolean {
+
+        val (info, world) = getData(world, pos) ?: return super.isNormalCube(state, world, pos)
+
+        return info.block.isNormalCube(info.state, world, pos)
+    }
+
+    /*@Deprecated("")
+    override fun getLightValue(state: IBlockState?): Int {
+        return lightValue
+    }*/
+
+    @Deprecated("")
+    override fun getUseNeighborBrightness(state: IBlockState?): Boolean {
+        return useNeighborBrightness
+        //if (state == null) return useNeighborBrightness
+        //return !isOpaqueCube(state)
+    }
+
+    override fun getHarvestTool(state: IBlockState): String? {
+        return null
+    }
+
+    override fun getPlayerRelativeBlockHardness(
+        state: IBlockState,
+        player: EntityPlayer,
+        worldIn: World,
+        pos: BlockPos
+    ): Float {
+
+        val (info, world) = getData(worldIn, pos) ?: return 1f
+
+        val hardness = info.state.getBlockHardness(world, pos)
+        if (hardness < 0.0f) {
+            return 0.0f
+        }
+
+        return if (!canHarvestBlock(worldIn, pos, player)) {
+            player.getDigSpeed(info.state, pos) / hardness / 100f
+        } else {
+            player.getDigSpeed(info.state, pos) / hardness / 30f
+        }
+    }
+
+    override fun isPassable(worldIn: IBlockAccess, pos: BlockPos): Boolean {
+        val (info, world) = getData(worldIn, pos) ?: return super.isPassable(worldIn, pos)
+        return info.block.isPassable(world, pos)
+    }
+
+    private infix fun Int.or(b: Boolean): Int {
+        return this or if (b) 0x1 else 0x0
     }
 
     override fun getMetaFromState(state: IBlockState): Int {
-        return state.getValue(RENDER_TYPE).ordinal
+        var meta = if (state.getValue(IsInvisible)) 1 else 0
+        meta = meta shl 0x1
+        //meta = meta or state.getValue(UseNeighborBrightness)
+        //meta = meta shl 0x1
+        meta = meta or state.getValue(Translucent)
+        meta = meta shl 0x1
+        meta = meta or state.getValue(FullCube)
+        meta = meta shl 0x1
+        meta = meta or state.getValue(OpaqueCube)
+
+        return meta
     }
 
     override fun getStateFromMeta(meta: Int): IBlockState {
-        return this.defaultState.withProperty(RENDER_TYPE, RenderType.values()[meta])
+        var meta = meta
+
+        val isOpaqueCube = meta and 0x1 != 0
+        meta = meta shr 0x1
+
+        val isFullBlock = meta and 0x1 != 0
+        meta = meta shr 0x1
+
+        val isTranslucent = meta and 0x1 != 0
+        meta = meta shr 0x1
+
+        //val getUseNeighborBrightness = meta and 0x1 != 0
+        //meta = meta shr 0x1
+
+        //val canCollideCheck = meta and 0x1 != 0
+        //meta = meta shr 0x1
+
+        val isInvis = meta and 0x1 != 0
+
+        return this.defaultState
+            .withProperty(IsInvisible, isInvis)
+            .withProperty(OpaqueCube, isOpaqueCube)
+            .withProperty(FullCube, isFullBlock)
+            .withProperty(Translucent, isTranslucent)
+        //.withProperty(UseNeighborBrightness, getUseNeighborBrightness)
+        //.withProperty(CollideCheck, canCollideCheck)
     }
 
+    override fun onNeighborChange(world: IBlockAccess, pos: BlockPos, neighbor: BlockPos) {
+        super.onNeighborChange(world, pos, neighbor)
+    }
+
+
     override fun getBlockHardness(blockState: IBlockState, worldIn: World, pos: BlockPos): Float {
-        val tile =
-            worldIn.getTileEntity(pos) as? BlockWrapperTileEntity ?: return super.getBlockHardness(
-                blockState,
-                worldIn,
-                pos
-            )
-        return tile.block?.state?.getBlockHardness(tile.getWorld(worldIn), pos) ?: super.getBlockHardness(
-            blockState,
-            worldIn,
-            pos
-        )
+        val (info, world) = getData(worldIn, pos) ?: return 1f
+
+        return info.block.getBlockHardness(info.state, world, pos)
     }
 
     override fun getDropItem(state: IBlockState, world: IBlockAccess, pos: BlockPos, te: TileEntity?): ItemStack {
@@ -194,6 +346,16 @@ open class BlockWrapperBlock(val name: String = "blockwrapper") :
     ): IBlockState {
         val state = world.getBlockState(pos)
 
+        var meta = if (state.renderType != EnumBlockRenderType.MODEL) 1 else 0
+        meta = meta shl 0x1
+        //meta = meta or state.useNeighborBrightness()
+        //meta = meta shl 0x1
+        meta = meta or state.isTranslucent
+        meta = meta shl 0x1
+        meta = meta or state.isFullCube
+        meta = meta shl 0x1
+        meta = meta or state.isOpaqueCube
+
         return super.getStateForPlacement(
             world,
             pos,
@@ -201,7 +363,7 @@ open class BlockWrapperBlock(val name: String = "blockwrapper") :
             hitX,
             hitY,
             hitZ,
-            state.renderType.ordinal,
+            meta,
             placer,
             hand
         )
@@ -318,14 +480,13 @@ open class BlockWrapperBlock(val name: String = "blockwrapper") :
         return info.block.getCollisionBoundingBox(info.state, world, pos)
     }
 
-    override fun getSelectedBoundingBox(state: IBlockState, worldIn: World, pos: BlockPos): AxisAlignedBB {
+    override fun getSelectedBoundingBox(state: IBlockState, worldIn: World?, pos: BlockPos): AxisAlignedBB {
         val (info, world) = getData(worldIn, pos) ?: return super.getSelectedBoundingBox(state, worldIn, pos)
         return info.block.getSelectedBoundingBox(info.state, world, pos)
     }
 
-    override fun getBoundingBox(state: IBlockState, source: IBlockAccess, pos: BlockPos): AxisAlignedBB {
+    override fun getBoundingBox(state: IBlockState, source: IBlockAccess?, pos: BlockPos): AxisAlignedBB {
         val (info, world) = getData(source, pos) ?: return super.getBoundingBox(state, source, pos)
-
         return info.block.getBoundingBox(info.state, world, pos)
     }
 
@@ -357,13 +518,17 @@ open class BlockWrapperBlock(val name: String = "blockwrapper") :
         return super.getActualState(state, worldIn, pos)
     }
 
-    fun getData(world: World, pos: BlockPos): Pair<BlockInfo, World>? {
+    fun getData(world: World?, pos: BlockPos): Pair<BlockInfo, World>? {
+        if (world == null)
+            return null
         val tile = world.getTileEntity(pos) as? BlockWrapperTileEntity
         val info = tile?.block ?: return null
         return info to tile.getWorld(world)
     }
 
-    fun getData(world: IBlockAccess, pos: BlockPos): Pair<BlockInfo, IBlockAccess>? {
+    fun getData(world: IBlockAccess?, pos: BlockPos): Pair<BlockInfo, IBlockAccess>? {
+        if (world == null)
+            return null
         val tile = world.getTileEntity(pos) as? BlockWrapperTileEntity
         val info = tile?.block ?: return null
         return info to tile.getAccess(world)
@@ -373,8 +538,22 @@ open class BlockWrapperBlock(val name: String = "blockwrapper") :
         return BlockWrapperTileEntity()
     }
 
+    override fun shouldSideBeRendered(
+        blockState: IBlockState,
+        blockAccess: IBlockAccess,
+        pos: BlockPos,
+        side: EnumFacing
+    ): Boolean {
+        val (info, world) = getData(blockAccess, pos) ?: return true
+        return info.state.shouldSideBeRendered(world, pos, side)
+    }
+
     override fun getFacade(world: IBlockAccess, pos: BlockPos, side: EnumFacing?): IBlockState {
         val (info, _) = getData(world, pos) ?: return defaultState
         return info.state
+    }
+
+    override fun getModelResourceLocation(state: IBlockState): ModelResourceLocation {
+        return ModelResourceLocation(ResourceLocation("technocracy.foundation", name), "normal")
     }
 }

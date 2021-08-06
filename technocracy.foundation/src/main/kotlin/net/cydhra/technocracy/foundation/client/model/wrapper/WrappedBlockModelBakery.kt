@@ -1,6 +1,8 @@
 package net.cydhra.technocracy.foundation.client.model.wrapper
 
 import net.cydhra.technocracy.foundation.client.textures.TextureAtlasManager
+import net.cydhra.technocracy.foundation.content.blocks.blockWrapper
+import net.cydhra.technocracy.foundation.content.blocks.tileWrapper
 import net.cydhra.technocracy.foundation.util.facade.FakeBlockAccess
 import net.cydhra.technocracy.foundation.util.model.SimpleQuad
 import net.cydhra.technocracy.foundation.util.model.pipeline.QuadPipeline
@@ -29,6 +31,9 @@ class WrappedBlockModelBakery : IBakedModel {
         ) ?: return mutableListOf()
 
         if (!state.block.canRenderInLayer(state, MinecraftForgeClient.getRenderLayer()))
+            return mutableListOf()
+
+        if (state.block == blockWrapper || state.block == tileWrapper)
             return mutableListOf()
 
         val mc = Minecraft.getMinecraft()

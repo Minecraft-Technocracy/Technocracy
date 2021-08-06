@@ -24,6 +24,10 @@ class DebugItem : BaseItem("debugitem") {
         hand: EnumHand
     ): EnumActionResult {
         if (!world.isRemote) {
+            if (world.getTileEntity(pos) is BlockWrapperTileEntity) {
+                return EnumActionResult.FAIL
+            }
+
             val state = world.getBlockState(pos)
             val block = state.block
 

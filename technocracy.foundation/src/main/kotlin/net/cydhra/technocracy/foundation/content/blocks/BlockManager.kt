@@ -1,10 +1,12 @@
 package net.cydhra.technocracy.foundation.content.blocks
 
 import net.cydhra.technocracy.foundation.api.blocks.IBaseBlock
+import net.cydhra.technocracy.foundation.api.blocks.util.IBlockStateMapper
 import net.cydhra.technocracy.foundation.client.model.AbstractCustomModel
 import net.cydhra.technocracy.foundation.client.model.CustomModelProvider
 import net.cydhra.technocracy.foundation.content.blocks.color.BlockColorDelegator
 import net.cydhra.technocracy.foundation.content.items.ItemSubBlock
+import net.cydhra.technocracy.foundation.util.DynBlockStateMapper
 import net.cydhra.technocracy.foundation.util.StateMapper
 import net.minecraft.block.Block
 import net.minecraft.client.Minecraft
@@ -82,18 +84,18 @@ class BlockManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
     @SubscribeEvent
     fun onRegisterItems(event: RegistryEvent.Register<Item>) {
         event.registry.registerAll(*blocksToRegister.filter { it.generateItem }
-                .filter { it !is BaseLiquidBlock }
-                .map { it as Block }
-                .map(::ItemSubBlock)
-                .map { it.apply { it.registryName = it.block.registryName } }
-                .toTypedArray())
+            .filter { it !is BaseLiquidBlock }
+            .map { it as Block }
+            .map(::ItemSubBlock)
+            .map { it.apply { it.registryName = it.block.registryName } }
+            .toTypedArray())
 
         blocksToRegister
-                .filterIsInstance<AbstractBaseBlock>()
-                .filter { it.oreDictionaryName != null }
-                .forEach {
-                    OreDictionary.registerOre(it.oreDictionaryName, it)
-                }
+            .filterIsInstance<AbstractBaseBlock>()
+            .filter { it.oreDictionaryName != null }
+            .forEach {
+                OreDictionary.registerOre(it.oreDictionaryName, it)
+            }
     }
 
     /**
@@ -104,18 +106,21 @@ class BlockManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
     @SubscribeEvent
     fun onRegisterRenders(@Suppress("UNUSED_PARAMETER") event: ModelRegistryEvent) {
         blocksToRegister.filter { it.generateItem }
-                .filter { it !is BaseLiquidBlock }
-                .map { it as Block }
-                .map(Item::getItemFromBlock)
-                .forEach { item ->
-                    val list = NonNullList.create<ItemStack>()
-                    item.getSubItems(item.creativeTab!!, list)
-                    item.getSubItems(CreativeTabs.SEARCH, list)
-                    for (subs in list) {
-                        ModelLoader.setCustomModelResourceLocation(subs.item, subs.metadata,
-                                ModelResourceLocation(((subs.item as ItemBlock).block as IBaseBlock).modelLocation, "inventory"))
-                    }
+            .filter { it !is BaseLiquidBlock }
+            .map { it as Block }
+            .map(Item::getItemFromBlock)
+            .forEach { item ->
+                val list = NonNullList.create<ItemStack>()
+                @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+                item.getSubItems(item.creativeTab, list)
+                item.getSubItems(CreativeTabs.SEARCH, list)
+                for (subs in list) {
+                    ModelLoader.setCustomModelResourceLocation(
+                        subs.item, subs.metadata,
+                        ModelResourceLocation(((subs.item as ItemBlock).block as IBaseBlock).modelLocation, "inventory")
+                    )
                 }
+            }
         registerCustomBlockModels()
     }
 
@@ -136,14 +141,20 @@ class BlockManager(val modName: String, val defaultCreativeTab: CreativeTabs) {
     private fun registerCustomBlockModels() {
         ModelLoaderRegistry.registerLoader(CustomModelProvider(customModels, modName))
         blocksToRegister.filter { it is BaseLiquidBlock }
-                .map { it as BaseLiquidBlock }
-                .forEach { liquid ->
-                    val stateMapper = StateMapper("fluid", liquid.modelLocation)
-                    val item = Item.getItemFromBlock(liquid)
-                    ModelBakery.registerItemVariants(item)
-                    ModelLoader.setCustomMeshDefinition(item, stateMapper)
-                    ModelLoader.setCustomStateMapper(liquid, stateMapper)
-                }
+            .map { it as BaseLiquidBlock }
+            .forEach { liquid ->
+                val stateMapper = StateMapper("fluid", liquid.modelLocation)
+                val item = Item.getItemFromBlock(liquid)
+                ModelBakery.registerItemVariants(item)
+                ModelLoader.setCustomMeshDefinition(item, stateMapper)
+                ModelLoader.setCustomStateMapper(liquid, stateMapper)
+            }
+
+        blocksToRegister.filter { it is IBlockStateMapper && it is Block }
+            .map { it as Block }
+            .forEach {
+                ModelLoader.setCustomStateMapper(it, DynBlockStateMapper(it as IBlockStateMapper))
+            }
     }
 
 }

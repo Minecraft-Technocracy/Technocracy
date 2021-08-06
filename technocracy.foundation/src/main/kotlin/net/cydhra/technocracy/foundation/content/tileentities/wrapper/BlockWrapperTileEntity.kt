@@ -17,10 +17,6 @@ import net.minecraft.world.chunk.IChunkProvider
  */
 open class BlockWrapperTileEntity() : AggregatableTileEntity() {
 
-    constructor(info: BlockInfo) : this() {
-        block = info
-    }
-
     open fun getWorld(world: World): World {
         return world
     }
@@ -85,22 +81,44 @@ class TileWrapperTileEntity : BlockWrapperTileEntity() {
     var internalTile: TileEntity? = null
 
     fun getWrappedTile(): TileEntity? {
+        val world = world ?: return null
+
         if (internalTile == null) {
-            val block_ = block?.block
-            internalTile = block_?.createTileEntity(world, block!!.state)
+            val block = block
+
+            internalTile = block?.block?.createTileEntity(CustomTEWorld(this, world, pos, null), block.state)
+                ?: return null
+
+            if (block.nbt != null)
+                internalTile?.deserializeNBT(block.nbt)
+
+            internalTile?.world = getWorld(world)
         }
         return internalTile
     }
 
     override fun getWorld(world: World): World {
-        return CustomTEWorld(world, pos, getWrappedTile())
+        return CustomTEWorld(this, world, pos, getWrappedTile())
     }
 
     override fun getAccess(access: IBlockAccess): IBlockAccess {
-        return CustomTEAccess(access, pos, getWrappedTile())
+        return CustomTEAccess(this, access, pos, getWrappedTile())
     }
 
-    private class CustomTEAccess(val parent: IBlockAccess, val blockPos: BlockPos, val tileEntity: TileEntity?) :
+    override fun writeToNBT(compound: NBTTagCompound): NBTTagCompound {
+        val block = block ?: return super.writeToNBT(compound)
+
+        this.block = BlockInfo(block.pos, block.block, block.meta, internalTile?.serializeNBT() ?: block.nbt)
+
+        return super.writeToNBT(compound)
+    }
+
+    private class CustomTEAccess(
+        val parentTile: BlockWrapperTileEntity,
+        val parent: IBlockAccess,
+        val blockPos: BlockPos,
+        val tileEntity: TileEntity?
+    ) :
         IBlockAccess by parent {
         override fun getTileEntity(pos: BlockPos): TileEntity? {
             if (blockPos == pos) {
@@ -123,8 +141,22 @@ class TileWrapperTileEntity : BlockWrapperTileEntity() {
         }
     }
 
-    private class CustomTEWorld(val parent: World, val blockPos: BlockPos, val tileEntity: TileEntity?) :
+    private class CustomTEWorld(
+        val parentTile: BlockWrapperTileEntity,
+        val parent: World,
+        val blockPos: BlockPos,
+        val tileEntity: TileEntity?
+    ) :
         World(parent.saveHandler, parent.worldInfo, parent.provider, parent.profiler, parent.isRemote) {
+
+        override fun markChunkDirty(pos: BlockPos, unusedTileEntity: TileEntity) {
+            if (pos == blockPos && unusedTileEntity == tileEntity) {
+                parentTile.markDirty()
+            } else {
+                super.markChunkDirty(pos, unusedTileEntity)
+            }
+        }
+
         override fun createChunkProvider(): IChunkProvider {
             return parent.chunkProvider
         }
