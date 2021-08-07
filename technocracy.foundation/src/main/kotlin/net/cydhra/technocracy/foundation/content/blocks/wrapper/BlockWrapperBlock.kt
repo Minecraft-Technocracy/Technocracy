@@ -42,6 +42,7 @@ open class BlockWrapperBlock(val name: String = "blockwrapper") :
         return null
     }
 
+
     companion object {
         //private var RENDER_TYPE: PropertyEnum<RenderType> =
         //    PropertyEnum.create("rendertype", RenderType::class.java)
@@ -233,26 +234,33 @@ open class BlockWrapperBlock(val name: String = "blockwrapper") :
         super.onNeighborChange(world, pos, neighbor)
     }
 
-
     override fun getBlockHardness(blockState: IBlockState, worldIn: World, pos: BlockPos): Float {
         val (info, world) = getData(worldIn, pos) ?: return 1f
 
         return info.block.getBlockHardness(info.state, world, pos)
     }
 
+    //we dont drop anything we delegate it to the wrapped block
     override fun getDropItem(state: IBlockState, world: IBlockAccess, pos: BlockPos, te: TileEntity?): ItemStack {
         return ItemStack.EMPTY
     }
 
-    override fun getDrops(
-        world: IBlockAccess,
+    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+    override fun harvestBlock(
+        worldIn: World,
+        player: EntityPlayer,
         pos: BlockPos,
         state: IBlockState,
-        fortune: Int
-    ): MutableList<ItemStack> {
-        val (info, world) = getData(world, pos) ?: return mutableListOf()
+        te: TileEntity?,
+        stack: ItemStack
+    ) {
+        val (info, world) = getData(worldIn, pos) ?: return
+        val block = info.block
 
-        return info.block.getDrops(world, pos, info.state, fortune)
+        block.harvestBlock(world, player, pos, info.state, world.getTileEntity(pos), stack)
+
+        //Set it to air like the flower pot's harvestBlock method
+        worldIn.setBlockToAir(pos)
     }
 
     override fun getEnchantPowerBonus(world: World, pos: BlockPos): Float {
