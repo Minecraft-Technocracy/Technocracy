@@ -1,7 +1,7 @@
 package net.cydhra.technocracy.astronautics.content.entity
 
-import net.cydhra.technocracy.astronautics.content.fx.RefrectParticle
 import net.cydhra.technocracy.foundation.api.fx.TCParticleManager
+import net.cydhra.technocracy.foundation.content.fx.ParticleSmoke
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityLiving
 import net.minecraft.entity.MoverType
@@ -17,8 +17,12 @@ class EntityParticleEmitter(world: World) : EntityLiving(world) {
 
     override fun onUpdate() {
         super.onUpdate()
-        if (this.world.isRemote && this.ticksExisted % 10 == 0) {
-            TCParticleManager.addParticle(RefrectParticle(world, posX  - 0.5, posY +1, posZ  - 0.5))
+        if (this.world.isRemote && this.ticksExisted % 2 == 0) {
+            for (i in 0..4) {
+                TCParticleManager.addParticle(ParticleSmoke(world, posX - 0.5, posY + 1, posZ - 0.5).apply {
+                    motionY = 0.0
+                })
+            }
         }
     }
 

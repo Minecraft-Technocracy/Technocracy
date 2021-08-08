@@ -2,7 +2,10 @@ package net.cydhra.technocracy.foundation.content.blocks.wrapper
 
 import net.cydhra.technocracy.foundation.api.blocks.util.IBlockStateMapper
 import net.cydhra.technocracy.foundation.content.blocks.AbstractTileEntityBlock
-import net.cydhra.technocracy.foundation.content.tileentities.BlockWrapperTileEntity
+import net.cydhra.technocracy.foundation.content.blocks.blockWrapper
+import net.cydhra.technocracy.foundation.content.blocks.tileWrapper
+import net.cydhra.technocracy.foundation.content.events.StructureDisbandEvent
+import net.cydhra.technocracy.foundation.content.tileentities.wrapper.BlockWrapperTileEntity
 import net.cydhra.technocracy.foundation.util.propertys.BLOCKSTATE
 import net.cydhra.technocracy.foundation.util.propertys.POSITION
 import net.cydhra.technocracy.foundation.util.structures.BlockInfo
@@ -11,6 +14,8 @@ import net.minecraft.block.properties.PropertyBool
 import net.minecraft.block.state.BlockFaceShape
 import net.minecraft.block.state.BlockStateContainer
 import net.minecraft.block.state.IBlockState
+import net.minecraft.client.particle.ParticleDigging
+import net.minecraft.client.particle.ParticleManager
 import net.minecraft.client.renderer.block.model.ModelResourceLocation
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.Entity
@@ -27,12 +32,15 @@ import net.minecraft.util.math.Vec3d
 import net.minecraft.world.Explosion
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
+import net.minecraft.world.WorldServer
 import net.minecraftforge.common.IPlantable
+import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.common.property.IExtendedBlockState
 import net.minecraftforge.fml.common.Optional
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import team.chisel.ctm.api.IFacade
+import java.util.concurrent.ThreadLocalRandom
 
 @Optional.Interface(iface = "team.chisel.ctm.api.IFacade", modid = "ctm")
 open class BlockWrapperBlock(val name: String = "blockwrapper") :
@@ -41,7 +49,6 @@ open class BlockWrapperBlock(val name: String = "blockwrapper") :
     override fun getCreativeTabToDisplayOn(): CreativeTabs? {
         return null
     }
-
 
     companion object {
         //private var RENDER_TYPE: PropertyEnum<RenderType> =
@@ -52,6 +59,14 @@ open class BlockWrapperBlock(val name: String = "blockwrapper") :
         private var FullCube: PropertyBool = PropertyBool.create("fullcube")
 
         private var Translucent: PropertyBool = PropertyBool.create("translucent")
+
+        fun get(world: World, pos: BlockPos, playerIn: EntityPlayer, hasTile: Boolean): IBlockState {
+            return if (hasTile) {
+                tileWrapper
+            } else {
+                blockWrapper
+            }.getStateForPlacement(world, pos, EnumFacing.NORTH, 0f, 0f, 0f, 0, playerIn, playerIn.activeHand)
+        }
         //private var UseNeighborBrightness: PropertyBool = PropertyBool.create("nbbrightness")
         //private var CollideCheck: PropertyBool = PropertyBool.create("collidecheck")
     }
@@ -68,7 +83,6 @@ open class BlockWrapperBlock(val name: String = "blockwrapper") :
         cacheState = state
         return true
     }
-
 
     override fun canHarvestBlock(world: IBlockAccess, pos: BlockPos, player: EntityPlayer): Boolean {
 
@@ -187,6 +201,33 @@ open class BlockWrapperBlock(val name: String = "blockwrapper") :
         return this or if (b) 0x1 else 0x0
     }
 
+    override fun addDestroyEffects(world: World, pos: BlockPos, manager: ParticleManager): Boolean {
+        val (info, world) = getData(world, pos) ?: return super.addDestroyEffects(world, pos, manager)
+
+        var state = info.state
+
+        if (!state.block.isAir(state, world, pos) && !state.block.addDestroyEffects(world, pos, manager)) {
+            state = state.getActualState(world, pos)
+            for (j in 0..3) {
+                for (k in 0..3) {
+                    for (l in 0..3) {
+                        val d0 = (j.toDouble() + 0.5) / 4.0
+                        val d1 = (k.toDouble() + 0.5) / 4.0
+                        val d2 = (l.toDouble() + 0.5) / 4.0
+                        manager.addEffect(
+                            ParticleDigging(
+                                world, pos.x.toDouble() + d0, pos.y.toDouble() + d1, pos.z
+                                    .toDouble() + d2, d0 - 0.5, d1 - 0.5, d2 - 0.5, state
+                            ).setBlockPos(pos)
+                        )
+                    }
+                }
+            }
+        }
+
+        return true
+    }
+
     override fun getMetaFromState(state: IBlockState): Int {
         var meta = if (state.getValue(IsInvisible)) 1 else 0
         meta = meta shl 0x1
@@ -257,10 +298,33 @@ open class BlockWrapperBlock(val name: String = "blockwrapper") :
         val (info, world) = getData(worldIn, pos) ?: return
         val block = info.block
 
+        (te as? BlockWrapperTileEntity)?.block = null
+
         block.harvestBlock(world, player, pos, info.state, world.getTileEntity(pos), stack)
+
 
         //Set it to air like the flower pot's harvestBlock method
         worldIn.setBlockToAir(pos)
+    }
+
+    override fun breakBlock(worldIn: World, pos: BlockPos, state: IBlockState) {
+        val te = worldIn.getTileEntity(pos)
+
+        val structure = (te as? BlockWrapperTileEntity)?.structureUUID
+
+        super.breakBlock(worldIn, pos, state)
+
+        if (structure != null) {
+            te.block = null
+            te.structureUUID = null
+            val event = StructureDisbandEvent(structure)
+            MinecraftForge.EVENT_BUS.post(event)
+        }
+    }
+
+    override fun onEntityCollidedWithBlock(worldIn: World, pos: BlockPos, state: IBlockState, entityIn: Entity) {
+        val (info, world) = getData(worldIn, pos) ?: return
+        info.block.onEntityCollidedWithBlock(world, pos, info.state, entityIn)
     }
 
     override fun getEnchantPowerBonus(world: World, pos: BlockPos): Float {
@@ -524,6 +588,55 @@ open class BlockWrapperBlock(val name: String = "blockwrapper") :
 
     override fun getActualState(state: IBlockState, worldIn: IBlockAccess, pos: BlockPos): IBlockState {
         return super.getActualState(state, worldIn, pos)
+    }
+
+    override fun addLandingEffects(
+        state: IBlockState,
+        worldIn: WorldServer,
+        pos: BlockPos,
+        iblockstate: IBlockState,
+        entity: EntityLivingBase,
+        numberOfParticles: Int
+    ): Boolean {
+        val (info, _) = getData(worldIn, pos) ?: return false
+
+        if (!info.block.addLandingEffects(info.state, worldIn, pos, info.state, entity, numberOfParticles)) {
+            worldIn.spawnParticle(
+                EnumParticleTypes.BLOCK_DUST,
+                entity.posX,
+                entity.posY,
+                entity.posZ,
+                numberOfParticles,
+                0.0,
+                0.0,
+                0.0,
+                0.15000000596046448,
+                getStateId(info.state)
+            )
+        }
+
+        return true
+    }
+
+    override fun addRunningEffects(state: IBlockState, worldIn: World, pos: BlockPos, entity: Entity): Boolean {
+        val (info, world) = getData(worldIn, pos) ?: return false
+
+        if (!info.block.addRunningEffects(info.state, world, pos, entity)) {
+            if (info.state.renderType != EnumBlockRenderType.INVISIBLE) {
+                worldIn.spawnParticle(
+                    EnumParticleTypes.BLOCK_CRACK,
+                    entity.posX + (ThreadLocalRandom.current().nextDouble() - 0.5) * entity.width,
+                    entity.entityBoundingBox.minY + 0.1,
+                    entity.posZ + (ThreadLocalRandom.current().nextDouble() - 0.5) * entity.width,
+                    -entity.motionX * 4.0,
+                    1.5,
+                    -entity.motionZ * 4.0,
+                    getStateId(info.state)
+                )
+            }
+        }
+
+        return true
     }
 
     fun getData(world: World?, pos: BlockPos): Pair<BlockInfo, World>? {

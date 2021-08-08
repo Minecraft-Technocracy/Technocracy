@@ -30,8 +30,10 @@ class WrappedBlockModelBakery : IBakedModel {
             BLOCKSTATE
         ) ?: return mutableListOf()
 
-        if (!state.block.canRenderInLayer(state, MinecraftForgeClient.getRenderLayer()))
-            return mutableListOf()
+        if (MinecraftForgeClient.getRenderLayer() != null) {
+            if (!state.block.canRenderInLayer(state, MinecraftForgeClient.getRenderLayer()))
+                return mutableListOf()
+        }
 
         if (state.block == blockWrapper || state.block == tileWrapper)
             return mutableListOf()

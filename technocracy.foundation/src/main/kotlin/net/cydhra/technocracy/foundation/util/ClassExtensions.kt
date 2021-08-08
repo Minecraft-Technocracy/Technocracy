@@ -1,6 +1,8 @@
 package net.cydhra.technocracy.foundation.util
 
 import net.cydhra.technocracy.foundation.TCFoundation
+import net.cydhra.technocracy.foundation.network.PacketHandler
+import net.cydhra.technocracy.foundation.network.ServerCustomChatPacket
 import net.minecraft.block.material.Material
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.BufferBuilder
@@ -8,7 +10,9 @@ import net.minecraft.client.shader.Framebuffer
 import net.minecraft.entity.Entity
 import net.minecraft.entity.item.EntityBoat
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.text.ITextComponent
 import net.minecraft.world.World
 import net.minecraftforge.common.ForgeHooks
 import net.minecraftforge.event.entity.EntityEvent
@@ -178,3 +182,12 @@ fun MessageContext.syncToMainThread(runnable: MessageContext.() -> IMessage?): I
 
 val MessageContext.player: EntityPlayer
     get() = if (this.side.isClient) Minecraft.getMinecraft().player else this.serverHandler.player
+
+fun EntityPlayer.sendInfoMessage(msg: ITextComponent) {
+    if (!this.world.isRemote) {
+        PacketHandler.sendToClient(
+            ServerCustomChatPacket(msg),
+            this as EntityPlayerMP
+        )
+    }
+}

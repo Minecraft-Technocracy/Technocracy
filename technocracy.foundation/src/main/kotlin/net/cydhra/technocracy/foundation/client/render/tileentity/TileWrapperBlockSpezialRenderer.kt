@@ -1,6 +1,6 @@
 package net.cydhra.technocracy.foundation.client.render.tileentity
 
-import net.cydhra.technocracy.foundation.content.tileentities.TileWrapperTileEntity
+import net.cydhra.technocracy.foundation.content.tileentities.wrapper.TileWrapperTileEntity
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer
 

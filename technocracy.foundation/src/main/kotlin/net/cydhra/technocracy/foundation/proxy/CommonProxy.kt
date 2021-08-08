@@ -15,9 +15,7 @@ import net.cydhra.technocracy.foundation.content.items.capability.DefaultItemCap
 import net.cydhra.technocracy.foundation.content.oresystems.*
 import net.cydhra.technocracy.foundation.content.potions.PotionManager
 import net.cydhra.technocracy.foundation.content.potions.oilyEffect
-import net.cydhra.technocracy.foundation.content.tileentities.BlockWrapperTileEntity
 import net.cydhra.technocracy.foundation.content.tileentities.TileEntityManager
-import net.cydhra.technocracy.foundation.content.tileentities.TileWrapperTileEntity
 import net.cydhra.technocracy.foundation.content.tileentities.machines.*
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartCapacitor
 import net.cydhra.technocracy.foundation.content.tileentities.multiblock.TileEntityMultiBlockPartRefinery
@@ -34,6 +32,8 @@ import net.cydhra.technocracy.foundation.content.tileentities.multiblock.tank.Ti
 import net.cydhra.technocracy.foundation.content.tileentities.pipe.TileEntityPipe
 import net.cydhra.technocracy.foundation.content.tileentities.storage.TileEntityBattery
 import net.cydhra.technocracy.foundation.content.tileentities.storage.TileEntityDrum
+import net.cydhra.technocracy.foundation.content.tileentities.wrapper.BlockWrapperTileEntity
+import net.cydhra.technocracy.foundation.content.tileentities.wrapper.TileWrapperTileEntity
 import net.cydhra.technocracy.foundation.content.world.OilLakeGen
 import net.cydhra.technocracy.foundation.content.world.OilSandGen
 import net.cydhra.technocracy.foundation.content.world.WorldGenDeco

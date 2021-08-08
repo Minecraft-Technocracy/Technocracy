@@ -10,9 +10,8 @@ import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluid
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicItemFluidStorage
 import net.cydhra.technocracy.foundation.content.items.components.ItemFluidComponent
 import net.cydhra.technocracy.foundation.content.tileentities.storage.TileEntityDrum
-import net.cydhra.technocracy.foundation.network.PacketHandler
-import net.cydhra.technocracy.foundation.network.ServerCustomChatPacket
 import net.cydhra.technocracy.foundation.util.ColorUtil
+import net.cydhra.technocracy.foundation.util.sendInfoMessage
 import net.minecraft.block.material.Material
 import net.minecraft.block.properties.PropertyEnum
 import net.minecraft.block.state.BlockStateContainer
@@ -21,7 +20,6 @@ import net.minecraft.client.util.ITooltipFlag
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.Entity
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.item.IItemPropertyGetter
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
@@ -256,10 +254,7 @@ class DrumBlock : AbstractTileEntityBlock("drum", material = Material.ROCK, colo
             val fluid = tile.fluidCapability.currentFluid
             //TODO translate
 
-            PacketHandler.sendToClient(
-                ServerCustomChatPacket(TextComponentString(if (fluid == null) "Empty" else "${fluid.localizedName}: ${fluid.amount}/${tile.fluidCapability.capacity}mB")),
-                playerIn as EntityPlayerMP
-            )
+            playerIn.sendInfoMessage(TextComponentString(if (fluid == null) "Empty" else "${fluid.localizedName}: ${fluid.amount}/${tile.fluidCapability.capacity}mB"))
         }
 
         return true

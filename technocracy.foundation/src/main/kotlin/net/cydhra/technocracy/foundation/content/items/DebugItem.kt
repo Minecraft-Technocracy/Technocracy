@@ -2,7 +2,7 @@ package net.cydhra.technocracy.foundation.content.items
 
 import net.cydhra.technocracy.foundation.content.blocks.blockWrapper
 import net.cydhra.technocracy.foundation.content.blocks.tileWrapper
-import net.cydhra.technocracy.foundation.content.tileentities.BlockWrapperTileEntity
+import net.cydhra.technocracy.foundation.content.tileentities.wrapper.BlockWrapperTileEntity
 import net.cydhra.technocracy.foundation.util.structures.BlockInfo
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.EnumActionResult

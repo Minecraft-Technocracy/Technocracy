@@ -1,9 +1,12 @@
 package net.cydhra.technocracy.foundation.util.structures
 
 import net.cydhra.technocracy.foundation.TCFoundation
+import net.cydhra.technocracy.foundation.content.blocks.wrapper.BlockWrapperBlock
+import net.cydhra.technocracy.foundation.content.tileentities.wrapper.BlockWrapperTileEntity
 import net.minecraft.block.Block
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.Minecraft
+import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.init.Blocks
 import net.minecraft.nbt.CompressedStreamTools
 import net.minecraft.nbt.NBTTagCompound
@@ -18,9 +21,71 @@ import net.minecraftforge.fml.common.Loader
 import java.io.File
 import java.io.FileOutputStream
 import java.nio.file.Files
+import java.util.*
 
 
 class Template() : INBTSerializable<NBTTagCompound> {
+
+    companion object {
+
+        fun Pair<Rotation, MutableList<BlockPos>>.toStructure(
+            structureId: UUID,
+            world: World,
+            playerIn: EntityPlayer,
+            ignorePos: BlockPos
+        ) {
+            val data = mutableMapOf<BlockPos, Pair<BlockInfo, IBlockState>>()
+
+            for (pos in this.second) {
+                if (pos == ignorePos) continue
+
+                val state = world.getBlockState(pos)
+                val block = state.block
+
+                val hasTile = block.hasTileEntity()
+
+                val info = if (hasTile) {
+                    BlockInfo(
+                        BlockPos.ORIGIN,
+                        block,
+                        block.getMetaFromState(state),
+                        world.getTileEntity(pos)!!.serializeNBT(),
+                        state
+                    )
+                } else {
+                    BlockInfo(BlockPos.ORIGIN, block, block.getMetaFromState(state), null, state)
+                }
+
+                val newState = BlockWrapperBlock.get(world, pos, playerIn, hasTile)
+
+                data[pos] = info to newState
+            }
+
+            for ((pos, pair) in data) {
+                val (info, state) = pair
+
+                world.removeTileEntity(pos)
+
+                if (!world.setBlockState(pos, state)) continue
+
+                val tile = world.getTileEntity(pos) as BlockWrapperTileEntity
+                tile.block = info
+                tile.structureUUID = structureId
+                tile.markDirty()
+            }
+        }
+
+        fun toStructure(
+            structureId: UUID,
+            matches: Pair<Rotation, MutableList<BlockPos>>,
+            world: World,
+            playerIn: EntityPlayer,
+            ignorePos: BlockPos
+        ) {
+            matches.toStructure(structureId, world, playerIn, ignorePos)
+        }
+    }
+
     val blocks = mutableListOf<BlockInfo>()
     var modules = mutableMapOf<Int, MutableList<BlockPos>>()
 

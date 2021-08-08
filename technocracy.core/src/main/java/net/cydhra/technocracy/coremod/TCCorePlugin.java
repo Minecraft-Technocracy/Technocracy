@@ -1,7 +1,5 @@
 package net.cydhra.technocracy.coremod;
 
-import net.cydhra.technocracy.coremod.event.RenderShaderEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 
 import javax.annotation.Nullable;

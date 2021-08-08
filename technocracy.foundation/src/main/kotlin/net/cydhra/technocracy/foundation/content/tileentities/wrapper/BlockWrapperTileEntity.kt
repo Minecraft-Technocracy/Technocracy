@@ -1,5 +1,7 @@
-package net.cydhra.technocracy.foundation.content.tileentities
+package net.cydhra.technocracy.foundation.content.tileentities.wrapper
 
+import net.cydhra.technocracy.foundation.content.events.StructureDisbandEvent
+import net.cydhra.technocracy.foundation.content.tileentities.AggregatableTileEntity
 import net.cydhra.technocracy.foundation.util.structures.BlockInfo
 import net.minecraft.block.Block
 import net.minecraft.block.state.IBlockState
@@ -10,12 +12,27 @@ import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 import net.minecraft.world.chunk.Chunk
 import net.minecraft.world.chunk.IChunkProvider
+import net.minecraftforge.common.MinecraftForge
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import java.util.*
 
 
 /**
  * Replaces a block and stores the original state of it
  */
-open class BlockWrapperTileEntity() : AggregatableTileEntity() {
+open class BlockWrapperTileEntity : AggregatableTileEntity() {
+
+    init {
+        MinecraftForge.EVENT_BUS.register(this)
+    }
+
+    @SubscribeEvent
+    fun disbandStructure(event: StructureDisbandEvent) {
+        if (event.structureId == structureUUID) {
+            structureUUID = null
+            restoreOriginalBlock()
+        }
+    }
 
     open fun getWorld(world: World): World {
         return world
@@ -24,6 +41,8 @@ open class BlockWrapperTileEntity() : AggregatableTileEntity() {
     open fun getAccess(access: IBlockAccess): IBlockAccess {
         return access
     }
+
+    var structureUUID: UUID? = null
 
     var block: BlockInfo? = null
 
@@ -55,6 +74,10 @@ open class BlockWrapperTileEntity() : AggregatableTileEntity() {
             blockNBT = compound.getCompoundTag("nbt")
         }
 
+        if (compound.hasKey("structure")) {
+            structureUUID = compound.getUniqueId("structure")
+        }
+
         block = BlockInfo(BlockPos.ORIGIN, Block.getBlockFromName(name)!!, meta, blockNBT)
     }
 
@@ -68,6 +91,9 @@ open class BlockWrapperTileEntity() : AggregatableTileEntity() {
             if (block.nbt != null) {
                 setTag("nbt", block.nbt)
             }
+
+            if (structureUUID != null)
+                setUniqueId("structure", structureUUID!!)
         }
 
         return super.writeToNBT(compound)

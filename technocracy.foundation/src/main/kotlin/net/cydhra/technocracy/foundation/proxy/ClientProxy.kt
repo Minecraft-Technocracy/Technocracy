@@ -17,7 +17,7 @@ import net.cydhra.technocracy.foundation.content.commands.ReloadShaderCommand
 import net.cydhra.technocracy.foundation.content.items.facadeItem
 import net.cydhra.technocracy.foundation.content.items.pipeItem
 import net.cydhra.technocracy.foundation.content.items.structureMarkerItem
-import net.cydhra.technocracy.foundation.content.tileentities.TileWrapperTileEntity
+import net.cydhra.technocracy.foundation.content.tileentities.wrapper.TileWrapperTileEntity
 import net.minecraft.client.Minecraft
 import net.minecraft.client.settings.KeyBinding
 import net.minecraft.entity.player.EntityPlayer

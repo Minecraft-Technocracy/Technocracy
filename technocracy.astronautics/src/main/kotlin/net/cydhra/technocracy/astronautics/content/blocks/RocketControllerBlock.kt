@@ -6,7 +6,9 @@ import net.cydhra.technocracy.foundation.api.blocks.util.IDynamicBlockPlaceBehav
 import net.cydhra.technocracy.foundation.client.gui.handler.TCGuiHandler
 import net.cydhra.technocracy.foundation.content.blocks.AbstractRotatableTileEntityBlock
 import net.cydhra.technocracy.foundation.data.world.groups.GroupManager
+import net.cydhra.technocracy.foundation.util.sendInfoMessage
 import net.cydhra.technocracy.foundation.util.structures.Template
+import net.cydhra.technocracy.foundation.util.structures.Template.Companion.toStructure
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.player.EntityPlayer
@@ -15,6 +17,7 @@ import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumHand
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.text.TextComponentString
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 
@@ -52,26 +55,35 @@ class RocketControllerBlock : AbstractRotatableTileEntityBlock("rocket_controlle
     override fun onBlockActivated(worldIn: World, pos: BlockPos, state: IBlockState, playerIn: EntityPlayer, hand: EnumHand, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean {
         if (!playerIn.isSneaking) {
             if (!worldIn.isRemote && hand == EnumHand.MAIN_HAND) {
+                val tile = worldIn.getTileEntity(pos) as? TileEntityRocketController ?: return false
+
+                if (!launchpad.init) {
+                    launchpad.init = true
+                    launchpad.loadFromAssets("launchpad")
+                    rocket_base.loadFromAssets("rocket/rocket_base")
+                    rocket_tip_a.loadFromAssets("rocket/rocket_tip_a")
+                    rocket_tip_b.loadFromAssets("rocket/rocket_tip_b")
+                    tank_module.loadFromAssets("rocket/tank_module")
+                    dyson_cargo.loadFromAssets("rocket/storage_module")
+                    satellite_cargo.loadFromAssets("rocket/satellite_module")
+                }
+
+                if (!tile.baseStructure.isAttached) {
+                    val matches = launchpad.matches(worldIn, pos, true)
+
+                    if (matches != null) {
+                        tile.baseStructure.isAttached = true
+                        tile.baseStructure.markDirty(false)
+                        matches.toStructure(tile.baseStructure.innerComponent.getValue(), worldIn, playerIn, pos)
+                    } else {
+                        playerIn.sendInfoMessage(TextComponentString("The Launchpad is invalid"))
+                        return true
+                    }
+                }
+
                 playerIn.openGui(TCFoundation, TCGuiHandler.machineGui, worldIn, pos.x, pos.y, pos.z)
             }
-
-            return true
         }
-
-        if (true)
-            return true
-
-
-        if (worldIn.isRemote || hand != EnumHand.MAIN_HAND) {
-
-            //TCParticleManager.addParticle(LaserBeam(worldIn, playerIn.posX, playerIn.posY, playerIn.posZ))
-
-
-            return true//super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ)
-        }
-
-        val tile = worldIn.getTileEntity(pos) as TileEntityRocketController
-
 
         return true
     }

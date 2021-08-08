@@ -1,12 +1,14 @@
 package net.cydhra.technocracy.foundation.client.shader
 
 import net.cydhra.technocracy.foundation.util.opengl.BasicShaderProgram
-import net.cydhra.technocracy.foundation.util.opengl.FramebufferTexture
+import net.cydhra.technocracy.foundation.util.opengl.Framebuffer
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.OpenGlHelper
 import net.minecraft.util.ResourceLocation
 import org.lwjgl.input.Keyboard
+import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL30
 
 object RefractionEffect {
 
@@ -28,8 +30,8 @@ object RefractionEffect {
 
     //var time = Vector2f(0f, 0f)
 
-    //private val buffer = Framebuffer()
-    private val mcBufferCopy = FramebufferTexture()
+    private val buffer = Framebuffer()
+    //private val mcBufferCopy = FramebufferTexture()
 
     private var rebuild = true
 
@@ -37,8 +39,11 @@ object RefractionEffect {
      * Updates the backbuffer texture the the vanilla texture
      */
     fun updateBackBuffer() {
-        mcBufferCopy.load(Minecraft.getMinecraft().framebuffer)
-        /*OpenGlHelper.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, Minecraft.getMinecraft().framebuffer.framebufferObject)
+
+        buffer.validate()
+
+        //mcBufferCopy.load(Minecraft.getMinecraft().framebuffer)
+        OpenGlHelper.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, Minecraft.getMinecraft().framebuffer.framebufferObject)
         OpenGlHelper.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, buffer.framebufferObject)
 
         GL30.glBlitFramebuffer(
@@ -55,7 +60,7 @@ object RefractionEffect {
         )
 
         OpenGlHelper.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, Minecraft.getMinecraft().framebuffer.framebufferObject)
-        OpenGlHelper.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, buffer.framebufferObject)*/
+        OpenGlHelper.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, buffer.framebufferObject)
     }
 
     /**
@@ -79,7 +84,7 @@ object RefractionEffect {
         //buffer.validateAndClear(depth = false)
         Minecraft.getMinecraft().framebuffer.bindFramebuffer(true)
 
-        GlStateManager.bindTexture(mcBufferCopy.glTextureId)
+        GlStateManager.bindTexture(buffer.framebufferTexture)
         GlStateManager.setActiveTexture(OpenGlHelper.GL_TEXTURE2)
         Minecraft.getMinecraft().renderEngine.bindTexture(normalTexture)
         GlStateManager.setActiveTexture(OpenGlHelper.GL_TEXTURE2 + 1)

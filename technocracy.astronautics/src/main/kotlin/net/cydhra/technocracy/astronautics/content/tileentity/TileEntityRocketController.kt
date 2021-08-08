@@ -20,13 +20,12 @@ import net.cydhra.technocracy.foundation.client.gui.container.TCContainer
 import net.cydhra.technocracy.foundation.client.gui.handler.TCGuiHandler
 import net.cydhra.technocracy.foundation.content.capabilities.fluid.DynamicFluidCapability
 import net.cydhra.technocracy.foundation.content.capabilities.inventory.DynamicInventoryCapability
+import net.cydhra.technocracy.foundation.content.events.StructureDisbandEvent
 import net.cydhra.technocracy.foundation.content.tileentities.AggregatableTileEntity
-import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityDataComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityFluidComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityInventoryComponent
-import net.cydhra.technocracy.foundation.content.tileentities.components.TileEntityOwnerShipComponent
+import net.cydhra.technocracy.foundation.content.tileentities.components.*
 import net.cydhra.technocracy.foundation.data.world.groups.GroupManager
 import net.cydhra.technocracy.foundation.network.componentsync.GuiUpdateListener
+import net.cydhra.technocracy.foundation.util.sendInfoMessage
 import net.cydhra.technocracy.foundation.util.structures.Template
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
@@ -36,13 +35,31 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.text.TextComponentString
 import net.minecraft.util.text.TextComponentTranslation
 import net.minecraft.world.World
+import net.minecraftforge.common.MinecraftForge
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import java.util.*
 import kotlin.math.ceil
 import kotlin.math.min
 
+class TileEntityRocketController : AggregatableTileEntity(), IAggregatableGuiProvider,
+    TEInventoryProvider<DynamicInventoryCapability>, TCTileEntityGuiProvider,
+    DynamicInventoryCapability.CustomItemStackStackLimit {
 
-class TileEntityRocketController : AggregatableTileEntity(), IAggregatableGuiProvider, TEInventoryProvider<DynamicInventoryCapability>, TCTileEntityGuiProvider, DynamicInventoryCapability.CustomItemStackStackLimit {
+    @SubscribeEvent
+    fun disbandStructure(event: StructureDisbandEvent) {
+        if (event.structureId == baseStructure.innerComponent.getValue()) {
+            baseStructure.isAttached = false
 
-    override fun onSlotUpdate(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack, originalStack: ItemStack) {
+            println("structure got destroyed")
+        }
+    }
+
+    override fun onSlotUpdate(
+        inventory: DynamicInventoryCapability,
+        slot: Int,
+        stack: ItemStack,
+        originalStack: ItemStack
+    ) {
     }
 
     override fun isItemValid(inventory: DynamicInventoryCapability, slot: Int, stack: ItemStack): Boolean {
@@ -62,6 +79,9 @@ class TileEntityRocketController : AggregatableTileEntity(), IAggregatableGuiPro
         //current dyson cargo is 16 per cargo element, max rocket is 6 modules * 8 storage slots * 16 items = 768 max dyson parts per rocket
         return 16//default*/
     }
+
+
+    val baseStructure = TileEntityOptionalAttachedComponent(TileEntityDataComponent(UUID.randomUUID()))
 
     val ownerShip = TileEntityOwnerShipComponent()
     val linked = TileEntityDataComponent(false)
@@ -113,27 +133,39 @@ class TileEntityRocketController : AggregatableTileEntity(), IAggregatableGuiPro
                     for (row in 0 until rows) {
                         val currSlots = min(maxSlotsPerRow, maxSlots)
                         for (slot in 0 until currSlots) {
-                            this.components.add(TCSlotIO(inventoryBuffer.inventory, slot + row * maxSlotsPerRow,
-                                    35 + slot * 18, 26 + row * 18, parent))
+                            this.components.add(
+                                TCSlotIO(
+                                    inventoryBuffer.inventory, slot + row * maxSlotsPerRow,
+                                    35 + slot * 18, 26 + row * 18, parent
+                                )
+                            )
                         }
                         maxSlots -= maxSlotsPerRow
                     }
 
                     components.add(fm)
 
-                    components.add(DefaultButton(35, 25 + 105 - 20, gui.origWidth - 5 - 35, 20, "Remove Rocket", parent) { side, player, tileEntity, button ->
-                        if (!player.isUser) {
-                            (tileEntity as TileEntityRocketController).currentRocket!!.liftOff = true
-                            /*
-                            linked.setState(false)
-                            //force update to be send
-                            GuiUpdateListener.syncComponentsToClients()
-                            //reopen gui to apply change
-                            player.openGui(TCFoundation, TCGuiHandler.machineGui, player.world, pos.x, pos.y, pos.z)
+                    components.add(
+                        DefaultButton(
+                            35,
+                            25 + 105 - 20,
+                            gui.origWidth - 5 - 35,
+                            20,
+                            "Remove Rocket",
+                            parent
+                        ) { side, player, tileEntity, button ->
+                            if (!player.isUser) {
+                                (tileEntity as TileEntityRocketController).currentRocket!!.liftOff = true
+                                /*
+                                linked.setState(false)
+                                //force update to be send
+                                GuiUpdateListener.syncComponentsToClients()
+                                //reopen gui to apply change
+                                player.openGui(TCFoundation, TCGuiHandler.machineGui, player.world, pos.x, pos.y, pos.z)
 
-                            world.removeEntity(currentRocket)*/
-                        }
-                    })
+                                world.removeEntity(currentRocket)*/
+                            }
+                        })
 
                 } else {
                     /*components.add(RedRoundButton(5, 9 + 50 + 10, gui.origWidth - 8, 20, "Build Rocket") { player, tileEntity, button ->
@@ -143,12 +175,20 @@ class TileEntityRocketController : AggregatableTileEntity(), IAggregatableGuiPro
                         }
                     })*/
 
-                    components.add(DefaultButton(5, 9, gui.origWidth - 8, 20, "Build Rocket", parent) { side, player, tileEntity, button ->
-                        //on server only
-                        if (!player.isUser) {
-                            constructRocket(player, player.world)
-                        }
-                    })
+                    components.add(
+                        DefaultButton(
+                            5,
+                            9,
+                            gui.origWidth - 8,
+                            20,
+                            "Build Rocket",
+                            parent
+                        ) { side, player, tileEntity, button ->
+                            //on server only
+                            if (!player.isUser) {
+                                constructRocket(player, player.world)
+                            }
+                        })
                 }
 
                 if (player != null) {
@@ -177,26 +217,14 @@ class TileEntityRocketController : AggregatableTileEntity(), IAggregatableGuiPro
         }
 
         if (ownerShip.currentOwner!!.getRights(playerIn.uniqueID) == GroupManager.PlayerGroup.GroupRights.NONE) {
-            playerIn.sendMessage(TextComponentTranslation("rocket.controller.invalid.ownership"))
-        }
-
-        if (!RocketControllerBlock.launchpad.init) {
-            RocketControllerBlock.launchpad.loadFromAssets("launchpad")
-            RocketControllerBlock.rocket_base.loadFromAssets("rocket/rocket_base")
-            RocketControllerBlock.rocket_tip_a.loadFromAssets("rocket/rocket_tip_a")
-            RocketControllerBlock.rocket_tip_b.loadFromAssets("rocket/rocket_tip_b")
-            RocketControllerBlock.tank_module.loadFromAssets("rocket/tank_module")
-            RocketControllerBlock.dyson_cargo.loadFromAssets("rocket/storage_module")
-            RocketControllerBlock.satellite_cargo.loadFromAssets("rocket/satellite_module")
+            playerIn.sendInfoMessage(TextComponentTranslation("rocket.controller.invalid.ownership"))
         }
 
         if (currentRocket != null) {
-            playerIn.sendMessage(TextComponentTranslation("rocket.controller.invalid.already_linked"))
+            playerIn.sendInfoMessage(TextComponentTranslation("rocket.controller.invalid.already_linked"))
         }
 
-        val matches = RocketControllerBlock.launchpad.matches(worldIn, pos, true)
-
-        if (matches != null) {
+        if (baseStructure.isAttached) {
             val base = RocketControllerBlock.rocket_base.matches(worldIn, pos, true)
             if (base != null) {
 
@@ -231,12 +259,13 @@ class TileEntityRocketController : AggregatableTileEntity(), IAggregatableGuiPro
                         continue
                     }
 
-                    val match_storage = RocketControllerBlock.dyson_cargo.matches(worldIn, offPos, true, valid = { _, block, _ ->
-                        if (block == rocketStorageBlock) {
-                            dysonCargo++
-                        }
-                        block == rocketHullBlock || block == rocketStorageBlock
-                    })
+                    val match_storage =
+                        RocketControllerBlock.dyson_cargo.matches(worldIn, offPos, true, valid = { _, block, _ ->
+                            if (block == rocketStorageBlock) {
+                                dysonCargo++
+                            }
+                            block == rocketHullBlock || block == rocketStorageBlock
+                        })
 
                     if (match_storage != null) {
                         blocks.addAll(match_storage.second)
@@ -256,7 +285,11 @@ class TileEntityRocketController : AggregatableTileEntity(), IAggregatableGuiPro
                     }
 
                     //todo add rocket controller
-                    var match_tip = RocketControllerBlock.rocket_tip_a.matches(worldIn, offPos, true, valid = { check_state, block, _ -> block == rocketHullBlock })
+                    var match_tip = RocketControllerBlock.rocket_tip_a.matches(
+                        worldIn,
+                        offPos,
+                        true,
+                        valid = { check_state, block, _ -> block == rocketHullBlock })
 
                     if (match_tip != null) {
                         blocks.addAll(match_tip.second)
@@ -264,7 +297,11 @@ class TileEntityRocketController : AggregatableTileEntity(), IAggregatableGuiPro
                         continue
                     }
 
-                    match_tip = RocketControllerBlock.rocket_tip_b.matches(worldIn, offPos, true, valid = { check_state, block, _ -> block == rocketHullBlock })
+                    match_tip = RocketControllerBlock.rocket_tip_b.matches(
+                        worldIn,
+                        offPos,
+                        true,
+                        valid = { check_state, block, _ -> block == rocketHullBlock })
                     if (match_tip != null) {
                         blocks.addAll(match_tip.second)
                         tip = true
@@ -273,7 +310,7 @@ class TileEntityRocketController : AggregatableTileEntity(), IAggregatableGuiPro
                 }
 
                 if (satelliteCargo != 0 && dysonCargo != 0) {
-                    playerIn.sendMessage(TextComponentTranslation("rocket.controller.invalid.cantMix"))
+                    playerIn.sendInfoMessage(TextComponentTranslation("rocket.controller.invalid.cantMix"))
                     return
                 }
 
@@ -309,7 +346,7 @@ class TileEntityRocketController : AggregatableTileEntity(), IAggregatableGuiPro
                         worldIn.setBlockToAir(e)
                     }
 
-                    playerIn.sendMessage(TextComponentString("rocket build: $totalStorageElements storage modules with $dysonCargo elements and $tank tank modules"))
+                    playerIn.sendInfoMessage(TextComponentString("rocket build: $totalStorageElements storage modules with $dysonCargo elements and $tank tank modules"))
                     linked.setValue(true)
 
                     //force update to be send
@@ -320,9 +357,9 @@ class TileEntityRocketController : AggregatableTileEntity(), IAggregatableGuiPro
                     return
                 }
             }
-            playerIn.sendMessage(TextComponentTranslation("rocket.controller.invalid.rocket"))
+            playerIn.sendInfoMessage(TextComponentTranslation("rocket.controller.invalid.rocket"))
         } else {
-            playerIn.sendMessage(TextComponentTranslation("rocket.controller.invalid.launchpad"))
+            playerIn.sendInfoMessage(TextComponentTranslation("rocket.controller.invalid.launchpad"))
         }
     }
 
@@ -340,10 +377,13 @@ class TileEntityRocketController : AggregatableTileEntity(), IAggregatableGuiPro
         registerComponent(maxStackSize, "maxStackSize")
         registerComponent(fluidBuffer, "fluidBuffer")
         registerComponent(inventoryBuffer, "invBuffer")
+        registerComponent(baseStructure, "basestructure")
         //no need to save or update as it only references to the entity
         linked.allowAutoSave = false
         fluidBuffer.allowAutoSave = false
         inventoryBuffer.allowAutoSave = false
+
+        MinecraftForge.EVENT_BUS.register(this)
     }
 
     override fun canInteractWith(player: EntityPlayer?): Boolean {
