@@ -188,12 +188,11 @@ class DynamicInventoryCapability(
     override fun serializeNBT(): NBTTagCompound {
         val nbtTagList = NBTTagList()
         for (i in stacks.indices) {
-            if (!stacks[i].isEmpty) {
-                val itemTag = NBTTagCompound()
-                itemTag.setInteger("Slot", i)
-                stacks[i].writeToNBT(itemTag)
-                nbtTagList.appendTag(itemTag)
-            }
+            val itemTag = NBTTagCompound()
+            itemTag.setInteger("Slot", i)
+            itemTag.setInteger("SlotType", slotTypes[i]?.ordinal ?: 0)
+            stacks[i].writeToNBT(itemTag)
+            nbtTagList.appendTag(itemTag)
         }
         val nbt = NBTTagCompound()
         nbt.setTag("Items", nbtTagList)
@@ -203,13 +202,16 @@ class DynamicInventoryCapability(
 
     override fun deserializeNBT(nbt: NBTTagCompound) {
         size = (if (nbt.hasKey("Size", Constants.NBT.TAG_INT)) nbt.getInteger("Size") else stacks.size)
+        slotTypes.clear()
         val tagList = nbt.getTagList("Items", Constants.NBT.TAG_COMPOUND)
         for (i in 0 until tagList.tagCount()) {
             val itemTags = tagList.getCompoundTagAt(i)
             val slot = itemTags.getInteger("Slot")
+            val slotType = InventoryType.values()[itemTags.getInteger("SlotType")]
 
             if (slot >= 0 && slot < stacks.size) {
                 stacks[slot] = ItemStack(itemTags)
+                slotTypes[slot] = slotType
             }
         }
     }
