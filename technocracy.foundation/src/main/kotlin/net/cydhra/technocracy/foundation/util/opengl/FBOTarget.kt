@@ -55,6 +55,39 @@ class FBOTarget {
     }
 }
 
+class DepthTarget {
+    private var fixedBufferID = -1
+    var bufferID: () -> Int
+    val type: TargetType
+
+    constructor(buffer: Framebuffer) {
+        type = TargetType.REFERENCE
+        bufferID = {
+            buffer.depthBuffer
+        }
+    }
+
+    constructor(useDepth: Boolean) {
+        bufferID = {
+            fixedBufferID
+        }
+
+        type = if (useDepth) {
+            TargetType.NEW
+        } else {
+            TargetType.NONE
+        }
+    }
+
+    fun setBufferId(id: Int) {
+        fixedBufferID = id
+    }
+
+    enum class TargetType {
+        REFERENCE, NEW, NONE
+    }
+}
+
 enum class ColorAttachment(val id: Int) {
     ATTACHMENT0(36064),
     ATTACHMENT1(36065),

@@ -12,12 +12,18 @@ import java.nio.IntBuffer
 class MultiTargetFBO(
     var width: Int,
     var height: Int,
-    var useDepth: Boolean,
+    val depth: DepthTarget,
     vararg val allTargets: FBOTarget
 ) {
 
+    constructor(
+        width: Int,
+        height: Int,
+        depth: Boolean,
+        vararg allTargets: FBOTarget
+    ) : this(width, height, DepthTarget(depth), *allTargets)
+
     var framebufferObject: Int = 0
-    var depthBuffer: Int = 0
     var depthTexture: Int = 0
 
     val ownTargets = mutableListOf<FBOTarget>()
@@ -61,8 +67,8 @@ class MultiTargetFBO(
             target.setTextureId(TextureUtil.glGenTextures())
         }
 
-        if (useDepth) {
-            this.depthBuffer = OpenGlHelper.glGenRenderbuffers()
+        if (depth.type == DepthTarget.TargetType.NEW) {
+            depth.setBufferId(OpenGlHelper.glGenRenderbuffers())
         }
 
         OpenGlHelper.glBindFramebuffer(OpenGlHelper.GL_FRAMEBUFFER, this.framebufferObject)
@@ -84,11 +90,11 @@ class MultiTargetFBO(
             )
         }
 
-        if (this.useDepth) {
+        if (depth.type != DepthTarget.TargetType.NONE) {
             depthTexture = TextureUtil.glGenTextures()
             TextureUtil.allocateTexture(depthTexture, width, height)
 
-            OpenGlHelper.glBindRenderbuffer(OpenGlHelper.GL_RENDERBUFFER, this.depthBuffer)
+            OpenGlHelper.glBindRenderbuffer(OpenGlHelper.GL_RENDERBUFFER, depth.bufferID())
 
             OpenGlHelper.glRenderbufferStorage(
                 OpenGlHelper.GL_RENDERBUFFER,
@@ -100,7 +106,7 @@ class MultiTargetFBO(
                 OpenGlHelper.GL_FRAMEBUFFER,
                 OpenGlHelper.GL_DEPTH_ATTACHMENT,
                 OpenGlHelper.GL_RENDERBUFFER,
-                this.depthBuffer
+                depth.bufferID()
             )
         }
 
@@ -127,7 +133,7 @@ class MultiTargetFBO(
     }
 
     fun updateDepth(): MultiTargetFBO {
-        if (useDepth) {
+        if (depth.type != DepthTarget.TargetType.NONE) {
             bindFramebuffer(false)
 
             GlStateManager.bindTexture(depthTexture)
@@ -180,7 +186,7 @@ class MultiTargetFBO(
         GlStateManager.clearColor(0f, 0f, 0f, 0f)
         var i = GL11.GL_COLOR_BUFFER_BIT
 
-        if (this.useDepth) {
+        if (depth.type == DepthTarget.TargetType.NEW) {
             GlStateManager.clearDepth(1.0)
             i = i or GL11.GL_DEPTH_BUFFER_BIT
         }
@@ -214,11 +220,9 @@ class MultiTargetFBO(
 
     fun validate(
         width: Int = Minecraft.getMinecraft().displayWidth,
-        height: Int = Minecraft.getMinecraft().displayHeight,
-        depth: Boolean = true
+        height: Int = Minecraft.getMinecraft().displayHeight
     ): MultiTargetFBO {
-        if (this.width != width || this.height != height || depth != useDepth) {
-            useDepth = depth
+        if (this.width != width || this.height != height) {
             this.refreshFramebuffer()
             this.width = width
             this.height = height
@@ -231,11 +235,10 @@ class MultiTargetFBO(
     fun validateAndClear(
         width: Int = Minecraft.getMinecraft().displayWidth,
         height: Int = Minecraft.getMinecraft().displayHeight,
-        depth: Boolean = true,
         viewport: Boolean = true,
         bind: Boolean = true
     ): MultiTargetFBO {
-        return validate(width, height, depth).apply {
+        return validate(width, height).apply {
             framebufferClear()
             if (bind)
                 bindFramebuffer(viewport)
@@ -247,9 +250,12 @@ class MultiTargetFBO(
             GlStateManager.bindTexture(0)
             OpenGlHelper.glBindFramebuffer(OpenGlHelper.GL_FRAMEBUFFER, this.framebufferObject)
 
-            if (this.depthBuffer > -1) {
-                OpenGlHelper.glDeleteRenderbuffers(this.depthBuffer)
-                this.depthBuffer = -1
+            if (depth.type == DepthTarget.TargetType.NEW) {
+                val tmp = depth.bufferID()
+                if (tmp != -1) {
+                    OpenGlHelper.glDeleteRenderbuffers(tmp)
+                    depth.setBufferId(-1)
+                }
             }
 
             for (target in ownTargets) {

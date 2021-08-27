@@ -87,14 +87,18 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
         val mtfbo = MultiTargetFBO(
             0,
             0,
-            false,
-            FBOTarget(ColorAttachment.ATTACHMENT0),
-            FBOTarget({ Minecraft.getMinecraft().framebuffer }, ColorAttachment.ATTACHMENT1)
+            DepthTarget(Minecraft.getMinecraft().framebuffer),
+            FBOTarget({ Minecraft.getMinecraft().framebuffer }, ColorAttachment.ATTACHMENT0),
+            FBOTarget(ColorAttachment.ATTACHMENT1)
         )
 
         //var pingPong: MultiTargetFBO? = null
-        val ping = Framebuffer()
-        val pong = Framebuffer()
+        val ping = Framebuffer {
+            framebufferFilter = GL11.GL_LINEAR
+        }
+        val pong = Framebuffer {
+            framebufferFilter = GL11.GL_LINEAR
+        }
         val downSampleFB = Framebuffer()
 
         val gaus = BasicShaderProgram(
@@ -111,7 +115,6 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
         )
         val u_xyPixelSize_zIteration =
             kawase.getUniform("u_xyPixelSize_zIteration", BasicShaderProgram.ShaderUniform.UniformType.FLOAT_3)
-
 
         val downSample = BasicShaderProgram(
             ResourceLocation("technocracy.foundation", "shaders/default.vsh"),
@@ -229,7 +232,7 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
             GlStateManager.popMatrix()*/
 
 
-            mtfbo.validateAndClear(depth = false, bind = true, viewport = false)
+            mtfbo.validateAndClear(bind = true, viewport = false)
 
             if (Keyboard.isKeyDown(Keyboard.KEY_K)) {
                 if (rebuild) {
@@ -458,8 +461,8 @@ class LaserBeam(worldIn: World, posXIn: Double, posYIn: Double, posZIn: Double) 
             val dsw: Int = (sW + downsampledRTFactor - 1).toInt() / downsampledRTFactor
             val dsh: Int = (sH + downsampledRTFactor - 1).toInt() / downsampledRTFactor
 
-            ping.validateAndClear(depth = false)
-            pong.validateAndClear(depth = false)
+            ping.validateAndClear(dsw, dsh, depth = false)
+            pong.validateAndClear(dsw, dsh, depth = false)
 
             downSampleFB.validateAndClear(dsw, dsh, depth = false)
 
